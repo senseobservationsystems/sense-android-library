@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="4" 
+    android:versionName="1.03" 
+    package="nl.sense_os.app">
+
+    <application 
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher_sense" 
+        android:theme="@android:style/Theme.Light.NoTitleBar">
+
+        <activity 
+            android:label="@string/app_name"
+            android:name=".SenseApp"
+            android:configChanges="orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="nl.sense_os.app.SenseApp" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity 
+            android:name=".SenseSettings" 
+            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:configChanges="orientation">            
+            <intent-filter>
+                <action android:name="nl.sense_os.app.Settings" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity 
+            android:name="nl.sense_os.service.popquiz.PopQuiz" 
+            android:configChanges="orientation">
+            <intent-filter>
+                <action android:name="nl.sense_os.service.DoPeriodic"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </activity>
+
+        <service 
+            android:name="nl.sense_os.service.SenseService" 
+            android:process="nl.sense_os.service">
+            <intent-filter>
+                <action android:name="nl.sense_os.service.ISenseService" />
+            </intent-filter>
+        </service>
+        
+        <receiver 
+            android:name="nl.sense_os.service.popquiz.PopQuizRx">
+            <intent-filter>
+                <action android:name="nl.sense_os.service.AlarmPeriodic"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </receiver>
+
+        <receiver 
+            android:name="nl.sense_os.service.popquiz.PopQuizSync">
+            <intent-filter>
+                <action android:name="nl.sense_os.service.AlarmPopQuestionUpdate"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </receiver>
+        
+        <receiver 
+            android:name="nl.sense_os.service.SenseBootRx">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <category android:name="android.intent.category.HOME"></category>
+            </intent-filter>
+        </receiver>
+    </application>
+
+    <uses-sdk android:minSdkVersion="4" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/> 
+    <uses-permission android:name="android.permission.VIBRATE"/> 
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+<uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+
+
+<uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"></uses-permission>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+<uses-permission android:name="android.permission.CAMERA"></uses-permission>
+</manifest> 

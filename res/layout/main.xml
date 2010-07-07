@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@drawable/bg_rings">    
+    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:gravity="center_vertical" >
+        <ImageView 
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"  
+            android:src="@drawable/ic_launcher_sense" />
+        <TextView 
+            android:text="Sense Service Station"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginLeft="8dp" />
+    </LinearLayout>
+    
+            <TextView
+                android:text="Main switch"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:background="@android:color/darker_gray"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+            <RelativeLayout
+                android:id="@+id/main_field"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/main_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" /> 
+                <TextView
+                    android:id="@+id/main_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:text="Sense service"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/main_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/main_firstline"
+                    android:layout_centerVertical="true"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="Start or stop Sense service completely" /> 
+            </RelativeLayout>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:text="Individual sensors"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:background="@android:color/darker_gray"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+            <RelativeLayout 
+                android:id="@+id/phonestate_field"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight" 
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/phonestate_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" /> 
+                <TextView
+                    android:id="@+id/phonestate_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:text="Phone state sensing"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/phonestate_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/phonestate_firstline"
+                    android:layout_centerVertical="true"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="Phone connectivity and state" /> 
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray" />
+            <RelativeLayout 
+                android:id="@+id/location_field"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"  
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/location_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" /> 
+                <TextView
+                    android:id="@+id/location_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:text="Location sensing"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/location_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/location_firstline"
+                    android:layout_centerVertical="true"     
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="GPS or network position" /> 
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray" />
+            <RelativeLayout 
+                android:id="@+id/noise_field"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight" 
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/noise_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" />   
+                <TextView
+                    android:id="@+id/noise_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="Sound sensing"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/noise_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/noise_firstline" 
+                    android:layout_centerVertical="true"     
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="Sound level from surroundings" /> 
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray" />
+            <RelativeLayout 
+                android:id="@+id/popquiz_field"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"  
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/popquiz_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" />      
+                <TextView
+                    android:id="@+id/popquiz_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"  
+                    android:layout_centerVertical="true"
+                    android:text="Pop quiz"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/popquiz_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/popquiz_firstline" 
+                    android:layout_centerVertical="true"     
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="Periodic popup question" /> 
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray" />
+            <RelativeLayout 
+                android:id="@+id/motion_field"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"  
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/motion_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" /> 
+                <TextView
+                    android:id="@+id/motion_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:text="Motion sensing"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/motion_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/motion_firstline"
+                    android:layout_centerVertical="true"     
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="Acceleration and orientation" /> 
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray" />
+            <RelativeLayout 
+                android:id="@+id/device_prox_field"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"  
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/device_prox_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" /> 
+                <TextView
+                    android:id="@+id/device_prox_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:text="Neighboring devices"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/device_prox_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/device_prox_firstline"
+                    android:layout_centerVertical="true"     
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="Bluetooth devices near you" /> 
+            </RelativeLayout>
+            <TextView
+                android:text="Preferences"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:background="@android:color/darker_gray"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+            <RelativeLayout 
+                android:id="@+id/prefs_field"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <ImageView
+                    android:src="@android:drawable/ic_menu_preferences"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:maxWidth="?android:attr/listPreferredItemHeight"
+                    android:maxHeight="?android:attr/listPreferredItemHeight"
+                    android:adjustViewBounds="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" />       
+                <TextView
+                    android:id="@+id/prefs_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="Preferences"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

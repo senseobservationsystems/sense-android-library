@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="General settings">
+        <Preference 
+            android:title="Login"
+            android:summary="Change your login name"
+            android:key="login" />
+        <Preference
+            android:title="Register"
+            android:summary="Register a new user"
+            android:key="register" />  
+        <ListPreference
+            android:title="CommonSense sync rate"
+            android:summary="Amount of communication with server"
+            android:dialogTitle="Sync rate"
+            android:entries="@array/pref_commonsense_rate_keys"
+            android:entryValues="@array/pref_commonsense_rate_vals"
+            android:defaultValue="0"
+            android:positiveButtonText="@string/button_ok"
+            android:negativeButtonText="@string/button_cancel"
+            android:key="commonsense_rate" />  
+        <CheckBoxPreference
+            android:title="Autostart"
+            android:summary="Autostart Sense service on phone boot"
+            android:defaultValue="false"
+            android:key="autostart" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Specific service settings" >
+        <PreferenceScreen 
+            android:title="Phone status"
+            android:summary="Phone status sensing settings"
+            android:enabled="false">
+        </PreferenceScreen>
+        <PreferenceScreen 
+            android:title="Location tracker"
+            android:summary="Location tracker service settings" >
+            <PreferenceCategory
+                android:title="Main settings">
+                <CheckBoxPreference
+                    android:title="GPS provider"
+                    android:summary="Use GPS location provider"
+                    android:defaultValue="true"
+                    android:key="location_gps"/>
+                <CheckBoxPreference
+                    android:title="Network provider"
+                    android:summary="Use WiFi/cell location provider"
+                    android:defaultValue="true"
+                    android:key="location_network"/>
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen 
+            android:title="Noise monitor"
+            android:summary="Noise monitor service settings"
+            android:enabled="false">
+        </PreferenceScreen>
+        <PreferenceScreen 
+            android:title="Periodic popups"
+            android:summary="Periodic popup question settings"
+            android:key="popquiz_screen">
+            <PreferenceCategory
+                android:title="Main settings">
+                <ListPreference
+                    android:title="Popup interval"
+                    android:summary="Amount of popup questions"
+                    android:dialogTitle="Popup rate"
+                    android:entries="@array/pref_popquiz_rate_keys"
+                    android:entryValues="@array/pref_popquiz_rate_vals"
+                    android:defaultValue="0"
+                    android:positiveButtonText="@string/button_ok"
+                    android:negativeButtonText="@string/button_cancel"
+                    android:key="popquiz_rate" />  
+                <Preference
+                    android:title="Refresh content"
+                    android:summary="Gets new questions from CommonSense"
+                    android:key="popquiz_sync" />  
+                <CheckBoxPreference
+                    android:title="Silent mode"
+                    android:summary="Turns off the alerts"
+                    android:key="popquiz_silent_mode"
+                    android:defaultValue="false" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+</PreferenceScreen>

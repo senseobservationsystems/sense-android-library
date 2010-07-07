@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+    <string name="app_name">Sense Platform</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_login">Login</string>
+    <string name="button_ok">OK</string>
+    <string name="button_quit">Quit</string>
+    <string name="button_reg">Register</string>
+    <string name="dialog_login_title">Enter login details:</string>
+    <string name="dialog_login_hint_mail">Email</string>
+    <string name="dialog_login_hint_pass">Password</string>
+    <string name="dialog_reg_title">Enter new login details:</string>
+    <string name="dialog_reg_hint_mail">Email</string>
+    <string name="dialog_reg_hint_name">Username</string>
+    <string name="dialog_reg_hint_pass">Password</string>
+    <string name="dialog_reg_hint_pass2">Retype password</string>
+    <string name="dialog_progress_title">One moment please</string>
+    <string name="dialog_progress_login_msg">Checking login credentials...</string>
+    <string name="dialog_update_msg">The CommonSense was recently updated to a new version.\n\nUnfortunately all user accounts were removed in the process. Please re-register your account.</string>
+    <string name="dialog_update_title">CommonSense update</string>    
+    <string name="dialog_welcome_title">Welcome to Sense</string> 
+    <string name="dialog_welcome_msg">The Sense platform gathers data about your activities and shares it with the CommonSense data storage.\n\nOver time, it will learn to recognize your behaviour and current status. This makes it possible for your phone to help you avoid repetitive or stupid tasks, and alert you about interesting events.\n\nPlease login, or register a free CommonSense account.</string> 
+    <string name="pq_missed_done">All missed pop quizzes are completed.</string>
+    <string name="pq_missed_msg">You have missed ?1 pop quizzes.\n\nDo you want to complete these now?</string>
+    <string name="pq_missed_title">Missed pop quiz</string>
+    <string name="pq_welcome_msg1">Time:</string>
+    <string name="pq_welcome_msg2">User:</string>
+    <string name="pq_welcome_title">Pop quiz</string>
+    <string name="toast_location_noprovider">All location providers are disabled in the preferences. Location service not started.</string>
+    <string name="toast_login_fail">Login failed, please try again.</string>
+    <string name="toast_login_ok">Login successful.</string>
+    <string name="toast_login_error_conn">No data connection available. Service will retry automatically.</string>
+    <string name="toast_quiz_refresh">Quiz questions are being refreshed...</string>
+    <string name="toast_reg_fail">Registration failed, please try again.</string>
+    <string name="toast_reg_ok">Registration successful.</string>
+    <string name="toast_reg_pass">Passwords do not match, try again.</string>
+    <string name="toast_toggle_dev_prox">Device proximity will be updated ?.</string>
+    <string name="toast_toggle_location">Location will be updated every ?.</string>
+    <string name="toast_toggle_motion">WARNING: Motion sensor is still very experimental!</string>
+    <string name="toast_toggle_noise">Noise measurement will be updated ?.</string>
+    <string name="toast_toggle_phonestate">Changes in phone state will be shared with CommonSense.</string>
+    <string name="toast_toggle_quiz">A question will pop up every ? minutes.</string>
+</resources>
