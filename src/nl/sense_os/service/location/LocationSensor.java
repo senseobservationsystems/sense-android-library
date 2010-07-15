@@ -1,5 +1,8 @@
 package nl.sense_os.service.location;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationProvider;
@@ -17,8 +20,17 @@ public class LocationSensor implements LocationListener {
         this.handler = handler;       	
     }
    
-    public void onLocationChanged(Location fix) {        
-        handler.sendPhoneLocation(""+fix.getLongitude(), ""+fix.getLatitude());
+    public void onLocationChanged(Location fix) {   
+    	Map<String, String> data = new HashMap<String, String>();
+    	data.put("latitude", ""+fix.getLatitude());
+    	data.put("longitude", ""+fix.getLongitude());
+    	if(fix.hasAccuracy())
+    		data.put("accuracy", ""+fix.getAccuracy());
+    	if(fix.hasAltitude())
+    		data.put("altitude", ""+fix.getAltitude());
+    	if(fix.hasSpeed())
+    		data.put("speed", ""+fix.getSpeed());
+        handler.sendSensorData("position", data);
     }
 
     public void onProviderDisabled(String provider) {

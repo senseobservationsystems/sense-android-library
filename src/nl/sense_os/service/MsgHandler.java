@@ -304,22 +304,28 @@ public class MsgHandler {
 		// mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
 	}
 
+	/*
+	 * @deprecated
+	 *
 	public void sendPhoneState(String stateName, String stateValue) 
 	{
 		String url = SenseSettings.URL_PHONESTATE_ADD+"?stateName="+URLEncoder.encode(stateName)+"&stateValue="+URLEncoder.encode(stateValue);
 		final SharedPreferences prefs 	= context.getSharedPreferences(PRIVATE_PREFS, android.content.Context.MODE_PRIVATE);
 		String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");			
 		new Thread(new SendMessageThread(url, cookie)).start();		
-	}		
-
-	public void sendSensorData(String sensorName, String sensorValue) 
+	}
+	*/
+	public void sendSensorData(String sensorName, String sensorValue, String dataType) 
 	{
-		String url = SenseSettings.URL_SEND_SENSOR_DATA+"?sensorName="+URLEncoder.encode(sensorName)+"&sensorValue="+URLEncoder.encode(sensorValue);
+		String url = SenseSettings.URL_SEND_SENSOR_DATA+"?sensorName="+URLEncoder.encode(sensorName)+"&sensorValue="+URLEncoder.encode(sensorValue)+"&sensorDataType="+URLEncoder.encode(dataType);
 		final SharedPreferences prefs 	= context.getSharedPreferences(PRIVATE_PREFS, android.content.Context.MODE_PRIVATE);
 		String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");			
 		new Thread(new SendMessageThread(url, cookie)).start();		
 	}	
-
+	
+	/*
+	 * @deprecated
+	 *
 	public void sendPhoneLocation(String longitude, String latitude) 
 	{
 		String url = SenseSettings.URL_LOCATION_ADD+"?longitude="+longitude+"&latitude="+latitude;
@@ -327,17 +333,25 @@ public class MsgHandler {
 		String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");			
 		new Thread(new SendMessageThread(url, cookie)).start();		
 	}	
-
-	public void sendPhoneState(Map<String, String> msg)
+	 */
+	public void sendSensorData(String sensorName, Map<String, String> msg)
 	{
 		Iterator<Entry<String, String>> it = msg.entrySet().iterator();
+		String jsonMsg = "{";
 		while(it.hasNext())
 		{
 			Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
-			sendPhoneState(entry.getKey(),entry.getValue());
+			if(jsonMsg.length() > 1)
+				jsonMsg += ",";
+			jsonMsg += "\""+entry.getKey()+"\":\""+entry.getValue()+"\"";			
 		}
+		jsonMsg += "}";
+		sendSensorData(sensorName,jsonMsg, SenseSettings.SENSOR_DATA_TYPE_JSON);
 	}
 
+	/*
+	 * @deprecated
+	 *
 	public void sendPopQuizAnswer(String questionID, String answerID, String quizDate) 
 	{
 		String url = SenseSettings.URL_QUIZ_SEND_ANSWER+"?questionId="+questionID+"&answerId="+answerID+"&quizDate="+URLEncoder.encode(quizDate);
@@ -345,6 +359,7 @@ public class MsgHandler {
 		String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");			
 		new Thread(new SendMessageThread(url, cookie)).start();		
 	}
+	*/
 	public void sendAddPopQuizAnswer(String answer) 
 	{
 		String url = SenseSettings.URL_QUIZ_ADD_ANSWER+"?answer="+URLEncoder.encode(answer);

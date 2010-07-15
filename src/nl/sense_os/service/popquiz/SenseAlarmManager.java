@@ -18,6 +18,8 @@ import nl.sense_os.service.MsgHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SenseAlarmManager {
     /**
@@ -586,7 +588,11 @@ public class SenseAlarmManager {
             long entryTime = c.getLong(c.getColumnIndex(COL_ENTRY_TIME));
             String timeString = new SimpleDateFormat("yyyy-MM-dd HH:mm")
                     .format(new Date(entryTime));
-            handler.sendPopQuizAnswer("" + qstnId, "" + answId, timeString);
+            Map<String, String> data = new HashMap<String, String>();
+            data.put("question id", ""+qstnId);
+            data.put("answer id", ""+answId);
+            data.put("date", timeString);
+            handler.sendSensorData("pop quiz", data);
 
             // delete the answer's entry in the database
             final String delSelection = COL_ROW_ID + "=" + c.getInt(c.getColumnIndex(COL_ROW_ID));

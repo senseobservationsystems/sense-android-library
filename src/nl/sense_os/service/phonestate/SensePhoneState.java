@@ -3,9 +3,11 @@ package nl.sense_os.service.phonestate;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
+import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
 
 import java.net.InetAddress;
@@ -17,31 +19,33 @@ import java.util.Map;
 public class SensePhoneState extends PhoneStateListener {
     private static final String TAG = "MyPhoneStateListener";    
     private MsgHandler msgHandler;
+    private TelephonyManager telman;
 
-    public SensePhoneState(MsgHandler msgHandler) {
+    public SensePhoneState(MsgHandler msgHandler, TelephonyManager telman) {
         super();        
+        this.telman = telman;
         this.msgHandler = msgHandler;
     }
 
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
         Log.d(TAG, "Call state changed.");
-        
+
         Map<String, String> data = new HashMap<String, String>();
         String strState = "";
         if (state == TelephonyManager.CALL_STATE_IDLE) {
-            strState = "idle";
+        	strState = "idle";
         }
         if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-            strState = "calling";
+        	strState = "calling";
         }
         if (state == TelephonyManager.CALL_STATE_RINGING) {
-            strState = "ringing";
+        	strState = "ringing";
+        	data.put("incomingNumber", incomingNumber);
         }
+        data.put("state", strState);
 
-        data.put("callState.state", strState);
-        data.put("callState.incomingNumber", incomingNumber);
-        this.msgHandler.sendPhoneState(data);
+        this.msgHandler.sendSensorData("call state",data);
         super.onCallStateChanged(state, incomingNumber);
     }
 
@@ -60,16 +64,16 @@ public class SensePhoneState extends PhoneStateListener {
         Map<String, String> data = new HashMap<String, String>();
         String strDirection = "";
         if (direction == TelephonyManager.DATA_ACTIVITY_IN) {
-            strDirection = "receiving_data";
+            strDirection = "receiving data";
         }
         if (direction == TelephonyManager.DATA_ACTIVITY_INOUT) {
-            strDirection = "receiving_and_sending_data";
+            strDirection = "receiving and sending_data";
         }
         if (direction == TelephonyManager.DATA_ACTIVITY_NONE) {
             strDirection = "none";
         }
         if (direction == TelephonyManager.DATA_ACTIVITY_OUT) {
-            strDirection = "sending_data";
+            strDirection = "sending data";
             // data.put("dataActivity", strDirection); // Don't Send, will create a loop
             // msgHandler.sendUpdate(data); // Don't Send, will create a loop
         }
@@ -78,8 +82,7 @@ public class SensePhoneState extends PhoneStateListener {
     @Override
     public void onDataConnectionStateChanged(int state) {
         Log.d(TAG, "Data connection state changed.");
-        
-        Map<String, String> data = new HashMap<String, String>();
+                
         String strState = "";
         if (state == TelephonyManager.DATA_CONNECTED) {
             // send the URL on which the phone can be reached
@@ -99,8 +102,8 @@ public class SensePhoneState extends PhoneStateListener {
             } catch (Exception e) {
                 Log.e(TAG, "Error getting my own IP:", e);
             }
-            data.put("phoneServiceUrl", "http://" + ip + ":8080/console/settings/");
-            data.put("phoneCallServiceUrl", "http://" + ip + ":8080");
+            if(ip.length() > 1)
+            	this.msgHandler.sendSensorData("ip address", ip, SenseSettings.SENSOR_DATA_TYPE_STRING);           
             strState = "connected";
         }
         if (state == TelephonyManager.DATA_CONNECTING) {
@@ -112,23 +115,20 @@ public class SensePhoneState extends PhoneStateListener {
         if (state == TelephonyManager.DATA_SUSPENDED) {
             strState = "suspended";
         }
-        data.put("dataConnection", strState);
-        this.msgHandler.sendPhoneState(data);
+        this.msgHandler.sendSensorData("data connection", strState, SenseSettings.SENSOR_DATA_TYPE_STRING);
     }
 
     @Override
     public void onMessageWaitingIndicatorChanged(boolean mwi) {
-        Log.d(TAG, "Message waiting indicator changed.");
-        
-        Map<String, String> data = new HashMap<String, String>();
+        Log.d(TAG, "Message waiting indicator changed.");       
+    
         String strState = "";
         if (mwi == true) {
             strState = "true";
         } else {
             strState = "false";
         }
-        data.put("unreadMSG", strState);
-        this.msgHandler.sendPhoneState(data);
+        this.msgHandler.sendSensorData("unread msg", strState, SenseSettings.SENSOR_DATA_TYPE_BOOL);
     }
 
     @Override
@@ -138,23 +138,35 @@ public class SensePhoneState extends PhoneStateListener {
         Map<String, String> data = new HashMap<String, String>();
         String strState = "";
         if (serviceState.getState() == ServiceState.STATE_EMERGENCY_ONLY) {
-            strState = "emergency_calls_only";
+            strState = "emergency calls only";
         }
         if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) {
-            strState = "in_service";
+            strState = "in service";
+            data.put("phone number", ""+telman.getLine1Number());
         }
         if (serviceState.getState() == ServiceState.STATE_OUT_OF_SERVICE) {
-            strState = "out_of_service";
+            strState = "out of service";
         }
         if (serviceState.getState() == ServiceState.STATE_POWER_OFF) {
-            strState = "power_off";
+            strState = "power off";
         }
-        data.put("serviceState.state", strState);
+        data.put("state", strState);
         if (serviceState.getIsManualSelection()) {
-            data.put("serviceState.manualSet", "true");
+            data.put("manualSet", "true");
         } else {
-            data.put("serviceState.manualSet", "false");
+            data.put("manualSet", "false");
         }
-        this.msgHandler.sendPhoneState(data);
+        this.msgHandler.sendSensorData("service state", data);
+    }
+        
+    @Override
+    public void onSignalStrengthsChanged(SignalStrength signalStrength) {
+    	Map<String, String> data = new HashMap<String, String>();
+    	data.put("CDMA dBm",""+signalStrength.getCdmaDbm());
+    	data.put("EVDO dBm", ""+signalStrength.getEvdoDbm());
+    	data.put("GSM signal strength", ""+signalStrength.getGsmSignalStrength());
+    	data.put("GSM bit error rate", ""+signalStrength.getGsmBitErrorRate());
+    	this.msgHandler.sendSensorData("signal strength", data);
+    	super.onSignalStrengthsChanged(signalStrength);
     }
 }

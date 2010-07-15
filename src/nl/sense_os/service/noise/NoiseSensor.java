@@ -15,8 +15,8 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
-import nl.sense_os.service.noise.NoiseSensorStream.SoundStreamServerThread;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,7 +65,7 @@ public class NoiseSensor extends PhoneStateListener {
     	public void run() 
     	{						
     		double dB = calculateDB();
-    		msgHandler.sendSensorData("noise_sensor", "" + dB);
+    		msgHandler.sendSensorData("noise_sensor", "" + dB, SenseSettings.SENSOR_DATA_TYPE_FLOAT);
     		if(audioRec != null && audioRec.getState() == AudioRecord.STATE_INITIALIZED)
     			audioRec.stop();
     		Log.d(TAG,"Done recording.");

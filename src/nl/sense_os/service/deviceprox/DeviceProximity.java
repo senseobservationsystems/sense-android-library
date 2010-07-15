@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
 
 import it.gerdavax.android.bluetooth.BluetoothDevice;
@@ -162,7 +163,7 @@ public class DeviceProximity {
 						deviceJSONS += "{\"address\":\""+address+"\",\"name\":\""+name+"\",\"rssi\":\""+rssi+"\"}";
 					}					
 					sensorValue += deviceJSONS+"]}";
-					msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, sensorValue);
+					msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, sensorValue, SenseSettings.SENSOR_DATA_TYPE_JSON);
 					context.unregisterReceiver(bbReceiver);					
 					scanHandler.postDelayed(new ScanThread2_1(), scanInterval);
 				}
@@ -253,7 +254,7 @@ public class DeviceProximity {
 								deviceJSONS += "{\"address\":\""+address+"\",\"name\":\""+name+"\",\"rssi\":\""+rssi+"\"}";
 							}					
 							sensorValue += deviceJSONS+"]}";							
-							msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, sensorValue);						  
+							msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, sensorValue, SenseSettings.SENSOR_DATA_TYPE_JSON);						  
 					 }
 					 catch (Exception e) {
 						 e.printStackTrace();	                           

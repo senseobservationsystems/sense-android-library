@@ -51,7 +51,9 @@ import java.net.NetworkInterface;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SenseService extends Service {
     private class LoginPossibility extends BroadcastReceiver {
@@ -200,7 +202,7 @@ public class SenseService extends Service {
         boolean registered = false;
         try {
             final String imei = this.telMan.getDeviceId();
-            final URI uri = new URI(SenseSettings.URL_CHECK_PHONE + "?imei=" + imei);
+            final URI uri = new URI(SenseSettings.URL_CHECK_PHONE + "?uuid=" + imei);
             final HttpPost post = new HttpPost(uri);
             final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
             final String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
@@ -270,12 +272,13 @@ public class SenseService extends Service {
         this.msgHandler = new MsgHandler(this);
         this.handler = new Handler(Looper.getMainLooper());
         this.loginPossibility = new LoginPossibility();
+        this.telMan = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         
         // listeners
         this.deviceProximity = new DeviceProximity(msgHandler, this);
         this.locListener = new LocationSensor(this.msgHandler);
         this.motionSensor = new MotionSensor(this.msgHandler);
-        this.psl = new SensePhoneState(this.msgHandler);
+        this.psl = new SensePhoneState(this.msgHandler, this.telMan);
         this.noiseSensor = new NoiseSensor(this.msgHandler);
         
         // statuses
@@ -285,8 +288,7 @@ public class SenseService extends Service {
         this.statusMotion = false;
         this.statusNoise = false;
         this.statusPhoneState = false;
-        this.statusPopQuiz = false;
-        this.telMan = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        this.statusPopQuiz = false;       
     }
 
     private boolean login(String email, String pass) {
@@ -586,30 +588,9 @@ public class SenseService extends Service {
     public boolean registerPhone() {
         boolean registered = false;
         try {
-            final String imei = this.telMan.getDeviceId();
-            final String brand = Build.MANUFACTURER;
-            final String type = Build.MODEL;
-            String ipaddress = "";
-            try {
-                final Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-                while (nis.hasMoreElements()) {
-                    final NetworkInterface ni = nis.nextElement();
-                    final Enumeration<InetAddress> iis = ni.getInetAddresses();
-                    while (iis.hasMoreElements()) {
-                        final InetAddress ia = iis.nextElement();
-                        if (ni.getDisplayName().equalsIgnoreCase("rmnet0")) {
-                            ipaddress = ia.getHostAddress();
-                        }
-                    }
-                }
-            } catch (final Exception e) {
-                Log.e(TAG, "Error getting my own IP:", e);
-            }
-
-            final String phoneNr = this.telMan.getLine1Number();
-            final URI uri = new URI((SenseSettings.URL_REG_PHONE + "?imei=" + imei + "&brand="
-                    + brand + "&type=" + type + "&ipAddress=" + ipaddress + "&phoneNr=" + phoneNr)
-                    .replaceAll(" ", "_"));
+            final String imei = this.telMan.getDeviceId();          
+            
+            final URI uri = new URI((SenseSettings.URL_REG_PHONE + "?uuid=" + imei + "&type=smartPhone"));
             final HttpPost post = new HttpPost(uri);
             final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
             final String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
@@ -624,7 +605,11 @@ public class SenseService extends Service {
             final InputStream stream = response.getEntity().getContent();
             final String responseStr = convertStreamToString(stream);
             registered = responseStr.toLowerCase().contains("ok");
-
+            Map<String, String> data = new HashMap<String, String>();
+            data.put("brand", Build.MANUFACTURER);
+            data.put("type", Build.MODEL);            
+            msgHandler.sendSensorData("device properties", data);            
+            
             Log.d(TAG, "CommonSense phone registration: " + responseStr);
         } catch (final IOException e) {
             Log.e(TAG, "IOException registering phone!", e);
