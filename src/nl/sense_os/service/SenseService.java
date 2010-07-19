@@ -46,11 +46,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,9 +187,9 @@ public class SenseService extends Service {
     private SensorEventListener motionSensor;
     private MsgHandler msgHandler;
     private NoiseSensor noiseSensor;
-    private PhoneStateListener psl;
-    private boolean started;
-    private boolean statusDeviceProx;
+    private PhoneStateListener psl; 
+    private boolean started; 
+    private boolean statusDeviceProx; 
     private boolean statusLocation;
     private boolean statusMotion;
     private boolean statusNoise;
@@ -337,36 +336,6 @@ public class SenseService extends Service {
         return success;
     }
 
-    /**
-     * Makes this service a foreground service, as important as 'real' activities. As a reminder
-     * that the service is running, a notification is shown.
-     */
-    private void makeForeground() {
-        // NB: for Android 2.0 and up, use startForeground(int, Notification)
-        setForeground(true);
-
-        // // notification that the service is running
-        // final int icon = R.drawable.statusbar_sense;
-        // final String tickerText = "Sense Service started";
-        // final long when = System.currentTimeMillis();
-        // final Notification note = new Notification(icon, tickerText, when);
-        // // note.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS;
-        // note.flags = Notification.FLAG_ONLY_ALERT_ONCE + Notification.FLAG_NO_CLEAR;
-        //
-        // // extra info text is shown when the statusbar is opened
-        // final CharSequence contentTitle = "Sense Service";
-        // final CharSequence contentText = "Service is running";
-        // final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
-        // notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        // final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
-        // note.setLatestEventInfo(getApplicationContext(), contentTitle, contentText,
-        // contentIntent);
-        //
-        // final NotificationManager mgr = (NotificationManager)
-        // getSystemService(NOTIFICATION_SERVICE);
-        // mgr.notify(NOTE_ID, note);
-    }
-
     private void notifySenseLogin(boolean error) {
         int icon = R.drawable.ic_status_sense;
 
@@ -383,8 +352,7 @@ public class SenseService extends Service {
         if (error) {
             contentText = "Trying to log in...";
         } else {
-            SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
-            contentText = "Logged in as " + prefs.getString(SenseSettings.PREF_LOGIN_NAME, "");
+            contentText = "Logged in.";
         }
         final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
         notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -412,8 +380,8 @@ public class SenseService extends Service {
         // Init stuff
         initFields();
 
-        // make service as important as regular activities
-        makeForeground();
+        // make service as important as regular activities        
+        startForegroundCompat();
     }
 
     @Override
@@ -432,12 +400,8 @@ public class SenseService extends Service {
         onLogOut();
 
         // stop the main service
-        setForeground(false);
         this.started = false;
-
-        // remove the notification that the service is running
-        final NotificationManager noteMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        noteMgr.cancel(NOTIF_ID);
+        stopForegroundCompat();        
     }
 
     /**
@@ -532,7 +496,16 @@ public class SenseService extends Service {
 
     @Override
     public void onStart(Intent intent, int startid) {
-        super.onStart(intent, startid);
+        onStartCompat(intent, 0 , startid);
+    }
+    
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        onStartCompat(intent, flags, startId);
+        return START_STICKY;
+    }
+    
+    private void onStartCompat(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStart.");
 
         // try to login immediately
@@ -541,7 +514,6 @@ public class SenseService extends Service {
         // register broadcast receiver for login in case of Internet connection changes
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(this.loginPossibility, filter);
-
     }
 
     private boolean register(String email, String name, String pass) {
@@ -687,6 +659,83 @@ public class SenseService extends Service {
                 Toast.makeText(SenseService.this, msg, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    /**
+     * Makes this service a foreground service, as important as 'real' activities. As a reminder
+     * that the service is running, a notification is shown.
+     */
+    private void startForegroundCompat() {
+        @SuppressWarnings("rawtypes")
+        final Class[] startForegroundSignature = new Class[] { int.class, Notification.class};
+        Method startForeground = null;
+        try { 
+            startForeground = getClass().getMethod("startForeground", startForegroundSignature); 
+        } catch (NoSuchMethodException e) { 
+            // Running on an older platform. 
+            startForeground = null; 
+        }
+
+        // call startForeground in fancy way so old systems do net get confused by unknown methods
+        if (startForeground == null) {
+            setForeground(true);
+        } else {
+            // create notification
+            final int icon = R.drawable.ic_status_sense_disabled; 
+            final long when = System.currentTimeMillis();
+            final Notification n = new Notification(icon, null, when);
+            final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
+            notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
+            n.setLatestEventInfo(this, "Sense service", "", contentIntent);            
+            
+            Object[] startArgs = {Integer.valueOf(NOTIF_ID), n}; 
+            try { 
+                startForeground.invoke(this, startArgs); 
+            } catch (InvocationTargetException e) { 
+                // Should not happen. 
+                Log.w(TAG, "Unable to invoke startForeground", e); 
+            } catch (IllegalAccessException e) { 
+                // Should not happen. 
+                Log.w(TAG, "Unable to invoke startForeground", e); 
+            } 
+        }
+    }
+
+    /**
+     * Makes this service a foreground service, as important as 'real' activities. As a reminder
+     * that the service is running, a notification is shown.
+     */
+    private void stopForegroundCompat() {
+        @SuppressWarnings("rawtypes")
+        final Class[] stopForegroundSignature = new Class[] { boolean.class };
+        Method stopForeground = null;
+        try { 
+            stopForeground = getClass().getMethod("stopForeground", stopForegroundSignature); 
+        } catch (NoSuchMethodException e) { 
+            // Running on an older platform. 
+            stopForeground = null; 
+        }
+
+        // call stopForeground in fancy way so old systems do net get confused by unknown methods
+        if (stopForeground == null) {
+            // remove the notification that the service is running
+            final NotificationManager noteMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            noteMgr.cancel(NOTIF_ID);
+            
+            setForeground(false);
+        } else {           
+            Object[] stopArgs = { Boolean.TRUE }; 
+            try { 
+                stopForeground.invoke(this, stopArgs); 
+            } catch (InvocationTargetException e) { 
+                // Should not happen. 
+                Log.w(TAG, "Unable to invoke stopForeground", e); 
+            } catch (IllegalAccessException e) { 
+                // Should not happen. 
+                Log.w(TAG, "Unable to invoke stopForeground", e); 
+            } 
+        }
     }
 
     private void toggleDeviceProx(boolean active) {

@@ -13,7 +13,6 @@ import android.util.Log;
 import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
 
-import it.gerdavax.android.bluetooth.BluetoothDevice;
 import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
 import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
 import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
@@ -29,7 +28,7 @@ public class DeviceProximity {
 	private MsgHandler msgHandler;
 	private int scanInterval = 0;
 	private boolean scanEnabled = false;
-	private boolean realtime = false;
+	private boolean isRealtime = false;
 	private Handler scanHandler = new Handler(Looper.getMainLooper());
 	private BluetoothAdapter btAdapter;
 	private Context context;
@@ -47,7 +46,7 @@ public class DeviceProximity {
 	public void startEnvironmentScanning(int interval)
 	{		
 		scanInterval = interval;
-		realtime = scanInterval == 1;
+		isRealtime = scanInterval == 1;
 		scanEnabled = true;
 		Thread t = new Thread()
 		{
