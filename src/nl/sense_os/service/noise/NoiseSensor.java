@@ -138,6 +138,7 @@ public class NoiseSensor extends PhoneStateListener {
     private MsgHandler msgHandler = null;
     private boolean listening = false;
     private int listenInterval; // Update interval in msec
+    private NoiseSensorThread noiseThread;
     private Handler noiseThreadHandler = new Handler();
     private Handler soundStreamHandler = new Handler();
     private MediaRecorder recorder = null;
@@ -194,7 +195,13 @@ public class NoiseSensor extends PhoneStateListener {
                                         + bufferSize);
                         return;
                     }
-                    noiseThreadHandler.postDelayed(new NoiseSensorThread(), listenInterval);
+                    
+                    // clear any old noise sensing threads
+                    if (noiseThread != null) {
+                        noiseThreadHandler.removeCallbacks(noiseThread);
+                    }
+                    noiseThread = new NoiseSensorThread();
+                    noiseThreadHandler.postDelayed(noiseThread, listenInterval);
                 }
             }
         };
@@ -206,8 +213,16 @@ public class NoiseSensor extends PhoneStateListener {
         try {
 
             listening = false;
+            
+            // clear any old noise sensing threads
+            if (noiseThread != null) {
+                noiseThreadHandler.removeCallbacks(noiseThread);
+                noiseThread = null;
+            }
+            
             if (audioRec != null)
                 audioRec.release();
+            
             if (listenInterval == -1 && recorder != null) {
                 recorder.stop();
                 recorder.reset(); // You can reuse the object by going back to setAudioSource() step
