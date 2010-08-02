@@ -315,10 +315,25 @@ public class MsgHandler {
      * prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, ""); new Thread(new SendMessageThread(url,
      * cookie)).start(); }
      */
+    
+    
+    /*
+     * Send sensordata with sensor name value and the type of sensor data
+     */
     public void sendSensorData(String sensorName, String sensorValue, String dataType) {
         String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
                 + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
                 + "&sensorDataType=" + URLEncoder.encode(dataType);
+        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
+                android.content.Context.MODE_PRIVATE);
+        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+        new Thread(new SendMessageThread(url, cookie)).start();
+    }
+    
+    public void sendSensorData(String sensorName, String sensorValue, String dataType, String deviceType) {
+        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
+                + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
+                + "&sensorDataType=" + URLEncoder.encode(dataType) + "&sensorDeviceType=" + URLEncoder.encode(deviceType);
         final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
                 android.content.Context.MODE_PRIVATE);
         String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");

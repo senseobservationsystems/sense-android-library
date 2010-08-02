@@ -184,7 +184,7 @@ public class SenseService extends Service {
     private Handler handler;
     private LocationListener locListener;
     private LoginPossibility loginPossibility;
-    private SensorEventListener motionSensor;
+    private MotionSensor motionSensor;
     private MsgHandler msgHandler;
     private NoiseSensor noiseSensor;
     private PhoneStateListener psl; 
@@ -852,13 +852,39 @@ public class SenseService extends Service {
         if (active != this.statusMotion) {
             SensorManager mgr = (SensorManager) getSystemService(SENSOR_SERVICE);
             if (true == active) {
-                List<Sensor> sensors = mgr.getSensorList(SensorManager.SENSOR_ACCELEROMETER);
+                List<Sensor> sensors = mgr.getSensorList(Sensor.TYPE_ALL);
                 for (Sensor sensor : sensors) {
-                    Log.d(TAG, "registering for sensor " + sensor.getName());
-                    mgr.registerListener(this.motionSensor, sensor,
-                            SensorManager.SENSOR_DELAY_NORMAL);
+                	if(sensor.getType()==Sensor.TYPE_ACCELEROMETER ||
+                			sensor.getType()==Sensor.TYPE_ORIENTATION || 
+                			sensor.getType()==Sensor.TYPE_GYROSCOPE || 
+                			sensor.getType()==Sensor.TYPE_PRESSURE)
+                	{
+                		Log.d(TAG, "registering for sensor " + sensor.getName());
+                		mgr.registerListener(this.motionSensor, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                	}
                 }
-
+                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                final int rate = Integer.parseInt(prefs.getString(
+                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                int interval = -1;
+                switch (rate) {
+                case -2: // real time
+                    interval = 0;
+                    break;
+                case -1: // often
+                    interval = 5 * 1000;
+                    break;
+                case 0: // normal
+                    interval = 60 * 1000;
+                    break;
+                case 1: // rarely (1 hour)
+                    interval = 15 * 1000;
+                    break;
+                default:
+                    Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                    break;
+                }
+                motionSensor.setSampleDelay(interval);  
                 this.statusMotion = true;
             } else {
                 mgr.unregisterListener(this.motionSensor);

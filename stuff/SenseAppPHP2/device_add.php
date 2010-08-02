@@ -52,6 +52,8 @@ if($uuid)
 		}
 		$row 			= mysql_fetch_assoc($result);		
 		$_SESSION['deviceId']  	= $row['id'];
+		$devices		= $_SESSION['devices'];
+		$devices[$uuid]		= $row['id'];
 		echo "OK";
 	}
 }

@@ -36,7 +36,7 @@
     <string name="toast_reg_pass">Passwords do not match, try again.</string>
     <string name="toast_toggle_dev_prox">Device proximity will be updated ?.</string>
     <string name="toast_toggle_location">Location will be updated every ?.</string>
-    <string name="toast_toggle_motion">WARNING: Motion sensor is still very experimental!</string>
+    <string name="toast_toggle_motion">Motion sensor will be updated every ?.</string>
     <string name="toast_toggle_noise">Noise measurement will be updated ?.</string>
     <string name="toast_toggle_phonestate">Changes in phone state will be shared with CommonSense.</string>
     <string name="toast_toggle_quiz">A question will pop up every ? minutes.</string>

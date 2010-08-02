@@ -1,5 +1,5 @@
 <?php
-include("db_connect.php");
+include_once("db_connect.php");
 $tbl_name="users"; // Table name
 
 // Define $email and $password 
@@ -30,8 +30,27 @@ if($email && $password)
 	if($count == 1)
 	{
 		// Register id
-		$row = mysql_fetch_assoc($result);		
-		$_SESSION['userId']  = $row['id'];
+		$row = mysql_fetch_assoc($result);	
+		$userId = $row['id'];
+		$_SESSION['userId']  = $userId;	
+		// cach the devices in the database connected to this userId
+		$sql	= "SELECT * FROM devices WHERE user_id='$userId'";
+		$result	= mysql_query($sql);	
+		if(!$result)			
+		{	
+			$message  = 'Invalid query: ' . mysql_error() . "\n";
+			$message .= 'Whole query: ' . $query;
+			die($message);
+		}
+		else
+		{
+		  $devices;
+		  while ($row = mysql_fetch_assoc($result))
+		  {
+		    $devices[$row['uuid']] = $row['id'];
+		  }
+		  $_SESSION['devices'] = $devices;
+		}
 		echo "OK";
 	}
 	else 	

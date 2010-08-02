@@ -1,15 +1,11 @@
 <?php
-include("db_connect.php");
+include_once("db_connect.php");
+include_once("deviceID_check.php");
 $tbl_name="sensor_data"; // Table name
-if(!isset($_SESSION['userId']))
-	die("Error: not logged in");
-if(!isset($_SESSION['deviceId']))
-	die("Error: device not checked");
 
 $baseURL = "http://demo.almende.com/commonSense2/";
 // Get input
 $userId		= $_SESSION['userId'];
-$deviceId	= $_SESSION['deviceId'];
 $sensorName	= $_REQUEST['sensorName'];
 //$sensorValue	= $_REQUEST['sensorValue'];
 

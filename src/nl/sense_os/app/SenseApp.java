@@ -890,7 +890,28 @@ public class SenseApp extends Activity {
 
                 // show informational toast
                 if (active) {
-                    final String msg = getString(R.string.toast_toggle_motion);
+                	  final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                      final int rate = Integer.parseInt(prefs.getString(
+                              SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                      String interval = "";
+                      switch (rate) {
+                      case -2: // often
+                          interval = "second";
+                          break;
+                      case -1: // often
+                          interval = "5 seconds";
+                          break;
+                      case 0: // normal
+                          interval = "minute";
+                          break;
+                      case 1: // rarely
+                          interval = "15 minutes";
+                          break;
+                      default:
+                          Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                          break;
+                      }
+                    final String msg = getString(R.string.toast_toggle_motion).replace("?", interval);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
             } catch (RemoteException e) {
