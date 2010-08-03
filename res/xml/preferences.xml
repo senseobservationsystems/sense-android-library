@@ -3,11 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="General settings">
         <Preference 
-            android:title="Login"
-            android:summary="Change your login name"
+            android:title="Change login"
             android:key="login" />
         <Preference
-            android:title="Register"
+            android:title="New user"
             android:summary="Register a new user"
             android:key="register" />  
         <ListPreference
@@ -51,8 +50,8 @@
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen 
-            android:title="Noise monitor"
-            android:summary="Noise monitor service settings"
+            android:title="Sound sensing"
+            android:summary="Sound sensing settings"
             android:enabled="false">
         </PreferenceScreen>
         <PreferenceScreen 
@@ -81,6 +80,16 @@
                     android:key="popquiz_silent_mode"
                     android:defaultValue="false" />
             </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen 
+            android:title="Motion sensing"
+            android:summary="Motion sensing settings"
+            android:enabled="false">
+        </PreferenceScreen>
+        <PreferenceScreen 
+            android:title="Neighboring devices"
+            android:summary="Bluetooth sensing settings"
+            android:enabled="false">
         </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

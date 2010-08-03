@@ -1,22 +1,13 @@
 package nl.sense_os.service.motion;
 
-import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.text.format.Time;
-import android.util.Log;
 
 import nl.sense_os.service.MsgHandler;
 
 public class MotionSensor implements SensorEventListener {
+    @SuppressWarnings("unused")
     private static final String TAG = "MotionSensor";
     private MsgHandler msgHandler;
     private long sampleDelay = 0; //in milliseconds    
@@ -26,8 +17,8 @@ public class MotionSensor implements SensorEventListener {
     }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        Log.d(TAG, "Accuracy changed...");
-        Log.d(TAG, "Sensor: " + sensor.getName() + "(" + sensor.getType() + "), accuracy: " + accuracy);
+//        Log.d(TAG, "Accuracy changed...");
+//        Log.d(TAG, "Sensor: " + sensor.getName() + "(" + sensor.getType() + "), accuracy: " + accuracy);
     }
 
     public void onSensorChanged(SensorEvent event) {
@@ -97,6 +88,7 @@ public class MotionSensor implements SensorEventListener {
     {
     	sampleDelay = _sampleDelay;
     }
+    
     public long getSampleDelau()
     {
     	return sampleDelay;

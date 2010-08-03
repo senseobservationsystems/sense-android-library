@@ -13,6 +13,11 @@ import android.util.Log;
 import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import it.gerdavax.android.bluetooth.BluetoothException;
 import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
 import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
 import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
@@ -22,251 +27,246 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-
 public class DeviceProximity {
-	private static final String TAG = "DeviceProximity";
-	private MsgHandler msgHandler;
-	private int scanInterval = 0;
-	private boolean scanEnabled = false;
-	private boolean isRealtime = false;
-	private Handler scanHandler = new Handler(Looper.getMainLooper());
-	private BluetoothAdapter btAdapter;
-	private Context context;
-	private static final int SCAN_STARTED = 1;
-	private static final int SCAN_FINISHED = 2;
-	private static final int DEVICE_FOUND = 3;
-	private final String LOCAL_SENSOR_NAME = "local_bt_address";
-	private final String BLUETOOTH_DISCOVERY = "bluetooth_discovery";
+    /*
+     * Scan thread 1.6
+     */
+    private class ScanThread1_6 implements Runnable {
+        private class BluetoothDeviceListener implements LocalBluetoothDeviceListener {
 
-	public DeviceProximity(MsgHandler handler, Context _context) {
-		this.msgHandler = handler;
-		this.context = _context;
-	}
+            public void bluetoothDisabled() {
+                // Auto-generated method stub
+            }
 
-	public void startEnvironmentScanning(int interval)
-	{		
-		scanInterval = interval;
-		isRealtime = scanInterval == 1;
-		scanEnabled = true;
-		Thread t = new Thread()
-		{
-			public void run() 
-			{
-				// Check if the phone version, if it is lower than, 2.1 use the bluetooth lib
-				if(Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR)
-					scanHandler.post(new ScanThread1_6());
-				else
-				{				
-					Looper.prepare();	
-					scanHandler.post(new ScanThread2_1());
-					Looper.loop();
-				}
-			}
-		};
-		t.start();
-	}
+            public void bluetoothEnabled() {
+                // Auto-generated method stub
+            }
 
-	public void stopEnvironmentScanning()
-	{
-		scanEnabled = false;
-	}
+            public void deviceFound(String arg0) {
+                // Auto-generated method stub
+            }
 
-	public void setScanInterval(int scanInterval) {
-		this.scanInterval = scanInterval;
-	}
+            public void scanCompleted(ArrayList<String> devices) {
+                try {
+                    if (devices.size() == 0)
+                        return;
 
-	public int getScanInterval() {
-		return scanInterval;
-	}
+                    JSONObject json = new JSONObject();
 
-	/*
-	 *  Scan thread 2.1
-	 */		
-	 class ScanThread2_1 implements Runnable  
-	 {		
-		 
-		 Vector<Map<android.bluetooth.BluetoothDevice,Short>> deviceArray;	
-		
-		public ScanThread2_1() 
-		{ 
-			// send address
-			try {
-				btAdapter = BluetoothAdapter.getDefaultAdapter();				
+                    // local bluetooth address property
+                    json.put("local_bt_address", btDevice.getAddress());
 
-				btAdapter.enable();
-				if (btAdapter.isEnabled()) 
-				{						
-					Log.d(TAG, "Bluetooth is enabled");
-					Log.d(TAG,"My address: " + btAdapter.getAddress());
-					// You don't want a dialog
-					//Intent discoverableIntent = new	Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-					//discoverableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					//discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-					//context.startActivity(discoverableIntent);
-				}
-				else
-				{
-					Log.d(TAG, "Bluetooth not enabled");
-				}
+                    // array of found devices
+                    JSONArray deviceArray = new JSONArray();
+                    for (String address : devices) {
+                        RemoteBluetoothDevice rbtDevice = btDevice
+                                .getRemoteBluetoothDevice(address);
 
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+                        JSONObject deviceJson = new JSONObject();
+                        deviceJson.put("address", address);
+                        deviceJson.put("name", rbtDevice.getName());
+                        deviceJson.put("rssi", rbtDevice.getRSSI());
+                        deviceArray.put(deviceJson);
+                    }
+                    json.put("bt_devices", deviceArray);
 
-		public void run() 
-		{	
-			try {
-				if(scanEnabled)					
-				{		
-					Log.d(TAG, "Starting discovery");	
-					deviceArray = new Vector<Map<android.bluetooth.BluetoothDevice,Short>>();
-					context.registerReceiver(bbReceiver, new  IntentFilter(android.bluetooth.BluetoothDevice.ACTION_FOUND));
-					context.registerReceiver(bbReceiver, new  IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
-					
-					btAdapter.startDiscovery();		
-				}
-			} catch (Exception e) {					
-				e.printStackTrace();
-			}				
-		}
+                    msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, json.toString(),
+                            SenseSettings.SENSOR_DATA_TYPE_JSON);
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSONException preparing Bluetooth sensing data:", e);
+                } catch (BluetoothException e) {
+                    Log.e(TAG, "BluetoothException preparing Bluetooth sensing data:", e);
+                }
 
-		private BroadcastReceiver bbReceiver = new BroadcastReceiver() { 		
-			
-			public void onReceive(Context context, Intent intent) { 
-				String action = intent.getAction(); 
-				// When discovery finds a device 
-				if (android.bluetooth.BluetoothDevice.ACTION_FOUND.equals(action)) 
-				{ 				
-					android.bluetooth.BluetoothDevice remoteDevice = intent.getParcelableExtra(android.bluetooth.BluetoothDevice.EXTRA_DEVICE);
-					Short rssi =  intent.getShortExtra(android.bluetooth.BluetoothDevice.EXTRA_RSSI,(short)0);		
-					HashMap<android.bluetooth.BluetoothDevice, Short> mapValue = new HashMap<android.bluetooth.BluetoothDevice, Short>();
-					mapValue.put(remoteDevice, rssi);
-					deviceArray.add(mapValue);
-				} 
-				if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) 
-				{ 
-					if(deviceArray.size() == 0 )
-						return;
-					String sensorValue = "{\"local_bt_address\":\""+btAdapter.getAddress()+"\",\"bt_devices\":[";
-					String deviceJSONS = "";
-					for (int i = 0; i < deviceArray.size(); i++) {
-						Map<android.bluetooth.BluetoothDevice, Short> mapValue  = deviceArray.get(i);	
-						android.bluetooth.BluetoothDevice btd = mapValue.entrySet().iterator().next().getKey();
-						String name = btd.getName();
-						String address = btd.getAddress();
-						String rssi = ""+mapValue.entrySet().iterator().next().getValue();
-						if(deviceJSONS.length() > 0)
-							deviceJSONS += ",";
-						deviceJSONS += "{\"address\":\""+address+"\",\"name\":\""+name+"\",\"rssi\":\""+rssi+"\"}";
-					}					
-					sensorValue += deviceJSONS+"]}";
-					msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, sensorValue, SenseSettings.SENSOR_DATA_TYPE_JSON);
-					context.unregisterReceiver(bbReceiver);					
-					scanHandler.postDelayed(new ScanThread2_1(), scanInterval);
-				}
-			} 
-		}; 
+                scanHandler.postDelayed(new ScanThread1_6(), scanInterval);
+            }
 
-	 }
+            public void scanStarted() {
+                // Auto-generated method stub
+            }
+        }
 
-	 /*
-	  *  Scan thread 1.6
-	  */
-	 class ScanThread1_6 implements Runnable 
-	 {
-		 private BluetoothDeviceListener btListener;
-		 private LocalBluetoothDevice btDevice;
+        private LocalBluetoothDevice btDevice;
+        private BluetoothDeviceListener btListener;
 
-		 public ScanThread1_6() 
-		 { 
-			 // send address
-			 try {
-				 btDevice =  LocalBluetoothDevice.initLocalDevice(context);
-				 btListener = new BluetoothDeviceListener();
-				 btDevice.setEnabled(true);
-				 if (btDevice.isEnabled()) 
-				 {
-					 Log.d(TAG, "Bluetooth is enabled");
-					 Log.d(TAG,"My address: " + btDevice.getAddress());	
-					 btDevice.setScanMode(LocalBluetoothDevice.SCAN_MODE_CONNECTABLE_DISCOVERABLE);
+        public ScanThread1_6() {
+            // send address
+            try {
+                btDevice = LocalBluetoothDevice.initLocalDevice(context);
+                btListener = new BluetoothDeviceListener();
+                btDevice.setEnabled(true);
+                if (btDevice.isEnabled()) {
+                    // Log.d(TAG, "Bluetooth is enabled");
+                    // Log.d(TAG, "My address: " + btDevice.getAddress());
+                    btDevice.setScanMode(LocalBluetoothDevice.SCAN_MODE_CONNECTABLE_DISCOVERABLE);
 
-					 if(scanEnabled)						
-						 btDevice.setListener(btListener);
-					 else
-						 btDevice.close();
-				 }
-				 else
-				 {
-					 Log.d(TAG, "Bluetooth not enabled");
-				 }
+                    if (scanEnabled)
+                        btDevice.setListener(btListener);
+                    else
+                        btDevice.close();
+                } else {
+                    // Log.d(TAG, "Bluetooth not enabled");
+                }
 
-			 } catch (Exception e) {
-				 // TODO Auto-generated catch block
-				 e.printStackTrace();
-			 }
-		 }
-		 public void run() 
-		 {	
-			 try {
-				 btDevice.scan();
-			 } catch (Exception e) {					
-				 e.printStackTrace();
-			 }
+            } catch (Exception e) {
+                Log.e(TAG, "Exception initializing Bluetooth scan thread:", e);
+            }
+        }
 
-		 }
+        public void run() {
+            try {
+                btDevice.scan();
+            } catch (Exception e) {
+                Log.e(TAG, "Exception running Bluetooth scan thread:", e);
+            }
+        }
+    }
 
-		 private class BluetoothDeviceListener implements LocalBluetoothDeviceListener {
+    /*
+     * Scan thread 2.1
+     */
+    private class ScanThread2_1 implements Runnable {
 
-			 public void bluetoothDisabled() {
-				 // TODO Auto-generated method stub
+        private BroadcastReceiver bbReceiver = new BroadcastReceiver() {
 
-			 }
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                // When discovery finds a device
+                if (android.bluetooth.BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    android.bluetooth.BluetoothDevice remoteDevice = intent
+                            .getParcelableExtra(android.bluetooth.BluetoothDevice.EXTRA_DEVICE);
+                    Short rssi = intent.getShortExtra(android.bluetooth.BluetoothDevice.EXTRA_RSSI,
+                            (short) 0);
+                    HashMap<android.bluetooth.BluetoothDevice, Short> mapValue = new HashMap<android.bluetooth.BluetoothDevice, Short>();
+                    mapValue.put(remoteDevice, rssi);
+                    deviceArray.add(mapValue);
+                }
+                if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                    if (deviceArray.size() == 0)
+                        return;
 
-			 
-			 public void bluetoothEnabled() {
-				 // TODO Auto-generated method stub
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("local_bt_device", btAdapter.getAddress());
 
-			 }
+                        JSONArray jsonArray = new JSONArray();
+                        for (Map<android.bluetooth.BluetoothDevice, Short> value : deviceArray) {
+                            android.bluetooth.BluetoothDevice btd = value.entrySet().iterator()
+                                    .next().getKey();
 
-			 
-			 public void deviceFound(String arg0) {
-				 // TODO Auto-generated method stub
+                            JSONObject deviceJson = new JSONObject();
+                            deviceJson.put("address", btd.getAddress());
+                            deviceJson.put("name", btd.getName());
+                            deviceJson.put("rssi", ""
+                                    + value.entrySet().iterator().next().getValue());
+                            jsonArray.put(deviceJson);
+                        }
+                        json.put("bt_devices", jsonArray);
 
-			 }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSONException preparing bluetooth scan data");
+                    }
 
-			 
-			 public void scanCompleted(ArrayList<String> devices) {				
-					 try {
-						 if(devices.size() == 0 )
-								return;
-						 String sensorValue = "{\"local_bt_address\":\""+btDevice.getAddress()+"\",\"bt_devices\":[";
-							String deviceJSONS = "";
-							for (int i = 0; i < devices.size(); i++) {
-								 String address = devices.get(i);								
-								 RemoteBluetoothDevice rbtDevice = btDevice.getRemoteBluetoothDevice(address);
-								 String name = rbtDevice.getName();
-								 String  rssi = ""+ rbtDevice.getRSSI();
-								if(deviceJSONS.length() > 0)
-									deviceJSONS += ",";
-								deviceJSONS += "{\"address\":\""+address+"\",\"name\":\""+name+"\",\"rssi\":\""+rssi+"\"}";
-							}					
-							sensorValue += deviceJSONS+"]}";							
-							msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, sensorValue, SenseSettings.SENSOR_DATA_TYPE_JSON);						  
-					 }
-					 catch (Exception e) {
-						 e.printStackTrace();	                           
-					 }
-				 
-				 scanHandler.postDelayed(new ScanThread1_6(), scanInterval);
-			 }
+                    msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, json.toString(),
+                            SenseSettings.SENSOR_DATA_TYPE_JSON);
 
-			 
-			 public void scanStarted() {
-				 // TODO Auto-generated method stub
+                    context.unregisterReceiver(bbReceiver);
+                    scanHandler.postDelayed(new ScanThread2_1(), scanInterval);
+                }
+            }
+        };
 
-			 }
-		 }
-	 }
+        Vector<Map<android.bluetooth.BluetoothDevice, Short>> deviceArray;
+
+        public ScanThread2_1() {
+            // send address
+            try {
+                btAdapter = BluetoothAdapter.getDefaultAdapter();
+                btAdapter.enable();
+                
+                if (btAdapter.isEnabled()) {
+                    // Log.d(TAG, "Bluetooth is enabled");
+                    // Log.d(TAG, "My address: " + btAdapter.getAddress());
+
+                    /* You don't want a dialog */
+                    // Intent discoverableIntent = new
+                    // Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                    // discoverableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
+                    // 300);
+                    // context.startActivity(discoverableIntent);
+                } else {
+                    // Log.d(TAG, "Bluetooth not enabled");
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "JSONException preparing Bluetooth scan thread:", e);
+            }
+        }
+
+        public void run() {
+            if (scanEnabled) {
+                // Log.d(TAG, "Starting discovery");
+                deviceArray = new Vector<Map<android.bluetooth.BluetoothDevice, Short>>();
+                context.registerReceiver(bbReceiver, new IntentFilter(
+                        android.bluetooth.BluetoothDevice.ACTION_FOUND));
+                context.registerReceiver(bbReceiver, new IntentFilter(
+                        BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
+
+                btAdapter.startDiscovery();
+            } else {
+                context.unregisterReceiver(bbReceiver);
+            }
+        }
+    }
+
+    private static final int DEVICE_FOUND = 3;
+    private static final String LOCAL_SENSOR_NAME = "local_bt_address";
+    private static final int SCAN_FINISHED = 2;
+    private static final int SCAN_STARTED = 1;
+    private static final String TAG = "DeviceProximity";
+    private static final String BLUETOOTH_DISCOVERY = "bluetooth_discovery";
+    private BluetoothAdapter btAdapter;
+    private final Context context;
+    private boolean isRealtime = false;
+    private final MsgHandler msgHandler;
+    private boolean scanEnabled = false;
+    private final Handler scanHandler = new Handler(Looper.getMainLooper());
+    private int scanInterval = 0;
+
+    public DeviceProximity(MsgHandler handler, Context context) {
+        this.msgHandler = handler;
+        this.context = context;
+    }
+
+    public int getScanInterval() {
+        return scanInterval;
+    }
+
+    public void setScanInterval(int scanInterval) {
+        this.scanInterval = scanInterval;
+    }
+
+    public void startEnvironmentScanning(int interval) {
+        scanInterval = interval;
+        isRealtime = scanInterval == 1;
+        scanEnabled = true;
+        Thread t = new Thread() {
+            private final Handler handler = new Handler(Looper.getMainLooper());
+
+            public void run() {
+                // Check if the phone version, if it is lower than, 2.1 use the bluetooth lib
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR)
+                    this.handler.post(new ScanThread1_6());
+                else {
+                    this.handler.post(new ScanThread2_1());
+                }
+            }
+        };
+        this.scanHandler.post(t);
+    }
+
+    public void stopEnvironmentScanning() {
+        scanEnabled = false;
+    }
 }

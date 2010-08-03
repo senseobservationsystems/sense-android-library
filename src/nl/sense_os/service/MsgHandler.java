@@ -17,6 +17,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -34,10 +36,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 public class MsgHandler {
@@ -174,6 +175,175 @@ public class MsgHandler {
         }
     };
 
+    class SendFileThread implements Runnable {
+        String cookie;
+        String exsistingFileName;
+        String sensorName;
+
+        public SendFileThread(String _sensorName, String path, String _cookie) {
+            exsistingFileName = path;
+            sensorName = _sensorName;
+            cookie = _cookie;
+        }
+
+        public void run() {
+            HttpURLConnection conn = null;
+            BufferedReader br = null;
+            DataOutputStream dos = null;
+            DataInputStream inStream = null;
+
+            InputStream is = null;
+            OutputStream os = null;
+            boolean ret = false;
+
+            String lineEnd = "\r\n";
+            String twoHyphens = "--";
+            String boundary = "----FormBoundary6bYQOdhfGEj4oCSv";
+
+            int bytesRead, bytesAvailable, bufferSize;
+
+            byte[] buffer;
+
+            int maxBufferSize = 1 * 1024 * 1024;
+            String responseFromServer = "";
+            String urlString = SenseSettings.URL_SEND_SENSOR_DATA_FILE;
+
+            try {
+                // ------------------ CLIENT REQUEST
+
+                FileInputStream fileInputStream = new FileInputStream(new File(exsistingFileName));
+
+                // open a URL connection to the Servlet
+
+                URL url = new URL(urlString);
+
+                // Open a HTTP connection to the URL
+
+                conn = (HttpURLConnection) url.openConnection();
+
+                // Allow Inputs
+                conn.setDoInput(true);
+
+                // Allow Outputs
+                conn.setDoOutput(true);
+
+                // Don't use a cached copy.
+                conn.setUseCaches(false);
+
+                // Use a post method.
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Cookie", cookie);
+                conn.setRequestProperty("Connection", "Keep-Alive");
+
+                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+                dos = new DataOutputStream(conn.getOutputStream());
+
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; sensorName=\"" + sensorName + "\";"
+                        + " filename=\"" + exsistingFileName + "\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                // create a buffer of maximum size
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                buffer = new byte[bufferSize];
+
+                // read file and write it into form...
+
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                while (bytesRead > 0) {
+                    dos.write(buffer, 0, bufferSize);
+                    bytesAvailable = fileInputStream.available();
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                }
+
+                // send multipart form data necesssary after file data...
+
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                // close streams
+
+                fileInputStream.close();
+                dos.flush();
+                dos.close();
+
+            } catch (MalformedURLException ex) {
+                System.out.println("From ServletCom CLIENT REQUEST:" + ex);
+            }
+
+            catch (IOException ioe) {
+                System.out.println("From ServletCom CLIENT REQUEST:" + ioe);
+            }
+
+            // ------------------ read the SERVER RESPONSE
+
+            try {
+                inStream = new DataInputStream(conn.getInputStream());
+                String str;
+                while ((str = inStream.readLine()) != null) {
+                    System.out.println("Server response is: " + str);
+                    System.out.println("");
+                }
+                inStream.close();
+
+            } catch (IOException ioex) {
+                System.out.println("From (ServerResponse): " + ioex);
+
+            }
+        }
+    }
+    class SendMessageThread implements Runnable {
+        String cookie;
+        Thread runner;
+        String url;
+
+        public SendMessageThread() {
+        }
+
+        public SendMessageThread(String _url, String Cookie) {
+            url = _url;
+            cookie = Cookie;
+        }
+
+        public void run() {
+            try {
+                URI uri = new URI(url);
+                HttpPost post = new HttpPost(uri);
+                post.setHeader("Cookie", cookie);
+                HttpClient client = new DefaultHttpClient();
+                client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
+                HttpResponse response = client.execute(post);
+
+                if (response != null) {
+                    Header header[] = response.getAllHeaders();
+                    String output = "";
+                    for (Header element : header) {
+                        output += element.getName() + "=" + element.getValue() + "\n";
+                    }
+
+                    int value = 0;
+                    String body = "";
+                    InputStream ir = response.getEntity().getContent();
+
+                    while ((value = ir.read()) != -1) {
+                        body += "" + (char) value;
+                    }
+                    
+                    int subStrStart = this.url.indexOf("sensorName=") + 11;
+                    int subStrEnd = this.url.indexOf("&", subStrStart);
+                    String sensor = URLDecoder.decode(this.url.substring(subStrStart, subStrEnd));
+                    String outputString = "Sent " + sensor
+                            + " data. Response from CommonSense: " + body;
+                    Log.d(TAG, outputString);
+                }
+            } catch (Exception e) {
+                System.out.println("error: " + e.getMessage());
+            }
+        }
+    }
     public static final String PREF_KEY_DEVICE_ID = "DeviceId";
     public static final String PREF_KEY_DEVICE_TYPE = "DeviceType";
     public static final String PREF_KEY_PORT = "Port";
@@ -218,8 +388,18 @@ public class MsgHandler {
             Looper.loop();
         }
     };
+
     private int updateFreq;
-    private String url;
+
+    private String url;;
+
+    // private void initTTS() {
+    // mil = new MyInitListener();
+    // mTts = new TextToSpeech(context, mil);
+    // mouc = new MyOnUtteranceCompletedListener();
+    // mTts.setLanguage(Locale.US);
+    // mTts.setOnUtteranceCompletedListener(mouc);
+    // }
 
     public MsgHandler(Context context) {
 
@@ -244,22 +424,6 @@ public class MsgHandler {
         listen(true);
     }
 
-    public String getDeviceService_id() {
-        return this.deviceService_id;
-    };
-
-    // private void initTTS() {
-    // mil = new MyInitListener();
-    // mTts = new TextToSpeech(context, mil);
-    // mouc = new MyOnUtteranceCompletedListener();
-    // mTts.setLanguage(Locale.US);
-    // mTts.setOnUtteranceCompletedListener(mouc);
-    // }
-
-    public String getDeviceService_type() {
-        return this.deviceService_type;
-    }
-
     // private class MyInitListener implements OnInitListener {
     //
     // public void onInit(int status) {
@@ -278,6 +442,14 @@ public class MsgHandler {
     // }
     // };
 
+    public String getDeviceService_id() {
+        return this.deviceService_id;
+    }
+
+    public String getDeviceService_type() {
+        return this.deviceService_type;
+    }
+
     public String getHttpResponse() {
         return this.httpResponse;
     }
@@ -288,20 +460,6 @@ public class MsgHandler {
 
     public String getUrl() {
         return this.url;
-    }
-
-    public void listen(boolean _listen) {
-        this.listening = _listen;
-        if (_listen) {
-            new Thread(this.socketServer).start();
-        }
-    }
-
-    private void say(String text) {
-        // synchronized (lock) {
-        // speaking = true;
-        // }
-        // mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
     }
 
     /*
@@ -315,52 +473,19 @@ public class MsgHandler {
      * prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, ""); new Thread(new SendMessageThread(url,
      * cookie)).start(); }
      */
-    
-    
-    /*
-     * Send sensordata with sensor name value and the type of sensor data
-     */
-    public void sendSensorData(String sensorName, String sensorValue, String dataType) {
-        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
-                + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
-                + "&sensorDataType=" + URLEncoder.encode(dataType);
-        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-                android.content.Context.MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-        new Thread(new SendMessageThread(url, cookie)).start();
-    }
-    
-    public void sendSensorData(String sensorName, String sensorValue, String dataType, String deviceType) {
-        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
-                + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
-                + "&sensorDataType=" + URLEncoder.encode(dataType) + "&sensorDeviceType=" + URLEncoder.encode(deviceType);
-        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-                android.content.Context.MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-        new Thread(new SendMessageThread(url, cookie)).start();
+
+    public void listen(boolean _listen) {
+        this.listening = _listen;
+        if (_listen) {
+            new Thread(this.socketServer).start();
+        }
     }
 
-    /*
-     * @deprecated
-     * 
-     * public void sendPhoneLocation(String longitude, String latitude) { String url =
-     * SenseSettings.URL_LOCATION_ADD+"?longitude="+longitude+"&latitude="+latitude; final
-     * SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-     * android.content.Context.MODE_PRIVATE); String cookie =
-     * prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, ""); new Thread(new SendMessageThread(url,
-     * cookie)).start(); }
-     */
-    public void sendSensorData(String sensorName, Map<String, String> msg) {
-        Iterator<Entry<String, String>> it = msg.entrySet().iterator();
-        String jsonMsg = "{";
-        while (it.hasNext()) {
-            Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
-            if (jsonMsg.length() > 1)
-                jsonMsg += ",";
-            jsonMsg += "\"" + entry.getKey() + "\":\"" + entry.getValue() + "\"";
-        }
-        jsonMsg += "}";
-        sendSensorData(sensorName, jsonMsg, SenseSettings.SENSOR_DATA_TYPE_JSON);
+    private void say(String text) {
+        // synchronized (lock) {
+        // speaking = true;
+        // }
+        // mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
     }
 
     /*
@@ -385,6 +510,53 @@ public class MsgHandler {
     public void sendAddPopQuizQuestion(String question) {
         String url = SenseSettings.URL_QUIZ_ADD_QUESTION + "?question="
                 + URLEncoder.encode(question);
+        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
+                android.content.Context.MODE_PRIVATE);
+        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+        new Thread(new SendMessageThread(url, cookie)).start();
+    }
+
+    /*
+     * @deprecated
+     * 
+     * public void sendPhoneLocation(String longitude, String latitude) { String url =
+     * SenseSettings.URL_LOCATION_ADD+"?longitude="+longitude+"&latitude="+latitude; final
+     * SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
+     * android.content.Context.MODE_PRIVATE); String cookie =
+     * prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, ""); new Thread(new SendMessageThread(url,
+     * cookie)).start(); }
+     */
+    public void sendSensorData(String sensorName, Map<String, String> msg) {
+        JSONObject json = new JSONObject();
+        try {
+            for (Map.Entry<String, String> entry : msg.entrySet()) {
+                json.put(entry.getKey(), entry.getValue());
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException preparing sensor data sending:", e);
+        }
+        sendSensorData(sensorName, json.toString(), SenseSettings.SENSOR_DATA_TYPE_JSON);
+    }
+
+    /*
+     * Send sensordata with sensor name value and the type of sensor data
+     */
+    public void sendSensorData(String sensorName, String sensorValue, String dataType) {
+        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
+                + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
+                + "&sensorDataType=" + URLEncoder.encode(dataType);
+        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
+                android.content.Context.MODE_PRIVATE);
+        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+        new Thread(new SendMessageThread(url, cookie)).start();
+    }
+
+    public void sendSensorData(String sensorName, String sensorValue, String dataType,
+            String deviceType) {
+        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
+                + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
+                + "&sensorDataType=" + URLEncoder.encode(dataType) + "&sensorDeviceType="
+                + URLEncoder.encode(deviceType);
         final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
                 android.content.Context.MODE_PRIVATE);
         String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
@@ -511,174 +683,6 @@ public class MsgHandler {
         } catch (IOException ioex) {
             System.out.println("From (ServerResponse): " + ioex);
 
-        }
-    }
-
-    class SendFileThread implements Runnable {
-        String exsistingFileName;
-        String sensorName;
-        String cookie;
-
-        public SendFileThread(String _sensorName, String path, String _cookie) {
-            exsistingFileName = path;
-            sensorName = _sensorName;
-            cookie = _cookie;
-        }
-
-        public void run() {
-            HttpURLConnection conn = null;
-            BufferedReader br = null;
-            DataOutputStream dos = null;
-            DataInputStream inStream = null;
-
-            InputStream is = null;
-            OutputStream os = null;
-            boolean ret = false;
-
-            String lineEnd = "\r\n";
-            String twoHyphens = "--";
-            String boundary = "----FormBoundary6bYQOdhfGEj4oCSv";
-
-            int bytesRead, bytesAvailable, bufferSize;
-
-            byte[] buffer;
-
-            int maxBufferSize = 1 * 1024 * 1024;
-            String responseFromServer = "";
-            String urlString = SenseSettings.URL_SEND_SENSOR_DATA_FILE;
-
-            try {
-                // ------------------ CLIENT REQUEST
-
-                FileInputStream fileInputStream = new FileInputStream(new File(exsistingFileName));
-
-                // open a URL connection to the Servlet
-
-                URL url = new URL(urlString);
-
-                // Open a HTTP connection to the URL
-
-                conn = (HttpURLConnection) url.openConnection();
-
-                // Allow Inputs
-                conn.setDoInput(true);
-
-                // Allow Outputs
-                conn.setDoOutput(true);
-
-                // Don't use a cached copy.
-                conn.setUseCaches(false);
-
-                // Use a post method.
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Cookie", cookie);
-                conn.setRequestProperty("Connection", "Keep-Alive");
-
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-                dos = new DataOutputStream(conn.getOutputStream());
-
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; sensorName=\"" + sensorName + "\";"
-                        + " filename=\"" + exsistingFileName + "\"" + lineEnd);
-                dos.writeBytes(lineEnd);
-                // create a buffer of maximum size
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // read file and write it into form...
-
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0) {
-                    dos.write(buffer, 0, bufferSize);
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                }
-
-                // send multipart form data necesssary after file data...
-
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                // close streams
-
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
-
-            } catch (MalformedURLException ex) {
-                System.out.println("From ServletCom CLIENT REQUEST:" + ex);
-            }
-
-            catch (IOException ioe) {
-                System.out.println("From ServletCom CLIENT REQUEST:" + ioe);
-            }
-
-            // ------------------ read the SERVER RESPONSE
-
-            try {
-                inStream = new DataInputStream(conn.getInputStream());
-                String str;
-                while ((str = inStream.readLine()) != null) {
-                    System.out.println("Server response is: " + str);
-                    System.out.println("");
-                }
-                inStream.close();
-
-            } catch (IOException ioex) {
-                System.out.println("From (ServerResponse): " + ioex);
-
-            }
-        }
-    }
-
-    class SendMessageThread implements Runnable {
-        Thread runner;
-        String url;
-        String cookie;
-
-        public SendMessageThread() {
-        }
-
-        public SendMessageThread(String _url, String Cookie) {
-            url = _url;
-            cookie = Cookie;
-        }
-
-        public void run() {
-            try {
-                URI uri = new URI(url);
-                HttpPost post = new HttpPost(uri);
-                post.setHeader("Cookie", cookie);
-                HttpClient client = new DefaultHttpClient();
-                client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
-                HttpResponse response = client.execute(post);
-
-                if (response != null) {
-                    Header header[] = response.getAllHeaders();
-                    String output = "";
-                    for (Header element : header) {
-                        output += element.getName() + "=" + element.getValue() + "\n";
-                    }
-
-                    int value = 0;
-                    String body = "";
-                    InputStream ir = response.getEntity().getContent();
-
-                    while ((value = ir.read()) != -1) {
-                        body += "" + (char) value;
-                    }
-
-                     String outputString = "http response from " + this.url + ":\n" + // output +
-                          "\n" + body + "\n";
-                     Log.d(TAG, outputString);
-                }
-            } catch (Exception e) {
-                System.out.println("error: " + e.getMessage());
-            }
         }
     }
 }

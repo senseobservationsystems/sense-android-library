@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.hardware.Sensor;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -352,7 +351,8 @@ public class SenseService extends Service {
         if (error) {
             contentText = "Trying to log in...";
         } else {
-            contentText = "Logged in.";
+            SharedPreferences prefs = this.getSharedPreferences(PRIVATE_PREFS, Context.MODE_PRIVATE);            
+            contentText = "Logged in as " + prefs.getString(SenseSettings.PREF_LOGIN_MAIL, "UNKNOWN");
         }
         final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
         notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -516,11 +516,11 @@ public class SenseService extends Service {
         registerReceiver(this.loginPossibility, filter);
     }
 
-    private boolean register(String email, String name, String pass) {
+    private boolean register(String email, String pass) {
         try {
             String cookie = "";
             final URI uri = new URI(SenseSettings.URL_REG + "?email=" + email + "&password=" + pass
-                    + "&name=" + name);
+                    + "&name=" + email);
             final HttpPost post = new HttpPost(uri);
             final HttpClient client = new DefaultHttpClient();
             // client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
@@ -534,12 +534,12 @@ public class SenseService extends Service {
             final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
             final Editor editor = prefs.edit();
             if (!responseStr.toLowerCase().contains("ok")) {
-                editor.putBoolean(name + "_ok", false);
+                editor.putBoolean(email + "_ok", false);
                 editor.putString(SenseSettings.PREF_LOGIN_COOKIE, "");
                 editor.commit();
                 return false;
             } else {
-                editor.putBoolean(name + "_ok", true);
+                editor.putBoolean(email + "_ok", true);
                 editor.putString(SenseSettings.PREF_LOGIN_COOKIE, cookie);
                 editor.commit();
             }
@@ -636,10 +636,9 @@ public class SenseService extends Service {
     public boolean senseServiceRegister() {
         final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
         final String email = prefs.getString(SenseSettings.PREF_LOGIN_MAIL, "");
-        final String name = prefs.getString(SenseSettings.PREF_LOGIN_NAME, "");
         final String pass = prefs.getString(SenseSettings.PREF_LOGIN_PASS, "");
-        Log.d(TAG, "Registering... Name: " + name + ", email: " + email + ", pass: " + pass);
-        if ((email.length() > 0) && (pass.length() > 0) && register(email, name, pass)) {
+        Log.d(TAG, "Registering... Email: " + email + ", pass: " + "********");
+        if ((email.length() > 0) && (pass.length() > 0) && register(email, pass)) {
             // Registration successful
             notifySenseLogin(false);
             SenseService.sLoggedIn = true;
@@ -676,7 +675,7 @@ public class SenseService extends Service {
             startForeground = null; 
         }
 
-        // call startForeground in fancy way so old systems do net get confused by unknown methods
+        // call startForeground in fancy way so old systems do not get confused by unknown methods
         if (startForeground == null) {
             setForeground(true);
         } else {
@@ -717,12 +716,12 @@ public class SenseService extends Service {
             stopForeground = null; 
         }
 
+        // remove the notification that the service is running
+        final NotificationManager noteMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        noteMgr.cancel(NOTIF_ID);
+        
         // call stopForeground in fancy way so old systems do net get confused by unknown methods
         if (stopForeground == null) {
-            // remove the notification that the service is running
-            final NotificationManager noteMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            noteMgr.cancel(NOTIF_ID);
-            
             setForeground(false);
         } else {           
             Object[] stopArgs = { Boolean.TRUE }; 

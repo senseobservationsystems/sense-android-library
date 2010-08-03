@@ -33,11 +33,11 @@
     <string name="toast_quiz_refresh">Quiz questions are being refreshed...</string>
     <string name="toast_reg_fail">Registration failed, please try again.</string>
     <string name="toast_reg_ok">Registration successful.</string>
-    <string name="toast_reg_pass">Passwords do not match, try again.</string>
-    <string name="toast_toggle_dev_prox">Device proximity will be updated ?.</string>
-    <string name="toast_toggle_location">Location will be updated every ?.</string>
-    <string name="toast_toggle_motion">Motion sensor will be updated every ?.</string>
-    <string name="toast_toggle_noise">Noise measurement will be updated ?.</string>
+    <string name="toast_reg_pass">Passwords do not match, please try again.</string>
+    <string name="toast_toggle_dev_prox">Device proximity will update every ?.</string>
+    <string name="toast_toggle_location">Location will update every ?.</string>
+    <string name="toast_toggle_motion">Motion sensor will update every ?.</string>
+    <string name="toast_toggle_noise">Noise measurement will update ?.</string>
     <string name="toast_toggle_phonestate">Changes in phone state will be shared with CommonSense.</string>
-    <string name="toast_toggle_quiz">A question will pop up every ? minutes.</string>
+    <string name="toast_toggle_quiz">A question will pop up ?.</string>
 </resources>

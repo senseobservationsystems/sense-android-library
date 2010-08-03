@@ -17,41 +17,42 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SensePhoneState extends PhoneStateListener {
-    private static final String TAG = "MyPhoneStateListener";    
+    private static final String TAG = "MyPhoneStateListener";
     private MsgHandler msgHandler;
     private TelephonyManager telman;
 
     public SensePhoneState(MsgHandler msgHandler, TelephonyManager telman) {
-        super();        
+        super();
         this.telman = telman;
         this.msgHandler = msgHandler;
     }
 
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
-        Log.d(TAG, "Call state changed.");
+        // Log.d(TAG, "Call state changed.");
 
         Map<String, String> data = new HashMap<String, String>();
         String strState = "";
         if (state == TelephonyManager.CALL_STATE_IDLE) {
-        	strState = "idle";
+            strState = "idle";
         }
         if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-        	strState = "calling";
+            strState = "calling";
         }
         if (state == TelephonyManager.CALL_STATE_RINGING) {
-        	strState = "ringing";
-        	data.put("incomingNumber", incomingNumber);
+            strState = "ringing";
+            data.put("incomingNumber", incomingNumber);
         }
         data.put("state", strState);
 
-        this.msgHandler.sendSensorData("call state",data);
+        this.msgHandler.sendSensorData("call state", data);
         super.onCallStateChanged(state, incomingNumber);
     }
 
     @Override
     public void onCellLocationChanged(CellLocation location) {
-        Log.d(TAG, "Cell location changed.");
+        // Log.d(TAG, "Cell location changed.");
+
         // TODO: Catch listen cell location!
         // location.requestLocationUpdate();
     }
@@ -59,8 +60,8 @@ public class SensePhoneState extends PhoneStateListener {
     @Override
     @SuppressWarnings("unused")
     public void onDataActivity(int direction) {
-        Log.d(TAG, "Data activity.");
-        
+        // Log.d(TAG, "Data activity.");
+
         Map<String, String> data = new HashMap<String, String>();
         String strDirection = "";
         if (direction == TelephonyManager.DATA_ACTIVITY_IN) {
@@ -81,8 +82,8 @@ public class SensePhoneState extends PhoneStateListener {
 
     @Override
     public void onDataConnectionStateChanged(int state) {
-        Log.d(TAG, "Data connection state changed.");
-                
+        // Log.d(TAG, "Data connection state changed.");
+
         String strState = "";
         if (state == TelephonyManager.DATA_CONNECTED) {
             // send the URL on which the phone can be reached
@@ -102,8 +103,9 @@ public class SensePhoneState extends PhoneStateListener {
             } catch (Exception e) {
                 Log.e(TAG, "Error getting my own IP:", e);
             }
-            if(ip.length() > 1)
-            	this.msgHandler.sendSensorData("ip address", ip, SenseSettings.SENSOR_DATA_TYPE_STRING);           
+            if (ip.length() > 1)
+                this.msgHandler.sendSensorData("ip address", ip,
+                        SenseSettings.SENSOR_DATA_TYPE_STRING);
             strState = "connected";
         }
         if (state == TelephonyManager.DATA_CONNECTING) {
@@ -115,13 +117,14 @@ public class SensePhoneState extends PhoneStateListener {
         if (state == TelephonyManager.DATA_SUSPENDED) {
             strState = "suspended";
         }
-        this.msgHandler.sendSensorData("data connection", strState, SenseSettings.SENSOR_DATA_TYPE_STRING);
+        this.msgHandler.sendSensorData("data connection", strState,
+                SenseSettings.SENSOR_DATA_TYPE_STRING);
     }
 
     @Override
     public void onMessageWaitingIndicatorChanged(boolean mwi) {
-        Log.d(TAG, "Message waiting indicator changed.");       
-    
+        // Log.d(TAG, "Message waiting indicator changed.");
+
         String strState = "";
         if (mwi == true) {
             strState = "true";
@@ -133,8 +136,8 @@ public class SensePhoneState extends PhoneStateListener {
 
     @Override
     public void onServiceStateChanged(ServiceState serviceState) {
-        Log.d(TAG, "Service state changed.");
-        
+        // Log.d(TAG, "Service state changed.");
+
         Map<String, String> data = new HashMap<String, String>();
         String strState = "";
         if (serviceState.getState() == ServiceState.STATE_EMERGENCY_ONLY) {
@@ -142,7 +145,7 @@ public class SensePhoneState extends PhoneStateListener {
         }
         if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) {
             strState = "in service";
-            data.put("phone number", ""+telman.getLine1Number());
+            data.put("phone number", "" + telman.getLine1Number());
         }
         if (serviceState.getState() == ServiceState.STATE_OUT_OF_SERVICE) {
             strState = "out of service";
@@ -158,15 +161,15 @@ public class SensePhoneState extends PhoneStateListener {
         }
         this.msgHandler.sendSensorData("service state", data);
     }
-        
+
     @Override
     public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-    	Map<String, String> data = new HashMap<String, String>();
-    	data.put("CDMA dBm",""+signalStrength.getCdmaDbm());
-    	data.put("EVDO dBm", ""+signalStrength.getEvdoDbm());
-    	data.put("GSM signal strength", ""+signalStrength.getGsmSignalStrength());
-    	data.put("GSM bit error rate", ""+signalStrength.getGsmBitErrorRate());
-    	this.msgHandler.sendSensorData("signal strength", data);
-    	super.onSignalStrengthsChanged(signalStrength);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("CDMA dBm", "" + signalStrength.getCdmaDbm());
+        data.put("EVDO dBm", "" + signalStrength.getEvdoDbm());
+        data.put("GSM signal strength", "" + signalStrength.getGsmSignalStrength());
+        data.put("GSM bit error rate", "" + signalStrength.getGsmBitErrorRate());
+        this.msgHandler.sendSensorData("signal strength", data);
+        super.onSignalStrengthsChanged(signalStrength);
     }
 }

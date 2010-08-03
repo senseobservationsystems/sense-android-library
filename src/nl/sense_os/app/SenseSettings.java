@@ -6,20 +6,19 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -73,13 +72,14 @@ public class SenseSettings extends PreferenceActivity {
 			} else {
 				Toast.makeText(SenseSettings.this, R.string.toast_login_ok, Toast.LENGTH_LONG)
 				.show();
-
+				
+				setupLoginPref();
+				
 				final Intent serviceIntent = new Intent(ISenseService.class.getName());
 				if (null == startService(serviceIntent)) {
 					Log.w(TAG, "Could not start Sense service after login!");
 				}
 			}
-			super.onPostExecute(result);
 		}
 
 		@Override
@@ -135,9 +135,9 @@ public class SenseSettings extends PreferenceActivity {
 			} else {
 				Toast.makeText(SenseSettings.this, getString(R.string.toast_reg_ok),
 						Toast.LENGTH_LONG).show();
+				
+				setupLoginPref();
 			}
-
-			super.onPostExecute(result);
 		}
 
 		@Override
@@ -173,7 +173,8 @@ public class SenseSettings extends PreferenceActivity {
 	public static final String PREF_LOGIN_COOKIE = "login_cookie";
 	/** Key for login preference for email address. */
 	public static final String PREF_LOGIN_MAIL = "login_mail";
-	/** Key for login preference for username. */
+	/** Key for login preference for username.
+	 * @deprecated */	
 	public static final String PREF_LOGIN_NAME = "login_name";
 	/** Key for login preference for hashed password. */
 	public static final String PREF_LOGIN_PASS = "login_pass";
@@ -314,38 +315,36 @@ public class SenseSettings extends PreferenceActivity {
 			final Intent serviceIntent = new Intent(ISenseService.class.getName());
 			bindService(serviceIntent, this.serviceConn, BIND_AUTO_CREATE);
 		}
-
-		// create View with input fields for dialog content
-		final LinearLayout register = new LinearLayout(this);
-		register.setOrientation(LinearLayout.VERTICAL);
+		
+		// create individual input fields
 		final EditText emailField = new EditText(this);
 		emailField.setLayoutParams(new LayoutParams(-1, -2));
 		emailField.setHint(R.string.dialog_reg_hint_mail);
 		emailField.setInputType(InputType.TYPE_CLASS_TEXT
 				| InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 		emailField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-		register.addView(emailField);
-		final EditText nameField = new EditText(this);
-		nameField.setLayoutParams(new LayoutParams(-1, -2));
-		nameField.setHint(R.string.dialog_reg_hint_name);
-		nameField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-		nameField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-		register.addView(nameField);
+		
 		final EditText passField1 = new EditText(this);
 		passField1.setLayoutParams(new LayoutParams(-1, -2));
 		passField1.setHint(R.string.dialog_reg_hint_pass);
 		passField1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 		passField1.setTransformationMethod(new PasswordTransformationMethod());
 		passField1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-		register.addView(passField1);
+		
 		final EditText passField2 = new EditText(this);
 		passField2.setLayoutParams(new LayoutParams(-1, -2));
 		passField2.setHint(R.string.dialog_reg_hint_pass2);
 		passField2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 		passField2.setTransformationMethod(new PasswordTransformationMethod());
 		passField2.setImeOptions(EditorInfo.IME_ACTION_DONE);
-		register.addView(passField2);
 
+        // create main dialog content View
+        final LinearLayout register = new LinearLayout(this);
+        register.setOrientation(LinearLayout.VERTICAL);
+        register.addView(emailField);
+        register.addView(passField1);
+        register.addView(passField2);
+		
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_reg_title);
 		builder.setView(register);
@@ -353,7 +352,6 @@ public class SenseSettings extends PreferenceActivity {
 
 			public void onClick(DialogInterface dialog, int which) {
 				final String email = emailField.getText().toString();
-				final String name = nameField.getText().toString();
 				final String pass1 = passField1.getText().toString();
 				final String pass2 = passField2.getText().toString();
 
@@ -382,7 +380,6 @@ public class SenseSettings extends PreferenceActivity {
 								MODE_PRIVATE);
 						final Editor editor = prefs.edit();
 						editor.putString(PREF_LOGIN_MAIL, email);
-						editor.putString(PREF_LOGIN_NAME, name);
 						editor.putString(PREF_LOGIN_PASS, MD5Pass);
 						editor.commit();
 						// start registration
@@ -404,6 +401,54 @@ public class SenseSettings extends PreferenceActivity {
 		builder.setNeutralButton(R.string.button_cancel, null);
 		return builder.create();
 	}
+	
+	private void setupLoginPref() {
+	    final Preference loginPref = findPreference(PREF_LOGIN);
+        loginPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                showDialog(DIALOG_LOGIN);
+                return true;
+            }
+        });
+        SharedPreferences loginPrefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
+        String email = loginPrefs.getString(PREF_LOGIN_MAIL, "");
+        String summary = email.length() > 0 ? email : "Enter your login details";
+        loginPref.setSummary(summary);
+	}
+	
+	private void setupQuizPref() {
+	    final Preference popQuizRefresh = findPreference(PREF_QUIZ_SYNC);
+        popQuizRefresh.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                // start quiz sync broadcast
+                final Intent refreshIntent = new Intent(
+                        "nl.sense_os.service.AlarmPopQuestionUpdate");
+                final PendingIntent refreshPI = PendingIntent.getBroadcast(SenseSettings.this, 0,
+                        refreshIntent, 0);
+                final AlarmManager mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+                mgr.set(AlarmManager.RTC_WAKEUP, 0, refreshPI);
+
+                // show confirmation Toast
+                Toast.makeText(SenseSettings.this, R.string.toast_quiz_refresh, Toast.LENGTH_LONG)
+                .show();
+
+                return true;
+            }
+        });
+	}
+	
+	private void setupRegisterPref() {
+	    final Preference registerPref = findPreference(PREF_REGISTER);
+        registerPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                showDialog(DIALOG_REGISTER);
+                return true;
+            }
+        });
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -411,43 +456,10 @@ public class SenseSettings extends PreferenceActivity {
 
 		addPreferencesFromResource(R.xml.preferences);
 
-		final Preference loginPref = findPreference(PREF_LOGIN);
-		loginPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-			public boolean onPreferenceClick(Preference preference) {
-				showDialog(DIALOG_LOGIN);
-				return true;
-			}
-		});
-
-		final Preference registerPref = findPreference(PREF_REGISTER);
-		registerPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-			public boolean onPreferenceClick(Preference preference) {
-				showDialog(DIALOG_REGISTER);
-				return true;
-			}
-		});
-
-		final Preference popQuizRefresh = findPreference(PREF_QUIZ_SYNC);
-		popQuizRefresh.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-			public boolean onPreferenceClick(Preference preference) {
-				// start quiz sync broadcast
-				final Intent refreshIntent = new Intent(
-						"nl.sense_os.service.AlarmPopQuestionUpdate");
-				final PendingIntent refreshPI = PendingIntent.getBroadcast(SenseSettings.this, 0,
-						refreshIntent, 0);
-				final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-				mgr.set(AlarmManager.RTC_WAKEUP, 0, refreshPI);
-
-				// show confirmation Toast
-				Toast.makeText(SenseSettings.this, R.string.toast_quiz_refresh, Toast.LENGTH_LONG)
-				.show();
-
-				return true;
-			}
-		});
+		// setup some preferences with custom dialogs 
+		setupLoginPref();
+		setupRegisterPref();		
+		setupQuizPref();
 	}
 
 	@Override

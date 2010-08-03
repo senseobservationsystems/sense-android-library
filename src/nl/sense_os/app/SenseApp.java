@@ -465,35 +465,33 @@ public class SenseApp extends Activity {
             bindService(serviceIntent, this.serviceConn, BIND_AUTO_CREATE);
         }
 
-        // create View with input fields for dialog content
-        final LinearLayout register = new LinearLayout(this);
-        register.setOrientation(LinearLayout.VERTICAL);
+        // create individual input fields
         final EditText emailField = new EditText(this);
         emailField.setLayoutParams(new LayoutParams(-1, -2));
         emailField.setHint(R.string.dialog_reg_hint_mail);
         emailField.setInputType(InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        register.addView(emailField);
-        final EditText nameField = new EditText(this);
-        nameField.setLayoutParams(new LayoutParams(-1, -2));
-        nameField.setHint(R.string.dialog_reg_hint_name);
-        nameField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-        nameField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        register.addView(nameField);
+        
         final EditText passField1 = new EditText(this);
         passField1.setLayoutParams(new LayoutParams(-1, -2));
         passField1.setHint(R.string.dialog_reg_hint_pass);
         passField1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         passField1.setTransformationMethod(new PasswordTransformationMethod());
         passField1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        register.addView(passField1);
+        
         final EditText passField2 = new EditText(this);
         passField2.setLayoutParams(new LayoutParams(-1, -2));
         passField2.setHint(R.string.dialog_reg_hint_pass2);
         passField2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         passField2.setTransformationMethod(new PasswordTransformationMethod());
         passField2.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        // create main dialog content View
+        final LinearLayout register = new LinearLayout(this);
+        register.setOrientation(LinearLayout.VERTICAL);
+        register.addView(emailField);
+        register.addView(passField1);
         register.addView(passField2);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -503,7 +501,6 @@ public class SenseApp extends Activity {
 
             public void onClick(DialogInterface dialog, int which) {
                 final String email = emailField.getText().toString();
-                final String name = nameField.getText().toString();
                 final String pass1 = passField1.getText().toString();
                 final String pass2 = passField2.getText().toString();
 
@@ -532,7 +529,6 @@ public class SenseApp extends Activity {
                                 MODE_PRIVATE);
                         final Editor editor = prefs.edit();
                         editor.putString(SenseSettings.PREF_LOGIN_MAIL, email);
-                        editor.putString(SenseSettings.PREF_LOGIN_NAME, name);
                         editor.putString(SenseSettings.PREF_LOGIN_PASS, MD5Pass);
                         editor.commit();
                         // start registration
@@ -819,16 +815,16 @@ public class SenseApp extends Activity {
                     String interval = "";          
                     switch (rate) {
                     case -2: // real-time
-                        interval = "every second";            
+                        interval = "second";            
                         break;
                     case -1: // often
-                        interval = "every 15 seconds";
+                        interval = "15 seconds";
                         break;
                     case 0: // normal
-                        interval = "every 1 minute";
+                        interval = "minute";
                         break;
                     case 1: // rarely (15 hour)
-                        interval = "every 15 minutes";
+                        interval = "15 minutes";
                         break;
                     default:
                         Log.e(TAG, "Unexpected quiz rate preference.");
@@ -998,13 +994,13 @@ public class SenseApp extends Activity {
                     String interval = "ERROR";
                     switch (r) {
                     case -1: // often (5 mins)
-                        interval = "5";
+                        interval = "every 5 minutes";
                         break;
                     case 0: // normal (15 mins)
-                        interval = "15";
+                        interval = "every 15 minutes";
                         break;
                     case 1: // rarely (1 hour)
-                        interval = "60";
+                        interval = "hour";
                         break;
                     default:
                         Log.e(TAG, "Unexpected quiz rate preference: " + r);

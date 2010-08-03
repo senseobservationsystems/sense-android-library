@@ -13,7 +13,7 @@ import nl.sense_os.service.MsgHandler;
 
 public class LocationSensor implements LocationListener {
     private static final String TAG = "LocationSensor";
-    private MsgHandler handler = null;
+    private final MsgHandler handler;
  
     
     public LocationSensor(MsgHandler handler) {
@@ -22,15 +22,16 @@ public class LocationSensor implements LocationListener {
    
     public void onLocationChanged(Location fix) {   
     	Map<String, String> data = new HashMap<String, String>();
-    	data.put("latitude", ""+fix.getLatitude());
-    	data.put("longitude", ""+fix.getLongitude());
-    	if(fix.hasAccuracy())
-    		data.put("accuracy", ""+fix.getAccuracy());
-    	if(fix.hasAltitude())
-    		data.put("altitude", ""+fix.getAltitude());
-    	if(fix.hasSpeed())
-    		data.put("speed", ""+fix.getSpeed());
-        handler.sendSensorData("position", data);
+        data.put("latitude", "" + fix.getLatitude());
+        data.put("longitude", "" + fix.getLongitude());
+        if (fix.hasAccuracy())
+            data.put("accuracy", "" + fix.getAccuracy());
+        if (fix.hasAltitude())
+            data.put("altitude", "" + fix.getAltitude());
+        if (fix.hasSpeed())
+            data.put("speed", "" + fix.getSpeed());
+    	
+        this.handler.sendSensorData("position", data);
     }
 
     public void onProviderDisabled(String provider) {
