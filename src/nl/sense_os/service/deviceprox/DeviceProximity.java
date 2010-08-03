@@ -47,6 +47,11 @@ public class DeviceProximity {
             }
 
             public void scanCompleted(ArrayList<String> devices) {
+                // return immediately if the BT device is closed (i.e. when the service is suddenly stopped)
+                if (null == btDevice) {
+                    return;
+                }
+                
                 try {
                     if (devices.size() == 0)
                         return;
@@ -58,7 +63,7 @@ public class DeviceProximity {
 
                     // array of found devices
                     JSONArray deviceArray = new JSONArray();
-                    for (String address : devices) {
+                    for (String address : devices) {                        
                         RemoteBluetoothDevice rbtDevice = btDevice
                                 .getRemoteBluetoothDevice(address);
 
@@ -215,16 +220,12 @@ public class DeviceProximity {
 
                 btAdapter.startDiscovery();
             } else {
-                context.unregisterReceiver(bbReceiver);
+                // do nothing
             }
         }
     }
 
-    private static final int DEVICE_FOUND = 3;
-    private static final String LOCAL_SENSOR_NAME = "local_bt_address";
-    private static final int SCAN_FINISHED = 2;
-    private static final int SCAN_STARTED = 1;
-    private static final String TAG = "DeviceProximity";
+    private static final String TAG = "Sense DeviceProximity";
     private static final String BLUETOOTH_DISCOVERY = "bluetooth_discovery";
     private BluetoothAdapter btAdapter;
     private final Context context;

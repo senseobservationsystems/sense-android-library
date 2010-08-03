@@ -339,6 +339,7 @@ public class MsgHandler {
                             + " data. Response from CommonSense: " + body;
                     Log.d(TAG, outputString);
                 }
+                
             } catch (Exception e) {
                 System.out.println("error: " + e.getMessage());
             }
@@ -351,7 +352,7 @@ public class MsgHandler {
     public static final String PREF_KEY_URL = "Url";
     public static final String PREF_MSG_HANDLER = "prefMsgHandler";
     public static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
-    private static final String TAG = "MessageHandler";
+    private static final String TAG = "Sense MsgHandler";
     private final Context context;
     private String deviceService_id;
     private String deviceService_type;

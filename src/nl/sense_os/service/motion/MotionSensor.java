@@ -8,7 +8,7 @@ import nl.sense_os.service.MsgHandler;
 
 public class MotionSensor implements SensorEventListener {
     @SuppressWarnings("unused")
-    private static final String TAG = "MotionSensor";
+    private static final String TAG = "Sense MotionSensor";
     private MsgHandler msgHandler;
     private long sampleDelay = 0; //in milliseconds    
     private long[] lastSampleTimes = new long[50];

@@ -72,7 +72,7 @@ public class PopQuiz extends Activity {
     private static final int DIALOG_WELCOME_CATCHUP = 7;
     private static final int LED_NOTE_ID = 42;
     private static final int MENU_LOGIN = 1;
-    private static final String TAG = "PopQuiz";
+    private static final String TAG = "Sense PopQuiz";
     protected static final int MISSED_REQ = 1;
     protected static final String KEY_MISSED = "nl.sense_os.service.popquiz.Missed";
     protected static final String PREF_QSTN_ID = "nl.sense_os.question_id";

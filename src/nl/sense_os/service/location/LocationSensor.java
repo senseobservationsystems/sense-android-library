@@ -12,7 +12,7 @@ import android.util.Log;
 import nl.sense_os.service.MsgHandler;
 
 public class LocationSensor implements LocationListener {
-    private static final String TAG = "LocationSensor";
+    private static final String TAG = "Sense LocationSensor";
     private final MsgHandler handler;
  
     

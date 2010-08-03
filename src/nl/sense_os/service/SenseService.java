@@ -177,24 +177,24 @@ public class SenseService extends Service {
     public static final int STATUS_PHONESTATE = 64;
     public static final int STATUS_QUIZ = 128;
     public static final int STATUS_RUNNING = 256;
-    private static final String TAG = "SenseService";
+    private static final String TAG = "Sense Service";
     private final ISenseService.Stub binder = new SenseServiceStub();
     private DeviceProximity deviceProximity;
-    private Handler handler;
     private LocationListener locListener;
     private LoginPossibility loginPossibility;
     private MotionSensor motionSensor;
     private MsgHandler msgHandler;
     private NoiseSensor noiseSensor;
-    private PhoneStateListener psl; 
+    private PhoneStateListener psl;
     private boolean started; 
     private boolean statusDeviceProx; 
-    private boolean statusLocation;
+    private boolean statusLocation; 
     private boolean statusMotion;
     private boolean statusNoise;
     private boolean statusPhoneState;
     private boolean statusPopQuiz;
     private TelephonyManager telMan;
+    private final Handler toastHandler = new Handler(Looper.getMainLooper());
 
     public boolean checkPhoneRegistration() {
         boolean registered = false;
@@ -268,7 +268,6 @@ public class SenseService extends Service {
 
     private void initFields() {
         this.msgHandler = new MsgHandler(this);
-        this.handler = new Handler(Looper.getMainLooper());
         this.loginPossibility = new LoginPossibility();
         this.telMan = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         
@@ -375,7 +374,7 @@ public class SenseService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate.");
+        Log.d(TAG, "onCreate");
 
         // Init stuff
         initFields();
@@ -387,7 +386,7 @@ public class SenseService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy.");
+        Log.d(TAG, "onDestroy");
 
         // stop listening for possibility to login
         try {
@@ -408,7 +407,7 @@ public class SenseService extends Service {
      * Restarts the service in the same state as it was the previous time it was stopped.
      */
     private void onLogIn() {
-        Log.d(TAG, "onLogIn.");
+        Log.d(TAG, "Logged in...");
         
         // set main status
         this.started = true;
@@ -417,23 +416,30 @@ public class SenseService extends Service {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final int status = prefs.getInt(SenseSettings.PREF_LAST_STATUS, 0);
         if ((status & STATUS_RUNNING) > 0) {
-
+            Log.d(TAG, "Restart services that were running before logout...");
+            
             if ((status & STATUS_DEVICE_PROX) > 0) {
+                Log.d(TAG, "Restart neighboring devices service...");
                 toggleDeviceProx(true);
             }
             if ((status & STATUS_LOCATION) > 0) {
+                Log.d(TAG, "Restart location service...");
                 toggleLocation(true);
             }
             if ((status & STATUS_MOTION) > 0) {
+                Log.d(TAG, "Restart motion service...");
                 toggleMotion(true);
             }
             if ((status & STATUS_NOISE) > 0) {
+                Log.d(TAG, "Restart noise service...");
                 toggleNoise(true);
             }
             if ((status & STATUS_PHONESTATE) > 0) {
+                Log.d(TAG, "Restart phone state service...");
                 togglePhoneState(true);
             }
             if ((status & STATUS_QUIZ) > 0) {
+                Log.d(TAG, "Restart popquiz service...");
                 togglePopQuiz(true);
             }
         }
@@ -447,53 +453,59 @@ public class SenseService extends Service {
      * the preferences.
      */
     private void onLogOut() {
-        Log.d(TAG, "onLogOut.");
+        // check if we were actually logged to prevent overwriting the last active state..
+        if (SenseService.sLoggedIn) {
+            Log.d(TAG, "Logged out...");
 
-        // update login status
-        SenseService.sLoggedIn = false;
-        notifySenseLogin(true);
+            // update login status
+            SenseService.sLoggedIn = false;
+            notifySenseLogin(true);
 
-        // save the last status for good restarting of the service
-        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        editor.putInt(SenseSettings.PREF_LAST_STATUS, getStatus());
-        editor.commit();
+            // save the last status for good restarting of the service
+            Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putInt(SenseSettings.PREF_LAST_STATUS, getStatus());
+            editor.commit();
 
-        // stop active sensing components
-        if (true == this.statusDeviceProx) {
-            toggleDeviceProx(false);
-        }
-        if (true == this.statusMotion) {
-            toggleMotion(false);
-        }
-        if (true == this.statusLocation) {
-            toggleLocation(false);
-        }
-        if (true == this.statusNoise) {
-            toggleNoise(false);
-        }
-        if (true == this.statusPhoneState) {
-            togglePhoneState(false);
-        }
-        if (true == this.statusPopQuiz) {
-            togglePopQuiz(false);
-        }
+            // stop active sensing components
+            if (true == this.statusDeviceProx) {
+                toggleDeviceProx(false);
+            }
+            if (true == this.statusMotion) {
+                toggleMotion(false);
+            }
+            if (true == this.statusLocation) {
+                toggleLocation(false);
+            }
+            if (true == this.statusNoise) {
+                toggleNoise(false);
+            }
+            if (true == this.statusPhoneState) {
+                togglePhoneState(false);
+            }
+            if (true == this.statusPopQuiz) {
+                togglePopQuiz(false);
+            }
 
-        // send broadcast that something has changed in the status
-        sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            // send broadcast that something has changed in the status
+            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+        }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        Log.d(TAG, "onLowMemory.");
+        Log.d(TAG, "onLowMemory");
     }
 
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Log.d(TAG, "onRebind.");
+        Log.d(TAG, "onRebind");
     }
 
+    /**
+     * Deprecated method for starting the service, used in 1.6 and older.
+     */
     @Override
     public void onStart(Intent intent, int startid) {
         onStartCompat(intent, 0 , startid);
@@ -506,7 +518,7 @@ public class SenseService extends Service {
     }
     
     private void onStartCompat(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStart.");
+        Log.d(TAG, "onStart");
 
         // try to login immediately
         senseServiceLogin();
@@ -606,30 +618,32 @@ public class SenseService extends Service {
         // show notification that we are not logged in (yet)
         notifySenseLogin(true);
 
+        // try to login
         final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
         final String email = prefs.getString(SenseSettings.PREF_LOGIN_MAIL, "");
         final String pass = prefs.getString(SenseSettings.PREF_LOGIN_PASS, "");
         if ((email.length() > 0) && (pass.length() > 0) && login(email, pass)) {
+            // logged in successfully
             notifySenseLogin(false);
             SenseService.sLoggedIn = true;
+            onLogIn();
+            
+            // register phone if necessary
             if (!checkPhoneRegistration()) {
                 registerPhone();
             }
-
-            // restart stuff after login
-            onLogIn();
         } else {
-            SenseService.sLoggedIn = false;
-            // notifySenseLogin(true);
+            Log.d(TAG, "Login failed");
+            
+            SenseService.sLoggedIn = false;            
         }
 
         return SenseService.sLoggedIn;
     }
 
     /**
-     * Tries to register a new login using the email, username and password from the private
-     * preferences and updates the <code>sLoggedIn</code> status accordingly. NB: blocks the calling
-     * thread.
+     * Tries to register a new user using the email and password from the private preferences and
+     * updates the <code>sLoggedIn</code> status accordingly. NB: blocks the calling thread.
      * 
      * @return <code>true</code> if successful.
      */
@@ -642,6 +656,7 @@ public class SenseService extends Service {
             // Registration successful
             notifySenseLogin(false);
             SenseService.sLoggedIn = true;
+            
             if (!checkPhoneRegistration()) {
                 registerPhone();
             }
@@ -653,7 +668,7 @@ public class SenseService extends Service {
 
     private void showToast(final String msg) {
         // show informational Toast
-        this.handler.post(new Runnable() {
+        this.toastHandler.post(new Runnable() {
             public void run() {
                 Toast.makeText(SenseService.this, msg, Toast.LENGTH_LONG).show();
             }

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SensePhoneState extends PhoneStateListener {
-    private static final String TAG = "MyPhoneStateListener";
+    private static final String TAG = "Sense PhoneStateListener";
     private MsgHandler msgHandler;
     private TelephonyManager telman;
 

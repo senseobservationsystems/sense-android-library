@@ -35,8 +35,7 @@ public class NoiseSensor extends PhoneStateListener {
                     for (int x = 0; x < readBytes; x++)
                         dB += Math.abs(buffer[x]);
                     dB /= (double) buffer.length;
-                    Log.d(TAG, "buffer length" + buffer.length + " buffer size:" + bufferSize
-                            + " dB:" + dB);
+//                    Log.d(TAG, "buffer length " + buffer.length + " buffer size: " + bufferSize + " dB: " + dB);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -131,7 +130,7 @@ public class NoiseSensor extends PhoneStateListener {
     }
 
     private static final int DEFAULT_SAMPLE_RATE = 8000;
-    private static final String TAG = "NoiseSensor";
+    private static final String TAG = "Sense NoiseSensor";
     private AudioRecord audioRec;
     private int bufferSize = 4096;
     private Handler calculateNoiseHandler = new Handler();
