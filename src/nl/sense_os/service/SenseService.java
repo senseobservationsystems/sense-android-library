@@ -1,5 +1,6 @@
 package nl.sense_os.service;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -85,7 +86,7 @@ public class SenseService extends Service {
 
         public void getStatus(ISenseServiceCallback callback) {
             try {
-                callback.statusReport(SenseService.this.getStatus());
+                callback.statusReport(SenseService.this.saveStatus());
             } catch (final RemoteException e) {
                 Log.e(TAG, "RemoteException sending status report.", e);
             }
@@ -253,7 +254,12 @@ public class SenseService extends Service {
         return sb.toString();
     }
 
-    private int getStatus() {
+    /**
+     * Saves the status of the sensing components in the preferences.
+     * 
+     * @return the new status
+     */
+    private int saveStatus() {
         int status = 0;
         status = this.started ? status + STATUS_RUNNING : status;
         status = sLoggedIn ? status + STATUS_CONNECTED : status;
@@ -263,6 +269,19 @@ public class SenseService extends Service {
         status = this.statusPopQuiz ? status + STATUS_QUIZ : status;
         status = this.statusDeviceProx ? status + STATUS_DEVICE_PROX : status;
         status = this.statusMotion ? status + STATUS_MOTION : status;
+        
+        // save status in the preferences
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final int oldStatus = prefs.getInt(SenseSettings.PREF_LAST_STATUS, -1);
+        if (oldStatus != status) {
+            final Editor editor = prefs.edit();
+            editor.putInt(SenseSettings.PREF_LAST_STATUS, status);
+            editor.commit();
+
+            // send broadcast that something has changed in the status
+            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+        }
+        
         return status;
     }
 
@@ -416,7 +435,6 @@ public class SenseService extends Service {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final int status = prefs.getInt(SenseSettings.PREF_LAST_STATUS, 0);
         if ((status & STATUS_RUNNING) > 0) {
-            Log.d(TAG, "Restart services that were running before logout...");
             
             if ((status & STATUS_DEVICE_PROX) > 0) {
                 Log.d(TAG, "Restart neighboring devices service...");
@@ -459,13 +477,10 @@ public class SenseService extends Service {
 
             // update login status
             SenseService.sLoggedIn = false;
-            notifySenseLogin(true);
+            notifySenseLogin(true);            
 
-            // save the last status for good restarting of the service
-            Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-            editor.putInt(SenseSettings.PREF_LAST_STATUS, getStatus());
-            editor.commit();
-
+            final int lastRunningState = saveStatus();
+            
             // stop active sensing components
             if (true == this.statusDeviceProx) {
                 toggleDeviceProx(false);
@@ -486,8 +501,9 @@ public class SenseService extends Service {
                 togglePopQuiz(false);
             }
 
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            final Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putInt(SenseSettings.PREF_LAST_STATUS, lastRunningState);
+            editor.commit();
         }
     }
 
@@ -521,7 +537,9 @@ public class SenseService extends Service {
         Log.d(TAG, "onStart");
 
         // try to login immediately
-        senseServiceLogin();
+        if (false == sLoggedIn) {
+            senseServiceLogin();
+        }
 
         // register broadcast receiver for login in case of Internet connection changes
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -674,12 +692,31 @@ public class SenseService extends Service {
             }
         });
     }
+    
+    private void startAliveCheck() {
+        // put alive status in the preferences
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final Editor editor = prefs.edit();
+        editor.putBoolean(SenseSettings.PREF_ALIVE, true);
+        editor.commit();
+        
+        /* start the checks that periodically check if the service should be alive */
+        final Intent alarmIntent = new Intent(AliveChecker.ACTION_CHECK_ALIVE);
+        final PendingIntent alarmOp = PendingIntent.getBroadcast(this, AliveChecker.REQ_CHECK_ALIVE,
+                alarmIntent, 0);
+        final long alarmTime = System.currentTimeMillis() + AliveChecker.PERIOD_CHECK_ALIVE;
+        final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmOp);
+    }
 
     /**
      * Makes this service a foreground service, as important as 'real' activities. As a reminder
      * that the service is running, a notification is shown.
      */
     private void startForegroundCompat() {
+        
+        startAliveCheck();
+        
         @SuppressWarnings("rawtypes")
         final Class[] startForegroundSignature = new Class[] { int.class, Notification.class};
         Method startForeground = null;
@@ -715,12 +752,30 @@ public class SenseService extends Service {
             } 
         }
     }
+    
+    private void stopAliveCheck() {
+        // remove alive status in the preferences
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final Editor editor = prefs.edit();
+        editor.putBoolean(SenseSettings.PREF_ALIVE, false);
+        editor.commit();
+        
+        /* stop the alive check broadcasts */
+        final Intent alarmIntent = new Intent(AliveChecker.ACTION_CHECK_ALIVE);
+        final PendingIntent alarmOp = PendingIntent.getBroadcast(this, AliveChecker.REQ_CHECK_ALIVE,
+                alarmIntent, 0);
+        final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mgr.cancel(alarmOp);
+    }
 
     /**
      * Makes this service a foreground service, as important as 'real' activities. As a reminder
      * that the service is running, a notification is shown.
      */
     private void stopForegroundCompat() {
+        
+        stopAliveCheck();
+        
         @SuppressWarnings("rawtypes")
         final Class[] stopForegroundSignature = new Class[] { boolean.class };
         Method stopForeground = null;
@@ -787,8 +842,7 @@ public class SenseService extends Service {
                 this.statusDeviceProx = false;
             }
             
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            saveStatus();
         }
     }
 
@@ -855,9 +909,8 @@ public class SenseService extends Service {
                 locMgr.removeUpdates(this.locListener);
                 this.statusLocation = false;
             }
-
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            
+            saveStatus();
         }
     }
 
@@ -868,7 +921,7 @@ public class SenseService extends Service {
             if (true == active) {
                 List<Sensor> sensors = mgr.getSensorList(Sensor.TYPE_ALL);
                 for (Sensor sensor : sensors) {
-                	if(sensor.getType()==Sensor.TYPE_ACCELEROMETER ||
+                	if (sensor.getType()==Sensor.TYPE_ACCELEROMETER ||
                 			sensor.getType()==Sensor.TYPE_ORIENTATION || 
                 			sensor.getType()==Sensor.TYPE_GYROSCOPE || 
                 			sensor.getType()==Sensor.TYPE_PRESSURE)
@@ -905,9 +958,8 @@ public class SenseService extends Service {
 
                 this.statusMotion = false;
             }
-
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            
+            saveStatus();
         }
     }
 
@@ -945,9 +997,8 @@ public class SenseService extends Service {
                 this.noiseSensor.stopListening();
                 this.statusNoise = false;
             }
-
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            
+            saveStatus();
         }
     }
 
@@ -970,9 +1021,8 @@ public class SenseService extends Service {
                 telMan.listen(this.psl, PhoneStateListener.LISTEN_NONE);
                 this.statusPhoneState = false;
             }
-
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            
+            saveStatus();
         }
     }
 
@@ -993,9 +1043,8 @@ public class SenseService extends Service {
 
                 this.statusPopQuiz = false;
             }
-
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+            
+            saveStatus();
         }
     }
 }

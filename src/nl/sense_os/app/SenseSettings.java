@@ -157,6 +157,8 @@ public class SenseSettings extends PreferenceActivity {
 	private static final int DIALOG_LOGIN = 1;
 	private static final int DIALOG_PROGRESS = 2;
 	private static final int DIALOG_REGISTER = 3;
+    /** Key for storing the "alive" status of the service, used for aggressive restarting after crashes. */
+    public static final String PREF_ALIVE = "alive";
 	/** Key for preference to autostart the sense service in boot. */
 	public static final String PREF_AUTOSTART = "autostart";
 	/** Key for preference that controls communication interval with CommonSense. */
@@ -190,7 +192,7 @@ public class SenseSettings extends PreferenceActivity {
 	public static final String PREF_REGISTER = "register";
 	/** Name of the private preference file, used for storing login data. */
 	public static final String PRIVATE_PREFS = "login";
-	private static final String TAG = "SenseSettings";
+	private static final String TAG = "Sense Settings";
 	public static final String URL_BASE = "http://demo.almende.com/commonSense2/";
 	public static final String URL_CHECK_PHONE = URL_BASE + "device_check.php";
 	//public static final String URL_LOCATION_ADD = URL_BASE + "sp_position_add.php";

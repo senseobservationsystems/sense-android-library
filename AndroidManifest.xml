@@ -67,10 +67,18 @@
         </receiver>
         
         <receiver 
-            android:name="nl.sense_os.service.SenseBootRx">
+            android:name="nl.sense_os.service.BootRx">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
                 <category android:name="android.intent.category.HOME"></category>
+            </intent-filter>
+        </receiver>
+        
+        <receiver 
+            android:name="nl.sense_os.service.AliveChecker">
+            <intent-filter>
+                <action android:name="nl.sense_os.service.CheckAlive"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
             </intent-filter>
         </receiver>
     </application>
