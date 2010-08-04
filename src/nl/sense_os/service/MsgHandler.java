@@ -28,13 +28,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -175,11 +175,12 @@ public class MsgHandler {
         }
     };
 
-    class SendFileThread implements Runnable {
+    private class SendFileThread implements Runnable {
         String cookie;
         String exsistingFileName;
         String sensorName;
 
+        @SuppressWarnings("unused")
         public SendFileThread(String _sensorName, String path, String _cookie) {
             exsistingFileName = path;
             sensorName = _sensorName;
@@ -188,13 +189,8 @@ public class MsgHandler {
 
         public void run() {
             HttpURLConnection conn = null;
-            BufferedReader br = null;
             DataOutputStream dos = null;
             DataInputStream inStream = null;
-
-            InputStream is = null;
-            OutputStream os = null;
-            boolean ret = false;
 
             String lineEnd = "\r\n";
             String twoHyphens = "--";
@@ -205,7 +201,6 @@ public class MsgHandler {
             byte[] buffer;
 
             int maxBufferSize = 1 * 1024 * 1024;
-            String responseFromServer = "";
             String urlString = SenseSettings.URL_SEND_SENSOR_DATA_FILE;
 
             try {
@@ -214,11 +209,9 @@ public class MsgHandler {
                 FileInputStream fileInputStream = new FileInputStream(new File(exsistingFileName));
 
                 // open a URL connection to the Servlet
-
                 URL url = new URL(urlString);
 
                 // Open a HTTP connection to the URL
-
                 conn = (HttpURLConnection) url.openConnection();
 
                 // Allow Inputs
@@ -234,7 +227,6 @@ public class MsgHandler {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Cookie", cookie);
                 conn.setRequestProperty("Connection", "Keep-Alive");
-
                 conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
                 dos = new DataOutputStream(conn.getOutputStream());
@@ -271,11 +263,9 @@ public class MsgHandler {
                 dos.close();
 
             } catch (MalformedURLException ex) {
-                System.out.println("From ServletCom CLIENT REQUEST:" + ex);
-            }
-
-            catch (IOException ioe) {
-                System.out.println("From ServletCom CLIENT REQUEST:" + ioe);
+                Log.e(TAG, "MalformedURLException uploading file:", ex);
+            } catch (IOException ioe) {
+                Log.e(TAG, "IOException uploading file:", ioe);
             }
 
             // ------------------ read the SERVER RESPONSE
@@ -284,23 +274,22 @@ public class MsgHandler {
                 inStream = new DataInputStream(conn.getInputStream());
                 String str;
                 while ((str = inStream.readLine()) != null) {
-                    System.out.println("Server response is: " + str);
-                    System.out.println("");
+                    Log.e(TAG, "Uploaded file... Server response is: " + str);
                 }
                 inStream.close();
 
             } catch (IOException ioex) {
-                System.out.println("From (ServerResponse): " + ioex);
-
+                Log.e(TAG, "IOException reading server response after file upload:", ioex);
             }
         }
     }
-    class SendMessageThread implements Runnable {
+    private class SendMessageThread implements Runnable {
         String cookie;
-        Thread runner;
         String url;
 
+        @SuppressWarnings("unused")
         public SendMessageThread() {
+            
         }
 
         public SendMessageThread(String _url, String Cookie) {
@@ -340,8 +329,10 @@ public class MsgHandler {
                     Log.d(TAG, outputString);
                 }
                 
-            } catch (Exception e) {
-                System.out.println("error: " + e.getMessage());
+            } catch (IOException e) {
+                Log.e(TAG, "IOException in SendMessageThread: " + e.getMessage());
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "URISyntaxException in SendMessageThread: " + e.getMessage());
             }
         }
     }
@@ -570,13 +561,8 @@ public class MsgHandler {
         String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
 
         HttpURLConnection conn = null;
-        BufferedReader br = null;
         DataOutputStream dos = null;
         DataInputStream inStream = null;
-
-        InputStream is = null;
-        OutputStream os = null;
-        boolean ret = false;
 
         String lineEnd = "\r\n";
         String twoHyphens = "--";
@@ -587,7 +573,7 @@ public class MsgHandler {
         byte[] buffer;
 
         // int maxBufferSize = 1*1024*1024;
-        String responseFromServer = "";
+//        String responseFromServer = "";
         String urlString = SenseSettings.URL_SEND_SENSOR_DATA_FILE;
 
         try {
@@ -598,11 +584,9 @@ public class MsgHandler {
             FileInputStream fileInputStream = new FileInputStream(file);
 
             // open a URL connection to the Servlet
-
             URL url = new URL(urlString);
 
             // Open a HTTP connection to the URL
-
             conn = (HttpURLConnection) url.openConnection();
 
             // Allow Inputs
@@ -618,7 +602,6 @@ public class MsgHandler {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Cookie", cookie);
             conn.setRequestProperty("Connection", "Keep-Alive");
-
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
             dos = new DataOutputStream(conn.getOutputStream());
@@ -641,9 +624,7 @@ public class MsgHandler {
             buffer = new byte[bufferSize];
 
             // read file and write it into form...
-
             bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
             while (bytesRead > 0) {
                 dos.write(buffer, 0, bufferSize);
                 // bytesAvailable = fileInputStream.available();
@@ -652,22 +633,18 @@ public class MsgHandler {
             }
 
             // send multipart form data necesssary after file data...
-
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
             // close streams
-
             fileInputStream.close();
             dos.flush();
             dos.close();
 
         } catch (MalformedURLException ex) {
-            System.out.println("From ServletCom CLIENT REQUEST:" + ex);
-        }
-
-        catch (IOException ioe) {
-            System.out.println("From ServletCom CLIENT REQUEST:" + ioe);
+            Log.e(TAG, "MalformedURLException uploading file:", ex);
+        } catch (IOException ioe) {
+            Log.e(TAG, "IOException uploading file:", ioe);
         }
 
         // ------------------ read the SERVER RESPONSE
@@ -676,14 +653,11 @@ public class MsgHandler {
             inStream = new DataInputStream(conn.getInputStream());
             String str;
             while ((str = inStream.readLine()) != null) {
-                System.out.println("Server response is: " + str);
-                System.out.println("");
+                Log.d(TAG, "Uploaded file. Server response is: " + str);
             }
             inStream.close();
-
         } catch (IOException ioex) {
-            System.out.println("From (ServerResponse): " + ioex);
-
+            Log.e(TAG, "IOException reading server response from inputstream:", ioex);
         }
     }
 }
