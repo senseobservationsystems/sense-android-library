@@ -50,7 +50,7 @@ public class NoiseSensor extends PhoneStateListener {
                     audioRec.stop();
                 Log.d(TAG, "Done recording.");
                 if (listening)
-                    noiseThreadHandler.postDelayed(new NoiseSensorThread(), listenInterval);
+                    noiseThreadHandler.postDelayed(noiseThread = new NoiseSensorThread(), listenInterval);
             }
         }
 
@@ -137,7 +137,7 @@ public class NoiseSensor extends PhoneStateListener {
     private MsgHandler msgHandler = null;
     private boolean listening = false;
     private int listenInterval; // Update interval in msec
-    private NoiseSensorThread noiseThread;
+    private NoiseSensorThread noiseThread;   
     private Handler noiseThreadHandler = new Handler();
     private Handler soundStreamHandler = new Handler();
     private MediaRecorder recorder = null;
@@ -215,7 +215,7 @@ public class NoiseSensor extends PhoneStateListener {
             
             // clear any old noise sensing threads
             if (noiseThread != null) {
-                noiseThreadHandler.removeCallbacks(noiseThread);
+                noiseThreadHandler.removeCallbacks(noiseThread);                
                 noiseThread = null;
             }
             

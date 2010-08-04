@@ -255,14 +255,12 @@ public class DeviceProximity {
 		isRealtime = scanInterval == 1;
 		scanEnabled = true;
 		Thread t = new Thread() {
-			private final Handler handler = new Handler(Looper.getMainLooper());
-
 			public void run() {
 				// Check if the phone version, if it is lower than, 2.1 use the bluetooth lib
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR)
-					this.handler.post(scanThread1_6 = new ScanThread1_6());
+					scanHandler.post(scanThread1_6 = new ScanThread1_6());
 				else {
-					this.handler.post(scanThread2_1 = new ScanThread2_1());
+					scanHandler.post(scanThread2_1 = new ScanThread2_1());
 				}
 			}
 		};
@@ -274,10 +272,16 @@ public class DeviceProximity {
 		try {
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR)				
 				if(scanThread1_6 != null)
-					scanThread1_6.stop();				
+				{
+					scanThread1_6.stop();
+					scanHandler.removeCallbacks(scanThread1_6);
+				}
 				else 
 					if(scanThread2_1 != null)
+					{
 						scanThread2_1.stop();
+						scanHandler.removeCallbacks(scanThread2_1);
+					}
 
 		} catch (Exception e) {				
 			Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
