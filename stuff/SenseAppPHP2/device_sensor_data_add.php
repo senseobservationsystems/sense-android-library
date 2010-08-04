@@ -23,8 +23,13 @@ else
 if($sensorName && $sensorValue)
 {
 	// To protect MySQL injection (more detail about MySQL injection)	
+	$sensorName = mysql_real_escape_string($sensorName);
+	$sensorDataType = mysql_real_escape_string($sensorDataType);
+	$sensorValue = mysql_real_escape_string($sensorValue);
+	$sensorDeviceType = mysql_real_escape_string($sensorDeviceType);
+
 	$sensorName 		= stripslashes($sensorName);	
-	$sensorValue 		= stripslashes($sensorValue);
+	$sensorValue 		= stripslashes($sensorValue);	
 	$sensorDataType 	= stripslashes($sensorDataType);
 	$sensorDeviceType 	= stripslashes($sensorDeviceType);
 	

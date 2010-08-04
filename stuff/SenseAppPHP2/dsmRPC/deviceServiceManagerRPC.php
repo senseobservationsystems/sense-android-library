@@ -8,6 +8,18 @@
 <h1>Device Service Manager RPC demo</h1>
 <?php
 
+//print the devices
+if(isset($_SESSION['devices']))
+{
+    $devices	= $_SESSION['devices'];	      
+    echo "Your devices:<br>";
+    foreach($devices as $devices_Id)
+    {		  
+      echo $devices_Id."<br>";
+    }
+  }
+
+
 // Play nice to PHP 5 installations with REGISTER_LONG_ARRAYS off
 if(!isset($HTTP_POST_VARS) && isset($_POST))
 {

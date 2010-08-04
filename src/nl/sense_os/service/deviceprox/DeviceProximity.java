@@ -120,7 +120,8 @@ public class DeviceProximity {
 
         public void run() {
             try {
-                btDevice.scan();
+            	if(btDevice != null)
+            		btDevice.scan();
             } catch (Exception e) {
                 Log.e(TAG, "Exception running Bluetooth scan thread:", e);
             }

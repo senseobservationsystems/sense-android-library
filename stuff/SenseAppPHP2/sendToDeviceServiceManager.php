@@ -1,20 +1,8 @@
 <?php
 include_once("db_connect.php");
 error_reporting(0);
-function sendDeviceServiceMessage($device_id, $dataType, $sensorValue)
-{	
-	$host		=	"localhost" ;
-	$port		=	1337;
-	$timeout	=	30;
-	if(isset($_SESSION['socket']))
-	{
-	  $sk = $_SESSION['socket'];	  
-	}
-	if(!is_resource($sk))
-	{	
-	  $sk=fsockopen($host,$port,$errnum,$errstr,$timeout) ;	
-	  $_SESSION['socket'] = $sk; 
-	}
+function sendDeviceServiceMessage($device_id, $dataType, $sensorValue, $sk)
+{
 	if (is_resource($sk)) 
 	{
 		// A message has the following structure:
@@ -26,26 +14,32 @@ function sendDeviceServiceMessage($device_id, $dataType, $sensorValue)
 		$SEPARATOR	= 0x20;	// SPACE
 
 		$dataSize	= strlen($sensorValue);
-	 	fputs($sk, chr($START_HEADER).$device_id.chr($SEPARATOR).$dataType.chr($SEPARATOR).$dataSize.chr($START_TEXT).$sensorValue.chr($END_TEXT));					
+	 	fputs($sk, chr($START_HEADER).$device_id.chr($SEPARATOR).$dataType.chr($SEPARATOR).$dataSize.chr($START_TEXT).$sensorValue.chr($END_TEXT));	//fclose($sk);				
 	}	
 }
 
 function sendToDeviceServiceManager($device_id, $sensorDataType, $sensorName, $sensorValue)
 {
+	$host		=	"localhost" ;
+	$port		=	1337;
+	$timeout	=	2;
+	$sk = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout,STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT);
+
 	//remove spaces from the sensor name
 	$sensorName = str_replace(" ", "_", $sensorName);
 	if($sensorDataType=='json')
 	{
 		// create the dataType from the sensor name + extra data in the Json object
 		// parse JSON, for each value send
-	     
+		$sensorValue = stripslashes($sensorValue);	     
 		$jsonObject = json_decode($sensorValue);
+		
 		while(list($key, $value) = each($jsonObject))
 		{ 
-		    sendDeviceServiceMessage($device_id, $sensorName.".".str_replace(" ", "_", $key), $value); 
+		    sendDeviceServiceMessage($device_id, $sensorName.".".str_replace(" ", "_", $key), $value, $sk); 
 		}
 	}
 	else// If the data is not JSON, then the sensorName is used as the dataType
-	 	sendDeviceServiceMessage($device_id, $sensorName, $sensorValue);
+	 	sendDeviceServiceMessage($device_id, $sensorName, $sensorValue, $sk);      
 }	
 ?>
