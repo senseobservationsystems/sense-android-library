@@ -174,13 +174,13 @@ public class MsgHandler {
 			}
 		}
 	};
-
-	private class SendFileThread implements Runnable {
+	
+	@SuppressWarnings("unused")
+    private class SendFileThread implements Runnable {
 		String cookie;
 		String exsistingFileName;
 		String sensorName;
-
-		@SuppressWarnings("unused")
+		
 		public SendFileThread(String _sensorName, String path, String _cookie) {
 			exsistingFileName = path;
 			sensorName = _sensorName;
