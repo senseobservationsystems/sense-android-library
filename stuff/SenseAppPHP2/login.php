@@ -31,8 +31,10 @@ if($email && $password)
 	{
 		// Register id
 		$row = mysql_fetch_assoc($result);	
-		$userId = $row['id'];
+		$userId = $row['id'];		
 		$_SESSION['userId']  = $userId;	
+		$userName = $row['name'];
+		$_SESSION['userName']  = $userName;	
 		// cach the devices in the database connected to this userId
 		$sql	= "SELECT * FROM devices WHERE user_id='$userId'";
 		$result	= mysql_query($sql);	

@@ -22,8 +22,8 @@ function sendToDeviceServiceManager($device_id, $sensorDataType, $sensorName, $s
 {
 	$host		=	"localhost" ;
 	$port		=	1337;
-	$timeout	=	2;
-	$sk = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout,STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT);
+	$timeout	=	20;
+	$sk = pfsockopen("tcp://$host:$port", $errno, $errstr, $timeout);
 
 	//remove spaces from the sensor name
 	$sensorName = str_replace(" ", "_", $sensorName);
@@ -41,5 +41,7 @@ function sendToDeviceServiceManager($device_id, $sensorDataType, $sensorName, $s
 	}
 	else// If the data is not JSON, then the sensorName is used as the dataType
 	 	sendDeviceServiceMessage($device_id, $sensorName, $sensorValue, $sk);      
+	//fclose($sk);
+	//sleep(1);
 }	
 ?>
