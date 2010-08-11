@@ -164,123 +164,67 @@ public class SenseApp extends Activity {
                     final boolean connected = ((status & SenseService.STATUS_CONNECTED) > 0);
                     ((CheckBox) findViewById(R.id.main_cb)).setChecked(running);
 
-                    if (true == connected) {
-                        // enable phone state list row
-                        CheckBox button = (CheckBox) findViewById(R.id.phonestate_cb);
-                        final boolean callstate = ((status & SenseService.STATUS_PHONESTATE) > 0);
-                        button.setChecked(callstate);
-                        button.setEnabled(true);
-                        View text1 = findViewById(R.id.phonestate_firstline);
-                        View text2 = findViewById(R.id.phonestate_secondLine);
-                        text1.setEnabled(true);
-                        text2.setEnabled(true);
-                        
-                        // enable location list row
-                        button = (CheckBox) findViewById(R.id.location_cb);
-                        final boolean location = ((status & SenseService.STATUS_LOCATION) > 0);
-                        button.setChecked(location);
-                        button.setEnabled(true);
-                        button = (CheckBox) findViewById(R.id.noise_cb);
-                        text1 = findViewById(R.id.location_firstline);
-                        text2 = findViewById(R.id.location_secondLine);
-                        text1.setEnabled(true);
-                        text2.setEnabled(true);
-                        
-                        // enable noise list row
-                        button = (CheckBox) findViewById(R.id.noise_cb);
-                        final boolean noise = ((status & SenseService.STATUS_NOISE) > 0);
-                        button.setChecked(noise);
-                        button.setEnabled(true);
-                        button = (CheckBox) findViewById(R.id.noise_cb);
-                        text1 = findViewById(R.id.noise_firstline);
-                        text2 = findViewById(R.id.noise_secondLine);
-                        text1.setEnabled(true);
-                        text2.setEnabled(true);
-                        
-                        // enable pop quiz list row
-                        button = (CheckBox) findViewById(R.id.popquiz_cb);
-                        final boolean popQuiz = ((status & SenseService.STATUS_QUIZ) > 0);
-                        button.setChecked(popQuiz);
-                        button.setEnabled(true);
-                        text1 = findViewById(R.id.popquiz_firstline);
-                        text2 = findViewById(R.id.popquiz_secondLine);
-                        text1.setEnabled(true);
-                        text2.setEnabled(true);
-                        
-                        // enable motion list row
-                        button = (CheckBox) findViewById(R.id.motion_cb);
-                        final boolean motion = ((status & SenseService.STATUS_MOTION) > 0);
-                        button.setChecked(motion);
-                        button.setEnabled(true);
-                        text1 = findViewById(R.id.motion_firstline);
-                        text2 = findViewById(R.id.motion_secondLine);
-                        text1.setEnabled(true);
-                        text2.setEnabled(true);
-                        
-                        // enable device proximity row
-                        button = (CheckBox) findViewById(R.id.device_prox_cb);
-                        final boolean deviceProx = ((status & SenseService.STATUS_DEVICE_PROX) > 0);
-                        button.setChecked(deviceProx);
-                        button.setEnabled(true);
-                        text1 = findViewById(R.id.device_prox_firstline);
-                        text2 = findViewById(R.id.device_prox_secondLine);
-                        text1.setEnabled(true);
-                        text2.setEnabled(true);
-                    } else {
-                        // disable phone state list row
-                        CheckBox button = (CheckBox) findViewById(R.id.phonestate_cb);
-                        button.setChecked(false);
-                        button.setEnabled(false);
-                        View text1 = findViewById(R.id.phonestate_firstline);
-                        View text2 = findViewById(R.id.phonestate_secondLine);
-                        text1.setEnabled(false);
-                        text2.setEnabled(false);
-                        
-                        // disable location list row
-                        button = (CheckBox) findViewById(R.id.location_cb);
-                        button.setChecked(false);
-                        button.setEnabled(false);
-                        text1 = findViewById(R.id.location_firstline);
-                        text2 = findViewById(R.id.location_secondLine);
-                        text1.setEnabled(false);
-                        text2.setEnabled(false);
-                        
-                        // disable noise list row
-                        button = (CheckBox) findViewById(R.id.noise_cb);
-                        button.setChecked(false);
-                        button.setEnabled(false);
-                        text1 = findViewById(R.id.noise_firstline);
-                        text2 = findViewById(R.id.noise_secondLine);
-                        text1.setEnabled(false);
-                        text2.setEnabled(false);
-                        
-                        // disable pop quiz list row
-                        button = (CheckBox) findViewById(R.id.popquiz_cb);
-                        button.setChecked(false);
-                        button.setEnabled(false);
-                        text1 = findViewById(R.id.popquiz_firstline);
-                        text2 = findViewById(R.id.popquiz_secondLine);
-                        text1.setEnabled(false);
-                        text2.setEnabled(false);
-                        
-                        // disable motion list row
-                        button = (CheckBox) findViewById(R.id.motion_cb);
-                        button.setChecked(false);
-                        button.setEnabled(false);
-                        text1 = findViewById(R.id.motion_firstline);
-                        text2 = findViewById(R.id.motion_secondLine);
-                        text1.setEnabled(false);
-                        text2.setEnabled(false);
-                        
-                        // disable device proximity list row
-                        button = (CheckBox) findViewById(R.id.device_prox_cb);
-                        button.setChecked(false);
-                        button.setEnabled(false);
-                        text1 = findViewById(R.id.device_prox_firstline);
-                        text2 = findViewById(R.id.device_prox_secondLine);
-                        text1.setEnabled(false);
-                        text2.setEnabled(false);
-                    }
+                    // enable phone state list row
+                    CheckBox button = (CheckBox) findViewById(R.id.phonestate_cb);
+                    final boolean callstate = ((status & SenseService.STATUS_PHONESTATE) > 0);
+                    button.setChecked(callstate);
+                    button.setEnabled(connected);
+                    View text1 = findViewById(R.id.phonestate_firstline);
+                    View text2 = findViewById(R.id.phonestate_secondLine);
+                    text1.setEnabled(connected);
+                    text2.setEnabled(connected);
+
+                    // enable location list row
+                    button = (CheckBox) findViewById(R.id.location_cb);
+                    final boolean location = ((status & SenseService.STATUS_LOCATION) > 0);
+                    button.setChecked(location);
+                    button.setEnabled(connected);
+                    button = (CheckBox) findViewById(R.id.noise_cb);
+                    text1 = findViewById(R.id.location_firstline);
+                    text2 = findViewById(R.id.location_secondLine);
+                    text1.setEnabled(connected);
+                    text2.setEnabled(connected);
+
+                    // enable noise list row
+                    button = (CheckBox) findViewById(R.id.noise_cb);
+                    final boolean noise = ((status & SenseService.STATUS_NOISE) > 0);
+                    button.setChecked(noise);
+                    button.setEnabled(connected);
+                    button = (CheckBox) findViewById(R.id.noise_cb);
+                    text1 = findViewById(R.id.noise_firstline);
+                    text2 = findViewById(R.id.noise_secondLine);
+                    text1.setEnabled(connected);
+                    text2.setEnabled(connected);
+
+                    // enable pop quiz list row
+                    button = (CheckBox) findViewById(R.id.popquiz_cb);
+                    final boolean popQuiz = ((status & SenseService.STATUS_QUIZ) > 0);
+                    button.setChecked(popQuiz);
+                    button.setEnabled(connected);
+                    text1 = findViewById(R.id.popquiz_firstline);
+                    text2 = findViewById(R.id.popquiz_secondLine);
+                    text1.setEnabled(connected);
+                    text2.setEnabled(connected);
+
+                    // enable motion list row
+                    button = (CheckBox) findViewById(R.id.motion_cb);
+                    final boolean motion = ((status & SenseService.STATUS_MOTION) > 0);
+                    button.setChecked(motion);
+                    button.setEnabled(connected);
+                    text1 = findViewById(R.id.motion_firstline);
+                    text2 = findViewById(R.id.motion_secondLine);
+                    text1.setEnabled(connected);
+                    text2.setEnabled(connected);
+
+                    // enable device proximity row
+                    button = (CheckBox) findViewById(R.id.device_prox_cb);
+                    final boolean deviceProx = ((status & SenseService.STATUS_DEVICE_PROX) > 0);
+                    button.setChecked(deviceProx);
+                    button.setEnabled(connected);
+                    text1 = findViewById(R.id.device_prox_firstline);
+                    text2 = findViewById(R.id.device_prox_secondLine);
+                    text1.setEnabled(connected);
+                    text2.setEnabled(connected);
                 }
             });
         }
@@ -472,14 +416,14 @@ public class SenseApp extends Activity {
         emailField.setInputType(InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        
+
         final EditText passField1 = new EditText(this);
         passField1.setLayoutParams(new LayoutParams(-1, -2));
         passField1.setHint(R.string.dialog_reg_hint_pass);
         passField1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         passField1.setTransformationMethod(new PasswordTransformationMethod());
         passField1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        
+
         final EditText passField2 = new EditText(this);
         passField2.setLayoutParams(new LayoutParams(-1, -2));
         passField2.setHint(R.string.dialog_reg_hint_pass2);
@@ -809,13 +753,14 @@ public class SenseApp extends Activity {
 
                 // show informational Toast
                 if (active) {
-                    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(
-                            prefs.getString(SenseSettings.PREF_COMMONSENSE_RATE, "0"));
-                    String interval = "";          
+                    final SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(this);
+                    final int rate = Integer.parseInt(prefs.getString(
+                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                    String interval = "";
                     switch (rate) {
                     case -2: // real-time
-                        interval = "second";            
+                        interval = "second";
                         break;
                     case -1: // often
                         interval = "15 seconds";
@@ -829,8 +774,8 @@ public class SenseApp extends Activity {
                     default:
                         Log.e(TAG, "Unexpected quiz rate preference.");
                     }
-                    final String msg = getString(R.string.toast_toggle_dev_prox);            
-                    Toast.makeText(this,msg.replace("?", interval), Toast.LENGTH_LONG).show();
+                    final String msg = getString(R.string.toast_toggle_dev_prox);
+                    Toast.makeText(this, msg.replace("?", interval), Toast.LENGTH_LONG).show();
                 }
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling device proximity service.");
@@ -847,7 +792,8 @@ public class SenseApp extends Activity {
 
                 // show informational toast
                 if (active) {
-                    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    final SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(this);
                     final int rate = Integer.parseInt(prefs.getString(
                             SenseSettings.PREF_COMMONSENSE_RATE, "0"));
                     String interval = "";
@@ -868,7 +814,8 @@ public class SenseApp extends Activity {
                         Log.e(TAG, "Unexpected commonsense rate: " + rate);
                         break;
                     }
-                    final String msg = getString(R.string.toast_toggle_location).replace("?", interval);
+                    final String msg = getString(R.string.toast_toggle_location).replace("?",
+                            interval);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
             } catch (RemoteException e) {
@@ -886,28 +833,30 @@ public class SenseApp extends Activity {
 
                 // show informational toast
                 if (active) {
-                	  final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                      final int rate = Integer.parseInt(prefs.getString(
-                              SenseSettings.PREF_COMMONSENSE_RATE, "0"));
-                      String interval = "";
-                      switch (rate) {
-                      case -2: // often
-                          interval = "second";
-                          break;
-                      case -1: // often
-                          interval = "5 seconds";
-                          break;
-                      case 0: // normal
-                          interval = "minute";
-                          break;
-                      case 1: // rarely
-                          interval = "15 minutes";
-                          break;
-                      default:
-                          Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                          break;
-                      }
-                    final String msg = getString(R.string.toast_toggle_motion).replace("?", interval);
+                    final SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(this);
+                    final int rate = Integer.parseInt(prefs.getString(
+                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                    String interval = "";
+                    switch (rate) {
+                    case -2: // often
+                        interval = "second";
+                        break;
+                    case -1: // often
+                        interval = "5 seconds";
+                        break;
+                    case 0: // normal
+                        interval = "minute";
+                        break;
+                    case 1: // rarely
+                        interval = "15 minutes";
+                        break;
+                    default:
+                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                        break;
+                    }
+                    final String msg = getString(R.string.toast_toggle_motion).replace("?",
+                            interval);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
             } catch (RemoteException e) {
@@ -952,8 +901,7 @@ public class SenseApp extends Activity {
                         Log.e(TAG, "Unexpected quiz rate preference.");
                     }
                     String msg = getString(R.string.toast_toggle_noise)
-                            .replace("?", intervalString)
-                            + extraString;
+                            .replace("?", intervalString) + extraString;
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
             } catch (RemoteException e) {
@@ -994,10 +942,10 @@ public class SenseApp extends Activity {
                     String interval = "ERROR";
                     switch (r) {
                     case -1: // often (5 mins)
-                        interval = "every 5 minutes";
+                        interval = "5 minutes";
                         break;
                     case 0: // normal (15 mins)
-                        interval = "every 15 minutes";
+                        interval = "15 minutes";
                         break;
                     case 1: // rarely (1 hour)
                         interval = "hour";

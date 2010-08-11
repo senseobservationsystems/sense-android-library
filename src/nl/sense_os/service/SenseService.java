@@ -254,37 +254,6 @@ public class SenseService extends Service {
         return sb.toString();
     }
 
-    /**
-     * Saves the status of the sensing components in the preferences.
-     * 
-     * @return the new status
-     */
-    private int saveStatus() {
-        int status = 0;
-        status = this.started ? status + STATUS_RUNNING : status;
-        status = sLoggedIn ? status + STATUS_CONNECTED : status;
-        status = this.statusPhoneState ? status + STATUS_PHONESTATE : status;
-        status = this.statusLocation ? status + STATUS_LOCATION : status;
-        status = this.statusNoise ? status + STATUS_NOISE : status;
-        status = this.statusPopQuiz ? status + STATUS_QUIZ : status;
-        status = this.statusDeviceProx ? status + STATUS_DEVICE_PROX : status;
-        status = this.statusMotion ? status + STATUS_MOTION : status;
-        
-        // save status in the preferences
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final int oldStatus = prefs.getInt(SenseSettings.PREF_LAST_STATUS, -1);
-        if (oldStatus != status) {
-            final Editor editor = prefs.edit();
-            editor.putInt(SenseSettings.PREF_LAST_STATUS, status);
-            editor.commit();
-
-            // send broadcast that something has changed in the status
-            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
-        }
-        
-        return status;
-    }
-
     private void initFields() {
         this.msgHandler = new MsgHandler(this);
         this.loginPossibility = new LoginPossibility();
@@ -501,6 +470,7 @@ public class SenseService extends Service {
                 togglePopQuiz(false);
             }
 
+            // save the pre-logout status
             final Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putInt(SenseSettings.PREF_LAST_STATUS, lastRunningState);
             editor.commit();
@@ -526,7 +496,7 @@ public class SenseService extends Service {
     public void onStart(Intent intent, int startid) {
         onStartCompat(intent, 0 , startid);
     }
-    
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         onStartCompat(intent, flags, startId);
@@ -545,7 +515,7 @@ public class SenseService extends Service {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(this.loginPossibility, filter);
     }
-
+    
     private boolean register(String email, String pass) {
         try {
             String cookie = "";
@@ -624,6 +594,37 @@ public class SenseService extends Service {
             return false;
         }
         return registered;
+    }
+
+    /**
+     * Saves the status of the sensing components in the preferences.
+     * 
+     * @return the new status
+     */
+    private int saveStatus() {
+        int status = 0;
+        status = this.started ? status + STATUS_RUNNING : status;
+        status = sLoggedIn ? status + STATUS_CONNECTED : status;
+        status = this.statusPhoneState ? status + STATUS_PHONESTATE : status;
+        status = this.statusLocation ? status + STATUS_LOCATION : status;
+        status = this.statusNoise ? status + STATUS_NOISE : status;
+        status = this.statusPopQuiz ? status + STATUS_QUIZ : status;
+        status = this.statusDeviceProx ? status + STATUS_DEVICE_PROX : status;
+        status = this.statusMotion ? status + STATUS_MOTION : status;
+        
+        // save status in the preferences
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final int oldStatus = prefs.getInt(SenseSettings.PREF_LAST_STATUS, -1);
+        if (oldStatus != status) {
+            final Editor editor = prefs.edit();
+            editor.putInt(SenseSettings.PREF_LAST_STATUS, status);
+            editor.commit();
+
+            // send broadcast that something has changed in the status
+            sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+        }
+        
+        return status;
     }
 
     /**
