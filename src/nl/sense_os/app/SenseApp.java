@@ -276,13 +276,16 @@ public class SenseApp extends Activity {
         }
     }
 
-    private static final int DIALOG_HELP = 1;
-    private static final int DIALOG_LOGIN = 2;
-    private static final int DIALOG_PROGRESS = 3;
-    private static final int DIALOG_REGISTER = 4;
-    private static final int DIALOG_UPDATE_ALERT = 5;
-    private static final int MENU_HELP = 1;
-    private static final int MENU_SETTINGS = 2;
+    private static final int DIALOG_FAQ = 1;
+    private static final int DIALOG_HELP = 2;
+    private static final int DIALOG_LOGIN = 3;
+    private static final int DIALOG_PROGRESS = 4;
+    private static final int DIALOG_REGISTER = 5;
+    private static final int DIALOG_UPDATE_ALERT = 6;
+    private static final int MENU_FAQ = 1;
+    private static final int MENU_LOGIN = 2;
+    private static final int MENU_REGISTER = 3;
+    private static final int MENU_SETTINGS = 4;
     private static final String TAG = "SenseApp";
     /** Name of the private settings file, used for password storage. */
     private static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
@@ -292,12 +295,21 @@ public class SenseApp extends Activity {
      * Preference for the version of CommonSense, changes the communication scheme with CommonSense.
      */
     public static final String PREF_COMMONSENSE_VERSION = "cs_version";
-    public static final int COMMONSENSE_VERSION = 2;
+    public static final int COMMONSENSE_VERSION = 3;
     private final ISenseServiceCallback callback = new SenseCallback();
     private boolean isServiceBound;
     private ISenseService service;
     private final ServiceConnection serviceConn = new SenseServiceConn();
     private final SenseServiceListener serviceListener = new SenseServiceListener();
+    
+    private Dialog createDialogFaq() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setTitle(R.string.dialog_faq_title);
+        builder.setMessage(R.string.dialog_faq_msg);
+        builder.setPositiveButton(R.string.button_ok, null);
+        return builder.create();
+    }
 
     /**
      * @return a help dialog, which explains the goal of Sense and clicks through to Registration or
@@ -318,6 +330,12 @@ public class SenseApp extends Activity {
 
             public void onClick(DialogInterface dialog, int which) {
                 showDialog(DIALOG_REGISTER);
+            }
+        });
+        builder.setNegativeButton(R.string.button_faq, new OnClickListener() {
+            
+            public void onClick(DialogInterface dialog, int which) {
+                showDialog(DIALOG_FAQ);
             }
         });
         return builder.create();
@@ -504,13 +522,7 @@ public class SenseApp extends Activity {
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setMessage(R.string.dialog_update_msg);
         builder.setTitle(R.string.dialog_update_title);
-        builder.setPositiveButton(R.string.button_reg, new OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                showDialog(DIALOG_REGISTER);
-            }
-        });
+        builder.setPositiveButton(R.string.button_ok, null);
         builder.setCancelable(false);
         return builder.create();
     }
@@ -643,6 +655,9 @@ public class SenseApp extends Activity {
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
         switch (id) {
+        case DIALOG_FAQ:
+            dialog = createDialogFaq();
+            break;
         case DIALOG_LOGIN:
             dialog = createDialogLogin();
             break;
@@ -672,18 +687,26 @@ public class SenseApp extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, "Preferences").setIcon(
                 android.R.drawable.ic_menu_preferences);
-        menu.add(Menu.NONE, MENU_HELP, Menu.NONE, "Help").setIcon(android.R.drawable.ic_menu_help);
+        menu.add(Menu.NONE, MENU_FAQ, Menu.NONE, "FAQ").setIcon(android.R.drawable.ic_menu_help);
+        menu.add(Menu.NONE, MENU_LOGIN, Menu.NONE, "Log in").setIcon(R.drawable.ic_menu_login);
+        menu.add(Menu.NONE, MENU_REGISTER, Menu.NONE, "Register").setIcon(R.drawable.ic_menu_invite);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        case MENU_FAQ:
+            showDialog(DIALOG_FAQ);
+            break;
         case MENU_SETTINGS:
             startActivity(new Intent("nl.sense_os.app.Settings"));
             break;
-        case MENU_HELP:
-            showDialog(DIALOG_HELP);
+        case MENU_LOGIN:
+            showDialog(DIALOG_LOGIN);
+            break;
+        case MENU_REGISTER:
+            showDialog(DIALOG_UPDATE_ALERT);
             break;
         default:
             Log.w(TAG, "Unexpected menu button pressed, ignoring input...");
