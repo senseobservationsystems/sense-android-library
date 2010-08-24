@@ -1,10 +1,10 @@
 <?php
-include("login_check.php");
+include_once("login_check.php");
 
 // check login with valid_login() from login_check.php
 switch (valid_login()) {
     case -1:
-        $message    = "invalid SQL query using provided credentials";
+        $message    = "invalid SQL query using provided credentials";	
         die($message);
         break;
     case -2:

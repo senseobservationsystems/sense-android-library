@@ -1,9 +1,7 @@
 <?php
 include_once("db_connect.php");
-$tbl_name="users"; // Table name
-
 function valid_login() {
-
+$tbl_name="users"; // Table name
     $email		= $_REQUEST['email']; 
     $password	= $_REQUEST['password'];
 
@@ -15,8 +13,9 @@ function valid_login() {
 	    $password 	= mysql_real_escape_string($password);
 	    $password 	= md5($password);
 
-	    // Check the login credentials
+	    // Check the login credentials	    
 	    $sql	= "SELECT * FROM $tbl_name WHERE email='$email' and password='$password'";
+	    
 	    $result	= mysql_query($sql);	
 	    if(!$result) {
 	        // problem with SQL query with provided credentials
