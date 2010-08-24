@@ -11,7 +11,7 @@ $db_name	= "commonSense2"; 	// Database name
 mysql_connect("$host", "$mysql_username", "$mysql_password")or die("cannot connect");
 mysql_select_db("$db_name")or die("cannot select DB");
 // try to login if session is not ok
-if (false == isset($_SESSION['user_id'])) {
+if (false == isset($_SESSION['userId'])) {
     if (($return = valid_login()) < 0) {               
         die("login failed:$return\n");               
     }                                      
