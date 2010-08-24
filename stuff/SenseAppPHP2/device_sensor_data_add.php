@@ -2,7 +2,15 @@
 include_once("db_connect.php");
 include_once("sendToDeviceServiceManager.php");
 include_once("deviceID_check.php");
+include("login_check.php");
 $tbl_name="sensor_data"; // Table name
+
+// try to login if session is not ok
+if (false == isset($_SESSION['user_id'])) {
+    if (valid_login() < 0) {
+        echo "login failed";
+    }
+}
 
 // Get input
 $sensorName		    = $_REQUEST['sensorName'];

@@ -1,61 +1,26 @@
 <?php
-include_once("db_connect.php");
-$tbl_name="users"; // Table name
+include("login_check.php");
 
-// Define $email and $password 
-$email		= $_REQUEST['email']; 
-$password	= $_REQUEST['password'];
-
-if($email && $password)
-{
-	// To protect MySQL injection (more detail about MySQL injection)
-	$email 		= stripslashes($email);
-	$password 	= stripslashes($password);
-	$email 		= mysql_real_escape_string($email);
-	$password 	= mysql_real_escape_string($password);
-	$password 	= md5($password);
-
-	// Check the login credentials
-	$sql	= "SELECT * FROM $tbl_name WHERE email='$email' and password='$password'";
-	$result	= mysql_query($sql);	
-	if(!$result)			
-	{	
-		$message  = 'Invalid query: ' . mysql_error() . "\n";
-		$message .= 'Whole query: ' . $query;
-		die($message);
-	}
-	$count	= mysql_num_rows($result);
-
-	// If result matched $email and $password, table row must be 1 row
-	if($count == 1)
-	{
-		// Register id
-		$row = mysql_fetch_assoc($result);	
-		$userId = $row['id'];		
-		$_SESSION['userId']  = $userId;	
-		$userName = $row['name'];
-		$_SESSION['userName']  = $userName;	
-		// cach the devices in the database connected to this userId
-		$sql	= "SELECT * FROM devices WHERE user_id='$userId'";
-		$result	= mysql_query($sql);	
-		if(!$result)			
-		{	
-			$message  = 'Invalid query: ' . mysql_error() . "\n";
-			$message .= 'Whole query: ' . $query;
-			die($message);
-		}
-		else
-		{
-		  $devices;
-		  while ($row = mysql_fetch_assoc($result))
-		  {
-		    $devices[$row['uuid']] = $row['id'];
-		  }
-		  $_SESSION['devices'] = $devices;
-		}
-		echo "OK";
-	}
-	else 	
-		echo "Wrong username or password";	
+// check login with valid_login() from login_check.php
+switch (valid_login()) {
+    case -1:
+        $message    = "invalid SQL query using provided credentials";
+        die($message);
+        break;
+    case -2:
+        $message    = "invalid SQL query for user's devices failed";
+        die($message);
+        break;
+    case -3:
+        $message    = "more than one user found (?!)";
+        die($message);
+        break;
+    case -4:
+        $message    = "username or password not provided";
+        die($message);
+        break;
+    default:
+        echo "OK";
+        break;
 }
-?>
+
