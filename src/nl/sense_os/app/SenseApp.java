@@ -706,7 +706,7 @@ public class SenseApp extends Activity {
             showDialog(DIALOG_LOGIN);
             break;
         case MENU_REGISTER:
-            showDialog(DIALOG_UPDATE_ALERT);
+            showDialog(DIALOG_REGISTER);
             break;
         default:
             Log.w(TAG, "Unexpected menu button pressed, ignoring input...");
