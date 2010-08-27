@@ -3,14 +3,14 @@ include_once("db_connect.php");
 include_once("sendToDeviceServiceManager.php");
 include_once("deviceID_check.php");
 
-$tbl_name="sensor_data"; // Table name
+$tbl_name = "sensor_data"; // Table name
 
 
 // Get input
-$sensorName		    = $_REQUEST['sensorName'];
+$sensorName	    	= $_REQUEST['sensorName'];
 $sensorValue		= $_REQUEST['sensorValue'];
 $sensorDataType 	= $_REQUEST['sensorDataType'];
-$sensorDeviceType   = $_REQUEST['sensorDeviceType'];
+$sensorDeviceType   	= $_REQUEST['sensorDeviceType'];
 
 if(isset($_REQUEST['sensorDataType']))
   $sensorDataType 	= $_REQUEST['sensorDataType'];
@@ -33,7 +33,7 @@ if($sensorName && $sensorValue)
 	$sensorName 		= stripslashes($sensorName);	
 	$sensorValue 		= stripslashes($sensorValue);	
 	$sensorDataType 	= stripslashes($sensorDataType);
-	$sensorDeviceType   = stripslashes($sensorDeviceType);
+	$sensorDeviceType	= stripslashes($sensorDeviceType);
 	
 
 	// Check if the sensor exists	

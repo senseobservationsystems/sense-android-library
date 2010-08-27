@@ -45,11 +45,11 @@ else
 	$sensorValue = $baseURL.$newLocation;
 	//if(substr_count(strtolower($_FILES["file"]["name"]),".3gp") || substr_count(strtolower($_FILES["file"]["name"]),".mp4"))
 	//{
-		$newLocationWave = $filePath.$filePrefix.$fileBase.".mp3";	
-		$ffmpegCommand = "ffmpeg -y -i ". $newLocation ." -ac 1 -acodec libmp3lame -ar 22050 -f wav ".$newLocationWave;
-		echo exec($ffmpegCommand);		
-		echo exec("rm -rf ".$newLocation);
-		$sensorValue = $baseURL.$newLocationWave;
+// 		$newLocationWave = $filePath.$filePrefix.$fileBase.".mp3";	
+// 		$ffmpegCommand = "ffmpeg -y -i ". $newLocation ." -ac 1 -acodec libmp3lame -ar 22050 -f wav ".$newLocationWave;
+// 		echo exec($ffmpegCommand);		
+// 		echo exec("rm -rf ".$newLocation);
+// 		$sensorValue = $baseURL.$newLocationWave;
 	//}
 	
 	// update the database

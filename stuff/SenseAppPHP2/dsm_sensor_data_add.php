@@ -1,5 +1,5 @@
 <?php
-include_once("db_connect.php");
+include_once("db_only_connect.php");
 include_once("sendToDeviceServiceManager.php");
 //include_once("deviceID_check.php");
 $tbl_name="sensor_data"; // Table name

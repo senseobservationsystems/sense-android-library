@@ -2,6 +2,7 @@
 session_start();
 include_once("login_check.php");
 
+
 $host		= "localhost"; 		// Host name 
 $mysql_username	= "commonSense"; 	// Mysql username 
 $mysql_password	= "senseo1234"; 	// Mysql password 
