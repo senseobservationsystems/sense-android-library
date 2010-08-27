@@ -6,7 +6,7 @@ $device_id	= $_REQUEST['device_id'];
 
 if(isset($_REQUEST['viewService']))
 {
-  include_once("../db_connect.php");
+  include_once("../db_only_connect.php");
   // get the last pose value from the databse
   $sql = "select * from sensor_type where name='$ds_type' and device_type='$ds_id'";
   $result = mysql_query($sql);	    
