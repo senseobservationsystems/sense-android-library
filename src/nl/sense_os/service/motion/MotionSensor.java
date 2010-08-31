@@ -51,9 +51,9 @@ public class MotionSensor implements SensorEventListener {
 	        	{
 	        		//jsonString += "{";
 	        		if(sensor.getType()==Sensor.TYPE_ACCELEROMETER || sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD)
-	        			jsonString += "\"x-axis\":\""+value+"\"";
+	        			jsonString += "\"x-axis\":"+value;
 	        		if(sensor.getType()==Sensor.TYPE_ORIENTATION || sensor.getType() == Sensor.TYPE_GYROSCOPE)
-	        			jsonString += "\"azimuth\":\""+value+"\"";	        
+	        			jsonString += "\"azimuth\":"+value;	        
 	        		//jsonString += "}";	        		
 	        	}
 	        	if(x==1)
@@ -61,9 +61,9 @@ public class MotionSensor implements SensorEventListener {
 	        		jsonString += ",";
 	        		//jsonString += ",{";
 	        		if(sensor.getType()==Sensor.TYPE_ACCELEROMETER || sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD)
-	        			jsonString += "\"y-axis\":\""+value+"\"";
+	        			jsonString += "\"y-axis\":"+value;
 	        		if(sensor.getType()==Sensor.TYPE_ORIENTATION || sensor.getType() == Sensor.TYPE_GYROSCOPE)
-	        			jsonString += "\"pitch\":\""+value+"\"";	        		
+	        			jsonString += "\"pitch\":"+value;	        		
 	        	//	jsonString += "}";
 	        	}
 	        	if(x==2)
@@ -71,9 +71,9 @@ public class MotionSensor implements SensorEventListener {
 	        		jsonString += ",";
 	        		//jsonString += ",{";
 	        		if(sensor.getType()==Sensor.TYPE_ACCELEROMETER || sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD)
-	        			jsonString += "\"z-axis\":\""+value+"\"";
+	        			jsonString += "\"z-axis\":"+value;
 	        		if(sensor.getType()==Sensor.TYPE_ORIENTATION || sensor.getType() == Sensor.TYPE_GYROSCOPE)
-	        			jsonString += "\"roll\":\""+value+"\"";	        		
+	        			jsonString += "\"roll\":"+value;	        		
 	        		//jsonString += "}";
 	        		
 	        	}	        	
@@ -89,7 +89,7 @@ public class MotionSensor implements SensorEventListener {
     	sampleDelay = _sampleDelay;
     }
     
-    public long getSampleDelau()
+    public long getSampleDelay()
     {
     	return sampleDelay;
     }

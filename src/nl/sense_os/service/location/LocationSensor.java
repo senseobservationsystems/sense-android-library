@@ -21,15 +21,15 @@ public class LocationSensor implements LocationListener {
     }
    
     public void onLocationChanged(Location fix) {   
-    	Map<String, String> data = new HashMap<String, String>();
-        data.put("latitude", "" + fix.getLatitude());
-        data.put("longitude", "" + fix.getLongitude());
+    	Map<String, Object> data = new HashMap<String, Object>();
+        data.put("latitude", fix.getLatitude());
+        data.put("longitude", fix.getLongitude());
         if (fix.hasAccuracy())
-            data.put("accuracy", "" + fix.getAccuracy());
+            data.put("accuracy", fix.getAccuracy());
         if (fix.hasAltitude())
-            data.put("altitude", "" + fix.getAltitude());
+            data.put("altitude", fix.getAltitude());
         if (fix.hasSpeed())
-            data.put("speed", "" + fix.getSpeed());
+            data.put("speed", fix.getSpeed());
     	
         this.handler.sendSensorData("position", data);
     }

@@ -588,9 +588,9 @@ public class SenseAlarmManager {
             long entryTime = c.getLong(c.getColumnIndex(COL_ENTRY_TIME));
             String timeString = new SimpleDateFormat("yyyy-MM-dd HH:mm")
                     .format(new Date(entryTime));
-            Map<String, String> data = new HashMap<String, String>();
-            data.put("question id", ""+qstnId);
-            data.put("answer id", ""+answId);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("question id", qstnId);
+            data.put("answer id", answId);
             data.put("date", timeString);
             handler.sendSensorData("pop quiz", data);
 

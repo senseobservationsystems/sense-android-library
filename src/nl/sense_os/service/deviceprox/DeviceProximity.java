@@ -72,6 +72,7 @@ public class DeviceProximity {
 							deviceJson.put("address", address);
 							deviceJson.put("name", rbtDevice.getName());
 							deviceJson.put("rssi", rbtDevice.getRSSI());
+							Log.d(TAG, "deviceJson: " + deviceJson);
 							deviceArray.put(deviceJson);
 						}
 						json.put("bt_devices", deviceArray);
@@ -170,8 +171,7 @@ public class DeviceProximity {
 								JSONObject deviceJson = new JSONObject();
 								deviceJson.put("address", btd.getAddress());
 								deviceJson.put("name", btd.getName());
-								deviceJson.put("rssi", ""
-										+ value.entrySet().iterator().next().getValue());
+								deviceJson.put("rssi", value.entrySet().iterator().next().getValue());
 								jsonArray.put(deviceJson);
 							}
 							json.put("bt_devices", jsonArray);

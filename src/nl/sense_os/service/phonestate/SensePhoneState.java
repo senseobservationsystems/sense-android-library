@@ -31,7 +31,7 @@ public class SensePhoneState extends PhoneStateListener {
     public void onCallStateChanged(int state, String incomingNumber) {
         // Log.d(TAG, "Call state changed.");
 
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, Object> data = new HashMap<String, Object>();
         String strState = "";
         if (state == TelephonyManager.CALL_STATE_IDLE) {
             strState = "idle";
@@ -62,7 +62,7 @@ public class SensePhoneState extends PhoneStateListener {
     public void onDataActivity(int direction) {
         // Log.d(TAG, "Data activity.");
 
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, Object> data = new HashMap<String, Object>();
         String strDirection = "";
         if (direction == TelephonyManager.DATA_ACTIVITY_IN) {
             strDirection = "receiving data";
@@ -138,7 +138,7 @@ public class SensePhoneState extends PhoneStateListener {
     public void onServiceStateChanged(ServiceState serviceState) {
         // Log.d(TAG, "Service state changed.");
 
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, Object> data = new HashMap<String, Object>();
         String strState = "";
         if (serviceState.getState() == ServiceState.STATE_EMERGENCY_ONLY) {
             strState = "emergency calls only";
@@ -164,11 +164,11 @@ public class SensePhoneState extends PhoneStateListener {
 
     @Override
     public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("CDMA dBm", "" + signalStrength.getCdmaDbm());
-        data.put("EVDO dBm", "" + signalStrength.getEvdoDbm());
-        data.put("GSM signal strength", "" + signalStrength.getGsmSignalStrength());
-        data.put("GSM bit error rate", "" + signalStrength.getGsmBitErrorRate());
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("CDMA dBm", signalStrength.getCdmaDbm());
+        data.put("EVDO dBm", signalStrength.getEvdoDbm());
+        data.put("GSM signal strength", signalStrength.getGsmSignalStrength());
+        data.put("GSM bit error rate", signalStrength.getGsmBitErrorRate());
         this.msgHandler.sendSensorData("signal strength", data);
         super.onSignalStrengthsChanged(signalStrength);
     }

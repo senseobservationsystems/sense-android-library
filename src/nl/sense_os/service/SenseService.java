@@ -577,7 +577,7 @@ public class SenseService extends Service {
             final InputStream stream = response.getEntity().getContent();
             final String responseStr = convertStreamToString(stream);
             registered = responseStr.toLowerCase().contains("ok");
-            Map<String, String> data = new HashMap<String, String>();
+            Map<String, Object> data = new HashMap<String, Object>();
             data.put("brand", Build.MANUFACTURER);
             data.put("type", Build.MODEL);            
             msgHandler.sendSensorData("device properties", data);            
