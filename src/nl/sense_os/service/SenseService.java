@@ -21,10 +21,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.format.Time;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -262,7 +264,7 @@ public class SenseService extends Service {
         // listeners
         this.deviceProximity = new DeviceProximity(msgHandler, this);
         this.locListener = new LocationSensor(this.msgHandler);
-        this.motionSensor = new MotionSensor(this.msgHandler);
+        this.motionSensor = new MotionSensor(this.msgHandler, this);
         this.psl = new SensePhoneState(this.msgHandler, this.telMan);
         this.noiseSensor = new NoiseSensor(this.msgHandler);
         
@@ -369,7 +371,11 @@ public class SenseService extends Service {
 
         // make service as important as regular activities        
         startForegroundCompat();
-    }
+        
+        // Register the receiver for SCREEN OFF events
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(bReceiverASO, filter);
+     }
 
     @Override
     public void onDestroy() {
@@ -920,17 +926,7 @@ public class SenseService extends Service {
         if (active != this.statusMotion) {
             SensorManager mgr = (SensorManager) getSystemService(SENSOR_SERVICE);
             if (true == active) {
-                List<Sensor> sensors = mgr.getSensorList(Sensor.TYPE_ALL);
-                for (Sensor sensor : sensors) {
-                	if (sensor.getType()==Sensor.TYPE_ACCELEROMETER ||
-                			sensor.getType()==Sensor.TYPE_ORIENTATION || 
-                			sensor.getType()==Sensor.TYPE_GYROSCOPE || 
-                			sensor.getType()==Sensor.TYPE_PRESSURE)
-                	{
-                		Log.d(TAG, "registering for sensor " + sensor.getName());
-                		mgr.registerListener(this.motionSensor, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-                	}
-                }
+               
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 final int rate = Integer.parseInt(prefs.getString(
                         SenseSettings.PREF_COMMONSENSE_RATE, "0"));
@@ -951,11 +947,11 @@ public class SenseService extends Service {
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);
                     break;
-                }
-                motionSensor.setSampleDelay(interval);  
+                }                
+                motionSensor.startMotionSensing(interval);
                 this.statusMotion = true;
             } else {
-                mgr.unregisterListener(this.motionSensor);
+               motionSensor.stopMotionSensing();
 
                 this.statusMotion = false;
             }
@@ -1048,4 +1044,31 @@ public class SenseService extends Service {
             saveStatus();
         }
     }
+   
+
+    // BroadcastReceiver for handling ACTION_SCREEN_OFF.
+    public BroadcastReceiver bReceiverASO = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        	// Check action just to be on the safe side.
+        	if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) 
+        	{        		        	
+        		if(statusMotion)
+        		{
+        			Runnable motionThread = new Runnable(){
+        				public void run() {
+        					// Unregisters the motion listener and registers it again. 
+        					Log.d(TAG, "Screen went off, re-registering the Motion sensor");
+        					// wait a few seconds and re-register
+        					toggleMotion(false);
+        					toggleMotion(true);        					
+        				};
+        			};
+
+        			Handler mtHandler = new Handler();        					
+        			mtHandler.postDelayed(motionThread,   500);        			
+        		}
+        	}
+        }
+    };
 }

@@ -273,9 +273,18 @@ public class MsgHandler {
             try {
                 inStream = new DataInputStream(conn.getInputStream());
                 String str;
-                while ((str = inStream.readLine()) != null) {
-                    Log.e(TAG, "Uploaded file... Server response is: " + str);
+                boolean sendOK = false;
+                while ((str = inStream.readLine()) != null) 
+                {
+                	 if(str.toLowerCase().contains("ok"))
+                		 sendOK = true;                	
+                    Log.d(TAG, "Uploaded file... Server response is: " + str);
                 }
+                if(!sendOK)
+            	{
+            		Log.d(TAG, "Error sending message, re-login");
+            		((SenseService) context).senseServiceLogin();
+            	}
                 inStream.close();
 
             } catch (IOException ioex) {
@@ -332,6 +341,11 @@ public class MsgHandler {
                         String outputString = "Sent " + sensor
                                 + " data. Response from CommonSense: " + body;
                         Log.d(TAG, outputString);
+                        if(!body.toLowerCase().contains("ok"))
+						{
+							Log.d(TAG, "Error sending message, re-login");
+							((SenseService) context).senseServiceLogin();
+						}
                         --nrOfSendMessageThreads;
                     }
                 }

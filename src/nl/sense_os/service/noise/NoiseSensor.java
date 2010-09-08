@@ -15,6 +15,8 @@ import nl.sense_os.service.MsgHandler;
 
 import java.io.File;
 
+
+
 public class NoiseSensor extends PhoneStateListener {
     private class NoiseSensorThread implements Runnable {
 
@@ -25,7 +27,7 @@ public class NoiseSensor extends PhoneStateListener {
             private double calculateDB() {
                 double dB = 0;
                 try {
-                    if (!listening)
+                    if (!isListening)
                         return 0;
                     byte[] buffer = new byte[bufferSize];
                     int readBytes = 0;
@@ -45,11 +47,11 @@ public class NoiseSensor extends PhoneStateListener {
             public void run() {
                 double dB = calculateDB();
                 msgHandler.sendSensorData("noise_sensor", "" + dB,
-                        SenseSettings.SENSOR_DATA_TYPE_FLOAT);
+                        SenseSettings.SENSOR_DATA_TYPE_FLOAT);              
                 if (audioRec != null && audioRec.getState() == AudioRecord.STATE_INITIALIZED)
                     audioRec.stop();
                 Log.d(TAG, "Done recording.");
-                if (listening)
+                if (isListening)
                     noiseThreadHandler.postDelayed(noiseThread = new NoiseSensorThread(), listenInterval);
             }
         }
@@ -64,14 +66,14 @@ public class NoiseSensor extends PhoneStateListener {
             }
             Log.d(TAG, "Start NoiseSensorThread...");
 
-            if (listening) {
+            if (isListening) {
                 if (audioRec.getState() != AudioRecord.STATE_INITIALIZED) {
                     // Strange... sometimes the audioRec is not initialized when it is automatically
                     // started when the service restarts...
                     startListening(listenInterval);
                 } else {
-                    audioRec.startRecording();
-                    calculateNoiseHandler.postDelayed(new CalculateNoiseThread(), sampleTime);
+                    audioRec.startRecording();                    
+                    calculateNoiseHandler.postDelayed(calculateNoiseThread = new CalculateNoiseThread(), sampleTime);
                 }
             }
         }
@@ -87,8 +89,10 @@ public class NoiseSensor extends PhoneStateListener {
                 // params.set("effect", effect);
                 // cameraDevice.setParameters(params);
                 // recorder.setCamera(cameraDevice);
-
-                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            	if(isCalling)            		
+            		recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_UPLINK);
+            	else
+            		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 // recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
                 recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                 // recorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
@@ -97,11 +101,12 @@ public class NoiseSensor extends PhoneStateListener {
                 new File(recordFileName).createNewFile();
                 String command = "chmod 666 " + recordFileName;
                 Runtime.getRuntime().exec(command);
-                recorder.setOutputFile(recordFileName);
+                recorder.setOutputFile(recordFileName);              
                 recorder.setMaxDuration(sampleTimeStream);
                 recorder.setOnInfoListener(new OnInfoListener() {
 
-                    public void onInfo(MediaRecorder mr, int what, int extra) {
+                    public void onInfo(MediaRecorder mr, int what, int extra) {                  	
+                    	                    	
                         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
                             try {
 
@@ -109,9 +114,11 @@ public class NoiseSensor extends PhoneStateListener {
                                 recorder.stop();
                                 recorder.reset();
                                 // wait until finished otherwise it will be overwritten
+                                SoundStreamThread tmp = soundStreamThread;
                                 msgHandler.uploadFile("microphone", recordFileName);
-                                if (listening && listenInterval == -1)
-                                    soundStreamHandler.post(new SoundStreamThread());
+                                if (isListening && listenInterval == -1 && tmp.equals(soundStreamThread))                               
+                                    soundStreamHandler.post(soundStreamThread = new SoundStreamThread()); 
+                              
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -130,19 +137,24 @@ public class NoiseSensor extends PhoneStateListener {
     }
 
     private static final int DEFAULT_SAMPLE_RATE = 8000;
-    private static final String TAG = "Sense NoiseSensor";
+    private static final String TAG = "Sense NoiseSensor";    
     private AudioRecord audioRec;
     private int bufferSize = 4096;
     private Handler calculateNoiseHandler = new Handler();
     private MsgHandler msgHandler = null;
-    private boolean listening = false;
+    private boolean listeningEnabled = false;
+    private boolean isListening = false;
     private int listenInterval; // Update interval in msec
-    private NoiseSensorThread noiseThread;   
+    private NoiseSensorThread noiseThread = null;   
+    private nl.sense_os.service.noise.NoiseSensor.NoiseSensorThread.CalculateNoiseThread calculateNoiseThread = null;
+    private SoundStreamThread soundStreamThread = null;
     private Handler noiseThreadHandler = new Handler();
     private Handler soundStreamHandler = new Handler();
     private MediaRecorder recorder = null;
+    
     private String recordFileName = Environment.getExternalStorageDirectory().getAbsolutePath()
             + "/micSample.3gp";
+    private boolean isCalling = false;
     // private Camera cameraDevice = null;
     int sampleTime = 2000;
     int sampleTimeStream = 10000;
@@ -156,13 +168,15 @@ public class NoiseSensor extends PhoneStateListener {
     };
 
     @Override
-    public void onCallStateChanged(int state, String incomingNumber) {
-        Log.d(TAG, "Call state changed.");
-
-        if (state != TelephonyManager.CALL_STATE_IDLE) {
-            stopListening();
-
-        } else if (listening)
+    public void onCallStateChanged(int state, String incomingNumber) {      
+        if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_RINGING)        
+        	isCalling = true;        
+        else
+        	isCalling = false;             
+      
+         pauzeListening();
+        
+        if (!isListening && listeningEnabled && state != TelephonyManager.CALL_STATE_RINGING)
             startListening(listenInterval);
     }
 
@@ -170,21 +184,33 @@ public class NoiseSensor extends PhoneStateListener {
         sampleTime = sTime;
     }
 
-    public void startListening(int interval) {
+    public void startListening(int interval) {    	
         listenInterval = interval;
-        listening = true;
+        listeningEnabled = true;
+        isListening = true;
 
         Thread t = new Thread() {
             public void run() {
-                if (listenInterval == -1) {
-                    recorder = new MediaRecorder();
-                    soundStreamHandler.post(new SoundStreamThread());
-                } else {
+                if (listenInterval == -1)
+                {
+                    recorder = new MediaRecorder();                    
+                    if(soundStreamThread != null)
+                    	soundStreamHandler.removeCallbacks(soundStreamThread);
+                    soundStreamThread = new SoundStreamThread();
+                    soundStreamHandler.post(soundStreamThread);
+                } 
+                else 
+                {
                     bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE,
                             AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
-                    audioRec = new AudioRecord(MediaRecorder.AudioSource.MIC, DEFAULT_SAMPLE_RATE,
+                    if(isCalling)
+                    audioRec = new AudioRecord(MediaRecorder.AudioSource.VOICE_UPLINK, DEFAULT_SAMPLE_RATE,
                             AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT,
                             bufferSize);
+                    else
+                    	audioRec = new AudioRecord(MediaRecorder.AudioSource.MIC, DEFAULT_SAMPLE_RATE,
+                                AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT,
+                                bufferSize);
 
                     if (audioRec.getState() == AudioRecord.STATE_UNINITIALIZED) {
                         Log.d(TAG,
@@ -205,22 +231,34 @@ public class NoiseSensor extends PhoneStateListener {
             }
         };
         t.start();
-
     }
 
-    public void stopListening() {
-        try {
-
-            listening = false;
-            
+    private void pauzeListening() {
+        try {                  	
+        	isListening = false;
             // clear any old noise sensing threads
-            if (noiseThread != null) {
+            if (noiseThread != null) 
+            {
                 noiseThreadHandler.removeCallbacks(noiseThread);                
                 noiseThread = null;
             }
+            if (soundStreamThread != null) 
+            {
+                soundStreamHandler.removeCallbacks(soundStreamThread);                
+                soundStreamThread = null;
+            }
+            if(calculateNoiseThread != null)
+            {
+            	calculateNoiseHandler.removeCallbacks(calculateNoiseThread);
+            	calculateNoiseThread = null;
+            }            
+            
             
             if (audioRec != null)
+            {
+            	audioRec.stop();
                 audioRec.release();
+            }
             
             if (listenInterval == -1 && recorder != null) {
                 recorder.stop();
@@ -230,5 +268,12 @@ public class NoiseSensor extends PhoneStateListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public void stopListening() 
+    {    	
+    	listeningEnabled = false;
+    	isListening = false;
+        pauzeListening();           
     }
 }
