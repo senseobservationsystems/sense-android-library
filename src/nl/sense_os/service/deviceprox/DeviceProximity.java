@@ -32,6 +32,9 @@ public class DeviceProximity {
 	 * Scan thread 1.6
 	 */
 	private class ScanThread1_6 implements Runnable {
+
+		private boolean bbActiveFromTheStart = false;
+
 		private class BluetoothDeviceListener implements LocalBluetoothDeviceListener {
 
 			public void bluetoothDisabled() {
@@ -84,7 +87,8 @@ public class DeviceProximity {
 					Log.e(TAG, "JSONException preparing Bluetooth sensing data:", e);
 				} catch (BluetoothException e) {
 					Log.e(TAG, "BluetoothException preparing Bluetooth sensing data:", e);
-				}				
+				}	
+				stop();
 				scanHandler.postDelayed(scanThread1_6 = new ScanThread1_6(), scanInterval);
 			}
 
@@ -104,6 +108,7 @@ public class DeviceProximity {
 				btListener = new BluetoothDeviceListener();
 				btDevice.setListener(btListener);
 
+				bbActiveFromTheStart = btDevice.isEnabled();
 				if(!btDevice.isEnabled())
 					btDevice.setEnabled(true);
 
@@ -126,7 +131,9 @@ public class DeviceProximity {
 		public void stop()
 		{
 			try {
-				btDevice.stopScanning();
+				btDevice.stopScanning();		
+				if(!bbActiveFromTheStart)
+					btDevice.setEnabled(false);
 				btDevice.close();	
 			}  catch (Exception e) {				
 				Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
@@ -139,12 +146,14 @@ public class DeviceProximity {
 	 */
 	private class ScanThread2_1 implements Runnable {
 
+		private boolean bbActiveFromTheStart = false;
+
 		private BroadcastReceiver bbReceiver = new BroadcastReceiver() {
 
 			public void onReceive(Context context, Intent intent) {
 				if(!scanEnabled)
 					return;
-				
+
 				String action = intent.getAction();
 				// When discovery finds a device
 				if (android.bluetooth.BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -183,8 +192,8 @@ public class DeviceProximity {
 						msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, json.toString(),
 								SenseSettings.SENSOR_DATA_TYPE_JSON);
 					}				
-
-					scanHandler.postDelayed(scanThread2_1 = new ScanThread2_1(), scanInterval);
+					stop();
+					scanHandler.postDelayed(scanThread2_1 = new ScanThread2_1(), scanInterval);					
 				}
 			}
 		};
@@ -195,7 +204,7 @@ public class DeviceProximity {
 			// send address
 			try {
 				btAdapter = BluetoothAdapter.getDefaultAdapter();
-				btAdapter.enable();
+				bbActiveFromTheStart = btAdapter.isEnabled();				
 
 			} catch (Exception e) {
 				Log.e(TAG, "JSONException preparing Bluetooth scan thread:", e);
@@ -204,23 +213,48 @@ public class DeviceProximity {
 
 		public void run() {
 			if (scanEnabled) {
+				if(!btAdapter.isEnabled())
+				{
+					btAdapter.enable();
+					Log.d(TAG, "Bluetooth enabled for discovery, waiting 1 sec");
+					try {
+						while(!btAdapter.isEnabled())
+						{
+							Log.d(TAG, "... waiting 1 sec");
+							Thread.sleep(1000); // evil but necessary
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+				}
 				// Log.d(TAG, "Starting discovery");
 				deviceArray = new Vector<Map<android.bluetooth.BluetoothDevice, Short>>();
 				context.registerReceiver(bbReceiver, new IntentFilter(
 						android.bluetooth.BluetoothDevice.ACTION_FOUND));
 				context.registerReceiver(bbReceiver, new IntentFilter(
 						BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
-
+				Log.d(TAG, "Starting discovery");
 				btAdapter.startDiscovery();
 			} else {
-				// do nothing
+				stop();
 			}
 		}
 
 		public void stop()
 		{
-			context.unregisterReceiver(bbReceiver);
-			btAdapter.cancelDiscovery();
+			try
+			{
+				Log.d(TAG, "Stopping BT discovery service");
+				context.unregisterReceiver(bbReceiver);
+				btAdapter.cancelDiscovery();
+				if(!bbActiveFromTheStart)
+					btAdapter.disable();
+			}
+			catch(Exception e)
+			{
+				Log.e(TAG,e.getMessage());
+			}
 		}
 
 	}
