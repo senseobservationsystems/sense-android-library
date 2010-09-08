@@ -552,6 +552,8 @@ public class MsgHandler {
                     json.put(entry.getKey(), (String) entry.getValue());
                 } else if (entry.getValue() instanceof Integer) {
                     json.put(entry.getKey(), (Integer) entry.getValue());
+                } else if (entry.getValue() instanceof Float) {
+                    json.put(entry.getKey(), (Float) entry.getValue());
                 } else if (entry.getValue() instanceof Double) {
                     json.put(entry.getKey(), (Double) entry.getValue());
                 } else {
