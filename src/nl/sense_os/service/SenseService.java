@@ -32,10 +32,12 @@ import android.widget.Toast;
 
 import nl.sense_os.app.R;
 import nl.sense_os.app.SenseSettings;
+import nl.sense_os.service.ambience.LightSensor;
+import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.motion.MotionSensor;
-import nl.sense_os.service.noise.NoiseSensor;
+import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.popquiz.SenseAlarmManager;
 
@@ -150,7 +152,7 @@ public class SenseService extends Service {
         }
 
         public void toggleNoise(boolean active, ISenseServiceCallback callback) {
-            SenseService.this.toggleNoise(active);
+            SenseService.this.toggleAmbience(active);
             // this.getStatus(callback);
         }
 
@@ -176,7 +178,7 @@ public class SenseService extends Service {
     public static final int STATUS_DEVICE_PROX = 4;
     public static final int STATUS_LOCATION = 8;
     public static final int STATUS_MOTION = 16;
-    public static final int STATUS_NOISE = 32;
+    public static final int STATUS_AMBIENCE = 32;
     public static final int STATUS_PHONESTATE = 64;
     public static final int STATUS_QUIZ = 128;
     public static final int STATUS_RUNNING = 256;
@@ -186,14 +188,16 @@ public class SenseService extends Service {
     private LocationListener locListener;
     private LoginPossibility loginPossibility;
     private MotionSensor motionSensor;
+    private ProximitySensor	proximitySensor;
     private MsgHandler msgHandler;
     private NoiseSensor noiseSensor;
+    private LightSensor lightSensor;
     private PhoneStateListener psl;
     private boolean started; 
     private boolean statusDeviceProx; 
     private boolean statusLocation; 
     private boolean statusMotion;
-    private boolean statusNoise;
+    private boolean statusAmbience;
     private boolean statusPhoneState;
     private boolean statusPopQuiz;
     private TelephonyManager telMan;
@@ -267,13 +271,15 @@ public class SenseService extends Service {
         this.motionSensor = new MotionSensor(this.msgHandler, this);
         this.psl = new SensePhoneState(this.msgHandler, this.telMan);
         this.noiseSensor = new NoiseSensor(this.msgHandler);
+        this.proximitySensor = new ProximitySensor(this.msgHandler, this);
+        this.lightSensor = new LightSensor(this.msgHandler, this);
         
         // statuses
         this.started = false;
         this.statusDeviceProx = false;
         this.statusLocation = false;
         this.statusMotion = false;
-        this.statusNoise = false;
+        this.statusAmbience = false;
         this.statusPhoneState = false;
         this.statusPopQuiz = false;       
     }
@@ -423,9 +429,9 @@ public class SenseService extends Service {
                 Log.d(TAG, "Restart motion service...");
                 toggleMotion(true);
             }
-            if ((status & STATUS_NOISE) > 0) {
+            if ((status & STATUS_AMBIENCE) > 0) {
                 Log.d(TAG, "Restart noise service...");
-                toggleNoise(true);
+                toggleAmbience(true);
             }
             if ((status & STATUS_PHONESTATE) > 0) {
                 Log.d(TAG, "Restart phone state service...");
@@ -466,8 +472,8 @@ public class SenseService extends Service {
             if (true == this.statusLocation) {
                 toggleLocation(false);
             }
-            if (true == this.statusNoise) {
-                toggleNoise(false);
+            if (true == this.statusAmbience) {
+                toggleAmbience(false);
             }
             if (true == this.statusPhoneState) {
                 togglePhoneState(false);
@@ -613,7 +619,7 @@ public class SenseService extends Service {
         status = sLoggedIn ? status + STATUS_CONNECTED : status;
         status = this.statusPhoneState ? status + STATUS_PHONESTATE : status;
         status = this.statusLocation ? status + STATUS_LOCATION : status;
-        status = this.statusNoise ? status + STATUS_NOISE : status;
+        status = this.statusAmbience ? status + STATUS_AMBIENCE : status;
         status = this.statusPopQuiz ? status + STATUS_QUIZ : status;
         status = this.statusDeviceProx ? status + STATUS_DEVICE_PROX : status;
         status = this.statusMotion ? status + STATUS_MOTION : status;
@@ -923,8 +929,7 @@ public class SenseService extends Service {
 
     private void toggleMotion(boolean active) {
 
-        if (active != this.statusMotion) {
-            SensorManager mgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (active != this.statusMotion) {           
             if (true == active) {
                
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -960,9 +965,9 @@ public class SenseService extends Service {
         }
     }
 
-    private void toggleNoise(boolean active) {
+    private void toggleAmbience(boolean active) {
         
-        if (active != this.statusNoise) {
+        if (active != this.statusAmbience) {
             final TelephonyManager telMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
             if (true == active) {
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -985,14 +990,19 @@ public class SenseService extends Service {
                 default:
                     Log.e(TAG, "Unexpected quiz rate preference.");
                 }
-                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_CALL_STATE);
-                this.noiseSensor.startListening(interval);
+                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_CALL_STATE);       
+                
+                if(prefs.getBoolean(SenseSettings.PREF_AMBIENCE_MIC, true))
+                	this.noiseSensor.startListening(interval);
+                if(prefs.getBoolean(SenseSettings.PREF_AMBIENCE_LIGHT, true))
+                	this.lightSensor.startLightSensing(interval);
 
-                this.statusNoise = true;
+                this.statusAmbience = true;
             } else {
                 telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_NONE);
                 this.noiseSensor.stopListening();
-                this.statusNoise = false;
+                this.lightSensor.stopLightSensing();
+                this.statusAmbience = false;
             }
             
             saveStatus();
@@ -1003,19 +1013,44 @@ public class SenseService extends Service {
 
         if (active != this.statusPhoneState) {
             if (true == active) {
-
+            	this.statusPhoneState = true;
                 // start listening to any phone connectivity updates
                 this.telMan.listen(this.psl, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR
                         | PhoneStateListener.LISTEN_CALL_STATE
                         | PhoneStateListener.LISTEN_DATA_ACTIVITY
                         | PhoneStateListener.LISTEN_DATA_CONNECTION_STATE
                         | PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR
-                        | PhoneStateListener.LISTEN_SERVICE_STATE);
-
-                this.statusPhoneState = true;
+                        | PhoneStateListener.LISTEN_SERVICE_STATE
+                        | PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+                
+                  
+                    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    final int rate = Integer.parseInt(prefs.getString(
+                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                    int interval = -1;
+                    switch (rate) {
+                    case -2: // real time
+                        interval = 0;
+                        break;
+                    case -1: // often
+                        interval = 5 * 1000;
+                        break;
+                    case 0: // normal
+                        interval = 60 * 1000;
+                        break;
+                    case 1: // rarely (1 hour)
+                        interval = 15 * 1000;
+                        break;
+                    default:
+                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                        break;
+                    }               
+                
+                proximitySensor.startProximitySensing(interval);
             } else {
                 // stop phone state listener
                 telMan.listen(this.psl, PhoneStateListener.LISTEN_NONE);
+                proximitySensor.stopProximitySensing();
                 this.statusPhoneState = false;
             }
             
@@ -1044,8 +1079,7 @@ public class SenseService extends Service {
             saveStatus();
         }
     }
-   
-
+ 
     // BroadcastReceiver for handling ACTION_SCREEN_OFF.
     public BroadcastReceiver bReceiverASO = new BroadcastReceiver() {
         @Override

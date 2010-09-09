@@ -1,4 +1,4 @@
-package nl.sense_os.service.noise;
+package nl.sense_os.service.ambience;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -146,7 +146,7 @@ public class NoiseSensor extends PhoneStateListener {
     private boolean isListening = false;
     private int listenInterval; // Update interval in msec
     private NoiseSensorThread noiseThread = null;   
-    private nl.sense_os.service.noise.NoiseSensor.NoiseSensorThread.CalculateNoiseThread calculateNoiseThread = null;
+    private nl.sense_os.service.ambience.NoiseSensor.NoiseSensorThread.CalculateNoiseThread calculateNoiseThread = null;
     private SoundStreamThread soundStreamThread = null;
     private Handler noiseThreadHandler = new Handler();
     private Handler soundStreamHandler = new Handler();

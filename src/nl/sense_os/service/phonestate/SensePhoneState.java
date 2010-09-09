@@ -20,13 +20,14 @@ public class SensePhoneState extends PhoneStateListener {
     private static final String TAG = "Sense PhoneStateListener";
     private MsgHandler msgHandler;
     private TelephonyManager telman;
+    
 
     public SensePhoneState(MsgHandler msgHandler, TelephonyManager telman) {
         super();
         this.telman = telman;
         this.msgHandler = msgHandler;
     }
-
+    
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
         // Log.d(TAG, "Call state changed.");
