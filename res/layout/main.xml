@@ -320,7 +320,7 @@
                     android:layout_centerVertical="true"     
                     android:singleLine="true"
                     android:ellipsize="marquee"
-                    android:text="Bluetooth devices near you" /> 
+                    android:text="Wireless devices near you" /> 
             </RelativeLayout>
             <TextView
                 android:text="Preferences"

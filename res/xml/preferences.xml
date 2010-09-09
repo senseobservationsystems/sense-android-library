@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="General settings">
         <Preference 
             android:title="Change login"
@@ -88,8 +87,10 @@
         </PreferenceScreen>
         <PreferenceScreen 
             android:title="Neighboring devices"
-            android:summary="Bluetooth sensing settings"
-            android:enabled="false">
-        </PreferenceScreen>
+            android:enabled="true" android:summary="Wireless sensing settings">
+        <PreferenceCategory android:title="Main settings"><CheckBoxPreference android:summary="Use bluetooth to find neighboring devices" android:defaultValue="true" android:title="Bluetooth " android:key="proximity_bt"></CheckBoxPreference>
+<CheckBoxPreference android:key="proximity_wifi" android:summary="Use WIFI to find neighboring devices" android:title="WIFI " android:defaultValue="True"></CheckBoxPreference>
+</PreferenceCategory>
+</PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>
