@@ -1,6 +1,5 @@
 package nl.sense_os.service.deviceprox;
 
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +18,8 @@ import nl.sense_os.service.MsgHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+
 
 public class WIFIDeviceProximity {
 

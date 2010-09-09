@@ -266,7 +266,7 @@ public class BluetoothDeviceProximity {
 	private static final String BLUETOOTH_DISCOVERY = "bluetooth_discovery";
 	private BluetoothAdapter btAdapter;
 	private final Context context;
-	private boolean isRealtime = false;
+	
 	private final MsgHandler msgHandler;
 	private boolean scanEnabled = false;
 	private final Handler scanHandler = new Handler(Looper.getMainLooper());
@@ -288,8 +288,7 @@ public class BluetoothDeviceProximity {
 	}
 
 	public void startEnvironmentScanning(int interval) {
-		scanInterval = interval;
-		isRealtime = scanInterval == 1;
+		scanInterval = interval;		
 		scanEnabled = true;
 		Thread t = new Thread() {
 			public void run() {
