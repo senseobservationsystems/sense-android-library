@@ -196,6 +196,10 @@ public class SenseSettings extends PreferenceActivity {
 	public static final String PREF_PROXIMITY_BT = "proximity_bt";
 	/** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
 	public static final String PREF_PROXIMITY_WIFI = "proximity_wifi";
+	/** Key for preference that toggles use of the microphone in ambience sensing. */
+	public static final String PREF_AMBIENCE_MIC = "ambience_mic";
+	/** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
+	public static final String PREF_AMBIENCE_LIGHT = "ambience_light";
 	private static final String TAG = "Sense Settings";
 	public static final String URL_BASE = "http://demo.almende.com/commonSense2/";
 	public static final String URL_CHECK_PHONE = URL_BASE + "device_check.php";

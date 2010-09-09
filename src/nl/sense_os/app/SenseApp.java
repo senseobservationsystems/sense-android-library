@@ -179,20 +179,20 @@ public class SenseApp extends Activity {
                     final boolean location = ((status & SenseService.STATUS_LOCATION) > 0);
                     button.setChecked(location);
                     button.setEnabled(connected);
-                    button = (CheckBox) findViewById(R.id.noise_cb);
+                    button = (CheckBox) findViewById(R.id.ambience_cb);
                     text1 = findViewById(R.id.location_firstline);
                     text2 = findViewById(R.id.location_secondLine);
                     text1.setEnabled(connected);
                     text2.setEnabled(connected);
 
                     // enable noise list row
-                    button = (CheckBox) findViewById(R.id.noise_cb);
-                    final boolean noise = ((status & SenseService.STATUS_NOISE) > 0);
+                    button = (CheckBox) findViewById(R.id.ambience_cb);
+                    final boolean noise = ((status & SenseService.STATUS_AMBIENCE) > 0);
                     button.setChecked(noise);
                     button.setEnabled(connected);
-                    button = (CheckBox) findViewById(R.id.noise_cb);
-                    text1 = findViewById(R.id.noise_firstline);
-                    text2 = findViewById(R.id.noise_secondLine);
+                    button = (CheckBox) findViewById(R.id.ambience_cb);
+                    text1 = findViewById(R.id.ambience_firstline);
+                    text2 = findViewById(R.id.ambience_secondLine);
                     text1.setEnabled(connected);
                     text2.setEnabled(connected);
 
@@ -595,16 +595,16 @@ public class SenseApp extends Activity {
                 toggleMotion(cb.isChecked());
             }
             break;
-        case R.id.noise_field:
-            cb = (CheckBox) findViewById(R.id.noise_cb);
+        case R.id.ambience_field:
+            cb = (CheckBox) findViewById(R.id.ambience_cb);
             if (cb.isEnabled()) {
                 oldState = cb.isChecked();
                 cb.setChecked(!oldState);
                 toggleNoise(!oldState);
             }
             break;
-        case R.id.noise_cb:
-            cb = (CheckBox) findViewById(R.id.noise_cb);
+        case R.id.ambience_cb:
+            cb = (CheckBox) findViewById(R.id.ambience_cb);
             if (cb.isEnabled()) {
                 toggleNoise(cb.isChecked());
             }
@@ -906,7 +906,7 @@ public class SenseApp extends Activity {
                     switch (rate) {
                     case -2:
                         intervalString = "the whole time";
-                        extraString = " The sound can be streamed via direct connection.";
+                        extraString = " A sound stream will be uploaded.";
                         break;
                     case -1:
                         // often
@@ -923,15 +923,15 @@ public class SenseApp extends Activity {
                     default:
                         Log.e(TAG, "Unexpected quiz rate preference.");
                     }
-                    String msg = getString(R.string.toast_toggle_noise)
+                    String msg = getString(R.string.toast_toggle_ambience)
                             .replace("?", intervalString) + extraString;
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
             } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException toggling noise service.");
+                Log.e(TAG, "RemoteException toggling ambience service.");
             }
         } else {
-            Log.w(TAG, "Could not toggle noise service: Sense service is not bound.");
+            Log.w(TAG, "Could not toggle ambience service: Sense service is not bound.");
         }
     }
 
