@@ -1,13 +1,10 @@
 package nl.sense_os.service.deviceprox;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
-
-
 
 public class DeviceProximity {
 

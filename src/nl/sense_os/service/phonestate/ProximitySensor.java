@@ -14,7 +14,6 @@ import android.util.Log;
 import nl.sense_os.service.MsgHandler;
 
 public class ProximitySensor implements SensorEventListener {
-	@SuppressWarnings("unused")
 	private static final String TAG = "Sense Proximity Sensor";
 	private MsgHandler msgHandler;
 	private long sampleDelay = 0; //in milliseconds    

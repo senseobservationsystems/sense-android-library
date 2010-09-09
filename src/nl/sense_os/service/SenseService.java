@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -21,12 +19,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.text.format.Time;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -55,7 +51,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SenseService extends Service {
