@@ -62,7 +62,7 @@
     <string name="toast_toggle_dev_prox">Device proximity will update every ?.</string>
     <string name="toast_toggle_location">Location will update every ?.</string>
     <string name="toast_toggle_motion">Motion sensor will update every ?.</string>
-    <string name="toast_toggle_noise">Noise measurement will update ?.</string>
+    <string name="toast_toggle_ambience">Ambience measurements will update ?.</string>
     <string name="toast_toggle_phonestate">Changes in phone state will be shared with CommonSense.</string>
     <string name="toast_toggle_quiz">A question will pop up every ?.</string>
 </resources>

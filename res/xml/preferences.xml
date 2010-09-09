@@ -49,10 +49,11 @@
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen 
-            android:title="Sound sensing"
-            android:summary="Sound sensing settings"
-            android:enabled="false">
-        </PreferenceScreen>
+            android:summary="Ambience sensing settings" android:title="Ambience sensing" android:enabled="true">
+        <PreferenceCategory android:title="Main settings"><CheckBoxPreference android:title="Microphone" android:defaultValue="True" android:summary="Measures noise or records audio" android:key="ambience_mic"></CheckBoxPreference>
+<CheckBoxPreference android:key="ambience_light" android:defaultValue="True" android:summary="Measures the light intensity" android:title="Light"></CheckBoxPreference>
+</PreferenceCategory>
+</PreferenceScreen>
         <PreferenceScreen 
             android:title="Periodic popups"
             android:summary="Periodic popup question settings"
