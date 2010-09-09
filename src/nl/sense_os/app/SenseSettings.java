@@ -192,6 +192,10 @@ public class SenseSettings extends PreferenceActivity {
 	public static final String PREF_REGISTER = "register";
 	/** Name of the private preference file, used for storing login data. */
 	public static final String PRIVATE_PREFS = "login";
+	/** Key for preference that toggles use of GPS in location sensor. */
+	public static final String PREF_PROXIMITY_BT = "proximity_bt";
+	/** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
+	public static final String PREF_PROXIMITY_WIFI = "proximity_wifi";
 	private static final String TAG = "Sense Settings";
 	public static final String URL_BASE = "http://demo.almende.com/commonSense2/";
 	public static final String URL_CHECK_PHONE = URL_BASE + "device_check.php";
