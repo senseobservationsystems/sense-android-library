@@ -1,5 +1,8 @@
 package nl.sense_os.service.phonestate;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -173,4 +176,6 @@ public class SensePhoneState extends PhoneStateListener {
         this.msgHandler.sendSensorData("signal strength", data);
         super.onSignalStrengthsChanged(signalStrength);
     }
+   
+
 }

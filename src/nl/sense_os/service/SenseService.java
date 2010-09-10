@@ -33,6 +33,8 @@ import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.motion.MotionSensor;
+import nl.sense_os.service.phonestate.PhoneActivitySensor;
+import nl.sense_os.service.phonestate.PressureSensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.popquiz.SenseAlarmManager;
@@ -187,6 +189,8 @@ public class SenseService extends Service {
     private MsgHandler msgHandler;
     private NoiseSensor noiseSensor;
     private LightSensor lightSensor;
+    private PressureSensor pressureSensor;
+    private PhoneActivitySensor phoneActivitySensor;
     private PhoneStateListener psl;
     private boolean started; 
     private boolean statusDeviceProx; 
@@ -268,6 +272,8 @@ public class SenseService extends Service {
         this.noiseSensor = new NoiseSensor(this.msgHandler);
         this.proximitySensor = new ProximitySensor(this.msgHandler, this);
         this.lightSensor = new LightSensor(this.msgHandler, this);
+        this.pressureSensor = new PressureSensor(this.msgHandler, this);
+        this.phoneActivitySensor = new PhoneActivitySensor(this.msgHandler, this);
         
         // statuses
         this.started = false;
@@ -1042,10 +1048,14 @@ public class SenseService extends Service {
                     }               
                 
                 proximitySensor.startProximitySensing(interval);
+                pressureSensor.startPressureSensing(interval);
+                phoneActivitySensor.startPhoneActivitySensing(interval);
             } else {
                 // stop phone state listener
                 telMan.listen(this.psl, PhoneStateListener.LISTEN_NONE);
                 proximitySensor.stopProximitySensing();
+                pressureSensor.stopPressureSensing();
+                phoneActivitySensor.stopPhoneActivitySensing();
                 this.statusPhoneState = false;
             }
             
