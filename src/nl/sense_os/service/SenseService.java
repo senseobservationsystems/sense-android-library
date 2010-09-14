@@ -43,6 +43,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,8 +54,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SenseService extends Service {
     private class LoginPossibility extends BroadcastReceiver {
@@ -102,34 +102,30 @@ public class SenseService extends Service {
         }
 
         public String serviceResponse() {
-            if (SenseService.this.msgHandler != null) {
-                return SenseService.this.msgHandler.getHttpResponse();
-            } else {
-                return "";
-            }
+            return "";
         }
 
         public void setDeviceId(String id) {
-            final SharedPreferences prefs = getSharedPreferences(MsgHandler.PREF_MSG_HANDLER,
+            final SharedPreferences prefs = getSharedPreferences(OldMsgHandler.PREF_MSG_HANDLER,
                     MODE_PRIVATE);
             final Editor editor = prefs.edit();
-            editor.putString(MsgHandler.PREF_KEY_DEVICE_ID, id);
+            editor.putString(OldMsgHandler.PREF_KEY_DEVICE_ID, id);
             editor.commit();
         }
 
         public void setUpdateFreq(int freq) {
-            final SharedPreferences prefs = getSharedPreferences(MsgHandler.PREF_MSG_HANDLER,
+            final SharedPreferences prefs = getSharedPreferences(OldMsgHandler.PREF_MSG_HANDLER,
                     MODE_PRIVATE);
             final Editor editor = prefs.edit();
-            editor.putInt(MsgHandler.PREF_KEY_UPDATE, freq);
+            editor.putInt(OldMsgHandler.PREF_KEY_UPDATE, freq);
             editor.commit();
         }
 
         public void setUrl(String url) {
-            final SharedPreferences prefs = getSharedPreferences(MsgHandler.PREF_MSG_HANDLER,
+            final SharedPreferences prefs = getSharedPreferences(OldMsgHandler.PREF_MSG_HANDLER,
                     MODE_PRIVATE);
             final Editor editor = prefs.edit();
-            editor.putString(MsgHandler.PREF_KEY_URL, url);
+            editor.putString(OldMsgHandler.PREF_KEY_URL, url);
             editor.commit();
         }
 
@@ -185,16 +181,15 @@ public class SenseService extends Service {
     private LocationListener locListener;
     private LoginPossibility loginPossibility;
     private MotionSensor motionSensor;
-    private ProximitySensor	proximitySensor;
-    private MsgHandler msgHandler;
+    private ProximitySensor proximitySensor;
     private NoiseSensor noiseSensor;
     private LightSensor lightSensor;
     private PressureSensor pressureSensor;
     private PhoneActivitySensor phoneActivitySensor;
     private PhoneStateListener psl;
-    private boolean started; 
-    private boolean statusDeviceProx; 
-    private boolean statusLocation; 
+    private boolean started;
+    private boolean statusDeviceProx;
+    private boolean statusLocation;
     private boolean statusMotion;
     private boolean statusAmbience;
     private boolean statusPhoneState;
@@ -260,20 +255,23 @@ public class SenseService extends Service {
     }
 
     private void initFields() {
-        this.msgHandler = new MsgHandler(this);
         this.loginPossibility = new LoginPossibility();
         this.telMan = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        
+
         // listeners
-        this.deviceProximity = new DeviceProximity(msgHandler, this);
-        this.locListener = new LocationSensor(this.msgHandler);
-        this.motionSensor = new MotionSensor(this.msgHandler, this);
-        this.psl = new SensePhoneState(this.msgHandler, this.telMan);
-        this.noiseSensor = new NoiseSensor(this.msgHandler);
-        this.proximitySensor = new ProximitySensor(this.msgHandler, this);
-        this.lightSensor = new LightSensor(this.msgHandler, this);
-        this.pressureSensor = new PressureSensor(this.msgHandler, this);
-        this.phoneActivitySensor = new PhoneActivitySensor(this.msgHandler, this);
+        this.deviceProximity = new DeviceProximity(this);
+        this.locListener = new LocationSensor(this);
+        this.motionSensor = new MotionSensor(this);
+        this.psl = new SensePhoneState(this.telMan, this);
+        this.noiseSensor = new NoiseSensor(this);
+        this.proximitySensor = new ProximitySensor(this);
+        this.lightSensor = new LightSensor(this);
+        this.pressureSensor = new PressureSensor(this);
+        this.phoneActivitySensor = new PhoneActivitySensor(this);
+        this.pressureSensor = new PressureSensor(this);
+        this.phoneActivitySensor = new PhoneActivitySensor(this);
+        this.pressureSensor = new PressureSensor(this);
+        this.phoneActivitySensor = new PhoneActivitySensor(this);
         
         // statuses
         this.started = false;
@@ -282,7 +280,7 @@ public class SenseService extends Service {
         this.statusMotion = false;
         this.statusAmbience = false;
         this.statusPhoneState = false;
-        this.statusPopQuiz = false;       
+        this.statusPopQuiz = false;
     }
 
     private boolean login(String email, String pass) {
@@ -347,8 +345,10 @@ public class SenseService extends Service {
         if (error) {
             contentText = "Trying to log in...";
         } else {
-            SharedPreferences prefs = this.getSharedPreferences(PRIVATE_PREFS, Context.MODE_PRIVATE);            
-            contentText = "Logged in as " + prefs.getString(SenseSettings.PREF_LOGIN_MAIL, "UNKNOWN");
+            SharedPreferences prefs = this
+                    .getSharedPreferences(PRIVATE_PREFS, Context.MODE_PRIVATE);
+            contentText = "Logged in as "
+                    + prefs.getString(SenseSettings.PREF_LOGIN_MAIL, "UNKNOWN");
         }
         final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
         notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -376,13 +376,13 @@ public class SenseService extends Service {
         // Init stuff
         initFields();
 
-        // make service as important as regular activities        
+        // make service as important as regular activities
         startForegroundCompat();
-        
+
         // Register the receiver for SCREEN OFF events
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(bReceiverASO, filter);
-     }
+    }
 
     @Override
     public void onDestroy() {
@@ -395,13 +395,20 @@ public class SenseService extends Service {
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Ignoring exception when trying to unregister login module...");
         }
+        
+        // stop listening to screen off receiver
+        try {
+            unregisterReceiver(this.bReceiverASO);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Ignoring exception when trying to unregister screen off listener...");
+        }
 
         // stop active sensing components
         onLogOut();
 
         // stop the main service
         this.started = false;
-        stopForegroundCompat();        
+        stopForegroundCompat();
     }
 
     /**
@@ -409,15 +416,21 @@ public class SenseService extends Service {
      */
     private void onLogIn() {
         Log.d(TAG, "Logged in...");
-        
+
         // set main status
         this.started = true;
 
+        // start database leeglepelaar
+        Intent alarm = new Intent(this, DataTransmitter.class);
+        PendingIntent operation = PendingIntent.getBroadcast(this, 1, alarm, 0);
+        AlarmManager mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, operation);
+        
         // restart individual sensing components
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final int status = prefs.getInt(SenseSettings.PREF_LAST_STATUS, 0);
         if ((status & STATUS_RUNNING) > 0) {
-            
+
             if ((status & STATUS_DEVICE_PROX) > 0) {
                 Log.d(TAG, "Restart neighboring devices service...");
                 toggleDeviceProx(true);
@@ -459,10 +472,10 @@ public class SenseService extends Service {
 
             // update login status
             SenseService.sLoggedIn = false;
-            notifySenseLogin(true);            
+            notifySenseLogin(true);
 
             final int lastRunningState = saveStatus();
-            
+
             // stop active sensing components
             if (true == this.statusDeviceProx) {
                 toggleDeviceProx(false);
@@ -507,7 +520,7 @@ public class SenseService extends Service {
      */
     @Override
     public void onStart(Intent intent, int startid) {
-        onStartCompat(intent, 0 , startid);
+        onStartCompat(intent, 0, startid);
     }
 
     @Override
@@ -515,7 +528,7 @@ public class SenseService extends Service {
         onStartCompat(intent, flags, startId);
         return START_STICKY;
     }
-    
+
     private void onStartCompat(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStart");
 
@@ -528,7 +541,7 @@ public class SenseService extends Service {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(this.loginPossibility, filter);
     }
-    
+
     private boolean register(String email, String pass) {
         try {
             String cookie = "";
@@ -573,9 +586,10 @@ public class SenseService extends Service {
     public boolean registerPhone() {
         boolean registered = false;
         try {
-            final String imei = this.telMan.getDeviceId();          
-            
-            final URI uri = new URI((SenseSettings.URL_REG_PHONE + "?uuid=" + imei + "&type=smartPhone"));
+            final String imei = this.telMan.getDeviceId();
+
+            final URI uri = new URI(
+                    (SenseSettings.URL_REG_PHONE + "?uuid=" + imei + "&type=smartPhone"));
             final HttpPost post = new HttpPost(uri);
             final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
             final String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
@@ -590,11 +604,19 @@ public class SenseService extends Service {
             final InputStream stream = response.getEntity().getContent();
             final String responseStr = convertStreamToString(stream);
             registered = responseStr.toLowerCase().contains("ok");
-            Map<String, Object> data = new HashMap<String, Object>();
-            data.put("brand", Build.MANUFACTURER);
-            data.put("type", Build.MODEL);            
-            msgHandler.sendSensorData("device properties", data);            
             
+            // put device properties in JSON format
+            JSONObject json = new JSONObject();
+            json.put("brand", Build.MANUFACTURER);
+            json.put("type", Build.MODEL);
+            
+            // send device properties
+            Intent i = new Intent(this, MsgHandler.class);
+            i.putExtra("name", "device properties");
+            i.putExtra("msg", json.toString());
+            i.putExtra("type", SenseSettings.SENSOR_DATA_TYPE_JSON);
+            startService(i);
+
             Log.d(TAG, "CommonSense phone registration: " + responseStr);
         } catch (final IOException e) {
             Log.e(TAG, "IOException registering phone!", e);
@@ -604,6 +626,9 @@ public class SenseService extends Service {
             return false;
         } catch (final URISyntaxException e) {
             Log.e(TAG, "URISyntaxException registering phone!", e);
+            return false;
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException sending device properties", e);
             return false;
         }
         return registered;
@@ -624,7 +649,7 @@ public class SenseService extends Service {
         status = this.statusPopQuiz ? status + STATUS_QUIZ : status;
         status = this.statusDeviceProx ? status + STATUS_DEVICE_PROX : status;
         status = this.statusMotion ? status + STATUS_MOTION : status;
-        
+
         // save status in the preferences
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final int oldStatus = prefs.getInt(SenseSettings.PREF_LAST_STATUS, -1);
@@ -636,7 +661,7 @@ public class SenseService extends Service {
             // send broadcast that something has changed in the status
             sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
         }
-        
+
         return status;
     }
 
@@ -659,15 +684,15 @@ public class SenseService extends Service {
             notifySenseLogin(false);
             SenseService.sLoggedIn = true;
             onLogIn();
-            
+
             // register phone if necessary
             if (!checkPhoneRegistration()) {
                 registerPhone();
             }
         } else {
             Log.d(TAG, "Login failed");
-            
-            SenseService.sLoggedIn = false;            
+
+            SenseService.sLoggedIn = false;
         }
 
         return SenseService.sLoggedIn;
@@ -688,7 +713,7 @@ public class SenseService extends Service {
             // Registration successful
             notifySenseLogin(false);
             SenseService.sLoggedIn = true;
-            
+
             if (!checkPhoneRegistration()) {
                 registerPhone();
             }
@@ -706,18 +731,18 @@ public class SenseService extends Service {
             }
         });
     }
-    
+
     private void startAliveCheck() {
         // put alive status in the preferences
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final Editor editor = prefs.edit();
         editor.putBoolean(SenseSettings.PREF_ALIVE, true);
         editor.commit();
-        
+
         /* start the checks that periodically check if the service should be alive */
         final Intent alarmIntent = new Intent(AliveChecker.ACTION_CHECK_ALIVE);
-        final PendingIntent alarmOp = PendingIntent.getBroadcast(this, AliveChecker.REQ_CHECK_ALIVE,
-                alarmIntent, 0);
+        final PendingIntent alarmOp = PendingIntent.getBroadcast(this,
+                AliveChecker.REQ_CHECK_ALIVE, alarmIntent, 0);
         final long alarmTime = System.currentTimeMillis() + AliveChecker.PERIOD_CHECK_ALIVE;
         final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmOp);
@@ -728,17 +753,17 @@ public class SenseService extends Service {
      * that the service is running, a notification is shown.
      */
     private void startForegroundCompat() {
-        
+
         startAliveCheck();
-        
+
         @SuppressWarnings("rawtypes")
-        final Class[] startForegroundSignature = new Class[] { int.class, Notification.class};
+        final Class[] startForegroundSignature = new Class[] { int.class, Notification.class };
         Method startForeground = null;
-        try { 
-            startForeground = getClass().getMethod("startForeground", startForegroundSignature); 
-        } catch (NoSuchMethodException e) { 
-            // Running on an older platform. 
-            startForeground = null; 
+        try {
+            startForeground = getClass().getMethod("startForeground", startForegroundSignature);
+        } catch (NoSuchMethodException e) {
+            // Running on an older platform.
+            startForeground = null;
         }
 
         // call startForeground in fancy way so old systems do not get confused by unknown methods
@@ -746,38 +771,38 @@ public class SenseService extends Service {
             setForeground(true);
         } else {
             // create notification
-            final int icon = R.drawable.ic_status_sense_disabled; 
+            final int icon = R.drawable.ic_status_sense_disabled;
             final long when = System.currentTimeMillis();
             final Notification n = new Notification(icon, null, when);
             final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
             notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
-            n.setLatestEventInfo(this, "Sense service", "", contentIntent);            
-            
-            Object[] startArgs = {Integer.valueOf(NOTIF_ID), n}; 
-            try { 
-                startForeground.invoke(this, startArgs); 
-            } catch (InvocationTargetException e) { 
-                // Should not happen. 
-                Log.w(TAG, "Unable to invoke startForeground", e); 
-            } catch (IllegalAccessException e) { 
-                // Should not happen. 
-                Log.w(TAG, "Unable to invoke startForeground", e); 
-            } 
+            n.setLatestEventInfo(this, "Sense service", "", contentIntent);
+
+            Object[] startArgs = { Integer.valueOf(NOTIF_ID), n };
+            try {
+                startForeground.invoke(this, startArgs);
+            } catch (InvocationTargetException e) {
+                // Should not happen.
+                Log.w(TAG, "Unable to invoke startForeground", e);
+            } catch (IllegalAccessException e) {
+                // Should not happen.
+                Log.w(TAG, "Unable to invoke startForeground", e);
+            }
         }
     }
-    
+
     private void stopAliveCheck() {
         // remove alive status in the preferences
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final Editor editor = prefs.edit();
         editor.putBoolean(SenseSettings.PREF_ALIVE, false);
         editor.commit();
-        
+
         /* stop the alive check broadcasts */
         final Intent alarmIntent = new Intent(AliveChecker.ACTION_CHECK_ALIVE);
-        final PendingIntent alarmOp = PendingIntent.getBroadcast(this, AliveChecker.REQ_CHECK_ALIVE,
-                alarmIntent, 0);
+        final PendingIntent alarmOp = PendingIntent.getBroadcast(this,
+                AliveChecker.REQ_CHECK_ALIVE, alarmIntent, 0);
         final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(alarmOp);
     }
@@ -787,52 +812,52 @@ public class SenseService extends Service {
      * that the service is running, a notification is shown.
      */
     private void stopForegroundCompat() {
-        
+
         stopAliveCheck();
-        
+
         @SuppressWarnings("rawtypes")
         final Class[] stopForegroundSignature = new Class[] { boolean.class };
         Method stopForeground = null;
-        try { 
-            stopForeground = getClass().getMethod("stopForeground", stopForegroundSignature); 
-        } catch (NoSuchMethodException e) { 
-            // Running on an older platform. 
-            stopForeground = null; 
+        try {
+            stopForeground = getClass().getMethod("stopForeground", stopForegroundSignature);
+        } catch (NoSuchMethodException e) {
+            // Running on an older platform.
+            stopForeground = null;
         }
 
         // remove the notification that the service is running
         final NotificationManager noteMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         noteMgr.cancel(NOTIF_ID);
-        
+
         // call stopForeground in fancy way so old systems do net get confused by unknown methods
         if (stopForeground == null) {
             setForeground(false);
-        } else {           
-            Object[] stopArgs = { Boolean.TRUE }; 
-            try { 
-                stopForeground.invoke(this, stopArgs); 
-            } catch (InvocationTargetException e) { 
-                // Should not happen. 
-                Log.w(TAG, "Unable to invoke stopForeground", e); 
-            } catch (IllegalAccessException e) { 
-                // Should not happen. 
-                Log.w(TAG, "Unable to invoke stopForeground", e); 
-            } 
+        } else {
+            Object[] stopArgs = { Boolean.TRUE };
+            try {
+                stopForeground.invoke(this, stopArgs);
+            } catch (InvocationTargetException e) {
+                // Should not happen.
+                Log.w(TAG, "Unable to invoke stopForeground", e);
+            } catch (IllegalAccessException e) {
+                // Should not happen.
+                Log.w(TAG, "Unable to invoke stopForeground", e);
+            }
         }
     }
 
     private void toggleDeviceProx(boolean active) {
-        
+
         if (active != this.statusDeviceProx) {
-            if (true == active) 
-            {
-                //  showToast(getString(R.string.toast_toggle_dev_prox));
+            if (true == active) {
+                // showToast(getString(R.string.toast_toggle_dev_prox));
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_COMMONSENSE_RATE, "0"));
-                int interval = 1;         
+                final int rate = Integer.parseInt(prefs.getString(
+                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                int interval = 1;
                 switch (rate) {
                 case -2:
-                	interval = 1 * 1000;    
+                    interval = 1 * 1000;
                     break;
                 case -1:
                     // often
@@ -844,7 +869,7 @@ public class SenseService extends Service {
                     break;
                 case 1:
                     // rarely (15 hour)
-                    interval = 15 *60 * 1000;
+                    interval = 15 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected quiz rate preference.");
@@ -852,10 +877,10 @@ public class SenseService extends Service {
                 deviceProximity.startEnvironmentScanning(interval);
                 this.statusDeviceProx = true;
             } else {
-            	deviceProximity.stopEnvironmentScanning();
+                deviceProximity.stopEnvironmentScanning();
                 this.statusDeviceProx = false;
             }
-            
+
             saveStatus();
         }
     }
@@ -923,16 +948,16 @@ public class SenseService extends Service {
                 locMgr.removeUpdates(this.locListener);
                 this.statusLocation = false;
             }
-            
+
             saveStatus();
         }
     }
 
     private void toggleMotion(boolean active) {
 
-        if (active != this.statusMotion) {           
+        if (active != this.statusMotion) {
             if (true == active) {
-               
+
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 final int rate = Integer.parseInt(prefs.getString(
                         SenseSettings.PREF_COMMONSENSE_RATE, "0"));
@@ -953,21 +978,21 @@ public class SenseService extends Service {
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);
                     break;
-                }                
+                }
                 motionSensor.startMotionSensing(interval);
                 this.statusMotion = true;
             } else {
-               motionSensor.stopMotionSensing();
+                motionSensor.stopMotionSensing();
 
                 this.statusMotion = false;
             }
-            
+
             saveStatus();
         }
     }
 
     private void toggleAmbience(boolean active) {
-        
+
         if (active != this.statusAmbience) {
             final TelephonyManager telMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
             if (true == active) {
@@ -991,12 +1016,12 @@ public class SenseService extends Service {
                 default:
                     Log.e(TAG, "Unexpected quiz rate preference.");
                 }
-                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_CALL_STATE);       
-                
-                if(prefs.getBoolean(SenseSettings.PREF_AMBIENCE_MIC, true))
-                	this.noiseSensor.startListening(interval);
-                if(prefs.getBoolean(SenseSettings.PREF_AMBIENCE_LIGHT, true))
-                	this.lightSensor.startLightSensing(interval);
+                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_CALL_STATE);
+
+                if (prefs.getBoolean(SenseSettings.PREF_AMBIENCE_MIC, true))
+                    this.noiseSensor.startListening(interval);
+                if (prefs.getBoolean(SenseSettings.PREF_AMBIENCE_LIGHT, true))
+                    this.lightSensor.startLightSensing(interval);
 
                 this.statusAmbience = true;
             } else {
@@ -1005,7 +1030,7 @@ public class SenseService extends Service {
                 this.lightSensor.stopLightSensing();
                 this.statusAmbience = false;
             }
-            
+
             saveStatus();
         }
     }
@@ -1014,7 +1039,7 @@ public class SenseService extends Service {
 
         if (active != this.statusPhoneState) {
             if (true == active) {
-            	this.statusPhoneState = true;
+                this.statusPhoneState = true;
                 // start listening to any phone connectivity updates
                 this.telMan.listen(this.psl, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR
                         | PhoneStateListener.LISTEN_CALL_STATE
@@ -1023,30 +1048,29 @@ public class SenseService extends Service {
                         | PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR
                         | PhoneStateListener.LISTEN_SERVICE_STATE
                         | PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-                
-                  
-                    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
-                    int interval = -1;
-                    switch (rate) {
-                    case -2: // real time
-                        interval = 0;
-                        break;
-                    case -1: // often
-                        interval = 5 * 1000;
-                        break;
-                    case 0: // normal
-                        interval = 60 * 1000;
-                        break;
-                    case 1: // rarely (1 hour)
-                        interval = 15 * 1000;
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                        break;
-                    }               
-                
+
+                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                final int rate = Integer.parseInt(prefs.getString(
+                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                int interval = -1;
+                switch (rate) {
+                case -2: // real time
+                    interval = 0;
+                    break;
+                case -1: // often
+                    interval = 5 * 1000;
+                    break;
+                case 0: // normal
+                    interval = 60 * 1000;
+                    break;
+                case 1: // rarely (1 hour)
+                    interval = 15 * 1000;
+                    break;
+                default:
+                    Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                    break;
+                }
+
                 proximitySensor.startProximitySensing(interval);
                 pressureSensor.startPressureSensing(interval);
                 phoneActivitySensor.startPhoneActivitySensing(interval);
@@ -1058,7 +1082,7 @@ public class SenseService extends Service {
                 phoneActivitySensor.stopPhoneActivitySensing();
                 this.statusPhoneState = false;
             }
-            
+
             saveStatus();
         }
     }
@@ -1080,34 +1104,32 @@ public class SenseService extends Service {
 
                 this.statusPopQuiz = false;
             }
-            
+
             saveStatus();
         }
     }
- 
+
     // BroadcastReceiver for handling ACTION_SCREEN_OFF.
     public BroadcastReceiver bReceiverASO = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        	// Check action just to be on the safe side.
-        	if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) 
-        	{        		        	
-        		if(statusMotion)
-        		{
-        			Runnable motionThread = new Runnable(){
-        				public void run() {
-        					// Unregisters the motion listener and registers it again. 
-        					Log.d(TAG, "Screen went off, re-registering the Motion sensor");
-        					// wait a few seconds and re-register
-        					toggleMotion(false);
-        					toggleMotion(true);        					
-        				};
-        			};
+            // Check action just to be on the safe side.
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                if (statusMotion) {
+                    Runnable motionThread = new Runnable() {
+                        public void run() {
+                            // Unregisters the motion listener and registers it again.
+                            Log.d(TAG, "Screen went off, re-registering the Motion sensor");
+                            // wait a few seconds and re-register
+                            toggleMotion(false);
+                            toggleMotion(true);
+                        };
+                    };
 
-        			Handler mtHandler = new Handler();        					
-        			mtHandler.postDelayed(motionThread,   500);        			
-        		}
-        	}
+                    Handler mtHandler = new Handler();
+                    mtHandler.postDelayed(motionThread, 500);
+                }
+            }
         }
     };
 }

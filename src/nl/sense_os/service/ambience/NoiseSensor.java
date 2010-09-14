@@ -1,5 +1,7 @@
 package nl.sense_os.service.ambience;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -20,7 +22,7 @@ import java.io.File;
 public class NoiseSensor extends PhoneStateListener {
     private class NoiseSensorThread implements Runnable {
 
-        private class CalculateNoiseThread implements Runnable {
+        protected class CalculateNoiseThread implements Runnable {
             public CalculateNoiseThread() {
             }
 
@@ -46,13 +48,25 @@ public class NoiseSensor extends PhoneStateListener {
 
             public void run() {
                 double dB = calculateDB();
-                msgHandler.sendSensorData("noise_sensor", "" + dB,
-                        SenseSettings.SENSOR_DATA_TYPE_FLOAT);              
-                if (audioRec != null && audioRec.getState() == AudioRecord.STATE_INITIALIZED)
+                
+                // pass message to the MsgHandler
+                Intent i = new Intent(NoiseSensor.this.context, MsgHandler.class);
+                i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_NOISE);
+                i.putExtra(MsgHandler.KEY_VALUE, dB);
+                i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_FLOAT);
+                i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+                NoiseSensor.this.context.startService(i);
+                
+                // stop audio recording
+                if (audioRec != null && audioRec.getState() == AudioRecord.STATE_INITIALIZED) {
                     audioRec.stop();
-                Log.d(TAG, "Done recording.");
-                if (isListening)
+                }
+                
+                // reschedule listen thread
+                if (isListening) {
                     noiseThreadHandler.postDelayed(noiseThread = new NoiseSensorThread(), listenInterval);
+                }
             }
         }
 
@@ -114,8 +128,18 @@ public class NoiseSensor extends PhoneStateListener {
                                 recorder.stop();
                                 recorder.reset();
                                 // wait until finished otherwise it will be overwritten
-                                SoundStreamThread tmp = soundStreamThread;
-                                msgHandler.uploadFile("microphone", recordFileName);
+                                SoundStreamThread tmp = soundStreamThread;                               
+
+                                
+                                // pass message to the MsgHandler
+                                Intent i = new Intent(NoiseSensor.this.context, MsgHandler.class);
+                                i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                                i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_MIC);
+                                i.putExtra(MsgHandler.KEY_VALUE, recordFileName);
+                                i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_STRING);
+                                i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+                                NoiseSensor.this.context.startService(i);
+                                
                                 if (isListening && listenInterval == -1 && tmp.equals(soundStreamThread))                               
                                     soundStreamHandler.post(soundStreamThread = new SoundStreamThread()); 
                               
@@ -137,16 +161,18 @@ public class NoiseSensor extends PhoneStateListener {
     }
 
     private static final int DEFAULT_SAMPLE_RATE = 8000;
-    private static final String TAG = "Sense NoiseSensor";    
+    private static final String TAG = "Sense NoiseSensor";
+    private static final String NAME_NOISE = "noise_sensor";
+    private static final String NAME_MIC = "microphone";
     private AudioRecord audioRec;
     private int bufferSize = 4096;
     private Handler calculateNoiseHandler = new Handler();
-    private MsgHandler msgHandler = null;
     private boolean listeningEnabled = false;
     private boolean isListening = false;
     private int listenInterval; // Update interval in msec
     private NoiseSensorThread noiseThread = null;   
-    private nl.sense_os.service.ambience.NoiseSensor.NoiseSensorThread.CalculateNoiseThread calculateNoiseThread = null;
+    private NoiseSensorThread.CalculateNoiseThread calculateNoiseThread = null;
+    private Context context;
     private SoundStreamThread soundStreamThread = null;
     private Handler noiseThreadHandler = new Handler();
     private Handler soundStreamHandler = new Handler();
@@ -159,8 +185,8 @@ public class NoiseSensor extends PhoneStateListener {
     int sampleTime = 2000;
     int sampleTimeStream = 10000;
 
-    public NoiseSensor(MsgHandler handler) {
-        this.msgHandler = handler;
+    public NoiseSensor(Context context) {
+        this.context = context;
     }
 
     public int getSampleTime() {

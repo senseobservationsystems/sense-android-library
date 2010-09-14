@@ -50,6 +50,14 @@
             </intent-filter>
         </service>
         
+        <service
+            android:name="nl.sense_os.service.MsgHandler"
+            android:process="nl.sense_os.service">
+            <intent-filter>
+                <action android:name="nl.sense_os.service.MsgHandler" />
+            </intent-filter>
+        </service>
+        
         <receiver 
             android:name="nl.sense_os.service.popquiz.PopQuizRx">
             <intent-filter>
@@ -81,6 +89,8 @@
                 <category android:name="android.intent.category.DEFAULT"></category>
             </intent-filter>
         </receiver>
+        
+        <receiver android:name="nl.sense_os.service.DataTransmitter" />
     </application>
 
     <uses-sdk android:minSdkVersion="4"/>

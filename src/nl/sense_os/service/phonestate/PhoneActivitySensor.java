@@ -1,9 +1,6 @@
 package nl.sense_os.service.phonestate;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,19 +10,18 @@ import android.util.Log;
 import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class PhoneActivitySensor  {
-	@SuppressWarnings("unused")
 	private static final String TAG = "Sense Phone activity";
-	private MsgHandler msgHandler;
 	private long sampleDelay = 0; //in milliseconds    
-	private long lastSampleTime;
-	
+	private long lastSampleTime;	
 	private Context context;
 	private static final String PHONE_ACTIVITY = "phone activity";	
 
-	public PhoneActivitySensor(MsgHandler handler, Context _context) {
-		this.msgHandler = handler;
-		this.context = _context;
+	public PhoneActivitySensor(Context context) {
+		this.context = context;
 	}
 
 	private BroadcastReceiver screenActivityReceiver = new BroadcastReceiver() {
@@ -51,12 +47,16 @@ public class PhoneActivitySensor  {
 						Log.e(TAG, "JSONException preparing screen activity data");
 					}
 
-					msgHandler.sendSensorData(PHONE_ACTIVITY, json.toString(), SenseSettings.SENSOR_DATA_TYPE_JSON);	
+					Intent i = new Intent(context, MsgHandler.class);
+					i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+					i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+					i.putExtra(MsgHandler.KEY_VALUE, json.toString());
+					i.putExtra(MsgHandler.KEY_SENSOR_NAME, PHONE_ACTIVITY);
+		            i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+					
 					lastSampleTime = System.currentTimeMillis();
 				}
-				// check if the intent was a activity change intent
-				
-				
+				// check if the intent was a activity change intent				
 			}
 		}
 	};
@@ -80,7 +80,7 @@ public class PhoneActivitySensor  {
 	{
 		try{			
 			context.unregisterReceiver(screenActivityReceiver);
-		}catch(Exception e)
+		} catch(Exception e)
 		{
 			Log.e(TAG, e.getMessage());
 		}

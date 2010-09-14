@@ -1,22 +1,21 @@
 package nl.sense_os.service.phonestate;
 
-import java.util.List;
-
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
 import android.os.Handler;
 import android.util.Log;
 
+import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
 
+import java.util.List;
+
 public class PressureSensor implements SensorEventListener {
-	@SuppressWarnings("unused")
 	private static final String TAG = "Sense Pressure Sensor";
-	private MsgHandler msgHandler;
 	private long sampleDelay = 0; //in milliseconds    
 	private long[] lastSampleTimes = new long[50];
 	private Context context;
@@ -25,9 +24,9 @@ public class PressureSensor implements SensorEventListener {
 	private Handler PressureHandler = new Handler();
 	private Runnable PressureThread = null;
 	private boolean PressureSensingActive = false;
-	public PressureSensor(MsgHandler handler, Context _context) {
-		this.msgHandler = handler;
-		this.context = _context;
+	
+	public PressureSensor(Context context) {
+		this.context = context;
 		smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);		
 		sensors = smgr.getSensorList(Sensor.TYPE_ALL);
 	}
@@ -44,8 +43,7 @@ public class PressureSensor implements SensorEventListener {
 			lastSampleTimes[sensor.getType()] = System.currentTimeMillis();	 
 
 			String sensorName = "";
-			if(sensor.getType()==Sensor.TYPE_PRESSURE)
-			{
+			if(sensor.getType()==Sensor.TYPE_PRESSURE) {
 				sensorName = "pressure";
 			}
 			
@@ -60,7 +58,14 @@ public class PressureSensor implements SensorEventListener {
 				x++;
 			}
 			jsonString += "}";
-			this.msgHandler.sendSensorData(sensorName, jsonString, "json", sensor.getName()); 	       
+			
+			// send msg to MsgHandler
+			Intent i = new Intent(this.context, MsgHandler.class);
+			i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+			i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+			i.putExtra(MsgHandler.KEY_VALUE, jsonString);
+			i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);   
+            i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());    
 		}
 		if(sampleDelay > 500 && PressureSensingActive)
 		{

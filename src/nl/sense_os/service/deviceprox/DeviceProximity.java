@@ -3,8 +3,8 @@ package nl.sense_os.service.deviceprox;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
 import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.MsgHandler;
 
 public class DeviceProximity {
 
@@ -13,15 +13,14 @@ public class DeviceProximity {
 	private BluetoothDeviceProximity bluetoothDP;
 	private WIFIDeviceProximity wifiDP;
 	private boolean btEnabled;
-	private boolean wifiEnabled;
-	
+	private boolean wifiEnabled;	
 	private int scanInterval = 0;
 
-	public DeviceProximity(MsgHandler handler, Context context) 
+	public DeviceProximity(Context context) 
 	{
 		this.context 	= context;
-		bluetoothDP 	= new BluetoothDeviceProximity(handler, context);
-		wifiDP 			= new WIFIDeviceProximity(handler, context);
+		bluetoothDP 	= new BluetoothDeviceProximity(context);
+		wifiDP 			= new WIFIDeviceProximity(context);
 	}
 
 	public int getScanInterval() {

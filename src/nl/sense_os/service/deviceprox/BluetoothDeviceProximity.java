@@ -79,9 +79,15 @@ public class BluetoothDeviceProximity {
 							deviceArray.put(deviceJson);
 						}
 						json.put("bt_devices", deviceArray);
-
-						msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, json.toString(),
-								SenseSettings.SENSOR_DATA_TYPE_JSON);
+			            
+			            // pass message to the MsgHandler
+			            Intent i = new Intent(BluetoothDeviceProximity.this.context, MsgHandler.class);
+			            i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+			            i.putExtra(MsgHandler.KEY_SENSOR_NAME, BLUETOOTH_DISCOVERY);
+			            i.putExtra(MsgHandler.KEY_VALUE, json.toString());
+			            i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+			            i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+			            BluetoothDeviceProximity.this.context.startService(i);
 					}
 				} catch (JSONException e) {
 					Log.e(TAG, "JSONException preparing Bluetooth sensing data:", e);
@@ -188,9 +194,15 @@ public class BluetoothDeviceProximity {
 						} catch (JSONException e) {
 							Log.e(TAG, "JSONException preparing bluetooth scan data");
 						}
-
-						msgHandler.sendSensorData(BLUETOOTH_DISCOVERY, json.toString(),
-								SenseSettings.SENSOR_DATA_TYPE_JSON);
+                        
+                        // pass message to the MsgHandler
+                        Intent i = new Intent(BluetoothDeviceProximity.this.context, MsgHandler.class);
+                        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                        i.putExtra(MsgHandler.KEY_SENSOR_NAME, BLUETOOTH_DISCOVERY);
+                        i.putExtra(MsgHandler.KEY_VALUE, json.toString());
+                        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+                        i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+                        BluetoothDeviceProximity.this.context.startService(i);
 					}				
 					stop();
 					scanHandler.postDelayed(scanThread2_1 = new ScanThread2_1(), scanInterval);					
@@ -227,8 +239,7 @@ public class BluetoothDeviceProximity {
 								btAdapter.enable();
 						}
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Log.e(TAG, "InterruptedException during sleep", e);
 					}					
 				}
 				// Log.d(TAG, "Starting discovery");
@@ -266,16 +277,13 @@ public class BluetoothDeviceProximity {
 	private static final String BLUETOOTH_DISCOVERY = "bluetooth_discovery";
 	private BluetoothAdapter btAdapter;
 	private final Context context;
-	
-	private final MsgHandler msgHandler;
 	private boolean scanEnabled = false;
 	private final Handler scanHandler = new Handler(Looper.getMainLooper());
 	private int scanInterval = 0;
 	private ScanThread2_1 scanThread2_1 = null;
 	private ScanThread1_6 scanThread1_6 = null;	
 
-	public BluetoothDeviceProximity(MsgHandler handler, Context context) {
-		this.msgHandler = handler;
+	public BluetoothDeviceProximity(Context context) {
 		this.context = context;
 	}
 

@@ -1,6 +1,5 @@
 package nl.sense_os.service.phonestate;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.CellLocation;
@@ -13,83 +12,100 @@ import android.util.Log;
 import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SensePhoneState extends PhoneStateListener {
+    private static final String NAME_CALL = "call state";
+    private static final String NAME_DATA = "data connection";
+    private static final String NAME_IP = "ip address";
+    private static final String NAME_SERVICE = "service state";
+    private static final String NAME_SIGNAL = "signal strength";
+    private static final String NAME_UNREAD = "unread msg";
     private static final String TAG = "Sense PhoneStateListener";
-    private MsgHandler msgHandler;
-    private TelephonyManager telman;
-    
 
-    public SensePhoneState(MsgHandler msgHandler, TelephonyManager telman) {
+    private Context context;
+
+    private TelephonyManager telman;
+
+    public SensePhoneState(TelephonyManager telman, Context context) {
         super();
+
         this.telman = telman;
-        this.msgHandler = msgHandler;
+        this.context = context;
     }
-    
+
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
-        // Log.d(TAG, "Call state changed.");
 
-        Map<String, Object> data = new HashMap<String, Object>();
-        String strState = "";
-        if (state == TelephonyManager.CALL_STATE_IDLE) {
-            strState = "idle";
+        JSONObject json = new JSONObject();
+        try {
+            switch (state) {
+            case TelephonyManager.CALL_STATE_IDLE:
+                json.put("state", "idle");
+                break;
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                json.put("state", "calling");
+                break;
+            case TelephonyManager.CALL_STATE_RINGING:
+                json.put("state", "ringing");
+                json.put("incomingNumber", incomingNumber);
+                break;
+            default:
+                Log.e(TAG, "Unexpected call state: " + state);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException in onCallChanged", e);
+            return;
         }
-        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-            strState = "calling";
-        }
-        if (state == TelephonyManager.CALL_STATE_RINGING) {
-            strState = "ringing";
-            data.put("incomingNumber", incomingNumber);
-        }
-        data.put("state", strState);
 
-        this.msgHandler.sendSensorData("call state", data);
-        super.onCallStateChanged(state, incomingNumber);
+        // pass message to the MsgHandler
+        Intent i = new Intent(this.context, MsgHandler.class);
+        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_CALL);
+        i.putExtra(MsgHandler.KEY_VALUE, json.toString());
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        this.context.startService(i);
     }
 
     @Override
     public void onCellLocationChanged(CellLocation location) {
-        // Log.d(TAG, "Cell location changed.");
 
         // TODO: Catch listen cell location!
         // location.requestLocationUpdate();
     }
 
     @Override
-    @SuppressWarnings("unused")
     public void onDataActivity(int direction) {
-        // Log.d(TAG, "Data activity.");
-
-        Map<String, Object> data = new HashMap<String, Object>();
-        String strDirection = "";
-        if (direction == TelephonyManager.DATA_ACTIVITY_IN) {
-            strDirection = "receiving data";
-        }
-        if (direction == TelephonyManager.DATA_ACTIVITY_INOUT) {
-            strDirection = "receiving and sending_data";
-        }
-        if (direction == TelephonyManager.DATA_ACTIVITY_NONE) {
-            strDirection = "none";
-        }
-        if (direction == TelephonyManager.DATA_ACTIVITY_OUT) {
-            strDirection = "sending data";
-            // data.put("dataActivity", strDirection); // Don't Send, will create a loop
-            // msgHandler.sendUpdate(data); // Don't Send, will create a loop
-        }
+        // not used to prevent a loop
+        /*
+         * JSONObject json = new JSONObject(); try { switch (direction) { case
+         * TelephonyManager.DATA_ACTIVITY_IN: json.put("dataActivity", "receiving data"); break;
+         * case TelephonyManager.DATA_ACTIVITY_INOUT: json.put("dataActivity",
+         * "receiving and sending_data"); break; case TelephonyManager.DATA_ACTIVITY_NONE:
+         * json.put("dataActivity", "none"); break; case TelephonyManager.DATA_ACTIVITY_OUT:
+         * json.put("dataActivity", "sending_data"); break; default: Log.e(TAG,
+         * "Unexpected data activity direction: " + direction); return; } } catch (JSONException e)
+         * { Log.e(TAG, "JSONException in onDataActivity", e); return; }
+         * 
+         * // pass message to the MsgHandler Intent i = new Intent(this.context, MsgHandler.class);
+         * i.putExtra("name", "dataActivity"); i.putExtra("msg", json.toString());
+         * i.putExtra("type", SenseSettings.SENSOR_DATA_TYPE_JSON); this.context.startService(i);
+         */
     }
 
     @Override
     public void onDataConnectionStateChanged(int state) {
-        // Log.d(TAG, "Data connection state changed.");
 
         String strState = "";
-        if (state == TelephonyManager.DATA_CONNECTED) {
+        switch (state) {
+        case TelephonyManager.DATA_CONNECTED:
             // send the URL on which the phone can be reached
             String ip = "";
             try {
@@ -106,75 +122,117 @@ public class SensePhoneState extends PhoneStateListener {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error getting my own IP:", e);
+                return;
             }
-            if (ip.length() > 1)
-                this.msgHandler.sendSensorData("ip address", ip,
-                        SenseSettings.SENSOR_DATA_TYPE_STRING);
+            if (ip.length() > 1) {
+                // pass message to the MsgHandler
+                Intent i = new Intent(this.context, MsgHandler.class);
+                i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_IP);
+                i.putExtra(MsgHandler.KEY_VALUE, ip);
+                i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_STRING);
+                i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+                this.context.startService(i);
+            }
             strState = "connected";
-        }
-        if (state == TelephonyManager.DATA_CONNECTING) {
+            break;
+        case TelephonyManager.DATA_CONNECTING:
             strState = "connecting";
-        }
-        if (state == TelephonyManager.DATA_DISCONNECTED) {
+            break;
+        case TelephonyManager.DATA_DISCONNECTED:
             strState = "disconnected";
-        }
-        if (state == TelephonyManager.DATA_SUSPENDED) {
+            break;
+        case TelephonyManager.DATA_SUSPENDED:
             strState = "suspended";
+            break;
+        default:
+            Log.e(TAG, "Unexpected data connection state: " + state);
+            return;
         }
-        this.msgHandler.sendSensorData("data connection", strState,
-                SenseSettings.SENSOR_DATA_TYPE_STRING);
+
+        // pass message to the MsgHandler
+        Intent i = new Intent(this.context, MsgHandler.class);
+        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_DATA);
+        i.putExtra(MsgHandler.KEY_VALUE, strState);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_STRING);
+        i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        this.context.startService(i);
     }
-
+    
     @Override
-    public void onMessageWaitingIndicatorChanged(boolean mwi) {
-        // Log.d(TAG, "Message waiting indicator changed.");
+    public void onMessageWaitingIndicatorChanged(boolean unreadMsgs) {
 
-        String strState = "";
-        if (mwi == true) {
-            strState = "true";
-        } else {
-            strState = "false";
-        }
-        this.msgHandler.sendSensorData("unread msg", strState, SenseSettings.SENSOR_DATA_TYPE_BOOL);
+        // pass message to the MsgHandler
+        Intent i = new Intent(this.context, MsgHandler.class);
+        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_UNREAD);
+        i.putExtra(MsgHandler.KEY_VALUE, unreadMsgs);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_BOOL);
+        i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        this.context.startService(i);
     }
 
     @Override
     public void onServiceStateChanged(ServiceState serviceState) {
-        // Log.d(TAG, "Service state changed.");
 
-        Map<String, Object> data = new HashMap<String, Object>();
-        String strState = "";
-        if (serviceState.getState() == ServiceState.STATE_EMERGENCY_ONLY) {
-            strState = "emergency calls only";
+        JSONObject json = new JSONObject();
+        try {
+            switch (serviceState.getState()) {
+            case ServiceState.STATE_EMERGENCY_ONLY:
+                json.put("state", "emergency calls only");
+                break;
+            case ServiceState.STATE_IN_SERVICE:
+                json.put("state", "in service");
+                json.put("phone number", telman.getLine1Number());
+                break;
+            case ServiceState.STATE_OUT_OF_SERVICE:
+                json.put("state", "out of service");
+                break;
+            case ServiceState.STATE_POWER_OFF:
+                json.put("state", "power off");
+                break;
+            }
+
+            json.put("manualSet", serviceState.getIsManualSelection() ? true : false);
+
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException in onServiceStateChanged", e);
+            return;
         }
-        if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) {
-            strState = "in service";
-            data.put("phone number", "" + telman.getLine1Number());
-        }
-        if (serviceState.getState() == ServiceState.STATE_OUT_OF_SERVICE) {
-            strState = "out of service";
-        }
-        if (serviceState.getState() == ServiceState.STATE_POWER_OFF) {
-            strState = "power off";
-        }
-        data.put("state", strState);
-        if (serviceState.getIsManualSelection()) {
-            data.put("manualSet", "true");
-        } else {
-            data.put("manualSet", "false");
-        }
-        this.msgHandler.sendSensorData("service state", data);
+
+        // pass message to the MsgHandler
+        Intent i = new Intent(this.context, MsgHandler.class);
+        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_SERVICE);
+        i.putExtra(MsgHandler.KEY_VALUE, json.toString());
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        this.context.startService(i);
     }
-
+    
     @Override
     public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("CDMA dBm", signalStrength.getCdmaDbm());
-        data.put("EVDO dBm", signalStrength.getEvdoDbm());
-        data.put("GSM signal strength", signalStrength.getGsmSignalStrength());
-        data.put("GSM bit error rate", signalStrength.getGsmBitErrorRate());
-        this.msgHandler.sendSensorData("signal strength", data);
-        super.onSignalStrengthsChanged(signalStrength);
+        
+        JSONObject json = new JSONObject();
+        try {
+            json.put("CDMA dBm", signalStrength.getCdmaDbm());
+            json.put("EVDO dBm", signalStrength.getEvdoDbm());
+            json.put("GSM signal strength", signalStrength.getGsmSignalStrength());
+            json.put("GSM bit error rate", signalStrength.getGsmBitErrorRate());
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException in onSignalStrengthsChanged", e);
+            return;
+        }
+
+        // pass message to the MsgHandler
+        Intent i = new Intent(this.context, MsgHandler.class);
+        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_SIGNAL);
+        i.putExtra(MsgHandler.KEY_VALUE, json.toString());
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        this.context.startService(i);
     }
    
 

@@ -1,21 +1,21 @@
 package nl.sense_os.service.ambience;
 
-import java.util.List;
-
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
 import android.os.Handler;
 import android.util.Log;
 
+import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
+
+import java.util.List;
 
 public class LightSensor implements SensorEventListener {
 	private static final String TAG = "Sense Light Sensor";
-	private MsgHandler msgHandler;
 	private long sampleDelay = 0; //in milliseconds    
 	private long[] lastSampleTimes = new long[50];
 	private Context context;
@@ -24,9 +24,9 @@ public class LightSensor implements SensorEventListener {
 	private Handler LightHandler = new Handler();
 	private Runnable LightThread = null;
 	private boolean LightSensingActive = false;
-	public LightSensor(MsgHandler handler, Context _context) {
-		this.msgHandler = handler;
-		this.context = _context;
+	
+	public LightSensor(Context context) {
+		this.context = context;
 		smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);		
 		sensors = smgr.getSensorList(Sensor.TYPE_ALL);
 
@@ -60,7 +60,15 @@ public class LightSensor implements SensorEventListener {
 				x++;
 			}
 			jsonString += "}";
-			this.msgHandler.sendSensorData(sensorName, jsonString, "json", sensor.getName()); 	       
+			
+			// pass message to the MsgHandler
+            Intent i = new Intent(this.context, MsgHandler.class);
+            i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+            i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);
+            i.putExtra(MsgHandler.KEY_VALUE, jsonString);
+            i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+            i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+            this.context.startService(i);
 		}
 		if(sampleDelay > 500 && LightSensingActive)
 		{

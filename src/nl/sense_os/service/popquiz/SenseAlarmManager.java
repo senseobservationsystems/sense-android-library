@@ -14,7 +14,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.MsgHandler;
+import nl.sense_os.service.OldMsgHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -580,7 +580,7 @@ public class SenseAlarmManager {
         final Cursor c = this.db.query(TABLE_ENTRY, null, selection, null, null, null, orderBy);
         c.moveToFirst();
 
-        MsgHandler handler = new MsgHandler(this.ctx);
+        OldMsgHandler handler = new OldMsgHandler(this.ctx);
         while (false == c.isAfterLast()) {
             // store the answer
             int qstnId = c.getInt(c.getColumnIndex(COL_QSTN_ID));

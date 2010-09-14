@@ -1,699 +1,304 @@
 package nl.sense_os.service;
 
+import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.media.AudioManager;
-import android.net.Uri;
-import android.os.Looper;
-import android.os.Vibrator;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class MsgHandler {
+public class MsgHandler extends IntentService {
 
     /**
-     * Thread to call a specified number.
+     * Inner class that handles the creation of the SQLite3 database with the desired tables and
+     * columns.
+     * 
+     * To view the Sqlite3 database in a terminal: $ adb shell # sqlite3
+     * /data/data/nl.sense_os.dji/databases/data.sqlite3 sqlite> .headers ON sqlite> select * from
+     * testTbl;
      */
-    private class CallThread implements Runnable {
-        public void run() {
-            // try {
-            // synchronized (lock)
-            // {
-            // while(speaking)
-            // lock.wait();
-            // Log.d(TAG, "Out of lock");
-            // }
-            // } catch (InterruptedException e) {
-            // Log.d(TAG, "InterruptedException in CallThread!", e);
-            // }
+    private static class DbHelper extends SQLiteOpenHelper {
 
-            final Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(MsgHandler.this.number));
-            MsgHandler.this.number = "";
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            MsgHandler.this.context.startActivity(intent);
-        }
-    }
+        protected static final String COL_ACTIVE = "active";
+        protected static final String COL_JSON = "json";
+        protected static final String COL_ROWID = "_id";
+        protected static final String DATABASE_NAME = "tx_buffer.sqlite3";
+        protected static final int DATABASE_VERSION = 3;
+        protected static final String TABLE_NAME = "sensor_data";
 
-    /**
-     * Thread that listens to input on a socket, performing Text-to-speech or call actions
-     * accordingly.
-     */
-    public class MultiServerThread extends Thread {
-        private Socket socket = null;
-
-        public MultiServerThread(Socket socket) {
-            super("MultiServerThread");
-            this.socket = socket;
+        DbHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override
-        public void run() {
-            Looper.prepare();
-            try {
-                final PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
-                final BufferedReader in = new BufferedReader(new InputStreamReader(
-                        this.socket.getInputStream()));
+        public void onCreate(SQLiteDatabase db) {
+            final StringBuilder sb = new StringBuilder("CREATE TABLE " + TABLE_NAME + "(");
+            sb.append(COL_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT");
+            sb.append(", " + COL_JSON + " STRING");
+            sb.append(", " + COL_ACTIVE + " INTEGER");
+            sb.append(");");
+            db.execSQL(sb.toString());
+        }
 
-                String inputLine;
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVers, int newVers) {
+            Log.w(TAG, "Upgrading database from version " + oldVers + " to " + newVers
+                    + ", which will destroy all old data");
 
-                while ((inputLine = in.readLine()) != null) {
-                    int index = 0;
-                    MsgHandler.this.number = "";
-                    inputLine = java.net.URLDecoder.decode(inputLine, "UTF-8");
-                    if ((index = inputLine.indexOf("action=say")) != -1) {
-                        if ((index = inputLine.indexOf("msg=\"", index)) != -1) {
-                            final int endIndex = inputLine.indexOf("\"", index + 5);
-                            final String text = inputLine.substring(index + 5, endIndex);
-                            say(text);
-                        }
-                    }
-                    if ((index = inputLine.indexOf("action=call")) != -1) {
-                        if ((index = inputLine.indexOf("number=\"")) != -1) {
-                            final int endIndex = inputLine.indexOf("\"", index + 8);
-                            MsgHandler.this.number = inputLine.substring(index + 8, endIndex);
-                        }
-                        Log.d(TAG, "Calling number:" + MsgHandler.this.number);
-                        out.println("Calling number:" + MsgHandler.this.number + "\n\n");
-                        final StringBuilder buf = new StringBuilder("tel:");
-                        buf.append(MsgHandler.this.number);
-                        MsgHandler.this.number = buf.toString();
-                        if (MsgHandler.this.url == null) {
-                            return;
-                        }
-                        try {
-                            final Vibrator vibrate = (Vibrator) MsgHandler.this.context
-                                    .getSystemService(Context.VIBRATOR_SERVICE);
-                            vibrate.vibrate(3000);
-                            say("Calling number " + MsgHandler.this.number);
-                            // try {
-                            // synchronized (lock)
-                            // {
-                            // while(speaking)
-                            // lock.wait(10);
-                            // Log.d(TAG, "Out of lock");
-                            // }
-                            // } catch (InterruptedException e) {
-                            // Log.e(TAG, "InterruptedException in MultiServerThread!", e);
-                            // }
-                            final CallThread callThread = new CallThread();
-                            new Thread(callThread).start();
-                            final AudioManager am = (AudioManager) MsgHandler.this.context
-                                    .getSystemService(Context.AUDIO_SERVICE);
-
-                            am.setSpeakerphoneOn(true);
-                            // am.setRouting(am.MODE_IN_CALL, am.ROUTE_SPEAKER , am.ROUTE_ALL);
-
-                        } catch (final Exception e) {
-                            e.printStackTrace();
-                            Log.d(TAG, "Error calling");
-                        }
-                    }
-                    break;
-                }
-                out.close();
-                in.close();
-                this.socket.close();
-
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
-            Looper.loop();
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            onCreate(db);
         }
     }
 
-    /**
-     * Listener for the MsgHandler's preferences. Updates the fields for this instance when the
-     * preference changes.
-     */
-    private class MyPrefListener implements OnSharedPreferenceChangeListener {
-
-        public void onSharedPreferenceChanged(SharedPreferences _prefs, String key) {
-            if (key.equals(PREF_KEY_DEVICE_ID)) {
-                MsgHandler.this.deviceService_id = _prefs.getString(key, "0");
-            } else if (key.equals(PREF_KEY_DEVICE_TYPE)) {
-                MsgHandler.this.deviceService_type = _prefs.getString(key, "phone_state_service");
-            } else if (key.equals(PREF_KEY_PORT)) {
-                MsgHandler.this.port = _prefs.getInt(key, 8080);
-            } else if (key.equals(PREF_KEY_UPDATE)) {
-                MsgHandler.this.updateFreq = _prefs.getInt(key, 0);
-            } else if (key.equals(PREF_KEY_URL)) {
-                MsgHandler.this.url = _prefs.getString(key,
-                        "http://demo.almende.com:8080/relaytodeviceservice");
-            }
-        }
-    };
-
-    @SuppressWarnings("unused")
-    private class SendFileThread implements Runnable {
-        String cookie;
-        String exsistingFileName;
-        String sensorName;
-
-        public SendFileThread(String _sensorName, String path, String _cookie) {
-            exsistingFileName = path;
-            sensorName = _sensorName;
-            cookie = _cookie;
-        }
-
-        public void run() {
-            HttpURLConnection conn = null;
-            DataOutputStream dos = null;
-            DataInputStream inStream = null;
-
-            String lineEnd = "\r\n";
-            String twoHyphens = "--";
-            String boundary = "----FormBoundary6bYQOdhfGEj4oCSv";
-
-            int bytesRead, bytesAvailable, bufferSize;
-
-            byte[] buffer;
-
-            int maxBufferSize = 1 * 1024 * 1024;
-            String urlString = SenseSettings.URL_SEND_SENSOR_DATA_FILE;
-
-            try {
-                // ------------------ CLIENT REQUEST
-
-                FileInputStream fileInputStream = new FileInputStream(new File(exsistingFileName));
-
-                // open a URL connection to the Servlet
-                URL url = new URL(urlString);
-
-                // Open a HTTP connection to the URL
-                conn = (HttpURLConnection) url.openConnection();
-
-                // Allow Inputs
-                conn.setDoInput(true);
-
-                // Allow Outputs
-                conn.setDoOutput(true);
-
-                // Don't use a cached copy.
-                conn.setUseCaches(false);
-
-                // Use a post method.
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Cookie", cookie);
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-                dos = new DataOutputStream(conn.getOutputStream());
-
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; sensorName=\"" + sensorName + "\";"
-                        + " filename=\"" + exsistingFileName + "\"" + lineEnd);
-                dos.writeBytes(lineEnd);
-                // create a buffer of maximum size
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // read file and write it into form...
-
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0) {
-                    dos.write(buffer, 0, bufferSize);
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                }
-
-                // send multipart form data necesssary after file data...
-
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                // close streams
-
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
-
-            } catch (MalformedURLException ex) {
-                Log.e(TAG, "MalformedURLException uploading file:", ex);
-            } catch (IOException ioe) {
-                Log.e(TAG, "IOException uploading file:", ioe);
-            }
-
-            // ------------------ read the SERVER RESPONSE
-
-            try {
-                inStream = new DataInputStream(conn.getInputStream());
-                String str;
-                boolean sendOK = false;
-                while ((str = inStream.readLine()) != null) 
-                {
-                	 if(str.toLowerCase().contains("ok"))
-                		 sendOK = true;                	
-                    Log.d(TAG, "Uploaded file... Server response is: " + str);
-                }
-                if(!sendOK)
-            	{
-            		Log.d(TAG, "Error sending message, re-login");
-            		((SenseService) context).senseServiceLogin();
-            	}
-                inStream.close();
-
-            } catch (IOException ioex) {
-                Log.e(TAG, "IOException reading server response after file upload:", ioex);
-            }
-        }
-    }
-
-    private class SendMessageThread implements Runnable {
-        String cookie;
-        String url;
-
-        @SuppressWarnings("unused")
-        public SendMessageThread() {
-
-        }
-
-        public SendMessageThread(String _url, String Cookie) {
-            url = _url;
-            cookie = Cookie;
-        }
-
-        public void run() {
-            try {
-
-                if (nrOfSendMessageThreads < MAX_NR_OF_SEND_Message_THREADS) {
-                    ++nrOfSendMessageThreads;
-                    URI uri = new URI(url);
-                    HttpPost post = new HttpPost(uri);
-                    post.setHeader("Cookie", cookie);
-                    HttpClient client = new DefaultHttpClient();
-                    client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
-                    HttpResponse response = client.execute(post);
-
-                    if (response != null) {
-                        Header header[] = response.getAllHeaders();
-                        String output = "";
-                        for (Header element : header) {
-                            output += element.getName() + "=" + element.getValue() + "\n";
-                        }
-
-                        int value = 0;
-                        String body = "";
-                        InputStream ir = response.getEntity().getContent();
-
-                        while ((value = ir.read()) != -1) {
-                            body += "" + (char) value;
-                        }
-
-                        int subStrStart = this.url.indexOf("sensorName=") + 11;
-                        int subStrEnd = this.url.indexOf("&", subStrStart);
-                        String sensor = URLDecoder.decode(this.url
-                                .substring(subStrStart, subStrEnd));
-                        String outputString = "Sent " + sensor
-                                + " data. Response from CommonSense: " + body;
-                        Log.d(TAG, outputString);
-                        if(!body.toLowerCase().contains("ok"))
-						{
-							Log.d(TAG, "Error sending message, re-login");
-							((SenseService) context).senseServiceLogin();
-						}
-                        --nrOfSendMessageThreads;
-                    }
-                }
-
-            } catch (IOException e) {
-                --nrOfSendMessageThreads;
-                Log.e(TAG, "IOException in SendMessageThread: " + e.getMessage());
-            } catch (URISyntaxException e) {
-                --nrOfSendMessageThreads;
-                Log.e(TAG, "URISyntaxException in SendMessageThread: " + e.getMessage());
-            }
-        }
-    }
-
-    public static final String PREF_KEY_DEVICE_ID = "DeviceId";
-    public static final String PREF_KEY_DEVICE_TYPE = "DeviceType";
-    public static final String PREF_KEY_PORT = "Port";
-    public static final String PREF_KEY_UPDATE = "UpdateFreq";
-    public static final String PREF_KEY_URL = "Url";
-    public static final String PREF_MSG_HANDLER = "prefMsgHandler";
-    public static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
+    public static final String KEY_DATA_TYPE = "data_type";
+    public static final String KEY_INTENT_TYPE = "intent_type";
+    public static final String KEY_SENSOR_NAME = "sensor_name";
+    public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_VALUE = "value";
     private static final String TAG = "Sense MsgHandler";
-    private final Context context;
-    private String deviceService_id;
-    private String deviceService_type;
-    private String httpResponse;
-    private int nrOfSendMessageThreads = 0;
-    private int MAX_NR_OF_SEND_Message_THREADS = 50;
-    // private long lastUpdate;
-    private boolean listening;
-    // private final HashMap<String, String> msgBuffer;
-    // private boolean speaking = false;
-    // private String lock = "locking";
-    // private TextToSpeech mTts;
-    // private MyInitListener mil;
-    // private MyOnUtteranceCompletedListener mouc;
-    private String number = "";
-    private int port;
-    // private boolean sending;
-    private ServerSocket serverSocket;
-    private final Runnable socketServer = new Runnable() {
-        public void run() {
-            Looper.prepare();
-            try {
-                MsgHandler.this.serverSocket = new ServerSocket(MsgHandler.this.port);
+    public static final int TYPE_NEW_MSG = 1;
+    public static final int TYPE_SEND_MSG = 2;
+    private HttpClient client;
+    private SQLiteDatabase db;
+    private DbHelper dbHelper;
+    private boolean isDbOpen;
 
-            } catch (final IOException e) {
-                Log.d(TAG, "Could not listen on port: " + MsgHandler.this.port);
-            }
-            try {
-                while (MsgHandler.this.listening) {
-                    new MultiServerThread(MsgHandler.this.serverSocket.accept()).start();
-                }
-                MsgHandler.this.serverSocket.close();
-            } catch (final Exception e) {
-                Log.d(TAG, "Error while listening on socket server:", e);
-            }
-            Looper.loop();
-        }
-    };
-
-    private int updateFreq;
-
-    private String url;;
-
-    // private void initTTS() {
-    // mil = new MyInitListener();
-    // mTts = new TextToSpeech(context, mil);
-    // mouc = new MyOnUtteranceCompletedListener();
-    // mTts.setLanguage(Locale.US);
-    // mTts.setOnUtteranceCompletedListener(mouc);
-    // }
-
-    public MsgHandler(Context context) {
-
-        this.context = context;
-
-        // get initialization data from preferences
-        final SharedPreferences prefs = context.getSharedPreferences(PREF_MSG_HANDLER,
-                Context.MODE_PRIVATE);
-        prefs.registerOnSharedPreferenceChangeListener(new MyPrefListener());
-        this.deviceService_id = prefs.getString(PREF_KEY_DEVICE_ID, "0");
-        this.deviceService_type = prefs.getString(PREF_KEY_DEVICE_TYPE, "phone_state_service");
-        this.port = prefs.getInt(PREF_KEY_PORT, 8080);
-        this.updateFreq = prefs.getInt(PREF_KEY_UPDATE, 0);
-        this.url = prefs.getString(PREF_KEY_URL,
-                "http://demo.almende.com/commonSense/sp_state_add.php");
-
-        // this.lastUpdate = -1;
-        this.listening = false;
-        // this.msgBuffer = new HashMap<String, String>();
-        // this.sending = false;
-
-        listen(true);
+    public MsgHandler() {
+        super("Sense MsgHandler");
+        this.isDbOpen = false;
     }
-
-    // private class MyInitListener implements OnInitListener {
-    //
-    // public void onInit(int status) {
-    //
-    // }
-    //
-    // };
-
-    // private class MyOnUtteranceCompletedListener implements OnUtteranceCompletedListener {
-    //
-    // public void onUtteranceCompleted(String utteranceId) {
-    // synchronized (lock) {
-    // speaking = false;
-    // }
-    // lock.notifyAll();
-    // }
-    // };
-
-    public String getDeviceService_id() {
-        return this.deviceService_id;
-    }
-
-    public String getDeviceService_type() {
-        return this.deviceService_type;
-    }
-
-    public String getHttpResponse() {
-        return this.httpResponse;
-    }
-
-    public int getUpdateFreq() {
-        return this.updateFreq;
-    }
-
-    public String getUrl() {
-        return this.url;
-    }
-
-    /*
-     * @deprecated
-     * 
-     * public void sendPhoneState(String stateName, String stateValue) { String url =
-     * SenseSettings.URL_PHONESTATE_ADD
-     * +"?stateName="+URLEncoder.encode(stateName)+"&stateValue="+URLEncoder.encode(stateValue);
-     * final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-     * android.content.Context.MODE_PRIVATE); String cookie =
-     * prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, ""); new Thread(new SendMessageThread(url,
-     * cookie)).start(); }
-     */
-
-    public void listen(boolean _listen) {
-        this.listening = _listen;
-        if (_listen) {
-            new Thread(this.socketServer).start();
+    
+    private void closeClient() {
+        if (null != client) {
+            client.getConnectionManager().shutdown();
         }
     }
 
-    private void say(String text) {
-        // synchronized (lock) {
-        // speaking = true;
-        // }
-        // mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
+    private void closeDb() {
+        if (true == this.isDbOpen) {
+            this.dbHelper.close();
+        }
     }
 
-    /*
-     * @deprecated
-     * 
-     * public void sendPopQuizAnswer(String questionID, String answerID, String quizDate) { String
-     * url =
-     * SenseSettings.URL_QUIZ_SEND_ANSWER+"?questionId="+questionID+"&answerId="+answerID+"&quizDate="
-     * +URLEncoder.encode(quizDate); final SharedPreferences prefs =
-     * context.getSharedPreferences(PRIVATE_PREFS, android.content.Context.MODE_PRIVATE); String
-     * cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, ""); new Thread(new
-     * SendMessageThread(url, cookie)).start(); }
-     */
-    public void sendAddPopQuizAnswer(String answer) {
-        String url = SenseSettings.URL_QUIZ_ADD_ANSWER + "?answer=" + URLEncoder.encode(answer);
-        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-                android.content.Context.MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-        new Thread(new SendMessageThread(url, cookie)).start();
-    }
+    private void handleNewMsgIntent(Intent intent) {
 
-    public void sendAddPopQuizQuestion(String question) {
-        String url = SenseSettings.URL_QUIZ_ADD_QUESTION + "?question="
-                + URLEncoder.encode(question);
-        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-                android.content.Context.MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-        new Thread(new SendMessageThread(url, cookie)).start();
-    }
-
-    /*
-     * @deprecated
-     * 
-     * public void sendPhoneLocation(String longitude, String latitude) { String url =
-     * SenseSettings.URL_LOCATION_ADD+"?longitude="+longitude+"&latitude="+latitude; final
-     * SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-     * android.content.Context.MODE_PRIVATE); String cookie =
-     * prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, ""); new Thread(new SendMessageThread(url,
-     * cookie)).start(); }
-     */
-    public void sendSensorData(String sensorName, Map<String, Object> msg) {
+        String name = intent.getStringExtra(KEY_SENSOR_NAME);
+        String type = intent.getStringExtra(KEY_DATA_TYPE);
+        long time = intent.getLongExtra(KEY_TIMESTAMP, System.currentTimeMillis());
         JSONObject json = new JSONObject();
         try {
-            for (Map.Entry<String, Object> entry : msg.entrySet()) {
-                if (entry.getValue() instanceof String) {
-                    json.put(entry.getKey(), (String) entry.getValue());
-                } else if (entry.getValue() instanceof Integer) {
-                    json.put(entry.getKey(), (Integer) entry.getValue());
-                } else if (entry.getValue() instanceof Float) {
-                    json.put(entry.getKey(), (Float) entry.getValue());
-                } else if (entry.getValue() instanceof Double) {
-                    json.put(entry.getKey(), (Double) entry.getValue());
-                } else {
-                    Log.d(TAG, "Unexpected sensed property: " + entry.getValue());
-                }
+            json.put("name", name);
+            json.put("time", time / 1000D);
+            json.put("type", type);
+            json.put("device", "");
+            if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
+                json.put("val", intent.getBooleanExtra(KEY_VALUE, false));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
+                json.put("val", intent.getDoubleExtra(KEY_VALUE, Double.MIN_VALUE));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
+                json.put("val", intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
+                json.put("val", new JSONObject(intent.getStringExtra(KEY_VALUE)));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
+                json.put("val", intent.getStringExtra(KEY_VALUE));
+            } else {
+                Log.e(TAG, "Unexpected data type: " + type);
+                return;
             }
         } catch (JSONException e) {
-            Log.e(TAG, "JSONException preparing sensor data sending:", e);
+            Log.e(TAG, "JSONException before putting message in buffer database", e);
+            return;
         }
-        sendSensorData(sensorName, json.toString(), SenseSettings.SENSOR_DATA_TYPE_JSON);
+
+        openDb();
+
+        // prepare content values for database entry
+        ContentValues values = new ContentValues();
+        values.put(DbHelper.COL_JSON, json.toString());
+        values.put(DbHelper.COL_ACTIVE, false);
+
+        long rowId = this.db.insert(DbHelper.TABLE_NAME, null, values);
+        if (rowId >= 0) {
+            Log.d(TAG, "New message in buffer: #" + rowId + ", sensor: " + name);
+        } else {
+            Log.e(TAG, "Error creating row in transmit buffer!");
+        }
     }
 
-    /*
-     * Send sensordata with sensor name value and the type of sensor data
-     */
-    public void sendSensorData(String sensorName, String sensorValue, String dataType) {
-        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
-                + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
-                + "&sensorDataType=" + URLEncoder.encode(dataType);
-        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-                android.content.Context.MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-        new Thread(new SendMessageThread(url, cookie)).start();
-    }
+    private void handleSendIntent(Intent intent) {
 
-    public void sendSensorData(String sensorName, String sensorValue, String dataType,
-            String deviceType) {
-        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
-                + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
-                + "&sensorDataType=" + URLEncoder.encode(dataType) + "&sensorDeviceType="
-                + URLEncoder.encode(deviceType);
-        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-                android.content.Context.MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-        new Thread(new SendMessageThread(url, cookie)).start();
-    }
-
-    public void uploadFile(String sensorName, String path) {
-        final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
-                android.content.Context.MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-
-        HttpURLConnection conn = null;
-        DataOutputStream dos = null;
-        DataInputStream inStream = null;
-
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "--FormBoundary6bYQOdhfGEj4oCSv";
-
-        int bytesRead, bufferSize; // bytesAvailable;
-
-        byte[] buffer;
-
-        // int maxBufferSize = 1*1024*1024;
-        // String responseFromServer = "";
-        String urlString = SenseSettings.URL_SEND_SENSOR_DATA_FILE;
-
+        // query the database
+        openDb();
+        String[] columns = { DbHelper.COL_ROWID, DbHelper.COL_JSON };
+        String selection = DbHelper.COL_ACTIVE + "!=\"true\"";
+        Cursor c = this.db.query(DbHelper.TABLE_NAME, columns, selection, null, null, null, null);
+        final int max_entries = 20;
+        
         try {
-            // ------------------ CLIENT REQUEST
+            if (c.getCount() > 0) {
 
-            File file = new File(path);
-            String fileName = file.getName();
-            FileInputStream fileInputStream = new FileInputStream(file);
+                // create JSON object with the data
+                JSONObject json = new JSONObject();
+                c.moveToFirst();
+                int count = 0;
+                try {
+                    JSONArray array = new JSONArray();
 
-            // open a URL connection to the Servlet
-            URL url = new URL(urlString);
+                    // fill array with JSON objects from the buffer database
+                    while (false == c.isAfterLast() && count < max_entries) {
+                        final String jsonString = c.getString(1);
+                        array.put(new JSONObject(jsonString));
+                        count++;
+                        c.moveToNext();
+                    }
+                    json.put("data", array);
+                } catch (JSONException e) {
+                    Log.d(TAG, "JSONException creating sensor data");
+                    return;
+                }
+//                Log.d(TAG, "Got data from database...\n" + json.toString());
 
-            // Open a HTTP connection to the URL
-            conn = (HttpURLConnection) url.openConnection();
+                // send data to CommonSense
+                final boolean success = sendData(json);
 
-            // Allow Inputs
-            conn.setDoInput(true);
-
-            // Allow Outputs
-            conn.setDoOutput(true);
-
-            // Don't use a cached copy.
-            conn.setUseCaches(false);
-
-            // Use a post method.
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Cookie", cookie);
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-            dos = new DataOutputStream(conn.getOutputStream());
-
-            // write sensorName
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"sensorName\";" + lineEnd);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(sensorName);
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"file\";" + " filename=\""
-                    + fileName + "\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-            // create a buffer of maximum size
-            // bytesAvailable = fileInputStream.available();
-            bufferSize = fileInputStream.available();// Math.min(bytesAvailable, maxBufferSize);
-            buffer = new byte[bufferSize];
-
-            // read file and write it into form...
-            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-            while (bytesRead > 0) {
-                dos.write(buffer, 0, bufferSize);
-                // bytesAvailable = fileInputStream.available();
-                bufferSize = fileInputStream.available();// Math.min(bytesAvailable, maxBufferSize);
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                // remove data from database
+                if (success) {
+                    count = 0;
+                    c.moveToFirst();
+                    while (false == c.isAfterLast() && count < max_entries) {
+                        int id = c.getInt(c.getColumnIndex(DbHelper.COL_ROWID));
+                        this.db.delete(DbHelper.TABLE_NAME, DbHelper.COL_ROWID + "=" + id, null);
+                        count++;
+                        c.moveToNext();
+                    }
+                }
+            } else {
+                // TODO smart transmission scaling
             }
 
-            // send multipart form data necesssary after file data...
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-            // close streams
-            fileInputStream.close();
-            dos.flush();
-            dos.close();
-
-        } catch (MalformedURLException ex) {
-            Log.e(TAG, "MalformedURLException uploading file:", ex);
-        } catch (IOException ioe) {
-            Log.e(TAG, "IOException uploading file:", ioe);
+        } finally {
+            c.close();
         }
+    }
 
-        // ------------------ read the SERVER RESPONSE
+    @Override
+    public void onDestroy() {
+        closeDb();
+        closeClient();
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
+        final int intentType = intent.getIntExtra(KEY_INTENT_TYPE, Integer.MIN_VALUE);
+        switch (intentType) {
+        case TYPE_NEW_MSG:
+            handleNewMsgIntent(intent);
+            break;
+        case TYPE_SEND_MSG:
+            handleSendIntent(intent);
+            break;
+        default:
+            Log.e(TAG, "Unexpected intent received: " + intentType);
+            return;
+        }
+    }
+    
+    private void openClient() {
+        if (null == client) {
+            client = new DefaultHttpClient();
+            client.getConnectionManager().closeIdleConnections(15, TimeUnit.SECONDS);
+        }
+    }
+
+    private void openDb() {
+        if (false == this.isDbOpen) {
+            this.dbHelper = new DbHelper(this);
+            this.db = this.dbHelper.getWritableDatabase();
+            this.isDbOpen = true;
+        }
+    }
+
+    private boolean sendData(JSONObject json) {
+
+        openClient();
 
         try {
-            inStream = new DataInputStream(conn.getInputStream());
-            String str;
-            while ((str = inStream.readLine()) != null) {
-                Log.d(TAG, "Uploaded file. Server response is: " + str);
+            String url = SenseSettings.URL_SEND_SENSOR_DATA + "?data="
+                    + URLEncoder.encode(json.toString(), HTTP.UTF_8);
+            final SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS,
+                    android.content.Context.MODE_PRIVATE);
+            String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+
+            // set up HTTP POST
+            URI uri = new URI(url);
+            HttpPost post = new HttpPost(uri);
+            post.setHeader("Cookie", cookie);
+
+            // execute POST
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            
+            // parse response
+            JSONObject response = new JSONObject(client.execute(post, responseHandler));
+            
+            if (response.getString("status").equals("ok")) {
+                Log.d(TAG, "Sent sensor data OK! Response message:\n" + response.getString("msg"));
+            } else {
+                int error = response.getInt("faultcode");
+                
+                switch (error) {
+                // TODO error handling
+                case 1:
+                    Log.e(TAG, "Error storing data in CommonSense, re-login");
+                    break;
+                case 2:
+                    Log.e(TAG, "Error storing data in CommonSense, sensor data incomplete!");
+                    break;
+                case 3:
+                    Log.e(TAG, "SQL error storing data in CommonSense: " + response.getString("msg"));
+                    break;                    
+                default:
+                    Log.e(TAG, "Error sending sensor data: " + error);
+                }
+                return false;
             }
-            inStream.close();
-        } catch (IOException ioex) {
-            Log.e(TAG, "IOException reading server response from inputstream:", ioex);
+
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, "UnsupportedEncodingException sending transmission", e);
+            return false;
+        } catch (URISyntaxException e) {
+            Log.e(TAG, "URISyntaxException sending transmission", e);
+            return false;
+        } catch (IOException e) {
+            Log.e(TAG, "IOException sending transmission: " + e.getMessage());
+            return false;
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException parsing response from CommonSense " + e.getMessage());
+            return false;
         }
+
+        return true;
     }
 }

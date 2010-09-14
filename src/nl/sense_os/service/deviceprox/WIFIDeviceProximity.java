@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -18,6 +17,7 @@ import nl.sense_os.service.MsgHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.List;
 
 
@@ -67,8 +67,15 @@ public class WIFIDeviceProximity {
 					} catch (JSONException e) {
 						Log.e(TAG, "JSONException preparing wifi scan data");
 					}
-
-					msgHandler.sendSensorData(WIFI_SCAN, json.toString(), SenseSettings.SENSOR_DATA_TYPE_JSON);
+                    
+                    // pass message to the MsgHandler
+                    Intent i = new Intent(WIFIDeviceProximity.this.context, MsgHandler.class);
+                    i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                    i.putExtra(MsgHandler.KEY_SENSOR_NAME, WIFI_SCAN);
+                    i.putExtra(MsgHandler.KEY_VALUE, json.toString());
+                    i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+                    i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+                    WIFIDeviceProximity.this.context.startService(i);
 
 					stop();
 					scanHandler.postDelayed(wifiScanThread = new WifiScanThread(), scanInterval);					
@@ -100,8 +107,7 @@ public class WIFIDeviceProximity {
 								wifi.setWifiEnabled(true);
 						}
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Log.e(TAG, "InterruptedException during sleep");
 					}					
 				}
 				context.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));				
@@ -132,15 +138,13 @@ public class WIFIDeviceProximity {
 	private static final String TAG = "WIFI DeviceProximity";
 	private static final String WIFI_SCAN = "wifi scan";	
 	private final Context context;
-	private final MsgHandler msgHandler;
 	private boolean scanEnabled = false;
 	private final Handler scanHandler = new Handler(Looper.getMainLooper());
 	private int scanInterval = 0;
 	private WifiScanThread wifiScanThread = null;
 	private WifiManager wifi = null;
 
-	public WIFIDeviceProximity(MsgHandler handler, Context context) {
-		this.msgHandler = handler;
+	public WIFIDeviceProximity(Context context) {
 		this.context = context;		
 	}
 
