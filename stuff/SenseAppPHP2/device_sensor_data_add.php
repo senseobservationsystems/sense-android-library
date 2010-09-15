@@ -43,7 +43,7 @@ if($sensorName && $sensorValue)
     $sensorDeviceType	= stripslashes($sensorDeviceType);
 
     // Check if the sensor exists
-    $sql	= "SELECT * FROM sensor_type WHERE name = '$sensorName' and device_type = '$sensorDeviceType'";
+    $sql	= "SELECT * FROM `sensor_type` WHERE `name`='$sensorName' AND `device_type`='$sensorDeviceType'";
     $result	= mysql_query($sql);
     $count	= mysql_num_rows($result);
 
@@ -61,7 +61,7 @@ if($sensorName && $sensorValue)
         if($result)
         {
             // Get sensorType
-            $sql		= "SELECT * FROM sensor_type WHERE name = '$sensorName' and device_type = '$sensorDeviceType'";
+            $sql		= "SELECT * FROM `sensor_type` WHERE `name`='$sensorName' AND `device_type`='$sensorDeviceType'";
             $result		= mysql_query($sql);
             $row 		= mysql_fetch_assoc($result);
             $sensorTypeID 	= $row['id'];
@@ -75,7 +75,7 @@ if($sensorName && $sensorValue)
     }
 
     // Check if tag exists
-    $sql    = "SELECT `id` FROM `tags` WHERE `tagged_id` = '$sensorTypeID' AND `parent_id` = '$deviceId'";
+    $sql    = "SELECT `id` FROM `tags` WHERE `tagged_id`='$sensorTypeID' AND `parent_id`='$deviceId'";
     $result	= mysql_query($sql);
     $count	= mysql_num_rows($result);
     if ($count < 1) {
@@ -91,7 +91,11 @@ if($sensorName && $sensorValue)
             $tag    = "/$userId/$deviceType #$deviceId/$sensorName/";
         } else if ($deviceType == 'myrianode') {
             $nodeId = $_REQUEST['uuid'];
-            $tag = "/$userId/MyriaNed node $nodeId/#$nodeId. $sensorName/";
+            if (isset($sensorDeviceType)) {
+                $tag = "/$userId/MyriaNed node $nodeId/#$nodeId. $sensorName ($sensorDeviceType)/";
+            } else {
+                $tag = "/$userId/MyriaNed node $nodeId/#$nodeId. $sensorName/";
+            }
         } else {
             // legacy, for older device types
             $tag    = "/$userId/$deviceType/$sensorName/";
