@@ -39,21 +39,18 @@ public class LightSensor implements SensorEventListener {
 
 	public void onSensorChanged(SensorEvent event) {
 		Sensor sensor = event.sensor;
-		if(System.currentTimeMillis() > lastSampleTimes[sensor.getType()]+sampleDelay)
-		{
+		if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()]+sampleDelay) {
 			lastSampleTimes[sensor.getType()] = System.currentTimeMillis();	 
 
 			String sensorName = "";
-			if(sensor.getType()==Sensor.TYPE_LIGHT)
-			{
+			if (sensor.getType() == Sensor.TYPE_LIGHT) {
 				sensorName = "light";
 			}
 			
 			String jsonString = "{";	        
 			int x = 0;
 			for (float value: event.values) {
-				if(x==0)
-				{	
+				if (x == 0) {	
 					if(sensor.getType()==Sensor.TYPE_LIGHT)
 						jsonString += "\"lux\":"+value;				
 				}				
@@ -66,6 +63,7 @@ public class LightSensor implements SensorEventListener {
             i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
             i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);
             i.putExtra(MsgHandler.KEY_VALUE, jsonString);
+            i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, sensor.getName());
             i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
             i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
             this.context.startService(i);

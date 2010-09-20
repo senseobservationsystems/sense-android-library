@@ -167,31 +167,54 @@ public class SenseService extends Service {
     private static final int NOTIF_ID = 1;
     private static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
     public static boolean sLoggedIn = false;
+    public static final int STATUS_AMBIENCE = 32;
     public static final int STATUS_CONNECTED = 2;
     public static final int STATUS_DEVICE_PROX = 4;
     public static final int STATUS_LOCATION = 8;
     public static final int STATUS_MOTION = 16;
-    public static final int STATUS_AMBIENCE = 32;
     public static final int STATUS_PHONESTATE = 64;
     public static final int STATUS_QUIZ = 128;
     public static final int STATUS_RUNNING = 256;
     private static final String TAG = "Sense Service";
     private final ISenseService.Stub binder = new SenseServiceStub();
+    // BroadcastReceiver for handling ACTION_SCREEN_OFF.
+    public BroadcastReceiver bReceiverASO = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Check action just to be on the safe side.
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                if (statusMotion) {
+                    Runnable motionThread = new Runnable() {
+                        public void run() {
+                            // Unregisters the motion listener and registers it again.
+                            Log.d(TAG, "Screen went off, re-registering the Motion sensor");
+                            // wait a few seconds and re-register
+                            toggleMotion(false);
+                            toggleMotion(true);
+                        };
+                    };
+
+                    Handler mtHandler = new Handler();
+                    mtHandler.postDelayed(motionThread, 500);
+                }
+            }
+        }
+    };
     private DeviceProximity deviceProximity;
+    private LightSensor lightSensor;
     private LocationListener locListener;
     private LoginPossibility loginPossibility;
     private MotionSensor motionSensor;
-    private ProximitySensor proximitySensor;
     private NoiseSensor noiseSensor;
-    private LightSensor lightSensor;
-    private PressureSensor pressureSensor;
     private PhoneActivitySensor phoneActivitySensor;
+    private PressureSensor pressureSensor;
+    private ProximitySensor proximitySensor;
     private PhoneStateListener psl;
     private boolean started;
+    private boolean statusAmbience;
     private boolean statusDeviceProx;
     private boolean statusLocation;
     private boolean statusMotion;
-    private boolean statusAmbience;
     private boolean statusPhoneState;
     private boolean statusPopQuiz;
     private TelephonyManager telMan;
@@ -255,7 +278,6 @@ public class SenseService extends Service {
     }
 
     private void initFields() {
-        this.loginPossibility = new LoginPossibility();
         this.telMan = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
         // listeners
@@ -272,7 +294,7 @@ public class SenseService extends Service {
         this.phoneActivitySensor = new PhoneActivitySensor(this);
         this.pressureSensor = new PressureSensor(this);
         this.phoneActivitySensor = new PhoneActivitySensor(this);
-        
+
         // statuses
         this.started = false;
         this.statusDeviceProx = false;
@@ -390,12 +412,15 @@ public class SenseService extends Service {
         Log.d(TAG, "onDestroy");
 
         // stop listening for possibility to login
-        try {
-            unregisterReceiver(this.loginPossibility);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Ignoring exception when trying to unregister login module...");
+        if (null != this.loginPossibility) {
+            try {
+                unregisterReceiver(this.loginPossibility);
+                this.loginPossibility = null;
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Ignoring exception when trying to unregister login module...");
+            }
         }
-        
+
         // stop listening to screen off receiver
         try {
             unregisterReceiver(this.bReceiverASO);
@@ -422,10 +447,10 @@ public class SenseService extends Service {
 
         // start database leeglepelaar
         Intent alarm = new Intent(this, DataTransmitter.class);
-        PendingIntent operation = PendingIntent.getBroadcast(this, 1, alarm, 0);
+        PendingIntent operation = PendingIntent.getBroadcast(this, DataTransmitter.REQID, alarm, 0);
         AlarmManager mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, operation);
-        
+        mgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), operation);
+
         // restart individual sensing components
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final int status = prefs.getInt(SenseSettings.PREF_LAST_STATUS, 0);
@@ -530,7 +555,6 @@ public class SenseService extends Service {
     }
 
     private void onStartCompat(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStart");
 
         // try to login immediately
         if (false == sLoggedIn) {
@@ -538,8 +562,11 @@ public class SenseService extends Service {
         }
 
         // register broadcast receiver for login in case of Internet connection changes
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(this.loginPossibility, filter);
+        if (null == this.loginPossibility) {
+            this.loginPossibility = new LoginPossibility();
+            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+            registerReceiver(this.loginPossibility, filter);
+        }
     }
 
     private boolean register(String email, String pass) {
@@ -604,12 +631,12 @@ public class SenseService extends Service {
             final InputStream stream = response.getEntity().getContent();
             final String responseStr = convertStreamToString(stream);
             registered = responseStr.toLowerCase().contains("ok");
-            
+
             // put device properties in JSON format
             JSONObject json = new JSONObject();
             json.put("brand", Build.MANUFACTURER);
             json.put("type", Build.MODEL);
-            
+
             // send device properties
             Intent i = new Intent(this, MsgHandler.class);
             i.putExtra("name", "device properties");
@@ -846,14 +873,58 @@ public class SenseService extends Service {
         }
     }
 
+    private void toggleAmbience(boolean active) {
+
+        if (active != this.statusAmbience) {
+            final TelephonyManager telMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            if (true == active) {
+                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_SAMPLE_RATE,
+                        "0"));
+                int interval = -1;
+                switch (rate) {
+                case -2: // real time
+                    interval = -1;
+                    break;
+                case -1: // often
+                    interval = 5 * 1000;
+                    break;
+                case 0: // normal
+                    interval = 60 * 1000;
+                    break;
+                case 1: // rarely (1 hour)
+                    interval = 15 * 1000;
+                    break;
+                default:
+                    Log.e(TAG, "Unexpected quiz rate preference.");
+                }
+                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_CALL_STATE);
+
+                if (prefs.getBoolean(SenseSettings.PREF_AMBIENCE_MIC, true))
+                    this.noiseSensor.startListening(interval);
+                if (prefs.getBoolean(SenseSettings.PREF_AMBIENCE_LIGHT, true))
+                    this.lightSensor.startLightSensing(interval);
+
+                this.statusAmbience = true;
+            } else {
+                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_NONE);
+                this.noiseSensor.stopListening();
+                this.lightSensor.stopLightSensing();
+                this.statusAmbience = false;
+            }
+
+            saveStatus();
+        }
+    }
+
     private void toggleDeviceProx(boolean active) {
 
         if (active != this.statusDeviceProx) {
             if (true == active) {
                 // showToast(getString(R.string.toast_toggle_dev_prox));
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_SAMPLE_RATE, "0"));
+                final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_SAMPLE_RATE,
+                        "0"));
                 int interval = 1;
                 switch (rate) {
                 case -2:
@@ -893,8 +964,8 @@ public class SenseService extends Service {
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 final boolean gps = prefs.getBoolean(SenseSettings.PREF_LOCATION_GPS, true);
                 final boolean network = prefs.getBoolean(SenseSettings.PREF_LOCATION_NETWORK, true);
-                final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_SAMPLE_RATE, "0"));
+                final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_SAMPLE_RATE,
+                        "0"));
 
                 // set update parameters according to preference
                 long minTime = -1;
@@ -959,8 +1030,8 @@ public class SenseService extends Service {
             if (true == active) {
 
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_SAMPLE_RATE, "0"));
+                final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_SAMPLE_RATE,
+                        "0"));
                 int interval = -1;
                 switch (rate) {
                 case -2: // real time
@@ -991,50 +1062,6 @@ public class SenseService extends Service {
         }
     }
 
-    private void toggleAmbience(boolean active) {
-
-        if (active != this.statusAmbience) {
-            final TelephonyManager telMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-            if (true == active) {
-                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_SAMPLE_RATE, "0"));
-                int interval = -1;
-                switch (rate) {
-                case -2: // real time
-                    interval = -1;
-                    break;
-                case -1: // often
-                    interval = 5 * 1000;
-                    break;
-                case 0: // normal
-                    interval = 60 * 1000;
-                    break;
-                case 1: // rarely (1 hour)
-                    interval = 15 * 1000;
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected quiz rate preference.");
-                }
-                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_CALL_STATE);
-
-                if (prefs.getBoolean(SenseSettings.PREF_AMBIENCE_MIC, true))
-                    this.noiseSensor.startListening(interval);
-                if (prefs.getBoolean(SenseSettings.PREF_AMBIENCE_LIGHT, true))
-                    this.lightSensor.startLightSensing(interval);
-
-                this.statusAmbience = true;
-            } else {
-                telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_NONE);
-                this.noiseSensor.stopListening();
-                this.lightSensor.stopLightSensing();
-                this.statusAmbience = false;
-            }
-
-            saveStatus();
-        }
-    }
-
     private void togglePhoneState(boolean active) {
 
         if (active != this.statusPhoneState) {
@@ -1050,8 +1077,8 @@ public class SenseService extends Service {
                         | PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_SAMPLE_RATE, "0"));
+                final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_SAMPLE_RATE,
+                        "0"));
                 int interval = -1;
                 switch (rate) {
                 case -2: // real time
@@ -1108,28 +1135,4 @@ public class SenseService extends Service {
             saveStatus();
         }
     }
-
-    // BroadcastReceiver for handling ACTION_SCREEN_OFF.
-    public BroadcastReceiver bReceiverASO = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Check action just to be on the safe side.
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                if (statusMotion) {
-                    Runnable motionThread = new Runnable() {
-                        public void run() {
-                            // Unregisters the motion listener and registers it again.
-                            Log.d(TAG, "Screen went off, re-registering the Motion sensor");
-                            // wait a few seconds and re-register
-                            toggleMotion(false);
-                            toggleMotion(true);
-                        };
-                    };
-
-                    Handler mtHandler = new Handler();
-                    mtHandler.postDelayed(motionThread, 500);
-                }
-            }
-        }
-    };
 }

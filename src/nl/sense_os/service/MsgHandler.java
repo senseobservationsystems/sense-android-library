@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
@@ -76,6 +77,7 @@ public class MsgHandler extends IntentService {
     public static final String KEY_INTENT_TYPE = "intent_type";
     public static final String KEY_SENSOR_NAME = "sensor_name";
     public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_SENSOR_DEVICE = "sensor_device";
     public static final String KEY_VALUE = "value";
     private static final String TAG = "Sense MsgHandler";
     public static final int TYPE_NEW_MSG = 1;
@@ -89,7 +91,7 @@ public class MsgHandler extends IntentService {
         super("Sense MsgHandler");
         this.isDbOpen = false;
     }
-    
+
     private void closeClient() {
         if (null != client) {
             client.getConnectionManager().shutdown();
@@ -107,12 +109,15 @@ public class MsgHandler extends IntentService {
         String name = intent.getStringExtra(KEY_SENSOR_NAME);
         String type = intent.getStringExtra(KEY_DATA_TYPE);
         long time = intent.getLongExtra(KEY_TIMESTAMP, System.currentTimeMillis());
+        String device = intent.getStringExtra(KEY_SENSOR_DEVICE);
         JSONObject json = new JSONObject();
         try {
             json.put("name", name);
             json.put("time", time / 1000D);
             json.put("type", type);
-            json.put("device", "");
+            if (null != device) {
+                json.put("device", device);
+            }
             if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
                 json.put("val", intent.getBooleanExtra(KEY_VALUE, false));
             } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
@@ -132,18 +137,22 @@ public class MsgHandler extends IntentService {
             return;
         }
 
-        openDb();
-
-        // prepare content values for database entry
-        ContentValues values = new ContentValues();
-        values.put(DbHelper.COL_JSON, json.toString());
-        values.put(DbHelper.COL_ACTIVE, false);
-
-        long rowId = this.db.insert(DbHelper.TABLE_NAME, null, values);
-        if (rowId >= 0) {
-            Log.d(TAG, "New message in buffer: #" + rowId + ", sensor: " + name);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getString(SenseSettings.PREF_SYNC_RATE, "0").equals("-2")) {
+            // real time mode, send immediately
+            JSONObject obj = new JSONObject();
+            try {
+                JSONArray array = new JSONArray();
+                array.put(json);
+                obj.put("data", array);
+            } catch (JSONException e) {
+                Log.e(TAG, "JSONException in real time msg sending: " + e.getMessage());
+                return;
+            }
+            sendData(obj);
         } else {
-            Log.e(TAG, "Error creating row in transmit buffer!");
+            // normal mode
+            storeData(json);
         }
     }
 
@@ -154,8 +163,8 @@ public class MsgHandler extends IntentService {
         String[] columns = { DbHelper.COL_ROWID, DbHelper.COL_JSON };
         String selection = DbHelper.COL_ACTIVE + "!=\"true\"";
         Cursor c = this.db.query(DbHelper.TABLE_NAME, columns, selection, null, null, null, null);
-        final int max_entries = 20; // 
-        
+        final int max_entries = 20; //
+
         try {
             if (c.getCount() > 0) {
 
@@ -163,7 +172,7 @@ public class MsgHandler extends IntentService {
                 JSONObject json = new JSONObject();
                 c.moveToFirst();
                 int count = 0;
-                
+
                 try {
                     JSONArray array = new JSONArray();
 
@@ -179,7 +188,7 @@ public class MsgHandler extends IntentService {
                     Log.d(TAG, "JSONException creating sensor data");
                     return;
                 }
-                
+
                 boolean flagMoreData = (count == max_entries);
 
                 // send data to CommonSense
@@ -195,7 +204,7 @@ public class MsgHandler extends IntentService {
                         count++;
                         c.moveToNext();
                     }
-                    
+
                     // immediately schedule a new send task if there is still stuff in the database
                     if (flagMoreData) {
                         Log.d(TAG, "there is still stuff in the database!");
@@ -235,7 +244,7 @@ public class MsgHandler extends IntentService {
             return;
         }
     }
-    
+
     private void openClient() {
         if (null == client) {
             client = new DefaultHttpClient();
@@ -269,15 +278,15 @@ public class MsgHandler extends IntentService {
 
             // execute POST
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            
+
             // parse response
             JSONObject response = new JSONObject(client.execute(post, responseHandler));
-            
+
             if (response.getString("status").equals("ok")) {
                 Log.d(TAG, "Sent sensor data OK! Response message:\n" + response.getString("msg"));
             } else {
                 int error = response.getInt("faultcode");
-                
+
                 switch (error) {
                 // TODO error handling
                 case 1:
@@ -287,8 +296,9 @@ public class MsgHandler extends IntentService {
                     Log.e(TAG, "Error storing data in CommonSense, sensor data incomplete!");
                     break;
                 case 3:
-                    Log.e(TAG, "SQL error storing data in CommonSense: " + response.getString("msg"));
-                    break;                    
+                    Log.e(TAG,
+                            "SQL error storing data in CommonSense: " + response.getString("msg"));
+                    break;
                 default:
                     Log.e(TAG, "Error sending sensor data: " + error);
                 }
@@ -310,5 +320,16 @@ public class MsgHandler extends IntentService {
         }
 
         return true;
+    }
+
+    private void storeData(JSONObject json) {
+        openDb();
+
+        // prepare content values for database entry
+        ContentValues values = new ContentValues();
+        values.put(DbHelper.COL_JSON, json.toString());
+        values.put(DbHelper.COL_ACTIVE, false);
+
+        this.db.insert(DbHelper.TABLE_NAME, null, values);
     }
 }

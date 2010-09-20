@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -30,6 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import nl.sense_os.service.DataTransmitter;
 import nl.sense_os.service.ISenseService;
 
 import java.security.MessageDigest;
@@ -209,7 +211,6 @@ public class SenseSettings extends PreferenceActivity {
     public static final String SENSOR_DATA_TYPE_INT = "int";
     public static final String SENSOR_DATA_TYPE_JSON = "json";
     public static final String SENSOR_DATA_TYPE_STRING = "string";
-    @SuppressWarnings("unused")
     private static final String TAG = "Sense Settings";
     public static final String URL_BASE = "http://demo.almende.com/commonSense2/";
     public static final String URL_CHECK_PHONE = URL_BASE + "device_check.php";
@@ -456,7 +457,12 @@ public class SenseSettings extends PreferenceActivity {
             this.service = null;
             this.isServiceBound = false;
         }
+        
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.unregisterOnSharedPreferenceChangeListener(this.prefChangeListener);
     }
+    
+    OnSharedPreferenceChangeListener prefChangeListener;
 
     @Override
     protected void onResume() {
@@ -467,6 +473,37 @@ public class SenseSettings extends PreferenceActivity {
             final Intent serviceIntent = new Intent(ISenseService.class.getName());
             this.isServiceBound = bindService(serviceIntent, this.serviceConn, 0);
         }
+        
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        this.prefChangeListener = new OnSharedPreferenceChangeListener() {
+            
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                
+                if (key.equals(PREF_SAMPLE_RATE)) {
+                    if (isServiceBound) {
+                        // stop service
+                        final boolean stopped = stopService(new Intent(
+                                ISenseService.class.getName()));
+                        if (stopped) {
+                            unbindService(SenseSettings.this.serviceConn);
+                            SenseSettings.this.service = null;
+                            SenseSettings.this.isServiceBound = false;
+                        } else {
+                            Log.w(TAG, "Service was not stopped.");
+                        }
+
+                        // restart service
+                        final Intent serviceIntent = new Intent(ISenseService.class.getName());
+                        if (null == startService(serviceIntent)) {
+                            Log.w(TAG, "Could not start Sense service!");
+                        }
+
+                        SenseSettings.this.isServiceBound = bindService(serviceIntent, SenseSettings.this.serviceConn, 0);
+                    }
+                }
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(this.prefChangeListener);
     }
 
     private void onSampleRateChange(Preference pref, String newValue) {
@@ -486,25 +523,34 @@ public class SenseSettings extends PreferenceActivity {
         default:
             pref.setSummary("ERROR");
         }
+        
+
     }
 
     private void onSyncRateChange(Preference pref, String newValue) {
         switch (Integer.parseInt(newValue)) {
         case -2: // real time
-            pref.setSummary("Current setting: Real-time");
+            pref.setSummary("Real-time connection with CommonSense");
             break;
         case -1: // often
-            pref.setSummary("Current setting: Often");
+            pref.setSummary("Sync with CommonSense every 5 secs");
             break;
         case 0: // normal
-            pref.setSummary("Current setting: Normal");
+            pref.setSummary("Sync with CommonSense every minute");
             break;
         case 1: // rarely
-            pref.setSummary("Current setting: Rarely");
+            pref.setSummary("Sync with CommonSense every hour (Eco-mode)");
             break;
         default:
             pref.setSummary("ERROR");
         }
+        
+        // re-set sync alarm
+        Intent alarm = new Intent(this, DataTransmitter.class);
+        PendingIntent operation = PendingIntent.getBroadcast(this, DataTransmitter.REQID, alarm, 0);
+        AlarmManager mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+        mgr.cancel(operation);
+        mgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), operation);
     }
 
     private void setupLoginPref() {
@@ -561,8 +607,8 @@ public class SenseSettings extends PreferenceActivity {
     private void showSummaries() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final Preference samplePref = findPreference(PREF_SYNC_RATE);
-        onSampleRateChange(samplePref, prefs.getString(PREF_SYNC_RATE, "0"));
+        final Preference samplePref = findPreference(PREF_SAMPLE_RATE);
+        onSampleRateChange(samplePref, prefs.getString(PREF_SAMPLE_RATE, "0"));
         samplePref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -571,8 +617,8 @@ public class SenseSettings extends PreferenceActivity {
             }
         });
 
-        final Preference syncPref = findPreference(PREF_SAMPLE_RATE);
-        onSyncRateChange(syncPref, prefs.getString(PREF_SAMPLE_RATE, "0"));
+        final Preference syncPref = findPreference(PREF_SYNC_RATE);
+        onSyncRateChange(syncPref, prefs.getString(PREF_SYNC_RATE, "0"));
         syncPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             public boolean onPreferenceChange(Preference preference, Object newValue) {

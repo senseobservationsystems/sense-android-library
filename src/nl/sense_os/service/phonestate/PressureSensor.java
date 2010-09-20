@@ -64,7 +64,8 @@ public class PressureSensor implements SensorEventListener {
 			i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
 			i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
 			i.putExtra(MsgHandler.KEY_VALUE, jsonString);
-			i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);   
+            i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);   
+            i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, sensor.getName());   
             i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());    
 		}
 		if(sampleDelay > 500 && PressureSensingActive)

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="pref_commonsense_rate_keys">
-        <item>Real-Time (Experimental)</item>
-        <item>Often</item>
-        <item>Normal</item>
-        <item>Rarely</item>
+    <string-array name="pref_sync_rate_keys">
+        <item>Real-Time</item>
+        <item>Often (every 5 seconds)</item>
+        <item>Normal (every minute)</item>
+        <item>Eco-mode (every hour)</item>
     </string-array>
-    <string-array name="pref_commonsense_rate_vals">
+    <string-array name="pref_sync_rate_vals">
         <item>-2</item>
         <item>-1</item>
         <item>0</item>
