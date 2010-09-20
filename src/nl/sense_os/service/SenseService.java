@@ -853,7 +853,7 @@ public class SenseService extends Service {
                 // showToast(getString(R.string.toast_toggle_dev_prox));
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                        SenseSettings.PREF_SAMPLE_RATE, "0"));
                 int interval = 1;
                 switch (rate) {
                 case -2:
@@ -894,7 +894,7 @@ public class SenseService extends Service {
                 final boolean gps = prefs.getBoolean(SenseSettings.PREF_LOCATION_GPS, true);
                 final boolean network = prefs.getBoolean(SenseSettings.PREF_LOCATION_NETWORK, true);
                 final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                        SenseSettings.PREF_SAMPLE_RATE, "0"));
 
                 // set update parameters according to preference
                 long minTime = -1;
@@ -960,7 +960,7 @@ public class SenseService extends Service {
 
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                        SenseSettings.PREF_SAMPLE_RATE, "0"));
                 int interval = -1;
                 switch (rate) {
                 case -2: // real time
@@ -998,7 +998,7 @@ public class SenseService extends Service {
             if (true == active) {
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                        SenseSettings.PREF_SAMPLE_RATE, "0"));
                 int interval = -1;
                 switch (rate) {
                 case -2: // real time
@@ -1051,7 +1051,7 @@ public class SenseService extends Service {
 
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 final int rate = Integer.parseInt(prefs.getString(
-                        SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                        SenseSettings.PREF_SAMPLE_RATE, "0"));
                 int interval = -1;
                 switch (rate) {
                 case -2: // real time

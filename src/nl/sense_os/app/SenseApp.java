@@ -779,7 +779,7 @@ public class SenseApp extends Activity {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
                     final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                            SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String interval = "";
                     switch (rate) {
                     case -2: // real-time
@@ -818,7 +818,7 @@ public class SenseApp extends Activity {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
                     final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                            SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String interval = "";
                     switch (rate) {
                     case -2: // often
@@ -859,7 +859,7 @@ public class SenseApp extends Activity {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
                     final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                            SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String interval = "";
                     switch (rate) {
                     case -2: // often
@@ -900,7 +900,7 @@ public class SenseApp extends Activity {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
                     final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_COMMONSENSE_RATE, "0"));
+                            SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String intervalString = "";
                     String extraString = "";
                     switch (rate) {

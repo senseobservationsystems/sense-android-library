@@ -154,7 +154,7 @@ public class MsgHandler extends IntentService {
         String[] columns = { DbHelper.COL_ROWID, DbHelper.COL_JSON };
         String selection = DbHelper.COL_ACTIVE + "!=\"true\"";
         Cursor c = this.db.query(DbHelper.TABLE_NAME, columns, selection, null, null, null, null);
-        final int max_entries = 20;
+        final int max_entries = 20; // 
         
         try {
             if (c.getCount() > 0) {
@@ -163,6 +163,7 @@ public class MsgHandler extends IntentService {
                 JSONObject json = new JSONObject();
                 c.moveToFirst();
                 int count = 0;
+                
                 try {
                     JSONArray array = new JSONArray();
 
@@ -178,7 +179,8 @@ public class MsgHandler extends IntentService {
                     Log.d(TAG, "JSONException creating sensor data");
                     return;
                 }
-//                Log.d(TAG, "Got data from database...\n" + json.toString());
+                
+                boolean flagMoreData = (count == max_entries);
 
                 // send data to CommonSense
                 final boolean success = sendData(json);
@@ -192,6 +194,14 @@ public class MsgHandler extends IntentService {
                         this.db.delete(DbHelper.TABLE_NAME, DbHelper.COL_ROWID + "=" + id, null);
                         count++;
                         c.moveToNext();
+                    }
+                    
+                    // immediately schedule a new send task if there is still stuff in the database
+                    if (flagMoreData) {
+                        Log.d(TAG, "there is still stuff in the database!");
+                        Intent task = new Intent(this, MsgHandler.class);
+                        task.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_SEND_MSG);
+                        startService(task);
                     }
                 }
             } else {
@@ -295,7 +305,7 @@ public class MsgHandler extends IntentService {
             Log.e(TAG, "IOException sending transmission: " + e.getMessage());
             return false;
         } catch (JSONException e) {
-            Log.e(TAG, "JSONException parsing response from CommonSense " + e.getMessage());
+            Log.e(TAG, "JSONException parsing response from CommonSense: " + e.getMessage());
             return false;
         }
 

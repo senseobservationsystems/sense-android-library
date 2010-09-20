@@ -9,6 +9,16 @@
             android:summary="Register a new user"
             android:key="register" />  
         <ListPreference
+            android:title="Sensor sample rate"
+            android:summary="Sampling frequency of the sensing modules"
+            android:dialogTitle="Sample rate"
+            android:entries="@array/pref_sample_rate_keys"
+            android:entryValues="@array/pref_sample_rate_vals"
+            android:defaultValue="0"
+            android:positiveButtonText="@string/button_ok"
+            android:negativeButtonText="@string/button_cancel"
+            android:key="commonsense_rate" />  
+        <ListPreference
             android:title="CommonSense sync rate"
             android:summary="Amount of communication with server"
             android:dialogTitle="Sync rate"
@@ -17,7 +27,7 @@
             android:defaultValue="0"
             android:positiveButtonText="@string/button_ok"
             android:negativeButtonText="@string/button_cancel"
-            android:key="commonsense_rate" />  
+            android:key="sync_rate" />  
         <CheckBoxPreference
             android:title="Autostart"
             android:summary="Autostart Sense service on phone boot"
@@ -43,17 +53,30 @@
                     android:key="location_gps"/>
                 <CheckBoxPreference
                     android:title="Network provider"
-                    android:summary="Use WiFi/cell location provider"
+                    android:summary="Use Wi-Fi/cell location provider"
                     android:defaultValue="true"
                     android:key="location_network"/>
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen 
-            android:summary="Ambience sensing settings" android:title="Ambience sensing" android:enabled="true">
-        <PreferenceCategory android:title="Main settings"><CheckBoxPreference android:title="Microphone" android:defaultValue="True" android:summary="Measures noise or records audio" android:key="ambience_mic"></CheckBoxPreference>
-<CheckBoxPreference android:key="ambience_light" android:defaultValue="True" android:summary="Measures the light intensity" android:title="Light"></CheckBoxPreference>
-</PreferenceCategory>
-</PreferenceScreen>
+            android:summary="Ambience sensing settings" 
+            android:title="Ambience sensing" 
+            android:enabled="true">
+            <PreferenceCategory android:title="Main settings">
+                <CheckBoxPreference 
+                    android:title="Microphone" 
+                    android:defaultValue="True" 
+                    android:summary="Measures noise or records audio" 
+                    android:key="ambience_mic">
+                </CheckBoxPreference>
+                <CheckBoxPreference 
+                    android:key="ambience_light" 
+                    android:defaultValue="True" 
+                    android:summary="Measures the light intensity" 
+                    android:title="Light">
+                </CheckBoxPreference>
+            </PreferenceCategory>
+        </PreferenceScreen>
         <PreferenceScreen 
             android:title="Periodic popups"
             android:summary="Periodic popup question settings"
@@ -89,9 +112,19 @@
         <PreferenceScreen 
             android:title="Neighboring devices"
             android:enabled="true" android:summary="Wireless sensing settings">
-        <PreferenceCategory android:title="Main settings"><CheckBoxPreference android:summary="Use bluetooth to find neighboring devices" android:defaultValue="true" android:title="Bluetooth " android:key="proximity_bt"></CheckBoxPreference>
-<CheckBoxPreference android:key="proximity_wifi" android:summary="Use WIFI to find neighboring devices" android:title="WIFI " android:defaultValue="True"></CheckBoxPreference>
-</PreferenceCategory>
-</PreferenceScreen>
+            <PreferenceCategory android:title="Main settings">
+                <CheckBoxPreference 
+                    android:summary="Use Bluetooth to find neighboring devices" 
+                    android:defaultValue="true" android:title="Bluetooth" 
+                    android:key="proximity_bt">
+                </CheckBoxPreference>
+                <CheckBoxPreference 
+                    android:key="proximity_wifi" 
+                    android:summary="Use Wi-Fi to find neighboring devices" 
+                    android:title="Wi-Fi" 
+                    android:defaultValue="True">
+                </CheckBoxPreference>
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>
