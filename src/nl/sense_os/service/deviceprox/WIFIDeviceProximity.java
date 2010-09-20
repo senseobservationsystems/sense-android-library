@@ -39,7 +39,7 @@ public class WIFIDeviceProximity {
 				Log.d(TAG,"Scan complete");				
 				// get the results of the wifi scan
 				List<ScanResult> results = wifi.getScanResults();		
-				if(results.size() > 0)
+				if(results != null && results.size() > 0)
 				{
 					Log.d(TAG,"devices found:"+results.size());
 					JSONObject json = new JSONObject();
