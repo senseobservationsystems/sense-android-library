@@ -117,8 +117,8 @@ for ($i = 0; $i < sizeOf($data); ++$i) {
         }
 
         // Insert into DB
-        $sql = "INSERT INTO `$tbl_name` (`id`,`device_id`,`sensor_type`,`sensor_value`,`date`) VALUES (NULL,'$deviceId','$sensorTypeID','$sensorValue','$time')";
-        $msg = $sql;
+        $sql = "INSERT INTO `$tbl_name` (`id`,`device_id`,`sensor_type`,`sensor_value`,`date`) ";
+        $sql .= "VALUES (NULL,'$deviceId','$sensorTypeID','$sensorValue','$time')";
         $result	= mysql_query($sql);
 
         if ($result) {
@@ -136,7 +136,8 @@ for ($i = 0; $i < sizeOf($data); ++$i) {
     }
 }
 
-$response = array("status"=>"ok", "msg" => "$msg");
+$msg = "stored " . sizeOf($data) . " values";
+$response = array("status"=>"ok", "msg" => $msg);
 echo json_encode($response);
 
 

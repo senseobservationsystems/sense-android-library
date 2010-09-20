@@ -1,5 +1,5 @@
 <?php
-include("db_connect.php");
+include("db_only_connect.php");
 $tbl_name="users"; // Table name
 
 // Define $email and $password
@@ -43,9 +43,9 @@ if($email && $password) {
         $sql="SELECT * FROM `$tbl_name` WHERE `email`='$email'";
         $result = mysql_query($sql);
         $row = mysql_fetch_assoc($result);
-        $userId = $row['id'];
-        $_SESSION['userId'] = $userId;
-
+        //$userId = $row['id'];
+        //$_SESSION['userId'] = $userId;
+	
         // Create tag for user
         $sql = "INSERT INTO `tags` (`id`,`tag`,`tagged_id`,`parent_id`,`type`,`date`) ";
         $sql .= "VALUES (NULL,'/$userId/','$userId','0','users',NOW())";
@@ -55,7 +55,7 @@ if($email && $password) {
             $message .= 'Whole query: ' . $query;
             die($message);
         }
-
+	include_once("login.php");
         echo "OK";
     }
 }
