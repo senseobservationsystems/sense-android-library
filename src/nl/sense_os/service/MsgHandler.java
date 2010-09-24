@@ -13,12 +13,14 @@ import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +29,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MsgHandler extends IntentService {
@@ -152,6 +155,7 @@ public class MsgHandler extends IntentService {
             sendData(obj);
         } else {
             // normal mode
+            // Log.d(TAG, "Stored \"" + name + "\" sensor value");
             storeData(json);
         }
     }
@@ -160,10 +164,12 @@ public class MsgHandler extends IntentService {
 
         // query the database
         openDb();
-        String[] columns = { DbHelper.COL_ROWID, DbHelper.COL_JSON };
-        String selection = DbHelper.COL_ACTIVE + "!=\"true\"";
-        Cursor c = this.db.query(DbHelper.TABLE_NAME, columns, selection, null, null, null, null);
-        final int max_entries = 20; //
+        String[] cols = { DbHelper.COL_ROWID, DbHelper.COL_JSON };
+        String sel = DbHelper.COL_ACTIVE + "!=?";
+        String[] selArgs = { "true" };
+        int limit = 100;
+        Cursor c = this.db.query(DbHelper.TABLE_NAME, cols, sel, selArgs, null, null, null, ""
+                + limit);
 
         try {
             if (c.getCount() > 0) {
@@ -177,7 +183,7 @@ public class MsgHandler extends IntentService {
                     JSONArray array = new JSONArray();
 
                     // fill array with JSON objects from the buffer database
-                    while (false == c.isAfterLast() && count < max_entries) {
+                    while (false == c.isAfterLast()) {
                         final String jsonString = c.getString(1);
                         array.put(new JSONObject(jsonString));
                         count++;
@@ -189,7 +195,7 @@ public class MsgHandler extends IntentService {
                     return;
                 }
 
-                boolean flagMoreData = (count == max_entries);
+                boolean flagMoreData = (count == limit);
 
                 // send data to CommonSense
                 final boolean success = sendData(json);
@@ -198,16 +204,18 @@ public class MsgHandler extends IntentService {
                 if (success) {
                     count = 0;
                     c.moveToFirst();
-                    while (false == c.isAfterLast() && count < max_entries) {
+                    while (false == c.isAfterLast()) {
                         int id = c.getInt(c.getColumnIndex(DbHelper.COL_ROWID));
-                        this.db.delete(DbHelper.TABLE_NAME, DbHelper.COL_ROWID + "=" + id, null);
+                        String where = DbHelper.COL_ROWID + "=?";
+                        String[] whereArgs = { "" + id };
+                        this.db.delete(DbHelper.TABLE_NAME, where, whereArgs);
                         count++;
                         c.moveToNext();
                     }
 
                     // immediately schedule a new send task if there is still stuff in the database
                     if (flagMoreData) {
-                        Log.d(TAG, "there is still stuff in the database!");
+                        Log.d(TAG, "Immediate reschedule of new send task to clean up DB");
                         Intent task = new Intent(this, MsgHandler.class);
                         task.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_SEND_MSG);
                         startService(task);
@@ -265,8 +273,7 @@ public class MsgHandler extends IntentService {
         openClient();
 
         try {
-            String url = SenseSettings.URL_SEND_SENSOR_DATA + "?data="
-                    + URLEncoder.encode(json.toString(), HTTP.UTF_8);
+            String url = SenseSettings.URL_SEND_SENSOR_DATA;
             final SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS,
                     android.content.Context.MODE_PRIVATE);
             String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
@@ -275,6 +282,10 @@ public class MsgHandler extends IntentService {
             URI uri = new URI(url);
             HttpPost post = new HttpPost(uri);
             post.setHeader("Cookie", cookie);
+            List<NameValuePair> postForm = new ArrayList<NameValuePair>();
+            postForm.add(new BasicNameValuePair("data", json.toString()));
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postForm, "UTF-8");
+            post.setEntity(entity);
 
             // execute POST
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -283,7 +294,7 @@ public class MsgHandler extends IntentService {
             JSONObject response = new JSONObject(client.execute(post, responseHandler));
 
             if (response.getString("status").equals("ok")) {
-                Log.d(TAG, "Sent sensor data OK! Response message:\n" + response.getString("msg"));
+                Log.d(TAG, "Sent sensor data OK! Response message: " + response.getString("msg"));
             } else {
                 int error = response.getInt("faultcode");
 
@@ -304,7 +315,6 @@ public class MsgHandler extends IntentService {
                 }
                 return false;
             }
-
         } catch (UnsupportedEncodingException e) {
             Log.e(TAG, "UnsupportedEncodingException sending transmission", e);
             return false;
