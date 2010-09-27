@@ -2,6 +2,7 @@
 include_once("db_connect.php");
 include_once("sendToDeviceServiceManager.php");
 include_once("deviceID_check.php");
+include_once("error_codes.php");
 
 $tbl_name = "sensor_data"; // Table name
 
@@ -48,29 +49,24 @@ if($sensorName && $sensorValue)
     $count	= mysql_num_rows($result);
 
     // Get sensorType
-    if($count == 1)
-    {
+    if ($count == 1) {
         $row 		    = mysql_fetch_assoc($result);
         $sensorTypeID 	= $row['id'];
-    }
-    // Create new sensor type
-    else
-    {
+    } else {
+        // Create new sensor type
         $sql	= "INSERT INTO sensor_type (`id` ,`name`, `data_type`, `device_type` ) VALUES (NULL ,  '$sensorName', '$sensorDataType','$sensorDeviceType')";
         $result	= mysql_query($sql);
-        if($result)
-        {
+        if ($result) {
             // Get sensorType
             $sql		= "SELECT * FROM `sensor_type` WHERE `name`='$sensorName' AND `device_type`='$sensorDeviceType'";
             $result		= mysql_query($sql);
             $row 		= mysql_fetch_assoc($result);
             $sensorTypeID 	= $row['id'];
-        }
-        else
-        {
-            $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $query;
-            die($message);
+        } else {
+            $msg  = 'Invalid query: ' . mysql_error() . "\n";
+            $msg .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+            die(json_encode($response));
         }
     }
 
@@ -102,31 +98,34 @@ if($sensorName && $sensorValue)
         }
         $sql       .= "VALUES (NULL, '$tag', '$sensorTypeID', '$deviceId', 'sensor_type', NOW())";
         $result	    = mysql_query($sql);
-        if(!$result)
-        {
-            $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $query;
-            die($message);
+        if(!$result) {
+            $msg  = 'Invalid query: ' . mysql_error() . "\n";
+            $msg .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+            die(json_encode($response));
         }
     }
 
     // Insert into DB
     $sql	= "INSERT INTO $tbl_name (`id` ,`device_id` ,`sensor_type` ,`sensor_value` ,`date`) VALUES (NULL ,  '$deviceId', '$sensorTypeID',  '$sensorValue',  '$time')";
     $result	= mysql_query($sql);
-    if($result)
-    {
-        echo "OK\n";
+    if ($result) {
+        $msg = "sensor value added";
+        $response = array("status"=>"ok", "msg"=>$msg);
+        echo json_encode($response);
+
         // send to device service manager
         sendToDeviceServiceManager($deviceId, $sensorDataType, $sensorName, $sensorValue);
+    } else {
+        $msg  = 'Invalid query: ' . mysql_error() . "\n";
+        $msg .= 'Whole query: ' . $sql;
+        $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+        die(json_encode($response));
     }
-    else
-    {
-        $message  = 'Invalid query: ' . mysql_error() . "\n";
-        $message .= 'Whole query: ' . $query;
-        die($message);
-    }
+} else {
+    $msg = "Error: no sensorName or sensorValue given";
+    $response = array("status"=>"error", "faultcode"=>$fault_parameter, "msg"=>$msg);
+    die(json_encode($response));
 }
-else
-echo "Error: no sensorName or sensorValue given";
 
 ?>

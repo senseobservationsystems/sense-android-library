@@ -1,5 +1,7 @@
 <?php
 
+include_once("error_codes.php");
+
 session_start();
 
 $host		= "localhost"; 		// Host name 
@@ -11,13 +13,13 @@ $db_name	= "commonSense2"; 	// Database name
 $resource = mysql_connect("$host", "$mysql_username", "$mysql_password");
 if (!$resource) {
     $msg = "Cannot connect to MySQL";
-    $response = array("status"=>"error", "faultcode"=>3, "msg"=>$msg);
+    $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
     die(json_encode($response));   
 }
 $db_ok = mysql_select_db("$db_name")or die("cannot select DB");
 if(!$db_ok) {
     $msg = "Cannot select database";
-    $response = array("status"=>"error", "faultcode"=>3, "msg"=>$msg);
+    $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
     die(json_encode($response));     
 }
 ?>

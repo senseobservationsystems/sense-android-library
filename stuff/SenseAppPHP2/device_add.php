@@ -1,9 +1,12 @@
 <?php
 include("db_connect.php");
+include_once("error_codes.php");
 $tbl_name="devices"; // Table name
 
 if(!isset($_SESSION['userId'])) {
-    die("Error: not logged in.");
+    $msg = "not logged in.";
+    $response = array("status"=>"error", "faultcode"=>$fault_login, "msg"=>$msg);
+    die(json_encode($response));
 }
 
 // Get Input
@@ -20,9 +23,10 @@ if ($uuid) {
     $sql = "SELECT * FROM $tbl_name WHERE uuid='$uuid' and user_id='$userId'";
     $result	= mysql_query($sql);
     if (!$result) {
-        $message    = 'Invalid query: ' . mysql_error() . "\n";
-        $message   .= 'Whole query: ' . $query;
-        die($message);
+        $msg  = 'Invalid query: ' . mysql_error() . "\n";
+        $msg .= 'Whole query: ' . $sql;
+        $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+        die(json_encode($response));
     }
     $count	= mysql_num_rows($result);
 
@@ -34,18 +38,20 @@ if ($uuid) {
         $sql = "INSERT INTO `$tbl_name` (`id`,`user_id`,`type`,`uuid`,`date`) VALUES (NULL,'$userId','$type','$uuid',NOW())";
         $result = mysql_query($sql);
         if (!$result) {
-            $message    = 'Invalid query: ' . mysql_error() . "\n";
-            $message   .= 'Whole query: ' . $query;
-            die($message);
+            $msg  = 'Invalid query: ' . mysql_error() . "\n";
+            $msg .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+            die(json_encode($response));
         }
 
         // Fetch sp_id
         $sql	= "SELECT * FROM `$tbl_name` WHERE `uuid`='$uuid'";
         $result = mysql_query($sql);
         if (!$result) {
-            $message    = 'Invalid query: ' . mysql_error() . "\n";
-            $message   .= 'Whole query: ' . $query;
-            die($message);
+            $msg  = 'Invalid query: ' . mysql_error() . "\n";
+            $msg .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+            die(json_encode($response));
         }
         $row                    = mysql_fetch_assoc($result);
         $sp_id                  = $row['id'];
@@ -63,15 +69,20 @@ if ($uuid) {
         $sql .= "VALUES (NULL,'/$userId/$type #$sp_id/','$sp_id','$userId','devices',NOW())";
         $result = mysql_query($sql);
         if (!$result) {
-            $message    = 'Invalid query: ' . mysql_error() . "\n";
-            $message   .= 'Whole query: ' . $query;
-            die($message);
+            $msg  = 'Invalid query: ' . mysql_error() . "\n";
+            $msg .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+            die(json_encode($response));
         }
 
-        echo "OK";
+        $msg = "device added";
+        $response = array("status"=>"ok", "msg"=>$msg);
+        die(json_encode($response));
     }
 } else {
-    echo "Error: no deviceId given";
+    $msg  = "Error: device already exists";
+    $response = array("status"=>"error", "faultcode"=>$fault_parameter, "msg"=>$msg);
+    die(json_encode($response));
 }
 
 ?>

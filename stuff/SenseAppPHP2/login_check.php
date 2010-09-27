@@ -1,5 +1,6 @@
 <?php
 include_once("db_connect.php");
+
 function valid_login() {
 $tbl_name="users"; // Table name
     $email		= $_REQUEST['email']; 

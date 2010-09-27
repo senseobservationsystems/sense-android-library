@@ -2,13 +2,12 @@
 include_once("db_connect.php");
 include_once("sendToDeviceServiceManager.php");
 include_once("deviceID_check.php");
+include_once("error_codes.php");
 
 $tbl_name = "sensor_data"; // Table name
-$fault_sql_error = 3;
-$fault_missing_data = 2;
 
 // get raw json string
-$jsonString = $_REQUEST['data'];
+$jsonString = $_POST['data'];
 
 // To protect MySQL injection (more detail about MySQL injection)
 //$jsonString = mysql_real_escape_string($jsonString);
@@ -78,8 +77,8 @@ for ($i = 0; $i < sizeOf($data); ++$i) {
                 $sensorTypeID = $row['id'];
             } else {
                 $message  = 'Invalid query: ' . mysql_error() . "\n";
-                $message .= 'Whole query: ' . $query;
-                $response = array("status"=>"error", "faultcode"=>$fault_sql_error, "msg"=>$message);
+                $message .= 'Whole query: ' . $sql;
+                $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
                 die(json_encode($response));
             }
         }
@@ -110,8 +109,8 @@ for ($i = 0; $i < sizeOf($data); ++$i) {
             $result	    = mysql_query($sql);
             if (!$result) {
                 $message  = 'Invalid query: ' . mysql_error() . "\n";
-                $message .= 'Whole query: ' . $query;
-                $response = array("status" => "error", "faultcode" => $fault_sql_error, "msg" => $message);
+                $message .= 'Whole query: ' . $sql;
+                $response = array("status" => "error", "faultcode" => $fault_internal, "msg" => $message);
                 die(json_encode($response));
             }
         }
@@ -126,12 +125,12 @@ for ($i = 0; $i < sizeOf($data); ++$i) {
             sendToDeviceServiceManager($deviceId, $sensorDataType, $sensorName, $sensorValue);
         } else {
             $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $query;
-            $response = array("status"=>"error", "faultcode"=>$fault_sql_error, "msg"=>$message);
+            $message .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
             die(json_encode($response));
         }
     } else {
-        $response = array("status" => "error", "faultcode" => $fault_missing_data, "msg" => "name:$sensorName, value:$value");
+        $response = array("status" => "error", "faultcode" => $fault_parameter, "msg" => "name:$sensorName, value:$value");
         die(json_encode($response));
     }
 }

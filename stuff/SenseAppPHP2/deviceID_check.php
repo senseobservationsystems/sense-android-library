@@ -1,8 +1,11 @@
 <?php
 include_once("db_connect.php");
+include_once("error_codes.php");
 
 if(!isset($_SESSION['userId'])) {
-    die("Error: not logged in");
+    $message  = "not logged in";
+    $response = array("status"=>"error", "faultcode"=>$fault_login, "msg"=>$message);
+    die(json_encode($response));
 }
 $userId		= $_SESSION['userId'];
 
@@ -26,10 +29,11 @@ if (isset($_REQUEST['uuid'])) {
         $result = mysql_query($sql);
         if (!$result) {
             $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $query;
-            die($message);
+            $message .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
+            die(json_encode($response));
         }
-        
+
         // create tag for the new device
         $tag = "";
         if (((int) $uuid) <= 1000000) {
@@ -41,9 +45,10 @@ if (isset($_REQUEST['uuid'])) {
         $sql .= "VALUES (NULL,'$tag','$sp_id','$userId','devices',NOW())";
         $result = mysql_query($sql);
         if (!$result) {
-            $message = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $query;
-            die($message);
+            $message  = 'Invalid query: ' . mysql_error() . "\n";
+            $message .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
+            die(json_encode($response));
         }
 
         // Fetch sp_id
@@ -51,8 +56,9 @@ if (isset($_REQUEST['uuid'])) {
         $result = mysql_query($sql);
         if (!$result) {
             $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $query;
-            die($message);
+            $message .= 'Whole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
+            die(json_encode($response));
         }
         $row = mysql_fetch_assoc($result);
         $devices[$uuid] = $row['id'];
@@ -64,7 +70,9 @@ if (isset($_REQUEST['uuid'])) {
 }
 
 if(!isset($deviceId)) {
-    die("Error: no deviceID");
+    $msg = "Error: no deviceID";
+    $response = array("status"=>"error", "faultcode"=>$fault_parameter, "msg"=>$msg);
+    die(json_encode($response));
 }
 
 ?>
