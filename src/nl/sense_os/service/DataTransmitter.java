@@ -1,3 +1,8 @@
+/*
+ ************************************************************************************************************
+ *     Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.     *
+ ************************************************************************************************************
+ */
 package nl.sense_os.service;
 
 import android.app.AlarmManager;
