@@ -15,12 +15,12 @@ $sensorDeviceType   = $_REQUEST['sensorDeviceType'];
 if(!isset($_REQUEST['sensorDataType'])) {
     if (is_numeric($sensorValue)) {
         $sensorDataType = 'float';
-    } else if (is_string($sensorValue)) {
-        $sensorDataType = 'string';
+    } else if (substr($sensorValue,0,1) == "{") {
+        $sensorDataType = 'json';
     } else if (is_bool($sensorValue)) {
         $sensorDataType = 'bool';
-    } else {
-        $sensorDataType = 'json';
+    } else if (is_string($sensorValue)) {
+        $sensorDataType = 'string';
     }
 }
 
@@ -33,15 +33,15 @@ if(isset($_REQUEST['sampleTime'])) {
 if($sensorName && $sensorValue)
 {
     // To protect MySQL injection (more detail about MySQL injection)
-    $sensorName         = mysql_real_escape_string($sensorName);
-    $sensorDataType     = mysql_real_escape_string($sensorDataType);
-    $sensorValue        = mysql_real_escape_string($sensorValue);
-    $sensorDeviceType   = mysql_real_escape_string($sensorDeviceType);
-
-    $sensorName 		= stripslashes($sensorName);
-    $sensorValue 		= stripslashes($sensorValue);
-    $sensorDataType 	= stripslashes($sensorDataType);
-    $sensorDeviceType	= stripslashes($sensorDeviceType);
+//     $sensorName         = mysql_real_escape_string($sensorName);
+//     $sensorDataType     = mysql_real_escape_string($sensorDataType);
+//     $sensorValue        = mysql_real_escape_string($sensorValue);
+//     $sensorDeviceType   = mysql_real_escape_string($sensorDeviceType);
+// 
+//     $sensorName 		= stripslashes($sensorName);
+//     $sensorValue 		= stripslashes($sensorValue);
+//     $sensorDataType 	= stripslashes($sensorDataType);
+//     $sensorDeviceType	= stripslashes($sensorDeviceType);
 
     // Check if the sensor exists
     $sql	= "SELECT * FROM `sensor_type` WHERE `name`='$sensorName' AND `device_type`='$sensorDeviceType'";
@@ -115,7 +115,7 @@ if($sensorName && $sensorValue)
         echo json_encode($response);
 
         // send to device service manager
-        sendToDeviceServiceManager($deviceId, $sensorDataType, $sensorName, $sensorValue);
+        sendToDeviceServiceManager(($deviceId.".".$sensorTypeID), $sensorDataType, $sensorName, $sensorValue);
     } else {
         $msg  = 'Invalid query: ' . mysql_error() . "\n";
         $msg .= 'Whole query: ' . $sql;
