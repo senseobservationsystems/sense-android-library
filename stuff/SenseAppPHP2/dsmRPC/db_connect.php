@@ -1,9 +1,12 @@
 <?php
 session_start();
 
-$host		= "localhost"; 		// Host name 
-$mysql_username	= "commonSense"; 	// Mysql username 
-$mysql_password	= "senseo1234"; 	// Mysql password 
+// $host		= "localhost"; 		// Host name 
+// $mysql_username	= "commonSense"; 	// Mysql username 
+// $mysql_password	= "senseo1234"; 	// Mysql password 
+$host		= "demo.almende.com"; 		// Host name 
+$mysql_username	= "ted"; 	// Mysql username 
+$mysql_password	= "09091983rd"; 	// Mysql password 
 $db_name	= "commonSense2"; 	// Database name 
 
 // Connect to server and select databse.
