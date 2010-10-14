@@ -1,15 +1,106 @@
 <?php
-//if(isset($_SESSION['devices']))
-//{
 
+// find all the sensor types of a device
+if(!isset($_SESSION['sensorDevices']) || isset($_REQUEST['reloadSensors']))
+{
+  $devices	= $_SESSION['devices'];	
+   foreach($devices as $devices_Id)
+    {	
+      $sql = "select * from tags where parent_id='$devices_Id' and type='sensor_type'";
+      $result	= mysql_query($sql);	
+      $searchStr = "";
+      if($result)   
+      {
+	  while( $row = mysql_fetch_assoc($result))
+	  {
+	    if(strlen($searchStr) > 0)
+	      $searchStr .= " or ";
+	    $searchStr .= " id='".$row['tagged_id']."'";	    
+	  }
+      }
+      $sql = "select * from sensor_type where $searchStr";
+      $result	= mysql_query($sql);	
+      
+      if($result)   
+      {
+	  while( $row = mysql_fetch_assoc($result))
+	  {	    
+	    if(strlen($row['device_type']) > 0)
+	      $postFix = " (".$row['device_type'].")";	
+	    else
+	      $postFix = "";
+	    $sensorDevices[$devices_Id.".".$row['id']] = $row['name'].$postFix;
+	  }
+      }
+    }
+  $_SESSION['sensorDevices'] = $sensorDevices;
+}
 
 if(!isset($HTTP_POST_VARS) && isset($_POST))
 {
 	$HTTP_POST_VARS = $_POST;
 }
+// change the status of gtalk external service
+if(isset($HTTP_POST_VARS["request"]) && $HTTP_POST_VARS["request"] == "gtalk")
+{
+    $ds_id = $HTTP_POST_VARS["ds_id"];
+    $ds_type = $HTTP_POST_VARS["ds_type"];
+    $gtalk = $HTTP_POST_VARS["gtalkStatus"];
+    $sensorType = -1;  
+    if($gtalk == "on")
+    {
+      // find the right sensor type
+      $sql = "select * from sensor_type where name='$ds_type' and device_type='$ds_id'";
+      $result	= mysql_query($sql);	
+      if($result) 
+      {
+	// create the sensor type
+	if(mysql_num_rows($result) == 0);
+	{
+	  $sql = "insert into sensor_type (name, data_type, device_type) value('$ds_type', 'string', '$ds_id')";
+	  $result	= mysql_query($sql);	
+	  if($result)   
+	  {	    
+	    $sql 	= "select * from sensor_type where name='$ds_type' and device_type='$ds_id'";
+	    $result	= mysql_query($sql);	
+	  }
+	}	
+	  $row = mysql_fetch_assoc($result);
+	  $sensorType = $row['id'];	
+      } 
+      else
+       $msgStr = "<br><b><font color=\"red\">Error: set your Gtalk credentials in your profile.</font></b><br>";   
+    }      
+    
+
+    $sql	= "update external_services set sensor_type='$sensorType' where user_id='".$_SESSION['userId']."' and service='gtalk'";
+    $result	= mysql_query($sql);	
+    if(!$result)    
+        $msgStr = "<br><b><font color=\"red\">Error: set your Gtalk credentials in your profile.</font></b><br>";   
+}
+
+// get the external service values
+$sql = "select external_services.*, sensor_type.* from external_services, sensor_type where external_services.user_id='".$_SESSION['userId']."' and external_services.sensor_type=sensor_type.id and external_services.service='gtalk'";
+$gtalkStatus;
+$result	= mysql_query($sql);	
+
+if($result) 
+{
+  if(mysql_num_rows($result) == 0 && $gtalk == "on")
+  {
+    echo $msgStr = "<b><font color=\"red\">Error: set your Gtalk credentials in your profile.</font></b><br><br>";   
+  }
+  while ($row = mysql_fetch_assoc($result)) 
+  {
+    $lable = $row['name'].$row['device_type'];
+    $gtalkStatus[$lable] = "checked";          
+  }
+  $_SESSION['gtalkStatus'] = $gtalkStatus;
+}
+
 
 // Display result
-if(isset($HTTP_POST_VARS["submit"]))
+if((isset($HTTP_POST_VARS["request"]) && $HTTP_POST_VARS["request"] == "disconnect") || isset($HTTP_POST_VARS["submit"]))
 {  
       $device_id = $HTTP_POST_VARS["device_id"];
       $ds_id = $HTTP_POST_VARS["ds_id"];
@@ -21,7 +112,7 @@ if(isset($HTTP_POST_VARS["submit"]))
 	if(strpos($ds_id, ".") == 0)
 	  $ds_id = $device_id.".".$ds_id;
       }
-      if($HTTP_POST_VARS["submit"] == "disconnect")
+      if($HTTP_POST_VARS["request"] == "disconnect")
       {
 	  $method = "dsm.DisconnectFromService";
       }
@@ -63,33 +154,41 @@ if(isset($HTTP_POST_VARS["submit"]))
       // register the service with the proxy
       if($HTTP_POST_VARS["submit"] == "connect" && $result == "ok")
       {
-	    $url = "http://demo.almende.com/commonSense2/deviceservices/$ds_type.php";
+	    $url = "http://demo.almende.com/commonSense2/dsm_sensor_data_add.php";
 	    $dsRegistryServer = "http://demo.almende.com:8080/registerdeviceservice?ds_id=".$ds_id."&ds_type=".$ds_type."&virtual=true&url=".$url;
 	    file_get_contents($dsRegistryServer);
 	   
       }
-     if($HTTP_POST_VARS["submit"] == "disconnect" && $result == "ok")
+     if($HTTP_POST_VARS["request"] == "disconnect" && $result == "ok")
       {
-	    $url = "http://demo.almende.com/commonSense2/deviceservices/$ds_type.php";
+	    $url = "http://demo.almende.com/commonSense2/dsm_sensor_data_add.php";
 	    $dsRegistryServer = "http://demo.almende.com:8080/unregisterdeviceservice?ds_id=".$ds_id."&ds_type=".$ds_type."&virtual=true&url=".$url;
 	    file_get_contents($dsRegistryServer);
 	  
       }
       
 }	
-print "<table width=100%><tr><td>".activeDeviceServices()."</td><td>".deviceServices()."</td></tr></table>";
+print activeDeviceServices()."<br>".deviceServices();
 
 function deviceServices()
 {
-    $devices	= $_SESSION['devices'];	      
-    echo "<h2>Connect a device to a service</h2>";
-    print "<table border=1><tr><td>";
-    print  "<table><tr><td>Device</td><td>Service Name</td><td>Service ID</td></tr>";
+    $devices		= $_SESSION['devices'];	
+    $sensorDevices 	= $_SESSION['sensorDevices'];
+    echo "<h3>Connect a device to a service</h3> <a href=\"login?reloadSensors=1\">reload sensors</a>";
+    print "<table style=\"border-left: black 1px solid; 
+border-right: black 1px solid; border-top: black 1px solid; border-bottom: black 1px solid\"><tr><td>";
+    print  "<table><tr><td><FONT SIZE=2>Sensor</td><td><FONT SIZE=2>Service type</td><td><FONT SIZE=2>Service ID</td></tr>";
     $deviceServices;
-
-    foreach($devices as $devices_Id)
+if(sizeof($sensorDevices) > 0)
+    $lastDevice_id = "";
+    foreach($sensorDevices as $devices_Id => $sensorName) // combination of device_id.sensor_type
     {		  
-  
+	  $pos = strpos($devices_Id, ".");
+	if($pos !== false)
+	{
+	    $sensorType = substr($devices_Id, $pos+1);
+	    $d_ID	= substr($devices_Id, 0, $pos); // device id as in the database
+	}
 	$g=new xmlrpcmsg('dsm.GetDeviceServices', array(new xmlrpcval($devices_Id)));
 	// print "<pre>Sending the following request:\n\n" . htmlentities($g->serialize()) . "\n\nDebug info of server data follows...\n\n";
 	  $client=new xmlrpc_client("/server.php", "localhost", 8000);
@@ -103,16 +202,20 @@ function deviceServices()
 	    $jsonObject = json_decode($sensorValue, True);
 	    //print $jsonObject;
 	    $serviceArray = $jsonObject['deviceServices'];
-	     $deviceService[$devices_Id] = $serviceArray;
+	    $deviceService[$devices_Id] = $serviceArray;
 	    $tmpDevices = array(0);
 	    $args = "";
 	    $argsCnt = 0;
-	    $outputForm =  "<form action=\"deviceServiceManagerRPC.php\" method=\"POST\">
-			    <input name=\"device_id\" type=hidden value=\"$devices_Id\">
-			     <tr><td><a href='../deviceservices/gps_service.php?device_id=$devices_Id'>$devices_Id</a></td><td><select name=\"ds_type\">";
+	    $outputForm =  "<form action=\"deviceServiceManagerRPC\" method=\"POST\">
+			    <input name=\"device_id\" type=hidden value=\"$devices_Id\">";		
+	     if($lastDevice_id!=$d_ID)
+	    {
+	        $outputForm .= "<tr><td><a href='../deviceservices/gps_service?device_id=$d_ID'>Device: $d_ID</a></td></tr>";
+		$lastDevice_id = $d_ID;
+	    }
+	    $outputForm .=    "<tr><td>$sensorName</td><td><select name=\"ds_type\">";
 	    while(list($key, $value) = each($serviceArray))
 	    { 	      
-	     
 	      if(isset($value['ds_type']))
 	      {
 		  $service = $value['ds_type'];
@@ -121,7 +224,6 @@ function deviceServices()
 		  $argsCnt++;
 		if(!isset($tmpDevices[$service]))
 		{
-		   
 		    $tmpDevices[$service] = $value['data_type'];
 		    $outputForm .= "<option value=\"$service\">$service</option>";	
 		}
@@ -138,20 +240,27 @@ function deviceServices()
 			  . " Reason: '" . htmlspecialchars($result->faultString()) . "'</pre><br/>";
 	  }
     }
-print "</table></tr></td></table>";
+print "</table></tr></td></table><br>";
 }
 function activeDeviceServices()
 {  
     $_SESSION['deviceService'] = $deviceServices;
  
-    $devices	= $_SESSION['devices'];	      
-    print "<h2>Active Services</h2>";
-    print "<table border=3 CELLPADDING=0 CELLSPACING=0><tr><td>Device_id</td><td>Service_ID</td><td>Name</td></tr>";
+    $devices		= $_SESSION['devices'];	         
+    $gtalkStatus 	= $_SESSION['gtalkStatus'];
+    $sensorDevices 	= $_SESSION['sensorDevices'];
     $deviceServices;    
     $argsCnt = array();
     $tmpDevices = array();	
-    foreach($devices as $devices_Id)
+if(sizeof($sensorDevices) > 0)
+    foreach($sensorDevices as $devices_Id => $sensorName)
     {		  
+	$pos = strpos($devices_Id, ".");
+	if($pos !== false)
+	{
+	    $sensorType = substr($devices_Id, $pos+1);
+	    $d_ID	= substr($devices_Id, 0, $pos); // device id as in the database
+	}
 	$g=new xmlrpcmsg('dsm.GetActiveServices', array(new xmlrpcval($devices_Id)));
 	  // print "<pre>Sending the following request:\n\n" . htmlentities($g->serialize()) . "\n\nDebug info of server data follows...\n\n";
 	  $client=new xmlrpc_client("/server.php", "localhost", 8000);
@@ -173,18 +282,18 @@ function activeDeviceServices()
 	      {
 		  $service = $value['ds_type'];
 		  $ds_id = $value['ds_id'];	  
-		  $data_type = $value['data_type'];
-		  
+		  $data_type = $value['data_type'];			  
 		if(!isset($tmpDevices[$service.$ds_id.$devices_Id]))
 		{		  
 		    $argCnt[$service.$ds_id.$devices_Id] = 0;
-		    $tmpDevices[$service.$ds_id.$devices_Id] = "<tr><td>$devices_Id</td><td><a href=\"deviceService.php?ds_id=$ds_id&ds_type=$service\">$ds_id</a></td><td><a href=\"deviceService.php?ds_id=$ds_id&ds_type=$service\">$service</a></td>
-		    <form action=\"deviceServiceManagerRPC.php\" method=\"POST\">			      
-			    <input name=\"device_id\" type=hidden value=\"$devices_Id\">
-			      <input name=\"ds_type\" type=hidden value=\"$service\">
-			      <input type=hidden name=\"arg".$argCnt[$service.$ds_id.$devices_Id]."\" value=\"$data_type\">
-			      <input name=\"ds_id\" type=hidden value=\"$ds_id\">";
-		   
+		    $tmpDevices[$service.$ds_id.$devices_Id] = "<tr><td>$d_ID</td><td>$sensorName</td><td><a href=\"deviceService?ds_id=$ds_id&ds_type=$service\">$ds_id</a></td><td><a href=\"deviceService?ds_id=$ds_id&ds_type=$service\">$service</a></td>
+		    <form name='$service.$ds_id' action=\"deviceServiceManagerRPC\" method=\"POST\">			      
+			    <input name=\"device_id\" type=hidden value=\"$devices_Id\"/>
+			      <input name=\"ds_type\" type=hidden value=\"$service\"/>
+			      <input type=hidden name=\"arg".$argCnt[$service.$ds_id.$devices_Id]."\" value=\"$data_type\"/>
+			      <input name=\"ds_id\" type=hidden value=\"$ds_id\"/>			
+			      <input name=request type=hidden value=\"disconnect\"/>
+			      <td><input name=\"gtalkStatus\" type=checkbox ".$gtalkStatus[$service.$ds_id]." onChange=\"request.value='gtalk';submit();\"/></td>";		   
 		}
 		else		
 		   $tmpDevices[$service.$ds_id.$devices_Id] .="<input type=hidden name=\"arg".$argCnt[$service.$ds_id.$devices_Id]."\" value=\"$data_type\">";	
@@ -200,11 +309,18 @@ function activeDeviceServices()
 	  }
 
   }
+  if(sizeof($tmpDevices) > 0)
+  {
+    //echo $msgStr;
+    print "<h3>Active Services</h3>";
+    print "<table style=\"border-left: black 1px solid; 
+border-right: black 1px solid; border-top: black 1px solid; border-bottom: black 1px solid\"><tr><td><FONT SIZE=2>Device id</td><td><FONT SIZE=2>Sensor</td><td><FONT SIZE=2>Service ID</td><td><FONT SIZE=2>Type</td><td><FONT SIZE=2>Gtalk status</td></tr>";
+  }
   while(list($key, $value) = each($tmpDevices))
   { 	
-      print $value."<td><input name=\"submit\" type=submit value=\"disconnect\"></form></td></tr>";
+      print $value."<td><input type=submit value=\"disconnect\"></form></td></tr>";
   }
-  print "</table>";
+  print "</table><br>";
 }
 
 ?>
