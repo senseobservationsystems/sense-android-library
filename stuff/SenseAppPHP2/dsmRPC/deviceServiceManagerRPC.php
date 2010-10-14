@@ -1,19 +1,22 @@
 <?php
-	include("../db_connect.php");
-	include("xmlrpc/lib/xmlrpc.inc");
+	include_once("../db_only_connect.php");
+	include_once("xmlrpc/lib/xmlrpc.inc");
 	$userName 	= $_SESSION['userName'];
 ?>
 <html>
-<head><title>xmlrpc</title></head>
-<body>
-<h1>Device Service Manager RPC demo</h1>
+<title>Device Service Manager | SENSE</title>
+<link rel="shortcut icon" href="http://www.sense-os.nl/sites/default/files/sense_os_favicon.png" type="image/x-icon">
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body leftmargin="5">
+
+<h1>Device Service Manager</h1>
 <?php
 
-print "<table width=100%><tr><td>You are here: <a href=\"login.php\">Home</a></td><td>hi $userName - <a href=\"login.php?logout=1\">logout</td></tr></table><br><br>";
+print "<hr><table width=100%><tr><td>You are here: <a href=\"login\">Home</a></td><td>hi <a href=\"sensorDataApi\">$userName</a> - <a href=\"login?logout=1\">logout</td></tr></table><hr><br><br>";
 
 //print the devices
 include_once("devicesAndServices.php");
-
 ?>
 </body>
 </html>
