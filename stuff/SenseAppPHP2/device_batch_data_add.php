@@ -122,7 +122,7 @@ for ($i = 0; $i < sizeOf($data); ++$i) {
 
         if ($result) {
             // send to device service manager
-            sendToDeviceServiceManager($deviceId, $sensorDataType, $sensorName, $sensorValue);
+            sendToDeviceServiceManager($deviceId.".".$sensorTypeID, $sensorDataType, $sensorName, $sensorValue);
         } else {
             $message  = 'Invalid query: ' . mysql_error() . "\n";
             $message .= 'Whole query: ' . $sql;
