@@ -1,8 +1,6 @@
 <?php
-
-include_once("error_codes.php");
-
 session_start();
+include_once("error_codes.php");
 
 $host		= "localhost"; 		// Host name 
 $mysql_username	= "commonSense"; 	// Mysql username 
