@@ -63,8 +63,7 @@ if($sensorName && $sensorValue)
             $row 		= mysql_fetch_assoc($result);
             $sensorTypeID 	= $row['id'];
         } else {
-            $msg  = 'Invalid query: ' . mysql_error() . "\n";
-            $msg .= 'Whole query: ' . $sql;
+            $msg  = 'Invalid query: ' . mysql_error() . "\nWhole query: " . $sql;
             $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
             die(json_encode($response));
         }
@@ -74,40 +73,56 @@ if($sensorName && $sensorValue)
     $sql    = "SELECT `id` FROM `tags` WHERE `tagged_id`='$sensorTypeID' AND `parent_id`='$deviceId'";
     $result	= mysql_query($sql);
     $count	= mysql_num_rows($result);
+
+    // create new tag for this sensor if it doesn't exist already
     if ($count < 1) {
-
-        $sql        = "SELECT `type` FROM `devices` WHERE `id` = '$deviceId' LIMIT 1";
-        $result		= mysql_query($sql);
-        $row 		= mysql_fetch_assoc($result);
+        
+        // get type of device (to make special MyriaNed node tags)
+        $sql = "SELECT `type` FROM `devices` ";
+        $sql .= "WHERE `id` = '$deviceId' ";
+        $sql .= "LIMIT 1";
+        $result = mysql_query($sql);
+        $row = mysql_fetch_assoc($result);
         $deviceType = $row['type'];
+        
+        // get tag of parent (i.e. the device)
+        $sql = "SELECT `tag` FROM `tags` ";
+        $sql .= "WHERE `tagged_id` = '$deviceId' AND `type` = 'devices' ";
+        $sql .= "LIMIT 1";
+        $result = mysql_query($sql);
+        $row = mysql_fetch_assoc($result);
 
-        // insert new tag with user id, device type and sensor type
-        $sql        = "INSERT INTO `tags` (`id`, `tag`, `tagged_id`, `parent_id`, `type`, `date`) ";
-        if ($deviceType == 'smartPhone') {
-            $tag    = "/$userId/$deviceType #$deviceId/$sensorName/";
-        } else if ($deviceType == 'myrianode') {
-            $nodeId = $_REQUEST['uuid'];
-            if (isset($sensorDeviceType)) {
-                $tag = "/$userId/MyriaNed node $nodeId/#$nodeId. $sensorName ($sensorDeviceType)/";
-            } else {
-                $tag = "/$userId/MyriaNed node $nodeId/#$nodeId. $sensorName/";
-            }
+        // use parent tag as base
+        $tag = $row['tag'];
+        
+        // include node id for myrianed nodes, otherwise just use sensor name
+        if ($deviceType == 'myrianode') {
+            $tag .= "#$nodeId. $sensorName";
         } else {
-            // legacy, for older device types
-            $tag    = "/$userId/$deviceType/$sensorName/";
+            $tag .= "$sensorName";
         }
-        $sql       .= "VALUES (NULL, '$tag', '$sensorTypeID', '$deviceId', 'sensor_type', NOW())";
-        $result	    = mysql_query($sql);
+        
+        // include sensor device type if available, otherwise finish tag with a '/'
+        if (isset($sensorDeviceType)) {
+            $tag .= " ($sensorDeviceType)/";
+        } else {
+            $tag .= "/";
+        }
+        $sql = "INSERT INTO `tags` ";
+        $sql .= "(`id`, `tag`, `tagged_id`, `parent_id`, `type`, `date`) ";
+        $sql .= "VALUES (NULL, '$tag', '$sensorTypeID', '$deviceId', 'sensor_type', NOW())";
+        $result = mysql_query($sql);
         if(!$result) {
-            $msg  = 'Invalid query: ' . mysql_error() . "\n";
-            $msg .= 'Whole query: ' . $sql;
+            $msg  = 'Invalid query: ' . mysql_error() . "\nWhole query: " . $sql;
             $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
             die(json_encode($response));
         }
     }
 
     // Insert into DB
-    $sql	= "INSERT INTO $tbl_name (`id` ,`device_id` ,`sensor_type` ,`sensor_value` ,`date`) VALUES (NULL ,  '$deviceId', '$sensorTypeID',  '$sensorValue',  '$time')";
+    $sql = "INSERT INTO `sensor_data` ";
+    $sql .= "(`id` ,`device_id` ,`sensor_type` ,`sensor_value` ,`date`) ";
+    $sql .= "VALUES (NULL ,  '$deviceId', '$sensorTypeID',  '$sensorValue',  '$time')";
     $result	= mysql_query($sql);
     if ($result) {
         $msg = "sensor value added";

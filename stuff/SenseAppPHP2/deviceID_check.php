@@ -28,11 +28,24 @@ if (isset($_REQUEST['uuid'])) {
         $sql = "INSERT INTO `devices` (`id`,`user_id`,`type`,`uuid`,`date`) VALUES (NULL,'$userId','$type','$uuid',NOW())";
         $result = mysql_query($sql);
         if (!$result) {
-            $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $sql;
+            $message  = 'Invalid query: ' . mysql_error() . '\nWhole query: ' . $sql;
             $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
             die(json_encode($response));
         }
+        
+        // Fetch sp_id
+        $sql = "SELECT * FROM `devices` WHERE `uuid`='$uuid' AND `user_id` = '$userId'";
+        $result = mysql_query($sql);
+        if (!$result) {
+            $msg  = 'Invalid query: ' . mysql_error() . '\nWhole query: ' . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+            die(json_encode($response));
+        }
+        $row                    = mysql_fetch_assoc($result);
+        $sp_id                  = $row['id'];
+        $_SESSION['deviceId']   = $sp_id;
+        $devices                = $_SESSION['devices'];
+        $devices[$uuid]         = $sp_id;
 
         // create tag for the new device
         $tag = "";
@@ -45,25 +58,10 @@ if (isset($_REQUEST['uuid'])) {
         $sql .= "VALUES (NULL,'$tag','$sp_id','$userId','devices',NOW())";
         $result = mysql_query($sql);
         if (!$result) {
-            $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $sql;
+            $message  = 'Invalid query: ' . mysql_error() . '\nWhole query: ' . $sql;
             $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
             die(json_encode($response));
         }
-
-        // Fetch sp_id
-        $sql = "SELECT * FROM `devices` WHERE `uuid`='$uuid' and `user_id`='$userId'";
-        $result = mysql_query($sql);
-        if (!$result) {
-            $message  = 'Invalid query: ' . mysql_error() . "\n";
-            $message .= 'Whole query: ' . $sql;
-            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$message);
-            die(json_encode($response));
-        }
-        $row = mysql_fetch_assoc($result);
-        $devices[$uuid] = $row['id'];
-        $_SESSION['devices'] = $devices;
-        $deviceId = $row['id'];
     }
 } else if ($_SESSION['deviceId']) {
     $deviceId = $_SESSION['deviceId'];

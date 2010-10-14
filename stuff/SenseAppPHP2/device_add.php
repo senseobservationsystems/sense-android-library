@@ -20,19 +20,20 @@ if ($uuid) {
     $type = stripslashes($type);
 
     // Check if the phone is already added
-    $sql = "SELECT * FROM $tbl_name WHERE uuid='$uuid' and user_id='$userId'";
+    $sql = "SELECT * FROM `$tbl_name` WHERE uuid='$uuid' AND user_id='$userId'";
     $result	= mysql_query($sql);
     if (!$result) {
-        $msg  = 'Invalid query: ' . mysql_error() . "\n";
-        $msg .= 'Whole query: ' . $sql;
+        $msg  = 'Invalid query: ' . mysql_error() . '\nWhole query: ' . $sql;
         $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
         die(json_encode($response));
     }
     $count	= mysql_num_rows($result);
 
     // If the device is already added table row count is 1
-    if ($count == 1) {
-        echo "Error: device already exists";
+    if ($count > 0) {
+        $msg  = 'Error: device already exists for this user';
+        $response = array("status"=>"error", "faultcode"=>$fault_parameter, "msg"=>$msg);
+        die(json_encode($response));
     } else {
         // Insert into DB
         $sql = "INSERT INTO `$tbl_name` (`id`,`user_id`,`type`,`uuid`,`date`) VALUES (NULL,'$userId','$type','$uuid',NOW())";
@@ -45,11 +46,10 @@ if ($uuid) {
         }
 
         // Fetch sp_id
-        $sql	= "SELECT * FROM `$tbl_name` WHERE `uuid`='$uuid'";
+        $sql = "SELECT * FROM `$tbl_name` WHERE `uuid`='$uuid' AND `user_id` = '$userId'";
         $result = mysql_query($sql);
         if (!$result) {
-            $msg  = 'Invalid query: ' . mysql_error() . "\n";
-            $msg .= 'Whole query: ' . $sql;
+            $msg  = 'Invalid query: ' . mysql_error() . '\nWhole query: ' . $sql;
             $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
             die(json_encode($response));
         }
@@ -80,7 +80,7 @@ if ($uuid) {
         die(json_encode($response));
     }
 } else {
-    $msg  = "Error: device already exists";
+    $msg  = "Error: uuid not found";
     $response = array("status"=>"error", "faultcode"=>$fault_parameter, "msg"=>$msg);
     die(json_encode($response));
 }
