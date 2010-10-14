@@ -41,7 +41,11 @@ if($email && $password)
 		$userId = $row['id'];
 		$_SESSION['userId']  = $userId;	
 		$userName = $row['name'];
-		$_SESSION['userName']  = $userName;	
+		if(strlen($userName) == 0)
+		  $_SESSION['userName']  = $row['email'];
+		else
+		  $_SESSION['userName']  = $userName;	
+	        $_SESSION['uuid']  = $row['UUID'];
 		// cach the devices in the database connected to this userId
 		$sql	= "SELECT * FROM devices WHERE user_id='$userId'";
 		$result	= mysql_query($sql);	
@@ -67,14 +71,26 @@ if($email && $password)
 
 if(!isset($_SESSION['userId']))
 {
+?>
+<html>
+<title>Device Service Manager | SENSE</title>
+<link rel="shortcut icon" href="http://www.sense-os.nl/sites/default/files/sense_os_favicon.png" type="image/x-icon">
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body>
+<?php
   print  "<h1>Device Service Manager login</h1><br>
   $error
-  <form action=\"login.php\" method=\"POST\">
+  <form action=\"login\" method=\"POST\">
   <table>
   <tr><td>Email:</td><td> <input name=\"email\" value=\"\"></td></tr><br>
   <tr><td>Password:</td><td><input name=\"password\" type=password value=\"\"></td></tr>
   <tr><td><input type=\"submit\" value=\"login\" name=\"submit\"></td></tr></form>
   </table>";
+?>
+</body>
+</html>
+<?php
 }
 else
 {
