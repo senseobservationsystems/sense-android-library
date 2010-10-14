@@ -1,5 +1,5 @@
 <?php 
-include_once("../db_connect.php");
+include_once("../API/db_connect_and_login.php");
 
 //$lat = $_REQUEST['latitude'];
 //$long = $_REQUEST['longitude'];
@@ -7,7 +7,15 @@ $ds_id		= $_REQUEST['ds_id'];
 $ds_type	= $_REQUEST['ds_type'];
 $device_id	= $_REQUEST['device_id'];
 $noPitch	= $_REQUEST['noPitch'];
-
+$deviceCheck = 0;
+if(isset($_SESSION['devices']))
+foreach($_SESSION['devices'] as $device)
+{
+    if($device == $device_id)
+      $deviceCheck = 1;
+}
+if($deviceCheck == 0)
+  die("Wrong device id.");
 // get from the database the long lat
 $positionSensorID = 14;
 $sql = "select * from sensor_data where device_id='$device_id' and sensor_type='$positionSensorID' ORDER BY id DESC LIMIT 0,1";
@@ -16,9 +24,15 @@ if(!$result)
     die("error"); 
   $count	= mysql_num_rows($result);
   if($count == 0 )
-    return;
+    die("No Position data found\n");
   $row = mysql_fetch_assoc($result);
   $longLatValue = $row['sensor_value'];	
+
+// get the values out of json
+$longLatJson = json_decode($longLatValue);
+while(list($key, $value) = each($longLatJson))
+  $$key = $value;
+
 //echo "long lat: $longLatValue\n" ;
 // find orientation
 $orientationID = 14;
@@ -38,19 +52,21 @@ $sql = "select * from sensor_data where device_id='$device_id' and ( $orientatio
 $result = mysql_query($sql);	
 if(!$result)			 
     die("error");  
+$count	= mysql_num_rows($result);
+if($count > 0)
+{
   $row = mysql_fetch_assoc($result);
   $orientationValue = $row['sensor_value'];	
-//echo "orientation: $orientationValue\n";
-// get the values out of json
-$longLatJson = json_decode($longLatValue);
-while(list($key, $value) = each($longLatJson))
-  $$key = $value;
-
-$orientationJson = json_decode($orientationValue);
-while(list($key, $value) = each($orientationJson))
-  $$key = $value;
-$yaw = $azimuth;
-
+  $orientationJson = json_decode($orientationValue);
+  while(list($key, $value) = each($orientationJson))
+    $$key = $value;
+  $yaw = $azimuth;
+}
+else
+{
+  $pitch = 0;
+  $yaw = 0;
+}
 //<meta http-equiv="refresh" content="5">
 if($_REQUEST['getData'])
 {
@@ -64,12 +80,9 @@ echo "<?xml version=\"1.0\" ?><root>
 		    <yaw>$yaw</yaw>
 	</orientation>	
 </root>";
-
 }
 else
 {
-  echo "lat:".$latitude." long:".$longitude."\n";
-  echo "yaw:$yaw, pitch:$pitch";
 ?>
 <html>
 <head>
@@ -80,7 +93,11 @@ var myPano;
 var panoClient;
 var nextPanoId;
 var myPOV;
-    function initialize() {
+var usePitch = new Boolean(true);
+var autoUpdate = new Boolean(true);
+var useStreetView = new Boolean(true);
+var theAlamo;
+function initialize() {
 	    panoClient = new GStreetviewClient();     
 	    var theAlamo = new GLatLng(<?php echo "$latitude,$longitude"; ?>);
             map = new GMap2(document.getElementById("map_canvas"));
@@ -89,26 +106,39 @@ var myPOV;
 	    map.addOverlay(new GMarker(theAlamo));
 	
 	//  var fenwayPark = new GLatLng(51.89878,4.488473);
+      if(useStreetView)
+      {
 	myPOV = {<?php echo "yaw:$yaw, pitch:$pitch";?>};
 	panoramaOptions = { latlng:theAlamo, pov:myPOV};
-      myPano = new GStreetviewPanorama(document.getElementById("pano"), panoramaOptions);
-      GEvent.addListener(myPano, "error", handleNoFlash);
-     panoClient.getNearestPanorama(theAlamo, showPanoData);
-    }
+	myPano = new GStreetviewPanorama(document.getElementById("pano"), panoramaOptions);
+	GEvent.addListener(myPano, "error", handleNoFlash);
+	panoClient.getNearestPanorama(theAlamo, showPanoData);
+      }
+}
 function loadNewData(yawVal, pitchVal, longitudeVal, latitudeVal)
 {
+if(!usePitch)
+  pitchVal = 0;
 <?php
 if($noPitch==1)
-    echo  "myPOV = {yaw:parseInt(yawVal)};\n";
+    echo  "var myPOV2 = {yaw:parseInt(yawVal,pitch:0)};\n";
 else
-  echo  "myPOV = {yaw:parseInt(yawVal), pitch:parseInt(pitchVal)};\n";
+  echo  "var myPOV2 = {yaw:parseInt(yawVal), pitch:parseInt(pitchVal)};\n";
 ?>
-  var theAlamo = new GLatLng(latitudeVal, longitudeVal);  
-            map.setCenter(theAlamo, 13);
-            map.setUIToDefault();
-	    map.addOverlay(new GMarker(theAlamo));  
-    myPano.setLocationAndPOV(theAlamo, myPOV);   
-  panoClient.getNearestPanorama(theAlamo, showPanoData);
+  var theAlamo2 = new GLatLng(latitudeVal, longitudeVal);  
+  if(!theAlamo2.equals(theAlamo))
+  {
+      theAlamo = theAlamo2;
+      map.setCenter(theAlamo, 13);
+      map.setUIToDefault();
+      map.addOverlay(new GMarker(theAlamo));      
+  }  
+    if(!theAlamo2.equals(theAlamo) || myPOV2['pitch'] != myPOV['pitch'] || myPOV2['yaw'] != myPOV['yaw'])
+    {
+      myPOV = myPOV2;
+      myPano.setLocationAndPOV(theAlamo2, myPOV);    
+      panoClient.getNearestPanorama(theAlamo2, showPanoData);
+    }
 }
 function showPanoData(panoData) {
  
@@ -122,7 +152,6 @@ function showPanoData(panoData) {
   map.openInfoWindowHtml(panoData.location.latlng, displayString);
   myPano.setLocationAndPOV(panoData.location.latlng,myPOV);
 }
-
    var http_request = false;
    function makeRequest(url, parameters) {
       http_request = false;
@@ -177,16 +206,60 @@ function showPanoData(panoData) {
       }
    }
    function do_xml() {
-      setTimeout("do_xml()",2000);   
+      if(autoUpdate)
+	setTimeout("do_xml()",2000);   
       makeRequest('gps_service.php', '?getData=1&device_id=<?php echo $device_id;?>');
    } 
+function togglePitch()
+{
+  usePitch = !usePitch;
+  if(usePitch)
+    document.getElementById("buttonPitch").value = "Disable Pitch";
+  else
+    document.getElementById("buttonPitch").value = "Enable Pitch";
+}
+
+function toggleUpdate()
+{
+  autoUpdate = !autoUpdate;
+  if(autoUpdate)
+  {
+    do_xml();
+    document.getElementById("buttonUpdate").value = "Disable Update";
+  }
+  else
+    document.getElementById("buttonUpdate").value = "Enable Update";
+}
+
+function toggleStreetView()
+{
+  useStreetView = !useStreetView;
+  if(useStreetView)
+  {   
+    document.getElementById("buttonStreetView").value = "Disable Street View";
+    document.getElementById("map_canvas").style.height = "25%";
+    document.getElementById("map_canvas").style.width = "100%";
+    document.getElementById("pano").style.display = "block";    
+    initialize(); 
+  }
+  else
+  {
+    document.getElementById("buttonStreetView").value = "Enable Street View";
+    document.getElementById("map_canvas").style.height = "97%";
+    document.getElementById("map_canvas").style.width = "100%";    
+    document.getElementById("pano").style.display = "none";   
+     initialize(); 
+  }
+}
 do_xml();
 </script>
 
 </head>
 <body onload="initialize()">
+<input type="button" id="buttonPitch" value="Disable Pitch" 
+   onclick="javascript:togglePitch();"><input type="button" id="buttonUpdate" value="Disable Update" onclick="javascript:toggleUpdate();"><input type="button" id="buttonStreetView" value="Disable Street View" onclick="javascript:toggleStreetView();">  
   <div id="map_canvas" style="width: 100%; height: 25%"></div>
-<div id="pano" style="width: 100%; height: 75%"></div>
+<div id="pano" style="width: 100%; height: 72%"></div>
 </body>
 </html>
 <?php 
