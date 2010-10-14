@@ -4,13 +4,9 @@ include_once("error_codes.php");
 
 session_start();
 
-$host		= "demo.almende.com"; 		// Host name 
-$mysql_username	= "ted"; 	// Mysql username 
-$mysql_password	= "09091983rd"; 	// Mysql password 
-// $host		= "localhost"; 		// Host name 
-// $mysql_username	= "commonSense"; 	// Mysql username 
-// $mysql_password	= "senseo1234"; 	// Mysql password 
-
+$host		= "localhost"; 		// Host name 
+$mysql_username	= "commonSense"; 	// Mysql username 
+$mysql_password	= "senseo1234"; 	// Mysql password 
 $db_name	= "commonSense2"; 	// Database name 
 
 
