@@ -13,7 +13,7 @@ function sendDeviceServiceMessage($device_id, $dataType, $sensorValue, $sk)
 		$SEPARATOR	= 0x20;	// SPACE
 
 		$dataSize	= strlen($sensorValue);
-	 	fputs($sk, chr($START_HEADER).$device_id.chr($SEPARATOR).$dataType.chr($SEPARATOR).$dataSize.chr($START_TEXT).$sensorValue.chr($END_TEXT));	//fclose($sk);				
+	 	fputs($sk, chr($START_HEADER).$device_id.chr($SEPARATOR).$dataType.chr($SEPARATOR).$dataSize.chr($START_TEXT).$sensorValue.chr($END_TEXT));	//fclose($sk);		
 	}	
 }
 
@@ -23,7 +23,8 @@ function sendToDeviceServiceManager($device_id, $sensorDataType, $sensorName, $s
 	$port		=	1337;
 	$timeout	=	20;
 	$sk = pfsockopen("udp://$host:$port", $errno, $errstr, $timeout);
-
+    
+	$sensorValue = stripslashes($sensorValue);
 	//remove spaces from the sensor name
 	$sensorName = str_replace(" ", "_", $sensorName);
 	if($sensorDataType=='json')
@@ -31,16 +32,25 @@ function sendToDeviceServiceManager($device_id, $sensorDataType, $sensorName, $s
 		// create the dataType from the sensor name + extra data in the Json object
 		// parse JSON, for each value send
 		$sensorValue = stripslashes($sensorValue);	     
-		$jsonObject = json_decode($sensorValue);
-		
-		while(list($key, $value) = each($jsonObject))
-		{ 
-		    sendDeviceServiceMessage($device_id, $sensorName.".".str_replace(" ", "_", $key), $value, $sk); 
-		}
+		$jsonObject = json_decode($sensorValue);		
+		stripJSONAndSend($jsonObject, $device_id,  $sensorName, $sk);
 	}
 	else// If the data is not JSON, then the sensorName is used as the dataType
 	 	sendDeviceServiceMessage($device_id, $sensorName, $sensorValue, $sk);      
 	fclose($sk);
 	//sleep(1);
 }	
+
+function stripJSONAndSend($json, $device_id,  $sensorName, $sk )
+{ 
+	while(list($key, $value) = each($json))
+	{ 	    
+	      if(is_array($value))
+	      {
+		 $value = json_encode($value);
+	      }
+	  sendDeviceServiceMessage($device_id, $sensorName.".".str_replace(" ", "_", $key), $value, $sk); 
+	      
+	}      
+}
 ?>
