@@ -4,7 +4,7 @@ include_once("db_connect.php");
 function valid_login() {
 $tbl_name="users"; // Table name
     $email		= $_REQUEST['email']; 
-    $password	= $_REQUEST['password'];
+    $password		= $_REQUEST['password'];
 
     if ($email && $password) {
         // To protect MySQL injection (more detail about MySQL injection)
@@ -30,8 +30,17 @@ $tbl_name="users"; // Table name
 		    $row = mysql_fetch_assoc($result);	
 		    $userId = $row['id'];		
 		    $_SESSION['userId']  = $userId;	
+		    $_SESSION['email']	 =  $email;		    
 		    $userName = $row['name'];
-		    $_SESSION['userName']  = $userName;	
+		    if(strlen($userName) == 0)
+		    {
+		    	$_SESSION['userName']  = $row['email'];
+		    }
+		    else
+		    {
+		    	$_SESSION['userName']  = $userName;
+		    }	
+		    $_SESSION['uuid']  = $row['UUID'];
 		    
 		    // cache the devices in the database connected to this userId
 		    $sql	= "SELECT * FROM devices WHERE user_id='$userId'";
