@@ -227,7 +227,8 @@ public class SenseSettings extends PreferenceActivity {
     public static final String URL_QUIZ_GET_QSTNS = URL_BASE + "get_pop_quiz_questions.php";
     public static final String URL_REG = URL_BASE + "register.php";
     public static final String URL_REG_PHONE = URL_BASE + "device_add.php";
-    public static final String URL_SEND_SENSOR_DATA = URL_BASE + "device_batch_data_add.php";
+    public static final String URL_SEND_BATCH_DATA = URL_BASE + "device_batch_data_add.php";
+    public static final String URL_SEND_SENSOR_VALUE = URL_BASE + "device_sensor_data_add.php";
     public static final String URL_SEND_SENSOR_DATA_FILE = URL_BASE + "device_sensor_add_file.php";
     private boolean isServiceBound;
     private ISenseService service = null;

@@ -70,8 +70,7 @@ public class SensePhoneState extends PhoneStateListener {
         }
 
         // pass message to the MsgHandler
-        Intent i = new Intent(this.context, MsgHandler.class);
-        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_CALL);
         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
         i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
@@ -131,8 +130,7 @@ public class SensePhoneState extends PhoneStateListener {
             }
             if (ip.length() > 1) {
                 // pass message to the MsgHandler
-                Intent i = new Intent(this.context, MsgHandler.class);
-                i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
                 i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_IP);
                 i.putExtra(MsgHandler.KEY_VALUE, ip);
                 i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_STRING);
@@ -156,8 +154,7 @@ public class SensePhoneState extends PhoneStateListener {
         }
 
         // pass message to the MsgHandler
-        Intent i = new Intent(this.context, MsgHandler.class);
-        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_DATA);
         i.putExtra(MsgHandler.KEY_VALUE, strState);
         i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_STRING);
@@ -169,8 +166,7 @@ public class SensePhoneState extends PhoneStateListener {
     public void onMessageWaitingIndicatorChanged(boolean unreadMsgs) {
 
         // pass message to the MsgHandler
-        Intent i = new Intent(this.context, MsgHandler.class);
-        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_UNREAD);
         i.putExtra(MsgHandler.KEY_VALUE, unreadMsgs);
         i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_BOOL);
@@ -207,8 +203,7 @@ public class SensePhoneState extends PhoneStateListener {
         }
 
         // pass message to the MsgHandler
-        Intent i = new Intent(this.context, MsgHandler.class);
-        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_SERVICE);
         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
         i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
@@ -231,8 +226,7 @@ public class SensePhoneState extends PhoneStateListener {
         }
 
         // pass message to the MsgHandler
-        Intent i = new Intent(this.context, MsgHandler.class);
-        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+        Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_SIGNAL);
         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
         i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);

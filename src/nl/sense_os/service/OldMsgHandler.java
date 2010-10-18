@@ -507,7 +507,7 @@ public class OldMsgHandler {
      * Send sensordata with sensor name value and the type of sensor data
      */
     public void sendSensorData(String sensorName, String sensorValue, String dataType) {
-        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
+        String url = SenseSettings.URL_SEND_BATCH_DATA + "?sensorName="
                 + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
                 + "&sensorDataType=" + URLEncoder.encode(dataType);
         final SharedPreferences prefs = context.getSharedPreferences(PRIVATE_PREFS,
@@ -518,7 +518,7 @@ public class OldMsgHandler {
 
     public void sendSensorData(String sensorName, String sensorValue, String dataType,
             String deviceType) {
-        String url = SenseSettings.URL_SEND_SENSOR_DATA + "?sensorName="
+        String url = SenseSettings.URL_SEND_BATCH_DATA + "?sensorName="
                 + URLEncoder.encode(sensorName) + "&sensorValue=" + URLEncoder.encode(sensorValue)
                 + "&sensorDataType=" + URLEncoder.encode(dataType) + "&sensorDeviceType="
                 + URLEncoder.encode(deviceType);

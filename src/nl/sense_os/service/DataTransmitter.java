@@ -59,8 +59,7 @@ public class DataTransmitter extends BroadcastReceiver {
         }
         
         // start send task
-        Intent task = new Intent(context, MsgHandler.class);
-        task.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_SEND_MSG);
+        Intent task = new Intent(MsgHandler.ACTION_SEND_DATA);
         context.startService(task);
     }
 }

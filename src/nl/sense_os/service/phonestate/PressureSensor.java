@@ -65,16 +65,15 @@ public class PressureSensor implements SensorEventListener {
 			jsonString += "}";
 			
 			// send msg to MsgHandler
-			Intent i = new Intent(this.context, MsgHandler.class);
-			i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+			Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
 			i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
 			i.putExtra(MsgHandler.KEY_VALUE, jsonString);
             i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);   
             i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, sensor.getName());   
-            i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());    
+            i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+            context.startService(i);
 		}
-		if(sampleDelay > 500 && PressureSensingActive)
-		{
+		if (sampleDelay > 500 && PressureSensingActive) {
 			// unregister the listener and start again in sampleDelay seconds	
 			stopPressureSensing();
 			PressureHandler.postDelayed(PressureThread= new Runnable() {

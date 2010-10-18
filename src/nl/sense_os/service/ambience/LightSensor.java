@@ -64,8 +64,7 @@ public class LightSensor implements SensorEventListener {
 			jsonString += "}";
 			
 			// pass message to the MsgHandler
-            Intent i = new Intent(this.context, MsgHandler.class);
-            i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+            Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
             i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);
             i.putExtra(MsgHandler.KEY_VALUE, jsonString);
             i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, sensor.getName());

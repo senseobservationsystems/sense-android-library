@@ -86,8 +86,7 @@ public class BluetoothDeviceProximity {
 						json.put("bt_devices", deviceArray);
 			            
 			            // pass message to the MsgHandler
-			            Intent i = new Intent(BluetoothDeviceProximity.this.context, MsgHandler.class);
-			            i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+			            Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
 			            i.putExtra(MsgHandler.KEY_SENSOR_NAME, BLUETOOTH_DISCOVERY);
 			            i.putExtra(MsgHandler.KEY_VALUE, json.toString());
 			            i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
@@ -201,8 +200,7 @@ public class BluetoothDeviceProximity {
 						}
                         
                         // pass message to the MsgHandler
-                        Intent i = new Intent(BluetoothDeviceProximity.this.context, MsgHandler.class);
-                        i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                        Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
                         i.putExtra(MsgHandler.KEY_SENSOR_NAME, BLUETOOTH_DISCOVERY);
                         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
                         i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);

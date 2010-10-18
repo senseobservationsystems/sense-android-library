@@ -54,8 +54,7 @@ public class NoiseSensor extends PhoneStateListener {
                 double dB = calculateDB();
 
                 // pass message to the MsgHandler
-                Intent i = new Intent(NoiseSensor.this.context, MsgHandler.class);
-                i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
                 i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_NOISE);
                 i.putExtra(MsgHandler.KEY_VALUE, dB);
                 i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_FLOAT);
@@ -137,8 +136,7 @@ public class NoiseSensor extends PhoneStateListener {
                                 SoundStreamThread tmp = soundStreamThread;
 
                                 // pass message to the MsgHandler
-                                Intent i = new Intent(NoiseSensor.this.context, MsgHandler.class);
-                                i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+                                Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
                                 i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_MIC);
                                 i.putExtra(MsgHandler.KEY_VALUE, recordFileName);
                                 i.putExtra(MsgHandler.KEY_DATA_TYPE,

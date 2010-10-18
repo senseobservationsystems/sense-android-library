@@ -52,8 +52,7 @@ public class PhoneActivitySensor  {
 						Log.e(TAG, "JSONException preparing screen activity data");
 					}
 
-					Intent i = new Intent(context, MsgHandler.class);
-					i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+					Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
 					i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
 					i.putExtra(MsgHandler.KEY_VALUE, json.toString());
 					i.putExtra(MsgHandler.KEY_SENSOR_NAME, PHONE_ACTIVITY);

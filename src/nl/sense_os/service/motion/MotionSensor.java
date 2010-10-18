@@ -115,8 +115,7 @@ public class MotionSensor implements SensorEventListener {
             }
 
             // pass message to the MsgHandler
-            Intent i = new Intent(this.context, MsgHandler.class);
-            i.putExtra(MsgHandler.KEY_INTENT_TYPE, MsgHandler.TYPE_NEW_MSG);
+            Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
             i.putExtra(MsgHandler.KEY_SENSOR_NAME, sensorName);
             i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, sensor.getName());
             i.putExtra(MsgHandler.KEY_VALUE, json.toString());
