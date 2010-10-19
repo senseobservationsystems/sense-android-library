@@ -106,9 +106,10 @@
         </PreferenceScreen>
         <PreferenceScreen 
             android:title="Motion sensing"
-            android:summary="Motion sensing settings"
-            android:enabled="false">
-        </PreferenceScreen>
+            android:summary="Motion sensing settings" android:enabled="True">
+        <PreferenceCategory android:title="Main Settings"><CheckBoxPreference android:key="motion_fall_detector" android:title="Fall detection" android:summary="Detects a human fall" android:defaultValue="False"></CheckBoxPreference><CheckBoxPreference android:summary="Detects a simple free fall" android:key="motion_fall_detector_demo" android:title="Fall detection demo" android:defaultValue="False"></CheckBoxPreference>
+</PreferenceCategory>
+</PreferenceScreen>
         <PreferenceScreen 
             android:title="Neighboring devices"
             android:enabled="true" android:summary="Wireless sensing settings">
