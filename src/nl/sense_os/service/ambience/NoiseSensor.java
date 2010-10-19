@@ -210,7 +210,8 @@ public class NoiseSensor extends PhoneStateListener {
 
         pauzeListening();
 
-        if (!isListening && listeningEnabled && state != TelephonyManager.CALL_STATE_RINGING) {
+        // recording while not calling is disabled
+        if (!isListening && listeningEnabled && state == TelephonyManager.CALL_STATE_IDLE) {
             startListening(listenInterval);
         }
     }
