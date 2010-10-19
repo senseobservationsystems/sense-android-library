@@ -272,13 +272,11 @@ public class SenseApp extends Activity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (null != SenseApp.this.service) {
-                try {
-                    SenseApp.this.service.getStatus(callback);
-                } catch (RemoteException e) {
-                    Log.e(TAG, "RemoteException in Sense service status in receiver", e);
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    updateUi();
                 }
-            }
+            });
         }
     }
 

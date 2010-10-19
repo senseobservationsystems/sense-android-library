@@ -195,6 +195,7 @@ public class MsgHandler extends Service {
     private void closeDb() {
         if (true == this.isDbOpen) {
             this.dbHelper.close();
+            this.isDbOpen = false;
         }
     }
 

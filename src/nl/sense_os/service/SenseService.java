@@ -807,7 +807,7 @@ public class SenseService extends Service {
             final long when = System.currentTimeMillis();
             final Notification n = new Notification(icon, null, when);
             final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
-            notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            notifIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
             n.setLatestEventInfo(this, "Sense service", "", contentIntent);
 
