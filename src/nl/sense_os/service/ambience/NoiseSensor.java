@@ -201,6 +201,7 @@ public class NoiseSensor extends PhoneStateListener {
 
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
+        
         if (state == TelephonyManager.CALL_STATE_OFFHOOK
                 || state == TelephonyManager.CALL_STATE_RINGING) {
             isCalling = true;
@@ -285,8 +286,11 @@ public class NoiseSensor extends PhoneStateListener {
             }
 
             if (audioRec != null) {
-                audioRec.stop();
+                if (audioRec.getState() == AudioRecord.STATE_INITIALIZED) {
+                    audioRec.stop();
+                }
                 audioRec.release();
+                audioRec = null;
             }
 
             if (listenInterval == -1 && recorder != null) {

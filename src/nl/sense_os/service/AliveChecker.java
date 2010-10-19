@@ -21,23 +21,23 @@ public class AliveChecker extends BroadcastReceiver {
     private static final String TAG = "Sense AliveChecker";
     public static final String ACTION_CHECK_ALIVE = "nl.sense_os.service.CheckAlive";
     public static final int REQ_CHECK_ALIVE = 1;
-    public static final long PERIOD_CHECK_ALIVE = 1 * 30 * 1000;
-    
+    public static final long PERIOD_CHECK_ALIVE = 1000 * 60 * 1;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        
+
         /* set the next check broadcast */
         final Intent alarmIntent = new Intent(AliveChecker.ACTION_CHECK_ALIVE);
-        final PendingIntent alarmOp = PendingIntent.getBroadcast(context, AliveChecker.REQ_CHECK_ALIVE,
-                alarmIntent, 0);
+        final PendingIntent alarmOp = PendingIntent.getBroadcast(context,
+                AliveChecker.REQ_CHECK_ALIVE, alarmIntent, 0);
         final long alarmTime = System.currentTimeMillis() + AliveChecker.PERIOD_CHECK_ALIVE;
         final AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmOp);
-        
+
         /* check if the Sense service should be alive */
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean alive = prefs.getBoolean(SenseSettings.PREF_ALIVE, false);
-        
+
         /* if it should be alive, check if it really is still alive */
         if (true == alive) {
             final Intent serviceIntent = new Intent(ISenseService.class.getName());
@@ -45,7 +45,7 @@ public class AliveChecker extends BroadcastReceiver {
                 Log.w(TAG, "Could not start Sense service!");
             }
         } else {
-            Log.d(TAG, "Sense service should NOT be alive. Doing nothing...");
+            // Log.d(TAG, "Sense service should NOT be alive. Doing nothing...");
         }
     }
 }

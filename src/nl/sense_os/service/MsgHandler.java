@@ -21,8 +21,6 @@ import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -39,11 +37,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,54 +98,32 @@ public class MsgHandler extends Service {
         }
 
         public void run() {
+            HttpClient client = new DefaultHttpClient();
+            client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
             try {
-
                 if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
+                    
                     ++nrOfSendMessageThreads;
+                    
+                    // prepare POST
                     URI uri = new URI(url);
                     HttpPost post = new HttpPost(uri);
-                    post.setHeader("Cookie", cookie);
-                    HttpClient client = new DefaultHttpClient();
-                    client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
-                    HttpResponse response = client.execute(post);
-
-                    if (response != null) {
-                        Header header[] = response.getAllHeaders();
-                        String output = "";
-                        for (Header element : header) {
-                            output += element.getName() + "=" + element.getValue() + "\n";
-                        }
-
-                        int value = 0;
-                        String body = "";
-                        InputStream ir = response.getEntity().getContent();
-
-                        while ((value = ir.read()) != -1) {
-                            body += "" + (char) value;
-                        }
-
-                        int subStrStart = this.url.indexOf("sensorName=") + 11;
-                        int subStrEnd = this.url.indexOf("&", subStrStart);
-                        String sensor = URLDecoder.decode(this.url
-                                .substring(subStrStart, subStrEnd));
-                        String outputString = "Sent " + sensor
-                                + " data. Response from CommonSense: " + body;
-                        Log.d(TAG, outputString);
-                        if(!body.toLowerCase().contains("ok"))
-                        {
-                            Log.d(TAG, "Error sending message, re-login");
-                            // TODO re-login
-                        }
-                        --nrOfSendMessageThreads;
-                    }
+                    post.setHeader("Cookie", cookie);                     
+                    
+                    // perform POST
+                    ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                    String response = client.execute(post, responseHandler);
+                    handleResponse(response);
                 }
-
             } catch (IOException e) {
-                --nrOfSendMessageThreads;
                 Log.e(TAG, "IOException in SendMessageThread: " + e.getMessage());
             } catch (URISyntaxException e) {
-                --nrOfSendMessageThreads;
                 Log.e(TAG, "URISyntaxException in SendMessageThread: " + e.getMessage());
+            } catch (JSONException e) {
+                Log.e(TAG, "JSONException in SendMessageThread: " + e.getMessage());
+            } finally {
+                --nrOfSendMessageThreads;
+                client.getConnectionManager().shutdown();
             }
         }
     }
@@ -219,6 +193,34 @@ public class MsgHandler extends Service {
             this.buffer = new JSONObject[MAX_BUFFER];
         } finally {
             closeDb();
+        }
+    }
+    
+    private void handleResponse(String responseString) throws JSONException {
+        JSONObject response = new JSONObject(responseString);
+
+        if (response.getString("status").equals("ok")) {
+            Log.d(TAG,"Sent sensor data OK! Response message: " + response.getString("msg"));
+        } else {
+            int error = response.getInt("faultcode");
+
+            switch (error) {
+            // TODO error handling
+            case 1:
+                Log.e(TAG, "Error storing data in CommonSense, re-login");
+                break;
+            case 2:
+                Log.e(TAG, "Error storing data in CommonSense, sensor data incomplete!");
+                break;
+            case 3:
+                Log.e(TAG,
+                        "SQL error storing data in CommonSense: "
+                                + response.getString("msg"));
+                break;
+            default:
+                Log.e(TAG, "Error sending sensor data: " + error);
+            }
+            return;
         }
     }
 
@@ -291,8 +293,8 @@ public class MsgHandler extends Service {
                     try {
                         value += new JSONObject(intent.getStringExtra(KEY_VALUE)).toString();
                     } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        Log.e(TAG, "JSONException creating object to POST", e);
+                        return;
                     }
                 } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
                     value += intent.getStringExtra(KEY_VALUE);
@@ -393,7 +395,6 @@ public class MsgHandler extends Service {
 
         new Thread() {
             public void run() {
-                // openClient();
                 HttpClient client = new DefaultHttpClient();
                 client.getConnectionManager().closeIdleConnections(1, TimeUnit.SECONDS);
 
@@ -417,35 +418,9 @@ public class MsgHandler extends Service {
 
                     // execute POST
                     ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                    String response = client.execute(post, responseHandler);
+                    handleResponse(response);                    
 
-                    // parse response
-                    JSONObject response = new JSONObject(client.execute(post, responseHandler));
-
-                    if (response.getString("status").equals("ok")) {
-                        Log.d(TAG,
-                                "Sent sensor data OK! Response message: "
-                                        + response.getString("msg"));
-                    } else {
-                        int error = response.getInt("faultcode");
-
-                        switch (error) {
-                        // TODO error handling
-                        case 1:
-                            Log.e(TAG, "Error storing data in CommonSense, re-login");
-                            break;
-                        case 2:
-                            Log.e(TAG, "Error storing data in CommonSense, sensor data incomplete!");
-                            break;
-                        case 3:
-                            Log.e(TAG,
-                                    "SQL error storing data in CommonSense: "
-                                            + response.getString("msg"));
-                            break;
-                        default:
-                            Log.e(TAG, "Error sending sensor data: " + error);
-                        }
-                        return;
-                    }
                 } catch (UnsupportedEncodingException e) {
                     Log.e(TAG, "UnsupportedEncodingException sending transmission", e);
                     return;
