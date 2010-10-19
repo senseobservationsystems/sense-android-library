@@ -47,31 +47,8 @@ if(isset($HTTP_POST_VARS["request"]) && $HTTP_POST_VARS["request"] == "gtalk")
     $ds_type = $HTTP_POST_VARS["ds_type"];
     $gtalk = $HTTP_POST_VARS["gtalkStatus"];
     $sensorType = -1;  
-    if($gtalk == "on")
-    {
-      // find the right sensor type
-      $sql = "select * from sensor_type where name='$ds_type' and device_type='$ds_id'";
-      $result	= mysql_query($sql);	
-      if($result) 
-      {
-	// create the sensor type
-	if(mysql_num_rows($result) == 0);
-	{
-	  $sql = "insert into sensor_type (name, data_type, device_type) value('$ds_type', 'string', '$ds_id')";
-	  $result	= mysql_query($sql);	
-	  if($result)   
-	  {	    
-	    $sql 	= "select * from sensor_type where name='$ds_type' and device_type='$ds_id'";
-	    $result	= mysql_query($sql);	
-	  }
-	}	
-	  $row = mysql_fetch_assoc($result);
-	  $sensorType = $row['id'];	
-      } 
-      else
-       $msgStr = "<br><b><font color=\"red\">Error: set your Gtalk credentials in your profile.</font></b><br>";   
-    }      
-    
+    if($gtalk == "on")    
+      $sensorType = $ds_id;
 
     $sql	= "update external_services set sensor_type='$sensorType' where user_id='".$_SESSION['userId']."' and service='gtalk'";
     $result	= mysql_query($sql);	
@@ -80,7 +57,7 @@ if(isset($HTTP_POST_VARS["request"]) && $HTTP_POST_VARS["request"] == "gtalk")
 }
 
 // get the external service values
-$sql = "select external_services.*, sensor_type.* from external_services, sensor_type where external_services.user_id='".$_SESSION['userId']."' and external_services.sensor_type=sensor_type.id and external_services.service='gtalk'";
+$sql = "select * from external_services where user_id='".$_SESSION['userId']."' and service='gtalk'";
 $gtalkStatus;
 $result	= mysql_query($sql);	
 
@@ -92,7 +69,7 @@ if($result)
   }
   while ($row = mysql_fetch_assoc($result)) 
   {
-    $lable = $row['name'].$row['device_type'];
+    $lable = $row['sensor_type'];
     $gtalkStatus[$lable] = "checked";          
   }
   $_SESSION['gtalkStatus'] = $gtalkStatus;
@@ -293,7 +270,7 @@ if(sizeof($sensorDevices) > 0)
 			      <input type=hidden name=\"arg".$argCnt[$service.$ds_id.$devices_Id]."\" value=\"$data_type\"/>
 			      <input name=\"ds_id\" type=hidden value=\"$ds_id\"/>			
 			      <input name=request type=hidden value=\"disconnect\"/>
-			      <td><input name=\"gtalkStatus\" type=checkbox ".$gtalkStatus[$service.$ds_id]." onChange=\"request.value='gtalk';submit();\"/></td>";		   
+			      <td><input name=\"gtalkStatus\" type=checkbox ".$gtalkStatus[$ds_id]." onChange=\"request.value='gtalk';submit();\"/></td>";		   
 		}
 		else		
 		   $tmpDevices[$service.$ds_id.$devices_Id] .="<input type=hidden name=\"arg".$argCnt[$service.$ds_id.$devices_Id]."\" value=\"$data_type\">";	

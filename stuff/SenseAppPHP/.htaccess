@@ -1,1 +1,4 @@
 Options -Indexes
+<Files index>
+	SetHandler application/x-httpd-php
+</Files>

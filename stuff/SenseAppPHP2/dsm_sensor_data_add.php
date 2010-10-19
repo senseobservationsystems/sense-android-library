@@ -52,8 +52,16 @@ if(!isset($device_id)) {
 
 if(isset($_REQUEST['sensorDataType'])) {
     $sensorDataType = $_REQUEST['sensorDataType'];
-} else {
-    $sensorDataType = 'string';
+}else{
+    if (is_numeric($sensorValue)) {
+        $sensorDataType = 'float';
+    } else if (substr($sensorValue,0,1) == "{") {
+        $sensorDataType = 'json';
+    } else if (is_bool($sensorValue)) {
+        $sensorDataType = 'bool';
+    } else if (is_string($sensorValue)) {
+        $sensorDataType = 'string';
+    }
 }
 
 if(isset($_REQUEST['sampleTime'])) {
@@ -63,17 +71,6 @@ if(isset($_REQUEST['sampleTime'])) {
 }
 
 if($sensorName && $sensorValue) {
-    // To protect MySQL injection (more detail about MySQL injection)
-    $sensorName = mysql_real_escape_string($sensorName);
-    $sensorDataType = mysql_real_escape_string($sensorDataType);
-    $sensorValue = mysql_real_escape_string($sensorValue);
-    $sensorDeviceType = mysql_real_escape_string($sensorDeviceType);
-
-    $sensorName 		= stripslashes($sensorName);
-    $sensorValue 		= stripslashes($sensorValue);
-    $sensorDataType 	= stripslashes($sensorDataType);
-    $sensorDeviceType 	= stripslashes($sensorDeviceType);
-
     // Check if the sensor exists
     $sql	= "SELECT * FROM sensor_type WHERE name = '$sensorName' and device_type = '$sensorDeviceType'";
     $result	= mysql_query($sql);
@@ -101,6 +98,58 @@ if($sensorName && $sensorValue) {
         }
     }
 
+ // Check if tag exists
+    $sql    = "SELECT `id` FROM `tags` WHERE `tagged_id`='$sensorTypeID' AND `parent_id`='$device_id'";
+    $result	= mysql_query($sql);
+    $count	= mysql_num_rows($result);
+
+    // create new tag for this sensor if it doesn't exist already
+    if ($count < 1) {
+        
+        // get type of device (to make special MyriaNed node tags)
+        $sql = "SELECT `type` FROM `devices` ";
+        $sql .= "WHERE `id` = '$device_id' ";
+        $sql .= "LIMIT 1";
+        $result = mysql_query($sql);
+        $row = mysql_fetch_assoc($result);
+        $deviceType = $row['type'];
+        
+        // get tag of parent (i.e. the device)
+        $sql = "SELECT `tag` FROM `tags` ";
+        $sql .= "WHERE `tagged_id` = '$device_id' AND `type` = 'devices' ";
+        $sql .= "LIMIT 1";
+        $result = mysql_query($sql);
+        $row = mysql_fetch_assoc($result);
+
+        // use parent tag as base
+        $tag = $row['tag'];
+        
+        // include node id for myrianed nodes, otherwise just use sensor name
+        if ($deviceType == 'myrianode') {
+            $tag .= "#$nodeId. $sensorName";
+        } else {
+            $tag .= "$sensorName";
+        }
+        
+        // include sensor device type if available, otherwise finish tag with a '/'
+        if (isset($sensorDeviceType)) {
+            $tag .= " ($sensorDeviceType)/";
+        } else {
+            $tag .= "/";
+        }
+        $sql = "INSERT INTO `tags` ";
+        $sql .= "(`id`, `tag`, `tagged_id`, `parent_id`, `type`, `date`) ";
+        $sql .= "VALUES (NULL, '$tag', '$sensorTypeID', '$device_id', 'sensor_type', NOW())";
+        $result = mysql_query($sql);
+        if(!$result) {
+            $msg  = 'Invalid query: ' . mysql_error() . "\nWhole query: " . $sql;
+            $response = array("status"=>"error", "faultcode"=>$fault_internal, "msg"=>$msg);
+            die(json_encode($response));
+        }
+    }
+
+
+
     // Insert into DB
     $sql = "INSERT INTO $tbl_name (`id` ,`device_id` ,`sensor_type` ,`sensor_value` ,`date`) VALUES (NULL ,  '$device_id', '$sensorTypeID',  '$sensorValue',  '$time')";
     $result	= mysql_query($sql);
@@ -113,20 +162,21 @@ if($sensorName && $sensorValue) {
 	$sql 	= "select * from devices where id='$device_id'";
 	$result	= mysql_query($sql);
 	if($result)
-	{
+	{	    
 	    $row 	= mysql_fetch_assoc($result);
 	    $userId 	= $row['user_id'];
 	    // find external service with user and sensor to send data to
-	    $sql 	= "select * from external_services where user_id='$userId' and sensor_type='$sensorTypeID'";
-	    $result	= mysql_query($sql);
+	    $sql 	= "select * from external_services where user_id='$userId' and sensor_type='".$_REQUEST['ds_id']."'";
+	    $result	= mysql_query($sql);	
+	  
 	    if($result)
-	    {
+	    {	
 		if( mysql_num_rows($result) == 1)
-		{		
+		{				 
 		    $row 	= mysql_fetch_assoc($result);
 		    // only Gtalk service for now
 		    if($row['service'] == "gtalk")
-		    {
+		    {		
 		      $url = "http://demo.almende.com/commonSense2/dsmRPC/xmp/setGtalkStatus";
 		      $params['username'] 	= $row['username'];
 		      $params['password'] 	= $row['password'];
@@ -139,7 +189,7 @@ if($sensorName && $sensorValue) {
 
 	}
 	// send to device service manager
-        sendToDeviceServiceManager($deviceId.".".$sensorTypeID, $sensorDataType, $sensorName, $sensorValue);
+        sendToDeviceServiceManager($device_id.".".$sensorTypeID, $sensorDataType, $sensorName, $sensorValue);
 	
     } else {
         $msg  = 'Invalid query: ' . mysql_error() . "\n";

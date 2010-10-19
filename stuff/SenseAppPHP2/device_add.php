@@ -15,11 +15,7 @@ $uuid 		= $_REQUEST['uuid'];
 $type		= $_REQUEST['type'];
 
 if ($uuid) {
-    // To protect MySQL injection (more detail about MySQL injection)
-    $uuid = stripslashes($uuid);
-    $type = stripslashes($type);
-
-    // Check if the phone is already added
+     // Check if the phone is already added
     $sql = "SELECT * FROM `$tbl_name` WHERE uuid='$uuid' AND user_id='$userId'";
     $result	= mysql_query($sql);
     if (!$result) {
