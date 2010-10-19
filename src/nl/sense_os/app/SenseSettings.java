@@ -197,6 +197,10 @@ public class SenseSettings extends PreferenceActivity {
     public static final String PREF_PROXIMITY_BT = "proximity_bt";
     /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
     public static final String PREF_PROXIMITY_WIFI = "proximity_wifi";
+    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
+    public static final String PREF_MOTION_FALL_DETECT = "motion_fall_detector";
+    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
+    public static final String PREF_MOTION_FALL_DETECT_DEMO = "motion_fall_detector_demo";
     /** Key for preference that sets the interval between pop quizzes. */
     public static final String PREF_QUIZ_RATE = "popquiz_rate";
     /** Key for preference that sets the silent mode for pop quizzes. */

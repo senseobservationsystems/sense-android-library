@@ -7,11 +7,13 @@ package nl.sense_os.service.motion;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
@@ -29,6 +31,10 @@ public class MotionSensor implements SensorEventListener {
     private static final String NAME_MAGNET = "magnetic_field";
     private static final String NAME_ORIENT = "orientation";
     private static final String TAG = "Sense MotionSensor";
+    private FallDetector fallDetector;	
+    private boolean useFallDetector;
+    private boolean useFallDetectorDemo;
+    private boolean firstStart = true;
     private Context context;
     private long[] lastSampleTimes = new long[50];
     private Handler motionHandler = new Handler();
@@ -42,6 +48,7 @@ public class MotionSensor implements SensorEventListener {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = smgr.getSensorList(Sensor.TYPE_ALL);
+        fallDetector = new FallDetector();
     }
     
     public long getSampleDelay() {
@@ -56,6 +63,18 @@ public class MotionSensor implements SensorEventListener {
 
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
+        
+        if(useFallDetector && sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        {
+	        float aX = event.values[1];
+			float aY = event.values[0];
+			float aZ = event.values[2];	
+			float accVecSum = (float)Math.sqrt((aX*aX)+(aY*aY)+(aZ*aZ));
+			
+			if(fallDetector.fallDetected(accVecSum))				
+				sendFallMessage(true); //send msg			
+					
+        }
         if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
@@ -123,7 +142,7 @@ public class MotionSensor implements SensorEventListener {
             i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
             this.context.startService(i);
         }
-        if (sampleDelay > 500 && motionSensingActive) {
+        if (sampleDelay > 500 && motionSensingActive && !useFallDetector) {
             // unregister the listener and start again in sampleDelay seconds
             stopMotionSensing();
             motionHandler.postDelayed(motionThread = new Runnable() {
@@ -138,8 +157,31 @@ public class MotionSensor implements SensorEventListener {
     public void setSampleDelay(long _sampleDelay) {
         sampleDelay = _sampleDelay;
     }
+    
+    private void sendFallMessage(boolean fall)
+    {
+        Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
+        i.putExtra(MsgHandler.KEY_SENSOR_NAME, "fall detector");
+        i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "");
+        i.putExtra(MsgHandler.KEY_VALUE, fall);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_BOOL);
+        i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        this.context.startService(i);
+    }
 
     public void startMotionSensing(long _sampleDelay) {
+    	// check if the falldetector is enabled
+    	 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+         useFallDetector = prefs.getBoolean(SenseSettings.PREF_MOTION_FALL_DETECT, true);
+        if(fallDetector.demo = prefs.getBoolean(SenseSettings.PREF_MOTION_FALL_DETECT_DEMO, false))        
+        	useFallDetector = true;        	
+        
+        if(firstStart && useFallDetector)        
+        {
+        	sendFallMessage(false);
+        	firstStart = false;
+        }
+                
         motionSensingActive = true;
         setSampleDelay(_sampleDelay);
         for (Sensor sensor : sensors) {
