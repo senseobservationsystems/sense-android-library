@@ -13,7 +13,7 @@ $jsonString = $_POST['data'];
 //$jsonString = mysql_real_escape_string($jsonString);
 $jsonString = stripslashes($jsonString);
 //$jsonString = stripslashes($jsonString);
-
+$jsonString = urldecode($jsonString);
 $jsonObj = json_decode($jsonString, True);
 
 // get array with data

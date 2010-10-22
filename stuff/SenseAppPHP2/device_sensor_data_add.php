@@ -12,6 +12,7 @@ $sensorValue		= $_REQUEST['sensorValue'];
 $sensorDataType 	= $_REQUEST['sensorDataType'];
 $sensorDeviceType   = $_REQUEST['sensorDeviceType'];
 
+$sensorValue = urldecode($sensorValue);
 if(!isset($_REQUEST['sensorDataType'])) {
     if (is_numeric($sensorValue)) {
         $sensorDataType = 'float';

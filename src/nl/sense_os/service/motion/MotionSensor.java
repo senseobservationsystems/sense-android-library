@@ -32,8 +32,7 @@ public class MotionSensor implements SensorEventListener {
     private static final String NAME_ORIENT = "orientation";
     private static final String TAG = "Sense MotionSensor";
     private FallDetector fallDetector;	
-    private boolean useFallDetector;
-    private boolean useFallDetectorDemo;
+    private boolean useFallDetector;    
     private boolean firstStart = true;
     private Context context;
     private long[] lastSampleTimes = new long[50];

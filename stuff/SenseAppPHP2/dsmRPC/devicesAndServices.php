@@ -128,21 +128,21 @@ if((isset($HTTP_POST_VARS["request"]) && $HTTP_POST_VARS["request"] == "disconne
 			  . " Reason: '" . htmlspecialchars($r->faultString()) . "'</pre><br/>";
 	  }      
 	}
-      // register the service with the proxy
-      if($HTTP_POST_VARS["submit"] == "connect" && $result == "ok")
-      {
-	    $url = "http://demo.almende.com/commonSense2/dsm_sensor_data_add.php";
-	    $dsRegistryServer = "http://demo.almende.com:8080/registerdeviceservice?ds_id=".$ds_id."&ds_type=".$ds_type."&virtual=true&url=".$url;
-	    file_get_contents($dsRegistryServer);
-	   
-      }
-     if($HTTP_POST_VARS["request"] == "disconnect" && $result == "ok")
-      {
-	    $url = "http://demo.almende.com/commonSense2/dsm_sensor_data_add.php";
-	    $dsRegistryServer = "http://demo.almende.com:8080/unregisterdeviceservice?ds_id=".$ds_id."&ds_type=".$ds_type."&virtual=true&url=".$url;
-	    file_get_contents($dsRegistryServer);
-	  
-      }
+//       // register the service with the proxy
+//       if($HTTP_POST_VARS["submit"] == "connect" && $result == "ok")
+//       {
+// 	    $url = "http://demo.almende.com/commonSense2/dsm_sensor_data_add.php";
+// 	    $dsRegistryServer = "http://demo.almende.com:8080/registerdeviceservice?ds_id=".$ds_id."&ds_type=".$ds_type."&virtual=true&url=".$url;
+// 	    file_get_contents($dsRegistryServer);
+// 	   
+//       }
+//      if($HTTP_POST_VARS["request"] == "disconnect" && $result == "ok")
+//       {
+// 	    $url = "http://demo.almende.com/commonSense2/dsm_sensor_data_add.php";
+// 	    $dsRegistryServer = "http://demo.almende.com:8080/unregisterdeviceservice?ds_id=".$ds_id."&ds_type=".$ds_type."&virtual=true&url=".$url;
+// 	    file_get_contents($dsRegistryServer);
+// 	  
+//       }
       
 }	
 print activeDeviceServices()."<br>".deviceServices();

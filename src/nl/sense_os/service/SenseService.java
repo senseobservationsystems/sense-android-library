@@ -38,6 +38,7 @@ import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.motion.MotionSensor;
+import nl.sense_os.service.phonestate.BatterySensor;
 import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.PressureSensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
@@ -215,6 +216,7 @@ public class SenseService extends Service {
     private PressureSensor pressureSensor;
     private ProximitySensor proximitySensor;
     private PhoneStateListener psl;
+    private BatterySensor	batterySensor;
     private boolean started;
     private boolean statusAmbience;
     private boolean statusDeviceProx;
@@ -299,6 +301,7 @@ public class SenseService extends Service {
         this.phoneActivitySensor = new PhoneActivitySensor(this);
         this.pressureSensor = new PressureSensor(this);
         this.phoneActivitySensor = new PhoneActivitySensor(this);
+        this.batterySensor = new BatterySensor(this);
 
         // statuses
         this.started = false;
@@ -1104,6 +1107,7 @@ public class SenseService extends Service {
                 }
 
                 proximitySensor.startProximitySensing(interval);
+                batterySensor.startBatterySensing(interval);
                 pressureSensor.startPressureSensing(interval);
                 phoneActivitySensor.startPhoneActivitySensing(interval);
             } else {
@@ -1111,6 +1115,7 @@ public class SenseService extends Service {
                 telMan.listen(this.psl, PhoneStateListener.LISTEN_NONE);
                 proximitySensor.stopProximitySensing();
                 pressureSensor.stopPressureSensing();
+                batterySensor.stopBatterySensing();
                 phoneActivitySensor.stopPhoneActivitySensing();
                 this.statusPhoneState = false;
             }

@@ -221,7 +221,7 @@ public class SenseSettings extends PreferenceActivity {
     public static final String SENSOR_DATA_TYPE_JSON = "json";
     public static final String SENSOR_DATA_TYPE_STRING = "string";
     private static final String TAG = "Sense Settings";
-    public static final String URL_BASE = "http://demo.almende.com/commonSense2/";
+    public static final String URL_BASE = "http://data.sense-os.nl/commonsense/";
     public static final String URL_CHECK_PHONE = URL_BASE + "device_check.php";
     public static final String URL_LOGIN = URL_BASE + "login.php";
     public static final String URL_QUIZ_ADD_ANSWER = URL_BASE + "pop_quiz_answer_add.php";

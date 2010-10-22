@@ -4,7 +4,7 @@ include_once("deviceID_check.php");
 include_once("error_codes.php");
 $tbl_name="sensor_data"; // Table name
 
-$baseURL = "http://demo.almende.com/commonSense2/";
+$baseURL = "http://data.sense-os.nl/commonsense/";
 // Get input
 $userId		= $_SESSION['userId'];
 $sensorName	= $_REQUEST['sensorName'];

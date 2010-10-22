@@ -86,7 +86,9 @@ else
 ?>
 <html>
 <head>
- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAhemGaS5PmIEPzvvfBHoE1RQHPyg5pH9x-vCl7Mtg7EdesbbpMRTozQtiOdyRBHcUwf7f5Sdsd-wW1Q" type="text/javascript"></script>
+<!--for demo.almende.com
+ <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAhemGaS5PmIEPzvvfBHoE1RQHPyg5pH9x-vCl7Mtg7EdesbbpMRTozQtiOdyRBHcUwf7f5Sdsd-wW1Q" type="text/javascript"></script>-->
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAhemGaS5PmIEPzvvfBHoE1RT1SJwgBNv1SjkOUMSX9xTcLZDcDBRl1p2f9slv3GObUzTn4MN_PuG-3A" type="text/javascript"></script>
 <script type="text/javascript">
 var map;
 var myPano;   
