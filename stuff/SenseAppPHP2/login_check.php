@@ -8,9 +8,9 @@ $tbl_name="users"; // Table name
 
     if ($email && $password) {
         // To protect MySQL injection (more detail about MySQL injection)
-	    $email 		= stripslashes($email);
+	    $email 	= stripslashes($email);
 	    $password 	= stripslashes($password);
-	    $email 		= mysql_real_escape_string($email);
+	    $email 	= mysql_real_escape_string($email);
 	    $password 	= mysql_real_escape_string($password);
 	    $password 	= md5($password);
 

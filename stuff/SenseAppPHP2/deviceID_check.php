@@ -12,7 +12,7 @@ $userId		= $_SESSION['userId'];
 // Check if a device id is send
 if (isset($_REQUEST['uuid'])) {
     $devices	= $_SESSION['devices'];
-    $uuid		= $_REQUEST['uuid'];
+    $uuid	= $_REQUEST['uuid'];
     $deviceId	= $devices[$uuid];
     // if the device is not in the list, then generate a new device in the db
     if (!isset($deviceId)) {
@@ -46,6 +46,7 @@ if (isset($_REQUEST['uuid'])) {
         $_SESSION['deviceId']   = $sp_id;
         $devices                = $_SESSION['devices'];
         $devices[$uuid]         = $sp_id;
+	$_SESSION['devices']	= $devices;
 
         // create tag for the new device
         $tag = "";
