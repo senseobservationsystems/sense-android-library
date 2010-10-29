@@ -300,7 +300,7 @@ public class MsgHandler extends Service {
 					value += intent.getStringExtra(KEY_VALUE);
 				}
 
-				Log.d(TAG, "Send real-time");
+				//Log.d(TAG, "Send real-time");
 				oldSendSensorData(name, value, type, device);
 			} else {
 				// normal mode, buffer to memory
