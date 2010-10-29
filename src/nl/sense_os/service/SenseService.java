@@ -170,6 +170,7 @@ public class SenseService extends Service {
     public static final String KEY_DEVICE_ID = "nl.sense_os.DeviceId";
     public static final String KEY_UPDATE_TIME = "nl.sense_os.UpdateTime";
     public static final String KEY_URL = "nl.sense_os.Url";
+    public static final String ACTION_RELOGIN = "action_relogin";
     private static final int NOTIF_ID = 1;
     private static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
     public static boolean sLoggedIn = false;
@@ -564,8 +565,9 @@ public class SenseService extends Service {
 
     private void onStartCompat(Intent intent, int flags, int startId) {
 
+    	boolean relogin = intent.getBooleanExtra(ACTION_RELOGIN, false);
         // try to login immediately
-        if (false == sLoggedIn) {
+        if (false == sLoggedIn || relogin) {
             senseServiceLogin();
         }
 
