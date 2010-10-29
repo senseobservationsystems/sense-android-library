@@ -292,7 +292,7 @@ public class SenseService extends Service {
         this.deviceProximity = new DeviceProximity(this);
         this.locListener = new LocationSensor(this);
         this.motionSensor = new MotionSensor(this);
-        this.psl = new SensePhoneState(this.telMan, this);
+        this.psl = new SensePhoneState(this);
         this.noiseSensor = new NoiseSensor(this);
         this.proximitySensor = new ProximitySensor(this);
         this.lightSensor = new LightSensor(this);

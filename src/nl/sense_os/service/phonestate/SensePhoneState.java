@@ -32,15 +32,10 @@ public class SensePhoneState extends PhoneStateListener {
     private static final String NAME_SIGNAL = "signal strength";
     private static final String NAME_UNREAD = "unread msg";
     private static final String TAG = "Sense PhoneStateListener";
-
     private Context context;
 
-    private TelephonyManager telman;
-
-    public SensePhoneState(TelephonyManager telman, Context context) {
+    public SensePhoneState(Context context) {
         super();
-
-        this.telman = telman;
         this.context = context;
     }
 
@@ -185,7 +180,8 @@ public class SensePhoneState extends PhoneStateListener {
                 break;
             case ServiceState.STATE_IN_SERVICE:
                 json.put("state", "in service");
-                json.put("phone number", telman.getLine1Number());
+                String number = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number();
+                json.put("phone number", number);
                 break;
             case ServiceState.STATE_OUT_OF_SERVICE:
                 json.put("state", "out of service");

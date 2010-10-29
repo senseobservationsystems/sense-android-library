@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="20100927" 
-    android:versionName="1.5" 
+    android:versionCode="20101029" 
+    android:versionName="1.6.1" 
     package="nl.sense_os.app">
 
     <application 
