@@ -15,6 +15,7 @@ interface ISenseService
 	void toggleNoise(boolean active, ISenseServiceCallback callback);
     void togglePhoneState(boolean active, ISenseServiceCallback callback);
     void togglePopQuiz(boolean active, ISenseServiceCallback callback);
+    void toggleExternalSensors(boolean active, ISenseServiceCallback callback);
     boolean serviceLogin();
     boolean serviceRegister();
 }

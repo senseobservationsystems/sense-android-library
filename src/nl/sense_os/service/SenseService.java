@@ -36,6 +36,8 @@ import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.deviceprox.DeviceProximity;
+import nl.sense_os.service.external_sensors.ZephyrBioHarness;
+import nl.sense_os.service.external_sensors.ZephyrHxM;
 import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.phonestate.BatterySensor;
@@ -149,6 +151,11 @@ public class SenseService extends Service {
             SenseService.this.toggleMotion(active);
             // this.getStatus(callback);
         }
+        
+        public void toggleExternalSensors(boolean active, ISenseServiceCallback callback) {
+            SenseService.this.toggleExternalSensors(active);
+            // this.getStatus(callback);
+        }
 
         public void toggleNoise(boolean active, ISenseServiceCallback callback) {
             SenseService.this.toggleAmbience(active);
@@ -182,6 +189,7 @@ public class SenseService extends Service {
     public static final int STATUS_PHONESTATE = 64;
     public static final int STATUS_QUIZ = 128;
     public static final int STATUS_RUNNING = 256;
+    public static final int STATUS_EXTERNAL_SENSORS = 512;
     private static final String TAG = "Sense Service";
     private final ISenseService.Stub binder = new SenseServiceStub();
     // BroadcastReceiver for handling ACTION_SCREEN_OFF.
@@ -217,10 +225,13 @@ public class SenseService extends Service {
     private PressureSensor pressureSensor;
     private ProximitySensor proximitySensor;
     private PhoneStateListener psl;
-    private BatterySensor	batterySensor;
+	private BatterySensor batterySensor;
+    private ZephyrBioHarness es_bioHarness;
+    private ZephyrHxM es_HxM;
     private boolean started;
     private boolean statusAmbience;
     private boolean statusDeviceProx;
+    private boolean statusExternalSensors;
     private boolean statusLocation;
     private boolean statusMotion;
     private boolean statusPhoneState;
@@ -303,6 +314,8 @@ public class SenseService extends Service {
         this.pressureSensor = new PressureSensor(this);
         this.phoneActivitySensor = new PhoneActivitySensor(this);
         this.batterySensor = new BatterySensor(this);
+        this.es_bioHarness = new ZephyrBioHarness(this);
+        this.es_HxM = new ZephyrHxM(this);
 
         // statuses
         this.started = false;
@@ -312,6 +325,7 @@ public class SenseService extends Service {
         this.statusAmbience = false;
         this.statusPhoneState = false;
         this.statusPopQuiz = false;
+        this.statusExternalSensors = false;
     }
 
     private boolean login(String email, String pass) {
@@ -489,6 +503,10 @@ public class SenseService extends Service {
                 Log.d(TAG, "Restart popquiz service...");
                 togglePopQuiz(true);
             }
+            if ((status & STATUS_EXTERNAL_SENSORS) > 0) {
+                Log.d(TAG, "Restart external sensors service...");
+                toggleExternalSensors(true);
+            }
         }
 
         // send broadcast that something has changed in the status
@@ -529,6 +547,10 @@ public class SenseService extends Service {
             if (true == this.statusPopQuiz) {
                 togglePopQuiz(false);
             }
+            if(true == this.statusExternalSensors){
+            	toggleExternalSensors(false);
+            }
+            	
 
             // save the pre-logout status
             final Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
@@ -685,6 +707,7 @@ public class SenseService extends Service {
         status = this.statusAmbience ? status + STATUS_AMBIENCE : status;
         status = this.statusPopQuiz ? status + STATUS_QUIZ : status;
         status = this.statusDeviceProx ? status + STATUS_DEVICE_PROX : status;
+        status = this.statusExternalSensors ? status + STATUS_EXTERNAL_SENSORS : status;
         status = this.statusMotion ? status + STATUS_MOTION : status;
 
         // save status in the preferences
@@ -953,13 +976,56 @@ public class SenseService extends Service {
                     interval = 15 * 60 * 1000;
                     break;
                 default:
-                    Log.e(TAG, "Unexpected quiz rate preference.");
+                    Log.e(TAG, "Unexpected device proximity rate preference.");
                 }
                 deviceProximity.startEnvironmentScanning(interval);
                 this.statusDeviceProx = true;
             } else {
                 deviceProximity.stopEnvironmentScanning();
                 this.statusDeviceProx = false;
+            }
+
+            saveStatus();
+        }
+    }
+
+    private void toggleExternalSensors(boolean active) {
+
+        if (active != this.statusExternalSensors) {
+            if (true == active) {
+                // showToast(getString(R.string.toast_toggle_dev_prox));
+                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_SAMPLE_RATE,
+                        "0"));
+                int interval = 1;
+                switch (rate) {
+                case -2:
+                    interval = 1 * 1000;
+                    break;
+                case -1:
+                    // often
+                    interval = 5 * 1000;
+                    break;
+                case 0:
+                    // normal
+                    interval = 60 * 1000;
+                    break;
+                case 1:
+                    // rarely (15 minutes)
+                    interval = 15 * 60 * 1000;
+                    break;
+                default:
+                    Log.e(TAG, "Unexpected external sensor rate preference.");
+                }
+                if(prefs.getBoolean(SenseSettings.PREF_BIOHARNESS, false))
+                	es_bioHarness.startBioHarness(interval);
+                if(prefs.getBoolean(SenseSettings.PREF_HXM, false))
+                	es_HxM.startHxM(interval);
+                this.statusExternalSensors = true;
+            } else {            	
+            	es_bioHarness.stopBioHarness();
+            	es_HxM.stopHxM();
+                this.statusExternalSensors = false;
             }
 
             saveStatus();

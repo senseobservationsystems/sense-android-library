@@ -213,6 +213,32 @@ public class SenseSettings extends PreferenceActivity {
     public static final String PREF_REGISTER = "register";
     /** Key for preference that controls sync frequency with CommonSense. */
     public static final String PREF_SYNC_RATE = "sync_rate";
+    /** Key for preference that toggles use of the Zephyr BioHarness. */
+    public static final String PREF_BIOHARNESS = "zephyrBioHarness";
+    /** Key for preference that toggles use of the Zephyr BioHarness Accelerometer. */
+    public static final String PREF_BIOHARNESS_ACC = "zephyrBioHarness_acc";
+    /** Key for preference that toggles use of the Zephyr BioHarness Heart rate. */
+    public static final String PREF_BIOHARNESS_HEART_RATE = "zephyrBioHarness_heartRate";
+    /** Key for preference that toggles use of the Zephyr BioHarness Temperature. */
+    public static final String PREF_BIOHARNESS_TEMP = "zephyrBioHarness_temp";
+    /** Key for preference that toggles use of the Zephyr BioHarness Respiration rate. */
+    public static final String PREF_BIOHARNESS_RESP = "zephyrBioHarness_resp";
+    /** Key for preference that toggles use of the Zephyr BioHarness Blood pressure. */
+    public static final String PREF_BIOHARNESS_BLOOD_PRESSURE = "zephyrBioHarness_bloodP";
+    /** Key for preference that toggles use of the Zephyr BioHarness worn status. */
+    public static final String PREF_BIOHARNESS_WORN_STATUS = "zephyrBioHarness_wornStatus";
+    /** Key for preference that toggles use of the Zephyr BioHarness battery level. */
+    public static final String PREF_BIOHARNESS_BATTERY = "zephyrBioHarness_battery";
+    /** Key for preference that toggles use of the Zephyr HxM. */
+    public static final String PREF_HXM = "zephyrHxM";
+    /** Key for preference that toggles use of the Zephyr HxM speed. */
+    public static final String PREF_HXM_SPEED= "zephyrHxM_speed";
+    /** Key for preference that toggles use of the Zephyr HxM heart rate. */
+    public static final String PREF_HXM_HEART_RATE = "zephyrHxM_heartRate";
+    /** Key for preference that toggles use of the Zephyr HxM battery. */
+    public static final String PREF_HXM_BATTERY = "zephyrHxM_battery";
+    /** Key for preference that toggles use of the Zephyr HxM distance. */
+    public static final String PREF_HXM_DISTANCE = "zephyrHxM_distance";
     /** Name of the private preference file, used for storing login data. */
     public static final String PRIVATE_PREFS = "login";
     public static final String SENSOR_DATA_TYPE_BOOL = "bool";

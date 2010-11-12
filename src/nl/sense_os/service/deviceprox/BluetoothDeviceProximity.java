@@ -270,7 +270,7 @@ public class BluetoothDeviceProximity {
 			}
 			catch(Exception e)
 			{
-				Log.e(TAG,e.getMessage());
+				Log.e(TAG, "Error in stopping BT discovery:" + e.getMessage());
 			}
 		}
 

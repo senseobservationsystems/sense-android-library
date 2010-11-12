@@ -51,12 +51,11 @@ public class NoiseSensor extends PhoneStateListener {
 			}
 
 			public void run() {
-				double dB = calculateDB();
-
+				double dB = calculateDB();				
 				// pass message to the MsgHandler
 				Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
 				i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_NOISE);
-				i.putExtra(MsgHandler.KEY_VALUE, dB);
+				i.putExtra(MsgHandler.KEY_VALUE, Double.valueOf(dB).floatValue());
 				i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_FLOAT);
 				i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
 				NoiseSensor.this.context.startService(i);

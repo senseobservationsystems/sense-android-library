@@ -221,6 +221,16 @@ public class SenseApp extends Activity {
                     text2 = findViewById(R.id.motion_secondLine);
                     text1.setEnabled(connected);
                     text2.setEnabled(connected);
+                    
+                    // enable external sensor list row
+                    button = (CheckBox) findViewById(R.id.external_sensor_cb);
+                    final boolean external_sensors = ((status & SenseService.STATUS_EXTERNAL_SENSORS) > 0);
+                    button.setChecked(external_sensors);
+                    button.setEnabled(connected);
+                    text1 = findViewById(R.id.external_sensor_firstline);
+                    text2 = findViewById(R.id.external_sensor_secondLine);
+                    text1.setEnabled(connected);
+                    text2.setEnabled(connected);
 
                     // enable device proximity row
                     button = (CheckBox) findViewById(R.id.device_prox_cb);
@@ -599,6 +609,20 @@ public class SenseApp extends Activity {
                 toggleMotion(cb.isChecked());
             }
             break;
+        case R.id.external_sensor_field:
+            cb = (CheckBox) findViewById(R.id.external_sensor_cb);
+            if (cb.isEnabled()) {
+                oldState = cb.isChecked();
+                cb.setChecked(!oldState);
+                toggleExternalSensors(!oldState);
+            }
+            break;
+        case R.id.external_sensor_cb:
+            cb = (CheckBox) findViewById(R.id.external_sensor_cb);
+            if (cb.isEnabled()) {
+                toggleExternalSensors(cb.isChecked());
+            }
+            break;
         case R.id.ambience_field:
             cb = (CheckBox) findViewById(R.id.ambience_cb);
             if (cb.isEnabled()) {
@@ -893,7 +917,47 @@ public class SenseApp extends Activity {
             Log.w(TAG, "Could not toggle motion service: Sense service is not bound.");
         }
     }
+    
+    private void toggleExternalSensors(boolean active) {
+        if (null != this.service) {
+            try {
+                this.service.toggleExternalSensors(active, callback);
 
+                // show informational toast
+                if (active) {
+                    final SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(this);
+                    final int rate = Integer.parseInt(prefs.getString(
+                            SenseSettings.PREF_SAMPLE_RATE, "0"));
+                    String interval = "";
+                    switch (rate) {
+                    case -2: // often
+                        interval = "second";
+                        break;
+                    case -1: // often
+                        interval = "5 seconds";
+                        break;
+                    case 0: // normal
+                        interval = "minute";
+                        break;
+                    case 1: // rarely
+                        interval = "15 minutes";
+                        break;
+                    default:
+                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                        break;
+                    }
+                    final String msg = getString(R.string.toast_toggle_external_sensors).replace("?",
+                            interval);
+                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                }
+            } catch (RemoteException e) {
+                Log.e(TAG, "RemoteException toggling external sensors service.");
+            }
+        } else {
+            Log.w(TAG, "Could not toggle external sensors service: Sense service is not bound.");
+        }
+    }
     private void toggleNoise(boolean active) {
         if (null != this.service) {
             try {

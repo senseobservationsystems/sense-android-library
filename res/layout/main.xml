@@ -322,6 +322,46 @@
                     android:ellipsize="marquee"
                     android:text="Wireless devices near you" /> 
             </RelativeLayout>
+             <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray" />
+            <RelativeLayout 
+                android:id="@+id/external_sensor_field"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="fill_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"  
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" >
+                <CheckBox
+                    android:id="@+id/external_sensor_cb"
+                    android:onClick="onClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" 
+                    android:layout_centerVertical="true" /> 
+                <TextView
+                    android:id="@+id/external_sensor_firstline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:text="External sensors"
+                    android:textSize="20sp" />
+                <TextView  
+                    android:id="@+id/external_sensor_secondLine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/external_sensor_firstline"
+                    android:layout_centerVertical="true"     
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:text="External bluetooth sensors" /> 
+            </RelativeLayout>
             <TextView
                 android:text="Preferences"
                 android:layout_width="fill_parent"
