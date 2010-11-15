@@ -587,7 +587,11 @@ public class SenseService extends Service {
 
     private void onStartCompat(Intent intent, int flags, int startId) {
 
-    	boolean relogin = intent.getBooleanExtra(ACTION_RELOGIN, false);
+        boolean relogin = true;
+        if (null != intent) {
+            relogin = intent.getBooleanExtra(ACTION_RELOGIN, false);
+        } 
+            
         // try to login immediately
         if (false == sLoggedIn || relogin) {
             senseServiceLogin();
