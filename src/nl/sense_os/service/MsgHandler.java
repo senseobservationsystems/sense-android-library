@@ -281,7 +281,7 @@ public class MsgHandler extends Service {
             if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
                 json.put("val", intent.getBooleanExtra(KEY_VALUE, false));
             } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
-                json.put("val", intent.getDoubleExtra(KEY_VALUE, Double.MIN_VALUE));
+                json.put("val", intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE));
             } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
                 json.put("val", intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE));
             } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
@@ -364,7 +364,7 @@ public class MsgHandler extends Service {
     }
 
     private void handleSendIntent(Intent intent) {
-        Log.d(TAG, "handleSendIntent");
+        // Log.d(TAG, "handleSendIntent");
 
         if (isOnline()) {
 
@@ -438,6 +438,7 @@ public class MsgHandler extends Service {
     private boolean sendDataFromBuffer() {
 
         if (this.bufferCount > 0) {
+            Log.d(TAG, "Sending " + this.bufferCount + " values from local buffer to CommonSense");
 
             // create JSON object with the data
             JSONObject json = new JSONObject();
@@ -495,6 +496,7 @@ public class MsgHandler extends Service {
 
         try {
             if (c.getCount() > 0) {
+                Log.d(TAG, "Sending " + c.getCount() + " values from database to CommonSense");
 
                 // create JSON object with the data
                 JSONObject json = new JSONObject();
