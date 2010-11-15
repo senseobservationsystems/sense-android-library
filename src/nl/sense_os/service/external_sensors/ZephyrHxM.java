@@ -8,21 +8,17 @@ package nl.sense_os.service.external_sensors;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
-
-import android.preference.PreferenceManager;
-import android.util.Log;
-import org.json.JSONObject;
 
 import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
 import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
@@ -30,7 +26,6 @@ import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
