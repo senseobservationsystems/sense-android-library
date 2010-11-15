@@ -18,7 +18,19 @@ if($deviceCheck == 0)
   die("Wrong device id.");
 // get from the database the long lat
 $positionSensorID = 14;
-$sql = "select * from sensor_data where device_id='$device_id' and sensor_type='$positionSensorID' ORDER BY id DESC LIMIT 0,1";
+$sql = "select * from sensor_type where name='position'";
+$result = mysql_query($sql);	
+if(!$result)			 
+    die("error"); 
+$positionSensorStr = "";
+while( $row = mysql_fetch_assoc($result))
+{
+    if(strlen($positionSensorStr) > 0)
+      $positionSensorStr .= " or ";
+      $positionSensorID = $row['id'];
+    $positionSensorStr .= " sensor_type ='$positionSensorID' ";
+}
+$sql = "select * from sensor_data where device_id='$device_id' and ( $positionSensorStr ) ORDER BY id DESC LIMIT 0,1";
 $result = mysql_query($sql);	
 if(!$result)			 
     die("error"); 
