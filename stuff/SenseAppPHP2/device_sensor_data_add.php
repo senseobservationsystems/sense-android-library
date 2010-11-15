@@ -12,7 +12,6 @@ $sensorValue		= $_REQUEST['sensorValue'];
 $sensorDataType 	= $_REQUEST['sensorDataType'];
 $sensorDeviceType   = $_REQUEST['sensorDeviceType'];
 
-$sensorValue = urldecode($sensorValue);
 if(!isset($_REQUEST['sensorDataType'])) {
     if (is_numeric($sensorValue)) {
         $sensorDataType = 'float';
@@ -45,7 +44,7 @@ if($sensorName && $sensorValue)
 //     $sensorDeviceType	= stripslashes($sensorDeviceType);
 
     // Check if the sensor exists
-    $sql	= "SELECT * FROM `sensor_type` WHERE `name`='$sensorName' AND `device_type`='$sensorDeviceType'";
+    $sql	= "SELECT * FROM `sensor_type` WHERE `name`='$sensorName' AND `device_type`='$sensorDeviceType' AND data_type='$sensorDataType'";
     $result	= mysql_query($sql);
     $count	= mysql_num_rows($result);
 

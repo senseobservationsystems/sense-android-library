@@ -21,11 +21,11 @@ $data = $jsonObj["data"];
 
 for ($i = 0; $i < sizeOf($data); ++$i) {
     $entry = $data[$i];
-    $sensorName = $entry['name'];
-    $sensorValue = $entry['val'];
-    $sensorDataType = $entry['type'];
-    $time = $entry['time'];
-    $sensorDeviceType = $entry['device'];
+    $sensorName = mysql_real_escape_string($entry['name']);
+    $sensorValue = $entry['val']; // value will be escaped later, after JSON re-encoding
+    $sensorDataType = mysql_real_escape_string($entry['type']);
+    $time = mysql_real_escape_string($entry['time']);
+    $sensorDeviceType = mysql_real_escape_string($entry['device']);
 
     // guess data type if it is not given
     if (!isset($entry['type'])) {
@@ -44,6 +44,7 @@ for ($i = 0; $i < sizeOf($data); ++$i) {
     if ($sensorDataType == "json") {
         $sensorValue = json_encode($sensorValue);
     }
+    $sensorValue = mysql_escape_string($sensorValue);
 
     // change boolean values to String because "False" doesn't print
     if ($sensorDataType === "bool") {
