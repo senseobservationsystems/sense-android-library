@@ -233,7 +233,8 @@ public class ZephyrBioHarness {
 			}
 		}	
 
-		public void run() {				
+		@Override
+        public void run() {				
 			// Keep listening to the InputStream until an exception occurs
 			boolean readMessage = false;
 			if (bioHarnessEnabled) {
@@ -273,7 +274,7 @@ public class ZephyrBioHarness {
 								readMessage = processZBHMessage.processMessage(buffer);
 							buffer = null;
 						}
-					}						
+					} 
 					// update every second
 					if(btSocket1_6 == null)							
 						updateHandler.postDelayed(updateThread = new UpdateThread(), 1000);
@@ -303,7 +304,7 @@ public class ZephyrBioHarness {
 		}
 
 		public boolean sendConnectionAlive()
-		{
+		{		    
 			try{															
 				byte[] writeBuffer = new byte[128];
 
@@ -388,20 +389,24 @@ public class ZephyrBioHarness {
 
 		private class BluetoothDeviceListener implements LocalBluetoothDeviceListener {
 
-			public void bluetoothDisabled() {
+			@Override
+            public void bluetoothDisabled() {
 				// Auto-generated method stub
 			}
 
-			public void bluetoothEnabled() {
+			@Override
+            public void bluetoothEnabled() {
 				// Auto-generated method stub
 			}
 
-			public void deviceFound(String arg0) 
+			@Override
+            public void deviceFound(String arg0) 
 			{				
 				// Auto-generated method stub
 			}
 
-			public void scanCompleted(ArrayList<String> devices) {
+			@Override
+            public void scanCompleted(ArrayList<String> devices) {
 				boolean foundDevice = false;
 				if(!bioHarnessEnabled)
 				{
@@ -462,7 +467,8 @@ public class ZephyrBioHarness {
 					connectHandler.postDelayed(bioHarnessConnectThread1_6 = new BioHarnessConnectThread1_6(), 10000);
 			}
 
-			public void scanStarted() {
+			@Override
+            public void scanStarted() {
 				// Auto-generated method stub
 			}
 		}
@@ -488,7 +494,8 @@ public class ZephyrBioHarness {
 			}
 		}
 
-		public void run() {
+		@Override
+        public void run() {
 			try {
 				if(btDevice != null)
 					btDevice.scan();
@@ -528,7 +535,8 @@ public class ZephyrBioHarness {
 			}
 		}
 
-		public void run() {
+		@Override
+        public void run() {
 			if (bioHarnessEnabled) {
 				streamEnabled = false;
 				if(!btAdapter.isEnabled())
@@ -636,7 +644,8 @@ public class ZephyrBioHarness {
 		bioHarnessEnabled = true;	
 
 		Thread t = new Thread() {
-			public void run() {
+			@Override
+            public void run() {
 				// Check if the phone version, if it is lower than, 2.1 use the bluetooth lib
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR)
 					connectHandler.post(bioHarnessConnectThread1_6 = new BioHarnessConnectThread1_6());

@@ -7,7 +7,6 @@
  */
 package nl.sense_os.service.motion;
 
-import android.text.format.Time;
 import android.util.Log;
 
 public class FallDetector 

@@ -93,6 +93,7 @@ public class SenseService extends Service {
 
     private class SenseServiceStub extends ISenseService.Stub {
 
+        @Override
         public void getStatus(ISenseServiceCallback callback) {
             try {
                 callback.statusReport(SenseService.this.saveStatus());
@@ -101,18 +102,22 @@ public class SenseService extends Service {
             }
         }
 
+        @Override
         public boolean serviceLogin() throws RemoteException {
             return senseServiceLogin();
         }
 
+        @Override
         public boolean serviceRegister() throws RemoteException {
             return senseServiceRegister();
         }
 
+        @Override
         public String serviceResponse() {
             return "";
         }
 
+        @Override
         public void setDeviceId(String id) {
             final SharedPreferences prefs = getSharedPreferences(OldMsgHandler.PREF_MSG_HANDLER,
                     MODE_PRIVATE);
@@ -121,6 +126,7 @@ public class SenseService extends Service {
             editor.commit();
         }
 
+        @Override
         public void setUpdateFreq(int freq) {
             final SharedPreferences prefs = getSharedPreferences(OldMsgHandler.PREF_MSG_HANDLER,
                     MODE_PRIVATE);
@@ -129,6 +135,7 @@ public class SenseService extends Service {
             editor.commit();
         }
 
+        @Override
         public void setUrl(String url) {
             final SharedPreferences prefs = getSharedPreferences(OldMsgHandler.PREF_MSG_HANDLER,
                     MODE_PRIVATE);
@@ -137,36 +144,43 @@ public class SenseService extends Service {
             editor.commit();
         }
 
+        @Override
         public void toggleDeviceProx(boolean active, ISenseServiceCallback callback) {
             SenseService.this.toggleDeviceProx(active);
             // this.getStatus(callback);
         }
 
+        @Override
         public void toggleLocation(boolean active, ISenseServiceCallback callback) {
             SenseService.this.toggleLocation(active);
             // this.getStatus(callback);
         }
 
+        @Override
         public void toggleMotion(boolean active, ISenseServiceCallback callback) {
             SenseService.this.toggleMotion(active);
             // this.getStatus(callback);
         }
         
+        @Override
         public void toggleExternalSensors(boolean active, ISenseServiceCallback callback) {
             SenseService.this.toggleExternalSensors(active);
             // this.getStatus(callback);
         }
 
+        @Override
         public void toggleNoise(boolean active, ISenseServiceCallback callback) {
             SenseService.this.toggleAmbience(active);
             // this.getStatus(callback);
         }
 
+        @Override
         public void togglePhoneState(boolean active, ISenseServiceCallback callback) {
             SenseService.this.togglePhoneState(active);
             // this.getStatus(callback);
         }
 
+        @Override
         public void togglePopQuiz(boolean active, ISenseServiceCallback callback) {
             SenseService.this.togglePopQuiz(active);
             // this.getStatus(callback);
@@ -200,6 +214,7 @@ public class SenseService extends Service {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 if (statusMotion) {
                     Runnable motionThread = new Runnable() {
+                        @Override
                         public void run() {
                             // Unregisters the motion listener and registers it again.
                             Log.d(TAG, "Screen went off, re-registering the Motion sensor");
@@ -790,6 +805,7 @@ public class SenseService extends Service {
     private void showToast(final String msg) {
         // show informational Toast
         this.toastHandler.post(new Runnable() {
+            @Override
             public void run() {
                 Toast.makeText(SenseService.this, msg, Toast.LENGTH_LONG).show();
             }

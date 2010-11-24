@@ -95,6 +95,7 @@ public class MsgHandler extends Service {
             this.data = data;
         }
 
+        @Override
         public void run() {
             HttpClient client = new DefaultHttpClient();
             client.getConnectionManager().closeIdleConnections(1, TimeUnit.SECONDS);
@@ -151,6 +152,7 @@ public class MsgHandler extends Service {
             cookie = Cookie;
         }
 
+        @Override
         public void run() {
             HttpClient client = new DefaultHttpClient();
             client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
