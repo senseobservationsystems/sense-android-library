@@ -308,7 +308,7 @@ public class MsgHandler extends Service {
                 if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
                     value += intent.getBooleanExtra(KEY_VALUE, false);
                 } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
-                    value += intent.getDoubleExtra(KEY_VALUE, Double.MIN_VALUE);
+                    value += intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE);
                 } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
                     value += intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE);
                 } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
