@@ -56,7 +56,21 @@ public class ZephyrBioHarness {
 		{				
 			// received general data
 			if(buffer[0] == 0x02 && buffer[1] == 0x20 && buffer[2] == 53)
-			{				
+			{		
+			    // check that payload is not completely empty
+			    boolean hasPayload = false;
+			    for (int i = 12; i < 58; i++) {
+			        if (buffer[i] != 0) {
+			            hasPayload = true;
+			            break;
+			        }
+			    }
+			    if (false == hasPayload) {
+			        Log.w(TAG, "No sensor data payload received");
+			        // return true because the message type was correct, only the data is wrong
+			        return true; 
+			    }
+			    
 				// send acceleration data in m/s^2				
 				if(prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_ACC, true))
 				{
