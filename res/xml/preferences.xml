@@ -107,9 +107,19 @@
         <PreferenceScreen 
             android:title="Motion sensing"
             android:summary="Motion sensing settings" android:enabled="True">
-        <PreferenceCategory android:title="Main Settings"><CheckBoxPreference android:key="motion_fall_detector" android:title="Fall detection" android:summary="Detects a human fall" android:defaultValue="False"></CheckBoxPreference><CheckBoxPreference android:summary="Detects a simple free fall" android:key="motion_fall_detector_demo" android:title="Fall detection demo" android:defaultValue="False"></CheckBoxPreference>
-</PreferenceCategory>
-</PreferenceScreen>
+            <PreferenceCategory android:title="Main Settings">
+                <CheckBoxPreference 
+                    android:key="motion_fall_detector" 
+                    android:title="Fall detection" 
+                    android:summary="Detects a human fall" 
+                    android:defaultValue="False"/>
+                <CheckBoxPreference 
+                    android:summary="Detects a simple free fall" 
+                    android:key="motion_fall_detector_demo" 
+                    android:title="Fall detection demo" 
+                    android:defaultValue="False"/>
+            </PreferenceCategory>
+        </PreferenceScreen>
         <PreferenceScreen 
             android:title="Neighboring devices"
             android:enabled="true" android:summary="Wireless sensing settings">
@@ -125,21 +135,109 @@
                     android:title="Wi-Fi" 
                     android:defaultValue="True">
                 </CheckBoxPreference>
-            </PreferenceCategory>
-        
-</PreferenceScreen>
-    <PreferenceScreen android:title="External Sensors" android:enabled="true" android:summary="External bluetooth sensor settings">Myglucohealth MGH-BT1 settings<CheckBoxPreference android:title="Zephyr BioHarness" android:defaultValue="False" android:key="zephyrBioHarness" android:summary="Use a paired Zephyr BioHarness"></CheckBoxPreference>
-<PreferenceScreen android:enabled="True" android:title="Zephyr BioHarness settings" android:summary="Select BioHarness sensors">
-<PreferenceCategory android:title="General sensor data"><CheckBoxPreference android:key="zephyrBioHarness_acc" android:defaultValue="True" android:title="Acceleration" android:summary="Acceleration data of 3-axis (m/s^2)"></CheckBoxPreference>
-<CheckBoxPreference android:key="zephyrBioHarness_heartRate" android:summary="Heart rate (BPM)" android:title="Heart rate" android:defaultValue="True"></CheckBoxPreference><CheckBoxPreference android:key="zephyrBioHarness_temp" android:summary="Skin temperature (C)" android:title="Skin temperature" android:defaultValue="True"></CheckBoxPreference><CheckBoxPreference android:key="zephyrBioHarness_resp" android:title="Respiration rate" android:summary="Respiration rate (BPM)" android:defaultValue="True"></CheckBoxPreference><CheckBoxPreference android:key="zephyrBioHarness_bloodP" android:title="Blood pressure" android:defaultValue="True" android:summary="Blood pressure (Hg)"></CheckBoxPreference><CheckBoxPreference android:key="zephyrBioHarness_wornStatus" android:title="Worn status" android:summary="Worn status (boolean)" android:defaultValue="True"></CheckBoxPreference><CheckBoxPreference android:key="zephyrBioHarness_battery" android:title="Battery level" android:summary="Battery level (%)" android:defaultValue="True"></CheckBoxPreference>
-</PreferenceCategory>
-</PreferenceScreen><CheckBoxPreference android:title="Zephyr HxM" android:defaultValue="False" android:key="zephyrHxM" android:summary="Use a paired Zephyr HxM"></CheckBoxPreference><PreferenceScreen android:enabled="True" android:title="Zephyr HxM settings" android:summary="Select HxM sensors">
-<PreferenceCategory android:title="Main settings"><CheckBoxPreference android:key="zephyrHxM_heartRate" android:title="Heart Rate" android:summary="Heart Rate (BPM)" android:defaultValue="True"></CheckBoxPreference>
-<CheckBoxPreference android:key="zephyrHxM_speed" android:title="Speed" android:defaultValue="True" android:summary="Instantaneous speed (m/s^2)"></CheckBoxPreference><CheckBoxPreference android:key="zephyrHxM_distance" android:title="Distance" android:summary="Distance (m)" android:defaultValue="True"></CheckBoxPreference><CheckBoxPreference android:key="zephyrHxM_battery" android:title="Battery charge indicator" android:defaultValue="True"></CheckBoxPreference>
-</PreferenceCategory>
-</PreferenceScreen>
-<CheckBoxPreference android:enabled="False" android:title="MyGlucoHealth" android:summary="Use the MyGlucoHealth MBH-BT1" android:defaultValue="False" android:key="myglucohealth"></CheckBoxPreference><PreferenceScreen android:enabled="False" android:summary="Myglucohealth MGH-BT1 settings" android:selectable="False" android:title="Myglucohealth settings"></PreferenceScreen><CheckBoxPreference android:enabled="False" android:defaultValue="False" android:key="tanita_scale" android:title="Body Composit Monitor" android:summary="Use the Tanita BC-590BT"></CheckBoxPreference><PreferenceScreen android:enabled="False" android:selectable="False" android:title="Body Composition settings" android:summary="Tanita BC-590BT settings"></PreferenceScreen>
-
-</PreferenceScreen>
-</PreferenceCategory>
+            </PreferenceCategory>        
+        </PreferenceScreen>
+        <PreferenceScreen 
+            android:title="External Sensors"
+            android:enabled="true" 
+            android:summary="External bluetooth sensor settings">
+            <CheckBoxPreference 
+                android:title="Zephyr BioHarness"
+                android:defaultValue="False" 
+                android:key="zephyrBioHarness"
+                android:summary="Use a paired Zephyr BioHarness" />
+            <PreferenceScreen 
+                android:enabled="True"
+                android:title="Zephyr BioHarness settings" 
+                android:summary="Select BioHarness sensors">
+                <PreferenceCategory android:title="General sensor data">
+                    <CheckBoxPreference 
+                        android:key="zephyrBioHarness_acc"
+                        android:defaultValue="True" 
+                        android:title="Acceleration"
+                        android:summary="Acceleration data of 3-axis (m/s^2)"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrBioHarness_heartRate"
+                        android:summary="Heart rate (BPM)" 
+                        android:title="Heart rate"
+                        android:defaultValue="True"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrBioHarness_temp"
+                        android:summary="Skin temperature (C)"
+                        android:title="Skin temperature"
+                        android:defaultValue="True"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrBioHarness_resp"
+                        android:title="Respiration rate" 
+                        android:summary="Respiration rate (BPM)"
+                        android:defaultValue="True"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrBioHarness_wornStatus"
+                        android:title="Worn status" 
+                        android:summary="Worn status (boolean)"
+                        android:defaultValue="True"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrBioHarness_battery"
+                        android:title="Battery level" 
+                        android:summary="Battery level (%)"
+                        android:defaultValue="True"/>
+                </PreferenceCategory>
+            </PreferenceScreen>
+            <CheckBoxPreference 
+                android:title="Zephyr HxM"
+                android:defaultValue="False" 
+                android:key="zephyrHxM"
+                android:summary="Use a paired Zephyr HxM device"/>
+            <PreferenceScreen 
+                android:enabled="True"
+                android:title="Zephyr HxM settings" 
+                android:summary="Select HxM sensors">
+                <PreferenceCategory 
+                    android:title="Main settings">
+                    <CheckBoxPreference 
+                        android:key="zephyrHxM_heartRate"
+                        android:title="Heart Rate" 
+                        android:summary="Heart Rate (BPM)"
+                        android:defaultValue="True"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrHxM_speed"
+                        android:title="Speed" 
+                        android:defaultValue="True"
+                        android:summary="Instantaneous speed (m/s^2)"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrHxM_distance"
+                        android:title="Distance" 
+                        android:summary="Distance (m)"
+                        android:defaultValue="True"/>
+                    <CheckBoxPreference 
+                        android:key="zephyrHxM_battery"
+                        android:title="Battery charge indicator"
+                        android:defaultValue="True"/>
+                </PreferenceCategory>
+            </PreferenceScreen>
+            <CheckBoxPreference 
+                android:enabled="False"
+                android:title="MyGlucoHealth" 
+                android:summary="Use the MyGlucoHealth MBH-BT1"
+                android:defaultValue="False" 
+                android:key="myglucohealth"/>
+            <PreferenceScreen 
+                android:enabled="False"
+                android:summary="Myglucohealth MGH-BT1 settings"
+                android:selectable="False" 
+                android:title="Myglucohealth settings"/>
+            <CheckBoxPreference 
+                android:enabled="False"
+                android:defaultValue="False" 
+                android:key="tanita_scale"
+                android:title="Body Composit Monitor" 
+                android:summary="Use the Tanita BC-590BT"/>
+            <PreferenceScreen 
+                android:enabled="False"
+                android:selectable="False" 
+                android:title="Body Composition settings"
+                android:summary="Tanita BC-590BT settings">
+             </PreferenceScreen>    
+        </PreferenceScreen>
+    </PreferenceCategory>
 </PreferenceScreen>
