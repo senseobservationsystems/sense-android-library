@@ -32,7 +32,8 @@ public class BatterySensor  {
 
 	private BroadcastReceiver batteryChangeReceiver = new BroadcastReceiver() {
 
-		public void onReceive(Context context, Intent intent) 
+		@Override
+        public void onReceive(Context context, Intent intent) 
 		{	
 			boolean gotData = false;
 			if(System.currentTimeMillis() > lastSampleTime+sampleDelay)

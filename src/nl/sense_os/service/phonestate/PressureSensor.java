@@ -36,12 +36,14 @@ public class PressureSensor implements SensorEventListener {
 		sensors = smgr.getSensorList(Sensor.TYPE_ALL);
 	}
 
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+	@Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		//        Log.d(TAG, "Accuracy changed...");
 		//        Log.d(TAG, "Sensor: " + sensor.getName() + "(" + sensor.getType() + "), accuracy: " + accuracy);
 	}
 
-	public void onSensorChanged(SensorEvent event) {
+	@Override
+    public void onSensorChanged(SensorEvent event) {
 		Sensor sensor = event.sensor;
 		if(System.currentTimeMillis() > lastSampleTimes[sensor.getType()]+sampleDelay)
 		{
@@ -78,7 +80,8 @@ public class PressureSensor implements SensorEventListener {
 			stopPressureSensing();
 			PressureHandler.postDelayed(PressureThread= new Runnable() {
 
-				public void run() 
+				@Override
+                public void run() 
 				{					
 					startPressureSensing(sampleDelay);
 				}

@@ -264,10 +264,12 @@ public class SenseSettings extends PreferenceActivity {
     private ISenseService service = null;
     private final ServiceConnection serviceConn = new ServiceConnection() {
 
+        @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
             SenseSettings.this.service = ISenseService.Stub.asInterface(binder);
         }
 
+        @Override
         public void onServiceDisconnected(ComponentName className) {
             /* this is not called when the service is stopped, only when it is suddenly killed! */
             SenseSettings.this.service = null;
@@ -308,6 +310,7 @@ public class SenseSettings extends PreferenceActivity {
         builder.setView(login);
         builder.setPositiveButton(R.string.button_login, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 final String name = emailField.getText().toString();
                 final String pass = passField.getText().toString();
@@ -396,6 +399,7 @@ public class SenseSettings extends PreferenceActivity {
         builder.setView(register);
         builder.setPositiveButton(R.string.button_reg, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 final String email = emailField.getText().toString();
                 final String pass1 = passField1.getText().toString();
@@ -513,6 +517,7 @@ public class SenseSettings extends PreferenceActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.prefChangeListener = new OnSharedPreferenceChangeListener() {
             
+            @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 
                 if (key.equals(PREF_SAMPLE_RATE)) {
@@ -593,6 +598,7 @@ public class SenseSettings extends PreferenceActivity {
         final Preference loginPref = findPreference(PREF_LOGIN);
         loginPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 showDialog(DIALOG_LOGIN);
                 return true;
@@ -608,6 +614,7 @@ public class SenseSettings extends PreferenceActivity {
         final Preference popQuizRefresh = findPreference(PREF_QUIZ_SYNC);
         popQuizRefresh.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 // start quiz sync broadcast
                 final Intent refreshIntent = new Intent(
@@ -630,6 +637,7 @@ public class SenseSettings extends PreferenceActivity {
         final Preference registerPref = findPreference(PREF_REGISTER);
         registerPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 showDialog(DIALOG_REGISTER);
                 return true;
@@ -647,6 +655,7 @@ public class SenseSettings extends PreferenceActivity {
         onSampleRateChange(samplePref, prefs.getString(PREF_SAMPLE_RATE, "0"));
         samplePref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
+            @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 onSampleRateChange(preference, (String) newValue);
                 return true;
@@ -657,6 +666,7 @@ public class SenseSettings extends PreferenceActivity {
         onSyncRateChange(syncPref, prefs.getString(PREF_SYNC_RATE, "0"));
         syncPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
+            @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 onSyncRateChange(preference, (String) newValue);
                 return true;

@@ -31,7 +31,8 @@ public class PhoneActivitySensor  {
 
 	private BroadcastReceiver screenActivityReceiver = new BroadcastReceiver() {
 
-		public void onReceive(Context context, Intent intent) 
+		@Override
+        public void onReceive(Context context, Intent intent) 
 		{	
 			if(System.currentTimeMillis() > lastSampleTime+sampleDelay)
 			{

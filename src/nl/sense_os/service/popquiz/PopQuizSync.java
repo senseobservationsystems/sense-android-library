@@ -35,6 +35,7 @@ public class PopQuizSync extends BroadcastReceiver {
     
     Thread syncThread = new Thread(new Runnable() {
         
+        @Override
         public void run() {
             try {
                 SharedPreferences loginPrefs = context.getSharedPreferences(PRIVATE_PREFS,

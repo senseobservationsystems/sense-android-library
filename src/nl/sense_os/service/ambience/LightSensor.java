@@ -37,12 +37,14 @@ public class LightSensor implements SensorEventListener {
 
 	}
 
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+	@Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		//        Log.d(TAG, "Accuracy changed...");
 		//        Log.d(TAG, "Sensor: " + sensor.getName() + "(" + sensor.getType() + "), accuracy: " + accuracy);
 	}
 
-	public void onSensorChanged(SensorEvent event) {
+	@Override
+    public void onSensorChanged(SensorEvent event) {
 		Sensor sensor = event.sensor;
 		if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()]+sampleDelay) {
 			lastSampleTimes[sensor.getType()] = System.currentTimeMillis();	 
@@ -78,7 +80,8 @@ public class LightSensor implements SensorEventListener {
 			stopLightSensing();
 			LightHandler.postDelayed(LightThread= new Runnable() {
 
-				public void run() 
+				@Override
+                public void run() 
 				{					
 					startLightSensing(sampleDelay);
 				}

@@ -16,11 +16,13 @@ public class FallDetector
 		boolean FREE_FALL		= false;		
 		boolean ACTIVITY		= false;
 		boolean INACTIVITY		= false;
-		boolean BASELINE		= false;
+		@SuppressWarnings("unused")
+        boolean BASELINE		= false;
 		boolean FALL			= false;
 		float	stopFreeFall 	= 0;
 		float	stopActivity	= 0;
-		float	stopInactivity	= 0;		
+		@SuppressWarnings("unused")
+        float	stopInactivity	= 0;		
 	}
 	
 	private Interrupt interrupt;
@@ -34,8 +36,10 @@ public class FallDetector
 	private float THRESH_INACT	= 1.3F*G; 	// Threshold for inactivity, default was 0.1875F*G;
 	private float TIME_INACT	= 2000F;	// Time of inactivity (msec)
 	private float TIME_ACT_INACT= 3500;		// Time between an activity and inactivity
-	private float THRESH_INITIAL= 0.7F*G;	// Threshold for the difference between the initial status and after inactivity
-	private long  time 			= 0;		// Time of last function call
+	@SuppressWarnings("unused")
+    private float THRESH_INITIAL= 0.7F*G;	// Threshold for the difference between the initial status and after inactivity
+	@SuppressWarnings("unused")
+    private long  time 			= 0;		// Time of last function call
 	public boolean demo			= true;		// For demoing only the free fall is used
 	
 	private boolean useInactivity = false;  // Use the inactivity property to determine a fall

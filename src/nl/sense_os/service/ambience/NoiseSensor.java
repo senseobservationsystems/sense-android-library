@@ -50,7 +50,8 @@ public class NoiseSensor extends PhoneStateListener {
 				return dB;
 			}
 
-			public void run() {
+			@Override
+            public void run() {
 				double dB = calculateDB();				
 				// pass message to the MsgHandler
 				Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
@@ -76,7 +77,8 @@ public class NoiseSensor extends PhoneStateListener {
 		public NoiseSensorThread() {
 		}
 
-		public void run() {
+		@Override
+        public void run() {
 			if (audioRec == null) {
 				Log.d(TAG, "AudioRec is null.");
 				return;
@@ -98,7 +100,8 @@ public class NoiseSensor extends PhoneStateListener {
 	}
 
 	class SoundStreamThread implements Runnable {
-		public void run() {
+		@Override
+        public void run() {
 
 			try {
 				// cameraDevice = android.hardware.Camera.open();
@@ -123,7 +126,8 @@ public class NoiseSensor extends PhoneStateListener {
 				recorder.setMaxDuration(sampleTimeStream);
 				recorder.setOnInfoListener(new OnInfoListener() {
 
-					public void onInfo(MediaRecorder mr, int what, int extra) {
+					@Override
+                    public void onInfo(MediaRecorder mr, int what, int extra) {
 
 						if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
 							try {
@@ -233,7 +237,8 @@ public class NoiseSensor extends PhoneStateListener {
 		isListening = true;
 
 		Thread t = new Thread() {
-			public void run() {
+			@Override
+            public void run() {
 				if (listenInterval == -1) {
 					recorder = new MediaRecorder();
 					if (soundStreamThread != null) {

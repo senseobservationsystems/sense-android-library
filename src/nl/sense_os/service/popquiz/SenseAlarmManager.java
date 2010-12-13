@@ -19,7 +19,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.OldMsgHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -585,7 +584,7 @@ public class SenseAlarmManager {
         final Cursor c = this.db.query(TABLE_ENTRY, null, selection, null, null, null, orderBy);
         c.moveToFirst();
 
-        OldMsgHandler handler = new OldMsgHandler(this.ctx);
+        // OldMsgHandler handler = new OldMsgHandler(this.ctx);
         while (false == c.isAfterLast()) {
             // store the answer
             int qstnId = c.getInt(c.getColumnIndex(COL_QSTN_ID));
@@ -597,7 +596,8 @@ public class SenseAlarmManager {
             data.put("question id", qstnId);
             data.put("answer id", answId);
             data.put("date", timeString);
-            handler.sendSensorData("pop quiz", data);
+            Log.d(TAG, "Pop quiz data not actually sent"); // TODO send pop quiz data
+            // handler.sendSensorData("pop quiz", data);
 
             // delete the answer's entry in the database
             final String delSelection = COL_ROW_ID + "=" + c.getInt(c.getColumnIndex(COL_ROW_ID));

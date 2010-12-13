@@ -27,6 +27,7 @@ public class LocationSensor implements LocationListener {
         this.context = context;
     }
 
+    @Override
     public void onLocationChanged(Location fix) {
         JSONObject json = new JSONObject();
         try {
@@ -55,14 +56,17 @@ public class LocationSensor implements LocationListener {
         this.context.startService(i);
     }
 
+    @Override
     public void onProviderDisabled(String provider) {
         // Log.v(TAG, "Provider " + provider + " disabled");
     }
 
+    @Override
     public void onProviderEnabled(String provider) {
         // Log.v(TAG, "Provider " + provider + " enabled");
     }
 
+    @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // switch (status) {
         // case LocationProvider.AVAILABLE:

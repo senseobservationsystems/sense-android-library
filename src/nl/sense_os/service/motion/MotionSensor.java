@@ -54,12 +54,14 @@ public class MotionSensor implements SensorEventListener {
         return sampleDelay;
     }
 
+    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Log.d(TAG, "Accuracy changed...");
         // Log.d(TAG, "Sensor: " + sensor.getName() + "(" + sensor.getType() + "), accuracy: " +
         // accuracy);
     }
 
+    @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
         
@@ -146,6 +148,7 @@ public class MotionSensor implements SensorEventListener {
             stopMotionSensing();
             motionHandler.postDelayed(motionThread = new Runnable() {
 
+                @Override
                 public void run() {
                     startMotionSensing(sampleDelay);
                 }

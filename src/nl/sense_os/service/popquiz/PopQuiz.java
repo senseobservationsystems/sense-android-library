@@ -46,6 +46,7 @@ public class PopQuiz extends Activity {
      */
     private class MyListListener implements AdapterView.OnItemClickListener {
 
+        @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             // get tab activity label from the view
             Question q = PopQuiz.this.quiz.questions.get(PopQuiz.this.tabs.getCurrentTab());
@@ -108,6 +109,7 @@ public class PopQuiz extends Activity {
         builder.setMessage("Register answer: " + answVal + " for " + name + "?");
         builder.setPositiveButton(R.string.button_ok, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 // get tab id and activity id from preferences
                 int qstnId = popPrefs.getInt(PREF_QSTN_ID, -1);
@@ -142,6 +144,7 @@ public class PopQuiz extends Activity {
         });
         builder.setNegativeButton(R.string.button_cancel, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_CONFIRM);
             }
@@ -159,6 +162,7 @@ public class PopQuiz extends Activity {
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setPositiveButton("Close", new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_CONFIRM_CLOSE);
                 setResult(RESULT_CANCELED);
@@ -167,6 +171,7 @@ public class PopQuiz extends Activity {
         });
         builder.setNegativeButton("Return", new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 dismissDialog(DIALOG_CONFIRM_CLOSE);
             }
@@ -187,6 +192,7 @@ public class PopQuiz extends Activity {
         builder.setMessage(msg.replace("?1", "" + (todos.length - 1)));
         builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
 
                 // start activity to handle the next unfinished registration
@@ -202,6 +208,7 @@ public class PopQuiz extends Activity {
         });
         builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
@@ -243,6 +250,7 @@ public class PopQuiz extends Activity {
         }
         builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_WELCOME);
             }
@@ -257,6 +265,7 @@ public class PopQuiz extends Activity {
 //        });
         builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeDialog(DIALOG_WELCOME);
                 showDialog(DIALOG_CONFIRM_CLOSE);
@@ -439,6 +448,8 @@ public class PopQuiz extends Activity {
             
             TabSpec spec = this.tabs.newTabSpec("q" + question.id);
             spec.setContent(new TabHost.TabContentFactory(){
+                
+                @Override
                 public View createTabContent(String tag)
                 {
                     // -- this tab contains a single control - the listview -- //

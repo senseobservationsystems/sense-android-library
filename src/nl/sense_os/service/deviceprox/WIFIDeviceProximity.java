@@ -34,6 +34,7 @@ public class WIFIDeviceProximity {
 
         private BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
 
+            @Override
             public void onReceive(Context context, Intent intent) {
                 if (!scanEnabled)
                     return;
@@ -83,6 +84,7 @@ public class WIFIDeviceProximity {
             }
         }
 
+        @Override
         public void run() {
             if (scanEnabled) {
                 if (!(wifiActiveFromTheStart = wifi.isWifiEnabled())) {
@@ -147,6 +149,7 @@ public class WIFIDeviceProximity {
         scanInterval = interval;
         scanEnabled = true;
         Thread t = new Thread() {
+            @Override
             public void run() {
                 scanHandler.post(wifiScanThread = new WifiScanThread());
             }

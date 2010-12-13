@@ -1,7 +1,7 @@
 /*
- ************************************************************************************************************
- *     Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.     *
- ************************************************************************************************************
+ **************************************************************************************************
+ * Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.
+ **************************************************************************************************
  */
 
 package nl.sense_os.app;
@@ -14,11 +14,11 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,12 +36,13 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.SenseService;
-import nl.sense_os.service.popquiz.SenseAlarmManager;
+import nl.sense_os.shared.Constants;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,7 +67,7 @@ public class SenseApp extends Activity {
                     e.printStackTrace();
                 }
             } else {
-                Log.d(TAG, "Service not bound. Skipping login task.");
+                Log.e(TAG, "Service not bound. Skipping login task.");
             }
             return success;
         }
@@ -84,7 +85,6 @@ public class SenseApp extends Activity {
             } else {
                 Toast.makeText(SenseApp.this, R.string.toast_login_ok, Toast.LENGTH_LONG).show();
             }
-            super.onPostExecute(result);
         }
 
         @Override
@@ -93,12 +93,10 @@ public class SenseApp extends Activity {
             try {
                 dismissDialog(DIALOG_LOGIN);
             } catch (final IllegalArgumentException e) {
-                e.printStackTrace();
+                // no problem: login dialog was not displayed
             }
 
             showDialog(DIALOG_PROGRESS);
-
-            super.onPreExecute();
         }
     }
 
@@ -139,8 +137,6 @@ public class SenseApp extends Activity {
             } else {
                 Toast.makeText(SenseApp.this, R.string.toast_reg_ok, Toast.LENGTH_LONG).show();
             }
-
-            super.onPostExecute(result);
         }
 
         @Override
@@ -152,8 +148,6 @@ public class SenseApp extends Activity {
                 e.printStackTrace();
             }
             showDialog(DIALOG_PROGRESS);
-
-            super.onPreExecute();
         }
     }
 
@@ -162,17 +156,36 @@ public class SenseApp extends Activity {
      */
     private class SenseCallback extends ISenseServiceCallback.Stub {
 
+        @Override
         public void statusReport(final int status) {
 
             runOnUiThread(new Runnable() {
+
+                @Override
                 public void run() {
-                    final boolean running = ((status & SenseService.STATUS_RUNNING) > 0);
-                    final boolean connected = ((status & SenseService.STATUS_CONNECTED) > 0);
+                    final boolean running = ((status & Constants.STATUSCODE_RUNNING) > 0);
+                    final boolean connected = ((status & Constants.STATUSCODE_CONNECTED) > 0);
                     ((CheckBox) findViewById(R.id.main_cb)).setChecked(running);
+
+                    // show connection status in main service field
+                    TextView mainFirstLine = (TextView) findViewById(R.id.main_firstline);
+                    if (connected) {
+                        mainFirstLine.setText("Sense service");
+                    } else {
+                        mainFirstLine.setText("Sense service (not logged in)");
+                    }
+
+                    // change description of main service field
+                    TextView mainDescription = (TextView) findViewById(R.id.main_secondLine);
+                    if (running) {
+                        mainDescription.setText("Press to stop Sense service completely");
+                    } else {
+                        mainDescription.setText("Press to start Sense service");
+                    }
 
                     // enable phone state list row
                     CheckBox button = (CheckBox) findViewById(R.id.phonestate_cb);
-                    final boolean callstate = ((status & SenseService.STATUS_PHONESTATE) > 0);
+                    final boolean callstate = ((status & Constants.STATUSCODE_PHONESTATE) > 0);
                     button.setChecked(callstate);
                     button.setEnabled(connected);
                     View text1 = findViewById(R.id.phonestate_firstline);
@@ -182,7 +195,7 @@ public class SenseApp extends Activity {
 
                     // enable location list row
                     button = (CheckBox) findViewById(R.id.location_cb);
-                    final boolean location = ((status & SenseService.STATUS_LOCATION) > 0);
+                    final boolean location = ((status & Constants.STATUSCODE_LOCATION) > 0);
                     button.setChecked(location);
                     button.setEnabled(connected);
                     button = (CheckBox) findViewById(R.id.ambience_cb);
@@ -193,7 +206,7 @@ public class SenseApp extends Activity {
 
                     // enable noise list row
                     button = (CheckBox) findViewById(R.id.ambience_cb);
-                    final boolean noise = ((status & SenseService.STATUS_AMBIENCE) > 0);
+                    final boolean noise = ((status & Constants.STATUSCODE_AMBIENCE) > 0);
                     button.setChecked(noise);
                     button.setEnabled(connected);
                     button = (CheckBox) findViewById(R.id.ambience_cb);
@@ -204,7 +217,7 @@ public class SenseApp extends Activity {
 
                     // enable pop quiz list row
                     button = (CheckBox) findViewById(R.id.popquiz_cb);
-                    final boolean popQuiz = ((status & SenseService.STATUS_QUIZ) > 0);
+                    final boolean popQuiz = ((status & Constants.STATUSCODE_QUIZ) > 0);
                     button.setChecked(popQuiz);
                     button.setEnabled(connected);
                     text1 = findViewById(R.id.popquiz_firstline);
@@ -214,17 +227,17 @@ public class SenseApp extends Activity {
 
                     // enable motion list row
                     button = (CheckBox) findViewById(R.id.motion_cb);
-                    final boolean motion = ((status & SenseService.STATUS_MOTION) > 0);
+                    final boolean motion = ((status & Constants.STATUSCODE_MOTION) > 0);
                     button.setChecked(motion);
                     button.setEnabled(connected);
                     text1 = findViewById(R.id.motion_firstline);
                     text2 = findViewById(R.id.motion_secondLine);
                     text1.setEnabled(connected);
                     text2.setEnabled(connected);
-                    
+
                     // enable external sensor list row
                     button = (CheckBox) findViewById(R.id.external_sensor_cb);
-                    final boolean external_sensors = ((status & SenseService.STATUS_EXTERNAL_SENSORS) > 0);
+                    final boolean external_sensors = ((status & Constants.STATUSCODE_EXTERNAL) > 0);
                     button.setChecked(external_sensors);
                     button.setEnabled(connected);
                     text1 = findViewById(R.id.external_sensor_firstline);
@@ -234,7 +247,7 @@ public class SenseApp extends Activity {
 
                     // enable device proximity row
                     button = (CheckBox) findViewById(R.id.device_prox_cb);
-                    final boolean deviceProx = ((status & SenseService.STATUS_DEVICE_PROX) > 0);
+                    final boolean deviceProx = ((status & Constants.STATUSCODE_DEVICE_PROX) > 0);
                     button.setChecked(deviceProx);
                     button.setEnabled(connected);
                     text1 = findViewById(R.id.device_prox_firstline);
@@ -252,6 +265,7 @@ public class SenseApp extends Activity {
      */
     private class SenseServiceConn implements ServiceConnection {
 
+        @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
 
             SenseApp.this.service = ISenseService.Stub.asInterface(binder);
@@ -262,11 +276,13 @@ public class SenseApp extends Activity {
             }
         }
 
+        @Override
         public void onServiceDisconnected(ComponentName className) {
             /* this is not called when the service is stopped, only when it is suddenly killed! */
 
             SenseApp.this.service = null;
             runOnUiThread(new Runnable() {
+                @Override
                 public void run() {
                     updateUi();
                 }
@@ -283,6 +299,7 @@ public class SenseApp extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             runOnUiThread(new Runnable() {
+                @Override
                 public void run() {
                     updateUi();
                 }
@@ -290,6 +307,7 @@ public class SenseApp extends Activity {
         }
     }
 
+    public static final int COMMONSENSE_VERSION = 3;
     private static final int DIALOG_FAQ = 1;
     private static final int DIALOG_HELP = 2;
     private static final int DIALOG_LOGIN = 3;
@@ -300,22 +318,21 @@ public class SenseApp extends Activity {
     private static final int MENU_LOGIN = 2;
     private static final int MENU_REGISTER = 3;
     private static final int MENU_SETTINGS = 4;
-    private static final String TAG = "SenseApp";
-    /** Name of the private settings file, used for password storage. */
-    private static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
-    /** Preference for determining whether the application is run for the first time ever. */
-    public static final String PREF_FIRSTRUN = "FirstRun";
     /**
      * Preference for the version of CommonSense, changes the communication scheme with CommonSense.
      */
     public static final String PREF_COMMONSENSE_VERSION = "cs_version";
-    public static final int COMMONSENSE_VERSION = 3;
+    /** Preference for determining whether the application is run for the first time ever. */
+    public static final String PREF_FIRSTRUN = "FirstRun";
+    /** Name of the private settings file, used for password storage. */
+    private static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
+    private static final String TAG = "SenseApp";
     private final ISenseServiceCallback callback = new SenseCallback();
     private boolean isServiceBound;
     private ISenseService service;
     private final ServiceConnection serviceConn = new SenseServiceConn();
     private final SenseServiceListener serviceListener = new SenseServiceListener();
-    
+
     private Dialog createDialogFaq() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(android.R.drawable.ic_dialog_info);
@@ -336,18 +353,21 @@ public class SenseApp extends Activity {
         builder.setMessage(R.string.dialog_welcome_msg);
         builder.setPositiveButton(R.string.button_login, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 showDialog(DIALOG_LOGIN);
             }
         });
         builder.setNeutralButton(R.string.button_reg, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 showDialog(DIALOG_REGISTER);
             }
         });
         builder.setNegativeButton(R.string.button_faq, new OnClickListener() {
-            
+
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 showDialog(DIALOG_FAQ);
             }
@@ -392,6 +412,7 @@ public class SenseApp extends Activity {
         builder.setView(login);
         builder.setPositiveButton(R.string.button_login, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 final String name = emailField.getText().toString();
                 final String pass = passField.getText().toString();
@@ -475,6 +496,7 @@ public class SenseApp extends Activity {
         builder.setView(register);
         builder.setPositiveButton(R.string.button_reg, new OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 final String email = emailField.getText().toString();
                 final String pass1 = passField1.getText().toString();
@@ -549,120 +571,68 @@ public class SenseApp extends Activity {
      */
     public void onClick(View v) {
 
-        CheckBox cb = null;
         boolean oldState = false;
         switch (v.getId()) {
-        case R.id.logo:
-            Toast.makeText(this, "Starting immediate pop quiz...", Toast.LENGTH_SHORT).show();
-            SenseAlarmManager mgr = new SenseAlarmManager(this);
-            mgr.createEntry(System.currentTimeMillis() + 2000, 1);
-            break;
         case R.id.main_field:
-            cb = (CheckBox) findViewById(R.id.main_cb);
+            final CheckBox cb = (CheckBox) findViewById(R.id.main_cb);
             oldState = cb.isChecked();
             cb.setChecked(!oldState);
             toggleService(!oldState);
             break;
-        case R.id.main_cb:
-            cb = (CheckBox) findViewById(R.id.main_cb);
-            toggleService(cb.isChecked());
-            break;
         case R.id.device_prox_field:
-            cb = (CheckBox) findViewById(R.id.device_prox_cb);
-            if (cb.isEnabled()) {
-                oldState = cb.isChecked();
-                cb.setChecked(!oldState);
+            final CheckBox devProx = (CheckBox) findViewById(R.id.device_prox_cb);
+            if (devProx.isEnabled()) {
+                oldState = devProx.isChecked();
+                devProx.setChecked(!oldState);
                 toggleDeviceProx(!oldState);
             }
             break;
-        case R.id.device_prox_cb:
-            cb = (CheckBox) findViewById(R.id.device_prox_cb);
-            if (cb.isEnabled()) {
-                toggleDeviceProx(cb.isChecked());
-            }
-            break;
         case R.id.location_field:
-            cb = (CheckBox) findViewById(R.id.location_cb);
-            if (cb.isEnabled()) {
-                oldState = cb.isChecked();
-                cb.setChecked(!oldState);
+            final CheckBox location = (CheckBox) findViewById(R.id.location_cb);
+            if (location.isEnabled()) {
+                oldState = location.isChecked();
+                location.setChecked(!oldState);
                 toggleLocation(!oldState);
             }
             break;
-        case R.id.location_cb:
-            cb = (CheckBox) findViewById(R.id.location_cb);
-            if (cb.isEnabled()) {
-                toggleLocation(cb.isChecked());
-            }
-            break;
         case R.id.motion_field:
-            cb = (CheckBox) findViewById(R.id.motion_cb);
-            if (cb.isEnabled()) {
-                oldState = cb.isChecked();
-                cb.setChecked(!oldState);
+            final CheckBox motion = (CheckBox) findViewById(R.id.motion_cb);
+            if (motion.isEnabled()) {
+                oldState = motion.isChecked();
+                motion.setChecked(!oldState);
                 toggleMotion(!oldState);
             }
             break;
-        case R.id.motion_cb:
-            cb = (CheckBox) findViewById(R.id.motion_cb);
-            if (cb.isEnabled()) {
-                toggleMotion(cb.isChecked());
-            }
-            break;
         case R.id.external_sensor_field:
-            cb = (CheckBox) findViewById(R.id.external_sensor_cb);
-            if (cb.isEnabled()) {
-                oldState = cb.isChecked();
-                cb.setChecked(!oldState);
+            final CheckBox external = (CheckBox) findViewById(R.id.external_sensor_cb);
+            if (external.isEnabled()) {
+                oldState = external.isChecked();
+                external.setChecked(!oldState);
                 toggleExternalSensors(!oldState);
             }
             break;
-        case R.id.external_sensor_cb:
-            cb = (CheckBox) findViewById(R.id.external_sensor_cb);
-            if (cb.isEnabled()) {
-                toggleExternalSensors(cb.isChecked());
-            }
-            break;
         case R.id.ambience_field:
-            cb = (CheckBox) findViewById(R.id.ambience_cb);
-            if (cb.isEnabled()) {
-                oldState = cb.isChecked();
-                cb.setChecked(!oldState);
-                toggleNoise(!oldState);
-            }
-            break;
-        case R.id.ambience_cb:
-            cb = (CheckBox) findViewById(R.id.ambience_cb);
-            if (cb.isEnabled()) {
-                toggleNoise(cb.isChecked());
+            final CheckBox ambience = (CheckBox) findViewById(R.id.ambience_cb);
+            if (ambience.isEnabled()) {
+                oldState = ambience.isChecked();
+                ambience.setChecked(!oldState);
+                toggleAmbience(!oldState);
             }
             break;
         case R.id.phonestate_field:
-            cb = (CheckBox) findViewById(R.id.phonestate_cb);
-            if (cb.isEnabled()) {
-                oldState = cb.isChecked();
-                cb.setChecked(!oldState);
+            final CheckBox phoneState = (CheckBox) findViewById(R.id.phonestate_cb);
+            if (phoneState.isEnabled()) {
+                oldState = phoneState.isChecked();
+                phoneState.setChecked(!oldState);
                 togglePhoneState(!oldState);
             }
             break;
-        case R.id.phonestate_cb:
-            cb = (CheckBox) findViewById(R.id.phonestate_cb);
-            if (cb.isEnabled()) {
-                togglePhoneState(cb.isChecked());
-            }
-            break;
         case R.id.popquiz_field:
-            cb = (CheckBox) findViewById(R.id.popquiz_cb);
-            if (cb.isEnabled()) {
-                oldState = cb.isChecked();
-                cb.setChecked(!oldState);
+            final CheckBox quiz = (CheckBox) findViewById(R.id.popquiz_cb);
+            if (quiz.isEnabled()) {
+                oldState = quiz.isChecked();
+                quiz.setChecked(!oldState);
                 togglePopQuiz(!oldState);
-            }
-            break;
-        case R.id.popquiz_cb:
-            cb = (CheckBox) findViewById(R.id.popquiz_cb);
-            if (cb.isEnabled()) {
-                togglePopQuiz(cb.isChecked());
             }
             break;
         case R.id.prefs_field:
@@ -717,7 +687,8 @@ public class SenseApp extends Activity {
                 android.R.drawable.ic_menu_preferences);
         menu.add(Menu.NONE, MENU_FAQ, Menu.NONE, "FAQ").setIcon(android.R.drawable.ic_menu_help);
         menu.add(Menu.NONE, MENU_LOGIN, Menu.NONE, "Log in").setIcon(R.drawable.ic_menu_login);
-        menu.add(Menu.NONE, MENU_REGISTER, Menu.NONE, "Register").setIcon(R.drawable.ic_menu_invite);
+        menu.add(Menu.NONE, MENU_REGISTER, Menu.NONE, "Register")
+                .setIcon(R.drawable.ic_menu_invite);
         return true;
     }
 
@@ -823,16 +794,65 @@ public class SenseApp extends Activity {
                         interval = "15 minutes";
                         break;
                     default:
-                        Log.e(TAG, "Unexpected quiz rate preference.");
+                        Log.e(TAG, "Unexpected device prox preference.");
                     }
                     final String msg = getString(R.string.toast_toggle_dev_prox);
                     Toast.makeText(this, msg.replace("?", interval), Toast.LENGTH_LONG).show();
                 }
+
+                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean(Constants.PREF_STATUS_DEV_PROX, active).commit();
+
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling device proximity service.");
             }
         } else {
             Log.w(TAG, "Could not toggle device proximity service: Sense service is not bound.");
+        }
+    }
+
+    private void toggleExternalSensors(boolean active) {
+        if (null != this.service) {
+            try {
+                this.service.toggleExternalSensors(active, callback);
+
+                // show informational toast
+                if (active) {
+                    final SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(this);
+                    final int rate = Integer.parseInt(prefs.getString(
+                            SenseSettings.PREF_SAMPLE_RATE, "0"));
+                    String interval = "";
+                    switch (rate) {
+                    case -2: // often
+                        interval = "second";
+                        break;
+                    case -1: // often
+                        interval = "5 seconds";
+                        break;
+                    case 0: // normal
+                        interval = "minute";
+                        break;
+                    case 1: // rarely
+                        interval = "15 minutes";
+                        break;
+                    default:
+                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                        break;
+                    }
+                    final String msg = getString(R.string.toast_toggle_external_sensors).replace(
+                            "?", interval);
+                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                }
+
+                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean(Constants.PREF_STATUS_EXTERNAL, active).commit();
+
+            } catch (RemoteException e) {
+                Log.e(TAG, "RemoteException toggling external sensors service.");
+            }
+        } else {
+            Log.w(TAG, "Could not toggle external sensors service: Sense service is not bound.");
         }
     }
 
@@ -869,6 +889,10 @@ public class SenseApp extends Activity {
                             interval);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
+
+                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean(Constants.PREF_STATUS_LOCATION, active).commit();
+
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling location service.");
             }
@@ -910,6 +934,10 @@ public class SenseApp extends Activity {
                             interval);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
+
+                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean(Constants.PREF_STATUS_MOTION, active).commit();
+
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling motion service.");
             }
@@ -917,48 +945,8 @@ public class SenseApp extends Activity {
             Log.w(TAG, "Could not toggle motion service: Sense service is not bound.");
         }
     }
-    
-    private void toggleExternalSensors(boolean active) {
-        if (null != this.service) {
-            try {
-                this.service.toggleExternalSensors(active, callback);
 
-                // show informational toast
-                if (active) {
-                    final SharedPreferences prefs = PreferenceManager
-                            .getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_SAMPLE_RATE, "0"));
-                    String interval = "";
-                    switch (rate) {
-                    case -2: // often
-                        interval = "second";
-                        break;
-                    case -1: // often
-                        interval = "5 seconds";
-                        break;
-                    case 0: // normal
-                        interval = "minute";
-                        break;
-                    case 1: // rarely
-                        interval = "15 minutes";
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                        break;
-                    }
-                    final String msg = getString(R.string.toast_toggle_external_sensors).replace("?",
-                            interval);
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-                }
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException toggling external sensors service.");
-            }
-        } else {
-            Log.w(TAG, "Could not toggle external sensors service: Sense service is not bound.");
-        }
-    }
-    private void toggleNoise(boolean active) {
+    private void toggleAmbience(boolean active) {
         if (null != this.service) {
             try {
                 this.service.toggleNoise(active, callback);
@@ -989,12 +977,17 @@ public class SenseApp extends Activity {
                         intervalString = "every 15 minutes";
                         break;
                     default:
-                        Log.e(TAG, "Unexpected quiz rate preference.");
+                        Log.e(TAG, "Unexpected commonsense rate preference.");
                     }
-                    String msg = getString(R.string.toast_toggle_ambience)
-                            .replace("?", intervalString) + extraString;
+                    String msg = getString(R.string.toast_toggle_ambience).replace("?",
+                            intervalString)
+                            + extraString;
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
+
+                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean(Constants.PREF_STATUS_AMBIENCE, active).commit();
+
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling ambience service.");
             }
@@ -1013,6 +1006,10 @@ public class SenseApp extends Activity {
                     final String msg = getString(R.string.toast_toggle_phonestate);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
+
+                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean(Constants.PREF_STATUS_PHONESTATE, active).commit();
+
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling phone state service.");
             }
@@ -1046,6 +1043,9 @@ public class SenseApp extends Activity {
                         break;
                     }
 
+                    Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                    editor.putBoolean(Constants.PREF_STATUS_POPQUIZ, active).commit();
+
                     String msg = getString(R.string.toast_toggle_quiz).replace("?", interval);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
@@ -1065,14 +1065,18 @@ public class SenseApp extends Activity {
      * Afterwards, the UI is updated to make the ToggleButtons show the new service state.
      */
     private void toggleService(boolean active) {
+
         if (true == active) {
             // start service
             final Intent serviceIntent = new Intent(ISenseService.class.getName());
             if (null == startService(serviceIntent)) {
                 Log.w(TAG, "Could not start Sense service!");
             }
+            TextView description = (TextView) findViewById(R.id.main_secondLine);
+            description.setText("Press to stop Sense service completely");
 
             this.isServiceBound = bindService(serviceIntent, this.serviceConn, 0);
+
         } else {
             // stop service
             final boolean stopped = stopService(new Intent(ISenseService.class.getName()));
@@ -1086,6 +1090,9 @@ public class SenseApp extends Activity {
 
             updateUi();
         }
+
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putBoolean(Constants.PREF_STATUS_MAIN, active).commit();
     }
 
     /**
