@@ -63,8 +63,7 @@ public class SenseApp extends Activity {
                 try {
                     success = SenseApp.this.service.serviceLogin();
                 } catch (final RemoteException e) {
-
-                    e.printStackTrace();
+                    Log.e(TAG, "RemoteException checking login", e);
                 }
             } else {
                 Log.e(TAG, "Service not bound. Skipping login task.");
@@ -77,13 +76,16 @@ public class SenseApp extends Activity {
             try {
                 dismissDialog(DIALOG_PROGRESS);
             } catch (final IllegalArgumentException e) {
-                // do nothing
+                // do nothing, perhaps the progress dialog was already dismissed
             }
             if (result != true) {
                 Toast.makeText(SenseApp.this, R.string.toast_login_fail, Toast.LENGTH_LONG).show();
                 showDialog(DIALOG_LOGIN);
             } else {
                 Toast.makeText(SenseApp.this, R.string.toast_login_ok, Toast.LENGTH_LONG).show();
+                
+                // at least turn on phone state sensor after the very first login
+                togglePhoneState(true);
             }
         }
 

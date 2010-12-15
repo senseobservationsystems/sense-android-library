@@ -833,10 +833,10 @@ public class SenseService extends Service {
                 startForeground.invoke(this, startArgs);
             } catch (InvocationTargetException e) {
                 // Should not happen.
-                Log.w(TAG, "Unable to invoke startForeground", e);
+                Log.e(TAG, "Unable to invoke startForeground", e);
             } catch (IllegalAccessException e) {
                 // Should not happen.
-                Log.w(TAG, "Unable to invoke startForeground", e);
+                Log.e(TAG, "Unable to invoke startForeground", e);
             }
         }
     }
