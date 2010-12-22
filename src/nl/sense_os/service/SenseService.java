@@ -341,6 +341,8 @@ public class SenseService extends Service {
             final HttpResponse response = client.execute(post);
 
             if (response.containsHeader("Set-Cookie")) {
+            	if(!response.containsHeader("Set-Cookie"))
+            		return false;
                 cookie = response.getFirstHeader("Set-Cookie").getValue();
                 final InputStream stream = response.getEntity().getContent();
                 final String responseStr = convertStreamToString(stream);
