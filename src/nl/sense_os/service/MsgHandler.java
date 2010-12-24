@@ -784,7 +784,7 @@ public class MsgHandler extends Service {
 
 			//Get Response	
 			InputStream is = urlConn.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is),1024);
 			String line;
 			StringBuffer responseString = new StringBuffer(); 
 			while((line = rd.readLine()) != null) {
@@ -839,7 +839,7 @@ public class MsgHandler extends Service {
 
 			HttpEntity entity = response.getEntity();
 			InputStream is = entity.getContent();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is), 1024);
 			String line;
 			StringBuffer responseString = new StringBuffer(); 
 			while((line = rd.readLine()) != null) {
