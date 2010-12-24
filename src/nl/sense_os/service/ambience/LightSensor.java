@@ -34,7 +34,6 @@ public class LightSensor implements SensorEventListener {
 		this.context = context;
 		smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);		
 		sensors = smgr.getSensorList(Sensor.TYPE_ALL);
-
 	}
 
 	@Override

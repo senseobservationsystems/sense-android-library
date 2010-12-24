@@ -164,7 +164,7 @@ public class MotionSensor implements SensorEventListener {
     {
         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, "fall detector");
-        i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "");
+        i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, fallDetector.demo?"demo fall":"human fall");
         i.putExtra(MsgHandler.KEY_VALUE, fall);
         i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_BOOL);
         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());

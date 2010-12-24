@@ -193,6 +193,14 @@ public class SenseSettings extends PreferenceActivity {
     public static final String PREF_LOGIN_NAME = "login_name";
     /** Key for login preference for hashed password. */
     public static final String PREF_LOGIN_PASS = "login_pass";
+    /** Key for storing the online device id. */
+    public static final String PREF_DEVICE_ID = "device_id";
+    /** Key for storing the online sensor list (type of JSONArray). */
+    public static final String PREF_JSON_SENSOR_LIST = "json_sensor_list";
+    /** Key for storing the imei of the phone. */
+    public static final String PREF_PHONE_IMEI = "phone_imei";
+    /** Key for storing the type of the phone. */
+    public static final String PREF_PHONE_TYPE = "phone_type";
     /** Key for preference that toggles use of GPS in location sensor. */
     public static final String PREF_PROXIMITY_BT = "proximity_bt";
     /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
@@ -247,15 +255,21 @@ public class SenseSettings extends PreferenceActivity {
     public static final String SENSOR_DATA_TYPE_JSON = "json";
     public static final String SENSOR_DATA_TYPE_STRING = "string";
     private static final String TAG = "Sense Settings";
-    public static final String URL_BASE = "http://data.sense-os.nl/commonsense/";
-    public static final String URL_CHECK_PHONE = URL_BASE + "device_check.php";
-    public static final String URL_LOGIN = URL_BASE + "login.php";
+    
+    public static final String URL_BASE = "http://api.sense-os.nl/";
+    public static final String URL_FORMAT = ".json";
+    public static final String URL_GET_DEVICES = URL_BASE + "devices" + URL_FORMAT;
+    public static final String URL_GET_SENSORS = URL_BASE + "devices/<id>/sensors" + URL_FORMAT;
+    public static final String URL_POST_SENSOR_DATA = URL_BASE + "sensors/<id>/data" + URL_FORMAT;
+    public static final String URL_CREATE_SENSOR = URL_BASE + "sensors" + URL_FORMAT;
+    public static final String URL_ADD_SENSOR_TO_DEVICE = URL_BASE + "sensors/<id>/device" + URL_FORMAT;
+    public static final String URL_LOGIN = URL_BASE + "login" + URL_FORMAT;
     public static final String URL_QUIZ_ADD_ANSWER = URL_BASE + "pop_quiz_answer_add.php";
     public static final String URL_QUIZ_ADD_QUESTION = URL_BASE + "pop_quiz_question_add.php";
     public static final String URL_QUIZ_CONNECT_ANSW_QSTN = URL_BASE
             + "pop_quiz_connect_answer_to_question.php";
     public static final String URL_QUIZ_GET_QSTNS = URL_BASE + "get_pop_quiz_questions.php";
-    public static final String URL_REG = URL_BASE + "register.php";
+    public static final String URL_REG = URL_BASE + "users"+ URL_FORMAT;
     public static final String URL_REG_PHONE = URL_BASE + "device_add.php";
     public static final String URL_SEND_BATCH_DATA = URL_BASE + "device_batch_data_add.php";
     public static final String URL_SEND_SENSOR_VALUE = URL_BASE + "device_sensor_data_add.php";

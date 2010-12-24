@@ -102,8 +102,7 @@ public class BatterySensor  {
 				}
 				// check if the intent was a screen change intent
 				if(gotData)
-				{
-					Log.d(TAG, "Got data:"+json.toString());
+				{					
 					Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
 					i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
 					i.putExtra(MsgHandler.KEY_VALUE, json.toString());
