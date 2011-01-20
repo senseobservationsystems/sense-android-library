@@ -93,6 +93,12 @@ public class SenseSettings extends PreferenceActivity {
 
         @Override
         protected void onPreExecute() {
+        	// clear cached settings of the previous user (i.e. device id)
+        	SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, MODE_PRIVATE);
+			Editor editor = prefs.edit();
+			editor.putInt(SenseSettings.PREF_DEVICE_ID, -1);
+			editor.commit();
+        	
             // close the login dialog before showing the progress dialog
             try {
                 dismissDialog(DIALOG_LOGIN);
@@ -151,6 +157,12 @@ public class SenseSettings extends PreferenceActivity {
 
         @Override
         protected void onPreExecute() {
+        	// clear cached settings of the previous user (i.e. device id)
+        	SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, MODE_PRIVATE);
+			Editor editor = prefs.edit();
+			editor.putInt(SenseSettings.PREF_DEVICE_ID, -1);
+			editor.commit();
+        	
             // close the login dialog before showing the progress dialog
             try {
                 dismissDialog(DIALOG_REGISTER);
@@ -257,6 +269,7 @@ public class SenseSettings extends PreferenceActivity {
     private static final String TAG = "Sense Settings";
     
     public static final String URL_BASE = "http://api.sense-os.nl/";
+    public static final String URL_VERSION = "http://data.sense-os.nl/senseapp/version.php";
     public static final String URL_FORMAT = ".json";
     public static final String URL_GET_DEVICES = URL_BASE + "devices" + URL_FORMAT;
     public static final String URL_GET_SENSORS = URL_BASE + "devices/<id>/sensors" + URL_FORMAT;

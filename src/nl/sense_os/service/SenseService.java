@@ -6,20 +6,25 @@
 package nl.sense_os.service;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -611,6 +616,10 @@ public class SenseService extends Service {
 		if (null != intent) {
 			relogin = intent.getBooleanExtra(ACTION_RELOGIN, false);
 		}
+		
+		if(!relogin && !sLoggedIn)				
+			checkVersion();
+		
 
 		// try to login immediately
 		if (false == sLoggedIn || relogin) {
@@ -623,6 +632,24 @@ public class SenseService extends Service {
 			IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 			registerReceiver(this.connectivityListener, filter);
 		}
+	}
+
+	private void checkVersion()
+	{
+		try {
+			PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			String versionName = packageInfo.versionName;
+			URI uri = new URI(SenseSettings.URL_VERSION+"?version="+versionName);
+			final JSONObject version = MsgHandler.getJSONObject(uri, "");
+			if(version == null)
+				return;
+			Log.d(TAG, "Version:"+version.toString());
+			if(version.getString("message").length() > 0)						
+				showToast(version.getString("message"));			
+			
+		} catch (Exception e) {
+			Log.e(TAG, "Error in getting version:" + e.getMessage());
+		}	
 	}
 
 	private boolean register(String email, String pass) {
@@ -735,7 +762,7 @@ public class SenseService extends Service {
 
 			// Retrieve the online registered sensor list
 			getRegisteredSensors();
-			
+
 		} else {
 			Log.d(TAG, "Login failed");
 
