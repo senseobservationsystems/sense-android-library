@@ -266,6 +266,7 @@ public class SenseSettings extends PreferenceActivity {
     public static final String SENSOR_DATA_TYPE_INT = "int";
     public static final String SENSOR_DATA_TYPE_JSON = "json";
     public static final String SENSOR_DATA_TYPE_STRING = "string";
+    public static final String SENSOR_DATA_TYPE_FILE = "file";
     private static final String TAG = "Sense Settings";
     
     public static final String URL_BASE = "http://api.sense-os.nl/";
@@ -274,6 +275,7 @@ public class SenseSettings extends PreferenceActivity {
     public static final String URL_GET_DEVICES = URL_BASE + "devices" + URL_FORMAT;
     public static final String URL_GET_SENSORS = URL_BASE + "devices/<id>/sensors" + URL_FORMAT;
     public static final String URL_POST_SENSOR_DATA = URL_BASE + "sensors/<id>/data" + URL_FORMAT;
+    public static final String URL_POST_FILE = URL_BASE + "sensors/<id>/file" + URL_FORMAT;
     public static final String URL_CREATE_SENSOR = URL_BASE + "sensors" + URL_FORMAT;
     public static final String URL_ADD_SENSOR_TO_DEVICE = URL_BASE + "sensors/<id>/device" + URL_FORMAT;
     public static final String URL_LOGIN = URL_BASE + "login" + URL_FORMAT;

@@ -31,17 +31,20 @@ $device_id	 	= stripslashes($device_id);
 
 // find the sensor device type based on the device id and sensor id
 $pos = strpos($device_id, ".");
-if($pos !== false)
+if($pos != false)
 {
     $sensorType = substr($device_id, $pos+1);
     $device_id	= substr($device_id, 0, $pos);
-    $sql = "select * from sensor_type where id='$sensorType'";
-    $result	= mysql_query($sql);
-    if ($result) 
-    {
-      $row = mysql_fetch_assoc($result);
-      $sensorDeviceType = $row['device_type'];
-    }
+   if(!$sensorDeviceType)
+	{
+	    $sql = "select * from sensor_type where id='$sensorType'";
+	    $result	= mysql_query($sql);
+	    if ($result) 
+	    {
+	      $row = mysql_fetch_assoc($result);
+	      $sensorDeviceType = $row['device_type'];
+	    }
+	}
 }
 
 if(!isset($device_id)) {

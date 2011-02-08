@@ -14,6 +14,7 @@ import android.util.Log;
 
 import nl.sense_os.app.SenseSettings;
 import nl.sense_os.service.MsgHandler;
+import nl.sense_os.service.ambience.NoiseSensor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +24,7 @@ public class PhoneActivitySensor  {
 	private long sampleDelay = 0; //in milliseconds    
 	private long lastSampleTime;	
 	private Context context;
-	private static final String PHONE_ACTIVITY = "phone activity";	
+	private static final String PHONE_ACTIVITY = "screen activity";	
 
 	public PhoneActivitySensor(Context context) {
 		this.context = context;
@@ -58,7 +59,7 @@ public class PhoneActivitySensor  {
 					i.putExtra(MsgHandler.KEY_VALUE, json.toString());
 					i.putExtra(MsgHandler.KEY_SENSOR_NAME, PHONE_ACTIVITY);
 		            i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
-					
+		            PhoneActivitySensor.this.context.startService(i);
 					lastSampleTime = System.currentTimeMillis();
 				}
 				// check if the intent was a activity change intent				
@@ -75,6 +76,7 @@ public class PhoneActivitySensor  {
 
 	public void startPhoneActivitySensing(long _sampleDelay)
 	{		
+		lastSampleTime = 0;
 		setSampleDelay(_sampleDelay);		
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);	
 		filter.addAction(Intent.ACTION_SCREEN_OFF);	

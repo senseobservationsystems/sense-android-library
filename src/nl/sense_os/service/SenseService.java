@@ -1006,8 +1006,8 @@ public class SenseService extends Service {
 				case 0: // normal
 					interval = 60 * 1000;
 					break;
-				case 1: // rarely (1 hour)
-					interval = 15 * 1000;
+				case 1: // rarely (15 minutes)
+					interval = 15 * 60 * 1000;
 					break;
 				default:
 					Log.e(TAG, "Unexpected quiz rate preference.");
@@ -1192,8 +1192,8 @@ public class SenseService extends Service {
 				case 0: // normal
 					interval = 60 * 1000;
 					break;
-				case 1: // rarely (1 hour)
-					interval = 15 * 1000;
+				case 1: // rarely (15 minutes)
+					interval = 15 * 60 * 1000;
 					break;
 				default:
 					Log.e(TAG, "Unexpected commonsense rate: " + rate);
@@ -1237,8 +1237,8 @@ public class SenseService extends Service {
 				case 0: // normal
 					interval = 60 * 1000;
 					break;
-				case 1: // rarely (1 hour)
-					interval = 15 * 1000;
+				case 1: // rarely (15 minutes)
+					interval = 15 * 60 * 1000;
 					break;
 				default:
 					Log.e(TAG, "Unexpected commonsense rate: " + rate);

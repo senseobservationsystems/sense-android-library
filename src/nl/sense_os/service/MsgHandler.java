@@ -41,10 +41,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -193,7 +197,116 @@ public class MsgHandler extends Service {
 		}
 	}
 
+	private class SendFileThread implements Runnable {
+		String cookie;
+		String urlStr;
+		String fileName;
+
+		public SendFileThread(String _url, String _cookie, String _fileName) {
+			urlStr = _url;
+			cookie = _cookie;
+			fileName = _fileName;
+		}
+
+		@Override
+		public void run() {
+			try
+			{
+				HttpURLConnection conn = null;
+		
+				DataOutputStream dos = null;
+	
+				OutputStream os = null;
+				boolean ret = false;
+
+				String lineEnd = "\r\n";
+				String twoHyphens = "--";
+				String boundary =  "----FormBoundary6bYQOdhfGEj4oCSv";
+
+				int bytesRead, bytesAvailable, bufferSize;
+
+				byte[] buffer;
+
+				int maxBufferSize = 1*1024*1024;		
+
+				//------------------ CLIENT REQUEST
+
+				FileInputStream fileInputStream = new FileInputStream( new	File(fileName) );
+
+				// open a URL connection to the Servlet 
+
+				URL url = new URL(urlStr);
+
+				// Open a HTTP connection to the URL
+
+				conn = (HttpURLConnection) url.openConnection();
+
+				// Allow Inputs
+				conn.setDoInput(true);
+
+				// Allow Outputs
+				conn.setDoOutput(true);
+
+				// Don't use a cached copy.
+				conn.setUseCaches(false);
+
+				// Use a post method.
+				conn.setRequestMethod("POST");
+				conn.setRequestProperty("Cookie", cookie);
+				conn.setRequestProperty("Connection", "Keep-Alive");
+
+				conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+
+				dos = new DataOutputStream( conn.getOutputStream() );
+
+				dos.writeBytes(twoHyphens + boundary + lineEnd);
+				dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName +"\"" + lineEnd);
+				dos.writeBytes(lineEnd);
+				// create a buffer of maximum size
+				bytesAvailable = fileInputStream.available();
+				bufferSize = Math.min(bytesAvailable, maxBufferSize);
+				buffer = new byte[bufferSize];
+
+				// read file and write it into form...
+
+				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+				while (bytesRead > 0)
+				{
+					dos.write(buffer, 0, bufferSize);
+					bytesAvailable = fileInputStream.available();
+					bufferSize = Math.min(bytesAvailable, maxBufferSize);
+					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+				}
+
+				// send multipart form data necesssary after file data...
+
+				dos.writeBytes(lineEnd);
+				dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+				// close streams
+
+				fileInputStream.close();
+				dos.flush();
+				dos.close();
+
+				if(conn.getResponseCode() != 201)				
+					Log.e(TAG, "Sending file failed. Response code:"+conn.getResponseMessage());				
+				else
+					Log.d(TAG, "Sent file data OK!");	
+			}
+			catch (Exception e) 
+			{
+				Log.e(TAG, "Sending sensor file failed:"+e.getMessage());
+			}
+			finally {
+				--nrOfSendMessageThreads;
+			}
+		}
+	}
+
 	public static final String ACTION_NEW_MSG = "nl.sense_os.app.MsgHandler.NEW_MSG";
+	public static final String ACTION_NEW_FILE = "nl.sense_os.app.MsgHandler.NEW_FILE";
 	public static final String ACTION_SEND_DATA = "nl.sense_os.app.MsgHandler.SEND_DATA";
 	public static final String KEY_DATA_TYPE = "data_type";
 	public static final String KEY_SENSOR_DEVICE = "sensor_device";
@@ -324,6 +437,8 @@ public class MsgHandler extends Service {
 				json.put("val", new JSONObject(intent.getStringExtra(KEY_VALUE)));
 			} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
 				json.put("val", intent.getStringExtra(KEY_VALUE));
+			} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+				json.put("val", intent.getStringExtra(KEY_VALUE));
 			} else {
 				Log.e(TAG, "Unexpected data type: " + type);
 				return;
@@ -357,6 +472,14 @@ public class MsgHandler extends Service {
 				} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
 					value += intent.getStringExtra(KEY_VALUE);
 				}
+				else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+					value += intent.getStringExtra(KEY_VALUE);
+				}
+				//				else if(type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
+				//				{
+				//					sendFile(name, value, type, device);
+				//					return;
+				//				}
 
 				// Log.d(TAG, "Send real-time");
 				sendSensorData(name, value, type, device);
@@ -490,7 +613,7 @@ public class MsgHandler extends Service {
 						data.put("value", sensor.getString("val"));					
 						data.put("date", sensor.get("time"));
 						dataArray.put(data);
-						++sentCount;
+						++sentCount;								
 					}	
 
 					sensorData.put("data", dataArray);
@@ -627,16 +750,35 @@ public class MsgHandler extends Service {
 		try{
 			// double check device type
 			deviceType = deviceType != null ? deviceType : sensorName;
-			String dataStructure = (String)((JSONObject)((JSONArray)sensorData.get("data")).get(0)).get("value");
+			String dataStructure = (String)((JSONObject)((JSONArray)sensorData.get("data")).get(0)).get("value");			
 			String url = getSensorURL(sensorName, dataStructure, dataType, deviceType);	
 
 			final SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, android.content.Context.MODE_PRIVATE);
 			String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
 
-			// start send thread
-			if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
-				++nrOfSendMessageThreads;
-				new Thread(new SendDataThread(url, cookie, sensorData)).start();
+			// check for sending a file
+			if(dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
+			{
+				JSONArray data = ((JSONArray)sensorData.get("data"));
+				for (int i = 0; i < data.length(); i++) 
+				{
+					JSONObject object = (JSONObject)data.get(i);
+					// start send thread
+					if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
+						++nrOfSendMessageThreads;						
+						new Thread(new SendFileThread(url, cookie, (String)object.get("value"))).start();
+					}
+					//TODO: wait until data can be send
+				}
+			}
+			else
+			{
+				// start send thread
+				if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
+					++nrOfSendMessageThreads;
+					new Thread(new SendDataThread(url, cookie, sensorData)).start();
+				}
+				//TODO: wait until data can be send
 			}
 		}
 		catch(Exception e)
@@ -644,8 +786,6 @@ public class MsgHandler extends Service {
 			Log.e(TAG, "Error in sending sensor data:"+e.getMessage());
 		}	
 	}
-
-
 
 	/* This method returns the url to which the data must be send, 
 	 * it does this based on the sensor name and device_type.
@@ -668,7 +808,10 @@ public class MsgHandler extends Service {
 					// found the right sensor
 					if(sensor.getString("device_type").compareToIgnoreCase(deviceType) == 0 && sensor.getString("name").compareToIgnoreCase(sensorName) == 0)
 					{
-						return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>", sensor.getString("id"));
+						if(dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
+							return SenseSettings.URL_POST_FILE.replaceFirst("<id>", sensor.getString("id"));
+						else
+							return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>", sensor.getString("id"));
 					}
 				}
 			}
@@ -733,7 +876,10 @@ public class MsgHandler extends Service {
 				return null;
 			}			
 
-			return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>", (String)JSONSensor.get("id"));			
+			if(dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
+				return SenseSettings.URL_POST_FILE.replaceFirst("<id>", (String)JSONSensor.get("id"));
+			else
+				return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>", (String)JSONSensor.get("id"));			
 		}
 		catch(Exception e)
 		{

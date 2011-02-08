@@ -3,10 +3,9 @@ $ds_id		= $_REQUEST['ds_id'];
 $ds_type	= $_REQUEST['ds_type'];
 $pose		= $_REQUEST['pose'];
 $device_id	= $_REQUEST['device_id'];
-
-if(isset($_REQUEST['viewService']))
-{
-  include_once("../db_only_connect.php");
+$pictureArray = array("sit"=>"http://data.sense-os.nl/commonsense/deviceservices/sit.png","stand"=>"http://data.sense-os.nl/commonsense/deviceservices/stand.png","lie"=>"http://data.sense-os.nl/commonsense/deviceservices/lie.png","dance" => "http://data.sense-os.nl/commonsense/deviceservices/dance.png", "walk"=>"http://data.sense-os.nl/commonsense/deviceservices/walk.png");
+include_once("../API/db_connect_and_login.php");
+//  include_once("../db_only_connect.php");
   // get the last pose value from the databse
   $sql = "select * from sensor_type where name='$ds_type' and device_type='$ds_id'";
   $result = mysql_query($sql);	    
@@ -25,23 +24,27 @@ if(isset($_REQUEST['viewService']))
   if($count == 0 )
     return;
   $row = mysql_fetch_assoc($result);
-  $sensorValue = $row['sensor_value'];	  
+  $sensorValue = $row['sensor_value'];	 
+
     if(!isset($_SESSION[$ds_type.$sensorValue]))
     {
-      $imgResult = googleImageResults($sensorValue,1);
+	if($pictureArray[$sensorValue])
+	{
+		$imgResult = $pictureArray[$sensorValue];
+	}
+	else
+	      $imgResult = googleImageResults($sensorValue,1);
       if(strlen($imgResult) > 20)
 	$_SESSION[$ds_type.$sensorValue] = $imgResult;
     }
     else
       $imgResult = $_SESSION[$ds_type.$sensorValue];
  
-    print "<html><head><META HTTP-EQUIV=Refresh CONTENT=\"5\"></head><body>";
+    print "<html><head><META HTTP-EQUIV=Refresh CONTENT=\"1\"></head><body>";
     print "<b>".$sensorValue."</b><br>";  
-    print "<img src=\"".$imgResult."\" width=90% height=90% />";
+    print "<img src=\"".$imgResult."\" />";
     print "</body></html>";
-}
-else
-$result=file_get_contents("http://demo.almende.com/commonSense2/dsm_sensor_data_add.php?sensorName=".urlencode($ds_type)."&sensorValue=".urlencode($pose)."&sensorDataType=string&device_id=".urlencode($device_id)."&sensorDeviceType=".urlencode($ds_id));
+
 
 function googleImageResults($query, $page=1, $safe='on', $dc="images.google.com"){
     $page--;

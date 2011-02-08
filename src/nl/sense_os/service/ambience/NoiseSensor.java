@@ -117,12 +117,13 @@ public class NoiseSensor extends PhoneStateListener {
 				// recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 				// recorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
-				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-
-				new File(recordFileName).createNewFile();
-				String command = "chmod 666 " + recordFileName;
+				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);				
+				final String fileName = recordFileName+fileCounter+".3gp";
+				fileCounter = (++fileCounter)%maxFiles;
+				new File(recordFileName).createNewFile();				
+				String command = "chmod 666 " + fileName;
 				Runtime.getRuntime().exec(command);
-				recorder.setOutputFile(recordFileName);
+				recorder.setOutputFile(fileName);
 				recorder.setMaxDuration(sampleTimeStream);
 				recorder.setOnInfoListener(new OnInfoListener() {
 
@@ -131,7 +132,6 @@ public class NoiseSensor extends PhoneStateListener {
 
 						if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
 							try {
-
 								// recording is done, upload file
 								recorder.stop();
 								recorder.reset();
@@ -141,16 +141,13 @@ public class NoiseSensor extends PhoneStateListener {
 								// pass message to the MsgHandler
 								Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
 								i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_MIC);
-								i.putExtra(MsgHandler.KEY_VALUE, recordFileName);
-								i.putExtra(MsgHandler.KEY_DATA_TYPE,
-										SenseSettings.SENSOR_DATA_TYPE_STRING);
+								i.putExtra(MsgHandler.KEY_VALUE, fileName);
+								i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_FILE);
 								i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
 								NoiseSensor.this.context.startService(i);
 
-								if (isListening && listenInterval == -1
-										&& tmp.equals(soundStreamThread))
-									soundStreamHandler
-									.post(soundStreamThread = new SoundStreamThread());
+								if (isListening && listenInterval == -1	&& tmp.equals(soundStreamThread))
+									soundStreamHandler.post(soundStreamThread = new SoundStreamThread());
 
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -186,13 +183,15 @@ public class NoiseSensor extends PhoneStateListener {
 	private Handler noiseThreadHandler = new Handler();
 	private Handler soundStreamHandler = new Handler();
 	private MediaRecorder recorder = null;
+	private int fileCounter = 0;
+	private int maxFiles = 60;
 
 	private String recordFileName = Environment.getExternalStorageDirectory().getAbsolutePath()
-	+ "/micSample.3gp";
+	+ "/sense/micSample";
 	private boolean isCalling = false;
 	// private Camera cameraDevice = null;
 	int sampleTime = 2000;
-	int sampleTimeStream = 10000;
+	int sampleTimeStream = 60000;
 
 	public NoiseSensor(Context context) {
 		this.context = context;
@@ -240,6 +239,8 @@ public class NoiseSensor extends PhoneStateListener {
 			@Override
             public void run() {
 				if (listenInterval == -1) {
+					// create dir
+					(new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/sense")).mkdir();
 					recorder = new MediaRecorder();
 					if (soundStreamThread != null) {
 						soundStreamHandler.removeCallbacks(soundStreamThread);

@@ -184,7 +184,7 @@ while(list($key, $value) = each($jsonObject))
 	print $value."<br>";
   }
 }
-//print "</td><td><iframe width=100% height=100% src=\"../deviceservices/$ds_type?viewService=1&ds_type=$ds_type&ds_id=$ds_id\"></iframe></td></tr></table>";
+print "</td><td width=80% height=100%><iframe width=90% height=100% src=\"../deviceservices/$ds_type.php?viewService=1&ds_type=$ds_type&ds_id=$ds_id\"></iframe></td></tr></table>";
 ?>
 </body>
 </html>
