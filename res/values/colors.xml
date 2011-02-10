@@ -5,6 +5,6 @@
  <color name="blue">#f00f</color>
  <color name="white">#ffff</color>
  <color name="black">#f000</color>
- <color name="transparent">#00000000</color>
+ <color name="transparent">#0fff</color>
  <color name="selected">#ff7f00</color>
 </resources>
