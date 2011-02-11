@@ -917,7 +917,7 @@ public class MsgHandler extends Service {
 			// Set content size
 			urlConn.setRequestProperty("Content-Length", ""+json.toString().length());		
 
-			// Set cookie
+			// Set cookie			
 			urlConn.setRequestProperty("Cookie", cookie);
 
 			// Send POST output.
