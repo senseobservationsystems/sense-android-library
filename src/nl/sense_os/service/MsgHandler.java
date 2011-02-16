@@ -5,12 +5,26 @@
  */
 package nl.sense_os.service;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+
+import nl.sense_os.app.SenseSettings;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -20,985 +34,612 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import nl.sense_os.app.SenseSettings;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 public class MsgHandler extends Service {
 
-	/**
-	 * Inner class that handles the creation of the SQLite3 database with the desired tables and
-	 * columns.
-	 * 
-	 * To view the Sqlite3 database in a terminal: $ adb shell # sqlite3
-	 * /data/data/nl.sense_os.dji/databases/data.sqlite3 sqlite> .headers ON sqlite> select * from
-	 * testTbl;
-	 */
-	private static class DbHelper extends SQLiteOpenHelper {
-
-		protected static final String COL_ACTIVE = "active";
-		protected static final String COL_JSON = "json";
-		protected static final String COL_SENSOR = "sensor";
-		protected static final String COL_ROWID = "_id";
-		protected static final String DATABASE_NAME = "tx_buffer.sqlite3";
-		protected static final int DATABASE_VERSION = 3;
-		protected static final String TABLE_NAME = "sensor_data";
-
-		DbHelper(Context context) {
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		}
-
-		@Override
-		public void onCreate(SQLiteDatabase db) {
-			final StringBuilder sb = new StringBuilder("CREATE TABLE " + TABLE_NAME + "(");
-			sb.append(COL_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT");
-			sb.append(", " + COL_JSON + " STRING");
-			sb.append(", " + COL_SENSOR + " STRING");
-			sb.append(", " + COL_ACTIVE + " INTEGER");
-			sb.append(");");
-			db.execSQL(sb.toString());
-		}
-
-		@Override
-		public void onUpgrade(SQLiteDatabase db, int oldVers, int newVers) {
-			Log.w(TAG, "Upgrading database from version " + oldVers + " to " + newVers
-					+ ", which will destroy all old data");
-
-			db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-			onCreate(db);
-		}
-	}
-
-	private class SendBatchDataThread implements Runnable {
-		private final JSONObject data;
-
-		public SendBatchDataThread(JSONObject data) {
-			this.data = data;
-		}
-
-		@Override
-		public void run() {
-			HttpClient client = new DefaultHttpClient();
-			client.getConnectionManager().closeIdleConnections(1, TimeUnit.SECONDS);
-
-			try {
-
-				String url = SenseSettings.URL_SEND_BATCH_DATA;
-				final SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS,
-						android.content.Context.MODE_PRIVATE);
-				String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-
-				// set up HTTP POST
-				URI uri = new URI(url);
-				HttpPost post = new HttpPost(uri);
-				post.setHeader("Cookie", cookie);
-				HttpParams params = new BasicHttpParams().setIntParameter(
-						HttpConnectionParams.CONNECTION_TIMEOUT, 0);
-				post.setParams(params);
-				List<NameValuePair> postForm = new ArrayList<NameValuePair>();
-				postForm.add(new BasicNameValuePair("data", this.data.toString()));
-				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postForm, "UTF-8");
-				post.setEntity(entity);
-
-				// execute POST
-				ResponseHandler<String> responseHandler = new BasicResponseHandler();
-				String response = client.execute(post, responseHandler);
-				handleResponse(response);
-
-			} catch (UnsupportedEncodingException e) {
-				Log.e(TAG, "UnsupportedEncodingException sending transmission", e);
-				return;
-			} catch (URISyntaxException e) {
-				Log.e(TAG, "URISyntaxException sending transmission", e);
-				return;
-			} catch (IOException e) {
-				Log.e(TAG, "IOException sending transmission: " + e.getMessage());
-				return;
-			} catch (JSONException e) {
-				Log.e(TAG, "JSONException parsing response from CommonSense: " + e.getMessage());
-				return;
-			} finally {
-				--nrOfSendMessageThreads;
-				client.getConnectionManager().shutdown();
-			}
-		}
-	}
-
-	private class SendDataThread implements Runnable {
-		String cookie;
-		String url;
-		JSONObject data;
-
-		public SendDataThread(String _url, String _cookie, JSONObject _data) {
-			url = _url;
-			cookie = _cookie;
-			data = _data;
-		}
-
-		@Override
-		public void run() {
-			try 
-			{
-				HashMap<String, String> response = sendJson(new URL(url), data, "POST", cookie);				
-				if(response.get("http response code").compareToIgnoreCase("201") != 0)				
-					Log.e(TAG, "Sending sensor data failed. Response code:"+response.get("http response code"));				
-				else
-					Log.d(TAG, "Sent sensor data OK!");			
-			} 
-			catch (Exception e) 
-			{
-				Log.e(TAG, "Sending sensor data failed:"+e.getMessage());
-			}
-			finally {
-				--nrOfSendMessageThreads;
-			}
-		}
-	}
-
-	private class SendFileThread implements Runnable {
-		String cookie;
-		String urlStr;
-		String fileName;
-
-		public SendFileThread(String _url, String _cookie, String _fileName) {
-			urlStr = _url;
-			cookie = _cookie;
-			fileName = _fileName;
-		}
-
-		@Override
-		public void run() {
-			try
-			{
-				HttpURLConnection conn = null;
-		
-				DataOutputStream dos = null;
-	
-				OutputStream os = null;
-				boolean ret = false;
-
-				String lineEnd = "\r\n";
-				String twoHyphens = "--";
-				String boundary =  "----FormBoundary6bYQOdhfGEj4oCSv";
-
-				int bytesRead, bytesAvailable, bufferSize;
-
-				byte[] buffer;
-
-				int maxBufferSize = 1*1024*1024;		
-
-				//------------------ CLIENT REQUEST
-
-				FileInputStream fileInputStream = new FileInputStream( new	File(fileName) );
-
-				// open a URL connection to the Servlet 
-
-				URL url = new URL(urlStr);
-
-				// Open a HTTP connection to the URL
-
-				conn = (HttpURLConnection) url.openConnection();
-
-				// Allow Inputs
-				conn.setDoInput(true);
-
-				// Allow Outputs
-				conn.setDoOutput(true);
-
-				// Don't use a cached copy.
-				conn.setUseCaches(false);
-
-				// Use a post method.
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Cookie", cookie);
-				conn.setRequestProperty("Connection", "Keep-Alive");
-
-				conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
-
-				dos = new DataOutputStream( conn.getOutputStream() );
-
-				dos.writeBytes(twoHyphens + boundary + lineEnd);
-				dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName +"\"" + lineEnd);
-				dos.writeBytes(lineEnd);
-				// create a buffer of maximum size
-				bytesAvailable = fileInputStream.available();
-				bufferSize = Math.min(bytesAvailable, maxBufferSize);
-				buffer = new byte[bufferSize];
-
-				// read file and write it into form...
-
-				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-				while (bytesRead > 0)
-				{
-					dos.write(buffer, 0, bufferSize);
-					bytesAvailable = fileInputStream.available();
-					bufferSize = Math.min(bytesAvailable, maxBufferSize);
-					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-				}
-
-				// send multipart form data necesssary after file data...
-
-				dos.writeBytes(lineEnd);
-				dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-				// close streams
-
-				fileInputStream.close();
-				dos.flush();
-				dos.close();
-
-				if(conn.getResponseCode() != 201)				
-					Log.e(TAG, "Sending file failed. Response code:"+conn.getResponseMessage());				
-				else
-					Log.d(TAG, "Sent file data OK!");	
-			}
-			catch (Exception e) 
-			{
-				Log.e(TAG, "Sending sensor file failed:"+e.getMessage());
-			}
-			finally {
-				--nrOfSendMessageThreads;
-			}
-		}
-	}
-
-	public static final String ACTION_NEW_MSG = "nl.sense_os.app.MsgHandler.NEW_MSG";
-	public static final String ACTION_NEW_FILE = "nl.sense_os.app.MsgHandler.NEW_FILE";
-	public static final String ACTION_SEND_DATA = "nl.sense_os.app.MsgHandler.SEND_DATA";
-	public static final String KEY_DATA_TYPE = "data_type";
-	public static final String KEY_SENSOR_DEVICE = "sensor_device";
-	public static final String KEY_SENSOR_NAME = "sensor_name";
-	public static final String KEY_TIMESTAMP = "timestamp";
-	public static final String KEY_VALUE = "value";
-	private static final int MAX_BUFFER = 1024;
-	private static final int MAX_NR_OF_SEND_MSG_THREADS = 50;
-	private static final int MAX_POST_DATA = 100;
-	private static final String TAG = "Sense MsgHandler";
-	private JSONObject buffer;
-	private int bufferCount;
-	private SQLiteDatabase db;
-	private DbHelper dbHelper;
-	private boolean isDbOpen;
-	private int nrOfSendMessageThreads = 0;
-
-	/**
-	 * Buffers data in the memory
-	 * 
-	 * @param json
-	 *            the data to buffer
-	 */
-	private void bufferData(JSONObject json) {
-
-		// check if there is room in the buffer
-		if (this.bufferCount >= MAX_BUFFER) {
-			// empty buffer into database
-			Log.d(TAG, "Buffer overflow! Emptying buffer to database");
-			emptyBufferToDb();
-		}
-		try
-		{
-			// put data in buffer
-			String sensorKey = json.getString("name")+"_"+json.optString("device", json.getString("name"));
-			JSONArray dataArray = buffer.optJSONArray(sensorKey);
-			if(dataArray == null)
-				dataArray = new JSONArray();
-			dataArray.put(json);
-			buffer.put(sensorKey,dataArray);		
-			this.bufferCount++;
-		}catch(Exception e)
-		{
-			Log.e(TAG, "Error in buffering data:"+e.getMessage());
-		}
-	}
-
-	private void closeDb() {
-		if (true == this.isDbOpen) {
-			this.dbHelper.close();
-			this.isDbOpen = false;
-		}
-	}
-
-	/**
-	 * Puts data from the buffer in the flash database for long-term storage
-	 */
-	private void emptyBufferToDb() {
-		Log.d(TAG, "Emptying buffer to database...");
-
-		openDb();
-		try {			
-			JSONArray names = buffer.names();			
-			for (int i = 0; i < names.length(); i++) {
-				JSONArray sensorArray = buffer.getJSONArray(names.getString(i));
-
-				for (int x = 0; x < sensorArray.length(); x++) 
-				{					
-					ContentValues values = new ContentValues();					
-					values.put(DbHelper.COL_JSON, ((JSONObject)sensorArray.get(x)).toString());
-					values.put(DbHelper.COL_SENSOR, names.getString(i));
-					values.put(DbHelper.COL_ACTIVE, false);
-					this.db.insert(DbHelper.TABLE_NAME, null, values);
-				}				
-			}
-			// reset buffer
-			this.bufferCount = 0;
-			this.buffer = new JSONObject();
-		}
-		catch (Exception e)
-		{
-			Log.e(TAG, "Error storing buffer in DB:"+e.getMessage());
-		}
-		finally {
-			closeDb();
-		}
-	}
-
-	/**
-	 * Handles an incoming Intent that started the service by checking if it wants to store a new
-	 * message or if it wants to send data to CommonSense.
-	 */
-	private void handleIntent(Intent intent, int flags, int startId) {
-
-		final String action = intent.getAction();
-
-		if (action != null && action.equals(ACTION_NEW_MSG)) {
-			handleNewMsgIntent(intent);
-		} else if (action != null && action.equals(ACTION_SEND_DATA)) {
-			handleSendIntent(intent);
-		} else {
-			Log.e(TAG, "Unexpected intent action: " + action);
-		}
-	}
-
-	private void handleNewMsgIntent(Intent intent) {
-		// Log.d(TAG, "handleNewMsgIntent");
-
-		String name = intent.getStringExtra(KEY_SENSOR_NAME);
-		String type = intent.getStringExtra(KEY_DATA_TYPE);
-		long time = intent.getLongExtra(KEY_TIMESTAMP, System.currentTimeMillis());
-		String device = intent.getStringExtra(KEY_SENSOR_DEVICE);
-		JSONObject json = new JSONObject();
-		try {
-			json.put("name", name);
-			NumberFormat formatter = new DecimalFormat("##########.##");
-			json.put("time", formatter.format(((double)System.currentTimeMillis())/1000.0d));			
-			json.put("type", type);
-			json.put("device", (null == device)? name:device);
-
-			if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
-				json.put("val", intent.getBooleanExtra(KEY_VALUE, false));
-			} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
-				json.put("val", intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE));
-			} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
-				json.put("val", intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE));
-			} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
-				json.put("val", new JSONObject(intent.getStringExtra(KEY_VALUE)));
-			} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
-				json.put("val", intent.getStringExtra(KEY_VALUE));
-			} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
-				json.put("val", intent.getStringExtra(KEY_VALUE));
-			} else {
-				Log.e(TAG, "Unexpected data type: " + type);
-				return;
-			}
-		} catch (JSONException e) {
-			Log.e(TAG, "JSONException before putting message in buffer database", e);
-			return;
-		}
-
-		// check if there is connectivity
-		if (isOnline()) {
-
-			// check if the app is in real-time sending mode
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			if (prefs.getString(SenseSettings.PREF_SYNC_RATE, "0").equals("-2")) {
-				// real time mode, send immediately
-				String value = "";
-				if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
-					value += intent.getBooleanExtra(KEY_VALUE, false);
-				} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
-					value += intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE);
-				} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
-					value += intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE);
-				} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
-					try {
-						value += new JSONObject(intent.getStringExtra(KEY_VALUE)).toString();
-					} catch (JSONException e) {
-						Log.e(TAG, "JSONException creating object to POST", e);
-						return;
-					}
-				} else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
-					value += intent.getStringExtra(KEY_VALUE);
-				}
-				else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
-					value += intent.getStringExtra(KEY_VALUE);
-				}
-				//				else if(type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
-				//				{
-				//					sendFile(name, value, type, device);
-				//					return;
-				//				}
-
-				// Log.d(TAG, "Send real-time");
-				sendSensorData(name, value, type, device);
-			} else {
-				// normal mode, buffer to memory
-				bufferData(json);
-			}
-		} else {
-			// buffer data if there is no connectivity
-			bufferData(json);
-		}
-	}
-
-	private void handleResponse(String responseString) throws JSONException {
-		JSONObject response = new JSONObject(responseString);
-
-		if (response.getString("status").equals("ok")) {
-			Log.d(TAG, "Sent sensor data OK! Response message: " + response.getString("msg"));
-		} else {
-			int error = response.getInt("faultcode");
-
-			switch (error) {
-			// TODO error handling
-			case 1:
-				Log.e(TAG, "Error storing data in CommonSense, re-login");
-				Intent i = new Intent(ISenseService.class.getName());
-				i.putExtra(SenseService.ACTION_RELOGIN, true);
-				this.startService(i);
-				break;
-			case 2:
-				Log.e(TAG, "Error storing data in CommonSense, sensor data incomplete!");
-				break;
-			case 3:
-				Log.e(TAG, "SQL error storing data in CommonSense: " + response.getString("msg"));
-				break;
-			default:
-				Log.e(TAG, "Error sending sensor data: " + error);
-			}
-			return;
-		}
-	}
-
-	private void handleSendIntent(Intent intent) {
-		// Log.d(TAG, "handleSendIntent");
-
-		if (isOnline()) {
-
-			sendDataFromDb();
-			sendDataFromBuffer();
-
-		}
-	}
-
-	private boolean isOnline() {
-		final ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-		final NetworkInfo info = cm.getActiveNetworkInfo();
-		return ((null != info) && (info.isConnected()));
-	}
-
-	@Override
-	public IBinder onBind(Intent intent) {
-		// you cannot bind to this service
-		return null;
-	}
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		Log.d(TAG, "onCreate");
-
-		this.buffer = new JSONObject();		
-		this.bufferCount = 0;
-	}
-
-	@Override
-	public void onDestroy() {
-		Log.d(TAG, "onDestroy");
-
-		emptyBufferToDb();
-	}
-
-	/**
-	 * Deprecated method for starting the service, used in 1.6 and older.
-	 */
-	@Override
-	public void onStart(Intent intent, int startid) {
-		handleIntent(intent, 0, startid);
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		handleIntent(intent, flags, startId);
-
-		// this service is not sticky, it will get an intent to restart it if necessary
-		return START_NOT_STICKY;
-	}
-
-	private void openDb() {
-		if (false == this.isDbOpen) {
-			this.dbHelper = new DbHelper(this);
-			this.db = this.dbHelper.getWritableDatabase();
-			this.isDbOpen = true;
-		}
-	}
-
-	private boolean sendBatchData(final JSONObject data) {
-
-		if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
-			++nrOfSendMessageThreads;
-			new Thread(new SendBatchDataThread(data)).start();
-		}
-		return true;
-	}
-
-	private boolean sendDataFromBuffer() {
-
-		if (this.bufferCount > 0) {
-			Log.d(TAG, "Sending " + this.bufferCount + " values from local buffer to CommonSense");			
-			try {	
-				int sentCount = 0;
-				int sentIndex = 0;
-				JSONArray names = buffer.names();			
-				for (int i = 0; i < names.length(); i++) {
-					JSONArray sensorArray = buffer.getJSONArray(names.getString(i));
-					JSONObject sensorData = new JSONObject();
-					JSONArray dataArray = new JSONArray();				
-					for (int x = sentIndex; x < sensorArray.length() && (sentCount-sentIndex) < MAX_POST_DATA; x++) 
-					{	
-						JSONObject data = new JSONObject();
-						JSONObject sensor = (JSONObject)sensorArray.get(x);
-						data.put("value", sensor.getString("val"));					
-						data.put("date", sensor.get("time"));
-						dataArray.put(data);
-						++sentCount;								
-					}	
-
-					sensorData.put("data", dataArray);
-					JSONObject sensor = (JSONObject)sensorArray.get(0);					
-					sendSensorData(sensor.getString("name"), sensorData, sensor.getString("type"), sensor.getString("device"));			
-
-					// if MAX_POST_DATA reached but their are still some items left, then do the rest --i;
-					if(sentCount != sensorArray.length())
-					{
-						--i;
-						sentIndex = sentCount;
-					}
-					else
-						sentIndex = sentCount = 0;
-				}				
-				Log.d(TAG, "sent " + bufferCount + " sensor values from buffer");
-				buffer = new JSONObject();
-				bufferCount = 0;
-			}
-			catch (Exception e)
-			{
-				Log.e(TAG, "Error sending data from buffer:"+e.getMessage());
-			}		
-
-		} else {
-			// TODO smart transmission scaling
-		}
-
-		return true;
-	}
-
-	private boolean sendDataFromDb() {
-		// query the database
-		openDb();
-		String[] cols = { DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR};
-		String sel = DbHelper.COL_ACTIVE + "!=?";
-		String[] selArgs = { "true" };
-		Cursor c = this.db.query(DbHelper.TABLE_NAME, cols, sel, selArgs, null, null, DbHelper.COL_SENSOR, null);
-
-		try {
-			if (c.getCount() > 0) {
-				Log.d(TAG, "Sending " + c.getCount() + " values from database to CommonSense");		
-
-				// Send Data from each sensor
-				int sentCount = 0;
-				String sensorKey = "";					
-				JSONObject sensorData = new JSONObject();
-				JSONArray dataArray = new JSONArray(); 		
-				String sensorName = "";
-				String sensorType = "";
-				String sensorDevice = "";
-				c.moveToFirst();
-				while (false == c.isAfterLast()) 
-				{						
-					if(c.getString(2).compareToIgnoreCase(sensorKey) != 0 || sentCount >= MAX_POST_DATA)
-					{		
-						// send the in the previous rounds collected data
-						if(sensorKey.length() > 0)
-						{				
-							sensorData.put("data", dataArray);
-							sendSensorData(sensorName, sensorData, sensorType, sensorDevice);			
-							sensorData = new JSONObject();
-							dataArray = new JSONArray();
-						}							
-					}					
-					JSONObject sensor = new JSONObject(c.getString(1));
-					JSONObject data = new JSONObject();						
-					data.put("value", sensor.get("val"));					
-					data.put("date", sensor.get("time"));
-					if(dataArray.length() == 0)
-					{
-						sensorName = sensor.getString("name");
-						sensorType = sensor.getString("type");
-						sensorDevice = sensor.getString("device");
-					}
-					dataArray.put(data);
-					sensorKey = c.getString(2);
-					// if last, then send
-					if(c.isLast())
-					{
-						sensorData.put("data", dataArray);
-						sendSensorData(sensorName, sensorData, sensorType, sensorDevice);						
-					}
-					sentCount++;					
-					c.moveToNext();
-				}	
-
-				Log.d(TAG, "sent " + c.getCount() + " sensor values from buffer");
-
-				// remove data from database				
-				c.moveToFirst();
-				while (false == c.isAfterLast()) {
-					int id = c.getInt(c.getColumnIndex(DbHelper.COL_ROWID));
-					String where = DbHelper.COL_ROWID + "=?";
-					String[] whereArgs = { "" + id };
-					this.db.delete(DbHelper.TABLE_NAME, where, whereArgs);					
-					c.moveToNext();
-				}
-
-			} else {
-				// TODO smart transmission scaling
-			}
-
-		} catch (Exception e) {
-			Log.d(TAG, "Error in sending data from database:"+e.getMessage());
-			return false;
-		}
-		finally {
-			c.close();
-			closeDb();
-		}
-		return true;
-	}
-
-	public void sendSensorData(String sensorName, String sensorValue, String dataType, String deviceType) {		
-		try{
-			JSONObject sensorData = new JSONObject();
-			JSONArray dataArray = new JSONArray();
-			JSONObject data = new JSONObject();
-			data.put("value", sensorValue);					
-			NumberFormat formatter = new DecimalFormat("##########.##");
-			data.put("date", formatter.format(((double)System.currentTimeMillis())/1000.0d));			
-			dataArray.put(data);
-			sensorData.put("data", dataArray);
-			sendSensorData(sensorName, sensorData, dataType, deviceType);
-		}
-		catch(Exception e)
-		{
-			Log.e(TAG, "Error in creating JSON POST data:"+e.getMessage());
-		}		
-	}
-
-	public void sendSensorData(String sensorName, JSONObject sensorData, String dataType, String deviceType) {
-		try{
-			// double check device type
-			deviceType = deviceType != null ? deviceType : sensorName;
-			String dataStructure = (String)((JSONObject)((JSONArray)sensorData.get("data")).get(0)).get("value");			
-			String url = getSensorURL(sensorName, dataStructure, dataType, deviceType);	
-
-			final SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, android.content.Context.MODE_PRIVATE);
-			String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-
-			// check for sending a file
-			if(dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
-			{
-				JSONArray data = ((JSONArray)sensorData.get("data"));
-				for (int i = 0; i < data.length(); i++) 
-				{
-					JSONObject object = (JSONObject)data.get(i);
-					// start send thread
-					if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
-						++nrOfSendMessageThreads;						
-						new Thread(new SendFileThread(url, cookie, (String)object.get("value"))).start();
-					}
-					//TODO: wait until data can be send
-				}
-			}
-			else
-			{
-				// start send thread
-				if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
-					++nrOfSendMessageThreads;
-					new Thread(new SendDataThread(url, cookie, sensorData)).start();
-				}
-				//TODO: wait until data can be send
-			}
-		}
-		catch(Exception e)
-		{
-			Log.e(TAG, "Error in sending sensor data:"+e.getMessage());
-		}	
-	}
-
-	/* This method returns the url to which the data must be send, 
-	 * it does this based on the sensor name and device_type.
-	 * If the sensor cannot be found, then it will be created
-	 * TODO: create a hashmap to search the sensor in, can we keep this in mem of the service? 
-	 */
-	private String getSensorURL(String sensorName, String sensorValue, String dataType, String deviceType)
-	{
-		try
-		{
-			SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, android.content.Context.MODE_PRIVATE);
-			String sensorsStr =  prefs.getString(SenseSettings.PREF_JSON_SENSOR_LIST, "");
-			JSONArray sensors;			
-			if(sensorsStr.length() > 0)
-			{
-				sensors = new JSONArray(sensorsStr);
-				for (int x = 0; x < sensors.length(); x++) 
-				{
-					JSONObject sensor = (JSONObject)sensors.get(x);
-					// found the right sensor
-					if(sensor.getString("device_type").compareToIgnoreCase(deviceType) == 0 && sensor.getString("name").compareToIgnoreCase(sensorName) == 0)
-					{
-						if(dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
-							return SenseSettings.URL_POST_FILE.replaceFirst("<id>", sensor.getString("id"));
-						else
-							return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>", sensor.getString("id"));
-					}
-				}
-			}
-			else
-				sensors = new JSONArray();
-
-			// Sensor not found, create it
-			URL url = new URL(SenseSettings.URL_CREATE_SENSOR);
-			final JSONObject newSensor = new JSONObject();
-			JSONObject sensor = new JSONObject();
-			sensor.put("name", sensorName);
-			sensor.put("device_type", deviceType);
-			sensor.put("pager_type", "");
-			sensor.put("data_type", dataType);
-			if(dataType.compareToIgnoreCase("json") == 0)
-			{				
-				JSONObject dataStructJSon = new JSONObject(sensorValue);
-				JSONArray names = dataStructJSon.names();
-				for (int x = 0; x < names.length(); x++) 
-				{
-					String name = names.getString(x);
-					int start = dataStructJSon.get(name).getClass().getName().lastIndexOf(".");					
-					dataStructJSon.put(name, dataStructJSon.get(name).getClass().getName().substring(start+1));					
-				}
-				sensor.put("data_structure", dataStructJSon.toString().replaceAll("\"", "\\\""));
-			}
-			newSensor.put("sensor", sensor);
-			String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
-			HashMap<String, String> response = MsgHandler.sendJson(url, newSensor, "POST", cookie);
-			if (response == null)
-				return null;
-
-			if(response.get("http response code").compareToIgnoreCase("201") != 0)
-			{
-				Log.e(TAG, "Error creating sensor got response code:"+response.get("http response code"));
-				return null;
-			}			
-
-			String content = response.get("content");			
-			Log.d(TAG, "Created sensor:"+sensorName);
-			JSONObject newJsonSensor = new JSONObject(content);
-			JSONObject JSONSensor = newJsonSensor.getJSONObject("sensor");
-			sensors.put(JSONSensor);
-			Editor editor = prefs.edit();
-			editor.putString(SenseSettings.PREF_JSON_SENSOR_LIST, sensors.toString());
-			editor.commit();
-			// Add sensor to this device
-			url = new URL(SenseSettings.URL_ADD_SENSOR_TO_DEVICE.replaceFirst("<id>", (String)JSONSensor.get("id")));
-			JSONObject newDevice = new JSONObject();
-			JSONObject device = new JSONObject();
-			device.put("type", prefs.getString(SenseSettings.PREF_PHONE_TYPE, "smartphone"));
-			device.put("uuid", prefs.getString(SenseSettings.PREF_PHONE_IMEI, "0000000000"));
-			newDevice.put("device", device);
-
-			response = MsgHandler.sendJson(url, newDevice, "POST", cookie);
-			if (response == null)
-				return null;
-
-			if(response.get("http response code").compareToIgnoreCase("201") != 0)
-			{
-				Log.e(TAG, "Error adding sensor to device response code:"+response.get("http response code"));
-				return null;
-			}			
-
-			if(dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
-				return SenseSettings.URL_POST_FILE.replaceFirst("<id>", (String)JSONSensor.get("id"));
-			else
-				return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>", (String)JSONSensor.get("id"));			
-		}
-		catch(Exception e)
-		{
-			Log.e(TAG, "Error in retrieving the right sensor URL:"+e.getMessage());
-			return null;
-		}
-	}
-
-	/* This method sends a Json object to update or create an item
-	 * it returns the HTTP-response code
-	 */
-	static public HashMap<String, String> sendJson(URL url ,JSONObject json, String method, String cookie)
-	{
-		HttpURLConnection urlConn = null;
-		try
-		{
-			// Open New URL connection channel.
-			urlConn = (HttpURLConnection)url.openConnection();
-
-			// set post request
-			urlConn.setRequestMethod(method);
-
-			// Let the run-time system (RTS) know that we want input.
-			urlConn.setDoInput (true);
-
-			// we want to do output.
-			urlConn.setDoOutput (true);
-
-			// We want no caching
-			urlConn.setUseCaches (false);
-
-			// Specify the header content type.
-			urlConn.setRequestProperty("Content-Type", "application/json");
-
-			// Set content size
-			urlConn.setRequestProperty("Content-Length", ""+json.toString().length());		
-
-			// Set cookie			
-			urlConn.setRequestProperty("Cookie", cookie);
-
-			// Send POST output.
-			DataOutputStream printout;
-			printout = new DataOutputStream (urlConn.getOutputStream ());
-
-			printout.writeBytes (json.toString());
-			printout.flush ();
-			printout.close ();
-
-			//Get Response	
-			InputStream is = urlConn.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is),1024);
-			String line;
-			StringBuffer responseString = new StringBuffer(); 
-			while((line = rd.readLine()) != null) {
-				responseString.append(line);
-				responseString.append('\r');
-			}
-			rd.close();
-			HashMap<String, String> response = new HashMap<String, String>();
-			response.put("http response code", ""+urlConn.getResponseCode());
-			response.put("content", responseString.toString());
-			Map<String, List<String>> headerFields = urlConn.getHeaderFields();
-			Iterator<String> it = headerFields.keySet().iterator();
-			while(it.hasNext())
-			{				
-				String key = it.next();
-				String value = headerFields.get(key).toString().substring(1);
-				value = value.substring(0, value.length()-1);
-				response.put(key,value);				
-			} 
-			return response;
-		}catch(Exception e)
-		{
-			Log.e(TAG, "Error in posting Json:"+json.toString()+"\n"+e.getMessage());
-			return null;
-		}	 
-		finally {
-
-			if(urlConn != null) {
-				urlConn.disconnect(); 
-			}
-		}
-	}
-
-	/* This method returns a JSONobject from the requested uri
-	 * 
-	 */
-	static public JSONObject getJSONObject(URI uri, String cookie)
-	{
-		try{							
-			final HttpGet get = new HttpGet(uri);			
-			get.setHeader("Cookie", cookie);
-			final HttpClient client = new DefaultHttpClient();
-
-			// client.getConnectionManager().closeIdleConnections(2, TimeUnit.SECONDS);
-			final HttpResponse response = client.execute(get);
-			if (response == null) return null;
-			if(response.getStatusLine().getStatusCode() != 200)
-			{
-				Log.e(TAG, "Error receiving content for "+ uri.toString() +" status code:"+response.getStatusLine().getStatusCode());
-				return null;
-			}
-
-			HttpEntity entity = response.getEntity();
-			InputStream is = entity.getContent();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is), 1024);
-			String line;
-			StringBuffer responseString = new StringBuffer(); 
-			while((line = rd.readLine()) != null) {
-				responseString.append(line);
-				responseString.append('\r');
-			}
-			rd.close();		
-			return new JSONObject(responseString.toString());
-		}
-		catch(Exception e)
-		{
-			Log.e(TAG, "Error receiving content for "+ uri.toString() +" :"+e.getMessage());
-			return null;
-		}
-	}
+    /**
+     * Inner class that handles the creation of the SQLite3 database with the desired tables and
+     * columns.
+     * 
+     * To view the Sqlite3 database in a terminal: $ adb shell # sqlite3
+     * /data/data/nl.sense_os.dji/databases/data.sqlite3 sqlite> .headers ON sqlite> select * from
+     * testTbl;
+     */
+    private static class DbHelper extends SQLiteOpenHelper {
+
+        protected static final String COL_ACTIVE = "active";
+        protected static final String COL_JSON = "json";
+        protected static final String COL_SENSOR = "sensor";
+        protected static final String COL_ROWID = "_id";
+        protected static final String DATABASE_NAME = "tx_buffer.sqlite3";
+        protected static final int DATABASE_VERSION = 3;
+        protected static final String TABLE_NAME = "sensor_data";
+
+        DbHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            final StringBuilder sb = new StringBuilder("CREATE TABLE " + TABLE_NAME + "(");
+            sb.append(COL_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT");
+            sb.append(", " + COL_JSON + " STRING");
+            sb.append(", " + COL_SENSOR + " STRING");
+            sb.append(", " + COL_ACTIVE + " INTEGER");
+            sb.append(");");
+            db.execSQL(sb.toString());
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVers, int newVers) {
+            Log.w(TAG, "Upgrading database from version " + oldVers + " to " + newVers
+                    + ", which will destroy all old data");
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            onCreate(db);
+        }
+    }
+
+    private class SendDataThread implements Runnable {
+        String cookie;
+        String url;
+        JSONObject data;
+
+        public SendDataThread(String _url, String _cookie, JSONObject _data) {
+            url = _url;
+            cookie = _cookie;
+            data = _data;
+        }
+
+        @Override
+        public void run() {
+            try {
+                HashMap<String, String> response = SenseApi.sendJson(new URL(url), data, "POST",
+                        cookie);
+                if (response.get("http response code").compareToIgnoreCase("201") != 0)
+                    Log.e(TAG,
+                            "Sending sensor data failed. Response code:"
+                                    + response.get("http response code"));
+                else
+                    Log.d(TAG, "Sent sensor data OK!");
+            } catch (Exception e) {
+                Log.e(TAG, "Sending sensor data failed:" + e.getMessage());
+            } finally {
+                --nrOfSendMessageThreads;
+            }
+        }
+    }
+
+    private class SendFileThread implements Runnable {
+        String cookie;
+        String urlStr;
+        String fileName;
+
+        public SendFileThread(String _url, String _cookie, String _fileName) {
+            urlStr = _url;
+            cookie = _cookie;
+            fileName = _fileName;
+        }
+
+        @Override
+        public void run() {
+            try {
+                HttpURLConnection conn = null;
+
+                DataOutputStream dos = null;
+
+                // OutputStream os = null;
+                // boolean ret = false;
+
+                String lineEnd = "\r\n";
+                String twoHyphens = "--";
+                String boundary = "----FormBoundary6bYQOdhfGEj4oCSv";
+
+                int bytesRead, bytesAvailable, bufferSize;
+
+                byte[] buffer;
+
+                int maxBufferSize = 1 * 1024 * 1024;
+
+                // ------------------ CLIENT REQUEST
+
+                FileInputStream fileInputStream = new FileInputStream(new File(fileName));
+
+                // open a URL connection to the Servlet
+
+                URL url = new URL(urlStr);
+
+                // Open a HTTP connection to the URL
+
+                conn = (HttpURLConnection) url.openConnection();
+
+                // Allow Inputs
+                conn.setDoInput(true);
+
+                // Allow Outputs
+                conn.setDoOutput(true);
+
+                // Don't use a cached copy.
+                conn.setUseCaches(false);
+
+                // Use a post method.
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Cookie", cookie);
+                conn.setRequestProperty("Connection", "Keep-Alive");
+
+                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+                dos = new DataOutputStream(conn.getOutputStream());
+
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\""
+                        + fileName + "\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                // create a buffer of maximum size
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                buffer = new byte[bufferSize];
+
+                // read file and write it into form...
+
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                while (bytesRead > 0) {
+                    dos.write(buffer, 0, bufferSize);
+                    bytesAvailable = fileInputStream.available();
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                }
+
+                // send multipart form data necesssary after file data...
+
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                // close streams
+
+                fileInputStream.close();
+                dos.flush();
+                dos.close();
+
+                if (conn.getResponseCode() != 201)
+                    Log.e(TAG, "Sending file failed. Response code:" + conn.getResponseMessage());
+                else
+                    Log.d(TAG, "Sent file data OK!");
+            } catch (Exception e) {
+                Log.e(TAG, "Sending sensor file failed:" + e.getMessage());
+            } finally {
+                --nrOfSendMessageThreads;
+            }
+        }
+    }
+
+    public static final String ACTION_NEW_MSG = "nl.sense_os.app.MsgHandler.NEW_MSG";
+    public static final String ACTION_NEW_FILE = "nl.sense_os.app.MsgHandler.NEW_FILE";
+    public static final String ACTION_SEND_DATA = "nl.sense_os.app.MsgHandler.SEND_DATA";
+    public static final String KEY_DATA_TYPE = "data_type";
+    public static final String KEY_SENSOR_DEVICE = "sensor_device";
+    public static final String KEY_SENSOR_NAME = "sensor_name";
+    public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_VALUE = "value";
+    private static final int MAX_BUFFER = 1024;
+    private static final int MAX_NR_OF_SEND_MSG_THREADS = 50;
+    private static final int MAX_POST_DATA = 100;
+    private static final String TAG = "Sense MsgHandler";
+    private JSONObject buffer;
+    private int bufferCount;
+    private SQLiteDatabase db;
+    private DbHelper dbHelper;
+    private boolean isDbOpen;
+    private int nrOfSendMessageThreads = 0;
+
+    /**
+     * Buffers data in the memory
+     * 
+     * @param json
+     *            the data to buffer
+     */
+    private void bufferData(JSONObject json) {
+
+        // check if there is room in the buffer
+        if (this.bufferCount >= MAX_BUFFER) {
+            // empty buffer into database
+            Log.d(TAG, "Buffer overflow! Emptying buffer to database");
+            emptyBufferToDb();
+        }
+        try {
+            // put data in buffer
+            String sensorKey = json.getString("name") + "_"
+                    + json.optString("device", json.getString("name"));
+            JSONArray dataArray = buffer.optJSONArray(sensorKey);
+            if (dataArray == null)
+                dataArray = new JSONArray();
+            dataArray.put(json);
+            buffer.put(sensorKey, dataArray);
+            this.bufferCount++;
+        } catch (Exception e) {
+            Log.e(TAG, "Error in buffering data:" + e.getMessage());
+        }
+    }
+
+    private void closeDb() {
+        if (true == this.isDbOpen) {
+            this.dbHelper.close();
+            this.isDbOpen = false;
+        }
+    }
+
+    /**
+     * Puts data from the buffer in the flash database for long-term storage
+     */
+    private void emptyBufferToDb() {
+        Log.d(TAG, "Emptying buffer to database...");
+
+        openDb();
+        try {
+            JSONArray names = buffer.names();
+            for (int i = 0; i < names.length(); i++) {
+                JSONArray sensorArray = buffer.getJSONArray(names.getString(i));
+
+                for (int x = 0; x < sensorArray.length(); x++) {
+                    ContentValues values = new ContentValues();
+                    values.put(DbHelper.COL_JSON, ((JSONObject) sensorArray.get(x)).toString());
+                    values.put(DbHelper.COL_SENSOR, names.getString(i));
+                    values.put(DbHelper.COL_ACTIVE, false);
+                    this.db.insert(DbHelper.TABLE_NAME, null, values);
+                }
+            }
+            // reset buffer
+            this.bufferCount = 0;
+            this.buffer = new JSONObject();
+        } catch (Exception e) {
+            Log.e(TAG, "Error storing buffer in DB:" + e.getMessage());
+        } finally {
+            closeDb();
+        }
+    }
+
+    /**
+     * Handles an incoming Intent that started the service by checking if it wants to store a new
+     * message or if it wants to send data to CommonSense.
+     */
+    private void handleIntent(Intent intent, int flags, int startId) {
+
+        final String action = intent.getAction();
+
+        if (action != null && action.equals(ACTION_NEW_MSG)) {
+            handleNewMsgIntent(intent);
+        } else if (action != null && action.equals(ACTION_SEND_DATA)) {
+            handleSendIntent(intent);
+        } else {
+            Log.e(TAG, "Unexpected intent action: " + action);
+        }
+    }
+
+    private void handleNewMsgIntent(Intent intent) {
+        // Log.d(TAG, "handleNewMsgIntent");
+
+        String name = intent.getStringExtra(KEY_SENSOR_NAME);
+        String type = intent.getStringExtra(KEY_DATA_TYPE);
+        long time = intent.getLongExtra(KEY_TIMESTAMP, System.currentTimeMillis());
+        String device = intent.getStringExtra(KEY_SENSOR_DEVICE);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", name);
+            NumberFormat formatter = new DecimalFormat("##########.##");
+            json.put("time", formatter.format(((double) time) / 1000.0d));
+            json.put("type", type);
+            json.put("device", (null == device) ? name : device);
+
+            if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
+                json.put("val", intent.getBooleanExtra(KEY_VALUE, false));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
+                json.put("val", intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
+                json.put("val", intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
+                json.put("val", new JSONObject(intent.getStringExtra(KEY_VALUE)));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
+                json.put("val", intent.getStringExtra(KEY_VALUE));
+            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+                json.put("val", intent.getStringExtra(KEY_VALUE));
+            } else {
+                Log.e(TAG, "Unexpected data type: " + type);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException before putting message in buffer database", e);
+            return;
+        }
+
+        // check if there is connectivity
+        if (isOnline()) {
+
+            // check if the app is in real-time sending mode
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            if (prefs.getString(SenseSettings.PREF_SYNC_RATE, "0").equals("-2")) {
+                // real time mode, send immediately
+                String value = "";
+                if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
+                    value += intent.getBooleanExtra(KEY_VALUE, false);
+                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
+                    value += intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE);
+                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
+                    value += intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE);
+                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
+                    try {
+                        value += new JSONObject(intent.getStringExtra(KEY_VALUE)).toString();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSONException creating object to POST", e);
+                        return;
+                    }
+                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
+                    value += intent.getStringExtra(KEY_VALUE);
+                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+                    value += intent.getStringExtra(KEY_VALUE);
+                }
+                // else if(type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
+                // {
+                // sendFile(name, value, type, device);
+                // return;
+                // }
+
+                // Log.d(TAG, "Send real-time");
+                sendSensorData(name, value, type, device);
+            } else {
+                // normal mode, buffer to memory
+                bufferData(json);
+            }
+        } else {
+            // buffer data if there is no connectivity
+            bufferData(json);
+        }
+    }
+
+    private void handleSendIntent(Intent intent) {
+        // Log.d(TAG, "handleSendIntent");
+
+        if (isOnline()) {
+
+            sendDataFromDb();
+            sendDataFromBuffer();
+
+        }
+    }
+
+    private boolean isOnline() {
+        final ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        final NetworkInfo info = cm.getActiveNetworkInfo();
+        return ((null != info) && (info.isConnected()));
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // you cannot bind to this service
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "onCreate");
+
+        this.buffer = new JSONObject();
+        this.bufferCount = 0;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy");
+
+        emptyBufferToDb();
+    }
+
+    /**
+     * Deprecated method for starting the service, used in 1.6 and older.
+     */
+    @Override
+    public void onStart(Intent intent, int startid) {
+        handleIntent(intent, 0, startid);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleIntent(intent, flags, startId);
+
+        // this service is not sticky, it will get an intent to restart it if necessary
+        return START_NOT_STICKY;
+    }
+
+    private void openDb() {
+        if (false == this.isDbOpen) {
+            this.dbHelper = new DbHelper(this);
+            this.db = this.dbHelper.getWritableDatabase();
+            this.isDbOpen = true;
+        }
+    }
+
+    private boolean sendDataFromBuffer() {
+
+        if (this.bufferCount > 0) {
+            Log.d(TAG, "Sending " + this.bufferCount + " values from local buffer to CommonSense");
+            try {
+                int sentCount = 0;
+                int sentIndex = 0;
+                JSONArray names = buffer.names();
+                for (int i = 0; i < names.length(); i++) {
+                    JSONArray sensorArray = buffer.getJSONArray(names.getString(i));
+                    JSONObject sensorData = new JSONObject();
+                    JSONArray dataArray = new JSONArray();
+                    for (int x = sentIndex; x < sensorArray.length()
+                            && (sentCount - sentIndex) < MAX_POST_DATA; x++) {
+                        JSONObject data = new JSONObject();
+                        JSONObject sensor = (JSONObject) sensorArray.get(x);
+                        data.put("value", sensor.getString("val"));
+                        data.put("date", sensor.get("time"));
+                        dataArray.put(data);
+                        ++sentCount;
+                    }
+
+                    sensorData.put("data", dataArray);
+                    JSONObject sensor = (JSONObject) sensorArray.get(0);
+                    sendSensorData(sensor.getString("name"), sensorData, sensor.getString("type"),
+                            sensor.getString("device"));
+
+                    // if MAX_POST_DATA reached but their are still some items left, then do the
+                    // rest --i;
+                    if (sentCount != sensorArray.length()) {
+                        --i;
+                        sentIndex = sentCount;
+                    } else
+                        sentIndex = sentCount = 0;
+                }
+                Log.d(TAG, "sent " + bufferCount + " sensor values from buffer");
+                buffer = new JSONObject();
+                bufferCount = 0;
+            } catch (Exception e) {
+                Log.e(TAG, "Error sending data from buffer:" + e.getMessage());
+            }
+
+        } else {
+            // TODO smart transmission scaling
+        }
+
+        return true;
+    }
+
+    private boolean sendDataFromDb() {
+        // query the database
+        openDb();
+        String[] cols = {DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR};
+        String sel = DbHelper.COL_ACTIVE + "!=?";
+        String[] selArgs = {"true"};
+        Cursor c = this.db.query(DbHelper.TABLE_NAME, cols, sel, selArgs, null, null,
+                DbHelper.COL_SENSOR, null);
+
+        try {
+            if (c.getCount() > 0) {
+                Log.d(TAG, "Sending " + c.getCount() + " values from database to CommonSense");
+
+                // Send Data from each sensor
+                int sentCount = 0;
+                String sensorKey = "";
+                JSONObject sensorData = new JSONObject();
+                JSONArray dataArray = new JSONArray();
+                String sensorName = "";
+                String sensorType = "";
+                String sensorDevice = "";
+                c.moveToFirst();
+                while (false == c.isAfterLast()) {
+                    if (c.getString(2).compareToIgnoreCase(sensorKey) != 0
+                            || sentCount >= MAX_POST_DATA) {
+                        // send the in the previous rounds collected data
+                        if (sensorKey.length() > 0) {
+                            sensorData.put("data", dataArray);
+                            sendSensorData(sensorName, sensorData, sensorType, sensorDevice);
+                            sensorData = new JSONObject();
+                            dataArray = new JSONArray();
+                        }
+                    }
+                    JSONObject sensor = new JSONObject(c.getString(1));
+                    JSONObject data = new JSONObject();
+                    data.put("value", sensor.get("val"));
+                    data.put("date", sensor.get("time"));
+                    if (dataArray.length() == 0) {
+                        sensorName = sensor.getString("name");
+                        sensorType = sensor.getString("type");
+                        sensorDevice = sensor.getString("device");
+                    }
+                    dataArray.put(data);
+                    sensorKey = c.getString(2);
+                    // if last, then send
+                    if (c.isLast()) {
+                        sensorData.put("data", dataArray);
+                        sendSensorData(sensorName, sensorData, sensorType, sensorDevice);
+                    }
+                    sentCount++;
+                    c.moveToNext();
+                }
+
+                Log.d(TAG, "sent " + c.getCount() + " sensor values from buffer");
+
+                // remove data from database
+                c.moveToFirst();
+                while (false == c.isAfterLast()) {
+                    int id = c.getInt(c.getColumnIndex(DbHelper.COL_ROWID));
+                    String where = DbHelper.COL_ROWID + "=?";
+                    String[] whereArgs = {"" + id};
+                    this.db.delete(DbHelper.TABLE_NAME, where, whereArgs);
+                    c.moveToNext();
+                }
+
+            } else {
+                // TODO smart transmission scaling
+            }
+
+        } catch (Exception e) {
+            Log.d(TAG, "Error in sending data from database:" + e.getMessage());
+            return false;
+        } finally {
+            c.close();
+            closeDb();
+        }
+        return true;
+    }
+
+    public void sendSensorData(String sensorName, JSONObject sensorData, String dataType,
+            String deviceType) {
+        try {
+            // double check device type
+            deviceType = deviceType != null ? deviceType : sensorName;
+            String dataStructure = (String) ((JSONObject) ((JSONArray) sensorData.get("data"))
+                    .get(0)).get("value");
+            String url = SenseApi.getSensorURL(this, sensorName, dataStructure, dataType,
+                    deviceType);
+
+            final SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS,
+                    android.content.Context.MODE_PRIVATE);
+            String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+
+            // check for sending a file
+            if (dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+                JSONArray data = ((JSONArray) sensorData.get("data"));
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject object = (JSONObject) data.get(i);
+                    // start send thread
+                    if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
+                        ++nrOfSendMessageThreads;
+                        new Thread(new SendFileThread(url, cookie, (String) object.get("value")))
+                                .start();
+                    }
+                    // TODO: wait until data can be send
+                }
+            } else {
+                // start send thread
+                if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
+                    ++nrOfSendMessageThreads;
+                    new Thread(new SendDataThread(url, cookie, sensorData)).start();
+                }
+                // TODO: wait until data can be send
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in sending sensor data:" + e.getMessage());
+        }
+    }
+
+    public void sendSensorData(String sensorName, String sensorValue, String dataType,
+            String deviceType) {
+        try {
+            JSONObject sensorData = new JSONObject();
+            JSONArray dataArray = new JSONArray();
+            JSONObject data = new JSONObject();
+            data.put("value", sensorValue);
+            NumberFormat formatter = new DecimalFormat("##########.##");
+            data.put("date", formatter.format(((double) System.currentTimeMillis()) / 1000.0d));
+            dataArray.put(data);
+            sensorData.put("data", dataArray);
+            sendSensorData(sensorName, sensorData, dataType, deviceType);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in creating JSON POST data:" + e.getMessage());
+        }
+    }
 }

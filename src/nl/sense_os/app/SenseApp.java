@@ -6,6 +6,13 @@
 
 package nl.sense_os.app;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import nl.sense_os.service.ISenseService;
+import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.SenseService;
+import nl.sense_os.shared.Constants;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -38,14 +45,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import nl.sense_os.service.ISenseService;
-import nl.sense_os.service.ISenseServiceCallback;
-import nl.sense_os.service.SenseService;
-import nl.sense_os.shared.Constants;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class SenseApp extends Activity {
     /**
@@ -83,7 +82,7 @@ public class SenseApp extends Activity {
                 showDialog(DIALOG_LOGIN);
             } else {
                 Toast.makeText(SenseApp.this, R.string.toast_login_ok, Toast.LENGTH_LONG).show();
-                
+
                 // at least turn on phone state sensor after the very first login
                 togglePhoneState(true);
             }
@@ -397,6 +396,7 @@ public class SenseApp extends Activity {
                 | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         login.addView(emailField);
+
         final EditText passField = new EditText(this);
         passField.setLayoutParams(new LayoutParams(-1, -2));
         passField.setHint(R.string.dialog_login_hint_pass);
@@ -575,110 +575,110 @@ public class SenseApp extends Activity {
 
         boolean oldState = false;
         switch (v.getId()) {
-        case R.id.main_field:
-            final CheckBox cb = (CheckBox) findViewById(R.id.main_cb);
-            oldState = cb.isChecked();
-            cb.setChecked(!oldState);
-            toggleService(!oldState);
-            break;
-        case R.id.device_prox_field:
-            final CheckBox devProx = (CheckBox) findViewById(R.id.device_prox_cb);
-            if (devProx.isEnabled()) {
-                oldState = devProx.isChecked();
-                devProx.setChecked(!oldState);
-                toggleDeviceProx(!oldState);
-            }
-            break;
-        case R.id.location_field:
-            final CheckBox location = (CheckBox) findViewById(R.id.location_cb);
-            if (location.isEnabled()) {
-                oldState = location.isChecked();
-                location.setChecked(!oldState);
-                toggleLocation(!oldState);
-            }
-            break;
-        case R.id.motion_field:
-            final CheckBox motion = (CheckBox) findViewById(R.id.motion_cb);
-            if (motion.isEnabled()) {
-                oldState = motion.isChecked();
-                motion.setChecked(!oldState);
-                toggleMotion(!oldState);
-            }
-            break;
-        case R.id.external_sensor_field:
-            final CheckBox external = (CheckBox) findViewById(R.id.external_sensor_cb);
-            if (external.isEnabled()) {
-                oldState = external.isChecked();
-                external.setChecked(!oldState);
-                toggleExternalSensors(!oldState);
-            }
-            break;
-        case R.id.ambience_field:
-            final CheckBox ambience = (CheckBox) findViewById(R.id.ambience_cb);
-            if (ambience.isEnabled()) {
-                oldState = ambience.isChecked();
-                ambience.setChecked(!oldState);
-                toggleAmbience(!oldState);
-            }
-            break;
-        case R.id.phonestate_field:
-            final CheckBox phoneState = (CheckBox) findViewById(R.id.phonestate_cb);
-            if (phoneState.isEnabled()) {
-                oldState = phoneState.isChecked();
-                phoneState.setChecked(!oldState);
-                togglePhoneState(!oldState);
-            }
-            break;
-        case R.id.popquiz_field:
-            final CheckBox quiz = (CheckBox) findViewById(R.id.popquiz_cb);
-            if (quiz.isEnabled()) {
-                oldState = quiz.isChecked();
-                quiz.setChecked(!oldState);
-                togglePopQuiz(!oldState);
-            }
-            break;
-        case R.id.prefs_field:
-            startActivity(new Intent("nl.sense_os.app.Settings"));
-            break;
-        default:
-            Log.e(TAG, "Unknown button pressed!");
+            case R.id.main_field :
+                final CheckBox cb = (CheckBox) findViewById(R.id.main_cb);
+                oldState = cb.isChecked();
+                cb.setChecked(!oldState);
+                toggleService(!oldState);
+                break;
+            case R.id.device_prox_field :
+                final CheckBox devProx = (CheckBox) findViewById(R.id.device_prox_cb);
+                if (devProx.isEnabled()) {
+                    oldState = devProx.isChecked();
+                    devProx.setChecked(!oldState);
+                    toggleDeviceProx(!oldState);
+                }
+                break;
+            case R.id.location_field :
+                final CheckBox location = (CheckBox) findViewById(R.id.location_cb);
+                if (location.isEnabled()) {
+                    oldState = location.isChecked();
+                    location.setChecked(!oldState);
+                    toggleLocation(!oldState);
+                }
+                break;
+            case R.id.motion_field :
+                final CheckBox motion = (CheckBox) findViewById(R.id.motion_cb);
+                if (motion.isEnabled()) {
+                    oldState = motion.isChecked();
+                    motion.setChecked(!oldState);
+                    toggleMotion(!oldState);
+                }
+                break;
+            case R.id.external_sensor_field :
+                final CheckBox external = (CheckBox) findViewById(R.id.external_sensor_cb);
+                if (external.isEnabled()) {
+                    oldState = external.isChecked();
+                    external.setChecked(!oldState);
+                    toggleExternalSensors(!oldState);
+                }
+                break;
+            case R.id.ambience_field :
+                final CheckBox ambience = (CheckBox) findViewById(R.id.ambience_cb);
+                if (ambience.isEnabled()) {
+                    oldState = ambience.isChecked();
+                    ambience.setChecked(!oldState);
+                    toggleAmbience(!oldState);
+                }
+                break;
+            case R.id.phonestate_field :
+                final CheckBox phoneState = (CheckBox) findViewById(R.id.phonestate_cb);
+                if (phoneState.isEnabled()) {
+                    oldState = phoneState.isChecked();
+                    phoneState.setChecked(!oldState);
+                    togglePhoneState(!oldState);
+                }
+                break;
+            case R.id.popquiz_field :
+                final CheckBox quiz = (CheckBox) findViewById(R.id.popquiz_cb);
+                if (quiz.isEnabled()) {
+                    oldState = quiz.isChecked();
+                    quiz.setChecked(!oldState);
+                    togglePopQuiz(!oldState);
+                }
+                break;
+            case R.id.prefs_field :
+                startActivity(new Intent("nl.sense_os.app.Settings"));
+                break;
+            default :
+                Log.e(TAG, "Unknown button pressed!");
         }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.sense_app);
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
         switch (id) {
-        case DIALOG_FAQ:
-            dialog = createDialogFaq();
-            break;
-        case DIALOG_LOGIN:
-            dialog = createDialogLogin();
-            break;
-        case DIALOG_PROGRESS:
-            dialog = new ProgressDialog(this);
-            dialog.setTitle("One moment please");
-            ((ProgressDialog) dialog).setMessage("Checking login credentials...");
-            dialog.setCancelable(false);
-            break;
-        case DIALOG_REGISTER:
-            dialog = createDialogRegister();
-            break;
-        case DIALOG_UPDATE_ALERT:
-            dialog = createDialogUpdateAlert();
-            break;
-        case DIALOG_HELP:
-            dialog = createDialogHelp();
-            break;
-        default:
-            Log.w(TAG, "Trying to create unexpected dialog, ignoring input...");
-            break;
+            case DIALOG_FAQ :
+                dialog = createDialogFaq();
+                break;
+            case DIALOG_LOGIN :
+                dialog = createDialogLogin();
+                break;
+            case DIALOG_PROGRESS :
+                dialog = new ProgressDialog(this);
+                dialog.setTitle("One moment please");
+                ((ProgressDialog) dialog).setMessage("Checking login credentials...");
+                dialog.setCancelable(false);
+                break;
+            case DIALOG_REGISTER :
+                dialog = createDialogRegister();
+                break;
+            case DIALOG_UPDATE_ALERT :
+                dialog = createDialogUpdateAlert();
+                break;
+            case DIALOG_HELP :
+                dialog = createDialogHelp();
+                break;
+            default :
+                Log.w(TAG, "Trying to create unexpected dialog, ignoring input...");
+                break;
         }
         return dialog;
     }
@@ -697,21 +697,21 @@ public class SenseApp extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case MENU_FAQ:
-            showDialog(DIALOG_FAQ);
-            break;
-        case MENU_SETTINGS:
-            startActivity(new Intent("nl.sense_os.app.Settings"));
-            break;
-        case MENU_LOGIN:
-            showDialog(DIALOG_LOGIN);
-            break;
-        case MENU_REGISTER:
-            showDialog(DIALOG_REGISTER);
-            break;
-        default:
-            Log.w(TAG, "Unexpected menu button pressed, ignoring input...");
-            return false;
+            case MENU_FAQ :
+                showDialog(DIALOG_FAQ);
+                break;
+            case MENU_SETTINGS :
+                startActivity(new Intent("nl.sense_os.app.Settings"));
+                break;
+            case MENU_LOGIN :
+                showDialog(DIALOG_LOGIN);
+                break;
+            case MENU_REGISTER :
+                showDialog(DIALOG_REGISTER);
+                break;
+            default :
+                Log.w(TAG, "Unexpected menu button pressed, ignoring input...");
+                return false;
         }
         return true;
     }
@@ -783,20 +783,20 @@ public class SenseApp extends Activity {
                             SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String interval = "";
                     switch (rate) {
-                    case -2: // real-time
-                        interval = "second";
-                        break;
-                    case -1: // often
-                        interval = "15 seconds";
-                        break;
-                    case 0: // normal
-                        interval = "minute";
-                        break;
-                    case 1: // rarely (15 hour)
-                        interval = "15 minutes";
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected device prox preference.");
+                        case -2 : // real-time
+                            interval = "second";
+                            break;
+                        case -1 : // often
+                            interval = "15 seconds";
+                            break;
+                        case 0 : // normal
+                            interval = "minute";
+                            break;
+                        case 1 : // rarely (15 hour)
+                            interval = "15 minutes";
+                            break;
+                        default :
+                            Log.e(TAG, "Unexpected device prox preference.");
                     }
                     final String msg = getString(R.string.toast_toggle_dev_prox);
                     Toast.makeText(this, msg.replace("?", interval), Toast.LENGTH_LONG).show();
@@ -826,21 +826,21 @@ public class SenseApp extends Activity {
                             SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String interval = "";
                     switch (rate) {
-                    case -2: // often
-                        interval = "second";
-                        break;
-                    case -1: // often
-                        interval = "5 seconds";
-                        break;
-                    case 0: // normal
-                        interval = "minute";
-                        break;
-                    case 1: // rarely
-                        interval = "15 minutes";
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                        break;
+                        case -2 : // often
+                            interval = "second";
+                            break;
+                        case -1 : // often
+                            interval = "5 seconds";
+                            break;
+                        case 0 : // normal
+                            interval = "minute";
+                            break;
+                        case 1 : // rarely
+                            interval = "15 minutes";
+                            break;
+                        default :
+                            Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                            break;
                     }
                     final String msg = getString(R.string.toast_toggle_external_sensors).replace(
                             "?", interval);
@@ -871,21 +871,21 @@ public class SenseApp extends Activity {
                             SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String interval = "";
                     switch (rate) {
-                    case -2: // often
-                        interval = "second";
-                        break;
-                    case -1: // often
-                        interval = "15 seconds";
-                        break;
-                    case 0: // normal
-                        interval = "minute";
-                        break;
-                    case 1: // rarely
-                        interval = "15 minutes";
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                        break;
+                        case -2 : // often
+                            interval = "second";
+                            break;
+                        case -1 : // often
+                            interval = "15 seconds";
+                            break;
+                        case 0 : // normal
+                            interval = "minute";
+                            break;
+                        case 1 : // rarely
+                            interval = "15 minutes";
+                            break;
+                        default :
+                            Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                            break;
                     }
                     final String msg = getString(R.string.toast_toggle_location).replace("?",
                             interval);
@@ -916,21 +916,21 @@ public class SenseApp extends Activity {
                             SenseSettings.PREF_SAMPLE_RATE, "0"));
                     String interval = "";
                     switch (rate) {
-                    case -2: // often
-                        interval = "second";
-                        break;
-                    case -1: // often
-                        interval = "5 seconds";
-                        break;
-                    case 0: // normal
-                        interval = "minute";
-                        break;
-                    case 1: // rarely
-                        interval = "15 minutes";
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                        break;
+                        case -2 : // often
+                            interval = "second";
+                            break;
+                        case -1 : // often
+                            interval = "5 seconds";
+                            break;
+                        case 0 : // normal
+                            interval = "minute";
+                            break;
+                        case 1 : // rarely
+                            interval = "15 minutes";
+                            break;
+                        default :
+                            Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                            break;
                     }
                     final String msg = getString(R.string.toast_toggle_motion).replace("?",
                             interval);
@@ -962,24 +962,24 @@ public class SenseApp extends Activity {
                     String intervalString = "";
                     String extraString = "";
                     switch (rate) {
-                    case -2:
-                        intervalString = "the whole time";
-                        extraString = " A sound stream will be uploaded.";
-                        break;
-                    case -1:
-                        // often
-                        intervalString = "every 5 seconds";
-                        break;
-                    case 0:
-                        // normal
-                        intervalString = "every minute";
-                        break;
-                    case 1:
-                        // rarely (1 hour)
-                        intervalString = "every 15 minutes";
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected commonsense rate preference.");
+                        case -2 :
+                            intervalString = "the whole time";
+                            extraString = " A sound stream will be uploaded.";
+                            break;
+                        case -1 :
+                            // often
+                            intervalString = "every 5 seconds";
+                            break;
+                        case 0 :
+                            // normal
+                            intervalString = "every minute";
+                            break;
+                        case 1 :
+                            // rarely (1 hour)
+                            intervalString = "every 15 minutes";
+                            break;
+                        default :
+                            Log.e(TAG, "Unexpected commonsense rate preference.");
                     }
                     String msg = getString(R.string.toast_toggle_ambience).replace("?",
                             intervalString)
@@ -1031,18 +1031,18 @@ public class SenseApp extends Activity {
                     final int r = Integer.parseInt(p.getString(SenseSettings.PREF_QUIZ_RATE, "0"));
                     String interval = "ERROR";
                     switch (r) {
-                    case -1: // often (5 mins)
-                        interval = "5 minutes";
-                        break;
-                    case 0: // normal (15 mins)
-                        interval = "15 minutes";
-                        break;
-                    case 1: // rarely (1 hour)
-                        interval = "hour";
-                        break;
-                    default:
-                        Log.e(TAG, "Unexpected quiz rate preference: " + r);
-                        break;
+                        case -1 : // often (5 mins)
+                            interval = "5 minutes";
+                            break;
+                        case 0 : // normal (15 mins)
+                            interval = "15 minutes";
+                            break;
+                        case 1 : // rarely (1 hour)
+                            interval = "hour";
+                            break;
+                        default :
+                            Log.e(TAG, "Unexpected quiz rate preference: " + r);
+                            break;
                     }
 
                     Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
