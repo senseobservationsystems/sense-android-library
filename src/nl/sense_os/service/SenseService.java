@@ -846,7 +846,7 @@ public class SenseService extends Service {
         final Intent alarmIntent = new Intent(FeedbackRx.ACTION_CHECK_FEEDBACK);
         final PendingIntent alarmOp = PendingIntent.getBroadcast(this,
                 FeedbackRx.REQ_CHECK_FEEDBACK, alarmIntent, 0);
-        final long alarmTime = System.currentTimeMillis() + FeedbackRx.PERIOD_CHECK_FEEDBACK;
+        final long alarmTime = System.currentTimeMillis() + 3000;
         final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmOp);
     }
