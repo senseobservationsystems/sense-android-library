@@ -227,7 +227,7 @@ public class SenseApi {
                 String key = it.next();
                 String value = headerFields.get(key).toString().substring(1);
                 value = value.substring(0, value.length() - 1);
-                response.put(key, value);
+                response.put(key.toLowerCase(), value);
             }
             return response;
         } catch (Exception e) {
