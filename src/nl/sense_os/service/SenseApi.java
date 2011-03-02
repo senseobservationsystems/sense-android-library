@@ -196,7 +196,8 @@ public class SenseApi {
 
             // Set content size
             urlConn.setRequestProperty("Content-Length", "" + json.toString().length());
-
+            urlConn.setRequestProperty("Content-Type", "application/json");
+            urlConn.setInstanceFollowRedirects(false);
             // Set cookie
             urlConn.setRequestProperty("Cookie", cookie);
 
@@ -211,12 +212,13 @@ public class SenseApi {
             // Get Response
             InputStream is = urlConn.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is), 1024);
-            String line;
+            String line;            
             StringBuffer responseString = new StringBuffer();
             while ((line = rd.readLine()) != null) {
                 responseString.append(line);
                 responseString.append('\r');
             }
+            
             rd.close();
             HashMap<String, String> response = new HashMap<String, String>();
             response.put("http response code", "" + urlConn.getResponseCode());

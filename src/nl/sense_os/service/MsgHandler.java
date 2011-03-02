@@ -11,8 +11,10 @@ import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 
 import nl.sense_os.app.SenseSettings;
 
@@ -325,7 +327,8 @@ public class MsgHandler extends Service {
         JSONObject json = new JSONObject();
         try {
             json.put("name", name);
-            NumberFormat formatter = new DecimalFormat("##########.##");
+            DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+            NumberFormat formatter = new DecimalFormat("##########.##", otherSymbols);   
             json.put("time", formatter.format(((double) time) / 1000.0d));
             json.put("type", type);
             json.put("device", (null == device) ? name : device);
@@ -633,7 +636,10 @@ public class MsgHandler extends Service {
             JSONArray dataArray = new JSONArray();
             JSONObject data = new JSONObject();
             data.put("value", sensorValue);
-            NumberFormat formatter = new DecimalFormat("##########.##");
+            DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+            //otherSymbols.setDecimalSeparator('.');
+            //otherSymbols.setGroupingSeparator('.');
+            NumberFormat formatter = new DecimalFormat("##########.##", otherSymbols);            
             data.put("date", formatter.format(((double) System.currentTimeMillis()) / 1000.0d));
             dataArray.put(data);
             sensorData.put("data", dataArray);
