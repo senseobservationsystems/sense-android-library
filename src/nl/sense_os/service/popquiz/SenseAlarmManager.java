@@ -5,6 +5,12 @@
  */
 package nl.sense_os.service.popquiz;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import nl.sense_os.service.Constants;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -17,13 +23,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
-import nl.sense_os.app.SenseSettings;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SenseAlarmManager {
     /**
@@ -181,8 +180,8 @@ public class SenseAlarmManager {
 
         // insert an entry for every question of the quiz in the database
         String qstnSel = COL_QUIZ_ID + "=" + quiz;
-        Cursor c = this.db.query(true, TABLE_QUIZ, new String[] { COL_QSTN_ID }, qstnSel, null,
-                null, null, null, null);
+        Cursor c = this.db.query(true, TABLE_QUIZ, new String[]{COL_QSTN_ID}, qstnSel, null, null,
+                null, null, null);
         c.moveToFirst();
         long result = -1;
         while (false == c.isAfterLast()) {
@@ -231,7 +230,7 @@ public class SenseAlarmManager {
 
         // get time of last refresh from preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.ctx);
-        long lastUpdate = prefs.getLong(SenseSettings.PREF_QUIZ_SYNC_TIME, 0);
+        long lastUpdate = prefs.getLong(Constants.PREF_QUIZ_SYNC_TIME, 0);
 
         // next update time 8 hours from last one
         final long nextUpdate = lastUpdate + 8 * 60 * 60 * 1000;
@@ -341,24 +340,24 @@ public class SenseAlarmManager {
      */
     private long getNextQuarterHour() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.ctx);
-        final int rate = Integer.parseInt(prefs.getString(SenseSettings.PREF_QUIZ_RATE, "0"));
+        final int rate = Integer.parseInt(prefs.getString(Constants.PREF_QUIZ_RATE, "0"));
         long period = 0;
         switch (rate) {
-        case -1:
-            // often (5 mins)
-            period = 5 * 60 * 1000;
-            break;
-        case 0:
-            // normal (15 mins)
-            period = 15 * 60 * 1000;
-            break;
-        case 1:
-            // rarely (1 hour)
-            period = 60 * 60 * 1000;
-            break;
-        default:
-            Log.e(TAG, "Unexpected quiz rate preference.");
-            return -1;
+            case -1 :
+                // often (5 mins)
+                period = 5 * 60 * 1000;
+                break;
+            case 0 :
+                // normal (15 mins)
+                period = 15 * 60 * 1000;
+                break;
+            case 1 :
+                // rarely (1 hour)
+                period = 60 * 60 * 1000;
+                break;
+            default :
+                Log.e(TAG, "Unexpected quiz rate preference.");
+                return -1;
         }
         final long now = System.currentTimeMillis();
         final long remainder = now % period;
@@ -384,7 +383,7 @@ public class SenseAlarmManager {
      */
     public int[] readLatestEntry() {
 
-        final int[] result = { -1, -1 };
+        final int[] result = {-1, -1};
 
         // safely open the database
         boolean closeMeWhenDone = false;
@@ -425,7 +424,7 @@ public class SenseAlarmManager {
         }
 
         // select all unfinished activities that are older than the current time
-        final String[] columns = { COL_QUIZ_ID };
+        final String[] columns = {COL_QUIZ_ID};
         final String selct = COL_ANSW_ID + "=-1 AND " + COL_ENTRY_TIME + "<"
                 + System.currentTimeMillis();
         final Cursor c = this.db.query(true, TABLE_ENTRY, columns, selct, null, null, null,
@@ -458,8 +457,8 @@ public class SenseAlarmManager {
         }
 
         // get quiz description
-        final String[] columns = { COL_ROW_ID, COL_QUIZ_VAL, COL_QSTN_ID, COL_QSTN_VAL,
-                COL_ANSW_ID, COL_ANSW_VAL };
+        final String[] columns = {COL_ROW_ID, COL_QUIZ_VAL, COL_QSTN_ID, COL_QSTN_VAL, COL_ANSW_ID,
+                COL_ANSW_VAL};
         final String selection = COL_QUIZ_ID + "=" + id;
         final String orderBy = COL_QSTN_ID + " ASC, " + COL_ANSW_ID + " ASC";
         final Cursor c = db.query(TABLE_QUIZ, columns, selection, null, null, null, orderBy);
@@ -514,7 +513,7 @@ public class SenseAlarmManager {
             openDb();
         }
 
-        final Cursor c = this.db.query(TABLE_ENTRY, new String[] { COL_QUIZ_ID, COL_ENTRY_TIME },
+        final Cursor c = this.db.query(TABLE_ENTRY, new String[]{COL_QUIZ_ID, COL_ENTRY_TIME},
                 COL_QUIZ_ID + "=" + id, null, null, null, null, null);
 
         c.moveToFirst();
@@ -544,7 +543,7 @@ public class SenseAlarmManager {
             openDb();
         }
 
-        final String[] columns = { COL_ROW_ID, COL_ENTRY_TIME };
+        final String[] columns = {COL_ROW_ID, COL_ENTRY_TIME};
         final String selct = COL_ANSW_ID + "=-1 AND " + COL_ENTRY_TIME + ">"
                 + System.currentTimeMillis();
         final Cursor c = this.db.query(TABLE_ENTRY, columns, selct, null, null, null, COL_QUIZ_ID,

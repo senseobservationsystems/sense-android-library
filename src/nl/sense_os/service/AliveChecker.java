@@ -14,8 +14,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import nl.sense_os.app.SenseSettings;
-
 public class AliveChecker extends BroadcastReceiver {
 
     private static final String TAG = "Sense AliveChecker";
@@ -36,7 +34,7 @@ public class AliveChecker extends BroadcastReceiver {
 
         /* check if the Sense service should be alive */
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        final boolean alive = prefs.getBoolean(SenseSettings.PREF_ALIVE, false);
+        final boolean alive = prefs.getBoolean(Constants.PREF_ALIVE, false);
 
         /* if it should be alive, check if it really is still alive */
         if (true == alive) {

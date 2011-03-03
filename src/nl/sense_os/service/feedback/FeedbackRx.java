@@ -25,6 +25,7 @@ public class FeedbackRx extends BroadcastReceiver {
                 alarmIntent, 0);
         final long alarmTime = System.currentTimeMillis() + PERIOD_CHECK_FEEDBACK;
         final AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.cancel(alarmOp);
         mgr.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmOp);
 
         /* start the feedback check task */

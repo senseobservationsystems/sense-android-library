@@ -5,37 +5,34 @@
  */
 package nl.sense_os.service.external_sensors;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-
-import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.MsgHandler;
-
-import android.preference.PreferenceManager;
-import android.util.Log;
-import org.json.JSONObject;
-
 import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
 import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
 import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
+
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.MsgHandler;
+
+import org.json.JSONObject;
+
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class ZephyrBioHarness {
 
@@ -69,7 +66,7 @@ public class ZephyrBioHarness {
                 }
 
                 // send acceleration data in m/s^2
-                if (prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_ACC, true)) {
+                if (prefs.getBoolean(Constants.PREF_BIOHARNESS_ACC, true)) {
                     float g = 9.80665f;
                     JSONObject json = new JSONObject();
                     Short xmin = (short) (((short) buffer[32]) | (((short) buffer[33]) << 8));
@@ -90,13 +87,13 @@ public class ZephyrBioHarness {
                     i.putExtra(MsgHandler.KEY_SENSOR_NAME, "accelerometer");
                     i.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "BioHarness " + deviceName);
                     i.putExtra(MsgHandler.KEY_VALUE, json.toString());
-                    i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+                    i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
                     i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
                     context.startService(i);
                 }
 
                 // send heart rate
-                if (prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_HEART_RATE, true)) {
+                if (prefs.getBoolean(Constants.PREF_BIOHARNESS_HEART_RATE, true)) {
                     Short heartRate = (short) (((short) buffer[12]) | (((short) buffer[13]) << 8));
                     // if(heartRate < (short)0)
                     // heartRate = (short)(heartRate+(short)255);
@@ -108,13 +105,13 @@ public class ZephyrBioHarness {
                             + deviceName);
                     heartRateIntent.putExtra(MsgHandler.KEY_VALUE, heartRate.intValue());
                     heartRateIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                            SenseSettings.SENSOR_DATA_TYPE_INT);
+                            Constants.SENSOR_DATA_TYPE_INT);
                     heartRateIntent.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
                     context.startService(heartRateIntent);
                 }
 
                 // send respiration rate
-                if (prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_RESP, true)) {
+                if (prefs.getBoolean(Constants.PREF_BIOHARNESS_RESP, true)) {
                     Short respirationRate = (short) (((short) buffer[14]) | (((short) buffer[15]) << 8));
                     if (respirationRate < 0)
                         respirationRate = (short) (respirationRate + (short) 255);
@@ -127,14 +124,14 @@ public class ZephyrBioHarness {
                             + deviceName);
                     respirationRateIntent.putExtra(MsgHandler.KEY_VALUE, respirationRateF);
                     respirationRateIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                            SenseSettings.SENSOR_DATA_TYPE_FLOAT);
+                            Constants.SENSOR_DATA_TYPE_FLOAT);
                     respirationRateIntent.putExtra(MsgHandler.KEY_TIMESTAMP,
                             System.currentTimeMillis());
                     context.startService(respirationRateIntent);
                 }
 
                 // send skin temperature
-                if (prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_TEMP, true)) {
+                if (prefs.getBoolean(Constants.PREF_BIOHARNESS_TEMP, true)) {
                     Short skinTemperature = (short) (((short) buffer[16]) | (((short) buffer[17]) << 8));
                     if (skinTemperature < 0)
                         skinTemperature = (short) (skinTemperature + (short) 255);
@@ -147,14 +144,14 @@ public class ZephyrBioHarness {
                             + deviceName);
                     skinTemperatureIntent.putExtra(MsgHandler.KEY_VALUE, skinTemperatureF);
                     skinTemperatureIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                            SenseSettings.SENSOR_DATA_TYPE_FLOAT);
+                            Constants.SENSOR_DATA_TYPE_FLOAT);
                     skinTemperatureIntent.putExtra(MsgHandler.KEY_TIMESTAMP,
                             System.currentTimeMillis());
                     context.startService(skinTemperatureIntent);
                 }
 
                 // send battery level
-                if (prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_BATTERY, true)) {
+                if (prefs.getBoolean(Constants.PREF_BIOHARNESS_BATTERY, true)) {
                     int batteryLevel = buffer[54];
                     Log.d(TAG, "Battery level:" + batteryLevel);
                     Intent batteryIntent = new Intent(MsgHandler.ACTION_NEW_MSG);
@@ -162,14 +159,14 @@ public class ZephyrBioHarness {
                     batteryIntent
                             .putExtra(MsgHandler.KEY_SENSOR_DEVICE, "BioHarness " + deviceName);
                     batteryIntent.putExtra(MsgHandler.KEY_VALUE, batteryLevel);
-                    batteryIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                            SenseSettings.SENSOR_DATA_TYPE_INT);
+                    batteryIntent
+                            .putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_INT);
                     batteryIntent.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
                     context.startService(batteryIntent);
                 }
 
                 // // send blood pressure
-                // if(prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_BLOOD_PRESSURE, true))
+                // if(prefs.getBoolean(Constants.PREF_BIOHARNESS_BLOOD_PRESSURE, true))
                 // {
                 // Short bloodPressure = (short)(((short)buffer[50]) | (((short)buffer[51]) << 8));
                 // if(bloodPressure < 0)
@@ -182,13 +179,13 @@ public class ZephyrBioHarness {
                 // batteryIntent.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "BioHarness "+deviceName);
                 // batteryIntent.putExtra(MsgHandler.KEY_VALUE, bloodPressureF);
                 // batteryIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                // SenseSettings.SENSOR_DATA_TYPE_FLOAT);
+                // Constants.SENSOR_DATA_TYPE_FLOAT);
                 // batteryIntent.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
                 // context.startService(batteryIntent);
                 // }
 
                 // send worn status
-                if (prefs.getBoolean(SenseSettings.PREF_BIOHARNESS_WORN_STATUS, true)) {
+                if (prefs.getBoolean(Constants.PREF_BIOHARNESS_WORN_STATUS, true)) {
                     boolean wornStatusB = (buffer[55] & 0x10000000) == 0x10000000;
 
                     Log.d(TAG, "Worn status:" + wornStatusB);
@@ -198,7 +195,7 @@ public class ZephyrBioHarness {
                             .putExtra(MsgHandler.KEY_SENSOR_DEVICE, "BioHarness " + deviceName);
                     batteryIntent.putExtra(MsgHandler.KEY_VALUE, wornStatusB);
                     batteryIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                            SenseSettings.SENSOR_DATA_TYPE_BOOL);
+                            Constants.SENSOR_DATA_TYPE_BOOL);
                     batteryIntent.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
                     context.startService(batteryIntent);
                 }
@@ -537,7 +534,7 @@ public class ZephyrBioHarness {
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                
+
                 if (!bioHarnessEnabled) {
                     return;
                 }
@@ -633,9 +630,9 @@ public class ZephyrBioHarness {
                 Log.d(TAG, "Stopping the BioHarness service");
                 updateHandler.removeCallbacks(updateThread);
                 btSocket2_1.close();
-                
+
                 context.unregisterReceiver(btReceiver);
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "Error in stopping bioHarness service" + e.getMessage());
             }

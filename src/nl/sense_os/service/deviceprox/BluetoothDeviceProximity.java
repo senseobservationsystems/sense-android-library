@@ -5,22 +5,6 @@
  */
 package nl.sense_os.service.deviceprox;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-
-import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.MsgHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import it.gerdavax.android.bluetooth.BluetoothException;
 import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
 import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
@@ -30,6 +14,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.MsgHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 public class BluetoothDeviceProximity {
     /*
@@ -83,7 +83,7 @@ public class BluetoothDeviceProximity {
                         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
                         i.putExtra(MsgHandler.KEY_SENSOR_NAME, BLUETOOTH_DISCOVERY);
                         i.putExtra(MsgHandler.KEY_VALUE, deviceJson.toString());
-                        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+                        i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
                         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
                         BluetoothDeviceProximity.this.context.startService(i);
                     }
@@ -166,9 +166,10 @@ public class BluetoothDeviceProximity {
                 }
 
                 String action = intent.getAction();
-                
+
                 if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF); 
+                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                            BluetoothAdapter.STATE_OFF);
                     if (state == BluetoothAdapter.STATE_ON) {
                         stop();
                         scanHandler.post(scanThread2_1 = new ScanThread2_1());
@@ -203,8 +204,7 @@ public class BluetoothDeviceProximity {
                             Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
                             i.putExtra(MsgHandler.KEY_SENSOR_NAME, BLUETOOTH_DISCOVERY);
                             i.putExtra(MsgHandler.KEY_VALUE, deviceJson.toString());
-                            i.putExtra(MsgHandler.KEY_DATA_TYPE,
-                                    SenseSettings.SENSOR_DATA_TYPE_JSON);
+                            i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
                             i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
                             BluetoothDeviceProximity.this.context.startService(i);
                         }
@@ -256,7 +256,7 @@ public class BluetoothDeviceProximity {
 
                     // listen for the adapter state to change to STATE_ON
                     context.registerReceiver(btReceiver, new IntentFilter(
-                            BluetoothAdapter.ACTION_STATE_CHANGED));                    
+                            BluetoothAdapter.ACTION_STATE_CHANGED));
                 }
             } else {
                 stop();

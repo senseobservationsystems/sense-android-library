@@ -16,7 +16,6 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 
-import nl.sense_os.app.SenseSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,9 +99,12 @@ public class MsgHandler extends Service {
                 if (response.get("http response code").compareToIgnoreCase("201") != 0)
                     Log.e(TAG,
                             "Sending sensor data failed. Response code:"
-                                    + response.get("http response code"));
-                else
+                                    + response.get("http response code") + ",  content: \'"
+                                    + response.get("content") + "\'");
+                else {
                     Log.d(TAG, "Sent sensor data OK!");
+                }
+                // Log.d(TAG, "  data: " + data);
             } catch (Exception e) {
                 Log.e(TAG, "Sending sensor data failed:" + e.getMessage());
             } finally {
@@ -328,22 +330,22 @@ public class MsgHandler extends Service {
         try {
             json.put("name", name);
             DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-            NumberFormat formatter = new DecimalFormat("##########.##", otherSymbols);   
+            NumberFormat formatter = new DecimalFormat("##########.##", otherSymbols);
             json.put("time", formatter.format(((double) time) / 1000.0d));
             json.put("type", type);
             json.put("device", (null == device) ? name : device);
 
-            if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
+            if (type.equals(Constants.SENSOR_DATA_TYPE_BOOL)) {
                 json.put("val", intent.getBooleanExtra(KEY_VALUE, false));
-            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
+            } else if (type.equals(Constants.SENSOR_DATA_TYPE_FLOAT)) {
                 json.put("val", intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE));
-            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
+            } else if (type.equals(Constants.SENSOR_DATA_TYPE_INT)) {
                 json.put("val", intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE));
-            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
+            } else if (type.equals(Constants.SENSOR_DATA_TYPE_JSON)) {
                 json.put("val", new JSONObject(intent.getStringExtra(KEY_VALUE)));
-            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
+            } else if (type.equals(Constants.SENSOR_DATA_TYPE_STRING)) {
                 json.put("val", intent.getStringExtra(KEY_VALUE));
-            } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+            } else if (type.equals(Constants.SENSOR_DATA_TYPE_FILE)) {
                 json.put("val", intent.getStringExtra(KEY_VALUE));
             } else {
                 Log.e(TAG, "Unexpected data type: " + type);
@@ -359,28 +361,28 @@ public class MsgHandler extends Service {
 
             // check if the app is in real-time sending mode
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            if (prefs.getString(SenseSettings.PREF_SYNC_RATE, "0").equals("-2")) {
+            if (prefs.getString(Constants.PREF_SYNC_RATE, "-2").equals("-2")) {
                 // real time mode, send immediately
                 String value = "";
-                if (type.equals(SenseSettings.SENSOR_DATA_TYPE_BOOL)) {
+                if (type.equals(Constants.SENSOR_DATA_TYPE_BOOL)) {
                     value += intent.getBooleanExtra(KEY_VALUE, false);
-                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FLOAT)) {
+                } else if (type.equals(Constants.SENSOR_DATA_TYPE_FLOAT)) {
                     value += intent.getFloatExtra(KEY_VALUE, Float.MIN_VALUE);
-                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_INT)) {
+                } else if (type.equals(Constants.SENSOR_DATA_TYPE_INT)) {
                     value += intent.getIntExtra(KEY_VALUE, Integer.MIN_VALUE);
-                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_JSON)) {
+                } else if (type.equals(Constants.SENSOR_DATA_TYPE_JSON)) {
                     try {
                         value += new JSONObject(intent.getStringExtra(KEY_VALUE)).toString();
                     } catch (JSONException e) {
                         Log.e(TAG, "JSONException creating object to POST", e);
                         return;
                     }
-                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_STRING)) {
+                } else if (type.equals(Constants.SENSOR_DATA_TYPE_STRING)) {
                     value += intent.getStringExtra(KEY_VALUE);
-                } else if (type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+                } else if (type.equals(Constants.SENSOR_DATA_TYPE_FILE)) {
                     value += intent.getStringExtra(KEY_VALUE);
                 }
-                // else if(type.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
+                // else if(type.equals(Constants.SENSOR_DATA_TYPE_FILE))
                 // {
                 // sendFile(name, value, type, device);
                 // return;
@@ -599,12 +601,12 @@ public class MsgHandler extends Service {
             String url = SenseApi.getSensorURL(this, sensorName, dataStructure, dataType,
                     deviceType);
 
-            final SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS,
+            final SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS,
                     android.content.Context.MODE_PRIVATE);
-            String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+            String cookie = prefs.getString(Constants.PREF_LOGIN_COOKIE, "");
 
             // check for sending a file
-            if (dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE)) {
+            if (dataType.equals(Constants.SENSOR_DATA_TYPE_FILE)) {
                 JSONArray data = ((JSONArray) sensorData.get("data"));
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject object = (JSONObject) data.get(i);
@@ -637,9 +639,9 @@ public class MsgHandler extends Service {
             JSONObject data = new JSONObject();
             data.put("value", sensorValue);
             DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-            //otherSymbols.setDecimalSeparator('.');
-            //otherSymbols.setGroupingSeparator('.');
-            NumberFormat formatter = new DecimalFormat("##########.##", otherSymbols);            
+            // otherSymbols.setDecimalSeparator('.');
+            // otherSymbols.setGroupingSeparator('.');
+            NumberFormat formatter = new DecimalFormat("##########.##", otherSymbols);
             data.put("date", formatter.format(((double) System.currentTimeMillis()) / 1000.0d));
             dataArray.put(data);
             sensorData.put("data", dataArray);

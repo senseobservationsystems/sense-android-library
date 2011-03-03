@@ -5,6 +5,12 @@
  */
 package nl.sense_os.app;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.DataTransmitter;
+import nl.sense_os.service.ISenseService;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,12 +42,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import nl.sense_os.service.DataTransmitter;
-import nl.sense_os.service.ISenseService;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 public class SenseSettings extends PreferenceActivity {
     /**
      * AsyncTask to check the login data with CommonSense. Takes no arguments to execute. Clears any
@@ -56,9 +56,8 @@ public class SenseSettings extends PreferenceActivity {
             boolean success = false;
             if (SenseSettings.this.service != null) {
                 try {
-                    success = SenseSettings.this.service.serviceLogin();
+                    success = SenseSettings.this.service.changeLogin();
                 } catch (final RemoteException e) {
-
                     e.printStackTrace();
                 }
             } else {
@@ -93,12 +92,7 @@ public class SenseSettings extends PreferenceActivity {
 
         @Override
         protected void onPreExecute() {
-        	// clear cached settings of the previous user (i.e. device id)
-        	SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, MODE_PRIVATE);
-			Editor editor = prefs.edit();
-			editor.putInt(SenseSettings.PREF_DEVICE_ID, -1);
-			editor.commit();
-        	
+
             // close the login dialog before showing the progress dialog
             try {
                 dismissDialog(DIALOG_LOGIN);
@@ -157,12 +151,12 @@ public class SenseSettings extends PreferenceActivity {
 
         @Override
         protected void onPreExecute() {
-        	// clear cached settings of the previous user (i.e. device id)
-        	SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, MODE_PRIVATE);
-			Editor editor = prefs.edit();
-			editor.putInt(SenseSettings.PREF_DEVICE_ID, -1);
-			editor.commit();
-        	
+            // clear cached settings of the previous user (i.e. device id)
+            SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
+            Editor editor = prefs.edit();
+            editor.putInt(Constants.PREF_DEVICE_ID, -1);
+            editor.commit();
+
             // close the login dialog before showing the progress dialog
             try {
                 dismissDialog(DIALOG_REGISTER);
@@ -178,117 +172,8 @@ public class SenseSettings extends PreferenceActivity {
     private static final int DIALOG_LOGIN = 1;
     private static final int DIALOG_PROGRESS = 2;
     private static final int DIALOG_REGISTER = 3;
-    /** Key for storing if the service is "alive", used for aggressive restarting after crashes. */
-    public static final String PREF_ALIVE = "alive";
-    /** Key for preference that toggles use of light sensor in ambience sensing. */
-    public static final String PREF_AMBIENCE_LIGHT = "ambience_light";
-    /** Key for preference that toggles use of the microphone in ambience sensing. */
-    public static final String PREF_AMBIENCE_MIC = "ambience_mic";
-    /** Key for preference to autostart the sense service in boot. */
-    public static final String PREF_AUTOSTART = "autostart";
-    /** Key for preference that controls sample frequency of the sensors. */
-    public static final String PREF_SAMPLE_RATE = "commonsense_rate";
-    /** Key for preference that saves the last running services. */
-    public static final String PREF_LAST_STATUS = "last_status";
-    /** Key for preference that toggles use of GPS in location sensor. */
-    public static final String PREF_LOCATION_GPS = "location_gps";
-    /** Key for preference that toggles use of Network in location sensor. */
-    public static final String PREF_LOCATION_NETWORK = "location_network";
-    /** Key for generic login preference that displays the login dialog when clicked. */
-    public static final String PREF_LOGIN = "login";
-    /** Key for login preference for session cookie. */
-    public static final String PREF_LOGIN_COOKIE = "login_cookie";
-    /** Key for login preference for email address. */
-    public static final String PREF_LOGIN_MAIL = "login_mail";
-    /** Key for login preference for username. */
-    @Deprecated
-    public static final String PREF_LOGIN_NAME = "login_name";
-    /** Key for login preference for hashed password. */
-    public static final String PREF_LOGIN_PASS = "login_pass";
-    /** Key for storing the online device id. */
-    public static final String PREF_DEVICE_ID = "device_id";
-    /** Key for storing the online sensor list (type of JSONArray). */
-    public static final String PREF_JSON_SENSOR_LIST = "json_sensor_list";
-    /** Key for storing the imei of the phone. */
-    public static final String PREF_PHONE_IMEI = "phone_imei";
-    /** Key for storing the type of the phone. */
-    public static final String PREF_PHONE_TYPE = "phone_type";
-    /** Key for preference that toggles use of GPS in location sensor. */
-    public static final String PREF_PROXIMITY_BT = "proximity_bt";
-    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
-    public static final String PREF_PROXIMITY_WIFI = "proximity_wifi";
-    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
-    public static final String PREF_MOTION_FALL_DETECT = "motion_fall_detector";
-    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
-    public static final String PREF_MOTION_FALL_DETECT_DEMO = "motion_fall_detector_demo";
-    /** Key for preference that sets the interval between pop quizzes. */
-    public static final String PREF_QUIZ_RATE = "popquiz_rate";
-    /** Key for preference that sets the silent mode for pop quizzes. */
-    public static final String PREF_QUIZ_SILENT_MODE = "popquiz_silent_mode";
-    /** Key for generic preference that starts an update of the quiz questions when clicked. */
-    public static final String PREF_QUIZ_SYNC = "popquiz_sync";
-    /** Key for preference that holds the last update time of the quiz questions with CommonSense. */
-    public static final String PREF_QUIZ_SYNC_TIME = "popquiz_sync_time";
-    /** Key for generic preference that shows the registration dialog when clicked. */
-    public static final String PREF_REGISTER = "register";
-    /** Key for preference that controls sync frequency with CommonSense. */
-    public static final String PREF_SYNC_RATE = "sync_rate";
-    /** Key for preference that toggles use of the Zephyr BioHarness. */
-    public static final String PREF_BIOHARNESS = "zephyrBioHarness";
-    /** Key for preference that toggles use of the Zephyr BioHarness Accelerometer. */
-    public static final String PREF_BIOHARNESS_ACC = "zephyrBioHarness_acc";
-    /** Key for preference that toggles use of the Zephyr BioHarness Heart rate. */
-    public static final String PREF_BIOHARNESS_HEART_RATE = "zephyrBioHarness_heartRate";
-    /** Key for preference that toggles use of the Zephyr BioHarness Temperature. */
-    public static final String PREF_BIOHARNESS_TEMP = "zephyrBioHarness_temp";
-    /** Key for preference that toggles use of the Zephyr BioHarness Respiration rate. */
-    public static final String PREF_BIOHARNESS_RESP = "zephyrBioHarness_resp";
-    /** Key for preference that toggles use of the Zephyr BioHarness Blood pressure. */
-    public static final String PREF_BIOHARNESS_BLOOD_PRESSURE = "zephyrBioHarness_bloodP";
-    /** Key for preference that toggles use of the Zephyr BioHarness worn status. */
-    public static final String PREF_BIOHARNESS_WORN_STATUS = "zephyrBioHarness_wornStatus";
-    /** Key for preference that toggles use of the Zephyr BioHarness battery level. */
-    public static final String PREF_BIOHARNESS_BATTERY = "zephyrBioHarness_battery";
-    /** Key for preference that toggles use of the Zephyr HxM. */
-    public static final String PREF_HXM = "zephyrHxM";
-    /** Key for preference that toggles use of the Zephyr HxM speed. */
-    public static final String PREF_HXM_SPEED= "zephyrHxM_speed";
-    /** Key for preference that toggles use of the Zephyr HxM heart rate. */
-    public static final String PREF_HXM_HEART_RATE = "zephyrHxM_heartRate";
-    /** Key for preference that toggles use of the Zephyr HxM battery. */
-    public static final String PREF_HXM_BATTERY = "zephyrHxM_battery";
-    /** Key for preference that toggles use of the Zephyr HxM distance. */
-    public static final String PREF_HXM_DISTANCE = "zephyrHxM_distance";
-    /** Name of the private preference file, used for storing login data. */
-    public static final String PRIVATE_PREFS = "login";
-    public static final String SENSOR_DATA_TYPE_BOOL = "bool";
-    public static final String SENSOR_DATA_TYPE_FLOAT = "float";
-    public static final String SENSOR_DATA_TYPE_INT = "int";
-    public static final String SENSOR_DATA_TYPE_JSON = "json";
-    public static final String SENSOR_DATA_TYPE_STRING = "string";
-    public static final String SENSOR_DATA_TYPE_FILE = "file";
     private static final String TAG = "Sense Settings";
-    
-    public static final String URL_BASE = "http://api.sense-os.nl/";
-    public static final String URL_VERSION = "http://data.sense-os.nl/senseapp/version.php";
-    public static final String URL_FORMAT = ".json";
-    public static final String URL_GET_DEVICES = URL_BASE + "devices" + URL_FORMAT;
-    public static final String URL_GET_SENSORS = URL_BASE + "devices/<id>/sensors" + URL_FORMAT;
-    public static final String URL_POST_SENSOR_DATA = URL_BASE + "sensors/<id>/data" + URL_FORMAT;
-    public static final String URL_POST_FILE = URL_BASE + "sensors/<id>/file" + URL_FORMAT;
-    public static final String URL_CREATE_SENSOR = URL_BASE + "sensors" + URL_FORMAT;
-    public static final String URL_ADD_SENSOR_TO_DEVICE = URL_BASE + "sensors/<id>/device" + URL_FORMAT;
-    public static final String URL_LOGIN = URL_BASE + "login" + URL_FORMAT;
-    public static final String URL_QUIZ_ADD_ANSWER = URL_BASE + "pop_quiz_answer_add.php";
-    public static final String URL_QUIZ_ADD_QUESTION = URL_BASE + "pop_quiz_question_add.php";
-    public static final String URL_QUIZ_CONNECT_ANSW_QSTN = URL_BASE
-            + "pop_quiz_connect_answer_to_question.php";
-    public static final String URL_QUIZ_GET_QSTNS = URL_BASE + "get_pop_quiz_questions.php";
-    public static final String URL_REG = URL_BASE + "users"+ URL_FORMAT;
-    public static final String URL_REG_PHONE = URL_BASE + "device_add.php";
-    public static final String URL_SEND_BATCH_DATA = URL_BASE + "device_batch_data_add.php";
-    public static final String URL_SEND_SENSOR_VALUE = URL_BASE + "device_sensor_data_add.php";
-    public static final String URL_SEND_SENSOR_DATA_FILE = URL_BASE + "device_sensor_add_file.php";
+
     private boolean isServiceBound;
     private ISenseService service = null;
     private final ServiceConnection serviceConn = new ServiceConnection() {
@@ -331,8 +216,8 @@ public class SenseSettings extends PreferenceActivity {
         login.addView(passField);
 
         // get current login email from preferences
-        final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
-        emailField.setText(prefs.getString(PREF_LOGIN_MAIL, ""));
+        final SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
+        emailField.setText(prefs.getString(Constants.PREF_LOGIN_MAIL, ""));
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dialog_login_title);
@@ -345,7 +230,7 @@ public class SenseSettings extends PreferenceActivity {
                 final String pass = passField.getText().toString();
 
                 final Editor editor = prefs.edit();
-                editor.putString(PREF_LOGIN_MAIL, name);
+                editor.putString(Constants.PREF_LOGIN_MAIL, name);
                 // put md5 string
                 String MD5Pass = "";
                 // Register to the Database
@@ -368,7 +253,7 @@ public class SenseSettings extends PreferenceActivity {
                 } catch (final NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
-                editor.putString(PREF_LOGIN_PASS, MD5Pass);
+                editor.putString(Constants.PREF_LOGIN_PASS, MD5Pass);
                 editor.commit();
 
                 // initiate Login
@@ -455,11 +340,11 @@ public class SenseSettings extends PreferenceActivity {
                         MD5Pass = hexString.toString();
 
                         // store the login value
-                        final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS,
-                                MODE_PRIVATE);
+                        final SharedPreferences prefs = getSharedPreferences(
+                                Constants.PRIVATE_PREFS, MODE_PRIVATE);
                         final Editor editor = prefs.edit();
-                        editor.putString(PREF_LOGIN_MAIL, email);
-                        editor.putString(PREF_LOGIN_PASS, MD5Pass);
+                        editor.putString(Constants.PREF_LOGIN_MAIL, email);
+                        editor.putString(Constants.PREF_LOGIN_PASS, MD5Pass);
                         editor.commit();
                         // start registration
                         new CheckRegisterTask().execute();
@@ -501,18 +386,18 @@ public class SenseSettings extends PreferenceActivity {
         Dialog dialog = null;
 
         switch (id) {
-        case DIALOG_LOGIN:
-            dialog = createDialogLogin();
-            break;
-        case DIALOG_REGISTER:
-            dialog = createDialogRegister();
-            break;
-        case DIALOG_PROGRESS:
-            dialog = createDialogLoginProgress();
-            break;
-        default:
-            dialog = super.onCreateDialog(id);
-            break;
+            case DIALOG_LOGIN :
+                dialog = createDialogLogin();
+                break;
+            case DIALOG_REGISTER :
+                dialog = createDialogRegister();
+                break;
+            case DIALOG_PROGRESS :
+                dialog = createDialogLoginProgress();
+                break;
+            default :
+                dialog = super.onCreateDialog(id);
+                break;
         }
         return dialog;
     }
@@ -526,11 +411,11 @@ public class SenseSettings extends PreferenceActivity {
             this.service = null;
             this.isServiceBound = false;
         }
-        
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.unregisterOnSharedPreferenceChangeListener(this.prefChangeListener);
     }
-    
+
     OnSharedPreferenceChangeListener prefChangeListener;
 
     @Override
@@ -542,14 +427,14 @@ public class SenseSettings extends PreferenceActivity {
             final Intent serviceIntent = new Intent(ISenseService.class.getName());
             this.isServiceBound = bindService(serviceIntent, this.serviceConn, 0);
         }
-        
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         this.prefChangeListener = new OnSharedPreferenceChangeListener() {
-            
+
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                
-                if (key.equals(PREF_SAMPLE_RATE)) {
+
+                if (key.equals(Constants.PREF_SAMPLE_RATE)) {
                     if (isServiceBound) {
                         // stop service
                         final boolean stopped = stopService(new Intent(
@@ -568,7 +453,8 @@ public class SenseSettings extends PreferenceActivity {
                             Log.w(TAG, "Could not start Sense service!");
                         }
 
-                        SenseSettings.this.isServiceBound = bindService(serviceIntent, SenseSettings.this.serviceConn, 0);
+                        SenseSettings.this.isServiceBound = bindService(serviceIntent,
+                                SenseSettings.this.serviceConn, 0);
                     }
                 }
             }
@@ -578,43 +464,42 @@ public class SenseSettings extends PreferenceActivity {
 
     private void onSampleRateChange(Preference pref, String newValue) {
         switch (Integer.parseInt(newValue)) {
-        case -2: // real time
-            pref.setSummary("Current setting: Real-time");
-            break;
-        case -1: // often
-            pref.setSummary("Current setting: Often");
-            break;
-        case 0: // normal
-            pref.setSummary("Current setting: Normal");
-            break;
-        case 1: // rarely
-            pref.setSummary("Current setting: Rarely");
-            break;
-        default:
-            pref.setSummary("ERROR");
+            case -2 : // real time
+                pref.setSummary("Current setting: Real-time");
+                break;
+            case -1 : // often
+                pref.setSummary("Current setting: Often");
+                break;
+            case 0 : // normal
+                pref.setSummary("Current setting: Normal");
+                break;
+            case 1 : // rarely
+                pref.setSummary("Current setting: Rarely");
+                break;
+            default :
+                pref.setSummary("ERROR");
         }
-        
 
     }
 
     private void onSyncRateChange(Preference pref, String newValue) {
         switch (Integer.parseInt(newValue)) {
-        case -2: // real time
-            pref.setSummary("Real-time connection with CommonSense");
-            break;
-        case -1: // often
-            pref.setSummary("Sync with CommonSense every 5 secs");
-            break;
-        case 0: // normal
-            pref.setSummary("Sync with CommonSense every minute");
-            break;
-        case 1: // rarely
-            pref.setSummary("Sync with CommonSense every hour (Eco-mode)");
-            break;
-        default:
-            pref.setSummary("ERROR");
+            case -2 : // real time
+                pref.setSummary("Real-time connection with CommonSense");
+                break;
+            case -1 : // often
+                pref.setSummary("Sync with CommonSense every 5 secs");
+                break;
+            case 0 : // normal
+                pref.setSummary("Sync with CommonSense every minute");
+                break;
+            case 1 : // rarely
+                pref.setSummary("Sync with CommonSense every hour (Eco-mode)");
+                break;
+            default :
+                pref.setSummary("ERROR");
         }
-        
+
         // re-set sync alarm
         Intent alarm = new Intent(this, DataTransmitter.class);
         PendingIntent operation = PendingIntent.getBroadcast(this, DataTransmitter.REQID, alarm, 0);
@@ -624,7 +509,7 @@ public class SenseSettings extends PreferenceActivity {
     }
 
     private void setupLoginPref() {
-        final Preference loginPref = findPreference(PREF_LOGIN);
+        final Preference loginPref = findPreference(Constants.PREF_LOGIN);
         loginPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
             @Override
@@ -633,14 +518,15 @@ public class SenseSettings extends PreferenceActivity {
                 return true;
             }
         });
-        final SharedPreferences loginPrefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
-        final String email = loginPrefs.getString(PREF_LOGIN_MAIL, "");
+        final SharedPreferences loginPrefs = getSharedPreferences(Constants.PRIVATE_PREFS,
+                MODE_PRIVATE);
+        final String email = loginPrefs.getString(Constants.PREF_LOGIN_MAIL, "");
         final String summary = email.length() > 0 ? email : "Enter your login details";
         loginPref.setSummary(summary);
     }
 
     private void setupQuizPref() {
-        final Preference popQuizRefresh = findPreference(PREF_QUIZ_SYNC);
+        final Preference popQuizRefresh = findPreference(Constants.PREF_QUIZ_SYNC);
         popQuizRefresh.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
             @Override
@@ -663,7 +549,7 @@ public class SenseSettings extends PreferenceActivity {
     }
 
     private void setupRegisterPref() {
-        final Preference registerPref = findPreference(PREF_REGISTER);
+        final Preference registerPref = findPreference(Constants.PREF_REGISTER);
         registerPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
             @Override
@@ -680,8 +566,8 @@ public class SenseSettings extends PreferenceActivity {
     private void showSummaries() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final Preference samplePref = findPreference(PREF_SAMPLE_RATE);
-        onSampleRateChange(samplePref, prefs.getString(PREF_SAMPLE_RATE, "0"));
+        final Preference samplePref = findPreference(Constants.PREF_SAMPLE_RATE);
+        onSampleRateChange(samplePref, prefs.getString(Constants.PREF_SAMPLE_RATE, "0"));
         samplePref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             @Override
@@ -691,8 +577,8 @@ public class SenseSettings extends PreferenceActivity {
             }
         });
 
-        final Preference syncPref = findPreference(PREF_SYNC_RATE);
-        onSyncRateChange(syncPref, prefs.getString(PREF_SYNC_RATE, "0"));
+        final Preference syncPref = findPreference(Constants.PREF_SYNC_RATE);
+        onSyncRateChange(syncPref, prefs.getString(Constants.PREF_SYNC_RATE, "0"));
         syncPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             @Override

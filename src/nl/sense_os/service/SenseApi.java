@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import nl.sense_os.app.SenseSettings;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -75,9 +74,9 @@ public class SenseApi {
     public static String getSensorURL(Context context, String sensorName, String sensorValue,
             String dataType, String deviceType) {
         try {
-            SharedPreferences prefs = context.getSharedPreferences(SenseSettings.PRIVATE_PREFS,
+            SharedPreferences prefs = context.getSharedPreferences(Constants.PRIVATE_PREFS,
                     android.content.Context.MODE_PRIVATE);
-            String sensorsStr = prefs.getString(SenseSettings.PREF_JSON_SENSOR_LIST, "");
+            String sensorsStr = prefs.getString(Constants.PREF_JSON_SENSOR_LIST, "");
             JSONArray sensors;
             if (sensorsStr.length() > 0) {
                 sensors = new JSONArray(sensorsStr);
@@ -86,11 +85,11 @@ public class SenseApi {
                     // found the right sensor
                     if (sensor.getString("device_type").compareToIgnoreCase(deviceType) == 0
                             && sensor.getString("name").compareToIgnoreCase(sensorName) == 0) {
-                        if (dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
-                            return SenseSettings.URL_POST_FILE.replaceFirst("<id>",
+                        if (dataType.equals(Constants.SENSOR_DATA_TYPE_FILE))
+                            return Constants.URL_POST_FILE.replaceFirst("<id>",
                                     sensor.getString("id"));
                         else
-                            return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>",
+                            return Constants.URL_POST_SENSOR_DATA.replaceFirst("<id>",
                                     sensor.getString("id"));
                     }
                 }
@@ -98,7 +97,7 @@ public class SenseApi {
                 sensors = new JSONArray();
 
             // Sensor not found, create it
-            URL url = new URL(SenseSettings.URL_CREATE_SENSOR);
+            URL url = new URL(Constants.URL_CREATE_SENSOR);
             final JSONObject newSensor = new JSONObject();
             JSONObject sensor = new JSONObject();
             sensor.put("name", sensorName);
@@ -117,7 +116,7 @@ public class SenseApi {
                 sensor.put("data_structure", dataStructJSon.toString().replaceAll("\"", "\\\""));
             }
             newSensor.put("sensor", sensor);
-            String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+            String cookie = prefs.getString(Constants.PREF_LOGIN_COOKIE, "");
             HashMap<String, String> response = sendJson(url, newSensor, "POST", cookie);
             if (response == null)
                 return null;
@@ -135,15 +134,15 @@ public class SenseApi {
             JSONObject JSONSensor = newJsonSensor.getJSONObject("sensor");
             sensors.put(JSONSensor);
             Editor editor = prefs.edit();
-            editor.putString(SenseSettings.PREF_JSON_SENSOR_LIST, sensors.toString());
+            editor.putString(Constants.PREF_JSON_SENSOR_LIST, sensors.toString());
             editor.commit();
             // Add sensor to this device
-            url = new URL(SenseSettings.URL_ADD_SENSOR_TO_DEVICE.replaceFirst("<id>",
+            url = new URL(Constants.URL_ADD_SENSOR_TO_DEVICE.replaceFirst("<id>",
                     (String) JSONSensor.get("id")));
             JSONObject newDevice = new JSONObject();
             JSONObject device = new JSONObject();
-            device.put("type", prefs.getString(SenseSettings.PREF_PHONE_TYPE, "smartphone"));
-            device.put("uuid", prefs.getString(SenseSettings.PREF_PHONE_IMEI, "0000000000"));
+            device.put("type", prefs.getString(Constants.PREF_PHONE_TYPE, "smartphone"));
+            device.put("uuid", prefs.getString(Constants.PREF_PHONE_IMEI, "0000000000"));
             newDevice.put("device", device);
 
             response = sendJson(url, newDevice, "POST", cookie);
@@ -157,11 +156,10 @@ public class SenseApi {
                 return null;
             }
 
-            if (dataType.equals(SenseSettings.SENSOR_DATA_TYPE_FILE))
-                return SenseSettings.URL_POST_FILE.replaceFirst("<id>",
-                        (String) JSONSensor.get("id"));
+            if (dataType.equals(Constants.SENSOR_DATA_TYPE_FILE))
+                return Constants.URL_POST_FILE.replaceFirst("<id>", (String) JSONSensor.get("id"));
             else
-                return SenseSettings.URL_POST_SENSOR_DATA.replaceFirst("<id>",
+                return Constants.URL_POST_SENSOR_DATA.replaceFirst("<id>",
                         (String) JSONSensor.get("id"));
         } catch (Exception e) {
             Log.e(TAG, "Error in retrieving the right sensor URL:" + e.getMessage());
@@ -212,13 +210,13 @@ public class SenseApi {
             // Get Response
             InputStream is = urlConn.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is), 1024);
-            String line;            
+            String line;
             StringBuffer responseString = new StringBuffer();
             while ((line = rd.readLine()) != null) {
                 responseString.append(line);
                 responseString.append('\r');
             }
-            
+
             rd.close();
             HashMap<String, String> response = new HashMap<String, String>();
             response.put("http response code", "" + urlConn.getResponseCode());

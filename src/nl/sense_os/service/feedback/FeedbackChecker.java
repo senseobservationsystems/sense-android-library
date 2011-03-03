@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.sense_os.app.SenseSettings;
+import nl.sense_os.service.Constants;
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.SenseApi;
 
@@ -33,23 +33,25 @@ public class FeedbackChecker extends IntentService {
 
         String url = getFeedbackUrl();
 
-        // only get the last value
-        url += "?last=1";
+        if (null != url) {
+            // only get the last value
+            url += "?last=1";
 
-        // get cookie for authentication
-        SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, MODE_PRIVATE);
-        String cookie = prefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
+            // get cookie for authentication
+            SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
+            String cookie = prefs.getString(Constants.PREF_LOGIN_COOKIE, null);
 
-        // get last feedback sensor value
-        try {
-            JSONObject json = SenseApi.getJSONObject(new URI(url), cookie);
-            parseFeedback(json);
-        } catch (URISyntaxException e) {
-            Log.e(TAG, "URISyntaxException checking feedback sensor", e);
+            // get last feedback sensor value
+            if (cookie != null) {
+                try {
+                    JSONObject json = SenseApi.getJSONObject(new URI(url), cookie);
+                    parseFeedback(json);
+                } catch (URISyntaxException e) {
+                    Log.e(TAG, "URISyntaxException checking feedback sensor", e);
+                }
+            }
         }
-
     }
-
     /**
      * @return URL of the feedback sensor for this user on CommonSense
      */
@@ -57,7 +59,7 @@ public class FeedbackChecker extends IntentService {
 
         // prepare dummy JSON object as value to create new feedback sensor
         Map<String, Object> jsonValues = new HashMap<String, Object>();
-        jsonValues.put("action", "popup");
+        jsonValues.put("action", "none");
         jsonValues.put("status", "idle");
         jsonValues.put("uri", "http://foo.bar");
 
@@ -89,7 +91,7 @@ public class FeedbackChecker extends IntentService {
             // do nothing
 
         } else if (status.equals("unread")) {
-            Log.d(TAG, "do \'" + action + "\' (" + uri + ")");
+            Log.d(TAG, "unread feedback: \'" + action + "\' (" + uri + ")");
             try {
                 Intent myAsk = new Intent("nl.sense_os.myask.FEEDBACK");
                 myAsk.putExtra("uri", uri);
@@ -107,7 +109,7 @@ public class FeedbackChecker extends IntentService {
             }
 
         } else {
-            Log.w(TAG, "Unexpected feedback action: \'" + action + "\'");
+            Log.w(TAG, "Unexpected feedback status: \'" + status + "\'");
         }
     }
 
@@ -186,7 +188,7 @@ public class FeedbackChecker extends IntentService {
         Intent newMsg = new Intent(MsgHandler.ACTION_NEW_MSG);
         newMsg.putExtra(MsgHandler.KEY_SENSOR_NAME, "feedback");
         newMsg.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "feedback");
-        newMsg.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        newMsg.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
         if (timestamp > System.currentTimeMillis() / 1000) {
             // make sure we really add this update as the newest value
             newMsg.putExtra(MsgHandler.KEY_TIMESTAMP, (long) ((timestamp + 1) * 1000));
@@ -219,7 +221,7 @@ public class FeedbackChecker extends IntentService {
         Intent newMsg = new Intent(MsgHandler.ACTION_NEW_MSG);
         newMsg.putExtra(MsgHandler.KEY_SENSOR_NAME, "feedback");
         newMsg.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "feedback");
-        newMsg.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        newMsg.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
         if (timestamp > System.currentTimeMillis() / 1000) {
             // make sure we really add this update as the newest value
             newMsg.putExtra(MsgHandler.KEY_TIMESTAMP, (long) ((timestamp + 1) * 1000));

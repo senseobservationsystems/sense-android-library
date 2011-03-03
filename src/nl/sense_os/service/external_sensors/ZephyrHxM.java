@@ -5,6 +5,18 @@
  */
 package nl.sense_os.service.external_sensors;
 
+import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
+import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
+import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.UUID;
+
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.MsgHandler;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -18,19 +30,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
-import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.MsgHandler;
-
-import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
-import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
-import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
 
 public class ZephyrHxM {
 
@@ -51,7 +50,7 @@ public class ZephyrHxM {
                 // received general data
                 if (buffer[0] == 0x02 && buffer[1] == 0x26 && buffer[2] == 55) {
                     // send heart rate
-                    if (prefs.getBoolean(SenseSettings.PREF_HXM_HEART_RATE, true)) {
+                    if (prefs.getBoolean(Constants.PREF_HXM_HEART_RATE, true)) {
                         int heartRate = Byte.valueOf(buffer[12]).intValue();
                         if (heartRate < 0)
                             heartRate = (heartRate + 255);
@@ -62,13 +61,13 @@ public class ZephyrHxM {
                         heartRateIntent.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "HxM " + deviceName);
                         heartRateIntent.putExtra(MsgHandler.KEY_VALUE, heartRate);
                         heartRateIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                                SenseSettings.SENSOR_DATA_TYPE_INT);
+                                Constants.SENSOR_DATA_TYPE_INT);
                         heartRateIntent.putExtra(MsgHandler.KEY_TIMESTAMP,
                                 System.currentTimeMillis());
                         context.startService(heartRateIntent);
                     }
                     // send speed
-                    if (prefs.getBoolean(SenseSettings.PREF_HXM_SPEED, true)) {
+                    if (prefs.getBoolean(Constants.PREF_HXM_SPEED, true)) {
                         int speed = (((int) buffer[52]) | (((int) buffer[53]) << 8));
                         float speedF = (float) speed / 256f;
 
@@ -78,13 +77,13 @@ public class ZephyrHxM {
                         heartRateIntent.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "HxM " + deviceName);
                         heartRateIntent.putExtra(MsgHandler.KEY_VALUE, speedF);
                         heartRateIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                                SenseSettings.SENSOR_DATA_TYPE_FLOAT);
+                                Constants.SENSOR_DATA_TYPE_FLOAT);
                         heartRateIntent.putExtra(MsgHandler.KEY_TIMESTAMP,
                                 System.currentTimeMillis());
                         context.startService(heartRateIntent);
                     }
                     // send distance
-                    if (prefs.getBoolean(SenseSettings.PREF_HXM_DISTANCE, true)) {
+                    if (prefs.getBoolean(Constants.PREF_HXM_DISTANCE, true)) {
                         int distance = (((int) buffer[50]) | (((int) buffer[51]) << 8));
                         float distanceF = (float) distance / 16F;
 
@@ -94,13 +93,13 @@ public class ZephyrHxM {
                         heartRateIntent.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "HxM " + deviceName);
                         heartRateIntent.putExtra(MsgHandler.KEY_VALUE, distanceF);
                         heartRateIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                                SenseSettings.SENSOR_DATA_TYPE_FLOAT);
+                                Constants.SENSOR_DATA_TYPE_FLOAT);
                         heartRateIntent.putExtra(MsgHandler.KEY_TIMESTAMP,
                                 System.currentTimeMillis());
                         context.startService(heartRateIntent);
                     }
                     // send battery charge
-                    if (prefs.getBoolean(SenseSettings.PREF_HXM_BATTERY, true)) {
+                    if (prefs.getBoolean(Constants.PREF_HXM_BATTERY, true)) {
                         Short battery = (short) buffer[11];
 
                         Log.d(TAG, "Battery charge:" + battery.intValue());
@@ -109,7 +108,7 @@ public class ZephyrHxM {
                         heartRateIntent.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "HxM " + deviceName);
                         heartRateIntent.putExtra(MsgHandler.KEY_VALUE, battery.intValue());
                         heartRateIntent.putExtra(MsgHandler.KEY_DATA_TYPE,
-                                SenseSettings.SENSOR_DATA_TYPE_INT);
+                                Constants.SENSOR_DATA_TYPE_INT);
                         heartRateIntent.putExtra(MsgHandler.KEY_TIMESTAMP,
                                 System.currentTimeMillis());
                         context.startService(heartRateIntent);
@@ -453,9 +452,9 @@ public class ZephyrHxM {
                 Log.d(TAG, "Stopping the HxM service");
                 updateHandler.removeCallbacks(updateThread);
                 btSocket2_1.close();
-                
+
                 context.unregisterReceiver(btReceiver);
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "Error in stopping the HxM service:" + e.getMessage());
             }

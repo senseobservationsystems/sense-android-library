@@ -5,6 +5,16 @@
  */
 package nl.sense_os.service.phonestate;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.MsgHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.CellLocation;
@@ -13,16 +23,6 @@ import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-
-import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.MsgHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
 
 public class SensePhoneState extends PhoneStateListener {
     private static final String NAME_CALL = "call state";
@@ -45,19 +45,19 @@ public class SensePhoneState extends PhoneStateListener {
         JSONObject json = new JSONObject();
         try {
             switch (state) {
-            case TelephonyManager.CALL_STATE_IDLE:
-                json.put("state", "idle");
-                break;
-            case TelephonyManager.CALL_STATE_OFFHOOK:
-                json.put("state", "calling");
-                break;
-            case TelephonyManager.CALL_STATE_RINGING:
-                json.put("state", "ringing");
-                json.put("incomingNumber", incomingNumber);
-                break;
-            default:
-                Log.e(TAG, "Unexpected call state: " + state);
-                return;
+                case TelephonyManager.CALL_STATE_IDLE :
+                    json.put("state", "idle");
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK :
+                    json.put("state", "calling");
+                    break;
+                case TelephonyManager.CALL_STATE_RINGING :
+                    json.put("state", "ringing");
+                    json.put("incomingNumber", incomingNumber);
+                    break;
+                default :
+                    Log.e(TAG, "Unexpected call state: " + state);
+                    return;
             }
         } catch (JSONException e) {
             Log.e(TAG, "JSONException in onCallChanged", e);
@@ -68,7 +68,7 @@ public class SensePhoneState extends PhoneStateListener {
         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_CALL);
         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
-        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
         this.context.startService(i);
     }
@@ -95,7 +95,7 @@ public class SensePhoneState extends PhoneStateListener {
          * 
          * // pass message to the MsgHandler Intent i = new Intent(this.context, MsgHandler.class);
          * i.putExtra("name", "dataActivity"); i.putExtra("msg", json.toString());
-         * i.putExtra("type", SenseSettings.SENSOR_DATA_TYPE_JSON); this.context.startService(i);
+         * i.putExtra("type", Constants.SENSOR_DATA_TYPE_JSON); this.context.startService(i);
          */
     }
 
@@ -104,59 +104,59 @@ public class SensePhoneState extends PhoneStateListener {
 
         String strState = "";
         switch (state) {
-        case TelephonyManager.DATA_CONNECTED:
-            // send the URL on which the phone can be reached
-            String ip = "";
-            try {
-                Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-                while (nis.hasMoreElements()) {
-                    NetworkInterface ni = nis.nextElement();
-                    Enumeration<InetAddress> iis = ni.getInetAddresses();
-                    while (iis.hasMoreElements()) {
-                        InetAddress ia = iis.nextElement();
-                        if (ni.getDisplayName().equalsIgnoreCase("rmnet0")) {
-                            ip = ia.getHostAddress();
+            case TelephonyManager.DATA_CONNECTED :
+                // send the URL on which the phone can be reached
+                String ip = "";
+                try {
+                    Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+                    while (nis.hasMoreElements()) {
+                        NetworkInterface ni = nis.nextElement();
+                        Enumeration<InetAddress> iis = ni.getInetAddresses();
+                        while (iis.hasMoreElements()) {
+                            InetAddress ia = iis.nextElement();
+                            if (ni.getDisplayName().equalsIgnoreCase("rmnet0")) {
+                                ip = ia.getHostAddress();
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error getting my own IP:", e);
+                    return;
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error getting my own IP:", e);
+                if (ip.length() > 1) {
+                    // pass message to the MsgHandler
+                    Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
+                    i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_IP);
+                    i.putExtra(MsgHandler.KEY_VALUE, ip);
+                    i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_STRING);
+                    i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+                    this.context.startService(i);
+                }
+                strState = "connected";
+                break;
+            case TelephonyManager.DATA_CONNECTING :
+                strState = "connecting";
+                break;
+            case TelephonyManager.DATA_DISCONNECTED :
+                strState = "disconnected";
+                break;
+            case TelephonyManager.DATA_SUSPENDED :
+                strState = "suspended";
+                break;
+            default :
+                Log.e(TAG, "Unexpected data connection state: " + state);
                 return;
-            }
-            if (ip.length() > 1) {
-                // pass message to the MsgHandler
-                Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
-                i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_IP);
-                i.putExtra(MsgHandler.KEY_VALUE, ip);
-                i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_STRING);
-                i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
-                this.context.startService(i);
-            }
-            strState = "connected";
-            break;
-        case TelephonyManager.DATA_CONNECTING:
-            strState = "connecting";
-            break;
-        case TelephonyManager.DATA_DISCONNECTED:
-            strState = "disconnected";
-            break;
-        case TelephonyManager.DATA_SUSPENDED:
-            strState = "suspended";
-            break;
-        default:
-            Log.e(TAG, "Unexpected data connection state: " + state);
-            return;
         }
 
         // pass message to the MsgHandler
         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_DATA);
         i.putExtra(MsgHandler.KEY_VALUE, strState);
-        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_STRING);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_STRING);
         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
         this.context.startService(i);
     }
-    
+
     @Override
     public void onMessageWaitingIndicatorChanged(boolean unreadMsgs) {
 
@@ -164,7 +164,7 @@ public class SensePhoneState extends PhoneStateListener {
         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_UNREAD);
         i.putExtra(MsgHandler.KEY_VALUE, unreadMsgs);
-        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_BOOL);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_BOOL);
         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
         this.context.startService(i);
     }
@@ -175,20 +175,21 @@ public class SensePhoneState extends PhoneStateListener {
         JSONObject json = new JSONObject();
         try {
             switch (serviceState.getState()) {
-            case ServiceState.STATE_EMERGENCY_ONLY:
-                json.put("state", "emergency calls only");
-                break;
-            case ServiceState.STATE_IN_SERVICE:
-                json.put("state", "in service");
-                String number = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number();
-                json.put("phone number", number);
-                break;
-            case ServiceState.STATE_OUT_OF_SERVICE:
-                json.put("state", "out of service");
-                break;
-            case ServiceState.STATE_POWER_OFF:
-                json.put("state", "power off");
-                break;
+                case ServiceState.STATE_EMERGENCY_ONLY :
+                    json.put("state", "emergency calls only");
+                    break;
+                case ServiceState.STATE_IN_SERVICE :
+                    json.put("state", "in service");
+                    String number = ((TelephonyManager) context
+                            .getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number();
+                    json.put("phone number", number);
+                    break;
+                case ServiceState.STATE_OUT_OF_SERVICE :
+                    json.put("state", "out of service");
+                    break;
+                case ServiceState.STATE_POWER_OFF :
+                    json.put("state", "power off");
+                    break;
             }
 
             json.put("manualSet", serviceState.getIsManualSelection() ? true : false);
@@ -202,14 +203,14 @@ public class SensePhoneState extends PhoneStateListener {
         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_SERVICE);
         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
-        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
         this.context.startService(i);
     }
-    
+
     @Override
     public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-        
+
         JSONObject json = new JSONObject();
         try {
             json.put("CDMA dBm", signalStrength.getCdmaDbm());
@@ -225,10 +226,9 @@ public class SensePhoneState extends PhoneStateListener {
         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME_SIGNAL);
         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
-        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
         this.context.startService(i);
     }
-   
 
 }

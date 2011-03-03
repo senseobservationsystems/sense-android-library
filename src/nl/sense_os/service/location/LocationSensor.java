@@ -5,18 +5,18 @@
  */
 package nl.sense_os.service.location;
 
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.MsgHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
-
-import nl.sense_os.app.SenseSettings;
-import nl.sense_os.service.MsgHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class LocationSensor implements LocationListener {
     private static final String TAG = "Sense LocationSensor";
@@ -33,15 +33,14 @@ public class LocationSensor implements LocationListener {
         try {
             json.put("latitude", fix.getLatitude());
             json.put("longitude", fix.getLongitude());
-            if (fix.hasAccuracy()) {
-                json.put("accuracy", fix.getAccuracy());
-            }
-            if (fix.hasAltitude()) {
-                json.put("altitude", fix.getAltitude());
-            }
-            if (fix.hasSpeed()) {
-                json.put("speed", fix.getSpeed());
-            }
+
+            // always include all JSON fields, otherwise we get a problem posting data with varying
+            // data_structure
+            json.put("accuracy", fix.hasAccuracy() ? fix.getAccuracy() : -1.0f);
+            json.put("altitude", fix.hasAltitude() ? fix.getAltitude() : -1.0d);
+            json.put("speed", fix.hasSpeed() ? fix.getSpeed() : -1.0f);
+            json.put("bearing", fix.hasBearing() ? fix.getBearing() : -1.0f);
+            json.put("provider", null != fix.getProvider() ? fix.getProvider() : "unknown");
         } catch (JSONException e) {
             Log.e(TAG, "JSONException in onLocationChanged", e);
             return;
@@ -51,7 +50,7 @@ public class LocationSensor implements LocationListener {
         Intent i = new Intent(MsgHandler.ACTION_NEW_MSG);
         i.putExtra(MsgHandler.KEY_SENSOR_NAME, NAME);
         i.putExtra(MsgHandler.KEY_VALUE, json.toString());
-        i.putExtra(MsgHandler.KEY_DATA_TYPE, SenseSettings.SENSOR_DATA_TYPE_JSON);
+        i.putExtra(MsgHandler.KEY_DATA_TYPE, Constants.SENSOR_DATA_TYPE_JSON);
         i.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
         this.context.startService(i);
     }

@@ -9,10 +9,10 @@ package nl.sense_os.app;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import nl.sense_os.service.Constants;
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.SenseService;
-import nl.sense_os.shared.Constants;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -60,7 +60,7 @@ public class SenseApp extends Activity {
             boolean success = false;
             if (SenseApp.this.service != null) {
                 try {
-                    success = SenseApp.this.service.serviceLogin();
+                    success = SenseApp.this.service.changeLogin();
                 } catch (final RemoteException e) {
                     Log.e(TAG, "RemoteException checking login", e);
                 }
@@ -319,14 +319,6 @@ public class SenseApp extends Activity {
     private static final int MENU_LOGIN = 2;
     private static final int MENU_REGISTER = 3;
     private static final int MENU_SETTINGS = 4;
-    /**
-     * Preference for the version of CommonSense, changes the communication scheme with CommonSense.
-     */
-    public static final String PREF_COMMONSENSE_VERSION = "cs_version";
-    /** Preference for determining whether the application is run for the first time ever. */
-    public static final String PREF_FIRSTRUN = "FirstRun";
-    /** Name of the private settings file, used for password storage. */
-    private static final String PRIVATE_PREFS = SenseSettings.PRIVATE_PREFS;
     private static final String TAG = "SenseApp";
     private final ISenseServiceCallback callback = new SenseCallback();
     private boolean isServiceBound;
@@ -406,8 +398,9 @@ public class SenseApp extends Activity {
         login.addView(passField);
 
         // get current login email from preferences
-        final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
-        emailField.setText(prefs.getString(SenseSettings.PREF_LOGIN_MAIL, ""));
+        final SharedPreferences privatePrefs = getSharedPreferences(Constants.PRIVATE_PREFS,
+                MODE_PRIVATE);
+        emailField.setText(privatePrefs.getString(Constants.PREF_LOGIN_MAIL, ""));
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dialog_login_title);
@@ -419,8 +412,8 @@ public class SenseApp extends Activity {
                 final String name = emailField.getText().toString();
                 final String pass = passField.getText().toString();
 
-                final Editor editor = prefs.edit();
-                editor.putString(SenseSettings.PREF_LOGIN_MAIL, name);
+                final Editor editor = privatePrefs.edit();
+                editor.putString(Constants.PREF_LOGIN_MAIL, name);
                 // put md5 string
                 String MD5Pass = "";
                 // Register to the Database
@@ -443,7 +436,7 @@ public class SenseApp extends Activity {
                 } catch (final NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
-                editor.putString(SenseSettings.PREF_LOGIN_PASS, MD5Pass);
+                editor.putString(Constants.PREF_LOGIN_PASS, MD5Pass);
                 editor.commit();
 
                 // initiate Login
@@ -525,11 +518,11 @@ public class SenseApp extends Activity {
                         MD5Pass = hexString.toString();
 
                         // store the login value
-                        final SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS,
-                                MODE_PRIVATE);
-                        final Editor editor = prefs.edit();
-                        editor.putString(SenseSettings.PREF_LOGIN_MAIL, email);
-                        editor.putString(SenseSettings.PREF_LOGIN_PASS, MD5Pass);
+                        final SharedPreferences privatePrefs = getSharedPreferences(
+                                Constants.PRIVATE_PREFS, MODE_PRIVATE);
+                        final Editor editor = privatePrefs.edit();
+                        editor.putString(Constants.PREF_LOGIN_MAIL, email);
+                        editor.putString(Constants.PREF_LOGIN_PASS, MD5Pass);
                         editor.commit();
                         // start registration
                         new CheckRegisterTask().execute();
@@ -749,19 +742,18 @@ public class SenseApp extends Activity {
         registerReceiver(this.serviceListener, filter);
 
         // show dialogs to handle special cases
-        SharedPreferences prefs = getSharedPreferences(PRIVATE_PREFS, MODE_PRIVATE);
-        if (prefs.getBoolean(PREF_FIRSTRUN, true)) {
+        SharedPreferences prefs = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE);
+        if (prefs.getBoolean(Constants.PREF_FIRSTLOGIN, true)) {
             // show informational dialog on first run
             Editor editor = prefs.edit();
-            editor.putBoolean(PREF_FIRSTRUN, false);
-            editor.putInt(PREF_COMMONSENSE_VERSION, COMMONSENSE_VERSION);
+            editor.putInt(Constants.PREF_COMMONSENSE_VERSION, COMMONSENSE_VERSION);
             editor.commit();
 
             showDialog(DIALOG_HELP);
-        } else if (prefs.getInt(PREF_COMMONSENSE_VERSION, 0) < COMMONSENSE_VERSION) {
-            // show alert about new commonsense version
+        } else if (prefs.getInt(Constants.PREF_COMMONSENSE_VERSION, 0) < COMMONSENSE_VERSION) {
+            // show alert about new CommonSense version
             Editor editor = prefs.edit();
-            editor.putInt(PREF_COMMONSENSE_VERSION, COMMONSENSE_VERSION);
+            editor.putInt(Constants.PREF_COMMONSENSE_VERSION, COMMONSENSE_VERSION);
             editor.commit();
 
             showDialog(DIALOG_UPDATE_ALERT);
@@ -779,8 +771,8 @@ public class SenseApp extends Activity {
                 if (active) {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_SAMPLE_RATE, "0"));
+                    final int rate = Integer.parseInt(prefs.getString(Constants.PREF_SAMPLE_RATE,
+                            "0"));
                     String interval = "";
                     switch (rate) {
                         case -2 : // real-time
@@ -802,7 +794,8 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg.replace("?", interval), Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
+                        .edit();
                 editor.putBoolean(Constants.PREF_STATUS_DEV_PROX, active).commit();
 
             } catch (RemoteException e) {
@@ -822,8 +815,8 @@ public class SenseApp extends Activity {
                 if (active) {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_SAMPLE_RATE, "0"));
+                    final int rate = Integer.parseInt(prefs.getString(Constants.PREF_SAMPLE_RATE,
+                            "0"));
                     String interval = "";
                     switch (rate) {
                         case -2 : // often
@@ -847,7 +840,8 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
+                        .edit();
                 editor.putBoolean(Constants.PREF_STATUS_EXTERNAL, active).commit();
 
             } catch (RemoteException e) {
@@ -867,8 +861,8 @@ public class SenseApp extends Activity {
                 if (active) {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_SAMPLE_RATE, "0"));
+                    final int rate = Integer.parseInt(prefs.getString(Constants.PREF_SAMPLE_RATE,
+                            "0"));
                     String interval = "";
                     switch (rate) {
                         case -2 : // often
@@ -892,7 +886,8 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
+                        .edit();
                 editor.putBoolean(Constants.PREF_STATUS_LOCATION, active).commit();
 
             } catch (RemoteException e) {
@@ -912,8 +907,8 @@ public class SenseApp extends Activity {
                 if (active) {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_SAMPLE_RATE, "0"));
+                    final int rate = Integer.parseInt(prefs.getString(Constants.PREF_SAMPLE_RATE,
+                            "0"));
                     String interval = "";
                     switch (rate) {
                         case -2 : // often
@@ -937,7 +932,8 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
+                        .edit();
                 editor.putBoolean(Constants.PREF_STATUS_MOTION, active).commit();
 
             } catch (RemoteException e) {
@@ -957,8 +953,8 @@ public class SenseApp extends Activity {
                 if (active) {
                     final SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(this);
-                    final int rate = Integer.parseInt(prefs.getString(
-                            SenseSettings.PREF_SAMPLE_RATE, "0"));
+                    final int rate = Integer.parseInt(prefs.getString(Constants.PREF_SAMPLE_RATE,
+                            "0"));
                     String intervalString = "";
                     String extraString = "";
                     switch (rate) {
@@ -987,7 +983,8 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
+                        .edit();
                 editor.putBoolean(Constants.PREF_STATUS_AMBIENCE, active).commit();
 
             } catch (RemoteException e) {
@@ -1009,7 +1006,8 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
+                        .edit();
                 editor.putBoolean(Constants.PREF_STATUS_PHONESTATE, active).commit();
 
             } catch (RemoteException e) {
@@ -1028,7 +1026,7 @@ public class SenseApp extends Activity {
                 // show informational toast
                 if (active) {
                     final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
-                    final int r = Integer.parseInt(p.getString(SenseSettings.PREF_QUIZ_RATE, "0"));
+                    final int r = Integer.parseInt(p.getString(Constants.PREF_QUIZ_RATE, "0"));
                     String interval = "ERROR";
                     switch (r) {
                         case -1 : // often (5 mins)
@@ -1045,12 +1043,14 @@ public class SenseApp extends Activity {
                             break;
                     }
 
-                    Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-                    editor.putBoolean(Constants.PREF_STATUS_POPQUIZ, active).commit();
-
                     String msg = getString(R.string.toast_toggle_quiz).replace("?", interval);
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
+
+                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
+                        .edit();
+                editor.putBoolean(Constants.PREF_STATUS_POPQUIZ, active).commit();
+
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling periodic popup service.");
             }
@@ -1093,7 +1093,7 @@ public class SenseApp extends Activity {
             updateUi();
         }
 
-        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
         editor.putBoolean(Constants.PREF_STATUS_MAIN, active).commit();
     }
 

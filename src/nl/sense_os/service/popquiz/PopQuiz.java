@@ -5,6 +5,17 @@
  */
 package nl.sense_os.service.popquiz;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import nl.sense_os.app.R;
+import nl.sense_os.service.Constants;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,9 +23,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,23 +33,12 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TabHost.TabSpec;
-
-import nl.sense_os.app.R;
-import nl.sense_os.app.SenseSettings;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import android.widget.Toast;
 
 public class PopQuiz extends Activity {
     /**
@@ -50,11 +50,11 @@ public class PopQuiz extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             // get tab activity label from the view
             Question q = PopQuiz.this.quiz.questions.get(PopQuiz.this.tabs.getCurrentTab());
-            Answer a = q.answers.get((int) id);            
+            Answer a = q.answers.get((int) id);
 
             Log.d(TAG, "Question answered!");
             Log.d(TAG, q.id + ") " + q.value + "\n --> " + a.id + ": " + a.value);
-            
+
             // save selection in preferences
             SharedPreferences prefs = PopQuiz.this.getSharedPreferences(
                     SenseAlarmManager.PREFS_LOCATION, Context.MODE_PRIVATE);
@@ -95,7 +95,7 @@ public class PopQuiz extends Activity {
 
     private Dialog createDialogConfirm() {
         // get registered activity and login name from preferences
-        final SharedPreferences loginPrefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS,
+        final SharedPreferences loginPrefs = getSharedPreferences(Constants.PRIVATE_PREFS,
                 MODE_PRIVATE);
         String name = loginPrefs.getString("login_name", "ERROR");
 
@@ -228,7 +228,7 @@ public class PopQuiz extends Activity {
         String timeString = timeString(this.entryId);
 
         // get login name from preferences
-        SharedPreferences prefs = getSharedPreferences(SenseSettings.PRIVATE_PREFS, MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
         String nameString = prefs.getString("login_name", "ERROR");
         if (nameString.equals("ERROR")) {
             Log.e(TAG, "Cannot fetch name from preferences.");
@@ -255,14 +255,14 @@ public class PopQuiz extends Activity {
                 removeDialog(DIALOG_WELCOME);
             }
         });
-//        builder.setNeutralButton("Change login", new OnClickListener() {
-//
-//            public void onClick(DialogInterface dialog, int which) {
-//                removeDialog(DIALOG_WELCOME);
-//                // TODO: fix login changing in PopQuiz
-//                // showDialog(DIALOG_LOGIN);
-//            }
-//        });
+        // builder.setNeutralButton("Change login", new OnClickListener() {
+        //
+        // public void onClick(DialogInterface dialog, int which) {
+        // removeDialog(DIALOG_WELCOME);
+        // // TODO: fix login changing in PopQuiz
+        // // showDialog(DIALOG_LOGIN);
+        // }
+        // });
         builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
 
             @Override
@@ -344,7 +344,7 @@ public class PopQuiz extends Activity {
             }
 
             populateTabs();
-//            populateLists();
+            // populateLists();
         }
     }
 
@@ -353,32 +353,32 @@ public class PopQuiz extends Activity {
         Dialog dialog = null;
 
         switch (id) {
-        case DIALOG_CONFIRM:
-            dialog = createDialogConfirm();
-            break;
-        case DIALOG_CONFIRM_CLOSE:
-            dialog = createDialogConfirmClose();
-            break;
-        case DIALOG_MISSED:
-            dialog = createDialogMissed();
-            break;
-        // case DIALOG_LOGIN:
-        // dialog = createDialogLogin();
-        // break;
-        // case DIALOG_LOGIN_PROGRESS:
-        // dialog = new ProgressDialog(this);
-        // ((ProgressDialog) dialog).setIcon(R.drawable.icon);
-        // dialog.setTitle("Een ogenblik geduld");
-        // ((ProgressDialog) dialog).setMessage("Inloggegevens controleren...");
-        // break;
-        case DIALOG_WELCOME:
-            dialog = createDialogWelcome(false);
-            break;
-        case DIALOG_WELCOME_CATCHUP:
-            dialog = createDialogWelcome(true);
-            break;
-        default:
-            dialog = null;
+            case DIALOG_CONFIRM :
+                dialog = createDialogConfirm();
+                break;
+            case DIALOG_CONFIRM_CLOSE :
+                dialog = createDialogConfirmClose();
+                break;
+            case DIALOG_MISSED :
+                dialog = createDialogMissed();
+                break;
+            // case DIALOG_LOGIN:
+            // dialog = createDialogLogin();
+            // break;
+            // case DIALOG_LOGIN_PROGRESS:
+            // dialog = new ProgressDialog(this);
+            // ((ProgressDialog) dialog).setIcon(R.drawable.icon);
+            // dialog.setTitle("Een ogenblik geduld");
+            // ((ProgressDialog) dialog).setMessage("Inloggegevens controleren...");
+            // break;
+            case DIALOG_WELCOME :
+                dialog = createDialogWelcome(false);
+                break;
+            case DIALOG_WELCOME_CATCHUP :
+                dialog = createDialogWelcome(true);
+                break;
+            default :
+                dialog = null;
         }
 
         return dialog;
@@ -395,19 +395,19 @@ public class PopQuiz extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean handled = false;
         switch (keyCode) {
-        case KeyEvent.KEYCODE_BACK:
-            if (false == this.selectionOk) {
-                showDialog(DIALOG_CONFIRM_CLOSE);
-                handled = true;
-            }
-            break;
+            case KeyEvent.KEYCODE_BACK :
+                if (false == this.selectionOk) {
+                    showDialog(DIALOG_CONFIRM_CLOSE);
+                    handled = true;
+                }
+                break;
         }
         return handled;
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        Object[] saveMe = { this.tabs.getCurrentTab(), this.loggedIn, this.selectionOk };
+        Object[] saveMe = {this.tabs.getCurrentTab(), this.loggedIn, this.selectionOk};
         return saveMe;
     }
 
@@ -440,25 +440,25 @@ public class PopQuiz extends Activity {
      */
     private void populateTabs() {
         this.tabs = (TabHost) findViewById(R.id.tabhost);
-        this.tabs.setup();            
+        this.tabs.setup();
         final OnItemClickListener listener = new MyListListener();
 
         for (final Question question : this.quiz.questions) {
             Log.d(TAG, "Displaying question " + question.id + ": " + question.value);
-            
+
             TabSpec spec = this.tabs.newTabSpec("q" + question.id);
-            spec.setContent(new TabHost.TabContentFactory(){
-                
+            spec.setContent(new TabHost.TabContentFactory() {
+
                 @Override
-                public View createTabContent(String tag)
-                {
+                public View createTabContent(String tag) {
                     // -- this tab contains a single control - the listview -- //
                     ListView qList = new ListView(PopQuiz.this);
                     String[] answers = new String[question.answers.size()];
-                    for (int i=0; i < answers.length; i++) {
+                    for (int i = 0; i < answers.length; i++) {
                         answers[i] = question.answers.get(i).value;
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(PopQuiz.this, R.layout.pq_list_row, R.id.label, answers);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(PopQuiz.this,
+                            R.layout.pq_list_row, R.id.label, answers);
                     qList.setAdapter(adapter);
                     qList.setOnItemClickListener(listener);
                     return qList;
