@@ -1,35 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nl.sense_os.app" android:versionCode="20110305" android:versionName="2.0.1">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="nl.sense_os.service">
 
     <application 
         android:label="@string/sense_app_name"
         android:icon="@drawable/ic_launcher_sense" 
-        android:theme="@android:style/Theme.Light.NoTitleBar">
-
-        <activity 
-            android:label="@string/sense_app_name"
-            android:name=".SenseApp"
-            android:configChanges="orientation">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="nl.sense_os.app.SenseApp" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        
-        <activity 
-            android:name=".SenseSettings" 
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:configChanges="orientation">            
-            <intent-filter>
-                <action android:name="nl.sense_os.app.Settings" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        android:theme="@android:style/Theme.Light.NoTitleBar">        
         
         <activity 
             android:name="nl.sense_os.service.popquiz.PopQuiz" 
@@ -126,16 +101,13 @@
     <uses-permission android:name="android.permission.INTERNET"/> 
     <uses-permission android:name="android.permission.VIBRATE"/> 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-
     <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
-
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.CAMERA"></uses-permission>
     <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"></uses-permission>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
 </manifest> 

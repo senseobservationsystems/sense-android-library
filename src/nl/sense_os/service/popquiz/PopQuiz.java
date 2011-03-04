@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import nl.sense_os.app.R;
 import nl.sense_os.service.Constants;
+import nl.sense_os.service.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

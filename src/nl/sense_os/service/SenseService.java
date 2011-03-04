@@ -12,7 +12,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 
-import nl.sense_os.app.R;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.deviceprox.DeviceProximity;
@@ -272,7 +271,8 @@ public class SenseService extends Service {
                             // Found the right device
                             if (uuid.compareToIgnoreCase(imei) == 0) {
                                 device_id = Integer.parseInt((String) (device.get("id")));
-                                editor.putString(Constants.PREF_DEVICE_TYPE, (String)device.get("type"));
+                                editor.putString(Constants.PREF_DEVICE_TYPE,
+                                        (String) device.get("type"));
                                 editor.putInt(Constants.PREF_DEVICE_ID, device_id);
                                 editor.commit();
                                 return device_id;
@@ -803,6 +803,11 @@ public class SenseService extends Service {
     }
 
     private void startSensorModules() {
+
+        final SharedPreferences prefss = PreferenceManager.getDefaultSharedPreferences(this);
+        final int rate = Integer.parseInt(prefss.getString(Constants.PREF_SAMPLE_RATE, "0"));
+        Log.d(TAG, "CommonSense sample rate: " + rate);
+
         final SharedPreferences prefs = getSharedPreferences(Constants.STATUSPREFS,
                 MODE_WORLD_WRITEABLE);
         if (started && prefs.getBoolean(Constants.PREF_STATUS_MAIN, false)) {
