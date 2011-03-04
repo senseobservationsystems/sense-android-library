@@ -136,6 +136,12 @@ public class FeedbackChecker extends IntentService {
      *            raw JSON sensor value, with status, action and uri properties
      */
     private void parseFeedback(JSONObject json) {
+
+        if (null == json) {
+            Log.d(TAG, "Feedback checking failed...");
+            return;
+        }
+
         try {
             // Log.d(TAG, "Feedback: " + json.toString(2));
 

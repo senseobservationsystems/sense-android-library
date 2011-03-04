@@ -151,11 +151,6 @@ public class SenseSettings extends PreferenceActivity {
 
         @Override
         protected void onPreExecute() {
-            // clear cached settings of the previous user (i.e. device id)
-            SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
-            Editor editor = prefs.edit();
-            editor.putInt(Constants.PREF_DEVICE_ID, -1);
-            editor.commit();
 
             // close the login dialog before showing the progress dialog
             try {

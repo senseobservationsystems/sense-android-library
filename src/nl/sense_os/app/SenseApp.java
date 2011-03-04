@@ -84,7 +84,9 @@ public class SenseApp extends Activity {
                 Toast.makeText(SenseApp.this, R.string.toast_login_ok, Toast.LENGTH_LONG).show();
 
                 // at least turn on phone state sensor after the very first login
+                toggleService(true);
                 togglePhoneState(true);
+                updateUi();
             }
         }
 
@@ -763,6 +765,10 @@ public class SenseApp extends Activity {
     }
 
     private void toggleDeviceProx(boolean active) {
+
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_DEV_PROX, active).commit();
+
         if (null != this.service) {
             try {
                 this.service.toggleDeviceProx(active, callback);
@@ -794,10 +800,6 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg.replace("?", interval), Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
-                        .edit();
-                editor.putBoolean(Constants.PREF_STATUS_DEV_PROX, active).commit();
-
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling device proximity service.");
             }
@@ -807,6 +809,10 @@ public class SenseApp extends Activity {
     }
 
     private void toggleExternalSensors(boolean active) {
+
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_EXTERNAL, active).commit();
+
         if (null != this.service) {
             try {
                 this.service.toggleExternalSensors(active, callback);
@@ -840,10 +846,6 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
-                        .edit();
-                editor.putBoolean(Constants.PREF_STATUS_EXTERNAL, active).commit();
-
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling external sensors service.");
             }
@@ -853,6 +855,10 @@ public class SenseApp extends Activity {
     }
 
     private void toggleLocation(boolean active) {
+
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_LOCATION, active).commit();
+
         if (null != this.service) {
             try {
                 this.service.toggleLocation(active, callback);
@@ -886,10 +892,6 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
-                        .edit();
-                editor.putBoolean(Constants.PREF_STATUS_LOCATION, active).commit();
-
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling location service.");
             }
@@ -899,6 +901,10 @@ public class SenseApp extends Activity {
     }
 
     private void toggleMotion(boolean active) {
+
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_MOTION, active).commit();
+
         if (null != this.service) {
             try {
                 this.service.toggleMotion(active, callback);
@@ -932,10 +938,6 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
-                        .edit();
-                editor.putBoolean(Constants.PREF_STATUS_MOTION, active).commit();
-
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling motion service.");
             }
@@ -945,6 +947,10 @@ public class SenseApp extends Activity {
     }
 
     private void toggleAmbience(boolean active) {
+
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_AMBIENCE, active).commit();
+
         if (null != this.service) {
             try {
                 this.service.toggleNoise(active, callback);
@@ -983,10 +989,6 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
-                        .edit();
-                editor.putBoolean(Constants.PREF_STATUS_AMBIENCE, active).commit();
-
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling ambience service.");
             }
@@ -996,6 +998,12 @@ public class SenseApp extends Activity {
     }
 
     private void togglePhoneState(boolean active) {
+
+        // put desired state in preferences
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_PHONESTATE, active).commit();
+
+        // toggle state in service
         if (null != this.service) {
             try {
                 this.service.togglePhoneState(active, callback);
@@ -1006,10 +1014,6 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
-                        .edit();
-                editor.putBoolean(Constants.PREF_STATUS_PHONESTATE, active).commit();
-
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling phone state service.");
             }
@@ -1019,6 +1023,10 @@ public class SenseApp extends Activity {
     }
 
     private void togglePopQuiz(boolean active) {
+
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_POPQUIZ, active).commit();
+
         if (null != this.service) {
             try {
                 this.service.togglePopQuiz(active, callback);
@@ -1047,10 +1055,6 @@ public class SenseApp extends Activity {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 }
 
-                Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE)
-                        .edit();
-                editor.putBoolean(Constants.PREF_STATUS_POPQUIZ, active).commit();
-
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling periodic popup service.");
             }
@@ -1067,6 +1071,9 @@ public class SenseApp extends Activity {
      * Afterwards, the UI is updated to make the ToggleButtons show the new service state.
      */
     private void toggleService(boolean active) {
+
+        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
+        editor.putBoolean(Constants.PREF_STATUS_MAIN, active).commit();
 
         if (true == active) {
             // start service
@@ -1092,9 +1099,6 @@ public class SenseApp extends Activity {
 
             updateUi();
         }
-
-        Editor editor = getSharedPreferences(Constants.STATUSPREFS, MODE_WORLD_WRITEABLE).edit();
-        editor.putBoolean(Constants.PREF_STATUS_MAIN, active).commit();
     }
 
     /**
