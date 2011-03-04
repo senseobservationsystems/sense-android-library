@@ -222,11 +222,11 @@ public class SenseApp extends Activity {
                     button = (CheckBox) findViewById(R.id.popquiz_cb);
                     final boolean popQuiz = ((status & Constants.STATUSCODE_QUIZ) > 0);
                     button.setChecked(popQuiz);
-                    button.setEnabled(connected);
+                    button.setEnabled(false);
                     text1 = findViewById(R.id.popquiz_firstline);
                     text2 = findViewById(R.id.popquiz_secondLine);
-                    text1.setEnabled(connected);
-                    text2.setEnabled(connected);
+                    text1.setEnabled(false);
+                    text2.setEnabled(false);
 
                     // enable motion list row
                     button = (CheckBox) findViewById(R.id.motion_cb);

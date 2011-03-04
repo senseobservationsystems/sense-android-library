@@ -186,11 +186,6 @@ public class SenseSettings extends PreferenceActivity {
     };
 
     private Dialog createDialogLogin() {
-        // start the service if it was not running already
-        if (this.service == null) {
-            final Intent serviceIntent = new Intent(ISenseService.class.getName());
-            bindService(serviceIntent, this.serviceConn, BIND_AUTO_CREATE);
-        }
 
         // create View with input fields for dialog content
         final LinearLayout login = new LinearLayout(this);
@@ -395,6 +390,30 @@ public class SenseSettings extends PreferenceActivity {
                 break;
         }
         return dialog;
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+            case DIALOG_LOGIN :
+                bindToService();
+                break;
+            case DIALOG_REGISTER :
+                bindToService();
+                break;
+            case DIALOG_PROGRESS :
+                break;
+            default :
+                break;
+        }
+    }
+
+    private void bindToService() {
+        // start the service if it was not running already
+        if (this.service == null) {
+            final Intent serviceIntent = new Intent(ISenseService.class.getName());
+            bindService(serviceIntent, this.serviceConn, BIND_AUTO_CREATE);
+        }
     }
 
     @Override
