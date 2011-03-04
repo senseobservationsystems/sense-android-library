@@ -141,7 +141,7 @@ public class SenseApi {
                     (String) JSONSensor.get("id")));
             JSONObject newDevice = new JSONObject();
             JSONObject device = new JSONObject();
-            device.put("type", prefs.getString(Constants.PREF_PHONE_TYPE, "smartphone"));
+            device.put("type", prefs.getString(Constants.PREF_DEVICE_TYPE, prefs.getString(Constants.PREF_PHONE_TYPE, "smartphone")));
             device.put("uuid", prefs.getString(Constants.PREF_PHONE_IMEI, "0000000000"));
             newDevice.put("device", device);
 

@@ -52,6 +52,8 @@ public class Constants {
     public static final String PREF_LOCATION_NETWORK = "location_network";
     /** Key for storing the online device id. */
     public static final String PREF_DEVICE_ID = "device_id";
+    /** Key for storing the online device type. */
+    public static final String PREF_DEVICE_TYPE = "device_type";
     /** Key for storing the online sensor list (type of JSONArray). */
     public static final String PREF_JSON_SENSOR_LIST = "json_sensor_list";
     /** Key for storing the imei of the phone. */

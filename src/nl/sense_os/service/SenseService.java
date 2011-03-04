@@ -240,6 +240,7 @@ public class SenseService extends Service {
         SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
         Editor editor = prefs.edit();
         editor.remove(Constants.PREF_DEVICE_ID);
+        editor.remove(Constants.PREF_DEVICE_TYPE);
         editor.commit();
 
         return senseServiceLogin();
@@ -271,6 +272,7 @@ public class SenseService extends Service {
                             // Found the right device
                             if (uuid.compareToIgnoreCase(imei) == 0) {
                                 device_id = Integer.parseInt((String) (device.get("id")));
+                                editor.putString(Constants.PREF_DEVICE_TYPE, (String)device.get("type"));
                                 editor.putInt(Constants.PREF_DEVICE_ID, device_id);
                                 editor.commit();
                                 return device_id;
@@ -625,6 +627,7 @@ public class SenseService extends Service {
         SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
         Editor editor = prefs.edit();
         editor.remove(Constants.PREF_DEVICE_ID);
+        editor.remove(Constants.PREF_DEVICE_TYPE);
         editor.commit();
 
         try {
