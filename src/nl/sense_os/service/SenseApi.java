@@ -56,8 +56,8 @@ public class SenseApi {
             StringBuffer responseString = new StringBuffer();
             while ((line = rd.readLine()) != null) {
                 responseString.append(line);
-                responseString.append('\r');
-            }
+                responseString.append('\r');                
+            }            
             rd.close();
             return new JSONObject(responseString.toString());
         } catch (Exception e) {

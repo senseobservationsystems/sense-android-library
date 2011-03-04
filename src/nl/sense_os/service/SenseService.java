@@ -240,7 +240,10 @@ public class SenseService extends Service {
             Editor editor = prefs.edit();
             int device_id = prefs.getInt(Constants.PREF_DEVICE_ID, -1);
             if (device_id != -1)
+            {            	
                 return device_id;
+            }
+
             String imei = this.telMan.getDeviceId();
             editor.putString(Constants.PREF_PHONE_IMEI, imei);
             editor.putString(Constants.PREF_PHONE_TYPE, Build.MODEL);
@@ -255,12 +258,14 @@ public class SenseService extends Service {
                         JSONObject device = (JSONObject) deviceList.get(x);
                         if (device != null) {
                             String uuid = (String) device.get("uuid");
-                            // Found the right device
+                            // Found the right device                            
                             if (uuid.compareToIgnoreCase(imei) == 0)
+                            {
                                 device_id = Integer.parseInt((String) (device.get("id")));
-                            editor.putInt(Constants.PREF_DEVICE_ID, device_id);
-                            editor.commit();
-                            return device_id;
+	                            editor.putInt(Constants.PREF_DEVICE_ID, device_id);
+	                            editor.commit();
+	                            return device_id;
+                            }
                         }
                     }
             }
@@ -275,7 +280,9 @@ public class SenseService extends Service {
         try {
             int device_id = getDeviceID();
             if (device_id == -1)
+            {            	
                 return;
+            }            
             URI uri = new URI(Constants.URL_GET_SENSORS.replaceAll("<id>", "" + device_id));
             SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
             String cookie = prefs.getString(Constants.PREF_LOGIN_COOKIE, "");
@@ -285,9 +292,9 @@ public class SenseService extends Service {
                 if (sensorList != null) {
                     Editor editor = prefs.edit();
                     editor.putString(Constants.PREF_JSON_SENSOR_LIST, sensorList.toString());
-                    editor.commit();
+                    editor.commit();                    
                 }
-            }
+            }            
         } catch (Exception e) {
             Log.e(TAG, "Error in retrieving registered sensors:" + e.getMessage());
         }
@@ -646,12 +653,12 @@ public class SenseService extends Service {
         // show notification that we are not logged in (yet)
         notifySenseLogin(true);
 
-        // clear cached settings of the previous user (i.e. device id)
+        // clear cached settings of the previous user (i.e. device id)    	
         SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
         Editor editor = prefs.edit();
         editor.putInt(Constants.PREF_DEVICE_ID, -1);
         editor.commit();
-
+        
         // try to login
         final String email = prefs.getString(Constants.PREF_LOGIN_MAIL, "");
         final String pass = prefs.getString(Constants.PREF_LOGIN_PASS, "");

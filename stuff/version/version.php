@@ -1,6 +1,6 @@
 <?php
 // Set the latest supported Sense App version
-$supportedVersion = array(1,7);
+$supportedVersion = array(2,0);
 $version = $_REQUEST['version'];
 $version = explode('.', $version);
 $oldVersion = 0;
