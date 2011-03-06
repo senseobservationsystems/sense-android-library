@@ -1,25 +1,11 @@
 /*
- ************************************************************************************************************
- *     Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.     *
- ************************************************************************************************************
+ * ***********************************************************************************************************
+ * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ * **
+ * ************************************************************************************************
+ * *********
  */
 package nl.sense_os.service;
-
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Locale;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Service;
 import android.content.ContentValues;
@@ -32,8 +18,22 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class MsgHandler extends Service {
 
@@ -93,20 +93,27 @@ public class MsgHandler extends Service {
 
         @Override
         public void run() {
+
+            // get sensor ID from the URL
+            int start = url.indexOf("/sensors/") + "/sensors/".length();
+            int end = url.indexOf("/data");
+            String sensorId = url.substring(start, end);
+
             try {
                 HashMap<String, String> response = SenseApi.sendJson(new URL(url), data, "POST",
                         cookie);
                 if (response.get("http response code").compareToIgnoreCase("201") != 0)
-                    Log.e(TAG,
-                            "Sending sensor data failed. Response code:"
-                                    + response.get("http response code") + ",  content: \'"
-                                    + response.get("content") + "\'");
+                    Log.e(TAG, "Sending sensor data failed. Sensor: " + sensorId
+                            + ", HTTP response code:" + response.get("http response code")
+                            + ",  content: \'" + response.get("content") + "\'");
                 else {
-                    Log.d(TAG, "Sent sensor data OK!");
+                    int bytes = data.toString().getBytes().length;
+                    Log.d(TAG, "Sent sensor data! Sensor ID: " + sensorId + ", raw data size: "
+                            + bytes + " bytes");
                 }
                 // Log.d(TAG, "  data: " + data);
             } catch (Exception e) {
-                Log.e(TAG, "Sending sensor data failed:" + e.getMessage());
+                Log.e(TAG, "Exception sending sensor data: " + e.getMessage());
             } finally {
                 --nrOfSendMessageThreads;
             }
@@ -360,8 +367,10 @@ public class MsgHandler extends Service {
         if (isOnline()) {
 
             // check if the app is in real-time sending mode
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            if (prefs.getString(Constants.PREF_SYNC_RATE, "-2").equals("-2")) {
+            final SharedPreferences mainPrefs = getSharedPreferences(Constants.MAIN_PREFS,
+                    MODE_WORLD_WRITEABLE);
+            final int rate = Integer.parseInt(mainPrefs.getString(Constants.PREF_SYNC_RATE, "0"));
+            if (rate == -2) {
                 // real time mode, send immediately
                 String value = "";
                 if (type.equals(Constants.SENSOR_DATA_TYPE_BOOL)) {
@@ -401,16 +410,15 @@ public class MsgHandler extends Service {
     }
 
     private void handleSendIntent(Intent intent) {
-        // Log.d(TAG, "handleSendIntent");
-
         if (isOnline()) {
-
             sendDataFromDb();
             sendDataFromBuffer();
-
         }
     }
 
+    /**
+     * @return <code>true</code> if the phone has network connectivity.
+     */
     private boolean isOnline() {
         final ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         final NetworkInfo info = cm.getActiveNetworkInfo();
@@ -515,9 +523,9 @@ public class MsgHandler extends Service {
     private boolean sendDataFromDb() {
         // query the database
         openDb();
-        String[] cols = {DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR};
+        String[] cols = { DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR };
         String sel = DbHelper.COL_ACTIVE + "!=?";
-        String[] selArgs = {"true"};
+        String[] selArgs = { "true" };
         Cursor c = this.db.query(DbHelper.TABLE_NAME, cols, sel, selArgs, null, null,
                 DbHelper.COL_SENSOR, null);
 
@@ -572,7 +580,7 @@ public class MsgHandler extends Service {
                 while (false == c.isAfterLast()) {
                     int id = c.getInt(c.getColumnIndex(DbHelper.COL_ROWID));
                     String where = DbHelper.COL_ROWID + "=?";
-                    String[] whereArgs = {"" + id};
+                    String[] whereArgs = { "" + id };
                     this.db.delete(DbHelper.TABLE_NAME, where, whereArgs);
                     c.moveToNext();
                 }
@@ -601,8 +609,8 @@ public class MsgHandler extends Service {
             String url = SenseApi.getSensorURL(this, sensorName, dataStructure, dataType,
                     deviceType);
 
-            final SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS,
-                    android.content.Context.MODE_PRIVATE);
+            final SharedPreferences prefs = getSharedPreferences(Constants.AUTH_PREFS,
+                    Context.MODE_PRIVATE);
             String cookie = prefs.getString(Constants.PREF_LOGIN_COOKIE, "");
 
             // check for sending a file

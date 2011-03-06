@@ -1,7 +1,9 @@
 /*
- ************************************************************************************************************
- *     Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.     *
- ************************************************************************************************************
+ * ***********************************************************************************************************
+ * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ * **
+ * ************************************************************************************************
+ * *********
  */
 package nl.sense_os.service;
 
@@ -11,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class DataTransmitter extends BroadcastReceiver {
@@ -22,31 +23,34 @@ public class DataTransmitter extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences statusPrefs = context.getSharedPreferences(Constants.STATUS_PREFS,
+                Context.MODE_WORLD_WRITEABLE);
+        final boolean alive = statusPrefs.getBoolean(Constants.PREF_ALIVE, false);
 
         // check if the service is (supposed to be) alive before scheduling next alarm
-        if (prefs.getBoolean(Constants.PREF_ALIVE, false)) {
+        if (true == alive) {
 
             // determine sync rate to schedule next alarm
+            final SharedPreferences mainPrefs = context.getSharedPreferences(Constants.MAIN_PREFS,
+                    Context.MODE_WORLD_WRITEABLE);
+            final int rate = Integer.parseInt(mainPrefs.getString(Constants.PREF_SYNC_RATE, "0"));
             long nextAlarm = 0;
-            switch (Integer.parseInt(prefs.getString(Constants.PREF_SYNC_RATE, "0"))) {
-                case -2 : // real-time: only clear out the buffer once, reset alarm in 1 hour
-                          // "just in case"
-                    nextAlarm = 1000L * 60 * 60;
-                    return;
-                case -1 : // 5 seconds
-                    nextAlarm = 1000L * 5;
-                    break;
-                case 0 : // 1 minute
-                    nextAlarm = 1000L * 60;
-                    break;
-                case 1 : // 1 hour
-                    nextAlarm = 1000L * 60 * 60;
-                    break;
-                default :
-                    final String val = prefs.getString(Constants.PREF_SYNC_RATE, "0");
-                    Log.e(TAG, "Unexpected sync rate value: " + val);
-                    return;
+            switch (rate) {
+            case -2: // real-time: clear out the buffer once, reset alarm in 1 hour "just in case"
+                nextAlarm = 1000L * 60 * 60;
+                return;
+            case -1: // 5 seconds
+                nextAlarm = 1000L * 5;
+                break;
+            case 0: // 1 minute
+                nextAlarm = 1000L * 60;
+                break;
+            case 1: // 1 hour
+                nextAlarm = 1000L * 60 * 60;
+                break;
+            default:
+                Log.e(TAG, "Unexpected sync rate value: " + rate);
+                return;
             }
 
             // set next alarm

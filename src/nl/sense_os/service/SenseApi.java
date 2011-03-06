@@ -1,17 +1,9 @@
 package nl.sense_os.service;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,10 +13,19 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class SenseApi {
 
@@ -44,7 +45,7 @@ public class SenseApi {
             if (response == null)
                 return null;
             if (response.getStatusLine().getStatusCode() != 200) {
-                Log.e(TAG, "Error receiving content for " + uri.toString() + " status code:"
+                Log.e(TAG, "Error receiving content for " + uri.toString() + ". Status code: "
                         + response.getStatusLine().getStatusCode());
                 return null;
             }
@@ -56,12 +57,12 @@ public class SenseApi {
             StringBuffer responseString = new StringBuffer();
             while ((line = rd.readLine()) != null) {
                 responseString.append(line);
-                responseString.append('\r');                
-            }            
+                responseString.append('\r');
+            }
             rd.close();
             return new JSONObject(responseString.toString());
         } catch (Exception e) {
-            Log.e(TAG, "Error receiving content for " + uri.toString() + " :" + e.getMessage());
+            Log.e(TAG, "Error receiving content for " + uri.toString() + ": " + e.getMessage());
             return null;
         }
     }
@@ -74,31 +75,37 @@ public class SenseApi {
     public static String getSensorURL(Context context, String sensorName, String sensorValue,
             String dataType, String deviceType) {
         try {
-            SharedPreferences prefs = context.getSharedPreferences(Constants.PRIVATE_PREFS,
-                    android.content.Context.MODE_PRIVATE);
-            String sensorsStr = prefs.getString(Constants.PREF_JSON_SENSOR_LIST, "");
+            final SharedPreferences authPrefs = context.getSharedPreferences(Constants.AUTH_PREFS,
+                    Context.MODE_PRIVATE);
+            String sensorsStr = authPrefs.getString(Constants.PREF_JSON_SENSOR_LIST, "");
             JSONArray sensors;
             if (sensorsStr.length() > 0) {
+
+                // check all the sensors in the list
                 sensors = new JSONArray(sensorsStr);
                 for (int x = 0; x < sensors.length(); x++) {
                     JSONObject sensor = (JSONObject) sensors.get(x);
-                    // found the right sensor
-                    if (sensor.getString("device_type").compareToIgnoreCase(deviceType) == 0
-                            && sensor.getString("name").compareToIgnoreCase(sensorName) == 0) {
-                        if (dataType.equals(Constants.SENSOR_DATA_TYPE_FILE))
+
+                    if (sensor.getString("device_type").equalsIgnoreCase(deviceType)
+                            && sensor.getString("name").equalsIgnoreCase(sensorName)) {
+
+                        // found the right sensor
+                        if (dataType.equals(Constants.SENSOR_DATA_TYPE_FILE)) {
                             return Constants.URL_POST_FILE.replaceFirst("<id>",
                                     sensor.getString("id"));
-                        else
+                        } else {
                             return Constants.URL_POST_SENSOR_DATA.replaceFirst("<id>",
                                     sensor.getString("id"));
+                        }
                     }
                 }
-            } else
+            } else {
                 sensors = new JSONArray();
+            }
 
-            // Sensor not found, create it
+            // Sensor not found, create it at CommonSense
             URL url = new URL(Constants.URL_CREATE_SENSOR);
-            final JSONObject newSensor = new JSONObject();
+            JSONObject postData = new JSONObject();
             JSONObject sensor = new JSONObject();
             sensor.put("name", sensorName);
             sensor.put("device_type", deviceType);
@@ -115,54 +122,86 @@ public class SenseApi {
                 }
                 sensor.put("data_structure", dataStructJSon.toString().replaceAll("\"", "\\\""));
             }
-            newSensor.put("sensor", sensor);
-            String cookie = prefs.getString(Constants.PREF_LOGIN_COOKIE, "");
-            HashMap<String, String> response = sendJson(url, newSensor, "POST", cookie);
-            if (response == null)
+            postData.put("sensor", sensor);
+            String cookie = authPrefs.getString(Constants.PREF_LOGIN_COOKIE, "");
+            HashMap<String, String> response = sendJson(url, postData, "POST", cookie);
+            if (response == null) {
+                // failed to create the sensor
                 return null;
-
+            }
             if (response.get("http response code").compareToIgnoreCase("201") != 0) {
-                Log.e(TAG,
-                        "Error creating sensor got response code:"
-                                + response.get("http response code"));
+                String code = response.get("http response code");
+                Log.e(TAG, "Error creating sensor. Got response code: " + code);
                 return null;
             }
 
+            // store sensor URL in the preferences
             String content = response.get("content");
-            Log.d(TAG, "Created sensor:" + sensorName);
-            JSONObject newJsonSensor = new JSONObject(content);
-            JSONObject JSONSensor = newJsonSensor.getJSONObject("sensor");
+            Log.d(TAG, "Created sensor: \'" + sensorName + "\'");
+            JSONObject responseJson = new JSONObject(content);
+            JSONObject JSONSensor = responseJson.getJSONObject("sensor");
             sensors.put(JSONSensor);
-            Editor editor = prefs.edit();
+            Editor editor = authPrefs.edit();
             editor.putString(Constants.PREF_JSON_SENSOR_LIST, sensors.toString());
             editor.commit();
-            // Add sensor to this device
+
+            // Add sensor to this device at CommonSense
+            String phoneType = authPrefs.getString(Constants.PREF_PHONE_TYPE, "smartphone");
             url = new URL(Constants.URL_ADD_SENSOR_TO_DEVICE.replaceFirst("<id>",
                     (String) JSONSensor.get("id")));
-            JSONObject newDevice = new JSONObject();
+            postData = new JSONObject();
             JSONObject device = new JSONObject();
-            device.put("type", prefs.getString(Constants.PREF_DEVICE_TYPE, prefs.getString(Constants.PREF_PHONE_TYPE, "smartphone")));
-            device.put("uuid", prefs.getString(Constants.PREF_PHONE_IMEI, "0000000000"));
-            newDevice.put("device", device);
+            device.put("type", authPrefs.getString(Constants.PREF_DEVICE_TYPE, phoneType));
+            device.put("uuid", authPrefs.getString(Constants.PREF_PHONE_IMEI, "0000000000"));
+            postData.put("device", device);
 
-            response = sendJson(url, newDevice, "POST", cookie);
-            if (response == null)
+            response = sendJson(url, postData, "POST", cookie);
+            if (response == null) {
+                // failed to add the sensor to the device
                 return null;
-
+            }
             if (response.get("http response code").compareToIgnoreCase("201") != 0) {
-                Log.e(TAG,
-                        "Error adding sensor to device response code:"
-                                + response.get("http response code"));
+                String code = response.get("http response code");
+                Log.e(TAG, "Error adding sensor to device. Got response code: " + code);
                 return null;
             }
 
-            if (dataType.equals(Constants.SENSOR_DATA_TYPE_FILE))
+            if (dataType.equals(Constants.SENSOR_DATA_TYPE_FILE)) {
                 return Constants.URL_POST_FILE.replaceFirst("<id>", (String) JSONSensor.get("id"));
-            else
+            } else {
                 return Constants.URL_POST_SENSOR_DATA.replaceFirst("<id>",
                         (String) JSONSensor.get("id"));
+            }
         } catch (Exception e) {
-            Log.e(TAG, "Error in retrieving the right sensor URL:" + e.getMessage());
+            Log.e(TAG, "Exception in retrieving the right sensor URL: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * @param hashMe
+     *            "clear" password String to be hashed before sending it to CommonSense
+     * @return hashed String
+     */
+    public static String hashPassword(String hashMe) {
+        final byte[] unhashedBytes = hashMe.getBytes();
+        try {
+            final MessageDigest algorithm = MessageDigest.getInstance("MD5");
+            algorithm.reset();
+            algorithm.update(unhashedBytes);
+            final byte[] hashedBytes = algorithm.digest();
+
+            final StringBuffer hexString = new StringBuffer();
+            for (final byte element : hashedBytes) {
+                final String hex = Integer.toHexString(0xFF & element);
+                if (hex.length() == 1) {
+                    hexString.append(0);
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (final NoSuchAlgorithmException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -231,7 +270,7 @@ public class SenseApi {
             }
             return response;
         } catch (Exception e) {
-            Log.e(TAG, "Error in posting Json:" + json.toString() + "\n" + e.getMessage());
+            Log.e(TAG, "Error in posting Json: " + json.toString() + "\n" + e.getMessage());
             return null;
         } finally {
 

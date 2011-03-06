@@ -1,9 +1,10 @@
 package nl.sense_os.service.feedback;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
+import android.app.IntentService;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 
 import nl.sense_os.service.Constants;
 import nl.sense_os.service.MsgHandler;
@@ -13,11 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.IntentService;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FeedbackChecker extends IntentService {
 
@@ -29,7 +29,7 @@ public class FeedbackChecker extends IntentService {
     }
 
     private void checkFeedback() {
-        Log.d(TAG, "checkFeedback");
+        // Log.d(TAG, "checkFeedback");
 
         String url = getFeedbackUrl();
 
@@ -38,8 +38,8 @@ public class FeedbackChecker extends IntentService {
             url += "?last=1";
 
             // get cookie for authentication
-            SharedPreferences prefs = getSharedPreferences(Constants.PRIVATE_PREFS, MODE_PRIVATE);
-            String cookie = prefs.getString(Constants.PREF_LOGIN_COOKIE, null);
+            SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
+            String cookie = authPrefs.getString(Constants.PREF_LOGIN_COOKIE, null);
 
             // get last feedback sensor value
             if (cookie != null) {
@@ -52,6 +52,7 @@ public class FeedbackChecker extends IntentService {
             }
         }
     }
+
     /**
      * @return URL of the feedback sensor for this user on CommonSense
      */
@@ -138,7 +139,7 @@ public class FeedbackChecker extends IntentService {
     private void parseFeedback(JSONObject json) {
 
         if (null == json) {
-            Log.d(TAG, "Feedback checking failed...");
+            Log.w(TAG, "Feedback checking failed...");
             return;
         }
 
@@ -164,7 +165,7 @@ public class FeedbackChecker extends IntentService {
                 handleFeedback(status, action, uri, date);
 
             } else {
-                Log.d(TAG, "No feedback available (yet)...");
+                // Log.d(TAG, "No feedback available (yet)...");
             }
 
         } catch (JSONException e) {

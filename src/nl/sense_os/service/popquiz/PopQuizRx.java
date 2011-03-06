@@ -1,20 +1,22 @@
 /*
- ************************************************************************************************************
- *     Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.     *
- ************************************************************************************************************
+ * ***********************************************************************************************************
+ * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ * **
+ * ************************************************************************************************
+ * *********
  */
 package nl.sense_os.service.popquiz;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import nl.sense_os.service.Constants;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import nl.sense_os.service.Constants;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PopQuizRx extends BroadcastReceiver {
     private static final String TAG = "PopQuizRx";
@@ -41,8 +43,9 @@ public class PopQuizRx extends BroadcastReceiver {
 
             // check whether to show the activity picker or not, depending on the silent mode
             // setting.
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            final boolean silentMode = prefs.getBoolean(Constants.PREF_QUIZ_SILENT_MODE, false);
+            final SharedPreferences mainPrefs = context.getSharedPreferences(Constants.MAIN_PREFS,
+                    Context.MODE_WORLD_WRITEABLE);
+            final boolean silentMode = mainPrefs.getBoolean(Constants.PREF_QUIZ_SILENT_MODE, false);
 
             if (false == silentMode) {
                 Log.d(TAG, "Starting pop quiz activity...");

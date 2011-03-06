@@ -1,17 +1,11 @@
 /*
- ************************************************************************************************************
- *     Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.     *
- ************************************************************************************************************
+ * ***********************************************************************************************************
+ * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ * **
+ * ************************************************************************************************
+ * *********
  */
 package nl.sense_os.service.motion;
-
-import java.util.List;
-
-import nl.sense_os.service.Constants;
-import nl.sense_os.service.MsgHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,8 +15,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.MsgHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 public class MotionSensor implements SensorEventListener {
 
@@ -80,18 +81,18 @@ public class MotionSensor implements SensorEventListener {
 
             String sensorName = "";
             switch (sensor.getType()) {
-                case Sensor.TYPE_ACCELEROMETER :
-                    sensorName = NAME_ACCELR;
-                    break;
-                case Sensor.TYPE_ORIENTATION :
-                    sensorName = NAME_ORIENT;
-                    break;
-                case Sensor.TYPE_MAGNETIC_FIELD :
-                    sensorName = NAME_MAGNET;
-                    break;
-                case Sensor.TYPE_GYROSCOPE :
-                    sensorName = NAME_GYRO;
-                    break;
+            case Sensor.TYPE_ACCELEROMETER:
+                sensorName = NAME_ACCELR;
+                break;
+            case Sensor.TYPE_ORIENTATION:
+                sensorName = NAME_ORIENT;
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                sensorName = NAME_MAGNET;
+                break;
+            case Sensor.TYPE_GYROSCOPE:
+                sensorName = NAME_GYRO;
+                break;
             }
 
             JSONObject json = new JSONObject();
@@ -99,32 +100,32 @@ public class MotionSensor implements SensorEventListener {
             try {
                 for (float value : event.values) {
                     switch (axis) {
-                        case 0 :
-                            if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
-                                    || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                                json.put("x-axis", value);
-                            } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
-                                    || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-                                json.put("azimuth", value);
-                            }
-                            break;
-                        case 1 :
-                            if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
-                                    || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                                json.put("y-axis", value);
-                            } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
-                                    || sensor.getType() == Sensor.TYPE_GYROSCOPE)
-                                json.put("pitch", value);
-                            break;
-                        case 2 :
-                            if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
-                                    || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                                json.put("z-axis", value);
-                            } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
-                                    || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-                                json.put("roll", value);
-                            }
-                            break;
+                    case 0:
+                        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
+                                || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                            json.put("x-axis", value);
+                        } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
+                                || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                            json.put("azimuth", value);
+                        }
+                        break;
+                    case 1:
+                        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
+                                || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                            json.put("y-axis", value);
+                        } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
+                                || sensor.getType() == Sensor.TYPE_GYROSCOPE)
+                            json.put("pitch", value);
+                        break;
+                    case 2:
+                        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
+                                || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                            json.put("z-axis", value);
+                        } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
+                                || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                            json.put("roll", value);
+                        }
+                        break;
                     }
                     axis++;
                 }
@@ -171,10 +172,12 @@ public class MotionSensor implements SensorEventListener {
 
     public void startMotionSensing(long _sampleDelay) {
         // check if the falldetector is enabled
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        useFallDetector = prefs.getBoolean(Constants.PREF_MOTION_FALL_DETECT, true);
-        if (fallDetector.demo = prefs.getBoolean(Constants.PREF_MOTION_FALL_DETECT_DEMO, false))
+        final SharedPreferences mainPrefs = context.getSharedPreferences(Constants.MAIN_PREFS,
+                Context.MODE_WORLD_WRITEABLE);
+        useFallDetector = mainPrefs.getBoolean(Constants.PREF_MOTION_FALL_DETECT, true);
+        if (fallDetector.demo = mainPrefs.getBoolean(Constants.PREF_MOTION_FALL_DETECT_DEMO, false)) {
             useFallDetector = true;
+        }
 
         if (firstStart && useFallDetector) {
             sendFallMessage(false);
@@ -198,9 +201,10 @@ public class MotionSensor implements SensorEventListener {
             motionSensingActive = false;
             smgr.unregisterListener(this);
 
-            if (motionThread != null)
+            if (motionThread != null) {
                 motionHandler.removeCallbacks(motionThread);
-            motionThread = null;
+                motionThread = null;
+            }
 
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());

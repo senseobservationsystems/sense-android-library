@@ -1,113 +1,345 @@
 package nl.sense_os.service;
 
+import android.content.Context;
+
 public class Constants {
 
-    /* keys for 'service status' preferences, that are used to toggle the active sensor modules */
-    public static final String STATUSPREFS = "service_status_prefs";
-    public static final String PREF_STATUS_AMBIENCE = "ambience component status";
-    public static final String PREF_STATUS_DEV_PROX = "device proximity component status";
-    public static final String PREF_STATUS_EXTERNAL = "external services component status";
-    public static final String PREF_STATUS_LOCATION = "location component status";
+    /* ======================================================================================== */
+    /* -------------------------Sense service status preferences ------------------------------ */
+    /* ======================================================================================== */
+    /**
+     * Name of shared preferences file holding the desired status of the Sense service.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     * @see #MAIN_PREFS
+     */
+    public static final String STATUS_PREFS = "service_status_prefs";
+    /**
+     * Key for the main status of the sensors. Set to <code>false</code> to disable all the sensing
+     * components.
+     * 
+     * @see #STATUS_PREFS
+     */
     public static final String PREF_STATUS_MAIN = "main service status";
+    /**
+     * Key for the status of the "ambience" sensors. Set to <code>true</code> to enable sensing.
+     * 
+     * @see #STATUS_PREFS
+     */
+    public static final String PREF_STATUS_AMBIENCE = "ambience component status";
+    /**
+     * Key for the status of the "device proximity" sensors. Set to <code>true</code> to enable
+     * sensing.
+     * 
+     * @see #STATUS_PREFS
+     */
+    public static final String PREF_STATUS_DEV_PROX = "device proximity component status";
+    /**
+     * Key for the status of the external Bluetooth sensors. Set to <code>true</code> to enable
+     * sensing.
+     * 
+     * @see #STATUS_PREFS
+     */
+    public static final String PREF_STATUS_EXTERNAL = "external services component status";
+    /**
+     * Key for the status of the location sensors. Set to <code>true</code> to enable sensing.
+     * 
+     * @see #STATUS_PREFS
+     */
+    public static final String PREF_STATUS_LOCATION = "location component status";
+    /**
+     * Key for the status of the motion sensors. Set to <code>true</code> to enable sensing.
+     * 
+     * @see #STATUS_PREFS
+     */
     public static final String PREF_STATUS_MOTION = "motion component status";
+    /**
+     * Key for the status of the "phone state" sensors. Set to <code>true</code> to enable sensing.
+     * 
+     * @see #STATUS_PREFS
+     */
     public static final String PREF_STATUS_PHONESTATE = "phone state component status";
+    /**
+     * Key for the status of the questionnaire. Set to <code>true</code> to enable it.
+     * 
+     * @see #STATUS_PREFS
+     */
     public static final String PREF_STATUS_POPQUIZ = "pop quiz component status";
+    /**
+     * Key for preference to automatically start the Sense service on boot.
+     * 
+     * @see #STATUS_PREFS
+     */
+    public static final String PREF_AUTOSTART = "autostart";
+    /**
+     * Key for storing if the service is supposed to be "alive", used for aggressive restarting
+     * after crashes.
+     * 
+     * @see #STATUS_PREFS
+     */
+    public static final String PREF_ALIVE = "alive";
 
-    /* keys for private 'login' preferences, storing the cookies and login data */
-    /** Name of the private preference file, used for storing login data. */
-    public static final String PRIVATE_PREFS = "login";
-    /** Key for generic login preference that displays the login dialog when clicked. */
+    /* ======================================================================================== */
+    /* --------------------- CommonSense authentication preferences --------------------------- */
+    /* ======================================================================================== */
+    /**
+     * Name of the shared preferences file used for storing CommonSense authentication data. Use
+     * {@link Context#MODE_PRIVATE}.
+     * 
+     * @see #MAIN_PREFS_PREFS
+     * @see #STATUS_PREFS
+     */
+    public static final String AUTH_PREFS = "authentication";// "login";
+    /**
+     * Key for generic login preference that displays the login dialog when clicked.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
     public static final String PREF_LOGIN = "login";
-    /** Key for login preference for session cookie. */
+    /**
+     * Key for login preference for session cookie.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
     public static final String PREF_LOGIN_COOKIE = "login_cookie";
-    /** Key for login preference for email address. */
-    public static final String PREF_LOGIN_MAIL = "login_mail";
-    /** Key for login preference for username. */
+    /**
+     * Key for login preference for email address.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
+    public static final String PREF_LOGIN_USERNAME = "login_mail";
+    /**
+     * Key for login preference for username.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
     @Deprecated
     public static final String PREF_LOGIN_NAME = "login_name";
-    /** Key for login preference for hashed password. */
+    /**
+     * Key for storing the online sensor list (type of JSONArray).
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
+    public static final String PREF_JSON_SENSOR_LIST = "json_sensor_list";
+    /**
+     * Key for storing the online device id.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
+    public static final String PREF_DEVICE_ID = "device_id";
+    /**
+     * Key for storing the online device type.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
+    public static final String PREF_DEVICE_TYPE = "device_type";
+    /**
+     * Key for storing the IMEI of the phone.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
+    public static final String PREF_PHONE_IMEI = "phone_imei";
+    /**
+     * Key for storing the type of the phone.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
+    public static final String PREF_PHONE_TYPE = "phone_type";
+    /**
+     * Key for login preference for hashed password.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
     public static final String PREF_LOGIN_PASS = "login_pass";
 
-    /* keys for the 'main' preferences, setting the sensor parameters */
-    /** Key for preference for the version of CommonSense */
-    public static final String PREF_COMMONSENSE_VERSION = "cs_version";
-    /** Preference for keeping track of the first successful login */
-    public static final String PREF_FIRSTLOGIN = "first_login_complete";
-    /** Key for storing if the service is "alive", used for aggressive restarting after crashes. */
-    public static final String PREF_ALIVE = "alive";
-    /** Key for preference to autostart the sense service in boot. */
-    public static final String PREF_AUTOSTART = "autostart";
-
-    /** Key for preference that toggles use of light sensor in ambience sensing. */
+    /* ======================================================================================== */
+    /* -------------------------- Main Sense service preferences ------------------------------ */
+    /* ======================================================================================== */
+    /**
+     * Name of the main preference file, used for storing the settings for the Sense service.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     * @see #STATUS_PREFS
+     */
+    public static final String MAIN_PREFS = "main";
+    /**
+     * Key for preference that toggles use of light sensor in ambience sensing.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_AMBIENCE_LIGHT = "ambience_light";
-    /** Key for preference that toggles use of the microphone in ambience sensing. */
+    /**
+     * Key for preference that toggles use of the microphone in ambience sensing.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_AMBIENCE_MIC = "ambience_mic";
-    /** Key for preference that controls sample frequency of the sensors. */
+    /**
+     * Key for preference that controls sample frequency of the sensors.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_SAMPLE_RATE = "commonsense_rate";
-    /** Key for preference that saves the last running services. */
+    /**
+     * Key for preference that saves the last running services.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_LAST_STATUS = "last_status";
-    /** Key for preference that toggles use of GPS in location sensor. */
+    /**
+     * Key for preference that toggles use of GPS in location sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_LOCATION_GPS = "location_gps";
-    /** Key for preference that toggles use of Network in location sensor. */
+    /**
+     * Key for preference that toggles use of Network in location sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_LOCATION_NETWORK = "location_network";
-    /** Key for storing the online device id. */
-    public static final String PREF_DEVICE_ID = "device_id";
-    /** Key for storing the online device type. */
-    public static final String PREF_DEVICE_TYPE = "device_type";
-    /** Key for storing the online sensor list (type of JSONArray). */
-    public static final String PREF_JSON_SENSOR_LIST = "json_sensor_list";
-    /** Key for storing the imei of the phone. */
-    public static final String PREF_PHONE_IMEI = "phone_imei";
-    /** Key for storing the type of the phone. */
-    public static final String PREF_PHONE_TYPE = "phone_type";
-    /** Key for preference that toggles use of GPS in location sensor. */
+    /**
+     * Key for preference that toggles use of GPS in location sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_PROXIMITY_BT = "proximity_bt";
-    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
+    /**
+     * Key for preference that toggles use of Bluetooth in the DeviceProximity sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_PROXIMITY_WIFI = "proximity_wifi";
-    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
+    /**
+     * Key for preference that toggles use of Bluetooth in the DeviceProximity sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_MOTION_FALL_DETECT = "motion_fall_detector";
-    /** Key for preference that toggles use of Bluetooth in the DeviceProximity sensor. */
+    /**
+     * Key for preference that toggles use of Bluetooth in the DeviceProximity sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_MOTION_FALL_DETECT_DEMO = "motion_fall_detector_demo";
-    /** Key for preference that sets the interval between pop quizzes. */
+    /**
+     * Key for preference that sets the interval between pop quizzes.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_QUIZ_RATE = "popquiz_rate";
-    /** Key for preference that sets the silent mode for pop quizzes. */
+    /**
+     * Key for preference that sets the silent mode for pop quizzes.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_QUIZ_SILENT_MODE = "popquiz_silent_mode";
-    /** Key for generic preference that starts an update of the quiz questions when clicked. */
+    /**
+     * Key for generic preference that starts an update of the quiz questions when clicked.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_QUIZ_SYNC = "popquiz_sync";
-    /** Key for preference that holds the last update time of the quiz questions with CommonSense. */
+    /**
+     * Key for preference that holds the last update time of the quiz questions with CommonSense.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_QUIZ_SYNC_TIME = "popquiz_sync_time";
-    /** Key for generic preference that shows the registration dialog when clicked. */
+    /**
+     * Key for generic preference that shows the registration dialog when clicked.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_REGISTER = "register";
-    /** Key for preference that controls sync frequency with CommonSense. */
+    /**
+     * Key for preference that controls sync frequency with CommonSense.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_SYNC_RATE = "sync_rate";
-    /** Key for preference that toggles use of the Zephyr BioHarness. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS = "zephyrBioHarness";
-    /** Key for preference that toggles use of the Zephyr BioHarness Accelerometer. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness Accelerometer.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS_ACC = "zephyrBioHarness_acc";
-    /** Key for preference that toggles use of the Zephyr BioHarness Heart rate. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness Heart rate.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS_HEART_RATE = "zephyrBioHarness_heartRate";
-    /** Key for preference that toggles use of the Zephyr BioHarness Temperature. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness Temperature.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS_TEMP = "zephyrBioHarness_temp";
-    /** Key for preference that toggles use of the Zephyr BioHarness Respiration rate. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness Respiration rate.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS_RESP = "zephyrBioHarness_resp";
-    /** Key for preference that toggles use of the Zephyr BioHarness Blood pressure. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness Blood pressure.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS_BLOOD_PRESSURE = "zephyrBioHarness_bloodP";
-    /** Key for preference that toggles use of the Zephyr BioHarness worn status. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness worn status.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS_WORN_STATUS = "zephyrBioHarness_wornStatus";
-    /** Key for preference that toggles use of the Zephyr BioHarness battery level. */
+    /**
+     * Key for preference that toggles use of the Zephyr BioHarness battery level.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_BIOHARNESS_BATTERY = "zephyrBioHarness_battery";
-    /** Key for preference that toggles use of the Zephyr HxM. */
+    /**
+     * Key for preference that toggles use of the Zephyr HxM.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_HXM = "zephyrHxM";
-    /** Key for preference that toggles use of the Zephyr HxM speed. */
+    /**
+     * Key for preference that toggles use of the Zephyr HxM speed.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_HXM_SPEED = "zephyrHxM_speed";
-    /** Key for preference that toggles use of the Zephyr HxM heart rate. */
+    /**
+     * Key for preference that toggles use of the Zephyr HxM heart rate.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_HXM_HEART_RATE = "zephyrHxM_heartRate";
-    /** Key for preference that toggles use of the Zephyr HxM battery. */
+    /**
+     * Key for preference that toggles use of the Zephyr HxM battery.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_HXM_BATTERY = "zephyrHxM_battery";
-    /** Key for preference that toggles use of the Zephyr HxM distance. */
+    /**
+     * Key for preference that toggles use of the Zephyr HxM distance.
+     * 
+     * @see #MAIN_PREFS
+     */
     public static final String PREF_HXM_DISTANCE = "zephyrHxM_distance";
 
-    /* Codes to keep track of the active sensing modules */
+    /* ======================================================================================== */
+    /* ---------------- Codes to keep track of the active sensing modules --------------------- */
+    /* ======================================================================================== */
     public static final int STATUSCODE_AMBIENCE = 0x01;
     public static final int STATUSCODE_CONNECTED = 0x02;
     public static final int STATUSCODE_DEVICE_PROX = 0x04;
@@ -118,7 +350,9 @@ public class Constants {
     public static final int STATUSCODE_QUIZ = 0x80;
     public static final int STATUSCODE_RUNNING = 0x100;
 
-    /* CommonSense URLs */
+    /* ======================================================================================== */
+    /* ----------------------------------- CommonSense URls ----------------------------------- */
+    /* ======================================================================================== */
     public static final String URL_BASE = "http://api.sense-os.nl/";
     public static final String URL_VERSION = "http://data.sense-os.nl/senseapp/version.php";
     public static final String URL_FORMAT = ".json";
@@ -132,11 +366,14 @@ public class Constants {
     public static final String URL_LOGIN = URL_BASE + "login" + URL_FORMAT;
     public static final String URL_REG = URL_BASE + "users" + URL_FORMAT;
 
-    /* Sensor data type designations */
+    /* ======================================================================================== */
+    /* -------------------------- Sensor data type designations ------------------------------- */
+    /* ======================================================================================== */
     public static final String SENSOR_DATA_TYPE_BOOL = "bool";
     public static final String SENSOR_DATA_TYPE_FLOAT = "float";
     public static final String SENSOR_DATA_TYPE_INT = "int";
     public static final String SENSOR_DATA_TYPE_JSON = "json";
     public static final String SENSOR_DATA_TYPE_STRING = "string";
     public static final String SENSOR_DATA_TYPE_FILE = "file";
+
 }

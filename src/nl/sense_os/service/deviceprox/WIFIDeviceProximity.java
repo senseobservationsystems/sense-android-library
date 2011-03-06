@@ -5,14 +5,6 @@
  */
 package nl.sense_os.service.deviceprox;
 
-import java.util.List;
-
-import nl.sense_os.service.Constants;
-import nl.sense_os.service.MsgHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,10 +15,18 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.MsgHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+
 public class WIFIDeviceProximity {
 
     /*
-     * WIFI Scan thread
+     * Wi-Fi Scan thread
      */
     private class WifiScanThread implements Runnable {
 

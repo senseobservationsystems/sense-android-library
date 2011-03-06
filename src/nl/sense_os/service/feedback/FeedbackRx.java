@@ -10,14 +10,13 @@ import android.util.Log;
 
 public class FeedbackRx extends BroadcastReceiver {
 
-    private static final String TAG = "FeedbackRx";
+    private static final String TAG = "Sense Feedback BroadcastReceiver";
     public static final String ACTION_CHECK_FEEDBACK = "nl.sense_os.service.CheckFeedback";
     public static final int REQ_CHECK_FEEDBACK = 2;
     public static final long PERIOD_CHECK_FEEDBACK = 1000 * 30 * 1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive");
 
         /* set the next check broadcast */
         final Intent alarmIntent = new Intent(ACTION_CHECK_FEEDBACK);

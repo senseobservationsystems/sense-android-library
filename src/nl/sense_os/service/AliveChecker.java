@@ -11,7 +11,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class AliveChecker extends BroadcastReceiver {
@@ -33,8 +32,9 @@ public class AliveChecker extends BroadcastReceiver {
         mgr.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmOp);
 
         /* check if the Sense service should be alive */
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        final boolean alive = prefs.getBoolean(Constants.PREF_ALIVE, false);
+        final SharedPreferences statusPrefs = context.getSharedPreferences(Constants.STATUS_PREFS,
+                Context.MODE_WORLD_WRITEABLE);
+        final boolean alive = statusPrefs.getBoolean(Constants.PREF_ALIVE, false);
 
         /* if it should be alive, check if it really is still alive */
         if (true == alive) {

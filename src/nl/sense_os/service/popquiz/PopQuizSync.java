@@ -1,18 +1,20 @@
 /*
- ************************************************************************************************************
- *     Copyright (C)  2010 Sense Observation Systems, Rotterdam, the Netherlands.  All rights reserved.     *
- ************************************************************************************************************
+ * ***********************************************************************************************************
+ * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ * **
+ * ************************************************************************************************
+ * *********
  */
 package nl.sense_os.service.popquiz;
 
-import nl.sense_os.service.Constants;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import nl.sense_os.service.Constants;
 
 public class PopQuizSync extends BroadcastReceiver {
 
@@ -25,7 +27,7 @@ public class PopQuizSync extends BroadcastReceiver {
         @Override
         public void run() {
             try {
-                // SharedPreferences loginPrefs = context.getSharedPreferences(PRIVATE_PREFS,
+                // SharedPreferences loginPrefs = context.getSharedPreferences(AUTHENTICATION_PREFS,
                 // Context.MODE_PRIVATE);
                 // String cookie = loginPrefs.getString(SenseSettings.PREF_LOGIN_COOKIE, "");
                 // URI uri = new URI(SenseSettings.URL_QUIZ_GET_QSTNS);
@@ -108,8 +110,9 @@ public class PopQuizSync extends BroadcastReceiver {
         // this.context = context;
 
         // save this sync time in the preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Editor editor = prefs.edit();
+        SharedPreferences mainPrefs = context.getSharedPreferences(Constants.MAIN_PREFS,
+                Context.MODE_WORLD_WRITEABLE);
+        Editor editor = mainPrefs.edit();
         editor.putLong(Constants.PREF_QUIZ_SYNC_TIME, System.currentTimeMillis());
         editor.commit();
 
