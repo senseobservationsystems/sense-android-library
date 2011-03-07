@@ -7,21 +7,6 @@
  */
 package nl.sense_os.service;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Locale;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -34,6 +19,21 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class MsgHandler extends Service {
 
@@ -521,14 +521,17 @@ public class MsgHandler extends Service {
     }
 
     private boolean sendDataFromDb() {
-        // query the database
-        openDb();
-        String[] cols = {DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR};
-        String sel = DbHelper.COL_ACTIVE + "!=\'true\'";
-        Cursor c = this.db.query(DbHelper.TABLE_NAME, cols, sel, null, null, null,
-                DbHelper.COL_SENSOR, null);
+
+        Cursor c = null;
 
         try {
+            // query the database
+            openDb();
+            String[] cols = { DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR };
+            String sel = DbHelper.COL_ACTIVE + "!=\'true\'";
+            c = this.db.query(DbHelper.TABLE_NAME, cols, sel, null, null, null,
+                    DbHelper.COL_SENSOR, null);
+
             if (c.getCount() > 0) {
                 Log.d(TAG, "Sending " + c.getCount() + " values from database to CommonSense");
 
@@ -579,7 +582,7 @@ public class MsgHandler extends Service {
                 while (false == c.isAfterLast()) {
                     int id = c.getInt(c.getColumnIndex(DbHelper.COL_ROWID));
                     String where = DbHelper.COL_ROWID + "=?";
-                    String[] whereArgs = {"" + id};
+                    String[] whereArgs = { "" + id };
                     this.db.delete(DbHelper.TABLE_NAME, where, whereArgs);
                     c.moveToNext();
                 }
@@ -589,10 +592,12 @@ public class MsgHandler extends Service {
             }
 
         } catch (Exception e) {
-            Log.d(TAG, "Error in sending data from database:" + e.getMessage());
+            Log.e(TAG, "Error in sending data from database!", e);
             return false;
         } finally {
-            c.close();
+            if (c != null) {
+                c.close();
+            }
             closeDb();
         }
         return true;
