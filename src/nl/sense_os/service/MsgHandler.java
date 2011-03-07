@@ -7,6 +7,21 @@
  */
 package nl.sense_os.service;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,21 +34,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Locale;
 
 public class MsgHandler extends Service {
 
@@ -52,7 +52,7 @@ public class MsgHandler extends Service {
         protected static final String COL_SENSOR = "sensor";
         protected static final String COL_ROWID = "_id";
         protected static final String DATABASE_NAME = "tx_buffer.sqlite3";
-        protected static final int DATABASE_VERSION = 3;
+        protected static final int DATABASE_VERSION = 4;
         protected static final String TABLE_NAME = "sensor_data";
 
         DbHelper(Context context) {
@@ -523,10 +523,9 @@ public class MsgHandler extends Service {
     private boolean sendDataFromDb() {
         // query the database
         openDb();
-        String[] cols = { DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR };
-        String sel = DbHelper.COL_ACTIVE + "!=?";
-        String[] selArgs = { "true" };
-        Cursor c = this.db.query(DbHelper.TABLE_NAME, cols, sel, selArgs, null, null,
+        String[] cols = {DbHelper.COL_ROWID, DbHelper.COL_JSON, DbHelper.COL_SENSOR};
+        String sel = DbHelper.COL_ACTIVE + "!=\'true\'";
+        Cursor c = this.db.query(DbHelper.TABLE_NAME, cols, sel, null, null, null,
                 DbHelper.COL_SENSOR, null);
 
         try {
@@ -580,7 +579,7 @@ public class MsgHandler extends Service {
                 while (false == c.isAfterLast()) {
                     int id = c.getInt(c.getColumnIndex(DbHelper.COL_ROWID));
                     String where = DbHelper.COL_ROWID + "=?";
-                    String[] whereArgs = { "" + id };
+                    String[] whereArgs = {"" + id};
                     this.db.delete(DbHelper.TABLE_NAME, where, whereArgs);
                     c.moveToNext();
                 }
