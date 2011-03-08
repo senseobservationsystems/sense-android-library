@@ -94,6 +94,10 @@ public class MsgHandler extends Service {
         @Override
         public void run() {
 
+            if (url == null) {
+                return;
+            }
+
             // get sensor ID from the URL
             int start = url.indexOf("/sensors/") + "/sensors/".length();
             int end = url.indexOf("/data");
