@@ -614,7 +614,7 @@ public class MsgHandler extends Service {
             deviceType = deviceType != null ? deviceType : sensorName;
             String dataStructure = (String) ((JSONObject) ((JSONArray) sensorData.get("data"))
                     .get(0)).get("value");
-            String url = SenseApi.getSensorURL(this, sensorName, dataStructure, dataType,
+            String url = SenseApi.getSensorUrl(this, sensorName, dataStructure, dataType,
                     deviceType);
 
             final SharedPreferences prefs = getSharedPreferences(Constants.AUTH_PREFS,

@@ -44,7 +44,7 @@ public class FeedbackChecker extends IntentService {
             // get last feedback sensor value
             if (cookie != null) {
                 try {
-                    JSONObject json = SenseApi.getJSONObject(new URI(url), cookie);
+                    JSONObject json = SenseApi.getJsonObject(new URI(url), cookie);
                     parseFeedback(json);
                 } catch (URISyntaxException e) {
                     Log.e(TAG, "URISyntaxException checking feedback sensor", e);
@@ -70,7 +70,7 @@ public class FeedbackChecker extends IntentService {
         String dataType = "json";
         String deviceType = "feedback";
 
-        return SenseApi.getSensorURL(this, sensorName, sensorValue, dataType, deviceType);
+        return SenseApi.getSensorUrl(this, sensorName, sensorValue, dataType, deviceType);
     }
 
     /**

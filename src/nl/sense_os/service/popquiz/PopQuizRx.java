@@ -7,16 +7,15 @@
  */
 package nl.sense_os.service.popquiz;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import nl.sense_os.service.Constants;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import nl.sense_os.service.Constants;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class PopQuizRx extends BroadcastReceiver {
     private static final String TAG = "PopQuizRx";
@@ -55,7 +54,7 @@ public class PopQuizRx extends BroadcastReceiver {
                 popQuiz.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 popQuiz.putExtra(SenseAlarmManager.KEY_ENTRY_ID, entryId);
                 popQuiz.putExtra(SenseAlarmManager.KEY_QUIZ_ID, quizId);
-                context.startActivity(popQuiz);
+                // context.startActivity(popQuiz);
             } else {
                 // ignore this alarm, silent mode is on
                 Log.d(TAG, "Ignored pop quiz alarm because of silent mode.");

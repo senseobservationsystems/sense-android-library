@@ -6,8 +6,7 @@ interface ISenseService
 {	
     void getStatus(ISenseServiceCallback callback);
     boolean changeLogin();
-	String serviceResponse();
-    boolean serviceRegister();
+    boolean register();
 	void toggleDeviceProx(boolean active, ISenseServiceCallback callback);
 	void toggleLocation(boolean active, ISenseServiceCallback callback);
 	void toggleMotion(boolean active, ISenseServiceCallback callback);

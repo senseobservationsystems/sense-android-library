@@ -7,6 +7,26 @@
  */
 package nl.sense_os.service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+
+import nl.sense_os.service.ambience.LightSensor;
+import nl.sense_os.service.ambience.NoiseSensor;
+import nl.sense_os.service.deviceprox.DeviceProximity;
+import nl.sense_os.service.external_sensors.ZephyrBioHarness;
+import nl.sense_os.service.external_sensors.ZephyrHxM;
+import nl.sense_os.service.feedback.FeedbackRx;
+import nl.sense_os.service.location.LocationSensor;
+import nl.sense_os.service.motion.MotionSensor;
+import nl.sense_os.service.phonestate.BatterySensor;
+import nl.sense_os.service.phonestate.PhoneActivitySensor;
+import nl.sense_os.service.phonestate.PressureSensor;
+import nl.sense_os.service.phonestate.ProximitySensor;
+import nl.sense_os.service.phonestate.SensePhoneState;
+
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -24,7 +44,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -33,32 +52,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
-
-import nl.sense_os.service.ambience.LightSensor;
-import nl.sense_os.service.ambience.NoiseSensor;
-import nl.sense_os.service.deviceprox.DeviceProximity;
-import nl.sense_os.service.external_sensors.ZephyrBioHarness;
-import nl.sense_os.service.external_sensors.ZephyrHxM;
-import nl.sense_os.service.feedback.FeedbackRx;
-import nl.sense_os.service.location.LocationSensor;
-import nl.sense_os.service.motion.MotionSensor;
-import nl.sense_os.service.phonestate.BatterySensor;
-import nl.sense_os.service.phonestate.PhoneActivitySensor;
-import nl.sense_os.service.phonestate.PressureSensor;
-import nl.sense_os.service.phonestate.ProximitySensor;
-import nl.sense_os.service.phonestate.SensePhoneState;
-import nl.sense_os.service.popquiz.SenseAlarmManager;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
 
 public class SenseService extends Service {
 
@@ -71,22 +64,23 @@ public class SenseService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            ConnectivityManager mgr = (ConnectivityManager) context
+            final ConnectivityManager mgr = (ConnectivityManager) context
                     .getSystemService(CONNECTIVITY_SERVICE);
-            NetworkInfo info = mgr.getActiveNetworkInfo();
+            final NetworkInfo info = mgr.getActiveNetworkInfo();
             if ((null != info) && (info.isConnectedOrConnecting())) {
+
                 // check that we are not logged in yet before logging in
                 if (false == isLoggedIn) {
                     Log.d(TAG, "Connectivity! Trying to log in...");
+                    login();
 
-                    senseServiceLogin();
                 } else {
                     // Log.d(TAG, "Connectivity! Staying logged in...");
                 }
-            } else {
-                Log.d(TAG, "No connectivity! Updating login status...");
 
+            } else {
                 // login not possible without connection
+                Log.d(TAG, "No connectivity! Updating login status...");
                 onLogOut();
             }
 
@@ -101,22 +95,24 @@ public class SenseService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Check action just to be on the safe side.
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                if (isMotionActive) {
-                    Runnable motionThread = new Runnable() {
-                        @Override
-                        public void run() {
-                            // Unregisters the motion listener and registers it again.
-                            Log.d(TAG, "Screen went off, re-registering the Motion sensor");
-                            // wait a few seconds and re-register
-                            toggleMotion(false);
-                            toggleMotion(true);
-                        };
-                    };
+            if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                return;
+            }
 
-                    Handler mtHandler = new Handler();
-                    mtHandler.postDelayed(motionThread, 500);
-                }
+            if (isMotionActive) {
+                // wait half a second and re-register
+                Runnable motionThread = new Runnable() {
+                    @Override
+                    public void run() {
+                        // Unregisters the motion listener and registers it again.
+                        Log.d(TAG, "Screen went off, re-registering the Motion sensor");
+                        toggleMotion(false);
+                        toggleMotion(true);
+                    };
+                };
+
+                Handler mtHandler = new Handler();
+                mtHandler.postDelayed(motionThread, 500);
             }
         }
     }
@@ -125,6 +121,11 @@ public class SenseService extends Service {
      * Implementation of the service's AIDL interface.
      */
     private class SenseServiceStub extends ISenseService.Stub {
+
+        @Override
+        public boolean changeLogin() throws RemoteException {
+            return SenseService.this.changeLogin();
+        }
 
         @Override
         public void getStatus(ISenseServiceCallback callback) {
@@ -136,18 +137,8 @@ public class SenseService extends Service {
         }
 
         @Override
-        public boolean changeLogin() throws RemoteException {
-            return SenseService.this.changeLogin();
-        }
-
-        @Override
-        public boolean serviceRegister() throws RemoteException {
-            return senseServiceRegister();
-        }
-
-        @Override
-        public String serviceResponse() {
-            return "";
+        public boolean register() throws RemoteException {
+            return SenseService.this.register();
         }
 
         @Override
@@ -190,13 +181,11 @@ public class SenseService extends Service {
     public static final String ACTION_RELOGIN = "action_relogin";
     public final static String ACTION_SERVICE_BROADCAST = "nl.sense_os.service.Broadcast";
     private static final int NOTIF_ID = 1;
-    private BatterySensor batterySensor;
     private final ISenseService.Stub binder = new SenseServiceStub();
     public BroadcastReceiver screenOffListener = new ScreenOffListener();
     private ConnectivityListener connectivityListener;
+    private BatterySensor batterySensor;
     private DeviceProximity deviceProximity;
-    private ZephyrBioHarness es_bioHarness;
-    private ZephyrHxM es_HxM;
     private LightSensor lightSensor;
     private LocationListener locListener;
     private MotionSensor motionSensor;
@@ -205,8 +194,10 @@ public class SenseService extends Service {
     private PressureSensor pressureSensor;
     private ProximitySensor proximitySensor;
     private PhoneStateListener phoneStateListener;
+    private ZephyrBioHarness es_bioHarness;
+    private ZephyrHxM es_HxM;
     private boolean isLoggedIn;
-    private boolean isStarted;
+    // private boolean isStarted;
     private boolean isAmbienceActive;
     private boolean isDevProxActive;
     private boolean isExternalActive;
@@ -216,31 +207,6 @@ public class SenseService extends Service {
     private boolean isQuizActive;
     private TelephonyManager telMgr;
     private final Handler toastHandler = new Handler(Looper.getMainLooper());
-
-    /**
-     * Checks if the installed Sense Platform application has an update available, alerting the user
-     * via a Toast message.
-     */
-    private void checkVersion() {
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo("nl.sense_os.app", 0);
-            String versionName = packageInfo.versionName;
-            URI uri = new URI(Constants.URL_VERSION + "?version=" + versionName);
-            final JSONObject version = SenseApi.getJSONObject(uri, "");
-
-            if (version == null) {
-                return;
-            }
-
-            if (version.getString("message").length() > 0) {
-                Log.w(TAG, "Version: " + version.toString());
-                showToast(version.getString("message"));
-            }
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error in getting version: " + e.getMessage());
-        }
-    }
 
     /**
      * Changes login of the Sense service. Removes "private" data of the previous user from the
@@ -254,111 +220,39 @@ public class SenseService extends Service {
         onLogOut();
 
         // clear cached settings of the previous user (i.e. device id)
-        final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                MODE_PRIVATE);
+        final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
         final Editor editor = authPrefs.edit();
         editor.remove(Constants.PREF_DEVICE_ID);
         editor.remove(Constants.PREF_DEVICE_TYPE);
         editor.remove(Constants.PREF_LOGIN_COOKIE);
-        editor.remove(Constants.PREF_JSON_SENSOR_LIST);
+        editor.remove(Constants.PREF_SENSOR_LIST);
         editor.commit();
 
-        return senseServiceLogin();
+        return login();
     }
 
     /**
-     * Gets the current device ID for use with CommonSense. The device ID is cached in the
-     * preferences if it was fetched earlier.
-     * 
-     * @return the device ID
+     * Checks if the installed Sense Platform application has an update available, alerting the user
+     * via a Toast message.
      */
-    private int getDeviceID() {
+    private void checkVersion() {
         try {
-            // try to get the device ID from the preferences
-            final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                    MODE_PRIVATE);
-            int deviceId = authPrefs.getInt(Constants.PREF_DEVICE_ID, -1);
-            if (deviceId != -1) {
-                return deviceId;
-            }
+            PackageInfo packageInfo = getPackageManager().getPackageInfo("nl.sense_os.app", 0);
+            String versionName = packageInfo.versionName;
+            URI uri = new URI(Constants.URL_VERSION + "?version=" + versionName);
+            final JSONObject version = SenseApi.getJsonObject(uri, "");
 
-            // Store phone type and IMEI. These are used to uniquely identify this device
-            final String imei = this.telMgr.getDeviceId();
-            final Editor editor = authPrefs.edit();
-            editor.putString(Constants.PREF_PHONE_IMEI, imei);
-            editor.putString(Constants.PREF_PHONE_TYPE, Build.MODEL);
-            editor.commit();
-
-            // get list of devices that are already registered at CommonSense for this user
-            final URI uri = new URI(Constants.URL_GET_DEVICES);
-            String cookie = authPrefs.getString(Constants.PREF_LOGIN_COOKIE, "");
-            JSONObject response = SenseApi.getJSONObject(uri, cookie);
-
-            // check if this device is in the list
-            if (response != null) {
-                JSONArray deviceList = response.getJSONArray("devices");
-                if (deviceList != null) {
-
-                    for (int x = 0; x < deviceList.length(); x++) {
-
-                        JSONObject device = deviceList.getJSONObject(x);
-                        if (device != null) {
-                            String uuid = device.getString("uuid");
-
-                            // Found the right device if UUID matches IMEI
-                            if (uuid.equalsIgnoreCase(imei)) {
-
-                                // cache device ID in preferences
-                                deviceId = Integer.parseInt(device.getString("id"));
-                                editor.putString(Constants.PREF_DEVICE_TYPE,
-                                        device.getString("type"));
-                                editor.putInt(Constants.PREF_DEVICE_ID, deviceId);
-                                editor.commit();
-
-                                return deviceId;
-                            }
-                        }
-                    }
-                }
-            }
-            return -1;
-        } catch (Exception e) {
-            Log.e(TAG, "Exception determining device ID: " + e.getMessage());
-            return -1;
-        }
-    }
-
-    /**
-     * Gets a list of all registered sensors for this device, and stores it in the preferences.
-     * 
-     * @see {@link Constants#PREF_JSON_SENSOR_LIST}
-     */
-    private void getRegisteredSensors() {
-        try {
-            // get device ID to use in communication with CommonSense
-            int deviceId = getDeviceID();
-            if (deviceId == -1) {
+            if (version == null) {
                 return;
             }
 
-            // get list of sensors for this device from CommonSense
-            final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                    MODE_PRIVATE);
-            String cookie = authPrefs.getString(Constants.PREF_LOGIN_COOKIE, "");
-            URI uri = new URI(Constants.URL_GET_SENSORS.replaceAll("<id>", "" + deviceId));
-            JSONObject response = SenseApi.getJSONObject(uri, cookie);
-
-            // parse response and store the list
-            if (response != null) {
-                JSONArray sensorList = response.getJSONArray("sensors");
-                if (sensorList != null) {
-                    Editor editor = authPrefs.edit();
-                    editor.putString(Constants.PREF_JSON_SENSOR_LIST, sensorList.toString());
-                    editor.commit();
-                }
+            if (version.getString("message").length() > 0) {
+                Log.w(TAG, "Version: " + version.toString());
+                showToast(version.getString("message"));
             }
+
         } catch (Exception e) {
-            Log.e(TAG, "Exception in retrieving registered sensors: " + e.getMessage());
+            Log.e(TAG, "Exception while getting version!", e);
         }
     }
 
@@ -369,8 +263,8 @@ public class SenseService extends Service {
 
         int status = 0;
 
-        status = this.isStarted ? status + Constants.STATUSCODE_RUNNING : status;
-        status = isLoggedIn ? status + Constants.STATUSCODE_CONNECTED : status;
+        status = status + Constants.STATUSCODE_RUNNING;
+        status = this.isLoggedIn ? status + Constants.STATUSCODE_CONNECTED : status;
         status = this.isPhoneStateActive ? status + Constants.STATUSCODE_PHONESTATE : status;
         status = this.isLocationActive ? status + Constants.STATUSCODE_LOCATION : status;
         status = this.isAmbienceActive ? status + Constants.STATUSCODE_AMBIENCE : status;
@@ -390,7 +284,6 @@ public class SenseService extends Service {
         this.telMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
         // statuses
-        this.isStarted = false;
         this.isDevProxActive = false;
         this.isLocationActive = false;
         this.isMotionActive = false;
@@ -401,118 +294,44 @@ public class SenseService extends Service {
     }
 
     /**
-     * Tries to log in at CommonSense using the supplied username and password. After login, the
-     * cookie containing the session ID is stored in the preferences.
+     * Tries to login using the username and password from the private preferences and updates the
+     * {@link #isLoggedIn} status accordingly. Can also be called from Activities that are bound to
+     * the service.
      * 
-     * @param username
-     *            username for login
-     * @param pass
-     *            hashed password for login
-     * @return <code>true</code> if successfully logged in
+     * @return <code>true</code> if successful.
      */
-    private boolean login(String username, String pass) {
-        try {
-            URL url = new URL(Constants.URL_LOGIN);
-            JSONObject user = new JSONObject();
-            user.put("username", username);
-            user.put("password", pass);
-            HashMap<String, String> response = SenseApi.sendJson(url, user, "POST", "");
-            if (response == null) {
-                // request failed
-                return false;
+    private boolean login() {
+        // show notification that we are not logged in (yet)
+        showNotification(true);
+
+        // get login parameters from the preferences
+        final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
+        final String username = authPrefs.getString(Constants.PREF_LOGIN_USERNAME, null);
+        final String pass = authPrefs.getString(Constants.PREF_LOGIN_PASS, null);
+
+        // try to log in
+        if ((username != null) && (pass != null)) {
+            this.isLoggedIn = SenseApi.login(this, username, pass);
+
+            if (this.isLoggedIn) {
+                // logged in successfully
+                onLogIn();
+            } else {
+                Log.d(TAG, "Login failed");
             }
 
-            final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                    MODE_PRIVATE);
-            final Editor editor = authPrefs.edit();
-
-            // if response code is not 200 (OK), the login was incorrect
-            if (response.get("http response code").compareToIgnoreCase("200") != 0) {
-                // incorrect login
-                Log.e(TAG,
-                        "CommonSense login incorrect! Response code: "
-                                + response.get("http response code"));
-                editor.putBoolean(username + "_ok", false);
-                editor.remove(Constants.PREF_LOGIN_COOKIE);
-                editor.commit();
-                return false;
-            }
-
-            // if no cookie was returned, something went horribly wrong
-            if (response.get("set-cookie") == null) {
-                // incorrect login
-                Log.e(TAG, "CommonSense login failed: no cookie received.");
-                editor.putBoolean(username + "_ok", false);
-                editor.remove(Constants.PREF_LOGIN_COOKIE);
-                editor.commit();
-                return false;
-            }
-
-            // store cookie in the preferences
-            String cookie = response.get("set-cookie");
-            Log.d(TAG, "CommonSense login ok!");
-            editor.putBoolean(username + "_ok", true);
-            editor.putString(Constants.PREF_LOGIN_COOKIE, cookie);
-            editor.commit();
-
-            return true;
-
-        } catch (Exception e) {
-            Log.e(TAG, "Exception during login: " + e.getMessage());
-
-            final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                    MODE_PRIVATE);
-            final Editor editor = authPrefs.edit();
-            editor.putBoolean(username + "_ok", false);
-            editor.remove(Constants.PREF_LOGIN_COOKIE);
-            editor.commit();
-            return false;
-        }
-    }
-
-    /**
-     * Shows a status bar notification that the Sense service is active, also displaying the
-     * username if the service is logged in.
-     * 
-     * @param error
-     *            set to <code>true</code> if the service is not running properly.
-     */
-    private void notifySenseLogin(boolean error) {
-
-        // select the icon resource
-        int icon = R.drawable.ic_status_sense;
-        if (error) {
-            icon = R.drawable.ic_status_sense_disabled;
-        }
-
-        final long when = System.currentTimeMillis();
-        final Notification note = new Notification(icon, null, when);
-        note.flags = Notification.FLAG_NO_CLEAR;
-
-        // extra info text is shown when the status bar is opened
-        final CharSequence contentTitle = "Sense service";
-        CharSequence contentText = "";
-        if (error) {
-            contentText = "Trying to log in...";
         } else {
-            final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                    MODE_PRIVATE);
-            contentText = "Logged in as "
-                    + authPrefs.getString(Constants.PREF_LOGIN_USERNAME, "UNKNOWN");
+            Log.d(TAG, "Cannot login: username or password unavailable... Username: " + username
+                    + ", password: " + pass);
+            this.isLoggedIn = false;
         }
-        final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
-        notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
-        note.setLatestEventInfo(getApplicationContext(), contentTitle, contentText, contentIntent);
 
-        final NotificationManager mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mgr.notify(NOTIF_ID, note);
+        return this.isLoggedIn;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
-        this.isStarted = true;
         return this.binder;
     }
 
@@ -558,7 +377,6 @@ public class SenseService extends Service {
         onLogOut();
 
         // stop the main service
-        this.isStarted = false;
         stopForegroundCompat();
     }
 
@@ -568,13 +386,10 @@ public class SenseService extends Service {
      * feedback checking.
      */
     private void onLogIn() {
-        Log.d(TAG, "Logged in...");
-
-        // set main status
-        this.isStarted = true;
+        Log.d(TAG, "Logged in! Starting service...");
 
         // Retrieve the online registered sensor list
-        getRegisteredSensors();
+        SenseApi.getRegisteredSensors(this);
 
         // restart individual sensing components
         startSensorModules();
@@ -584,6 +399,9 @@ public class SenseService extends Service {
 
         // start the periodic checks of the feedback sensor
         startFeedbackChecks();
+
+        // show notification
+        showNotification(false);
 
         // send broadcast that something has changed in the status
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
@@ -600,33 +418,13 @@ public class SenseService extends Service {
             Log.d(TAG, "Logged out...");
 
             // stop active sensing components
-            if (this.isDevProxActive) {
-                toggleDeviceProx(false);
-            }
-            if (this.isMotionActive) {
-                toggleMotion(false);
-            }
-            if (this.isLocationActive) {
-                toggleLocation(false);
-            }
-            if (this.isAmbienceActive) {
-                toggleAmbience(false);
-            }
-            if (this.isPhoneStateActive) {
-                togglePhoneState(false);
-            }
-            if (this.isQuizActive) {
-                togglePopQuiz(false);
-            }
-            if (this.isExternalActive) {
-                toggleExternalSensors(false);
-            }
+            stopSensorModules();
 
             // update login status
             this.isLoggedIn = false;
         }
 
-        notifySenseLogin(true);
+        showNotification(true);
 
         stopFeedbackChecks();
         stopTransmitAlarms();
@@ -682,7 +480,7 @@ public class SenseService extends Service {
 
         // try to login immediately
         if (false == isLoggedIn || relogin) {
-            senseServiceLogin();
+            login();
         } else {
             checkVersion();
 
@@ -699,136 +497,84 @@ public class SenseService extends Service {
     }
 
     /**
-     * Tries to register a new user at CommonSense. Discards private data of any previous users.
-     * 
-     * @param username
-     *            username to register
-     * @param pass
-     *            hashed password for the new user
-     * @return <code>true</code> if registration completed successfully
-     */
-    private boolean register(String username, String pass) {
-
-        // clear cached settings of the previous user
-        final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                MODE_PRIVATE);
-        final Editor editor = authPrefs.edit();
-        editor.remove(Constants.PREF_DEVICE_ID);
-        editor.remove(Constants.PREF_DEVICE_TYPE);
-        editor.remove(Constants.PREF_LOGIN_COOKIE);
-        editor.remove(Constants.PREF_JSON_SENSOR_LIST);
-        editor.commit();
-
-        try {
-            URL url = new URL(Constants.URL_REG);
-            final JSONObject data = new JSONObject();
-            JSONObject user = new JSONObject();
-            user.put("username", username);
-            user.put("password", pass);
-            user.put("email", username);
-            data.put("user", user);
-            HashMap<String, String> response = SenseApi.sendJson(url, data, "POST", "");
-            if (response == null) {
-                return false;
-            }
-            if (response.get("http response code").compareToIgnoreCase("201") != 0) {
-                Log.e(TAG, "Error got response code:" + response.get("http response code"));
-                return false;
-            }
-
-            Log.d(TAG, "CommonSense registration: Successful");
-        } catch (final IOException e) {
-            Log.e(TAG, "IOException during registration!", e);
-            return false;
-        } catch (final IllegalAccessError e) {
-            Log.e(TAG, "IllegalAccessError during registration!", e);
-            return false;
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException during registration!", e);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Tries to login using the username and password from the private preferences and updates the
-     * {@link #isLoggedIn} status accordingly. Can also be called from Activities that are bound to
-     * the service.
-     * 
-     * @return <code>true</code> if successful.
-     */
-    private boolean senseServiceLogin() {
-        // show notification that we are not logged in (yet)
-        notifySenseLogin(true);
-
-        // get login parameters from the preferences
-        final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                MODE_PRIVATE);
-        final String username = authPrefs.getString(Constants.PREF_LOGIN_USERNAME, "ERROR!");
-        final String pass = authPrefs.getString(Constants.PREF_LOGIN_PASS, "ERROR!");
-
-        // try to log in
-        if ((false == username.equals("ERROR!")) && (false == pass.equals("ERROR!"))) {
-            this.isLoggedIn = login(username, pass);
-
-            if (this.isLoggedIn) {
-                // logged in successfully
-                notifySenseLogin(false);
-                onLogIn();
-            } else {
-                Log.d(TAG, "Login failed");
-            }
-
-        } else {
-            Log.d(TAG, "Cannot login: username or password unavailable... Username: " + username
-                    + ", password: " + pass);
-            this.isLoggedIn = false;
-        }
-
-        return this.isLoggedIn;
-    }
-
-    /**
      * Tries to register a new user using the username and password from the private preferences and
      * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
      * are bound to the service.
      * 
      * @return <code>true</code> if successful.
      */
-    private boolean senseServiceRegister() {
+    private boolean register() {
 
         // log out before registering a new user
         onLogOut();
 
         // clear cached settings of the previous user (i.e. device id)
-        final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
-                MODE_PRIVATE);
-        final Editor editor = authPrefs.edit();
-        editor.remove(Constants.PREF_DEVICE_ID);
-        editor.remove(Constants.PREF_DEVICE_TYPE);
-        editor.remove(Constants.PREF_LOGIN_COOKIE);
-        editor.remove(Constants.PREF_JSON_SENSOR_LIST);
-        editor.commit();
+        final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
+        final Editor authEditor = authPrefs.edit();
+        authEditor.remove(Constants.PREF_DEVICE_ID);
+        authEditor.remove(Constants.PREF_DEVICE_TYPE);
+        authEditor.remove(Constants.PREF_LOGIN_COOKIE);
+        authEditor.remove(Constants.PREF_SENSOR_LIST);
+        authEditor.commit();
 
         // get login parameters for the new user from the preferences
-        final String username = authPrefs.getString(Constants.PREF_LOGIN_USERNAME, "ERROR!");
-        final String pass = authPrefs.getString(Constants.PREF_LOGIN_PASS, "ERROR!");
+        final String username = authPrefs.getString(Constants.PREF_LOGIN_USERNAME, null);
+        final String password = authPrefs.getString(Constants.PREF_LOGIN_PASS, null);
 
         // try to register
-        if ((false == username.equals("ERROR!")) && (false == pass.equals("ERROR!"))) {
-            Log.d(TAG, "Registering... Username: " + username + ", password: " + pass);
+        if ((null != username) && (null != password)) {
+            Log.d(TAG, "Registering... Username: " + username + ", password: " + password);
 
-            boolean registered = register(username, pass);
+            boolean registered = SenseApi.register(this, username, password);
             if (registered) {
-                senseServiceLogin();
+                login();
             } else {
                 Log.w(TAG, "Registration failed");
             }
         } else {
             Log.w(TAG, "Cannot register: username or password unavailable... Username: " + username
-                    + ", password: " + pass);
+                    + ", password: " + password);
         }
         return isLoggedIn;
+    }
+
+    /**
+     * Shows a status bar notification that the Sense service is active, also displaying the
+     * username if the service is logged in.
+     * 
+     * @param error
+     *            set to <code>true</code> if the service is not running properly.
+     */
+    private void showNotification(boolean error) {
+
+        // select the icon resource
+        int icon = R.drawable.ic_status_sense;
+        if (error) {
+            icon = R.drawable.ic_status_sense_disabled;
+        }
+
+        final long when = System.currentTimeMillis();
+        final Notification note = new Notification(icon, null, when);
+        note.flags = Notification.FLAG_NO_CLEAR;
+
+        // extra info text is shown when the status bar is opened
+        final CharSequence contentTitle = "Sense service";
+        CharSequence contentText = "";
+        if (error) {
+            contentText = "Trying to log in...";
+        } else {
+            final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
+                    MODE_PRIVATE);
+            contentText = "Logged in as "
+                    + authPrefs.getString(Constants.PREF_LOGIN_USERNAME, "UNKNOWN");
+        }
+        final Intent notifIntent = new Intent("nl.sense_os.app.SenseApp");
+        notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
+        note.setLatestEventInfo(getApplicationContext(), contentTitle, contentText, contentIntent);
+
+        final NotificationManager mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mgr.notify(NOTIF_ID, note);
     }
 
     /**
@@ -859,7 +605,7 @@ public class SenseService extends Service {
         editor.putBoolean(Constants.PREF_ALIVE, true);
         editor.commit();
 
-        /* start the checks that periodically check if the service should be alive */
+        // start the alarms
         final Intent alarmIntent = new Intent(AliveChecker.ACTION_CHECK_ALIVE);
         final PendingIntent alarmOp = PendingIntent.getBroadcast(this,
                 AliveChecker.REQ_CHECK_ALIVE, alarmIntent, 0);
@@ -892,7 +638,7 @@ public class SenseService extends Service {
         startAliveChecks();
 
         @SuppressWarnings("rawtypes")
-        final Class[] startForegroundSignature = new Class[] { int.class, Notification.class };
+        final Class[] startForegroundSignature = new Class[]{int.class, Notification.class};
         Method startForeground = null;
         try {
             startForeground = getClass().getMethod("startForeground", startForegroundSignature);
@@ -914,7 +660,7 @@ public class SenseService extends Service {
             final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
             n.setLatestEventInfo(this, "Sense service", "", contentIntent);
 
-            Object[] startArgs = { Integer.valueOf(NOTIF_ID), n };
+            Object[] startArgs = {Integer.valueOf(NOTIF_ID), n};
             try {
                 startForeground.invoke(this, startArgs);
             } catch (InvocationTargetException e) {
@@ -936,7 +682,7 @@ public class SenseService extends Service {
         final SharedPreferences statusPrefs = getSharedPreferences(Constants.STATUS_PREFS,
                 MODE_WORLD_WRITEABLE);
 
-        if (this.isStarted && statusPrefs.getBoolean(Constants.PREF_STATUS_MAIN, true)) {
+        if (statusPrefs.getBoolean(Constants.PREF_STATUS_MAIN, true)) {
 
             if (statusPrefs.getBoolean(Constants.PREF_STATUS_PHONESTATE, true)) {
                 // Log.d(TAG, "Restart phone state component...");
@@ -1019,7 +765,7 @@ public class SenseService extends Service {
         stopAliveChecks();
 
         @SuppressWarnings("rawtypes")
-        final Class[] stopForegroundSignature = new Class[] { boolean.class };
+        final Class[] stopForegroundSignature = new Class[]{boolean.class};
         Method stopForeground = null;
         try {
             stopForeground = getClass().getMethod("stopForeground", stopForegroundSignature);
@@ -1036,7 +782,7 @@ public class SenseService extends Service {
         if (stopForeground == null) {
             setForeground(false);
         } else {
-            Object[] stopArgs = { Boolean.TRUE };
+            Object[] stopArgs = {Boolean.TRUE};
             try {
                 stopForeground.invoke(this, stopArgs);
             } catch (InvocationTargetException e) {
@@ -1046,6 +792,33 @@ public class SenseService extends Service {
                 // Should not happen.
                 Log.w(TAG, "Unable to invoke stopForeground", e);
             }
+        }
+    }
+
+    /**
+     * Stops any running sensor modules.
+     */
+    private void stopSensorModules() {
+        if (this.isDevProxActive) {
+            toggleDeviceProx(false);
+        }
+        if (this.isMotionActive) {
+            toggleMotion(false);
+        }
+        if (this.isLocationActive) {
+            toggleLocation(false);
+        }
+        if (this.isAmbienceActive) {
+            toggleAmbience(false);
+        }
+        if (this.isPhoneStateActive) {
+            togglePhoneState(false);
+        }
+        if (this.isQuizActive) {
+            togglePopQuiz(false);
+        }
+        if (this.isExternalActive) {
+            toggleExternalSensors(false);
         }
     }
 
@@ -1088,20 +861,20 @@ public class SenseService extends Service {
                         "0"));
                 int interval = -1;
                 switch (rate) {
-                case -2: // real time
-                    interval = -1;
-                    break;
-                case -1: // often
-                    interval = 5 * 1000;
-                    break;
-                case 0: // normal
-                    interval = 60 * 1000;
-                    break;
-                case 1: // rarely (15 minutes)
-                    interval = 15 * 60 * 1000;
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected sample rate preference.");
+                    case -2 : // real time
+                        interval = -1;
+                        break;
+                    case -1 : // often
+                        interval = 5 * 1000;
+                        break;
+                    case 0 : // normal
+                        interval = 60 * 1000;
+                        break;
+                    case 1 : // rarely (15 minutes)
+                        interval = 15 * 60 * 1000;
+                        break;
+                    default :
+                        Log.e(TAG, "Unexpected sample rate preference.");
                 }
                 final int finalInterval = interval;
 
@@ -1162,23 +935,23 @@ public class SenseService extends Service {
                         "0"));
                 int interval = 1;
                 switch (rate) {
-                case -2:
-                    interval = 1 * 1000;
-                    break;
-                case -1:
-                    // often
-                    interval = 15 * 1000;
-                    break;
-                case 0:
-                    // normal
-                    interval = 60 * 1000;
-                    break;
-                case 1:
-                    // rarely (15 hour)
-                    interval = 15 * 60 * 1000;
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected device proximity rate preference.");
+                    case -2 :
+                        interval = 1 * 1000;
+                        break;
+                    case -1 :
+                        // often
+                        interval = 15 * 1000;
+                        break;
+                    case 0 :
+                        // normal
+                        interval = 60 * 1000;
+                        break;
+                    case 1 :
+                        // rarely (15 hour)
+                        interval = 15 * 60 * 1000;
+                        break;
+                    default :
+                        Log.e(TAG, "Unexpected device proximity rate preference.");
                 }
                 final int finalInterval = interval;
 
@@ -1235,24 +1008,24 @@ public class SenseService extends Service {
                         "0"));
                 int interval = 1;
                 switch (rate) {
-                case -2:
-                    interval = 1 * 1000;
-                    break;
-                case -1:
-                    // often
-                    interval = 5 * 1000;
-                    break;
-                case 0:
-                    // normal
-                    interval = 60 * 1000;
-                    break;
-                case 1:
-                    // rarely (15 minutes)
-                    interval = 15 * 60 * 1000;
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected external sensor rate preference.");
-                    return;
+                    case -2 :
+                        interval = 1 * 1000;
+                        break;
+                    case -1 :
+                        // often
+                        interval = 5 * 1000;
+                        break;
+                    case 0 :
+                        // normal
+                        interval = 60 * 1000;
+                        break;
+                    case 1 :
+                        // rarely (15 minutes)
+                        interval = 15 * 60 * 1000;
+                        break;
+                    default :
+                        Log.e(TAG, "Unexpected external sensor rate preference.");
+                        return;
                 }
                 final int finalInterval = interval;
 
@@ -1315,25 +1088,25 @@ public class SenseService extends Service {
                 long minTime = -1;
                 float minDistance = -1;
                 switch (rate) {
-                case -2: // real-time
-                    minTime = 1000;
-                    minDistance = 0;
-                    break;
-                case -1: // often
-                    minTime = 15 * 1000;
-                    minDistance = 10;
-                    break;
-                case 0: // normal
-                    minTime = 60 * 1000;
-                    minDistance = 25;
-                    break;
-                case 1: // rarely
-                    minTime = 15 * 60 * 1000;
-                    minDistance = 25;
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                    break;
+                    case -2 : // real-time
+                        minTime = 1000;
+                        minDistance = 0;
+                        break;
+                    case -1 : // often
+                        minTime = 15 * 1000;
+                        minDistance = 10;
+                        break;
+                    case 0 : // normal
+                        minTime = 60 * 1000;
+                        minDistance = 25;
+                        break;
+                    case 1 : // rarely
+                        minTime = 15 * 60 * 1000;
+                        minDistance = 25;
+                        break;
+                    default :
+                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                        break;
                 }
 
                 // check if any providers are selected in the preferences
@@ -1394,21 +1167,21 @@ public class SenseService extends Service {
                         "0"));
                 int interval = -1;
                 switch (rate) {
-                case -2: // real time
-                    interval = 0;
-                    break;
-                case -1: // often
-                    interval = 5 * 1000;
-                    break;
-                case 0: // normal
-                    interval = 60 * 1000;
-                    break;
-                case 1: // rarely (15 minutes)
-                    interval = 15 * 60 * 1000;
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                    break;
+                    case -2 : // real time
+                        interval = 0;
+                        break;
+                    case -1 : // often
+                        interval = 5 * 1000;
+                        break;
+                    case 0 : // normal
+                        interval = 60 * 1000;
+                        break;
+                    case 1 : // rarely (15 minutes)
+                        interval = 15 * 60 * 1000;
+                        break;
+                    default :
+                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                        break;
                 }
                 final int finalInterval = interval;
 
@@ -1484,21 +1257,21 @@ public class SenseService extends Service {
                         "0"));
                 int interval = -1;
                 switch (rate) {
-                case -2: // real time
-                    interval = 0;
-                    break;
-                case -1: // often
-                    interval = 5 * 1000;
-                    break;
-                case 0: // normal
-                    interval = 60 * 1000;
-                    break;
-                case 1: // rarely (15 minutes)
-                    interval = 15 * 60 * 1000;
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected commonsense rate: " + rate);
-                    break;
+                    case -2 : // real time
+                        interval = 0;
+                        break;
+                    case -1 : // often
+                        interval = 5 * 1000;
+                        break;
+                    case 0 : // normal
+                        interval = 60 * 1000;
+                        break;
+                    case 1 : // rarely (15 minutes)
+                        interval = 15 * 60 * 1000;
+                        break;
+                    default :
+                        Log.e(TAG, "Unexpected commonsense rate: " + rate);
+                        break;
                 }
                 final int finalInterval = interval;
 
@@ -1560,20 +1333,20 @@ public class SenseService extends Service {
 
     private void togglePopQuiz(boolean active) {
 
-        if (active != isQuizActive) {
-            this.isQuizActive = active;
-            final SenseAlarmManager mgr = new SenseAlarmManager(this);
-            if (true == active) {
-
-                // create alarm
-                mgr.createSyncAlarm();
-                this.isQuizActive = mgr.createEntry(0, 1);
-            } else {
-
-                // cancel alarm
-                mgr.cancelEntry();
-                mgr.cancelSyncAlarm();
-            }
-        }
+        // if (active != isQuizActive) {
+        // this.isQuizActive = active;
+        // final SenseAlarmManager mgr = new SenseAlarmManager(this);
+        // if (true == active) {
+        //
+        // // create alarm
+        // mgr.createSyncAlarm();
+        // this.isQuizActive = mgr.createEntry(0, 1);
+        // } else {
+        //
+        // // cancel alarm
+        // mgr.cancelEntry();
+        // mgr.cancelSyncAlarm();
+        // }
+        // }
     }
 }

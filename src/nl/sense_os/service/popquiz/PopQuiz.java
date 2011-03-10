@@ -7,6 +7,17 @@
  */
 package nl.sense_os.service.popquiz;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import nl.sense_os.service.Constants;
+import nl.sense_os.service.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,17 +41,6 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
-
-import nl.sense_os.service.Constants;
-import nl.sense_os.service.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class PopQuiz extends Activity {
     /**
@@ -355,32 +355,32 @@ public class PopQuiz extends Activity {
         Dialog dialog = null;
 
         switch (id) {
-        case DIALOG_CONFIRM:
-            dialog = createDialogConfirm();
-            break;
-        case DIALOG_CONFIRM_CLOSE:
-            dialog = createDialogConfirmClose();
-            break;
-        case DIALOG_MISSED:
-            dialog = createDialogMissed();
-            break;
-        // case DIALOG_LOGIN:
-        // dialog = createDialogLogin();
-        // break;
-        // case DIALOG_LOGIN_PROGRESS:
-        // dialog = new ProgressDialog(this);
-        // ((ProgressDialog) dialog).setIcon(R.drawable.icon);
-        // dialog.setTitle("Een ogenblik geduld");
-        // ((ProgressDialog) dialog).setMessage("Inloggegevens controleren...");
-        // break;
-        case DIALOG_WELCOME:
-            dialog = createDialogWelcome(false);
-            break;
-        case DIALOG_WELCOME_CATCHUP:
-            dialog = createDialogWelcome(true);
-            break;
-        default:
-            dialog = null;
+            case DIALOG_CONFIRM :
+                dialog = createDialogConfirm();
+                break;
+            case DIALOG_CONFIRM_CLOSE :
+                dialog = createDialogConfirmClose();
+                break;
+            case DIALOG_MISSED :
+                dialog = createDialogMissed();
+                break;
+            // case DIALOG_LOGIN:
+            // dialog = createDialogLogin();
+            // break;
+            // case DIALOG_LOGIN_PROGRESS:
+            // dialog = new ProgressDialog(this);
+            // ((ProgressDialog) dialog).setIcon(R.drawable.icon);
+            // dialog.setTitle("Een ogenblik geduld");
+            // ((ProgressDialog) dialog).setMessage("Inloggegevens controleren...");
+            // break;
+            case DIALOG_WELCOME :
+                dialog = createDialogWelcome(false);
+                break;
+            case DIALOG_WELCOME_CATCHUP :
+                dialog = createDialogWelcome(true);
+                break;
+            default :
+                dialog = null;
         }
 
         return dialog;
@@ -397,19 +397,19 @@ public class PopQuiz extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean handled = false;
         switch (keyCode) {
-        case KeyEvent.KEYCODE_BACK:
-            if (false == this.selectionOk) {
-                showDialog(DIALOG_CONFIRM_CLOSE);
-                handled = true;
-            }
-            break;
+            case KeyEvent.KEYCODE_BACK :
+                if (false == this.selectionOk) {
+                    showDialog(DIALOG_CONFIRM_CLOSE);
+                    handled = true;
+                }
+                break;
         }
         return handled;
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        Object[] saveMe = { this.tabs.getCurrentTab(), this.loggedIn, this.selectionOk };
+        Object[] saveMe = {this.tabs.getCurrentTab(), this.loggedIn, this.selectionOk};
         return saveMe;
     }
 
