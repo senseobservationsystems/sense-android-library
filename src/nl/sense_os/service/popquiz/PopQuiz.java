@@ -230,7 +230,7 @@ public class PopQuiz extends Activity {
         String timeString = timeString(this.entryId);
 
         // get login name from preferences
-        SharedPreferences prefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
+        final SharedPreferences prefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
         String nameString = prefs.getString("login_name", "ERROR");
         if (nameString.equals("ERROR")) {
             Log.e(TAG, "Cannot fetch name from preferences.");

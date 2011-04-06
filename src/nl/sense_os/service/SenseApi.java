@@ -108,7 +108,6 @@ public class SenseApi {
             return -1;
         }
     }
-
     /**
      * @return a JSONObject from the requested URI
      */
@@ -196,7 +195,6 @@ public class SenseApi {
         }
         return null;
     }
-
     /**
      * This method returns the url to which the data must be send, it does this based on the sensor
      * name and device_type. If the sensor cannot be found, then it will be created
@@ -315,7 +313,6 @@ public class SenseApi {
             return null;
         }
     }
-
     /**
      * @param hashMe
      *            "clear" password String to be hashed before sending it to CommonSense
@@ -411,7 +408,6 @@ public class SenseApi {
             return false;
         }
     }
-
     /**
      * Tries to register a new user at CommonSense. Discards private data of any previous users.
      * 
@@ -471,7 +467,6 @@ public class SenseApi {
         }
         return true;
     }
-
     /**
      * This method sends a JSON object to update or create an item it returns the HTTP-response code
      */

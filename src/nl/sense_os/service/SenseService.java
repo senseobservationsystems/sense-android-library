@@ -328,7 +328,6 @@ public class SenseService extends Service {
 
         return this.isLoggedIn;
     }
-
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
@@ -430,18 +429,6 @@ public class SenseService extends Service {
         stopTransmitAlarms();
     }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        Log.w(TAG, "onLowMemory");
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-        Log.d(TAG, "onRebind");
-    }
-
     /**
      * Deprecated method for starting the service, used in Android 1.6 and older.
      */
@@ -537,7 +524,6 @@ public class SenseService extends Service {
         }
         return isLoggedIn;
     }
-
     /**
      * Shows a status bar notification that the Sense service is active, also displaying the
      * username if the service is logged in.
@@ -576,7 +562,6 @@ public class SenseService extends Service {
         final NotificationManager mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mgr.notify(NOTIF_ID, note);
     }
-
     /**
      * Displays a Toast message using the process's main Thread.
      * 
@@ -842,8 +827,7 @@ public class SenseService extends Service {
                 // check noise sensor presence
                 if (null != this.noiseSensor) {
                     Log.w(TAG, "Noise sensor is already present!");
-                    this.telMgr.listen(this.noiseSensor, PhoneStateListener.LISTEN_NONE);
-                    this.noiseSensor.stopListening();
+                    this.noiseSensor.disable();
                     this.noiseSensor = null;
                 }
 
@@ -865,7 +849,7 @@ public class SenseService extends Service {
                         interval = -1;
                         break;
                     case -1 : // often
-                        interval = 5 * 1000;
+                        interval = 10 * 1000;
                         break;
                     case 0 : // normal
                         interval = 60 * 1000;
@@ -887,8 +871,7 @@ public class SenseService extends Service {
 
                         if (mainPrefs.getBoolean(Constants.PREF_AMBIENCE_MIC, true)) {
                             noiseSensor = new NoiseSensor(SenseService.this);
-                            telMgr.listen(noiseSensor, PhoneStateListener.LISTEN_CALL_STATE);
-                            noiseSensor.startListening(finalInterval);
+                            noiseSensor.enable(finalInterval);
                         }
                         if (mainPrefs.getBoolean(Constants.PREF_AMBIENCE_LIGHT, true)) {
                             lightSensor = new LightSensor(SenseService.this);
@@ -903,7 +886,7 @@ public class SenseService extends Service {
                 // stop sensing
                 if (null != this.noiseSensor) {
                     this.telMgr.listen(this.noiseSensor, PhoneStateListener.LISTEN_NONE);
-                    this.noiseSensor.stopListening();
+                    this.noiseSensor.disable();
                     this.noiseSensor = null;
                 }
                 if (null != this.lightSensor) {

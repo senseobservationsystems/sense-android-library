@@ -1,10 +1,9 @@
 package nl.sense_os.service.feedback;
 
-import android.app.IntentService;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import nl.sense_os.service.Constants;
 import nl.sense_os.service.MsgHandler;
@@ -14,10 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
+import android.app.IntentService;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 
 public class FeedbackChecker extends IntentService {
 
@@ -38,7 +38,8 @@ public class FeedbackChecker extends IntentService {
             url += "?last=1";
 
             // get cookie for authentication
-            SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
+            final SharedPreferences authPrefs = getSharedPreferences(Constants.AUTH_PREFS,
+                    MODE_PRIVATE);
             String cookie = authPrefs.getString(Constants.PREF_LOGIN_COOKIE, null);
 
             // get last feedback sensor value
