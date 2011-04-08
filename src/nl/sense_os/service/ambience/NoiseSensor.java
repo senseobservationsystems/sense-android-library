@@ -201,7 +201,7 @@ public class NoiseSensor extends PhoneStateListener {
         @Override
         protected void onPostExecute(Boolean isRecording) {
 
-            if (isRecording) {
+            if (null != isRecording && isRecording) {
                 // schedule task to stop recording and calculate the noise
                 TimerTask task = new TimerTask() {
 
@@ -213,12 +213,15 @@ public class NoiseSensor extends PhoneStateListener {
                             return;
                         }
 
-                        if (null == calcNoiseTask
-                                || calcNoiseTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-                            calcNoiseTask = new CalcNoiseTask();
-                            calcNoiseTask.execute();
-                        } else {
-                            // Log.d(TAG, "Did not start noise calc task: it is already active...");
+                        synchronized (calcNoiseTask) {
+                            if (null == calcNoiseTask
+                                    || calcNoiseTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                                calcNoiseTask = new CalcNoiseTask();
+                                calcNoiseTask.execute();
+                            } else {
+                                // Log.d(TAG,
+                                // "Did not start noise calc task: it is already active...");
+                            }
                         }
                     }
                 };
