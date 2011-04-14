@@ -213,15 +213,12 @@ public class NoiseSensor extends PhoneStateListener {
                             return;
                         }
 
-                        synchronized (calcNoiseTask) {
-                            if (null == calcNoiseTask
-                                    || calcNoiseTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-                                calcNoiseTask = new CalcNoiseTask();
-                                calcNoiseTask.execute();
-                            } else {
-                                // Log.d(TAG,
-                                // "Did not start noise calc task: it is already active...");
-                            }
+                        if (null == calcNoiseTask
+                                || calcNoiseTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                            calcNoiseTask = new CalcNoiseTask();
+                            calcNoiseTask.execute();
+                        } else {
+                            // Log.d(TAG, "Did not start noise calc task: it is already active...");
                         }
                     }
                 };
