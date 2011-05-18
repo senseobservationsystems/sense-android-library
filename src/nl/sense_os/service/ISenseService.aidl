@@ -5,8 +5,8 @@ import nl.sense_os.service.ISenseServiceCallback;
 interface ISenseService 
 {	
     void getStatus(ISenseServiceCallback callback);
-    boolean changeLogin();
-    boolean register();
+    boolean changeLogin(String username, String password);
+    boolean register(String username, String password);
 	void toggleDeviceProx(boolean active, ISenseServiceCallback callback);
 	void toggleLocation(boolean active, ISenseServiceCallback callback);
 	void toggleMotion(boolean active, ISenseServiceCallback callback);
