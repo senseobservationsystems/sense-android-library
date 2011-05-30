@@ -346,8 +346,10 @@ public class Constants {
     /**
      * Key for preference that toggles use of the Zephyr BioHarness Blood pressure.
      * 
+     * @deprecated BioHarness does not actually measure blood pressure.
      * @see #MAIN_PREFS
      */
+    @Deprecated
     public static final String PREF_BIOHARNESS_BLOOD_PRESSURE = "zephyrBioHarness_bloodP";
 
     /**
@@ -398,6 +400,20 @@ public class Constants {
      * @see #MAIN_PREFS
      */
     public static final String PREF_HXM_DISTANCE = "zephyrHxM_distance";
+
+    /**
+     * Key for preference that toggles use of the MyGlucohealth sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_GLUCO = "myglucohealth";
+
+    /**
+     * Key for preference that toggles use of the Tanita scale sensor.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_TANITA_SCALE = "tanita_scale";
 
     /* ======================================================================================== */
     /* ---------------- Codes to keep track of the active sensing modules --------------------- */
