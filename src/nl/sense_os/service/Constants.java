@@ -425,17 +425,29 @@ public class Constants {
     /* ----------------------------------- CommonSense URls ----------------------------------- */
     /* ======================================================================================== */
     public static final String URL_BASE = "http://api.sense-os.nl/";
+    public static final String URL_DEV_BASE = "http://api.dev.sense-os.nl/";
     public static final String URL_VERSION = "http://data.sense-os.nl/senseapp/version.php";
     public static final String URL_FORMAT = ".json";
-    public static final String URL_GET_DEVICES = URL_BASE + "devices" + URL_FORMAT;
-    public static final String URL_GET_SENSORS = URL_BASE + "devices/<id>/sensors" + URL_FORMAT;
-    public static final String URL_POST_SENSOR_DATA = URL_BASE + "sensors/<id>/data" + URL_FORMAT;
-    public static final String URL_POST_FILE = URL_BASE + "sensors/<id>/file" + URL_FORMAT;
+    public static final String URL_DEVICES = URL_BASE + "devices" + URL_FORMAT;
+    public static final String URL_DEV_DEVICES = URL_DEV_BASE + "devices" + URL_FORMAT;
+    public static final String URL_SENSORS = URL_BASE + "devices/<id>/sensors" + URL_FORMAT;
+    public static final String URL_DEV_SENSORS = URL_DEV_BASE + "devices/<id>/sensors" + URL_FORMAT;
+    public static final String URL_SENSOR_DATA = URL_BASE + "sensors/<id>/data" + URL_FORMAT;
+    public static final String URL_DEV_SENSOR_DATA = URL_DEV_BASE + "sensors/<id>/data"
+            + URL_FORMAT;
+    public static final String URL_SENSOR_FILE = URL_BASE + "sensors/<id>/file" + URL_FORMAT;
+    public static final String URL_DEV_SENSOR_FILE = URL_DEV_BASE + "sensors/<id>/file"
+            + URL_FORMAT;
     public static final String URL_CREATE_SENSOR = URL_BASE + "sensors" + URL_FORMAT;
+    public static final String URL_DEV_CREATE_SENSOR = URL_DEV_BASE + "sensors" + URL_FORMAT;
     public static final String URL_ADD_SENSOR_TO_DEVICE = URL_BASE + "sensors/<id>/device"
             + URL_FORMAT;
+    public static final String URL_DEV_ADD_SENSOR_TO_DEVICE = URL_DEV_BASE + "sensors/<id>/device"
+            + URL_FORMAT;
     public static final String URL_LOGIN = URL_BASE + "login" + URL_FORMAT;
+    public static final String URL_DEV_LOGIN = URL_DEV_BASE + "login" + URL_FORMAT;
     public static final String URL_REG = URL_BASE + "users" + URL_FORMAT;
+    public static final String URL_DEV_REG = URL_DEV_BASE + "users" + URL_FORMAT;
 
     /* ======================================================================================== */
     /* -------------------------- Sensor data type designations ------------------------------- */

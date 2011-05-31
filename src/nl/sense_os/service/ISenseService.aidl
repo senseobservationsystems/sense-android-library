@@ -4,16 +4,27 @@ import nl.sense_os.service.ISenseServiceCallback;
 
 interface ISenseService 
 {	
-    void getStatus(ISenseServiceCallback callback);
     boolean changeLogin(String username, String password);
+    boolean getPrefBool(String key, boolean defValue);
+    float getPrefFloat(String key, float defValue);
+    int getPrefInt(String key, int defValue);
+    long getPrefLong(String key, long defValue);
+    String getPrefString(String key, String defValue);
+    void getStatus(ISenseServiceCallback callback);
     boolean register(String username, String password);
-	void toggleDeviceProx(boolean active, ISenseServiceCallback callback);
-	void toggleLocation(boolean active, ISenseServiceCallback callback);
-	void toggleMotion(boolean active, ISenseServiceCallback callback);
-	void toggleNoise(boolean active, ISenseServiceCallback callback);
-    void togglePhoneState(boolean active, ISenseServiceCallback callback);
-    void togglePopQuiz(boolean active, ISenseServiceCallback callback);
-    void toggleExternalSensors(boolean active, ISenseServiceCallback callback);
+    void setPrefBool(String key, boolean value);
+    void setPrefFloat(String key, float value);
+    void setPrefInt(String key, int value);
+    void setPrefLong(String key, long value);
+    void setPrefString(String key, String value);
+    void toggleAmbience(boolean active);
+	void toggleDeviceProx(boolean active);
+    void toggleExternalSensors(boolean active);
+	void toggleLocation(boolean active);
+	void toggleMain(boolean active);
+	void toggleMotion(boolean active);
+    void togglePhoneState(boolean active);
+    void togglePopQuiz(boolean active);
 }
 
 
