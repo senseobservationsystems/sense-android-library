@@ -102,13 +102,6 @@ public class Constants {
     public static final String AUTH_PREFS = "authentication";// "login";
 
     /**
-     * Key for generic login preference that displays the login dialog when clicked.
-     * 
-     * @see #AUTHENTICATION_PREFS
-     */
-    public static final String PREF_LOGIN = "login";
-
-    /**
      * Key for login preference for session cookie.
      * 
      * @see #AUTHENTICATION_PREFS
@@ -294,13 +287,6 @@ public class Constants {
      * @see #MAIN_PREFS
      */
     public static final String PREF_QUIZ_SYNC_TIME = "popquiz_sync_time";
-
-    /**
-     * Key for generic preference that shows the registration dialog when clicked.
-     * 
-     * @see #MAIN_PREFS
-     */
-    public static final String PREF_REGISTER = "register";
 
     /**
      * Key for preference that controls sync frequency with CommonSense.
