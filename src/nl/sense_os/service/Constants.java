@@ -138,6 +138,13 @@ public class Constants {
     public static final String PREF_SENSOR_LIST_TIME = "sensor_list_timestamp";
 
     /**
+     * Key to use the development version of CommonSense.
+     * 
+     * @see #AUTHENTICATION_PREFS
+     */
+    public static final String PREF_DEV_MODE = "devmode";
+
+    /**
      * Key for storing the online device id.
      * 
      * @see #AUTHENTICATION_PREFS
