@@ -4,14 +4,14 @@ import nl.sense_os.service.ISenseServiceCallback;
 
 interface ISenseService 
 {	
-    boolean changeLogin(String username, String password);
+    int changeLogin(String username, String password);
     boolean getPrefBool(String key, boolean defValue);
     float getPrefFloat(String key, float defValue);
     int getPrefInt(String key, int defValue);
     long getPrefLong(String key, long defValue);
     String getPrefString(String key, String defValue);
     void getStatus(ISenseServiceCallback callback);
-    boolean register(String username, String password);
+    int register(String username, String password);
     void setPrefBool(String key, boolean value);
     void setPrefFloat(String key, float value);
     void setPrefInt(String key, int value);
