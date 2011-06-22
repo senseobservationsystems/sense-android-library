@@ -458,5 +458,6 @@ public class Constants {
     public static final String SENSOR_DATA_TYPE_JSON = "json";
     public static final String SENSOR_DATA_TYPE_STRING = "string";
     public static final String SENSOR_DATA_TYPE_FILE = "file";
+    public static final String SENSOR_DATA_TYPE_JSON_TIME_SERIE = "json time serie";
 
 }
