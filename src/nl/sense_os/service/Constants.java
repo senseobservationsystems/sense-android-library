@@ -85,6 +85,7 @@ public class Constants {
      * Key for storing if the service is supposed to be "alive", used for aggressive restarting
      * after crashes.
      * 
+     * @deprecated Use {@link #PREF_STATUS_MAIN} instead.
      * @see #STATUS_PREFS
      */
     public static final String PREF_ALIVE = "alive";
@@ -407,6 +408,28 @@ public class Constants {
      * @see #MAIN_PREFS
      */
     public static final String PREF_TANITA_SCALE = "tanita_scale";
+
+    /**
+     * Key for preference that toggles use of compression for transmission.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_COMPRESSION = "compression";
+
+    /**
+     * Key for preference that toggles "epi-mode", drastically changing motion sensing
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_EPI_MODE = "epimode";
+
+    /**
+     * Key for preference that determines whether to unregister the motion sensor between samples.
+     * Nota bene: unregistering the sensor breaks the screen rotation on some phones (e.g. Nexus S).
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_MOTION_UNREG = "motion_unregister";
 
     /* ======================================================================================== */
     /* ---------------- Codes to keep track of the active sensing modules --------------------- */
