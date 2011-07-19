@@ -421,7 +421,7 @@ public class Constants {
      * 
      * @see #MAIN_PREFS
      */
-    public static final String PREF_EPI_MODE = "epimode";
+    public static final String PREF_MOTION_EPIMODE = "epimode";
 
     /**
      * Key for preference that determines whether to unregister the motion sensor between samples.
@@ -430,6 +430,14 @@ public class Constants {
      * @see #MAIN_PREFS
      */
     public static final String PREF_MOTION_UNREG = "motion_unregister";
+
+    /**
+     * Key for preference that toggles motion energy sensing, which measures average kinetic energy
+     * over a sample period.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_MOTION_ENERGY = "motion_energy";
 
     /* ======================================================================================== */
     /* ---------------- Codes to keep track of the active sensing modules --------------------- */
