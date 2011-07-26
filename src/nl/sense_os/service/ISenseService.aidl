@@ -4,14 +4,46 @@ import nl.sense_os.service.ISenseServiceCallback;
 
 interface ISenseService 
 {	
+    /**
+     * Tries to log in at CommonSense using the supplied username and password. After login, the
+     * service remembers the username and password.
+     * 
+     * @param username
+     *            username for login
+     * @param pass
+     *            hashed password for login
+     * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
+     *         errors.
+     */
     int changeLogin(String username, String password);
+    
+    /**
+     * Registers a new user at CommonSense and logs in immediately.
+     *
+     * @param username 
+     *         Username for the new user.
+     * @param password 
+     *         Unhashed password String for the new user.
+     * @param name 
+     *         First name (optional, null if not required).
+     * @param surname 
+     *         Surname (optional, null if not required).
+     * @param email 
+     *         Email address (optional, null if not required).
+     * @param mobile 
+     *         Phone number, preferably in E164 format (optional, null if not required).
+     * @return 0 if registration completed successfully, -2 if the user already exists, and -1
+     *         otherwise.
+     */
+    int register(String username, String password, String name, String surname, String email, 
+            String mobile);
+    
     boolean getPrefBool(String key, boolean defValue);
     float getPrefFloat(String key, float defValue);
     int getPrefInt(String key, int defValue);
     long getPrefLong(String key, long defValue);
     String getPrefString(String key, String defValue);
     void getStatus(ISenseServiceCallback callback);
-    int register(String username, String password);
     void setPrefBool(String key, boolean value);
     void setPrefFloat(String key, float value);
     void setPrefInt(String key, int value);
