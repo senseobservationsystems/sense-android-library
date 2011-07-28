@@ -439,6 +439,14 @@ public class Constants {
      */
     public static final String PREF_MOTION_ENERGY = "motion_energy";
 
+    /**
+     * Key for preference that enables fix that re-registers the motion sensor when the screen turns
+     * off.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_SCREENOFF_FIX = "screenoff_fix";
+
     /* ======================================================================================== */
     /* ---------------- Codes to keep track of the active sensing modules --------------------- */
     /* ======================================================================================== */
