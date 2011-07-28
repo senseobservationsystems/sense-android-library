@@ -447,6 +447,14 @@ public class Constants {
      */
     public static final String PREF_SCREENOFF_FIX = "screenoff_fix";
 
+    /**
+     * Key for preference that enables partial wake lock, ensuring the CPU never turns off while
+     * sensing.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_WAKELOCK = "partial_wakelock";
+
     /* ======================================================================================== */
     /* ---------------- Codes to keep track of the active sensing modules --------------------- */
     /* ======================================================================================== */
