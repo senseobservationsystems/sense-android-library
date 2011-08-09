@@ -455,6 +455,14 @@ public class Constants {
      */
     public static final String PREF_WAKELOCK = "partial_wakelock";
 
+    /**
+     * Key for preference that enables local storage, making the sensor data available to other apps
+     * through a ContentProvider.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_LOCAL_STORAGE = "local_storage";
+
     /* ======================================================================================== */
     /* ---------------- Codes to keep track of the active sensing modules --------------------- */
     /* ======================================================================================== */
