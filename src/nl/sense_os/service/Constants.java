@@ -396,6 +396,14 @@ public class Constants {
     public static final String PREF_HXM_DISTANCE = "zephyrHxM_distance";
 
     /**
+     * Key for preference that toggles use of the Zephyr HxM strides.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_HXM_STRIDES = "zephyrHxM_strides";
+
+    
+    /**
      * Key for preference that toggles use of the MyGlucohealth sensor.
      * 
      * @see #MAIN_PREFS
@@ -501,6 +509,7 @@ public class Constants {
             + URL_FORMAT;
     public static final String URL_LOGIN = URL_BASE + "login" + URL_FORMAT;
     public static final String URL_DEV_LOGIN = URL_DEV_BASE + "login" + URL_FORMAT;
+    
     public static final String URL_REG = URL_BASE + "users" + URL_FORMAT;
     public static final String URL_DEV_REG = URL_DEV_BASE + "users" + URL_FORMAT;
 
