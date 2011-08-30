@@ -241,6 +241,13 @@ public class Constants {
     public static final String PREF_LOCATION_NETWORK = "location_network";
 
     /**
+     * Key for preference that toggles use of sensor fusion to toggle th GPS usage.
+     * 
+     * @see #MAIN_PREFS
+     */
+    public static final String PREF_LOCATION_AUTO_GPS = "automatic_gps";
+
+    /**
      * Key for preference that toggles use of GPS in location sensor.
      * 
      * @see #MAIN_PREFS
@@ -402,7 +409,6 @@ public class Constants {
      */
     public static final String PREF_HXM_STRIDES = "zephyrHxM_strides";
 
-    
     /**
      * Key for preference that toggles use of the MyGlucohealth sensor.
      * 
@@ -460,7 +466,9 @@ public class Constants {
      * sensing.
      * 
      * @see #MAIN_PREFS
+     * @deprecated Not used anymore, Sense automatically uses wake lock when required.
      */
+    @Deprecated
     public static final String PREF_WAKELOCK = "partial_wakelock";
 
     /**
@@ -509,7 +517,7 @@ public class Constants {
             + URL_FORMAT;
     public static final String URL_LOGIN = URL_BASE + "login" + URL_FORMAT;
     public static final String URL_DEV_LOGIN = URL_DEV_BASE + "login" + URL_FORMAT;
-    
+
     public static final String URL_REG = URL_BASE + "users" + URL_FORMAT;
     public static final String URL_DEV_REG = URL_DEV_BASE + "users" + URL_FORMAT;
 
@@ -523,5 +531,4 @@ public class Constants {
     public static final String SENSOR_DATA_TYPE_STRING = "string";
     public static final String SENSOR_DATA_TYPE_FILE = "file";
     public static final String SENSOR_DATA_TYPE_JSON_TIME_SERIE = "json time serie";
-
 }
