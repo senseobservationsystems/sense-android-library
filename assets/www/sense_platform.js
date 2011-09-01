@@ -33,53 +33,138 @@ var SensePlatform = {
     },
 
     /**
-     * @param argument
+     * @param authentication
      *            Array with username and password
      * @param successCallback
      *            The callback which will be called when Sense login is successful
      * @param failureCallback
-     *            The callback which will be called when Sense login encounters an error
+     *            The callback which will be called when Sense login fails
      */
-    login : function(argument, successCallback, failureCallback) {
+    changeLogin : function(authentication, successCallback, failureCallback) {
         this.bindToSense();
         PhoneGap.exec(successCallback,
                 failureCallback, 
                 'SensePlatform', 
-                'login', 
-                 argument ); 
+                'change_login', 
+                 authentication ); 
     },
 
     /**
-     * @param argument
-     *            Unused
+     * @param authentication
+     *            Array with username, password, first name, surname, email, phone number strings
      * @param successCallback
-     *            The callback which will be called when Sense startup is successful
+     *            The callback which will be called when Sense registration is successful
      * @param failureCallback
-     *            The callback which will be called when Sense startup encounters an error
+     *            The callback which will be called when Sense registration fails
      */
-    start : function(argument, successCallback, failureCallback) {
+    register : function(authentication, successCallback, failureCallback) {
+        this.bindToSense();
+        PhoneGap.exec(successCallback,
+                failureCallback, 
+                'SensePlatform', 
+                'register', 
+                 authentication ); 
+    },
+
+    /**
+     * @param active
+     *            boolean to indicate desired state
+     * @param successCallback
+     *            The callback which will be called when Sense status is successfully changed
+     * @param failureCallback
+     *            The callback which will be called when execution fails
+     */
+    toggleMain : function(active, successCallback, failureCallback) {
         this.bindToSense();
         return PhoneGap.exec(successCallback,
                 failureCallback, 
                 'SensePlatform', 
-                'start', 
-                []); 
+                'toggle_main', 
+                [ active ]); 
     },
 
     /**
-     * @param argument
-     *            Unused
+     * @param active
+     *            boolean to indicate desired state
      * @param successCallback
-     *            The callback which will be called when Sense is successfully stopped
+     *            The callback which will be called when ambience sensor status is successfully changed
      * @param failureCallback
-     *            The callback which will be called when Sense encounters an error while stopping
+     *            The callback which will be called when execution fails
      */
-    stop : function(argument, successCallback, failureCallback) {
+    toggleAmbience : function(active, successCallback, failureCallback) {
         this.bindToSense();
         return PhoneGap.exec(successCallback,
                 failureCallback, 
                 'SensePlatform', 
-                'stop_sense',
-                []); 
+                'toggle_ambience', 
+                [ active ]); 
+    },
+
+    /**
+     * @param active
+     *            boolean to indicate desired state
+     * @param successCallback
+     *            The callback which will be called when external sensor status is successfully changed
+     * @param failureCallback
+     *            The callback which will be called when execution fails
+     */
+    toggleExternal : function(active, successCallback, failureCallback) {
+        this.bindToSense();
+        return PhoneGap.exec(successCallback,
+                failureCallback, 
+                'SensePlatform', 
+                'toggle_external', 
+                [ active ]); 
+    },
+
+    /**
+     * @param active
+     *            boolean to indicate desired state
+     * @param successCallback
+     *            The callback which will be called when motion sensor status is successfully changed
+     * @param failureCallback
+     *            The callback which will be called when execution fails
+     */
+    toggleMotion : function(active, successCallback, failureCallback) {
+        this.bindToSense();
+        return PhoneGap.exec(successCallback,
+                failureCallback, 
+                'SensePlatform', 
+                'toggle_motion', 
+                [ active ]); 
+    },
+
+    /**
+     * @param active
+     *            boolean to indicate desired state
+     * @param successCallback
+     *            The callback which will be called when neighboring devices sensor status is successfully changed
+     * @param failureCallback
+     *            The callback which will be called when execution fails
+     */
+    toggleNeighDev : function(active, successCallback, failureCallback) {
+        this.bindToSense();
+        return PhoneGap.exec(successCallback,
+                failureCallback, 
+                'SensePlatform', 
+                'toggle_neighdev', 
+                [ active ]); 
+    },
+
+    /**
+     * @param active
+     *            boolean to indicate desired state
+     * @param successCallback
+     *            The callback which will be called when phone state sensor status is successfully changed
+     * @param failureCallback
+     *            The callback which will be called when execution fails
+     */
+    togglePhoneState : function(active, successCallback, failureCallback) {
+        this.bindToSense();
+        return PhoneGap.exec(successCallback,
+                failureCallback, 
+                'SensePlatform', 
+                'toggle_phonestate', 
+                [ active ]); 
     }
 };

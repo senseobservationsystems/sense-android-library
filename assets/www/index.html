@@ -7,7 +7,8 @@
 	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	  <script type="text/javascript" charset="utf-8" src="phonegap-1.0.0.js"></script>
       <script type="text/javascript" charset="utf-8" src="main.js"></script>  
-      <script type="text/javascript" charset="utf-8" src="sense_ivitality.js"></script>  
+      <script type="text/javascript" charset="utf-8" src="sense_platform.js"></script>  
+      <script type="text/javascript" charset="utf-8" src="ivitality.js"></script>  
 
   </head>
   <body onload="init();" id="stage" class="theme">
@@ -20,18 +21,18 @@
                    </span>, Color Depth: <span id="colorDepth"></span></h4>
      </div>
      
-     <h2>Sense iVitality plugin examples:</h2>
+     <h2>Sense PhoneGap plugin examples:</h2>
      
-    <a href="#" class="btn large" onclick="SenseIVit.startSense(
-        '',
+    <a href="#" class="btn large" onclick="SensePlatform.toggleMain(
+        true,
         function(r){console.log('startSense result: ' + r)},
         function(e){console.log('startSense error: ' + e)});">Start Sense</a>
-    <a href="#" class="btn large" onclick="SenseIVit.loginSense(
+    <a href="#" class="btn large" onclick="SensePlatform.changeLogin(
         ['steven@sense-os.nl', '1234'],
         function(r){console.log('loginSense result: ' + r)},
         function(e){console.log('loginSense error: ' + e)});">Login Sense</a>
-    <a href="#" class="btn large" onclick="SenseIVit.stopSense(
-        '',
+    <a href="#" class="btn large" onclick="SensePlatform.toggleMain(
+        false,
         function(r){console.log('stopSense result: ' + r)},
         function(e){console.log('stopSense error: ' + e)});">Stop Sense</a>
         

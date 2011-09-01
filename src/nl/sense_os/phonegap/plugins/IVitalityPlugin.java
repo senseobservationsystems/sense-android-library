@@ -38,33 +38,32 @@ public class IVitalityPlugin extends AbstractSensePlugin {
      */
     @Override
     public PluginResult execute(String action, JSONArray data, String callbackId) {
-
-        if (action == null) {
-            Log.e(TAG, "Cannot execute action. action=" + action);
-            return new PluginResult(Status.INVALID_ACTION);
-
-        } else if (action.equals(Actions.BIND)) {
-            bindToSenseService();
-            return new PluginResult(Status.NO_RESULT);
-
-        } else if (action.equals(Actions.CHECK_SENSE_STATUS)) {
-            return checkSenseStatus(data, callbackId);
-
-        } else if (action.equals(Actions.MEASURE_REACTION)) {
-            measureReaction(data, callbackId);
-
-        } else if (action.equals(Actions.MEASURE_PRESSURE)) {
-            measurePressure(data, callbackId);
-
-        } else if (action.equals(Actions.SHOW_QUESTION)) {
-            showQuestion(data, callbackId);
-
-        } else {
-            Log.e(TAG, "Cannot execute action. action=" + action);
-            return new PluginResult(Status.INVALID_ACTION);
+        try {
+            if (action == null) {
+                Log.e(TAG, "Invalid action: " + action);
+                return new PluginResult(Status.INVALID_ACTION);
+            } else if (action.equals(Actions.BIND)) {
+                bindToSenseService();
+                return new PluginResult(Status.NO_RESULT);
+            } else if (action.equals(Actions.CHECK_SENSE_STATUS)) {
+                return checkSenseStatus(data, callbackId);
+            } else if (action.equals(Actions.MEASURE_REACTION)) {
+                measureReaction(data, callbackId);
+                return null;
+            } else if (action.equals(Actions.MEASURE_PRESSURE)) {
+                measurePressure(data, callbackId);
+                return null;
+            } else if (action.equals(Actions.SHOW_QUESTION)) {
+                showQuestion(data, callbackId);
+                return null;
+            } else {
+                Log.e(TAG, "Invalid action: " + action);
+                return new PluginResult(Status.INVALID_ACTION);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Unexpected error while executing action: " + action, e);
+            return new PluginResult(Status.ERROR, e.getMessage());
         }
-
-        return null;
     }
 
     /**
@@ -78,29 +77,22 @@ public class IVitalityPlugin extends AbstractSensePlugin {
     public boolean isSynch(String action) {
         if (action == null) {
             return false;
-
         } else if (action.equals(Actions.BIND)) {
             return true;
-
         } else if (action.equals(Actions.CHECK_SENSE_STATUS)) {
             return true;
-
         } else if (action.equals(Actions.MEASURE_REACTION)) {
             return false;
-
         } else if (action.equals(Actions.MEASURE_PRESSURE)) {
             return false;
-
         } else if (action.equals(Actions.SHOW_QUESTION)) {
             return false;
-
         }
-        return true;
+        return false;
     }
 
     private void measurePressure(JSONArray data, String callbackId) {
         Log.v(TAG, "Measure pressure");
-
         // TODO Auto-generated method stub
 
     }
