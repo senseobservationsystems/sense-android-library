@@ -51,24 +51,24 @@ public class SensePlugin extends AbstractSensePlugin {
 
         // check the result
         switch (result) {
-            case 0 :
-                Log.v(TAG, "Logged in");
-                success(new PluginResult(Status.OK, "Logged in"), callbackId);
-                break;
-            case -1 :
-                Log.v(TAG, "Login failed! Result: " + result);
-                error(new PluginResult(Status.ERROR, "Login failed. Connectivity problems?"),
-                        callbackId);
-                break;
-            case -2 :
-                Log.v(TAG, "Login failed! Result: " + result);
-                error(new PluginResult(Status.ERROR, "Login failed. Invalid username or password."),
-                        callbackId);
-                break;
-            default :
-                Log.w(TAG, "Unexpected login result! Result: " + result);
-                error(new PluginResult(Status.ERROR, "Unexpected login result."), callbackId);
-                break;
+        case 0:
+            Log.v(TAG, "Logged in as '" + username + "'");
+            success(new PluginResult(Status.OK, "Logged in"), callbackId);
+            break;
+        case -1:
+            Log.v(TAG, "Login failed! Result: " + result);
+            error(new PluginResult(Status.ERROR, "Login failed. Connectivity problems?"),
+                    callbackId);
+            break;
+        case -2:
+            Log.v(TAG, "Login failed! Result: " + result);
+            error(new PluginResult(Status.ERROR, "Login failed. Invalid username or password."),
+                    callbackId);
+            break;
+        default:
+            Log.w(TAG, "Unexpected login result! Result: " + result);
+            error(new PluginResult(Status.ERROR, "Unexpected login result."), callbackId);
+            break;
         }
     }
 
@@ -94,7 +94,7 @@ public class SensePlugin extends AbstractSensePlugin {
                 return new PluginResult(Status.NO_RESULT);
             } else if (action.equals(Actions.CHANGE_LOGIN)) {
                 changeLogin(data, callbackId);
-                return null;
+                return new PluginResult(Status.NO_RESULT);
             } else if (action.equals(Actions.REGISTER)) {
                 register(data, callbackId);
                 return null;
@@ -137,7 +137,7 @@ public class SensePlugin extends AbstractSensePlugin {
         } else if (action.equals(Actions.REGISTER)) {
             return false;
         } else if (action.equals(Actions.CHANGE_LOGIN)) {
-            return false;
+            return true;
         } else if (action.equals(Actions.TOGGLE_MAIN)) {
             return true;
         } else if (action.equals(Actions.TOGGLE_AMBIENCE) || action.equals(Actions.TOGGLE_EXTERNAL)
@@ -180,24 +180,24 @@ public class SensePlugin extends AbstractSensePlugin {
 
         // check the result
         switch (result) {
-            case 0 :
-                Log.v(TAG, "Registered successfully");
-                success(new PluginResult(Status.OK, "Registered successfully"), callbackId);
-                break;
-            case -1 :
-                Log.v(TAG, "Registration failed! Result: " + result);
-                error(new PluginResult(Status.ERROR, "Registration failed. Connectivity problems?"),
-                        callbackId);
-                break;
-            case -2 :
-                Log.v(TAG, "Registration failed! Result: " + result);
-                error(new PluginResult(Status.ERROR, "Registration failed. Username already taken."),
-                        callbackId);
-                break;
-            default :
-                Log.w(TAG, "Unexpected registration result! Result: " + result);
-                error(new PluginResult(Status.ERROR, "Unexpected registration result."), callbackId);
-                break;
+        case 0:
+            Log.v(TAG, "Registered successfully");
+            success(new PluginResult(Status.OK, "Registered successfully"), callbackId);
+            break;
+        case -1:
+            Log.v(TAG, "Registration failed! Result: " + result);
+            error(new PluginResult(Status.ERROR, "Registration failed. Connectivity problems?"),
+                    callbackId);
+            break;
+        case -2:
+            Log.v(TAG, "Registration failed! Result: " + result);
+            error(new PluginResult(Status.ERROR, "Registration failed. Username already taken."),
+                    callbackId);
+            break;
+        default:
+            Log.w(TAG, "Unexpected registration result! Result: " + result);
+            error(new PluginResult(Status.ERROR, "Unexpected registration result."), callbackId);
+            break;
         }
     }
 
@@ -300,7 +300,7 @@ public class SensePlugin extends AbstractSensePlugin {
         // do the call
         if (null != service) {
             try {
-                service.toggleExternalSensors(active);
+                service.toggleMotion(active);
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling motion sensors!");
                 return new PluginResult(Status.ERROR, e.getMessage());
@@ -328,7 +328,7 @@ public class SensePlugin extends AbstractSensePlugin {
         // do the call
         if (null != service) {
             try {
-                service.toggleExternalSensors(active);
+                service.toggleDeviceProx(active);
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling neighboring devices sensors!");
                 return new PluginResult(Status.ERROR, e.getMessage());
@@ -356,7 +356,7 @@ public class SensePlugin extends AbstractSensePlugin {
         // do the call
         if (null != service) {
             try {
-                service.toggleExternalSensors(active);
+                service.togglePhoneState(active);
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException toggling phone state sensors!");
                 return new PluginResult(Status.ERROR, e.getMessage());

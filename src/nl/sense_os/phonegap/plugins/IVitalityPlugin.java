@@ -1,7 +1,9 @@
 package nl.sense_os.phonegap.plugins;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.phonegap.api.PluginResult;
@@ -14,7 +16,8 @@ public class IVitalityPlugin extends AbstractSensePlugin {
         static final String CHECK_SENSE_STATUS = "check_sense_status";
         static final String MEASURE_PRESSURE = "measure_pressure";
         static final String MEASURE_REACTION = "measure_reaction";
-        static final String SHOW_QUESTION = "show_question";
+        static final String SHOW_MULTIPLE_CHOICE = "show_multiple_choice";
+        static final String SHOW_SLIDER_QUESTION = "show_slider_question";
     }
 
     private static final String TAG = "PhoneGap iVitality";
@@ -53,8 +56,11 @@ public class IVitalityPlugin extends AbstractSensePlugin {
             } else if (action.equals(Actions.MEASURE_PRESSURE)) {
                 measurePressure(data, callbackId);
                 return null;
-            } else if (action.equals(Actions.SHOW_QUESTION)) {
-                showQuestion(data, callbackId);
+            } else if (action.equals(Actions.SHOW_MULTIPLE_CHOICE)) {
+                showMultipleChoice(data, callbackId);
+                return null;
+            } else if (action.equals(Actions.SHOW_SLIDER_QUESTION)) {
+                showSliderQuestion(data, callbackId);
                 return null;
             } else {
                 Log.e(TAG, "Invalid action: " + action);
@@ -81,31 +87,80 @@ public class IVitalityPlugin extends AbstractSensePlugin {
             return true;
         } else if (action.equals(Actions.CHECK_SENSE_STATUS)) {
             return true;
-        } else if (action.equals(Actions.MEASURE_REACTION)) {
+        } else if (action.equals(Actions.MEASURE_REACTION)
+                || action.equals(Actions.MEASURE_PRESSURE)) {
             return false;
-        } else if (action.equals(Actions.MEASURE_PRESSURE)) {
+        } else if (action.equals(Actions.SHOW_MULTIPLE_CHOICE)
+                || action.equals(Actions.SHOW_SLIDER_QUESTION)) {
             return false;
-        } else if (action.equals(Actions.SHOW_QUESTION)) {
+        } else {
             return false;
         }
-        return false;
     }
 
     private void measurePressure(JSONArray data, String callbackId) {
         Log.v(TAG, "Measure pressure");
-        // TODO Auto-generated method stub
-
+        Intent measure = new Intent("nl.sense_os.ivitality.MeasurePressure");
+        ctx.startActivity(measure);
     }
 
     private void measureReaction(JSONArray data, String callbackId) {
         Log.v(TAG, "Measure reaction");
-        // TODO Auto-generated method stub
-
+        Intent measure = new Intent("nl.sense_os.ivitality.MeasureReaction");
+        ctx.startActivity(measure);
     }
 
-    private void showQuestion(JSONArray data, String callbackId) {
-        Log.v(TAG, "Show question");
-        // TODO Auto-generated method stub
+    private void showMultipleChoice(JSONArray data, String callbackId) {
+        Log.v(TAG, "Show multiple choice");
 
+        // get arguments
+        String question = null, questionId = null;
+        String[] answers = null;
+        try {
+            questionId = data.getString(0);
+            question = data.getString(1);
+            JSONArray rawAnswers = data.getJSONArray(2);
+            answers = new String[rawAnswers.length()];
+            for (int i = 0; i < rawAnswers.length(); i++) {
+                answers[i] = rawAnswers.getString(i);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException getting multiple choice arguments", e);
+            error(new PluginResult(Status.JSON_EXCEPTION, e.getMessage()), callbackId);
+            return;
+        }
+
+        Intent show = new Intent("nl.sense_os.ivitality.ShowMultipleChoice");
+        show.putExtra("questionId", questionId);
+        show.putExtra("question", question);
+        show.putExtra("answers", answers);
+        ctx.startActivity(show);
+    }
+
+    private void showSliderQuestion(JSONArray data, String callbackId) {
+        Log.v(TAG, "Show slider question");
+
+        // get arguments
+        String question = null, questionId = null;
+        int sliderMin = -1, sliderMax = -1, step = -1;
+        try {
+            questionId = data.getString(0);
+            question = data.getString(1);
+            sliderMin = data.getInt(2);
+            sliderMax = data.getInt(3);
+            step = data.getInt(4);
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException getting multiple choice arguments", e);
+            error(new PluginResult(Status.JSON_EXCEPTION, e.getMessage()), callbackId);
+            return;
+        }
+
+        Intent show = new Intent("nl.sense_os.ivitality.ShowSliderQuestion");
+        show.putExtra("questionId", questionId);
+        show.putExtra("question", question);
+        show.putExtra("sliderMin", sliderMin);
+        show.putExtra("sliderMax", sliderMax);
+        show.putExtra("step", step);
+        ctx.startActivity(show);
     }
 }

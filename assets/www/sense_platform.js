@@ -17,15 +17,15 @@ var SensePlatform = {
      */ 
     bindToSense : function() {
         if (!this.isBound) {                
-        PhoneGap.exec(
-                function(r){
-                    console.log('bindToSense success: ' + r); 
-                    isBound=true;
-                    }, 
-                function(e){console.log('bindToSense error: ' + e)}, 
-                'SensePlatform', 
-                'bind', 
-                []);
+            PhoneGap.exec(
+                    function(r){
+                        console.log('bindToSense success: ' + r); 
+                        isBound=true;
+                        }, 
+                    function(e){console.log('bindToSense error: ' + e)}, 
+                    'SensePlatform', 
+                    'bind', 
+                    []);
         } else {
             // already bound
             return;

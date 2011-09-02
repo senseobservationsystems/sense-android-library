@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">PhoneGap Example</string>
+  <string name="app_name">PhoneGap Examples</string>
   <string name="go">Snap</string>
+  <string name="show_phonegap">PhoneGap Examples</string>
+  <string name="show_sense">Sense Platform Examples</string>
+  <string name="show_ivitality">iVitality Examples</string>
 </resources>
