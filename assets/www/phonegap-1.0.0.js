@@ -803,7 +803,7 @@ PhoneGap.JSCallback = function() {
 
             // If error, revert to polling
             else {
-                console.log("JSCallback Error: Request failed.");
+                console.log("JSCallback Error: Request failed." + "  status='" + xmlhttp.status+"' response='" + xmlhttp.responseText + "'");
                 PhoneGap.UsePolling = true;
                 PhoneGap.JSCallbackPolling();
             }

@@ -1,32 +1,32 @@
 package nl.sense_os.phonegap.plugins;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import com.phonegap.api.PluginResult.Status;
 
-public class IVitalityPlugin extends AbstractSensePlugin {
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class IVitalityPlugin extends Plugin {
 
     private static class Actions {
-        static final String BIND = "bind";
-        static final String CHECK_SENSE_STATUS = "check_sense_status";
         static final String MEASURE_PRESSURE = "measure_pressure";
         static final String MEASURE_REACTION = "measure_reaction";
         static final String SHOW_MULTIPLE_CHOICE = "show_multiple_choice";
         static final String SHOW_SLIDER_QUESTION = "show_slider_question";
     }
 
-    private static final String TAG = "PhoneGap iVitality";
-
-    private PluginResult checkSenseStatus(JSONArray data, String callbackId) {
-        Log.v(TAG, "Check Sense status");
-        // TODO Auto-generated method stub
-        return null;
+    private static class Callbacks {
+        static final int PRESSURE = 0x076e5586e;
+        static final int REACTION = 0x06eac7102;
     }
+
+    private static final String TAG = "PhoneGap iVitality";
+    private String callbackId;
 
     /**
      * Executes the request and returns PluginResult.
@@ -45,17 +45,10 @@ public class IVitalityPlugin extends AbstractSensePlugin {
             if (action == null) {
                 Log.e(TAG, "Invalid action: " + action);
                 return new PluginResult(Status.INVALID_ACTION);
-            } else if (action.equals(Actions.BIND)) {
-                bindToSenseService();
-                return new PluginResult(Status.NO_RESULT);
-            } else if (action.equals(Actions.CHECK_SENSE_STATUS)) {
-                return checkSenseStatus(data, callbackId);
             } else if (action.equals(Actions.MEASURE_REACTION)) {
-                measureReaction(data, callbackId);
-                return null;
+                return measureReaction(data, callbackId);
             } else if (action.equals(Actions.MEASURE_PRESSURE)) {
-                measurePressure(data, callbackId);
-                return null;
+                return measurePressure(data, callbackId);
             } else if (action.equals(Actions.SHOW_MULTIPLE_CHOICE)) {
                 showMultipleChoice(data, callbackId);
                 return null;
@@ -83,10 +76,6 @@ public class IVitalityPlugin extends AbstractSensePlugin {
     public boolean isSynch(String action) {
         if (action == null) {
             return false;
-        } else if (action.equals(Actions.BIND)) {
-            return true;
-        } else if (action.equals(Actions.CHECK_SENSE_STATUS)) {
-            return true;
         } else if (action.equals(Actions.MEASURE_REACTION)
                 || action.equals(Actions.MEASURE_PRESSURE)) {
             return false;
@@ -98,16 +87,55 @@ public class IVitalityPlugin extends AbstractSensePlugin {
         }
     }
 
-    private void measurePressure(JSONArray data, String callbackId) {
+    private PluginResult measurePressure(JSONArray data, String callbackId) {
         Log.v(TAG, "Measure pressure");
+        this.callbackId = callbackId;
         Intent measure = new Intent("nl.sense_os.ivitality.MeasurePressure");
-        ctx.startActivity(measure);
+        ctx.startActivityForResult(this, measure, Callbacks.PRESSURE);
+
+        PluginResult r = new PluginResult(Status.NO_RESULT);
+        r.setKeepCallback(true);
+        return r;
     }
 
-    private void measureReaction(JSONArray data, String callbackId) {
+    private PluginResult measureReaction(JSONArray data, String callbackId) {
         Log.v(TAG, "Measure reaction");
+        this.callbackId = callbackId;
         Intent measure = new Intent("nl.sense_os.ivitality.MeasureReaction");
-        ctx.startActivity(measure);
+        ctx.startActivityForResult(this, measure, Callbacks.REACTION);
+
+        PluginResult r = new PluginResult(Status.NO_RESULT);
+        r.setKeepCallback(true);
+        return r;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        switch (requestCode) {
+        case Callbacks.PRESSURE:
+            Log.d(TAG, "Pressure measurement result: " + resultCode);
+            if (resultCode == Activity.RESULT_OK) {
+                success(new PluginResult(Status.OK, "OK"), callbackId);
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
+            } else {
+                error(new PluginResult(Status.ERROR, "Error"), callbackId);
+            }
+            break;
+        case Callbacks.REACTION:
+            Log.d(TAG, "Pressure measurement result: " + resultCode);
+            if (resultCode == Activity.RESULT_OK) {
+                success(new PluginResult(Status.OK, "OK"), callbackId);
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
+            } else {
+                error(new PluginResult(Status.ERROR, "Error"), callbackId);
+            }
+            break;
+        default:
+            Log.w(TAG, "Unexpected activity result");
+            super.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 
     private void showMultipleChoice(JSONArray data, String callbackId) {

@@ -1,20 +1,23 @@
 package nl.sense_os.phonegap.plugins;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.phonegap.api.PluginResult;
 import com.phonegap.api.PluginResult.Status;
 
-public class SensePlugin extends AbstractSensePlugin {
+import nl.sense_os.service.ISenseServiceCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class SensePlugin extends SenseConnectedPlugin {
 
     private static class Actions {
-        static final String BIND = "bind";
         static final String CHANGE_LOGIN = "change_login";
         static final String REGISTER = "register";
+        static final String GET_STATUS = "get_status";
         static final String TOGGLE_MAIN = "toggle_main";
         static final String TOGGLE_AMBIENCE = "toggle_ambience";
         static final String TOGGLE_EXTERNAL = "toggle_external";
@@ -25,50 +28,40 @@ public class SensePlugin extends AbstractSensePlugin {
 
     private static final String TAG = "PhoneGap Sense";
 
-    private void changeLogin(JSONArray data, String callbackId) {
+    private PluginResult changeLogin(final JSONArray data, final String callbackId)
+            throws JSONException, RemoteException {
         Log.v(TAG, "Change login");
 
-        // get the parameters
-        String username = null, password = null;
-        try {
+        if (null != service) {
+
+            // get the parameters
+            String username = null, password = null;
             username = data.getString(0);
             password = data.getString(1);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException getting login arguments", e);
-            error(new PluginResult(Status.JSON_EXCEPTION, e.getMessage()), callbackId);
-            return;
-        }
 
-        // try the login
-        int result = -1;
-        try {
-            result = service.changeLogin(username, password);
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException while trying to log in", e);
-            error(new PluginResult(Status.ERROR, e.getMessage()), callbackId);
-            return;
-        }
+            // try the login
+            int result = service.changeLogin(username, password);
 
-        // check the result
-        switch (result) {
-        case 0:
-            Log.v(TAG, "Logged in as '" + username + "'");
-            success(new PluginResult(Status.OK, "Logged in"), callbackId);
-            break;
-        case -1:
-            Log.v(TAG, "Login failed! Result: " + result);
-            error(new PluginResult(Status.ERROR, "Login failed. Connectivity problems?"),
-                    callbackId);
-            break;
-        case -2:
-            Log.v(TAG, "Login failed! Result: " + result);
-            error(new PluginResult(Status.ERROR, "Login failed. Invalid username or password."),
-                    callbackId);
-            break;
-        default:
-            Log.w(TAG, "Unexpected login result! Result: " + result);
-            error(new PluginResult(Status.ERROR, "Unexpected login result."), callbackId);
-            break;
+            // check the result
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Logged in as '" + username + "'");
+                return new PluginResult(Status.OK, result);
+            case -1:
+                Log.v(TAG, "Login failed! Connectivity problems?");
+                return new PluginResult(Status.IO_EXCEPTION,
+                        "Error loggin in, probably connectivity problems.");
+            case -2:
+                Log.v(TAG, "Login failed! Invalid username or password.");
+                return new PluginResult(Status.ERROR, "Invalid username or password.");
+            default:
+                Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
+                return new PluginResult(Status.ERROR, "Unexpected result: " + result);
+            }
+
+        } else {
+            Log.e(TAG, "No connection to the Sense Platform service.");
+            return new PluginResult(Status.ERROR, "No connection to the Sense Platform service.");
         }
     }
 
@@ -84,40 +77,71 @@ public class SensePlugin extends AbstractSensePlugin {
      * @return A PluginResult object with a status and message.
      */
     @Override
-    public PluginResult execute(String action, JSONArray data, String callbackId) {
+    public PluginResult execute(String action, final JSONArray data, final String callbackId) {
+        Log.d(TAG, "Execute action: '" + action + "'");
         try {
-            if (action == null) {
-                Log.e(TAG, "Invalid action: " + action);
-                return new PluginResult(Status.INVALID_ACTION);
-            } else if (action.equals(Actions.BIND)) {
-                bindToSenseService();
-                return new PluginResult(Status.NO_RESULT);
-            } else if (action.equals(Actions.CHANGE_LOGIN)) {
-                changeLogin(data, callbackId);
-                return new PluginResult(Status.NO_RESULT);
-            } else if (action.equals(Actions.REGISTER)) {
-                register(data, callbackId);
-                return null;
-            } else if (action.equals(Actions.TOGGLE_AMBIENCE)) {
+            if (action.equals("test")) {
+                return test();
+            } else if (Actions.CHANGE_LOGIN.equals(action)) {
+                return changeLogin(data, callbackId);
+            } else if (Actions.GET_STATUS.equals(action)) {
+                return getStatus(data, callbackId);
+            } else if (Actions.REGISTER.equals(action)) {
+                return register(data, callbackId);
+            } else if (Actions.TOGGLE_AMBIENCE.equals(action)) {
                 return toggleAmbience(data, callbackId);
-            } else if (action.equals(Actions.TOGGLE_EXTERNAL)) {
+            } else if (Actions.TOGGLE_EXTERNAL.equals(action)) {
                 return toggleExternal(data, callbackId);
-            } else if (action.equals(Actions.TOGGLE_MAIN)) {
+            } else if (Actions.TOGGLE_MAIN.equals(action)) {
                 return toggleMain(data, callbackId);
-            } else if (action.equals(Actions.TOGGLE_MOTION)) {
+            } else if (Actions.TOGGLE_MOTION.equals(action)) {
                 return toggleMotion(data, callbackId);
-            } else if (action.equals(Actions.TOGGLE_NEIGHDEV)) {
+            } else if (Actions.TOGGLE_NEIGHDEV.equals(action)) {
                 return toggleNeighboringDevices(data, callbackId);
-            } else if (action.equals(Actions.TOGGLE_PHONESTATE)) {
+            } else if (Actions.TOGGLE_PHONESTATE.equals(action)) {
                 return togglePhoneState(data, callbackId);
             } else {
-                Log.e(TAG, "Invalid action: " + action);
-                return new PluginResult(Status.INVALID_ACTION);
+                return super.execute(action, data, callbackId);
             }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException getting arguments for action '" + action + "'", e);
+            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
+        } catch (RemoteException e) {
+            Log.e(TAG, "RemoteException communicating with Sense Platform for action '" + action
+                    + "'", e);
+            return new PluginResult(Status.ERROR, e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "Unexpected error while executing action: " + action, e);
             return new PluginResult(Status.ERROR, e.getMessage());
         }
+    }
+
+    private PluginResult getStatus(JSONArray data, final String callbackId) throws RemoteException {
+        // TODO does not work
+        if (null != service) {
+            service.getStatus(new ISenseServiceCallback.Stub() {
+
+                @Override
+                public void statusReport(final int status) throws RemoteException {
+                    ctx.runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "Received Sense Platform service status: " + status);
+                            SensePlugin.this.success(new PluginResult(Status.OK, status),
+                                    callbackId);
+                        }
+                    });
+                }
+            });
+        } else {
+            Log.e(TAG, "No connection to the Sense Platform service.");
+            return new PluginResult(Status.ERROR, "No connection to the Sense Platform service.");
+        }
+
+        PluginResult r = new PluginResult(Status.NO_RESULT);
+        r.setKeepCallback(true);
+        return r;
     }
 
     /**
@@ -129,28 +153,28 @@ public class SensePlugin extends AbstractSensePlugin {
      */
     @Override
     public boolean isSynch(String action) {
-        if (action == null) {
-            Log.w(TAG, "Invalid action: " + action);
-            return false;
-        } else if (action.equals(Actions.BIND)) {
-            return true;
-        } else if (action.equals(Actions.REGISTER)) {
-            return false;
-        } else if (action.equals(Actions.CHANGE_LOGIN)) {
-            return true;
-        } else if (action.equals(Actions.TOGGLE_MAIN)) {
-            return true;
-        } else if (action.equals(Actions.TOGGLE_AMBIENCE) || action.equals(Actions.TOGGLE_EXTERNAL)
-                || action.equals(Actions.TOGGLE_MOTION) || action.equals(Actions.TOGGLE_NEIGHDEV)
-                || action.equals(Actions.TOGGLE_PHONESTATE)) {
-            return true;
+        boolean synch = false;
+        if ("test".equals(action)) {
+            synch = true;
+        } else if (Actions.CHANGE_LOGIN.equals(action)) {
+            synch = true;
+        } else if (Actions.REGISTER.equals(action)) {
+            synch = true;
+        } else if (Actions.GET_STATUS.equals(action)) {
+            synch = true;
+        } else if (Actions.TOGGLE_MAIN.equals(action)) {
+            synch = true;
+        } else if (Actions.TOGGLE_AMBIENCE.equals(action) || Actions.TOGGLE_EXTERNAL.equals(action)
+                || Actions.TOGGLE_MOTION.equals(action) || Actions.TOGGLE_NEIGHDEV.equals(action)
+                || Actions.TOGGLE_PHONESTATE.equals(action)) {
+            synch = true;
         } else {
-            Log.w(TAG, "Invalid action: " + action);
-            return false;
+            synch = super.isSynch(action);
         }
+        return synch;
     }
 
-    private void register(JSONArray data, String callbackId) {
+    private PluginResult register(JSONArray data, String callbackId) {
         Log.v(TAG, "Register");
 
         // get the parameters
@@ -164,41 +188,57 @@ public class SensePlugin extends AbstractSensePlugin {
             phone = data.getString(5);
         } catch (JSONException e) {
             Log.e(TAG, "JSONException getting registration arguments", e);
-            error(new PluginResult(Status.JSON_EXCEPTION, e.getMessage()), callbackId);
-            return;
+            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
         }
 
         // do the registration
         int result = -1;
-        try {
-            result = service.register(username, password, name, surname, email, phone);
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException while trying to register", e);
-            error(new PluginResult(Status.ERROR, e.getMessage()), callbackId);
-            return;
+        if (null != service) {
+            try {
+                result = service.register(username, password, name, surname, email, phone);
+            } catch (RemoteException e) {
+                Log.e(TAG, "RemoteException while trying to register", e);
+                return new PluginResult(Status.ERROR, e.getMessage());
+            }
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
         }
 
         // check the result
+        Status status = null;
         switch (result) {
         case 0:
-            Log.v(TAG, "Registered successfully");
-            success(new PluginResult(Status.OK, "Registered successfully"), callbackId);
+            Log.v(TAG, "Registered '" + username + "'");
+            status = Status.OK;
             break;
         case -1:
-            Log.v(TAG, "Registration failed! Result: " + result);
-            error(new PluginResult(Status.ERROR, "Registration failed. Connectivity problems?"),
-                    callbackId);
+            Log.v(TAG, "Registration failed! Connectivity problems?");
+            status = Status.IO_EXCEPTION;
             break;
         case -2:
-            Log.v(TAG, "Registration failed! Result: " + result);
-            error(new PluginResult(Status.ERROR, "Registration failed. Username already taken."),
-                    callbackId);
+            Log.v(TAG, "Registration failed! Username already taken.");
+            status = Status.ERROR;
             break;
         default:
-            Log.w(TAG, "Unexpected registration result! Result: " + result);
-            error(new PluginResult(Status.ERROR, "Unexpected registration result."), callbackId);
+            Log.w(TAG, "Unexpected registration result! Unexpected registration result: " + result);
+            status = Status.ERROR;
             break;
         }
+        return new PluginResult(status, result);
+    }
+
+    private PluginResult test() {
+        ctx.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                Toast.makeText(ctx, "test", Toast.LENGTH_SHORT).show();
+            }
+        });
+        PluginResult r = new PluginResult(Status.OK);
+        // r.setKeepCallback(true);
+        return r;
     }
 
     private PluginResult toggleAmbience(JSONArray data, String callbackId) {

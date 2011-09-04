@@ -57,28 +57,33 @@
             android:name="IVitalityExamples"
             android:configChanges="orientation|keyboardHidden"></activity>
 
-        <activity android:name="nl.sense_os.ivitality.MeasurePressure">
+        <activity
+            android:name="nl.sense_os.ivitality.MeasurePressure"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="nl.sense_os.ivitality.MeasurePressure"></action>
                 <category android:name="android.intent.category.DEFAULT"></category>
             </intent-filter>
         </activity>
 
-        <activity android:name="nl.sense_os.ivitality.MeasureReaction">
+        <activity android:name="nl.sense_os.ivitality.MeasureReaction"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="nl.sense_os.ivitality.MeasureReaction"></action>
                 <category android:name="android.intent.category.DEFAULT"></category>
             </intent-filter>
         </activity>
 
-        <activity android:name="nl.sense_os.ivitality.MultipleChoicePopup">
+        <activity android:name="nl.sense_os.ivitality.MultipleChoicePopup"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="nl.sense_os.ivitality.ShowMultipleChoice"></action>
                 <category android:name="android.intent.category.DEFAULT"></category>
             </intent-filter>
         </activity>
 
-        <activity android:name="nl.sense_os.ivitality.SliderQuestionPopup">
+        <activity android:name="nl.sense_os.ivitality.SliderQuestionPopup"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="nl.sense_os.ivitality.ShowSliderQuestion"></action>
                 <category android:name="android.intent.category.DEFAULT"></category>

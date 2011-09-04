@@ -10,23 +10,28 @@
     <script type="text/javascript" charset="utf-8" src="sense_platform.js"></script>  
     <script type="text/javascript" charset="utf-8" src="ivitality.js"></script> 
   </head>
-  <body onload="init();" id="stage" class="theme">
+  <body onload="document.addEventListener('deviceready', function() {
+                window.plugins.sense.init();
+                window.plugins.ivitality.init();
+            }, false);" id="stage" class="theme">
     <h1>Welcome to iVitality's plugin!</h1>
     <h2>this file is located at assets/www/ivitality_examples.html</h2>
-    <a href="#" class="btn large" onclick="SensePlatform.toggleMain(
-        true,
-        function(r){console.log('startSense result: ' + r)},
-        function(e){console.log('startSense error: ' + e)});">Start Sense</a>
-    <a href="#" class="btn large" onclick="SensePlatform.changeLogin(
-        ['steven@sense-os.nl', '1234'],
-        function(r){console.log('loginSense result: ' + r)},
-        function(e){console.log('loginSense error: ' + e)});">Login Sense</a>
-    <a href="#" class="btn large" onclick="SensePlatform.toggleMain(
-        false,
-        function(r){console.log('stopSense result: ' + r)},
-        function(e){console.log('stopSense error: ' + e)});">Stop Sense</a>
+    <a href="#" class="btn large" onclick="window.plugins.ivitality.measurePressure(
+        function(r){console.log('measure pressure result: ' + r)},
+        function(e){console.log('measure pressure error: ' + e)});">Measure blood pressure</a>
+    <a href="#" class="btn large" onclick="window.plugins.ivitality.measureReaction(
+        function(r){console.log('measure reaction result: ' + r)},
+        function(e){console.log('measure reaction error: ' + e)});">Measure reaction time</a>
+    <a href="#" class="btn large" onclick="window.plugins.ivitality.showMultipleChoice(
+        '1', 'Why?', ['The computer did it', 'Some engineer wanted it', 'For her approval'],
+        function(r){console.log('multiple choice result: ' + r)},
+        function(e){console.log('multiple choice error: ' + e)});">Show multiple choice</a>
+    <a href="#" class="btn large" onclick="window.plugins.ivitality.showSliderQuestion(
+        '1', 'How many?', 0, 10, 0.25,
+        function(r){console.log('multiple choice result: ' + r)},
+        function(e){console.log('multiple choice error: ' + e)});">Show slider question</a>
     <div id="viewport" class="viewport" style="display: none;">       
-      <img style="width:60px;height:60px" id="test_img" src="" />
+      <img style="width:60px;height:60px" id="test_img" src="" alt="" />
     </div> 
   </body>
 </html>
