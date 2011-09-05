@@ -37,6 +37,7 @@ public class SensePlugin extends Plugin {
         static final String TOGGLE_MOTION = "toggle_motion";
         static final String TOGGLE_NEIGHDEV = "toggle_neighdev";
         static final String TOGGLE_PHONESTATE = "toggle_phonestate";
+        static final String TOGGLE_POSITION = "toggle_position";
     }
 
     /**
@@ -70,7 +71,7 @@ public class SensePlugin extends Plugin {
     /**
      * Binds to the Sense Service, creating it if necessary.
      */
-    protected void bindToSenseService() {
+    private void bindToSenseService() {
         if (!isServiceBound) {
             Log.v(TAG, "Try to connect to Sense Platform service");
             final Intent service = new Intent(ISenseService.class.getName());
@@ -154,6 +155,8 @@ public class SensePlugin extends Plugin {
                 return toggleNeighboringDevices(data, callbackId);
             } else if (Actions.TOGGLE_PHONESTATE.equals(action)) {
                 return togglePhoneState(data, callbackId);
+            } else if (Actions.TOGGLE_POSITION.equals(action)) {
+                return togglePosition(data, callbackId);
             } else {
                 Log.e(TAG, "Invalid action: '" + action + "'");
                 return new PluginResult(Status.INVALID_ACTION);
@@ -247,7 +250,8 @@ public class SensePlugin extends Plugin {
             return true;
         } else if (Actions.TOGGLE_AMBIENCE.equals(action) || Actions.TOGGLE_EXTERNAL.equals(action)
                 || Actions.TOGGLE_MOTION.equals(action) || Actions.TOGGLE_NEIGHDEV.equals(action)
-                || Actions.TOGGLE_PHONESTATE.equals(action)) {
+                || Actions.TOGGLE_PHONESTATE.equals(action)
+                || Actions.TOGGLE_POSITION.equals(action)) {
             return true;
         } else {
             return super.isSynch(action);
@@ -330,26 +334,16 @@ public class SensePlugin extends Plugin {
         return r;
     }
 
-    private PluginResult toggleAmbience(JSONArray data, String callbackId) {
+    private PluginResult toggleAmbience(JSONArray data, String callbackId) throws RemoteException,
+            JSONException {
         Log.v(TAG, "Toggle ambience sensors");
 
         // get the argument
-        boolean active = false;
-        try {
-            active = data.getBoolean(0);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException getting argument for toggling ambience sensors", e);
-            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
-        }
+        boolean active = data.getBoolean(0);
 
         // do the call
         if (null != service) {
-            try {
-                service.toggleAmbience(active);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException toggling ambience sensors!");
-                return new PluginResult(Status.ERROR, e.getMessage());
-            }
+            service.toggleAmbience(active);
         } else {
             Log.e(TAG, "Failed to bind to service in time!");
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
@@ -358,26 +352,16 @@ public class SensePlugin extends Plugin {
         return new PluginResult(Status.OK);
     }
 
-    private PluginResult toggleExternal(JSONArray data, String callbackId) {
+    private PluginResult toggleExternal(JSONArray data, String callbackId) throws RemoteException,
+            JSONException {
         Log.v(TAG, "Toggle external sensors");
 
         // get the argument
-        boolean active = false;
-        try {
-            active = data.getBoolean(0);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException getting argument for toggling external sensors", e);
-            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
-        }
+        boolean active = data.getBoolean(0);
 
         // do the call
         if (null != service) {
-            try {
-                service.toggleExternalSensors(active);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException toggling external sensors!");
-                return new PluginResult(Status.ERROR, e.getMessage());
-            }
+            service.toggleExternalSensors(active);
         } else {
             Log.e(TAG, "Failed to bind to service in time!");
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
@@ -386,26 +370,16 @@ public class SensePlugin extends Plugin {
         return new PluginResult(Status.OK);
     }
 
-    private PluginResult toggleMain(JSONArray data, String callbackId) {
+    private PluginResult toggleMain(JSONArray data, String callbackId) throws RemoteException,
+            JSONException {
         Log.v(TAG, "Toggle main status");
 
         // get the argument
-        boolean active = false;
-        try {
-            active = data.getBoolean(0);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException getting argument for toggleMain", e);
-            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
-        }
+        boolean active = data.getBoolean(0);
 
         // do the call
         if (null != service) {
-            try {
-                service.toggleMain(active);
-            } catch (RemoteException e) {
-                Log.e(TAG, "Exception toggling main status!");
-                return new PluginResult(Status.ERROR, e.getMessage());
-            }
+            service.toggleMain(active);
         } else {
             Log.e(TAG, "Failed to bind to service in time!");
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
@@ -414,26 +388,16 @@ public class SensePlugin extends Plugin {
         return new PluginResult(Status.OK);
     }
 
-    private PluginResult toggleMotion(JSONArray data, String callbackId) {
+    private PluginResult toggleMotion(JSONArray data, String callbackId) throws RemoteException,
+            JSONException {
         Log.v(TAG, "Toggle motion sensors");
 
         // get the argument
-        boolean active = false;
-        try {
-            active = data.getBoolean(0);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException getting argument for toggling motion sensors", e);
-            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
-        }
+        boolean active = data.getBoolean(0);
 
         // do the call
         if (null != service) {
-            try {
-                service.toggleMotion(active);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException toggling motion sensors!");
-                return new PluginResult(Status.ERROR, e.getMessage());
-            }
+            service.toggleMotion(active);
         } else {
             Log.e(TAG, "Failed to bind to service in time!");
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
@@ -442,26 +406,16 @@ public class SensePlugin extends Plugin {
         return new PluginResult(Status.OK);
     }
 
-    private PluginResult toggleNeighboringDevices(JSONArray data, String callbackId) {
+    private PluginResult toggleNeighboringDevices(JSONArray data, String callbackId)
+            throws JSONException, RemoteException {
         Log.v(TAG, "Toggle neighboring devices sensors");
 
         // get the argument
-        boolean active = false;
-        try {
-            active = data.getBoolean(0);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException getting argument for toggling neighboring devices sensors", e);
-            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
-        }
+        boolean active = data.getBoolean(0);
 
         // do the call
         if (null != service) {
-            try {
-                service.toggleDeviceProx(active);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException toggling neighboring devices sensors!");
-                return new PluginResult(Status.ERROR, e.getMessage());
-            }
+            service.toggleDeviceProx(active);
         } else {
             Log.e(TAG, "Failed to bind to service in time!");
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
@@ -470,26 +424,34 @@ public class SensePlugin extends Plugin {
         return new PluginResult(Status.OK);
     }
 
-    private PluginResult togglePhoneState(JSONArray data, String callbackId) {
-        Log.v(TAG, "Toggle phone state sensors");
+    private PluginResult togglePosition(JSONArray data, String callbackId) throws JSONException,
+            RemoteException {
+        Log.v(TAG, "Toggle position sensors");
 
         // get the argument
-        boolean active = false;
-        try {
-            active = data.getBoolean(0);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException getting argument for toggling phone state sensors", e);
-            return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
-        }
+        boolean active = data.getBoolean(0);
 
         // do the call
         if (null != service) {
-            try {
-                service.togglePhoneState(active);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException toggling phone state sensors!");
-                return new PluginResult(Status.ERROR, e.getMessage());
-            }
+            service.toggleLocation(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
+        }
+
+        return new PluginResult(Status.OK);
+    }
+
+    private PluginResult togglePhoneState(JSONArray data, String callbackId) throws JSONException,
+            RemoteException {
+        Log.v(TAG, "Toggle phone state sensors");
+
+        // get the argument
+        boolean active = data.getBoolean(0);
+
+        // do the call
+        if (null != service) {
+            service.togglePhoneState(active);
         } else {
             Log.e(TAG, "Failed to bind to service in time!");
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
@@ -510,21 +472,5 @@ public class SensePlugin extends Plugin {
         }
         service = null;
         isServiceBound = false;
-    }
-
-    private void waitForServiceConnection() {
-        try {
-            final long start = System.currentTimeMillis();
-            while (null == service) {
-                if ((System.currentTimeMillis() - start) > 5000) {
-                    Log.w(TAG, "Connection to Sense Platform was not established in time!");
-                    break;
-                } else {
-                    Thread.sleep(100);
-                }
-            }
-        } catch (final InterruptedException e) {
-            Log.e(TAG, "Interrupted while waiting for connection to Sense Platform service", e);
-        }
     }
 }

@@ -22,7 +22,7 @@ public class MeasureReaction extends Activity {
         final int top = (int) (241 + Math.round(150 * Math.random()));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Reaction time measurement");
-        builder.setMessage("Your reaction time is: " + top + " ms");
+        builder.setMessage("The result of your reaction time test is: " + top + " ms");
         builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
             @Override

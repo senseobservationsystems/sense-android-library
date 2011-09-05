@@ -13,46 +13,64 @@
             }, false);" id="stage" class="theme">
     <h1>Welcome to Sense's plugin!</h1>
     <h2>this file is located at assets/www/sense_examples.html</h2>     
-    <a href="" class="btn large" onclick="window.plugins.sense.getStatus(
-        function(r){console.log('getStatus result: ' + r)},
+    <a href="#" class="btn large" onclick="window.plugins.sense.getStatus(
+        function(r){
+            console.log('getStatus result: ' + r);
+            var isRunning = (r && SensePlatform.STATUSCODE_RUNNING > 0);
+            var isLoggedIn = (r && SensePlatform.STATUSCODE_CONNECTED > 0);
+            var isSensingMotion = (r && SensePlatform.STATUSCODE_MOTION > 0);
+            var isSensingAmbience = (r && SensePlatform.STATUSCODE_AMBIENCE > 0);
+            if (isRunning && isLoggedIn) {
+                alert('Sense Platform is active');
+            } else if (!isLoggedIn) {
+                alert('Sense Platform is not logged in');
+            } else {
+                alert('Sense Platform is not running');
+            }
+            // etc
+        },
         function(e){console.log('getStatus error: ' + e)});">Get status</a>
-    <a href="" class="btn large" onclick="window.plugins.sense.toggleMain(
+    <a href="#" class="btn large" onclick="window.plugins.sense.toggleMain(
         true,
         function(r){console.log('startSense result: ' + r)},
         function(e){console.log('startSense error: ' + e)});">Start sensing</a>
-    <a href="" class="btn large" onclick="window.plugins.sense.toggleMain(
+    <a href="#" class="btn large" onclick="window.plugins.sense.toggleMain(
         false,
         function(r){console.log('stopSense result: ' + r)},
         function(e){console.log('stopSense error: ' + e)});">Stop sensing</a>
-    <a href="" class="btn large" onclick="window.plugins.sense.changeLogin(
-        'steven@sense-os.nl', '1234',
+    <a href="#" class="btn large" onclick="window.plugins.sense.changeLogin(
+        'foo', 'bar',
         function(r){
                 alert('Logged in');
             },
         function(e){
                 alert('login failed: ' + e);
             });">Change login</a>
-    <a href="" class="btn large" onclick="window.plugins.sense.register(
+    <a href="#" class="btn large" onclick="window.plugins.sense.register(
         'username', 'password', 'first name', 'surname', 'email', 'phone',
         function(r){console.log('register result: ' + r)},
         function(e){console.log('register error: ' + e)});">Register user</a>
-    <a href="" class="btn large" onclick="window.plugins.sense.togglePhoneState(
+    <a href="#" class="btn large" onclick="window.plugins.sense.togglePhoneState(
         true,
         function(r){console.log('start phone state result: ' + r)},
-        function(e){console.log('start phone state error: ' + e)});">Start phone state sensors</a>  
-    <a href="" class="btn large" onclick="window.plugins.sense.toggleAmbience(
+        function(e){console.log('start phone state error: ' + e)});">Start phone state sensors</a>
+    <a href="#" class="btn large" onclick="window.plugins.sense.togglePosition(
+        true,
+        function(r){console.log('start position result: ' + r)},
+        function(e){console.log('start position error: ' + e)});">Start position sensors</a>  
+    <a href="#" class="btn large" onclick="window.plugins.sense.toggleAmbience(
         true,
         function(r){console.log('start ambience result: ' + r)},
         function(e){console.log('start ambience error: ' + e)});">Start ambience sensors</a>  
-    <a href="" class="btn large" onclick="window.plugins.sense.toggleMotion(
+    <a href="#" class="btn large" onclick="window.plugins.sense.toggleMotion(
         true,
         function(r){console.log('start motion result: ' + r)},
         function(e){console.log('start motion  error: ' + e)});">Start motion sensors</a>
-    <a href="" class="btn large" onclick="window.plugins.sense.toggleNeighDev(
+    <a href="#" class="btn large" onclick="window.plugins.sense.toggleNeighDev(
         true,
         function(r){console.log('start neighboring devices result: ' + r)},
         function(e){console.log('start neighboring devices error: ' + e)});">Start sensing neighboring devices</a>
-    <a href="" class="btn large" onclick="window.plugins.sense.toggleExternal(
+    <a href="#" class="btn large" onclick="window.plugins.sense.toggleExternal(
         true,
         function(r){console.log('start external result: ' + r)},
         function(e){console.log('start external error: ' + e)});">Start external sensors</a>        

@@ -1,5 +1,10 @@
 package nl.sense_os.ivitality;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,11 +13,6 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MeasurePressure extends Activity {
 
@@ -29,7 +29,8 @@ public class MeasurePressure extends Activity {
         final int bottom = (int) (top - Math.round(40 * Math.random()));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Blood pressure measurement");
-        builder.setMessage("Your blood pressure is: " + top + " / " + bottom);
+        builder.setMessage("The results of your blood pressure measurement are: " + top + " / "
+                + bottom);
         builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
             @Override

@@ -128,6 +128,21 @@ SensePlatform.prototype.toggleExternal = function(active, successCallback, failu
  * @param failureCallback
  *            The callback which will be called when execution fails
  */
+SensePlatform.prototype.togglePosition = function(active, successCallback, failureCallback) {
+    if (!window.plugins.sense.isInitialized) {
+        window.plugins.sense.init();
+    }
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_position', [active]);
+};
+
+/**
+ * @param active
+ *            boolean to indicate desired state
+ * @param successCallback
+ *            The callback which will be called when motion sensor status is successfully changed
+ * @param failureCallback
+ *            The callback which will be called when execution fails
+ */
 SensePlatform.prototype.toggleMotion = function(active, successCallback, failureCallback) {
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
@@ -164,6 +179,16 @@ SensePlatform.prototype.togglePhoneState = function(active, successCallback, fai
     }
     return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_phonestate', [active]);
 };
+
+SensePlatform.STATUSCODE_AMBIENCE = 0x01;
+SensePlatform.STATUSCODE_CONNECTED = 0x02;
+SensePlatform.STATUSCODE_DEVICE_PROX = 0x04;
+SensePlatform.STATUSCODE_EXTERNAL = 0x08;
+SensePlatform.STATUSCODE_LOCATION = 0x10;
+SensePlatform.STATUSCODE_MOTION = 0x20;
+SensePlatform.STATUSCODE_PHONESTATE = 0x40;
+SensePlatform.STATUSCODE_QUIZ = 0x80;
+SensePlatform.STATUSCODE_RUNNING = 0x100;
 
 PhoneGap.addConstructor(function() {
     PhoneGap.addPlugin("sense", new SensePlatform());
