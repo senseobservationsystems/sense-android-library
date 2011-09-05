@@ -1,23 +1,36 @@
 package nl.sense_os.phonegap.plugins;
 
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+import java.util.List;
 
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
-
+import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class SensePlugin extends SenseConnectedPlugin {
+import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
+import com.phonegap.api.PluginResult.Status;
+
+public class SensePlugin extends Plugin {
 
     private static class Actions {
         static final String CHANGE_LOGIN = "change_login";
-        static final String REGISTER = "register";
         static final String GET_STATUS = "get_status";
+        static final String INIT = "init";
+        static final String REGISTER = "register";
         static final String TOGGLE_MAIN = "toggle_main";
         static final String TOGGLE_AMBIENCE = "toggle_ambience";
         static final String TOGGLE_EXTERNAL = "toggle_external";
@@ -26,7 +39,46 @@ public class SensePlugin extends SenseConnectedPlugin {
         static final String TOGGLE_PHONESTATE = "toggle_phonestate";
     }
 
+    /**
+     * Service connection to handle connection with the Sense service. Manages the
+     * <code>service</code> field when the service is connected or disconnected.
+     */
+    private class SenseServiceConn implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            Log.v(TAG, "Connection to Sense Platform service established...");
+            service = ISenseService.Stub.asInterface(binder);
+            isServiceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+            Log.v(TAG, "Connection to Sense Platform service lost...");
+
+            /* this is not called when the service is stopped, only when it is suddenly killed! */
+            service = null;
+            isServiceBound = false;
+        }
+    }
+
     private static final String TAG = "PhoneGap Sense";
+    private final ServiceConnection conn = new SenseServiceConn();
+    private boolean isServiceBound;
+    private ISenseService service;
+
+    /**
+     * Binds to the Sense Service, creating it if necessary.
+     */
+    protected void bindToSenseService() {
+        if (!isServiceBound) {
+            Log.v(TAG, "Try to connect to Sense Platform service");
+            final Intent service = new Intent(ISenseService.class.getName());
+            isServiceBound = ctx.bindService(service, conn, Context.BIND_AUTO_CREATE);
+        } else {
+            // already bound
+        }
+    }
 
     private PluginResult changeLogin(final JSONArray data, final String callbackId)
             throws JSONException, RemoteException {
@@ -80,8 +132,10 @@ public class SensePlugin extends SenseConnectedPlugin {
     public PluginResult execute(String action, final JSONArray data, final String callbackId) {
         Log.d(TAG, "Execute action: '" + action + "'");
         try {
-            if (action.equals("test")) {
+            if ("test".equals(action)) {
                 return test();
+            } else if (Actions.INIT.equals(action)) {
+                return init(data, callbackId);
             } else if (Actions.CHANGE_LOGIN.equals(action)) {
                 return changeLogin(data, callbackId);
             } else if (Actions.GET_STATUS.equals(action)) {
@@ -101,7 +155,8 @@ public class SensePlugin extends SenseConnectedPlugin {
             } else if (Actions.TOGGLE_PHONESTATE.equals(action)) {
                 return togglePhoneState(data, callbackId);
             } else {
-                return super.execute(action, data, callbackId);
+                Log.e(TAG, "Invalid action: '" + action + "'");
+                return new PluginResult(Status.INVALID_ACTION);
             }
         } catch (JSONException e) {
             Log.e(TAG, "JSONException getting arguments for action '" + action + "'", e);
@@ -144,6 +199,31 @@ public class SensePlugin extends SenseConnectedPlugin {
         return r;
     }
 
+    private PluginResult init(JSONArray data, String callbackId) {
+        if (!isSenseInstalled()) {
+            Log.w(TAG, "Sense is not installed!");
+            ctx.runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    AlertDialog d = InstallSenseDialog.create(ctx);
+                    d.show();
+                }
+            });
+            return new PluginResult(Status.ERROR);
+        } else {
+            bindToSenseService();
+            return new PluginResult(Status.OK);
+        }
+    }
+
+    private boolean isSenseInstalled() {
+        PackageManager pm = ctx.getPackageManager();
+        List<ResolveInfo> list = pm.queryIntentServices(new Intent(
+                "nl.sense_os.service.ISenseService"), 0);
+        return list.size() > 0;
+    }
+
     /**
      * Identifies if action to be executed returns a value and should be run synchronously.
      * 
@@ -153,25 +233,34 @@ public class SensePlugin extends SenseConnectedPlugin {
      */
     @Override
     public boolean isSynch(String action) {
-        boolean synch = false;
-        if ("test".equals(action)) {
-            synch = true;
+        if (Actions.INIT.equals(action)) {
+            return true;
+        } else if ("test".equals(action)) {
+            return true;
         } else if (Actions.CHANGE_LOGIN.equals(action)) {
-            synch = true;
+            return true;
         } else if (Actions.REGISTER.equals(action)) {
-            synch = true;
+            return true;
         } else if (Actions.GET_STATUS.equals(action)) {
-            synch = true;
+            return true;
         } else if (Actions.TOGGLE_MAIN.equals(action)) {
-            synch = true;
+            return true;
         } else if (Actions.TOGGLE_AMBIENCE.equals(action) || Actions.TOGGLE_EXTERNAL.equals(action)
                 || Actions.TOGGLE_MOTION.equals(action) || Actions.TOGGLE_NEIGHDEV.equals(action)
                 || Actions.TOGGLE_PHONESTATE.equals(action)) {
-            synch = true;
+            return true;
         } else {
-            synch = super.isSynch(action);
+            return super.isSynch(action);
         }
-        return synch;
+    }
+
+    /**
+     * The final call you receive before your activity is destroyed.
+     */
+    @Override
+    public void onDestroy() {
+        unbindFromSenseService();
+        super.onDestroy();
     }
 
     private PluginResult register(JSONArray data, String callbackId) {
@@ -407,5 +496,35 @@ public class SensePlugin extends SenseConnectedPlugin {
         }
 
         return new PluginResult(Status.OK);
+    }
+
+    /**
+     * Unbinds from the Sense service, resets {@link #service} and {@link #isServiceBound}.
+     */
+    private void unbindFromSenseService() {
+        if ((true == isServiceBound) && (null != conn)) {
+            Log.v(TAG, "Unbind from Sense Platform service");
+            ctx.unbindService(conn);
+        } else {
+            // already unbound
+        }
+        service = null;
+        isServiceBound = false;
+    }
+
+    private void waitForServiceConnection() {
+        try {
+            final long start = System.currentTimeMillis();
+            while (null == service) {
+                if ((System.currentTimeMillis() - start) > 5000) {
+                    Log.w(TAG, "Connection to Sense Platform was not established in time!");
+                    break;
+                } else {
+                    Thread.sleep(100);
+                }
+            }
+        } catch (final InterruptedException e) {
+            Log.e(TAG, "Interrupted while waiting for connection to Sense Platform service", e);
+        }
     }
 }
