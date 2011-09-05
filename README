@@ -1,22 +1,26 @@
 Sense PhoneGap Plugins Readme
 
-1. Overview
+1. Introduction
 2. Installation
 3. Examples
 4. Release notes
 
 ===========================================================
- Overview
+ Introduction
 ===========================================================
 
 The Sense PhoneGap plugins are designed to help web apps 
-communicate with the native Sense Platform. 
+communicate with the native Sense Platform. You can find 
+the repository for this project at:
+
+https://dev.almende.com/svn/sense-phonegap
 
 ===========================================================
  Installation
 ===========================================================
 
-Using this plugin requires Android PhoneGap. See 
+Using this plugin requires Android PhoneGap. See: 
+
 http://github.com/phonegap/phonegap-android. 
 
 1. Make sure your project uses the Sense App Library 
@@ -48,7 +52,8 @@ reference to it in your html file after phonegap.js.
 SensePlugin.java, IVitalityPlugin.java, and 
 InstallSenseDialog.java into it.
 
-4. In your res/xml/plugins.xml file add the following line:
+4. In your res/xml/plugins.xml file, add the following 
+lines:
 
 <plugin name="IVitalityPlugin" value="nl.sense_os.phonegap.plugins.IVitalityPlugin"/>
 <plugin name="SensePlatform" value="nl.sense_os.phonegap.plugins.SensePlugin"/>
