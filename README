@@ -1,0 +1,84 @@
+Sense PhoneGap Plugins Readme
+
+1. Overview
+2. Installation
+3. Examples
+4. Release notes
+
+===========================================================
+ Overview
+===========================================================
+
+The Sense PhoneGap plugins are designed to help web apps 
+communicate with the native Sense Platform. 
+
+===========================================================
+ Installation
+===========================================================
+
+Using this plugin requires Android PhoneGap. See 
+http://github.com/phonegap/phonegap-android. 
+
+1. Make sure your project uses the Sense App Library 
+project. This project enables the Sense plugin to use IPC 
+to communicate with the Sense Platform, when it is 
+installed.
+ 
+The Library project code is available at:
+ 
+https://dev.almende.com/svn/sense-platform
+
+Create a separate Android Application for the Sense App 
+Library, and use it as an Android Library Project. Careful: 
+this is not the same as adding the project to your build 
+path! See:
+
+http://developer.android.com/guide/developing/projects/projects-eclipse.html#ReferencingLibraryProject
+
+2. To install the plugins, copy sense_platform.js and 
+ivitality.js to your project's www folder and include a 
+reference to it in your html file after phonegap.js.
+
+<script type="text/javascript" charset="utf-8" src="phonegap-1.0.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="sense_platform.js"></script>
+<script type="text/javascript" charset="utf-8" src="ivitality.js"></script>
+
+3. Create a directory within your project called 
+"src/nl/sense_os/phonegap/plugins" and copy 
+SensePlugin.java, IVitalityPlugin.java, and 
+InstallSenseDialog.java into it.
+
+4. In your res/xml/plugins.xml file add the following line:
+
+<plugin name="IVitalityPlugin" value="nl.sense_os.phonegap.plugins.IVitalityPlugin"/>
+<plugin name="SensePlatform" value="nl.sense_os.phonegap.plugins.SensePlugin"/>
+
+5. You can now reference the plugins from javascript using
+window.plugins.sense.* and window.plugins.ivitality.*
+
+===========================================================
+ Examples
+===========================================================
+
+This project comes with examples of plugin usage. 
+
+Copy the assets, src, and res folders to your Android 
+project and follow the normal installation instructions. 
+Launch ExampleApp to check out the example code. Make sure 
+you take a look at the device's LogCat to see all activity.
+
+===========================================================
+ Release notes
+===========================================================
+
+20110905
+- Initial release
+- Sense plugin features init, getStatus, changeLogin, 
+  register, toggleMain functions, and toggle functions for 
+  all individual sensing modules.
+- The init function checks if the Sense Platform is 
+  installed and prompts the user to install it if it cannot
+  be found.
+- iVitality plugin features dummy activities for 
+  blood pressure and reaction time measurements, and non-
+  functional question popups.
