@@ -9,6 +9,6 @@ public class IVitalityExamples extends DroidGap {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.loadUrl("file:///android_asset/www/ivitality_examples.html");
+        super.loadUrl("file:///android_asset/www/ivitality_examples.html#");
     }
 }
