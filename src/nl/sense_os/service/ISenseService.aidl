@@ -38,6 +38,18 @@ interface ISenseService
     int register(String username, String password, String name, String surname, String email, 
             String mobile);
     
+    /**
+     * @param appSecret
+     *         Secret identifier of the application that requests the session ID. Only certain 
+     *         'safe' apps are allowed to access the session ID.
+     * @return
+     *         The currently active session ID for CommonSense, or null if there is no active 
+     *         session
+     * @throws RemoteException 
+     *         If the app ID is not valid
+     */
+    String getSessionId(String appSecret);  
+    
     boolean getPrefBool(String key, boolean defValue);
     float getPrefFloat(String key, float defValue);
     int getPrefInt(String key, int defValue);
