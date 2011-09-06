@@ -30,6 +30,11 @@
             // etc
         },
         function(e){console.log('getStatus error: ' + e)});">Get status</a>
+    <a href="#" class="btn large" onclick="window.plugins.sense.getSessionId(
+        function(r){
+            alert('CommonSense session ID: ' + r);
+        },
+        function(e){console.log('getSessionId error: ' + e)});">Get session ID</a>
     <a href="#" class="btn large" onclick="window.plugins.sense.toggleMain(
         true,
         function(r){console.log('startSense result: ' + r)},

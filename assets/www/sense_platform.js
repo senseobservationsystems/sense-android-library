@@ -76,6 +76,19 @@ SensePlatform.prototype.getStatus = function(successCallback, failureCallback) {
 };
 
 /**
+ * @param successCallback
+ *            The callback which will be called when Sense registration is successful
+ * @param failureCallback
+ *            The callback which will be called when Sense registration fails
+ */
+SensePlatform.prototype.getSessionId = function(successCallback, failureCallback) {
+    if (!window.plugins.sense.isInitialized) {
+        window.plugins.sense.init();
+    }
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_session', []);
+};
+
+/**
  * @param active
  *            boolean to indicate desired state
  * @param successCallback

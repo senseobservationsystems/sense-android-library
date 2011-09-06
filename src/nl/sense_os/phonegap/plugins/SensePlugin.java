@@ -29,6 +29,7 @@ public class SensePlugin extends Plugin {
     private static class Actions {
         static final String CHANGE_LOGIN = "change_login";
         static final String GET_STATUS = "get_status";
+        static final String GET_SESSION = "get_session";
         static final String INIT = "init";
         static final String REGISTER = "register";
         static final String TOGGLE_MAIN = "toggle_main";
@@ -64,6 +65,7 @@ public class SensePlugin extends Plugin {
     }
 
     private static final String TAG = "PhoneGap Sense";
+    private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
     private final ServiceConnection conn = new SenseServiceConn();
     private boolean isServiceBound;
     private ISenseService service;
@@ -141,6 +143,8 @@ public class SensePlugin extends Plugin {
                 return changeLogin(data, callbackId);
             } else if (Actions.GET_STATUS.equals(action)) {
                 return getStatus(data, callbackId);
+            } else if (Actions.GET_SESSION.equals(action)) {
+                return getSession(data, callbackId);
             } else if (Actions.REGISTER.equals(action)) {
                 return register(data, callbackId);
             } else if (Actions.TOGGLE_AMBIENCE.equals(action)) {
@@ -174,8 +178,28 @@ public class SensePlugin extends Plugin {
         }
     }
 
+    private PluginResult getSession(JSONArray data, String callbackId) throws RemoteException {
+        if (null != service) {
+
+            // try the login
+            String sessionId = service.getSessionId(SECRET);
+
+            // check the result
+            if (null != sessionId) {
+                Log.v(TAG, "Received session ID from Sense");
+                return new PluginResult(Status.OK, sessionId);
+            } else {
+                Log.v(TAG, "No session ID");
+                return new PluginResult(Status.ERROR, "No session ID.");
+            }
+
+        } else {
+            Log.e(TAG, "No connection to the Sense Platform service.");
+            return new PluginResult(Status.ERROR, "No connection to the Sense Platform service.");
+        }
+    }
+
     private PluginResult getStatus(JSONArray data, final String callbackId) throws RemoteException {
-        // TODO does not work
         if (null != service) {
             service.getStatus(new ISenseServiceCallback.Stub() {
 
@@ -245,6 +269,8 @@ public class SensePlugin extends Plugin {
         } else if (Actions.REGISTER.equals(action)) {
             return true;
         } else if (Actions.GET_STATUS.equals(action)) {
+            return true;
+        } else if (Actions.GET_SESSION.equals(action)) {
             return true;
         } else if (Actions.TOGGLE_MAIN.equals(action)) {
             return true;
@@ -424,24 +450,6 @@ public class SensePlugin extends Plugin {
         return new PluginResult(Status.OK);
     }
 
-    private PluginResult togglePosition(JSONArray data, String callbackId) throws JSONException,
-            RemoteException {
-        Log.v(TAG, "Toggle position sensors");
-
-        // get the argument
-        boolean active = data.getBoolean(0);
-
-        // do the call
-        if (null != service) {
-            service.toggleLocation(active);
-        } else {
-            Log.e(TAG, "Failed to bind to service in time!");
-            return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-        }
-
-        return new PluginResult(Status.OK);
-    }
-
     private PluginResult togglePhoneState(JSONArray data, String callbackId) throws JSONException,
             RemoteException {
         Log.v(TAG, "Toggle phone state sensors");
@@ -460,11 +468,29 @@ public class SensePlugin extends Plugin {
         return new PluginResult(Status.OK);
     }
 
+    private PluginResult togglePosition(JSONArray data, String callbackId) throws JSONException,
+            RemoteException {
+        Log.v(TAG, "Toggle position sensors");
+
+        // get the argument
+        boolean active = data.getBoolean(0);
+
+        // do the call
+        if (null != service) {
+            service.toggleLocation(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
+        }
+
+        return new PluginResult(Status.OK);
+    }
+
     /**
      * Unbinds from the Sense service, resets {@link #service} and {@link #isServiceBound}.
      */
     private void unbindFromSenseService() {
-        if ((true == isServiceBound) && (null != conn)) {
+        if (true == isServiceBound && null != conn) {
             Log.v(TAG, "Unbind from Sense Platform service");
             ctx.unbindService(conn);
         } else {
