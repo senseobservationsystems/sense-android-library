@@ -83,23 +83,23 @@ public class SensePrefs {
 
         public static class Advanced {
             /**
-             * Key for preference that toggles use of compression for transmission.
+             * Key for preference that toggles use of compression for transmission. Default is true.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String COMPRESS = "compression";
             /**
              * Key for preference that enables local storage, making the sensor data available to
-             * other apps through a ContentProvider.
+             * other apps through a ContentProvider. Default is true.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String LOCAL_STORAGE = "local_storage";
             /**
-             * Key for preference that enables local-only mode, which disables communication with
-             * CommonSense.
+             * Key for preference that enables communication with CommonSense. Disable this to work
+             * in local-only mode. Default is true.
              */
-            public static final String LOCAL_ONLY_MODE = "local_only_mode";
+            public static final String USE_COMMONSENSE = "use_commonsense";
         }
 
         public static class Ambience {
