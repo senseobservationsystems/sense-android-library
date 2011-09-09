@@ -260,7 +260,97 @@ public class SensorData {
          * Data connection type sensor. Part of the Phone State sensors.
          */
         public static final String CONN_TYPE = "connection type";
+        
+        /**
+         * Monitor status since DTCs cleared. Part of the OBD-II sensors.
+         */
+        public static final String MONITOR_STATUS = "Monitor status";
 
+        /**
+         * Fuel system status. Part of the OBD-II sensors.
+         */
+        public static final String FUEL_SYSTEM_STATUS = "Fuel system status";
+        
+        /**
+         * Calculated engine load. Part of the OBD-II sensors.
+         */
+        public static final String ENGINE_LOAD = "engine load";
+        
+        /**
+         * Engine coolant. Part of the OBD-II sensors.
+         */
+        public static final String ENGINE_COOLANT = "engine coolant";
+        
+        /**
+         * Short/Long term fuel trim bank 1 & 2. Part of the OBD-II sensors.
+         */
+        public static final String FUEL_TRIM = "fuel trim";
+
+        /**
+         * Fuel Pressure. Part of the OBD-II sensors.
+         */
+        public static final String FUEL_PRESSURE = "fuel pressure";
+
+        /**
+         * Intake manifold absolute pressure. Part of the OBD-II sensors.
+         */
+        public static final String INTAKE_PRESSURE = "intake manifold absolute pressure";
+
+        /**
+         * Engine RPM. Part of the OBD-II sensors.
+         */
+        public static final String ENGINE_RPM = "engine RPM";
+    	
+        /**
+         * Vehicle speed. Part of the OBD-II sensors.
+         */
+        public static final String VEHICLE_SPEED = "vehicle speed";
+
+        /**
+         * Timing advance. Part of the OBD-II sensors.
+         */
+        public static final String TIMING_ADVANCE = "timing advance";
+        
+        /**
+         * Intake air temperature. Part of the OBD-II sensors.
+         */
+        public static final String INTAKE_TEMPERATURE = "intake air temperature";
+        
+        /**
+         * MAF air flow rate. Part of the OBD-II sensors.
+         */
+        public static final String MAF_AIRFLOW = "MAF air flow rate";
+    	
+        /**
+         * Throttle position. Part of the OBD-II sensors.
+         */
+        public static final String THROTTLE_POSITION = "throttle position";
+    	
+        /**
+         * Commanded secondary air status. Part of the OBD-II sensors.
+         */
+        public static final String AIR_STATUS = "commanded secondary air status";
+    	
+        /**
+         * Oxygen sensors. Part of the OBD-II sensors.
+         */
+        public static final String OXYGEN_SENSORS = "oxygen sensors";
+        
+        /**
+         * OBD standards. Part of the OBD-II sensors.
+         */
+        public static final String OBD_STANDARDS = "OBD standards";
+    	        
+        /**
+         * Auxiliary input status. Part of the OBD-II sensors.
+         */
+        public static final String AUXILIARY_INPUT = "Auxiliary input status";    	        
+
+        /**
+         * Run time since engine start. Part of the OBD-II sensors.
+         */
+        public static final String RUN_TIME = "Run time";    	        
+    	        
         private SensorNames() {
             // class should not be instantiated
         }
