@@ -37,11 +37,46 @@ public class SensorData {
         public static final Uri CONTENT_URI = Uri.parse("content://"
                 + "nl.sense_os.service.provider.LocalStorage" + "/recent_values");
 
+        /**
+         * The name of the sensor that generated the data point. <br>
+         * <br>
+         * TYPE: String
+         */
         public static final String SENSOR_NAME = "sensor_name";
+        /**
+         * Description of the sensor that generated the data point. Can either be the hardware name,
+         * or any other useful description. <br>
+         * <br>
+         * TYPE: String
+         */
         public static final String SENSOR_DESCRIPTION = "sensor_description";
+        /**
+         * The data type of the data point. <br>
+         * <br>
+         * TYPE: String
+         * 
+         * @see SenseDataTypes
+         */
         public static final String DATA_TYPE = "data_type";
+        /**
+         * Time stamp for the data point, in milliseconds. <br>
+         * <br>
+         * TYPE: long
+         */
         public static final String TIMESTAMP = "timestamp";
+        /**
+         * Data point value. <br>
+         * <br>
+         * TYPE: String
+         */
         public static final String VALUE = "value";
+        /**
+         * Transmit state of the data point, signalling whether the point has been sent to
+         * CommonSense already.<br>
+         * <br>
+         * TYPE: integer status code: 0 (not sent), or 1 (sent)
+         */
+        public static final String TRANSMIT_STATE = "transmit_state";
 
         private DataPoint() {
             // class should not be instantiated
