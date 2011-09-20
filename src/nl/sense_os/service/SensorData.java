@@ -93,6 +93,12 @@ public class SensorData {
     public static class SensorNames {
 
         /**
+         * Fall detector sensor. Can be a real fall or a regular free fall for demo's. Part of the
+         * Motion sensors.
+         */
+        public static final String FALL_DETECTOR = "fall_detector";
+
+        /**
          * Noise level sensor. Part of the Ambience sensors.
          */
         public static final String NOISE = "noise_sensor";
