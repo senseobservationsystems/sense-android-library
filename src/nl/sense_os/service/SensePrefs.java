@@ -27,17 +27,33 @@ public class SensePrefs {
          */
         public static final String LOGIN_PASS = "login_pass";
         /**
-         * Key for storing the online sensor list (type of JSONArray).
+         * Key for storing the online sensor list for this device (type of JSONArray).
          * 
+         * @see #SENSOR_LIST_COMPLETE
          * @see SensePrefs#AUTH_PREFS
          */
         public static final String SENSOR_LIST = "sensor_list";
         /**
-         * Key for storing the retrieval time of online sensor list.
+         * Key for storing the online sensor list for this user (type of JSONArray).
          * 
+         * @see #SENSOR_LIST
+         * @see SensePrefs#AUTH_PREFS
+         */
+        public static final String SENSOR_LIST_COMPLETE = "sensor_list_complete";
+        /**
+         * Key for storing the retrieval time of device's online sensor list.
+         * 
+         * @see #SENSOR_LIST_COMPLETE_TIME
          * @see SensePrefs#AUTH_PREFS
          */
         public static final String SENSOR_LIST_TIME = "sensor_list_timestamp";
+        /**
+         * Key for storing the retrieval time of complete online sensor list.
+         * 
+         * @see #SENSOR_LIST_TIME
+         * @see SensePrefs#AUTH_PREFS
+         */
+        public static final String SENSOR_LIST_COMPLETE_TIME = "sensor_list_complete_timestamp";
         /**
          * Key to use the development version of CommonSense.
          * 

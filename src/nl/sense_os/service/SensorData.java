@@ -38,6 +38,8 @@ public class SensorData {
                 + "nl.sense_os.service.provider.LocalStorage" + "/recent_values");
         public static final Uri CONTENT_PERSISTED_URI = Uri.parse("content://"
                 + "nl.sense_os.service.provider.LocalStorage" + "/persisted_values");
+        public static final Uri CONTENT_REMOTE_URI = Uri.parse("content://"
+                + "nl.sense_os.service.provider.LocalStorage" + "/remote_values");
 
         /**
          * The name of the sensor that generated the data point. <br>
