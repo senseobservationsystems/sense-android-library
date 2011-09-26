@@ -57,8 +57,7 @@
             android:orientation="vertical"
             android:gravity="center"
             android:id="@+id/reaction_view_waiting"
-            android:layout_gravity="center"
-            android:onClick="onReactionClick">
+            android:layout_gravity="center">
             <View
                 android:layout_height="60dp"
                 android:background="#00F"
