@@ -5,4 +5,6 @@
   <string name="show_phonegap">PhoneGap Examples</string>
   <string name="show_sense">Sense Platform Examples</string>
   <string name="show_ivitality">iVitality Examples</string>
+  <string name="start">Start</string>
+  <string name="reaction_intro">Welkom bij de iVitality reactietijd-test.\n\nOp het scherm verschijn een gekleurd vierkant, dat op een gegeven moment van kleur verandert. Op het moment dat het vierkant een andere kleur krijgt, druk je zo snel mogelijk op het scherm van de telefoon.\n\nDe test wordt vijf keer herhaald, en de uiteindelijke uitkomst is de gemiddelde reactietijd.</string>
 </resources>
