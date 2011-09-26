@@ -37,8 +37,7 @@
         android:debuggable="true">
 
         <activity
-            android:name="nl.sense_os.phonegap.ExampleApp"
-            android:label="@string/app_name">
+            android:label="@string/app_name" android:name="ExampleApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -56,39 +55,6 @@
         <activity
             android:name="IVitalityExamples"
             android:configChanges="orientation|keyboardHidden"></activity>
-
-        <activity
-            android:name="nl.sense_os.ivitality.MeasurePressure"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="nl.sense_os.ivitality.MeasurePressure"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
-            </intent-filter>
-        </activity>
-
-        <activity android:name="nl.sense_os.ivitality.MeasureReaction"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="nl.sense_os.ivitality.MeasureReaction"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
-            </intent-filter>
-        </activity>
-
-        <activity android:name="nl.sense_os.ivitality.MultipleChoicePopup"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="nl.sense_os.ivitality.ShowMultipleChoice"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
-            </intent-filter>
-        </activity>
-
-        <activity android:name="nl.sense_os.ivitality.SliderQuestionPopup"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="nl.sense_os.ivitality.ShowSliderQuestion"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
-            </intent-filter>
-        </activity>
 
     </application>
 
