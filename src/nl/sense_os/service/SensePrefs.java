@@ -253,6 +253,14 @@ public class SensePrefs {
                  */
                 public static final String STRIDES = "zephyrHxM_strides";
             }
+            public static class OBD2Dongle{
+                /**
+                 * Key for preference that toggles use of the OBD-II dongle.
+                 * 
+                 * @see SensePrefs#MAIN_PREFS
+                 */
+                public static final String MAIN = "obd2dongle";
+            }
         }
 
         public static class Location {
