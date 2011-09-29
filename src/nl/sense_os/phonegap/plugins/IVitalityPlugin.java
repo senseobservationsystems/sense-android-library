@@ -22,7 +22,7 @@ public class IVitalityPlugin extends Plugin {
 
     private static class Callbacks {
         static final int PRESSURE = 0x078E5508E;
-        static final int REACTION = 0x08EAC7102;
+        static final int REACTION = 0x08EAC7;
         static final int MULTIPLE_CHOICE = 0x0C401CE;
         static final int SLIDER_QUESTION = 0x0571DE8;
     }
@@ -74,16 +74,17 @@ public class IVitalityPlugin extends Plugin {
      */
     @Override
     public boolean isSynch(String action) {
-        if (action == null) {
+        if (Actions.MEASURE_REACTION.equals(action)) {
             return false;
-        } else if (action.equals(Actions.MEASURE_REACTION)
-                || action.equals(Actions.MEASURE_PRESSURE)) {
+        } else if (Actions.MEASURE_PRESSURE.equals(action)) {
             return false;
-        } else if (action.equals(Actions.SHOW_MULTIPLE_CHOICE)
-                || action.equals(Actions.SHOW_SLIDER_QUESTION)) {
+        } else if (Actions.SHOW_MULTIPLE_CHOICE.equals(action)) {
+            return false;
+        } else if (Actions.SHOW_SLIDER_QUESTION.equals(action)) {
             return false;
         } else {
-            return false;
+            Log.w(TAG, "Unexpected action: " + action + ". Revert to default isSynch");
+            return super.isSynch(action);
         }
     }
 
@@ -113,9 +114,9 @@ public class IVitalityPlugin extends Plugin {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
         case Callbacks.PRESSURE:
-            Log.d(TAG, "Pressure measurement result: " + resultCode);
             if (resultCode == Activity.RESULT_OK) {
-                success(new PluginResult(Status.OK, "OK"), callbackId);
+                String value = null != intent ? intent.getStringExtra("value") : null;
+                success(new PluginResult(Status.OK, value), callbackId);
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
             } else {
@@ -123,9 +124,9 @@ public class IVitalityPlugin extends Plugin {
             }
             break;
         case Callbacks.REACTION:
-            Log.d(TAG, "Pressure measurement result: " + resultCode);
             if (resultCode == Activity.RESULT_OK) {
-                success(new PluginResult(Status.OK, "OK"), callbackId);
+                int value = null != intent ? intent.getIntExtra("value", -1) : -1;
+                success(new PluginResult(Status.OK, value), callbackId);
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
             } else {
@@ -133,7 +134,6 @@ public class IVitalityPlugin extends Plugin {
             }
             break;
         case Callbacks.MULTIPLE_CHOICE:
-            Log.d(TAG, "Multiple choice result: " + resultCode);
             if (resultCode == Activity.RESULT_OK) {
                 success(new PluginResult(Status.OK, "OK"), callbackId);
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -143,7 +143,6 @@ public class IVitalityPlugin extends Plugin {
             }
             break;
         case Callbacks.SLIDER_QUESTION:
-            Log.d(TAG, "Slider question result: " + resultCode);
             if (resultCode == Activity.RESULT_OK) {
                 success(new PluginResult(Status.OK, "OK"), callbackId);
             } else if (resultCode == Activity.RESULT_CANCELED) {
