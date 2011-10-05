@@ -89,7 +89,7 @@ public class IVitalityPlugin extends Plugin {
     }
 
     private PluginResult measurePressure(JSONArray data, String callbackId) {
-        Log.v(TAG, "Measure pressure");
+        Log.v(TAG, "Measure pressure: " + callbackId);
         this.callbackId = callbackId;
         Intent measure = new Intent("nl.sense_os.ivitality.MeasurePressure");
         ctx.startActivityForResult(this, measure, Callbacks.PRESSURE);
@@ -100,7 +100,7 @@ public class IVitalityPlugin extends Plugin {
     }
 
     private PluginResult measureReaction(JSONArray data, String callbackId) {
-        Log.v(TAG, "Measure reaction");
+        Log.v(TAG, "Measure reaction: " + callbackId);
         this.callbackId = callbackId;
         Intent measure = new Intent("nl.sense_os.ivitality.MeasureReaction");
         ctx.startActivityForResult(this, measure, Callbacks.REACTION);
@@ -112,48 +112,13 @@ public class IVitalityPlugin extends Plugin {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        switch (requestCode) {
-        case Callbacks.PRESSURE:
-            if (resultCode == Activity.RESULT_OK) {
-                String value = null != intent ? intent.getStringExtra("value") : null;
-                success(new PluginResult(Status.OK, value), callbackId);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
-            } else {
-                error(new PluginResult(Status.ERROR, "Error"), callbackId);
-            }
-            break;
-        case Callbacks.REACTION:
-            if (resultCode == Activity.RESULT_OK) {
-                int value = null != intent ? intent.getIntExtra("value", -1) : -1;
-                success(new PluginResult(Status.OK, value), callbackId);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
-            } else {
-                error(new PluginResult(Status.ERROR, "Error"), callbackId);
-            }
-            break;
-        case Callbacks.MULTIPLE_CHOICE:
-            if (resultCode == Activity.RESULT_OK) {
-                success(new PluginResult(Status.OK, "OK"), callbackId);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
-            } else {
-                error(new PluginResult(Status.ERROR, "Error"), callbackId);
-            }
-            break;
-        case Callbacks.SLIDER_QUESTION:
-            if (resultCode == Activity.RESULT_OK) {
-                success(new PluginResult(Status.OK, "OK"), callbackId);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                error(new PluginResult(Status.ERROR, "Canceled"), callbackId);
-            } else {
-                error(new PluginResult(Status.ERROR, "Error"), callbackId);
-            }
-            break;
-        default:
-            Log.w(TAG, "Unexpected activity result");
-            super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode == Activity.RESULT_OK) {
+            String value = null != intent ? intent.getStringExtra("result") : "OK";
+            success(new PluginResult(Status.OK, value), callbackId);
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            error(new PluginResult(Status.ERROR, "canceled"), callbackId);
+        } else {
+            error(new PluginResult(Status.ERROR, "error"), callbackId);
         }
     }
 
