@@ -1,24 +1,27 @@
 package nl.sense_os.phonegap.plugins;
 
-import java.util.List;
-
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.R;
+import nl.sense_os.service.SensePrefs;
+import nl.sense_os.service.SensePrefs.Auth;
+import nl.sense_os.service.SensePrefs.Main;
+import nl.sense_os.service.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
@@ -28,10 +31,13 @@ public class SensePlugin extends Plugin {
 
     private static class Actions {
         static final String CHANGE_LOGIN = "change_login";
+        static final String GET_DATA = "get_data";
         static final String GET_STATUS = "get_status";
         static final String GET_SESSION = "get_session";
+        static final String GET_PREF = "get_pref";
         static final String INIT = "init";
         static final String REGISTER = "register";
+        static final String SET_PREF = "set_pref";
         static final String TOGGLE_MAIN = "toggle_main";
         static final String TOGGLE_AMBIENCE = "toggle_ambience";
         static final String TOGGLE_EXTERNAL = "toggle_external";
@@ -52,6 +58,28 @@ public class SensePlugin extends Plugin {
             Log.v(TAG, "Connection to Sense Platform service established...");
             service = ISenseService.Stub.asInterface(binder);
             isServiceBound = true;
+
+            // only for ivitality
+            String packageName = ctx.getPackageName();
+            if (packageName.equals("nl.sense_os.ivitality")) {
+                Log.d(TAG, "Set iVitality sensor settings");
+                try {
+                    service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+                    service.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
+
+                    service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, false);
+                    service.toggleAmbience(true);
+
+                    service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
+                    service.toggleMotion(true);
+
+                    service.togglePhoneState(true);
+
+                    service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Failed to init default sense setttings");
+                }
+            }
         }
 
         @Override
@@ -76,7 +104,7 @@ public class SensePlugin extends Plugin {
     private void bindToSenseService() {
         if (!isServiceBound) {
             Log.v(TAG, "Try to connect to Sense Platform service");
-            final Intent service = new Intent(ISenseService.class.getName());
+            final Intent service = new Intent(ctx.getString(R.string.action_sense_service));
             isServiceBound = ctx.bindService(service, conn, Context.BIND_AUTO_CREATE);
         } else {
             // already bound
@@ -135,18 +163,20 @@ public class SensePlugin extends Plugin {
     public PluginResult execute(String action, final JSONArray data, final String callbackId) {
         Log.d(TAG, "Execute action: '" + action + "'");
         try {
-            if ("test".equals(action)) {
-                return test();
-            } else if (Actions.INIT.equals(action)) {
+            if (Actions.INIT.equals(action)) {
                 return init(data, callbackId);
             } else if (Actions.CHANGE_LOGIN.equals(action)) {
                 return changeLogin(data, callbackId);
+            } else if (Actions.GET_PREF.equals(action)) {
+                return getPreference(data, callbackId);
             } else if (Actions.GET_STATUS.equals(action)) {
                 return getStatus(data, callbackId);
             } else if (Actions.GET_SESSION.equals(action)) {
                 return getSession(data, callbackId);
             } else if (Actions.REGISTER.equals(action)) {
                 return register(data, callbackId);
+            } else if (Actions.SET_PREF.equals(action)) {
+                return setPreference(data, callbackId);
             } else if (Actions.TOGGLE_AMBIENCE.equals(action)) {
                 return toggleAmbience(data, callbackId);
             } else if (Actions.TOGGLE_EXTERNAL.equals(action)) {
@@ -161,6 +191,8 @@ public class SensePlugin extends Plugin {
                 return togglePhoneState(data, callbackId);
             } else if (Actions.TOGGLE_POSITION.equals(action)) {
                 return togglePosition(data, callbackId);
+            } else if (Actions.GET_DATA.equals(action)) {
+                return getValues(data, callbackId);
             } else {
                 Log.e(TAG, "Invalid action: '" + action + "'");
                 return new PluginResult(Status.INVALID_ACTION);
@@ -175,6 +207,21 @@ public class SensePlugin extends Plugin {
         } catch (Exception e) {
             Log.e(TAG, "Unexpected error while executing action: " + action, e);
             return new PluginResult(Status.ERROR, e.getMessage());
+        }
+    }
+
+    private PluginResult getPreference(JSONArray data, String callbackId) throws JSONException,
+            RemoteException {
+
+        String key = data.getString(0);
+
+        if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
+                || key.equals(Auth.LOGIN_USERNAME)) {
+            String result = service.getPrefString(key, null);
+            return new PluginResult(Status.OK, result);
+        } else {
+            boolean result = service.getPrefBool(key, false);
+            return new PluginResult(Status.OK, result);
         }
     }
 
@@ -226,6 +273,44 @@ public class SensePlugin extends Plugin {
         return r;
     }
 
+    /** Test function to print all location values saved in the sense app */
+    private PluginResult getValues(JSONArray data, String callbackId) throws JSONException,
+            RemoteException {
+        Cursor cursor = null;
+        String sensorName = data.getString(0);
+        JSONArray returnvalue = new JSONArray();
+        try {
+            Uri url = Uri.parse("content://" + ctx.getString(R.string.local_storage_authority)
+                    + DataPoint.CONTENT_URI_PATH);
+            String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
+            String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
+            String[] selectionArgs = null;
+            String sortOrder = null;
+            cursor = LocalStorage.getInstance(ctx).query(url, projection, selection, selectionArgs,
+                    sortOrder);
+
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    JSONObject val = new JSONObject();
+                    val.put("timestamp", cursor.getString(0));
+                    val.put("value", cursor.getString(1));
+                    returnvalue.put(val);
+                    cursor.moveToNext();
+                }
+            } else {
+                Log.e(TAG, "No " + sensorName + " sample stored yet...");
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        if (returnvalue.length() == 0) {
+            return new PluginResult(Status.NO_RESULT);
+        }
+        return new PluginResult(Status.OK, returnvalue);
+    }
+
     private PluginResult init(JSONArray data, String callbackId) {
         if (!isSenseInstalled()) {
             Log.w(TAG, "Sense is not installed!");
@@ -233,8 +318,8 @@ public class SensePlugin extends Plugin {
 
                 @Override
                 public void run() {
-                    AlertDialog d = InstallSenseDialog.create(ctx);
-                    d.show();
+                    // AlertDialog d = InstallSenseDialog.create(ctx);
+                    // d.show();
                 }
             });
             return new PluginResult(Status.ERROR);
@@ -245,10 +330,8 @@ public class SensePlugin extends Plugin {
     }
 
     private boolean isSenseInstalled() {
-        PackageManager pm = ctx.getPackageManager();
-        List<ResolveInfo> list = pm.queryIntentServices(new Intent(
-                "nl.sense_os.service.ISenseService"), 0);
-        return list.size() > 0;
+        // Sense is always installed because it is packaged with Paige
+        return true;
     }
 
     /**
@@ -270,7 +353,11 @@ public class SensePlugin extends Plugin {
             return true;
         } else if (Actions.GET_STATUS.equals(action)) {
             return true;
+        } else if (Actions.GET_PREF.equals(action)) {
+            return true;
         } else if (Actions.GET_SESSION.equals(action)) {
+            return true;
+        } else if (Actions.SET_PREF.equals(action)) {
             return true;
         } else if (Actions.TOGGLE_MAIN.equals(action)) {
             return true;
@@ -347,17 +434,67 @@ public class SensePlugin extends Plugin {
         return new PluginResult(status, result);
     }
 
-    private PluginResult test() {
-        ctx.runOnUiThread(new Runnable() {
+    private PluginResult setPreference(JSONArray data, String callbackId) throws JSONException {
 
-            @Override
-            public void run() {
-                Toast.makeText(ctx, "test", Toast.LENGTH_SHORT).show();
-            }
-        });
-        PluginResult r = new PluginResult(Status.OK);
-        // r.setKeepCallback(true);
-        return r;
+        // get the preference key
+        String key = data.getString(0);
+
+        // get the preference value
+        try {
+            boolean value = data.getBoolean(1);
+            service.setPrefBool(key, value);
+            return new PluginResult(Status.OK);
+        } catch (JSONException e) {
+            // do nothing, try another type
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to set preference '" + key + "' at Sense service");
+            return new PluginResult(Status.ERROR, "failed to set preference");
+        }
+
+        try {
+            float value = (float) data.getDouble(1);
+            service.setPrefFloat(key, value);
+            return new PluginResult(Status.OK);
+        } catch (JSONException e) {
+            // do nothing, try another type
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to set preference '" + key + "' at Sense service");
+            return new PluginResult(Status.ERROR, "failed to set preference");
+        }
+
+        try {
+            int value = data.getInt(1);
+            service.setPrefInt(key, value);
+            return new PluginResult(Status.OK);
+        } catch (JSONException e) {
+            // do nothing, try another type
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to set preference '" + key + "' at Sense service");
+            return new PluginResult(Status.ERROR, "failed to set preference");
+        }
+
+        try {
+            long value = data.getLong(1);
+            service.setPrefLong(key, value);
+            return new PluginResult(Status.OK);
+        } catch (JSONException e) {
+            // do nothing, try another type
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to set preference '" + key + "' at Sense service");
+            return new PluginResult(Status.ERROR, "failed to set preference");
+        }
+
+        try {
+            String value = data.getString(1);
+            service.setPrefString(key, value);
+            return new PluginResult(Status.OK);
+        } catch (JSONException e) {
+            // give up
+            return new PluginResult(Status.ERROR, "cannot determine preference type");
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to set preference '" + key + "' at Sense service");
+            return new PluginResult(Status.ERROR, "failed to set preference");
+        }
     }
 
     private PluginResult toggleAmbience(JSONArray data, String callbackId) throws RemoteException,
