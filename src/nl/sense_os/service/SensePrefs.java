@@ -109,6 +109,7 @@ public class SensePrefs {
              * other apps through a ContentProvider. Default is true.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Local storage is always on.
              */
             public static final String LOCAL_STORAGE = "local_storage";
             /**
@@ -253,7 +254,8 @@ public class SensePrefs {
                  */
                 public static final String STRIDES = "zephyrHxM_strides";
             }
-            public static class OBD2Dongle{
+
+            public static class OBD2Dongle {
                 /**
                  * Key for preference that toggles use of the OBD-II dongle.
                  * 
