@@ -59,6 +59,14 @@ public class SensorData {
          */
         public static final String DATA_TYPE = "data_type";
         /**
+         * The human readable display name of the sensor that generated the data point. <br>
+         * <br>
+         * TYPE: String
+         * 
+         * @see SenseDataTypes
+         */
+        public static final String DISPLAY_NAME = "display_name";
+        /**
          * Time stamp for the data point, in milliseconds. <br>
          * <br>
          * TYPE: long
