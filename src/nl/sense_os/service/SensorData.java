@@ -193,7 +193,12 @@ public class SensorData {
         /**
          * blood pressure sensor
          */
-        public static final String BLOOD_PRESSURE = "blood pressure";
+        public static final String BLOOD_PRESSURE = "blood_pressure";
+
+        /**
+         * reaction time sensor
+         */
+        public static final String REACTION_TIME = "reaction_time";
 
         /**
          * strides sensor (stappenteller) for Zephyr HxM external sensor
