@@ -20,8 +20,4 @@ public class ExampleApp extends Activity {
     public void showSenseExamples(View v) {
         startActivity(new Intent(this, SenseExamples.class));
     }
-
-    public void showIVitalityExamples(View v) {
-        startActivity(new Intent(this, IVitalityExamples.class));
-    }
 }

@@ -52,10 +52,6 @@
             android:name="SenseExamples"
             android:configChanges="orientation|keyboardHidden"></activity>
 
-        <activity
-            android:name="IVitalityExamples"
-            android:configChanges="orientation|keyboardHidden"></activity>
-
     </application>
 
     <uses-sdk android:minSdkVersion="7" />

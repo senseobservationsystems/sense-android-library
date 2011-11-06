@@ -16,7 +16,5 @@
     <plugin name="Temperature" value="com.phonegap.TempListener"/>
     <plugin name="FileTransfer" value="com.phonegap.FileTransfer"/>
     <plugin name="Capture" value="com.phonegap.Capture"/>
-    <plugin name="IVitalityPlugin" value="nl.sense_os.phonegap.plugins.IVitalityPlugin"/>
     <plugin name="SensePlatform" value="nl.sense_os.phonegap.plugins.SensePlugin"/>
-    <plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker"/>
 </plugins>
