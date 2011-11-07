@@ -122,6 +122,8 @@ public class SensePlugin extends Plugin {
             username = data.getString(0);
             password = data.getString(1);
 
+            Log.d(TAG, "username=" + username + ", pasword=" + password);
+
             // try the login
             int result = service.changeLogin(username, password);
 
@@ -298,7 +300,7 @@ public class SensePlugin extends Plugin {
                     cursor.moveToNext();
                 }
             } else {
-                Log.e(TAG, "No " + sensorName + " sample stored yet...");
+                Log.e(TAG, "No '" + sensorName + "' sample stored yet...");
             }
         } finally {
             if (cursor != null) {
