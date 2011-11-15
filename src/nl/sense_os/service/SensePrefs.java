@@ -109,6 +109,7 @@ public class SensePrefs {
              * other apps through a ContentProvider. Default is true.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Local storage is always on.
              */
             public static final String LOCAL_STORAGE = "local_storage";
             /**
@@ -131,7 +132,10 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String MIC = "ambience_mic";
-
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String PRESSURE = "ambience_pressure";
         }
 
         public static class DevProx {
@@ -253,7 +257,8 @@ public class SensePrefs {
                  */
                 public static final String STRIDES = "zephyrHxM_strides";
             }
-            public static class OBD2Dongle{
+
+            public static class OBD2Dongle {
                 /**
                  * Key for preference that toggles use of the OBD-II dongle.
                  * 
@@ -328,7 +333,42 @@ public class SensePrefs {
         }
 
         public static class PhoneState {
-
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String BATTERY = "phonestate_battery";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String SCREEN_ACTIVITY = "phonestate_screen_activity";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String PROXIMITY = "phonestate_proximity";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String IP_ADDRESS = "phonestate_ip";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String DATA_CONNECTION = "phonestate_data_connection";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String UNREAD_MSG = "phonestate_unread_msg";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String SERVICE_STATE = "phonestate_service_state";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String SIGNAL_STRENGTH = "phonestate_signal_strength";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String CALL_STATE = "phonestate_call_state";
         }
 
         public static class Quiz {

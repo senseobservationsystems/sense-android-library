@@ -1,7 +1,6 @@
 package nl.sense_os.service;
 
 import android.content.ContentResolver;
-import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class SensorData {
@@ -34,12 +33,9 @@ public class SensorData {
                 + "/vnd.sense_os.data_point";
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
                 + "/vnd.sense_os.data_point";
-        public static final Uri CONTENT_URI = Uri.parse("content://"
-                + "nl.sense_os.service.provider.LocalStorage" + "/recent_values");
-        public static final Uri CONTENT_PERSISTED_URI = Uri.parse("content://"
-                + "nl.sense_os.service.provider.LocalStorage" + "/persisted_values");
-        public static final Uri CONTENT_REMOTE_URI = Uri.parse("content://"
-                + "nl.sense_os.service.provider.LocalStorage" + "/remote_values");
+        public static final String CONTENT_URI_PATH = "/recent_values";
+        public static final String CONTENT_PERSISTED_URI_PATH = "/persisted_values";
+        public static final String CONTENT_REMOTE_URI_PATH = "/remote_values";
 
         /**
          * The name of the sensor that generated the data point. <br>
@@ -62,6 +58,14 @@ public class SensorData {
          * @see SenseDataTypes
          */
         public static final String DATA_TYPE = "data_type";
+        /**
+         * The human readable display name of the sensor that generated the data point. <br>
+         * <br>
+         * TYPE: String
+         * 
+         * @see SenseDataTypes
+         */
+        public static final String DISPLAY_NAME = "display_name";
         /**
          * Time stamp for the data point, in milliseconds. <br>
          * <br>
@@ -189,7 +193,12 @@ public class SensorData {
         /**
          * blood pressure sensor
          */
-        public static final String BLOOD_PRESSURE = "blood pressure";
+        public static final String BLOOD_PRESSURE = "blood_pressure";
+
+        /**
+         * reaction time sensor
+         */
+        public static final String REACTION_TIME = "reaction_time";
 
         /**
          * strides sensor (stappenteller) for Zephyr HxM external sensor
