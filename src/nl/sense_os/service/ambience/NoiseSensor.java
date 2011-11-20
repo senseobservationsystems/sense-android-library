@@ -125,7 +125,7 @@ public class NoiseSensor extends PhoneStateListener {
             try {
                 int audioSource = -1, channelConfig = -1;
                 if (isCalling) {
-                    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+                    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.ECLAIR) {
                         audioSource = MediaRecorder.AudioSource.VOICE_UPLINK;
                         channelConfig = AudioFormat.CHANNEL_CONFIGURATION_DEFAULT;
                     } else {
@@ -133,7 +133,7 @@ public class NoiseSensor extends PhoneStateListener {
                         channelConfig = AudioFormat.CHANNEL_IN_DEFAULT;
                     }
                 } else {
-                    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+                    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.ECLAIR) {
                         audioSource = MediaRecorder.AudioSource.MIC;
                         channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
                     } else {
