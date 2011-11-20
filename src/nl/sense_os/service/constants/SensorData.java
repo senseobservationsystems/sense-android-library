@@ -1,4 +1,4 @@
-package nl.sense_os.service;
+package nl.sense_os.service.constants;
 
 import android.content.ContentResolver;
 import android.provider.BaseColumns;
