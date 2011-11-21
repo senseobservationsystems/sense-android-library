@@ -3,6 +3,12 @@
  *************************************************************************************************/
 package nl.sense_os.service.storage;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensorData.DataPoint;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,13 +19,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Storage for recent sensor data. The data is stored in the devices RAM memory, so this
@@ -83,9 +82,7 @@ public class LocalStorage {
     private static final String TAG = "Sense LocalStorage";
 
     // public static final String AUTHORITY = "nl.sense_os.service.provider.LocalStorage";
-    private static final String TABLE_VOLATILE = "recent_values";
     private static final String TABLE_PERSISTENT = "persisted_values";
-    private static final String TABLE_REMOTE = "remote_values";
     private static final int VOLATILE_VALUES_URI = 1;
     private static final int PERSISTED_VALUES_URI = 2;
     private static final int REMOTE_VALUES_URI = 3;
@@ -115,7 +112,7 @@ public class LocalStorage {
     }
 
     private LocalStorage(Context context) {
-        Log.v(TAG, "Construct new local storage instance...");
+        // Log.v(TAG, "Construct new local storage instance...");
         this.context = context;
         dbHelper = new DbHelper(context);
     }
@@ -135,8 +132,18 @@ public class LocalStorage {
         }
     }
 
+    /**
+     * @param dataPoint
+     * @return Key that uniquely represents the sensor that produced the data point.
+     */
+    private String getKey(ContentValues dataPoint) {
+        String name = dataPoint.getAsString(DataPoint.SENSOR_NAME);
+        String descr = dataPoint.getAsString(DataPoint.SENSOR_DESCRIPTION);
+        return name.equals(descr) ? name : name + " (" + descr + ")";
+    }
+
     public String getType(Uri uri) {
-        Log.v(TAG, "Get content type...");
+        // Log.v(TAG, "Get content type...");
         int uriType = matchUri(uri);
         if (uriType == VOLATILE_VALUES_URI || uriType == PERSISTED_VALUES_URI
                 || uriType == REMOTE_VALUES_URI) {
@@ -167,9 +174,9 @@ public class LocalStorage {
         count++;
 
         // get currently stored values from the storage map
-        String sensorName = values.getAsString(DataPoint.SENSOR_NAME);
-        ContentValues[] storedValues = storage.get(sensorName);
-        Integer index = pointers.get(sensorName);
+        String key = getKey(values);
+        ContentValues[] storedValues = storage.get(key);
+        Integer index = pointers.get(key);
         if (null == storedValues) {
             storedValues = new ContentValues[MAX_VOLATILE_VALUES];
             index = 0;
@@ -177,8 +184,8 @@ public class LocalStorage {
 
         // check for buffer overflows
         if (index >= MAX_VOLATILE_VALUES) {
-            Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '"
-                    + sensorName + "'. Send to persistent storage...");
+            // Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '" +
+            // key + "'. Send to persistent storage...");
 
             // find out how many values have to be put in the persistant storage
             int persistFrom = -1;
@@ -203,11 +210,11 @@ public class LocalStorage {
         }
 
         // add the new data point
-        Log.v(TAG, "Inserting '" + sensorName + "' value in local storage...");
+        // Log.v(TAG, "Inserting '" + key + "' value in local storage...");
         storedValues[index] = values;
         index++;
-        storage.put(sensorName, storedValues);
-        pointers.put(sensorName, index);
+        storage.put(key, storedValues);
+        pointers.put(key, index);
 
         // notify any listeners (does this work properly?)
         Uri contentUri = Uri.parse("content://"
@@ -231,7 +238,7 @@ public class LocalStorage {
     }
 
     private void persist(ContentValues[] storedValues) {
-        Log.d(TAG, "Persist " + storedValues.length + " data points");
+        // Log.v(TAG, "Persist " + storedValues.length + " data points");
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -240,7 +247,7 @@ public class LocalStorage {
                     + (System.currentTimeMillis() - 1000 * 60 * 60 * 24);
             int deleted = db.delete(TABLE_PERSISTENT, where, null);
             if (deleted > 0) {
-                Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
+                // Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
             }
 
             // insert new points to persistent storage
@@ -284,7 +291,7 @@ public class LocalStorage {
             }
         case REMOTE_VALUES_URI:
             // try {
-            Log.d(TAG, "Querying remote data points is not supported!");
+            Log.w(TAG, "Querying remote data points is not supported!");
             // return queryRemote(uri, projection, where, selectionArgs, sortOrder);
             // } catch (Exception e) {
             // Log.e(TAG, "Failed to query the CommonSense data points", e);

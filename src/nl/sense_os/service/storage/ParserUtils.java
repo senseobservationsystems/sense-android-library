@@ -3,11 +3,11 @@
  *************************************************************************************************/
 package nl.sense_os.service.storage;
 
-import nl.sense_os.service.constants.SensorData.DataPoint;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import nl.sense_os.service.constants.SensorData.DataPoint;
 
 public class ParserUtils {
 
@@ -58,7 +58,11 @@ public class ParserUtils {
                 // Log.v(TAG, "Query contains: " + DataPoint.SENSOR_NAME + " = '" + sensorName +
                 // "'");
 
-                names.add(sensorName);
+                for (String key : allSensors) {
+                    if (key.startsWith(sensorName)) {
+                        names.add(key);
+                    }
+                }
 
             } else if (-1 != neqKeyStart) {
                 // selection contains "sensor_name!='"
@@ -73,11 +77,12 @@ public class ParserUtils {
                 // Log.v(TAG, "Query contains: " + DataPoint.SENSOR_NAME + " != '" + notSensorName +
                 // "'");
 
-                for (String name : allSensors) {
-                    if (!name.equals(notSensorName)) {
-                        names.add(name);
+                for (String key : allSensors) {
+                    if (!key.startsWith(notSensorName)) {
+                        names.add(key);
                     }
                 }
+
             } else {
                 throw new IllegalArgumentException("Parser cannot handle selection query: "
                         + selection);

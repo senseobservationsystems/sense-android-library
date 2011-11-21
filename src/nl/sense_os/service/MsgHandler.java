@@ -3,6 +3,31 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map.Entry;
+
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,31 +47,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
-
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map.Entry;
 
 public class MsgHandler extends Service {
 
@@ -254,9 +254,8 @@ public class MsgHandler extends Service {
 
                     } else {
                         // if the data type is a "file", we need special handling
-                        Log.d(TAG,
-                                "Transmit file separately from the other buffered data points: '"
-                                        + value + "'");
+                        // Log.d(TAG, "Transmit file separately from the other data points: '" +
+                        // value + "'");
 
                         // create sensor data JSON object with only 1 data point
                         JSONObject sensorData = new JSONObject();
@@ -314,11 +313,11 @@ public class MsgHandler extends Service {
                         where, null, null);
 
                 if ((null != unsent) && unsent.moveToFirst()) {
-                    Log.v(TAG, "Found " + unsent.getCount()
-                            + " unsent data points in persistant storage");
+                    // Log.v(TAG, "Found " + unsent.getCount() +
+                    // " unsent data points in persistant storage");
                     return unsent;
                 } else {
-                    Log.v(TAG, "No unsent data points in the persistant storage");
+                    // Log.v(TAG, "No unsent data points in the persistant storage");
                     return new MatrixCursor(new String[] {});
                 }
             } catch (IllegalArgumentException e) {
@@ -375,8 +374,8 @@ public class MsgHandler extends Service {
                     int deleted = LocalStorage.getInstance(MsgHandler.this).delete(contentUri,
                             where, null);
                     if (deleted == dataPoints.length()) {
-                        Log.v(TAG, "Deleted all " + deleted + " '" + sensorName
-                                + "' points from the persistant storage");
+                        // Log.v(TAG, "Deleted all " + deleted + " '" + sensorName +
+                        // "' points from the persistant storage");
                     } else {
                         Log.w(TAG, "Wrong number of '" + sensorName
                                 + "' data points deleted after transmission! " + deleted + " vs. "
@@ -409,11 +408,11 @@ public class MsgHandler extends Service {
                 Cursor unsent = LocalStorage.getInstance(MsgHandler.this).query(contentUri, null,
                         where, null, null);
                 if ((null != unsent) && unsent.moveToFirst()) {
-                    Log.v(TAG, "Found " + unsent.getCount()
-                            + " unsent data points in local storage");
+                    // Log.v(TAG, "Found " + unsent.getCount() +
+                    // " unsent data points in local storage");
                     return unsent;
                 } else {
-                    Log.v(TAG, "No unsent recent data points");
+                    // Log.v(TAG, "No unsent recent data points");
                     return new MatrixCursor(new String[] {});
                 }
             } catch (IllegalArgumentException e) {
@@ -474,8 +473,8 @@ public class MsgHandler extends Service {
                     int updated = LocalStorage.getInstance(MsgHandler.this).update(contentUri,
                             values, where, null);
                     if (updated == dataPoints.length()) {
-                        Log.v(TAG, "Updated all " + updated + " '" + sensorName
-                                + "' data points in the local storage");
+                        // Log.v(TAG, "Updated all " + updated + " '" + sensorName +
+                        // "' data points in the local storage");
                     } else {
                         Log.w(TAG, "Wrong number of '" + sensorName
                                 + "' data points updated after transmission! " + updated + " vs. "
@@ -827,7 +826,7 @@ public class MsgHandler extends Service {
      * Puts data from the buffer in the flash database for long-term storage
      */
     private void emptyBufferToDb() {
-        Log.v(TAG, "Emptying buffer to persistant database...");
+        // Log.v(TAG, "Emptying buffer to persistant database...");
         try {
             Uri contentUri = Uri.parse("content://" + getString(R.string.local_storage_authority)
                     + DataPoint.CONTENT_URI_PATH + "?persist=true");
@@ -1087,10 +1086,10 @@ public class MsgHandler extends Service {
 
                     }
                 } else {
-                    Log.d(TAG, "Cannot send data point: no cookie");
+                    Log.w(TAG, "Cannot send data point! no cookie");
                 }
             } else {
-                Log.d(TAG, "Maximum number of sensor data transmission threads reached");
+                Log.w(TAG, "Maximum number of sensor data transmission threads reached!");
             }
 
         } catch (Exception e) {
