@@ -3,6 +3,19 @@
  *************************************************************************************************/
 package com.phonegap.plugins.sense;
 
+import nl.sense_os.service.ISenseService;
+import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,19 +29,6 @@ import android.util.Log;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import com.phonegap.api.PluginResult.Status;
-
-import nl.sense_os.service.ISenseService;
-import nl.sense_os.service.ISenseServiceCallback;
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class SensePlugin extends Plugin {
 
@@ -68,7 +68,7 @@ public class SensePlugin extends Plugin {
                 Log.d(TAG, "Set iVitality sensor settings");
                 try {
                     service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
-                    service.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
+                    service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
 
                     service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
                     service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
