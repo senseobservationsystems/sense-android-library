@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>     
+<resources>    
+    <!-- status bar notification -->
+    <string name="stat_notify_action">nl.sense_os.platform.SenseApp</string>
+    <string name="stat_notify_title">Sense Platform</string>
+    <string name="stat_notify_content_off_loggedin">Sensors inactive, logged in as \'%s\'</string> 
+    <string name="stat_notify_content_off_loggedout">Sensors inactive, no connection to CommonSense</string>  
+    <string name="stat_notify_content_on_loggedin">"Sensors active, logged in as \'%s\'"</string> 
+    <string name="stat_notify_content_on_loggedout">Sensors active, no connection to CommonSense</string>
+       
     <!-- actions for generic Sense Platform, overwrite when bundling Sense into another app -->
     <string name="action_sense_app">nl.sense_os.platform.SenseApp</string>
     <string name="action_sense_settings">nl.sense_os.platform.SenseSettings</string>
@@ -11,7 +19,7 @@
     <string name="action_sense_alive_check_alarm">nl.sense_os.platform.AliveCheck</string>
     <string name="action_sense_data_transmit_alarm">nl.sense_os.platform.DataTransmit</string>
     
-    <!-- action for the app widget -->
+    <!-- actions for the app widget -->
     <string name="action_widget_update">nl.sense_os.platform.AppWidgetUpdate</string>
     <string name="action_widget_start_phone_state">nl.sense_os.platform.StartPhoneState</string>
     <string name="action_widget_start_location">nl.sense_os.platform.StartLocation</string>
@@ -24,9 +32,16 @@
     <string name="action_widget_stop_motion">nl.sense_os.platform.StopMotion</string>
     <string name="action_widget_stop_ambience">nl.sense_os.platform.StopAmbience</string>
     <string name="action_widget_stop_devices">nl.sense_os.platform.StopDevices</string>
-    <string name="action_widget_stop_external">nl.sense_os.platform.StopExternal</string>
-        
+    <string name="action_widget_stop_external">nl.sense_os.platform.StopExternal</string>        
 
     <!-- LocalStorage authority, overwrite when bundling Sense into another app -->
     <string name="local_storage_authority">nl.sense_os.platform.provider.LocalStorage</string>
+
+    <!-- old pop quiz stuff -->
+    <string name="pq_missed_done">All missed pop quizzes are completed.</string>
+    <string name="pq_missed_msg">You have missed ?1 pop quizzes.\n\nDo you want to complete these now?</string>
+    <string name="pq_missed_title">Missed pop quiz</string>
+    <string name="pq_welcome_msg1">Time:</string>
+    <string name="pq_welcome_msg2">User:</string>
+    <string name="pq_welcome_title">Pop quiz</string>
 </resources>
