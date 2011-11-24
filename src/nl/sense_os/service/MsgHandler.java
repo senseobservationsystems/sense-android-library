@@ -98,7 +98,7 @@ public class MsgHandler extends Service {
         public void handleMessage(Message msg) {
             try {
                 cookie = msg.getData().getString("cookie");
-                cursor = getUnsentData();
+                cursor = getUnsentData();                
                 if ((null != cursor) && cursor.moveToFirst()) {
                     transmit();
                 } else {
@@ -383,6 +383,27 @@ public class MsgHandler extends Service {
                     }
                 } catch (IllegalArgumentException e) {
                     Log.e(TAG, "Error deleting points from Local Storage!", e);
+                }
+                
+                // check if there is more data left
+                SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+                int maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT;
+                
+                if(pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+                	maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
+                
+                // there is probably more data, try to send more
+                if(dataPoints.length() == maxDataPoints)
+                {
+                	Log.d(TAG, "There is more data! Sending another batch from the persistant storage.");
+
+                    // prepare the data to give to the transmitters
+                    Bundle msgData = new Bundle();
+                    msgData.putString("cookie", cookie);
+
+                    Message msg = Message.obtain();
+                    msg.setData(msgData);
+                    persistedDataTransmitter.sendMessage(msg);
                 }
             }
         }

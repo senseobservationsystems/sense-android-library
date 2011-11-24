@@ -694,7 +694,7 @@ public class SenseApi {
         HttpURLConnection urlConnection = null;
         HashMap<String, String> result = new HashMap<String, String>();
         try {
-            // Log.d(TAG, "API request: " + (content == null ? "GET" : "POST") + " " + urlString);
+           //  Log.d(TAG, "API request: " + (content == null ? "GET" : "POST") + " " + urlString+ " cookie:"+cookie);
 
             // get compression preference
             final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
