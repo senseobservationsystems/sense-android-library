@@ -339,7 +339,7 @@ public class MsgHandler extends Service {
                 Log.e(TAG, "List of registered sensors is unavailable right after data transfer?!");
                 return;
             }
-
+            int totalDatapoints = 0;
             JSONArray sensorDatas = transmission.getJSONArray("sensors");
             for (int i = 0; i < sensorDatas.length(); i++) {
 
@@ -357,6 +357,7 @@ public class MsgHandler extends Service {
 
                 // select points for this sensor, between the first and the last time stamp
                 JSONArray dataPoints = sensorData.getJSONArray("data");
+                totalDatapoints += dataPoints.length();
                 String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
                 String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
                         "date");
@@ -375,7 +376,7 @@ public class MsgHandler extends Service {
                             where, null);
                     if (deleted == dataPoints.length()) {
                         // Log.v(TAG, "Deleted all " + deleted + " '" + sensorName +
-                        // "' points from the persistant storage");
+                         //"' points from the persistant storage");
                     } else {
                         Log.w(TAG, "Wrong number of '" + sensorName
                                 + "' data points deleted after transmission! " + deleted + " vs. "
@@ -383,28 +384,28 @@ public class MsgHandler extends Service {
                     }
                 } catch (IllegalArgumentException e) {
                     Log.e(TAG, "Error deleting points from Local Storage!", e);
-                }
-                
-                // check if there is more data left
-                SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-                int maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT;
-                
-                if(pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
-                	maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
-                
-                // there is probably more data, try to send more
-                if(dataPoints.length() == maxDataPoints)
-                {
-                	Log.d(TAG, "There is more data! Sending another batch from the persistant storage.");
+                }   
+            }
+            
+            // check if there is more data left
+            SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+            int maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT;
+            
+            if(pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+            	maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
+            
+            // there is probably more data, try to send more           
+            if(totalDatapoints == maxDataPoints)
+            {
+            	//Log.d(TAG, "There is more data! Sending another batch from the persistant storage.");
 
-                    // prepare the data to give to the transmitters
-                    Bundle msgData = new Bundle();
-                    msgData.putString("cookie", cookie);
+                // prepare the data to give to the transmitters
+                Bundle msgData = new Bundle();
+                msgData.putString("cookie", cookie);
 
-                    Message msg = Message.obtain();
-                    msg.setData(msgData);
-                    persistedDataTransmitter.sendMessage(msg);
-                }
+                Message msg = Message.obtain();
+                msg.setData(msgData);
+                persistedDataTransmitter.sendMessage(msg);
             }
         }
     }

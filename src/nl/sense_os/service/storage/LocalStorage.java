@@ -189,8 +189,8 @@ public class LocalStorage {
 
         // check for buffer overflows
         if (index >= MAX_VOLATILE_VALUES) {
-            // Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '" +
-            // key + "'. Send to persistent storage...");
+           //  Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '" +
+           //  key + "'. Send to persistent storage...");
 
             // find out how many values have to be put in the persistant storage
             int persistFrom = -1;
@@ -252,7 +252,7 @@ public class LocalStorage {
                     + (System.currentTimeMillis() - 1000l * 60 * 60 * 24);
             int deleted = db.delete(TABLE_PERSISTENT, where, null);
             if (deleted > 0) {
-                // Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
+               //  Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
             }
 
             // insert new points to persistent storage
@@ -317,9 +317,10 @@ public class LocalStorage {
         
         if(pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
         	limitStr = ""+QUERY_RESULTS_LIMIT_EPI_MODE;        
-        
+              
         Cursor persistentResult = db.query(TABLE_PERSISTENT, projection, where, selectionArgs,
                 null, null, sortOrder, limitStr);
+      
         return persistentResult;
     }
 
