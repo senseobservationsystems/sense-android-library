@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 
@@ -144,6 +145,7 @@ public class ZephyrHxM {
                     return false;
                 // received general data
                 if (buffer[0] == 0x02 && buffer[1] == 0x26 && buffer[2] == 55) {
+                	Log.d(TAG, "Found start of message");
                     // send heart rate
                     if (prefs.getBoolean(External.ZephyrHxM.HEART_RATE, true)) {
                         int heartRate = Byte.valueOf(buffer[12]).intValue();
@@ -175,7 +177,7 @@ public class ZephyrHxM {
                     }
                     // send battery charge
                     if (prefs.getBoolean(External.ZephyrHxM.BATTERY, true)) {
-                        Short battery = (short) buffer[11];
+                        int battery = Byte.valueOf(buffer[11]).intValue();
 
                         // Log.v(TAG, "Battery charge:" + battery.intValue());
                         sendDataPoint(SensorNames.BATTERY_CHARGE, "HxM " + deviceName, battery,
@@ -195,7 +197,8 @@ public class ZephyrHxM {
                     }
                     // send strides count
                     if (prefs.getBoolean(External.ZephyrHxM.STRIDES, true)) {
-                        Short strides = (short) (0x000000FF & (int) buffer[54]);
+                    	int strides = buffer[54];
+                    	strides = strides < 0 ? strides+256:strides;                        
                         // Short strides = (short)buffer[54];
 
                         // Log.v(TAG, "Battery charge:" + battery.intValue());
@@ -305,12 +308,17 @@ public class ZephyrHxM {
                         int bytes; // bytes returned from read()
                         bytes = mmInStream.read(buffer);
                         if (bytes > 0) {
-                            Log.d(TAG, "Read " + bytes + " bytes from Bluetooth input stream");
-                            // copy the buffer
+                           // Log.d(TAG, "Read " + bytes + " bytes from Bluetooth input stream");
+                            
+                            // copy the buffer                           
                             byte[] newBuffer = new byte[bytes];
                             for (int i = 0; i < bytes; i++) {
+//                            	int byteNr = buffer[i];
+//                            	byteNr = byteNr < 0 ? byteNr+256:byteNr;
+//                            	Log.d(TAG, ""+ byteNr);	
                                 newBuffer[i] = buffer[i];
-                            }
+                            }                            
+                                                       
                             done = processZHxMMessage.processMessage(newBuffer, !firstRun);
                             firstRun = false;
                         } else {
@@ -576,7 +584,9 @@ public class ZephyrHxM {
                             Log.v(TAG, "Connecting to device: " + device.getName());
                             // Get a BluetoothSocket to connect with the BluetoothDevice
                             try {
-                                btSocket2_1 = device.createRfcommSocketToServiceRecord(serial_uid);
+                            	
+                                //btSocket2_1 = device.createInsecureRfcommSocketToServiceRecord(serial_uid);
+                            	btSocket2_1 = device.createRfcommSocketToServiceRecord(serial_uid);
                                 btSocket2_1.connect();
                                 processZHxMMessage = new ProcessZephyrHxMMessage(btSocket2_1
                                         .getRemoteDevice().getName());
@@ -659,8 +669,10 @@ public class ZephyrHxM {
     private final Context context;
     private boolean hxmEnabled = false;
     private UUID serial_uid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-    private final Handler connectHandler = new Handler(Looper.getMainLooper());
-    private Handler updateHandler = new Handler(Looper.getMainLooper());
+    HandlerThread connectHT = null;
+    HandlerThread updateHT = null;    
+    private Handler connectHandler = null;//new Handler(Looper.getMainLooper());
+    private Handler updateHandler = null; //new Handler(Looper.getMainLooper());
     private int updateInterval = 0;
     private UpdateThread updateThread = null;
     @SuppressWarnings("unused")
@@ -696,7 +708,16 @@ public class ZephyrHxM {
 
         updateInterval = interval;
         hxmEnabled = true;
-
+        // create the handler threads
+        connectHT = new HandlerThread("Hxm Connect Handler Thread");
+        updateHT = new HandlerThread("Hxm Update Handler Thread"); 
+        connectHT.start();
+        updateHT.start();
+        
+        // get the looper
+        connectHandler = new Handler(connectHT.getLooper());
+        updateHandler = new Handler(updateHT.getLooper());
+        
         Thread t = new Thread() {
 
             @Override
@@ -715,22 +736,23 @@ public class ZephyrHxM {
     }
 
     public void stopHxM() {
-        Log.v(TAG, "Stop HxM...");
-
+        Log.v(TAG, "Stop HxM...");        
+        
         hxmEnabled = false;
         try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
-                if (hxmConnectThread1_6 != null) {
-                    hxmConnectThread1_6.stop();
-                    connectHandler.removeCallbacks(hxmConnectThread1_6);
-                }
-            } else {
-                if (hxmConnectThread2_1 != null) {
-                    hxmConnectThread2_1.stop();
-                    connectHandler.removeCallbacks(hxmConnectThread2_1);
-                }
-            }
-
+        		connectHT.getLooper().quit();
+        		updateHT.getLooper().quit();
+	            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
+	                if (hxmConnectThread1_6 != null) {
+	                    hxmConnectThread1_6.stop();
+	                    connectHandler.removeCallbacks(hxmConnectThread1_6);
+	                }
+	            } else {
+	                if (hxmConnectThread2_1 != null) {
+	                    hxmConnectThread2_1.stop();
+	                    connectHandler.removeCallbacks(hxmConnectThread2_1);
+	                }
+	            }
         } catch (Exception e) {
             Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
         }
