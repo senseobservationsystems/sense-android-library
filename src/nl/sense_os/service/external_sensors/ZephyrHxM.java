@@ -739,9 +739,7 @@ public class ZephyrHxM {
         Log.v(TAG, "Stop HxM...");        
         
         hxmEnabled = false;
-        try {
-        		connectHT.getLooper().quit();
-        		updateHT.getLooper().quit();
+        try {        		
 	            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
 	                if (hxmConnectThread1_6 != null) {
 	                    hxmConnectThread1_6.stop();
@@ -753,6 +751,8 @@ public class ZephyrHxM {
 	                    connectHandler.removeCallbacks(hxmConnectThread2_1);
 	                }
 	            }
+	            connectHT.getLooper().quit();
+        		updateHT.getLooper().quit(); 
         } catch (Exception e) {
             Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
         }
