@@ -3,18 +3,10 @@
  *************************************************************************************************/
 package nl.sense_os.service.external_sensors;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.UUID;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -25,15 +17,17 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import org.json.JSONObject;
 
-import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
-import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
-import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 public class ZephyrBioHarness {
 
@@ -214,31 +208,20 @@ public class ZephyrBioHarness {
         private OutputStream mmOutStream;
 
         public UpdateThread() {
-            if (btSocket2_1 != null) {
-                if (mmInStream == null || mmOutStream == null) {
-                    InputStream tmpIn = null;
-                    OutputStream tmpOut = null;
+            if (mmInStream == null || mmOutStream == null) {
+                InputStream tmpIn = null;
+                OutputStream tmpOut = null;
 
-                    // Get the input and output streams, using temp objects because
-                    // member streams are final
-                    try {
-                        tmpIn = btSocket2_1.getInputStream();
-                        tmpOut = btSocket2_1.getOutputStream();
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error in update thread constructor:" + e.getMessage());
-                    }
-                    mmInStream = tmpIn;
-                    mmOutStream = tmpOut;
-                }
-            } else {
+                // Get the input and output streams, using temp objects because member streams are
+                // final
                 try {
-                    if (mmInStream == null || mmOutStream == null) {
-                        mmInStream = btSocket1_6.getInputStream();
-                        mmOutStream = btSocket1_6.getOutputStream();
-                    }
+                    tmpIn = btSocket.getInputStream();
+                    tmpOut = btSocket.getOutputStream();
                 } catch (Exception e) {
                     Log.e(TAG, "Error in update thread constructor:" + e.getMessage());
                 }
+                mmInStream = tmpIn;
+                mmOutStream = tmpOut;
             }
         }
 
@@ -250,17 +233,14 @@ public class ZephyrBioHarness {
                 try {
                     if (!streamEnabled) {
                         streamEnabled = setEnableGeneralData(true);
-                        if (btSocket1_6 == null)
-                            updateHandler.post(updateThread = new UpdateThread());
-                        else
-                            updateHandler.post(updateThread = new UpdateThread());
+                        updateHandler.post(updateThread = new UpdateThread());
                         return;
                     }
                     // check connection
                     if (!sendConnectionAlive()) {
                         connectHandler
                                 .postDelayed(
-                                        bioHarnessConnectThread2_1 = new BioHarnessConnectThread2_1(),
+                                        bioHarnessConnectThread = new BioHarnessConnectThread(),
                                         1000);
                         return;
                     }
@@ -275,7 +255,7 @@ public class ZephyrBioHarness {
                             if (!sendConnectionAlive()) {
                                 connectHandler
                                         .postDelayed(
-                                                bioHarnessConnectThread2_1 = new BioHarnessConnectThread2_1(),
+                                                bioHarnessConnectThread = new BioHarnessConnectThread(),
                                                 1000);
                                 return;
                             }
@@ -286,16 +266,13 @@ public class ZephyrBioHarness {
                         }
                     }
                     // update every second
-                    if (btSocket1_6 == null)
-                        updateHandler.postDelayed(updateThread = new UpdateThread(), 1000);
-                    else
-                        updateHandler.postDelayed(updateThread = new UpdateThread(), 1000);
+                    updateHandler.postDelayed(updateThread = new UpdateThread(), 1000);
                 } catch (Exception e) {
                     Log.e(TAG, "Error in receiving BioHarness data:" + e.getMessage());
                     e.printStackTrace();
                     // re-connect
                     connectHandler.postDelayed(
-                            bioHarnessConnectThread2_1 = new BioHarnessConnectThread2_1(), 1000);
+                            bioHarnessConnectThread = new BioHarnessConnectThread(), 1000);
                 }
             } else
                 cancel();
@@ -377,10 +354,7 @@ public class ZephyrBioHarness {
             try {
                 Log.i(TAG, "Stopping the BioHarness service");
                 setEnableGeneralData(false);
-                if (btSocket1_6 == null)
-                    btSocket2_1.close();
-                else
-                    btSocket1_6.closeSocket();
+                btSocket.close();
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -388,149 +362,9 @@ public class ZephyrBioHarness {
     }
 
     /*
-     * Scan thread 1.6
+     * Scan thread
      */
-    private class BioHarnessConnectThread1_6 implements Runnable {
-
-        @SuppressWarnings("unused")
-        private boolean bbActiveFromTheStart = false; // TODO use this
-
-        private class BluetoothDeviceListener implements LocalBluetoothDeviceListener {
-
-            @Override
-            public void bluetoothDisabled() {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void bluetoothEnabled() {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void deviceFound(String arg0) {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void scanCompleted(ArrayList<String> devices) {
-                boolean foundDevice = false;
-                if (!bioHarnessEnabled) {
-                    stop();
-                    return;
-                }
-                // return immediately if the BT device is closed (i.e. when the service is suddenly
-                // stopped)
-                if (null == btDevice) {
-                    return;
-                }
-
-                try {
-                    if (devices.size() != 0) {
-                        // find a paired BioHarness
-
-                        for (int x = 0; x < devices.size(); ++x) {
-                            RemoteBluetoothDevice rbtDevice = btDevice
-                                    .getRemoteBluetoothDevice(devices.get(x));
-                            if (rbtDevice.isPaired() && rbtDevice.getName().startsWith("BH ZBH")
-                                    && rbtDevice.getAddress().startsWith("00:07:80")) {
-                                btSocket1_6 = rbtDevice.openSocket(1);
-                                processZBHMessage = new ProcessZephyrBioHarnessMessage(
-                                        rbtDevice.getName());
-                                updateHandler.post(updateThread = new UpdateThread());
-                                foundDevice = true;
-                                break;
-                            }
-                        }
-                        // connect to a unpaired device
-                        // if(!foundDevice)
-                        // {
-                        // Log.d(TAG, "No paired device found, searching for available device...");
-                        //
-                        // for (int x=0 ;x < devices.size();++x)
-                        // {
-                        // RemoteBluetoothDevice rbtDevice =
-                        // btDevice.getRemoteBluetoothDevice(devices.get(x));
-                        // if(rbtDevice.getName().startsWith("BH ZBH") &&
-                        // rbtDevice.getAddress().startsWith("00:07:80"))
-                        // {
-                        // Log.d(TAG, "found device, pairing...");
-                        // rbtDevice.setPin("1234");
-                        // rbtDevice.pair();
-                        // it.gerdavax.android.bluetooth.BluetoothSocket btSocket =
-                        // rbtDevice.openSocket(1);
-                        // updateHandler.post(updateThread = new UpdateThread(btSocket));
-                        // foundDevice = true;
-                        // break;
-                        // }
-                        // }
-                        //
-                        // }
-
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error connecting to BioHarness:", e);
-                }
-                // wait 10 seconds for another scan
-                if (!foundDevice)
-                    connectHandler.postDelayed(
-                            bioHarnessConnectThread1_6 = new BioHarnessConnectThread1_6(), 10000);
-            }
-
-            @Override
-            public void scanStarted() {
-                // Auto-generated method stub
-            }
-        }
-
-        private LocalBluetoothDevice btDevice;
-        private BluetoothDeviceListener btListener;
-
-        public BioHarnessConnectThread1_6() {
-            // send address
-            try {
-                streamEnabled = false;
-                btDevice = LocalBluetoothDevice.initLocalDevice(context);
-
-                btListener = new BluetoothDeviceListener();
-                btDevice.setListener(btListener);
-
-                bbActiveFromTheStart = btDevice.isEnabled();
-                if (!btDevice.isEnabled())
-                    btDevice.setEnabled(true);
-
-            } catch (Exception e) {
-                Log.e(TAG, "Exception initializing the bioHarness connectThread:" + e.getMessage());
-            }
-        }
-
-        @Override
-        public void run() {
-            try {
-                if (btDevice != null)
-                    btDevice.scan();
-
-            } catch (Exception e) {
-                Log.e(TAG, "Exception running Bluetooth scan thread:", e);
-            }
-        }
-
-        public void stop() {
-            try {
-                btDevice.stopScanning();
-                // if(!bbActiveFromTheStart)
-                // btDevice.setEnabled(false);
-                btDevice.close();
-            } catch (Exception e) {
-                Log.e(TAG, "Exception in stopping the bioHarness thread:" + e.getMessage());
-            }
-        }
-    }
-
-    /*
-     * Scan thread 2.1
-     */
-    private class BioHarnessConnectThread2_1 implements Runnable {
+    private class BioHarnessConnectThread implements Runnable {
 
         private BroadcastReceiver btReceiver = new BroadcastReceiver() {
 
@@ -549,14 +383,14 @@ public class ZephyrBioHarness {
                     if (state == BluetoothAdapter.STATE_ON) {
                         stop();
                         connectHandler
-                                .post(bioHarnessConnectThread2_1 = new BioHarnessConnectThread2_1());
+                                .post(bioHarnessConnectThread = new BioHarnessConnectThread());
                         return;
                     }
                 }
             }
         };
 
-        public BioHarnessConnectThread2_1() {
+        public BioHarnessConnectThread() {
             // send address
             try {
                 btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -572,8 +406,7 @@ public class ZephyrBioHarness {
                 if (btAdapter.isEnabled()) {
 
                     // check if there is a paired device with the name BioHarness
-                    Set<android.bluetooth.BluetoothDevice> pairedDevices = btAdapter
-                            .getBondedDevices();
+                    Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
 
                     // If there are paired devices
                     boolean foundDevice = false;
@@ -586,11 +419,11 @@ public class ZephyrBioHarness {
                                 // Log.v(TAG, "Connecting to BioHarness:" + device.getName());
                                 // Get a BluetoothSocket to connect with the given BluetoothDevice
                                 try {
-                                    btSocket2_1 = device
+                                    btSocket = device
                                             .createRfcommSocketToServiceRecord(serial_uid);
-                                    btSocket2_1.connect();
+                                    btSocket.connect();
                                     processZBHMessage = new ProcessZephyrBioHarnessMessage(
-                                            btSocket2_1.getRemoteDevice().getName());
+                                            btSocket.getRemoteDevice().getName());
                                     updateHandler.post(updateThread = new UpdateThread());
                                     foundDevice = true;
                                 } catch (Exception e) {
@@ -604,7 +437,7 @@ public class ZephyrBioHarness {
                     if (!foundDevice) {
                         // Log.v(TAG, "No Paired BioHarness device found. Sleeping for 10 seconds");
                         connectHandler.postDelayed(
-                                bioHarnessConnectThread2_1 = new BioHarnessConnectThread2_1(),
+                                bioHarnessConnectThread = new BioHarnessConnectThread(),
                                 10000);
                     }
                 } else if (btAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON) {
@@ -631,7 +464,7 @@ public class ZephyrBioHarness {
             try {
                 // Log.v(TAG, "Stopping the BioHarness service");
                 updateHandler.removeCallbacks(updateThread);
-                btSocket2_1.close();
+                btSocket.close();
 
                 context.unregisterReceiver(btReceiver);
 
@@ -652,11 +485,9 @@ public class ZephyrBioHarness {
     private int updateInterval = 0;
     private UpdateThread updateThread = null;
     private long lastSampleTime = 0;
-    private BioHarnessConnectThread2_1 bioHarnessConnectThread2_1 = null;
-    private BioHarnessConnectThread1_6 bioHarnessConnectThread1_6 = null;
+    private BioHarnessConnectThread bioHarnessConnectThread = null;
     private boolean streamEnabled = false;
-    private BluetoothSocket btSocket2_1 = null;
-    private it.gerdavax.android.bluetooth.BluetoothSocket btSocket1_6 = null;
+    private BluetoothSocket btSocket = null;
     private ProcessZephyrBioHarnessMessage processZBHMessage = null;
 
     public ZephyrBioHarness(Context context) {
@@ -676,16 +507,11 @@ public class ZephyrBioHarness {
         bioHarnessEnabled = true;
 
         Thread t = new Thread() {
+
             @Override
             public void run() {
-                // Check if the phone version, if it is lower than, 2.1 use the bluetooth lib
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR)
-                    connectHandler
-                            .post(bioHarnessConnectThread1_6 = new BioHarnessConnectThread1_6());
-                else {
-                    connectHandler
-                            .post(bioHarnessConnectThread2_1 = new BioHarnessConnectThread2_1());
-                }
+
+                connectHandler.post(bioHarnessConnectThread = new BioHarnessConnectThread());
             }
         };
         this.connectHandler.post(t);
@@ -694,14 +520,10 @@ public class ZephyrBioHarness {
     public void stopBioHarness() {
         bioHarnessEnabled = false;
         try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR)
-                if (bioHarnessConnectThread1_6 != null) {
-                    bioHarnessConnectThread1_6.stop();
-                    connectHandler.removeCallbacks(bioHarnessConnectThread1_6);
-                } else if (bioHarnessConnectThread2_1 != null) {
-                    bioHarnessConnectThread2_1.stop();
-                    connectHandler.removeCallbacks(bioHarnessConnectThread2_1);
-                }
+            if (bioHarnessConnectThread != null) {
+                bioHarnessConnectThread.stop();
+                connectHandler.removeCallbacks(bioHarnessConnectThread);
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);

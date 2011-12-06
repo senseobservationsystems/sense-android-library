@@ -4,5 +4,5 @@
     package="nl.sense_os.service" >
 
     <!-- <uses-sdk -->
-    <uses-sdk android:minSdkVersion="4"/>
+    <uses-sdk android:minSdkVersion="7"/>
 </manifest>

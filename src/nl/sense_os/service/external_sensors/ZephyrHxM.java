@@ -3,6 +3,18 @@
  *************************************************************************************************/
 package nl.sense_os.service.external_sensors;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Vector;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.External;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,29 +26,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.util.Log;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.External;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-
-import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
-import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
-import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
-import java.util.Vector;
 
 public class ZephyrHxM {
 
@@ -145,7 +137,7 @@ public class ZephyrHxM {
                     return false;
                 // received general data
                 if (buffer[0] == 0x02 && buffer[1] == 0x26 && buffer[2] == 55) {
-                	Log.d(TAG, "Found start of message");
+                    Log.d(TAG, "Found start of message");
                     // send heart rate
                     if (prefs.getBoolean(External.ZephyrHxM.HEART_RATE, true)) {
                         int heartRate = Byte.valueOf(buffer[12]).intValue();
@@ -197,8 +189,8 @@ public class ZephyrHxM {
                     }
                     // send strides count
                     if (prefs.getBoolean(External.ZephyrHxM.STRIDES, true)) {
-                    	int strides = buffer[54];
-                    	strides = strides < 0 ? strides+256:strides;                        
+                        int strides = buffer[54];
+                        strides = strides < 0 ? strides + 256 : strides;
                         // Short strides = (short)buffer[54];
 
                         // Log.v(TAG, "Battery charge:" + battery.intValue());
@@ -270,22 +262,10 @@ public class ZephyrHxM {
 
         public UpdateThread() {
 
-            if (btSocket1_6 == null) {
-                if (mmInStream == null || mmOutStream == null) {
-                    try {
-                        mmInStream = btSocket2_1.getInputStream();
-                        mmOutStream = btSocket2_1.getOutputStream();
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error in update thread constructor:" + e.getMessage());
-                    }
-                }
-            } else {
+            if (mmInStream == null || mmOutStream == null) {
                 try {
-
-                    if (mmInStream == null || mmOutStream == null) {
-                        mmInStream = btSocket1_6.getInputStream();
-                        mmOutStream = btSocket1_6.getOutputStream();
-                    }
+                    mmInStream = btSocket.getInputStream();
+                    mmOutStream = btSocket.getOutputStream();
                 } catch (Exception e) {
                     Log.e(TAG, "Error in update thread constructor:" + e.getMessage());
                 }
@@ -308,17 +288,17 @@ public class ZephyrHxM {
                         int bytes; // bytes returned from read()
                         bytes = mmInStream.read(buffer);
                         if (bytes > 0) {
-                           // Log.d(TAG, "Read " + bytes + " bytes from Bluetooth input stream");
-                            
-                            // copy the buffer                           
+                            // Log.d(TAG, "Read " + bytes + " bytes from Bluetooth input stream");
+
+                            // copy the buffer
                             byte[] newBuffer = new byte[bytes];
                             for (int i = 0; i < bytes; i++) {
-//                            	int byteNr = buffer[i];
-//                            	byteNr = byteNr < 0 ? byteNr+256:byteNr;
-//                            	Log.d(TAG, ""+ byteNr);	
+                                // int byteNr = buffer[i];
+                                // byteNr = byteNr < 0 ? byteNr+256:byteNr;
+                                // Log.d(TAG, ""+ byteNr);
                                 newBuffer[i] = buffer[i];
-                            }                            
-                                                       
+                            }
+
                             done = processZHxMMessage.processMessage(newBuffer, !firstRun);
                             firstRun = false;
                         } else {
@@ -327,24 +307,15 @@ public class ZephyrHxM {
                         buffer = null;
                     }
 
-                    if (btSocket1_6 == null)
-                        updateHandler
-                                .postDelayed(updateThread = new UpdateThread(), updateInterval);
-                    else
-                        updateHandler
-                                .postDelayed(updateThread = new UpdateThread(), updateInterval);
+                    updateHandler.postDelayed(updateThread = new UpdateThread(), updateInterval);
 
                 } catch (Exception e) {
                     Log.e(TAG, "Error in receiving HxM data: ", e);
 
                     // re-connect
                     processZHxMMessage = null;
-                    if (btSocket1_6 == null)
-                        connectHandler.post(hxmConnectThread2_1 = new HxMConnectThread2_1());
-                    else
-                        connectHandler.post(hxmConnectThread1_6 = new HxMConnectThread1_6());
-                    btSocket2_1 = null;
-                    btSocket1_6 = null;
+                    connectHandler.post(hxmConnectThread = new HxMConnectThread());
+                    btSocket = null;
                 }
             } else {
                 Log.d(TAG, "HxM not enabled. Cancelling update thread");
@@ -357,13 +328,9 @@ public class ZephyrHxM {
             try {
                 Log.i(TAG, "Stopping the HxM service");
                 processZHxMMessage = null;
-                if (btSocket1_6 == null) {
-                    btSocket2_1.close();
-                    btSocket2_1 = null;
-                } else {
-                    btSocket1_6.closeSocket();
-                    btSocket1_6 = null;
-                }
+
+                btSocket.close();
+                btSocket = null;
 
             } catch (Exception e) {
                 Log.e(TAG, "Error in stopping the servicve:" + e.getMessage());
@@ -372,155 +339,9 @@ public class ZephyrHxM {
     }
 
     /*
-     * Scan thread 1.6
+     * Scan thread
      */
-    private class HxMConnectThread1_6 implements Runnable {
-
-        @SuppressWarnings("unused")
-        private boolean bbActiveFromTheStart = false; // TODO use this
-
-        private class BluetoothDeviceListener implements LocalBluetoothDeviceListener {
-
-            @Override
-            public void bluetoothDisabled() {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void bluetoothEnabled() {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void deviceFound(String arg0) {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void scanCompleted(ArrayList<String> devices) {
-                boolean foundDevice = false;
-                if (!hxmEnabled) {
-                    stop();
-                    return;
-                }
-                // return immediately if the BT device is closed (i.e. when the service is suddenly
-                // stopped)
-                if (null == btDevice) {
-                    return;
-                }
-
-                try {
-                    if (devices.size() != 0) {
-                        // find a paired HxM
-
-                        for (int x = 0; x < devices.size(); ++x) {
-                            RemoteBluetoothDevice rbtDevice = btDevice
-                                    .getRemoteBluetoothDevice(devices.get(x));
-                            if (rbtDevice.isPaired() && rbtDevice.getName().startsWith("HXM")
-                                    && rbtDevice.getAddress().startsWith("00:07:80")) {
-                                btSocket1_6 = rbtDevice.openSocket(1);
-                                processZHxMMessage = new ProcessZephyrHxMMessage(btSocket1_6
-                                        .getRemoteBluetoothDevice().getName());
-                                updateHandler.post(updateThread = new UpdateThread());
-                                foundDevice = true;
-                                break;
-                            }
-                        }
-                        // connect to a unpaired device
-                        // if(!foundDevice)
-                        // {
-                        // Log.d(TAG, "No paired device found, searching for available device...");
-                        //
-                        // for (int x=0 ;x < devices.size();++x)
-                        // {
-                        // RemoteBluetoothDevice rbtDevice =
-                        // btDevice.getRemoteBluetoothDevice(devices.get(x));
-                        // if(rbtDevice.getName().startsWith("BH ZBH") &&
-                        // rbtDevice.getAddress().startsWith("00:07:80"))
-                        // {
-                        // Log.d(TAG, "found device, pairing...");
-                        // rbtDevice.setPin("1234");
-                        // rbtDevice.pair();
-                        // it.gerdavax.android.bluetooth.BluetoothSocket btSocket =
-                        // rbtDevice.openSocket(1);
-                        // updateHandler.post(updateThread = new UpdateThread(btSocket));
-                        // foundDevice = true;
-                        // break;
-                        // }
-                        // }
-                        //
-                        // }
-
-                    }
-                } catch (Exception e) {
-                    connectionErrorCount++;
-                    if (connectionErrorCount > 30) // set to 5 minutes => 30
-                    {
-                        sendNotification("Error connecting to Zephyr HxM module, please enable the device.");
-                        connectionErrorCount = 0;
-                    }
-                    Log.e(TAG, "Error connecting to HxM:" + e.getMessage());
-                }
-                // wait 10 seconds for another scan
-                if (!foundDevice)
-                    connectHandler.postDelayed(hxmConnectThread1_6 = new HxMConnectThread1_6(),
-                            10000);
-            }
-
-            @Override
-            public void scanStarted() {
-                // Auto-generated method stub
-            }
-        }
-
-        private LocalBluetoothDevice btDevice;
-        private BluetoothDeviceListener btListener;
-
-        public HxMConnectThread1_6() {
-            // send address
-            try {
-                streamEnabled = false;
-                btDevice = LocalBluetoothDevice.initLocalDevice(context);
-
-                btListener = new BluetoothDeviceListener();
-                btDevice.setListener(btListener);
-
-                bbActiveFromTheStart = btDevice.isEnabled();
-                if (!btDevice.isEnabled())
-                    btDevice.setEnabled(true);
-
-            } catch (Exception e) {
-                Log.e(TAG, "Exception initializing HxM:" + e.getMessage());
-            }
-        }
-
-        @Override
-        public void run() {
-            try {
-                if (btDevice != null)
-                    btDevice.scan();
-
-            } catch (Exception e) {
-                Log.e(TAG, "Exception running HxM:" + e.getMessage());
-            }
-        }
-
-        public void stop() {
-            try {
-                btDevice.stopScanning();
-                // if(!bbActiveFromTheStart)
-                // btDevice.setEnabled(false);
-                btDevice.close();
-            } catch (Exception e) {
-                Log.e(TAG, "Exception in stopping HxM:" + e.getMessage());
-            }
-        }
-    }
-
-    /*
-     * Scan thread 2.1
-     */
-    private class HxMConnectThread2_1 implements Runnable {
+    private class HxMConnectThread implements Runnable {
 
         private BroadcastReceiver btReceiver = new BroadcastReceiver() {
 
@@ -540,14 +361,14 @@ public class ZephyrHxM {
                             BluetoothAdapter.STATE_OFF);
                     if (state == BluetoothAdapter.STATE_ON) {
                         stop();
-                        connectHandler.post(hxmConnectThread2_1 = new HxMConnectThread2_1());
+                        connectHandler.post(hxmConnectThread = new HxMConnectThread());
                         return;
                     }
                 }
             }
         };
 
-        public HxMConnectThread2_1() {
+        public HxMConnectThread() {
             // send address
             try {
                 btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -584,11 +405,12 @@ public class ZephyrHxM {
                             Log.v(TAG, "Connecting to device: " + device.getName());
                             // Get a BluetoothSocket to connect with the BluetoothDevice
                             try {
-                            	
-                                //btSocket2_1 = device.createInsecureRfcommSocketToServiceRecord(serial_uid);
-                            	btSocket2_1 = device.createRfcommSocketToServiceRecord(serial_uid);
-                                btSocket2_1.connect();
-                                processZHxMMessage = new ProcessZephyrHxMMessage(btSocket2_1
+
+                                // btSocket2_1 =
+                                // device.createInsecureRfcommSocketToServiceRecord(serial_uid);
+                                btSocket = device.createRfcommSocketToServiceRecord(serial_uid);
+                                btSocket.connect();
+                                processZHxMMessage = new ProcessZephyrHxMMessage(btSocket
                                         .getRemoteDevice().getName());
                                 updateHandler.post(updateThread = new UpdateThread());
                                 foundDevice = true;
@@ -608,7 +430,7 @@ public class ZephyrHxM {
 
                 if (!foundDevice) {
                     Log.v(TAG, "No paired HxM device found. Sleeping for 10 seconds");
-                    connectHandler.postDelayed(hxmConnectThread2_1 = new HxMConnectThread2_1(),
+                    connectHandler.postDelayed(hxmConnectThread = new HxMConnectThread(),
                             10000);
                 }
 
@@ -634,7 +456,7 @@ public class ZephyrHxM {
             try {
                 Log.i(TAG, "Stopping the HxM service");
                 updateHandler.removeCallbacks(updateThread);
-                btSocket2_1.close();
+                btSocket.close();
 
                 context.unregisterReceiver(btReceiver);
 
@@ -670,19 +492,17 @@ public class ZephyrHxM {
     private boolean hxmEnabled = false;
     private UUID serial_uid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
     HandlerThread connectHT = null;
-    HandlerThread updateHT = null;    
-    private Handler connectHandler = null;//new Handler(Looper.getMainLooper());
-    private Handler updateHandler = null; //new Handler(Looper.getMainLooper());
+    HandlerThread updateHT = null;
+    private Handler connectHandler = null;// new Handler(Looper.getMainLooper());
+    private Handler updateHandler = null; // new Handler(Looper.getMainLooper());
     private int updateInterval = 0;
     private UpdateThread updateThread = null;
     @SuppressWarnings("unused")
     private long lastSampleTime = 0;
-    private HxMConnectThread2_1 hxmConnectThread2_1 = null;
-    private HxMConnectThread1_6 hxmConnectThread1_6 = null;
+    private HxMConnectThread hxmConnectThread = null;
     @SuppressWarnings("unused")
     private boolean streamEnabled = false; // TODO use this
-    private BluetoothSocket btSocket2_1 = null;
-    private it.gerdavax.android.bluetooth.BluetoothSocket btSocket1_6 = null;
+    private BluetoothSocket btSocket = null;
     private ProcessZephyrHxMMessage processZHxMMessage = null;
     @SuppressWarnings("unused")
     private boolean notifyOnNoConnection = true;
@@ -710,49 +530,35 @@ public class ZephyrHxM {
         hxmEnabled = true;
         // create the handler threads
         connectHT = new HandlerThread("Hxm Connect Handler Thread");
-        updateHT = new HandlerThread("Hxm Update Handler Thread"); 
+        updateHT = new HandlerThread("Hxm Update Handler Thread");
         connectHT.start();
         updateHT.start();
-        
+
         // get the looper
         connectHandler = new Handler(connectHT.getLooper());
         updateHandler = new Handler(updateHT.getLooper());
-        
+
         Thread t = new Thread() {
 
             @Override
             public void run() {
-                // Check if the phone version, if it is lower than, 2.1 use the bluetooth lib
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
-                    Log.v(TAG, "Use old Bluetooth libary");
-                    connectHandler.post(hxmConnectThread1_6 = new HxMConnectThread1_6());
-                } else {
-                    Log.v(TAG, "Use regular Bluetooth API");
-                    connectHandler.post(hxmConnectThread2_1 = new HxMConnectThread2_1());
-                }
+                connectHandler.post(hxmConnectThread = new HxMConnectThread());
             }
         };
         this.connectHandler.post(t);
     }
 
     public void stopHxM() {
-        Log.v(TAG, "Stop HxM...");        
-        
+        Log.v(TAG, "Stop HxM...");
+
         hxmEnabled = false;
-        try {        		
-	            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
-	                if (hxmConnectThread1_6 != null) {
-	                    hxmConnectThread1_6.stop();
-	                    connectHandler.removeCallbacks(hxmConnectThread1_6);
-	                }
-	            } else {
-	                if (hxmConnectThread2_1 != null) {
-	                    hxmConnectThread2_1.stop();
-	                    connectHandler.removeCallbacks(hxmConnectThread2_1);
-	                }
-	            }
-	            connectHT.getLooper().quit();
-        		updateHT.getLooper().quit(); 
+        try {
+            if (hxmConnectThread != null) {
+                hxmConnectThread.stop();
+                connectHandler.removeCallbacks(hxmConnectThread);
+            }
+            connectHT.getLooper().quit();
+            updateHT.getLooper().quit();
         } catch (Exception e) {
             Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
         }
