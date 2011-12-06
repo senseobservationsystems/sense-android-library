@@ -3,15 +3,9 @@
  *************************************************************************************************/
 package nl.sense_os.service.deviceprox;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -21,140 +15,21 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import it.gerdavax.android.bluetooth.BluetoothException;
-import it.gerdavax.android.bluetooth.LocalBluetoothDevice;
-import it.gerdavax.android.bluetooth.LocalBluetoothDeviceListener;
-import it.gerdavax.android.bluetooth.RemoteBluetoothDevice;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 public class BluetoothDeviceProximity {
-    /*
-     * Scan thread 1.6
-     */
-    private class ScanThread1_6 implements Runnable {
-
-        private class BluetoothDeviceListener implements LocalBluetoothDeviceListener {
-
-            @Override
-            public void bluetoothDisabled() {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void bluetoothEnabled() {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void deviceFound(String arg0) {
-                // Auto-generated method stub
-            }
-
-            @Override
-            public void scanCompleted(ArrayList<String> devices) {
-                if (!scanEnabled) {
-                    return;
-                }
-
-                // return immediately if the BT device is closed (e.g. when the service is suddenly
-                // stopped)
-                if (null == btDevice) {
-                    return;
-                }
-
-                try {
-                    // Log.v(TAG, "Bluetooth devices found: " + devices.size());
-
-                    // array of found devices
-                    for (String address : devices) {
-                        RemoteBluetoothDevice rbtDevice = btDevice
-                                .getRemoteBluetoothDevice(address);
-
-                        JSONObject deviceJson = new JSONObject();
-                        deviceJson.put("address", address);
-                        deviceJson.put("name", rbtDevice.getName());
-                        deviceJson.put("rssi", rbtDevice.getRSSI());
-
-                        // pass device data to the MsgHandler
-                        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-                        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_DISCOVERY);
-                        i.putExtra(DataPoint.VALUE, deviceJson.toString());
-                        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-                        i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
-                        BluetoothDeviceProximity.this.context.startService(i);
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "JSONException preparing Bluetooth sensing data:", e);
-                } catch (BluetoothException e) {
-                    Log.e(TAG, "BluetoothException preparing Bluetooth sensing data:", e);
-                } finally {
-                    stop();
-                    scanHandler.postDelayed(scanThread1_6 = new ScanThread1_6(), scanInterval);
-                }
-            }
-
-            @Override
-            public void scanStarted() {
-                // Auto-generated method stub
-            }
-        }
-
-        private boolean bbActiveFromTheStart = false;
-        private LocalBluetoothDevice btDevice;
-        private BluetoothDeviceListener btListener;
-
-        public ScanThread1_6() {
-            // send address
-            try {
-                btDevice = LocalBluetoothDevice.initLocalDevice(context);
-
-                btListener = new BluetoothDeviceListener();
-                btDevice.setListener(btListener);
-
-                bbActiveFromTheStart = btDevice.isEnabled();
-                if (!btDevice.isEnabled()) {
-                    btDevice.setEnabled(true);
-                }
-                if (btDevice.getScanMode() != LocalBluetoothDevice.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-                    btDevice.setScanMode(LocalBluetoothDevice.SCAN_MODE_CONNECTABLE_DISCOVERABLE);
-                }
-
-            } catch (Exception e) {
-                Log.e(TAG, "Exception initializing Bluetooth scan thread:", e);
-            }
-        }
-
-        @Override
-        public void run() {
-            try {
-                if (btDevice != null)
-                    btDevice.scan();
-            } catch (Exception e) {
-                Log.e(TAG, "Exception running Bluetooth scan thread:", e);
-            }
-        }
-
-        public void stop() {
-            try {
-                btDevice.stopScanning();
-                if (!bbActiveFromTheStart) {
-                    btDevice.setEnabled(false);
-                }
-                btDevice.close();
-            } catch (Exception e) {
-                Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
-            }
-        }
-    }
 
     /*
-     * Scan thread 2.1
+     * Scan thread
      */
-    private class ScanThread2_1 implements Runnable {
+    private class ScanThread implements Runnable {
 
         // private boolean btActiveFromTheStart = false; // removed
         private BroadcastReceiver btReceiver = new BroadcastReceiver() {
@@ -172,7 +47,7 @@ public class BluetoothDeviceProximity {
                             BluetoothAdapter.STATE_OFF);
                     if (state == BluetoothAdapter.STATE_ON) {
                         stop();
-                        scanHandler.post(scanThread2_1 = new ScanThread2_1());
+                        scanHandler.post(scanThread = new ScanThread());
                         return;
                     }
                 }
@@ -213,14 +88,14 @@ public class BluetoothDeviceProximity {
                         Log.e(TAG, "JSONException preparing bluetooth scan data");
                     } finally {
                         stop();
-                        scanHandler.postDelayed(scanThread2_1 = new ScanThread2_1(), scanInterval);
+                        scanHandler.postDelayed(scanThread = new ScanThread(), scanInterval);
                     }
                 }
             }
         };
         private Vector<Map<android.bluetooth.BluetoothDevice, Short>> deviceArray;
 
-        public ScanThread2_1() {
+        public ScanThread() {
             // send address
             try {
                 btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -285,8 +160,7 @@ public class BluetoothDeviceProximity {
     private boolean scanEnabled = false;
     private final Handler scanHandler = new Handler(Looper.getMainLooper());
     private int scanInterval = 0;
-    private ScanThread1_6 scanThread1_6 = null;
-    private ScanThread2_1 scanThread2_1 = null;
+    private ScanThread scanThread = null;
 
     public BluetoothDeviceProximity(Context context) {
         this.context = context;
@@ -308,30 +182,19 @@ public class BluetoothDeviceProximity {
 
             @Override
             public void run() {
-                // Check if the phone version, if it is lower than, 2.1 use the bluetooth lib
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
-                    scanHandler.post(scanThread1_6 = new ScanThread1_6());
-                } else {
-                    scanHandler.post(scanThread2_1 = new ScanThread2_1());
-                }
+                scanHandler.post(scanThread = new ScanThread());
             }
         };
-        this.scanHandler.post(t);
+        scanHandler.post(t);
     }
 
     public void stopEnvironmentScanning() {
         scanEnabled = false;
         try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
-                if (scanThread1_6 != null) {
-                    scanThread1_6.stop();
-                    scanHandler.removeCallbacks(scanThread1_6);
-                } else if (scanThread2_1 != null) {
-                    scanThread2_1.stop();
-                    scanHandler.removeCallbacks(scanThread2_1);
-                }
+            if (scanThread != null) {
+                scanThread.stop();
+                scanHandler.removeCallbacks(scanThread);
             }
-
         } catch (Exception e) {
             Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
         }

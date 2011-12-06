@@ -8,15 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -87,6 +90,8 @@ public class LocalStorage {
     private static final int PERSISTED_VALUES_URI = 2;
     private static final int REMOTE_VALUES_URI = 3;
     private static final int MAX_VOLATILE_VALUES = 100;
+    public static final int QUERY_RESULTS_LIMIT = 10000;
+    public static final int QUERY_RESULTS_LIMIT_EPI_MODE = 60;
 
     private static long count = 0;
 
@@ -184,8 +189,8 @@ public class LocalStorage {
 
         // check for buffer overflows
         if (index >= MAX_VOLATILE_VALUES) {
-            // Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '" +
-            // key + "'. Send to persistent storage...");
+           //  Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '" +
+           //  key + "'. Send to persistent storage...");
 
             // find out how many values have to be put in the persistant storage
             int persistFrom = -1;
@@ -244,10 +249,10 @@ public class LocalStorage {
 
             // do not store data points that are more than 24 hours old
             String where = DataPoint.TIMESTAMP + "<"
-                    + (System.currentTimeMillis() - 1000 * 60 * 60 * 24);
+                    + (System.currentTimeMillis() - 1000l * 60 * 60 * 24);
             int deleted = db.delete(TABLE_PERSISTENT, where, null);
             if (deleted > 0) {
-                // Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
+               //  Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
             }
 
             // insert new points to persistent storage
@@ -306,8 +311,16 @@ public class LocalStorage {
     private Cursor queryPersistent(Uri uri, String[] projection, String where,
             String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+        
+        SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        String limitStr = ""+QUERY_RESULTS_LIMIT;
+        
+        if(pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+        	limitStr = ""+QUERY_RESULTS_LIMIT_EPI_MODE;        
+              
         Cursor persistentResult = db.query(TABLE_PERSISTENT, projection, where, selectionArgs,
-                null, null, sortOrder);
+                null, null, sortOrder, limitStr);
+      
         return persistentResult;
     }
 
