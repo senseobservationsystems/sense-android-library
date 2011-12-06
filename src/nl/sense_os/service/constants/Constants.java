@@ -1,18 +1,19 @@
-package nl.sense_os.service;
+package nl.sense_os.service.constants;
 
-import nl.sense_os.service.SensePrefs.Auth;
-import nl.sense_os.service.SensePrefs.Main;
-import nl.sense_os.service.SensePrefs.Main.Advanced;
-import nl.sense_os.service.SensePrefs.Main.Ambience;
-import nl.sense_os.service.SensePrefs.Main.DevProx;
-import nl.sense_os.service.SensePrefs.Main.External.MyGlucoHealth;
-import nl.sense_os.service.SensePrefs.Main.External.TanitaScale;
-import nl.sense_os.service.SensePrefs.Main.External.ZephyrBioHarness;
-import nl.sense_os.service.SensePrefs.Main.External.ZephyrHxM;
-import nl.sense_os.service.SensePrefs.Main.Location;
-import nl.sense_os.service.SensePrefs.Main.Motion;
-import nl.sense_os.service.SensePrefs.Main.Quiz;
-import nl.sense_os.service.SensePrefs.Status;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Status;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
+import nl.sense_os.service.constants.SensePrefs.Main.Location;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensePrefs.Main.Quiz;
+import nl.sense_os.service.constants.SensePrefs.Main.External.MyGlucoHealth;
+import nl.sense_os.service.constants.SensePrefs.Main.External.TanitaScale;
+import nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrBioHarness;
+import nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrHxM;
+
 import android.content.Context;
 
 /**

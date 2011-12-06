@@ -1,4 +1,4 @@
-package nl.sense_os.service;
+package nl.sense_os.service.constants;
 
 public class SenseDataTypes {
 

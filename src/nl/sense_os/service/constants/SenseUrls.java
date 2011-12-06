@@ -1,8 +1,8 @@
-package nl.sense_os.service;
+package nl.sense_os.service.constants;
 
 public class SenseUrls {
 
-    public static final String BASE = "http://api.sense-os.nl/";
+    public static final String BASE = "https://api.sense-os.nl/";
     public static final String DEV_BASE = "http://api.dev.sense-os.nl/";
     public static final String VERSION = "http://data.sense-os.nl/senseapp/version.php";
 
