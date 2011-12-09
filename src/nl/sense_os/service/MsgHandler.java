@@ -71,7 +71,9 @@ public class MsgHandler extends Service {
         public AbstractDataTransmitHandler(Context context, Looper looper) {
             super(looper);
             this.context = context;
-            url = SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
+            final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+            boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+            url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/") : SenseUrls.SENSOR_DATA.replace("/<id>/", "/");            
         }
 
         /**
