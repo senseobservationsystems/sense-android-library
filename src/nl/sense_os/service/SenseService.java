@@ -3,10 +3,27 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URLEncoder;
-import java.util.HashMap;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.os.RemoteException;
+import android.util.Log;
+import android.widget.Toast;
 
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
@@ -33,27 +50,10 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URLEncoder;
+import java.util.HashMap;
 
 public class SenseService extends Service {
 
@@ -633,16 +633,24 @@ public class SenseService extends Service {
      * Method is synchronized to make sure {@link SenseApi#getRegisteredSensors(Context)} is only
      * called by one thread at a time.
      */
-    private synchronized void onLogIn() {
+    private void onLogIn() {
         Log.i(TAG, "Logged in!");
 
-        // Retrieve the online registered sensor list
-        SensorCreator.checkSensorsAtCommonSense(this);
+        HandlerThread ht = new HandlerThread("on login");
+        ht.start();
+        new Handler(ht.getLooper()) {
+            public void handleMessage(Message msg) {
 
-        // start database leeglepelaar
-        startTransmitAlarms();
+                // Retrieve the online registered sensor list
+                SensorCreator.checkSensorsAtCommonSense(SenseService.this);
 
-        checkVersion();
+                // start database leeglepelaar
+                startTransmitAlarms();
+
+                checkVersion();
+            };
+
+        }.sendEmptyMessage(0);
     }
 
     /**

@@ -3,31 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map.Entry;
-
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,6 +22,31 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map.Entry;
 
 public class MsgHandler extends Service {
 
@@ -71,9 +71,11 @@ public class MsgHandler extends Service {
         public AbstractDataTransmitHandler(Context context, Looper looper) {
             super(looper);
             this.context = context;
-            final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+            final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+                    Context.MODE_PRIVATE);
             boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
-            url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/") : SenseUrls.SENSOR_DATA.replace("/<id>/", "/");            
+            url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/")
+                    : SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
         }
 
         /**
@@ -100,7 +102,7 @@ public class MsgHandler extends Service {
         public void handleMessage(Message msg) {
             try {
                 cookie = msg.getData().getString("cookie");
-                cursor = getUnsentData();                
+                cursor = getUnsentData();
                 if ((null != cursor) && cursor.moveToFirst()) {
                     transmit();
                 } else {
@@ -241,8 +243,16 @@ public class MsgHandler extends Service {
                         JSONArray data = null;
                         if (sensorEntry == null) {
                             sensorEntry = new JSONObject();
-                            sensorEntry.put("sensor_id", SenseApi.getSensorId(context, sensorName,
-                                    displayName, value, dataType, sensorDesc));
+                            String id = SenseApi.getSensorId(context, sensorName, displayName,
+                                    value, dataType, sensorDesc);
+                            if (null == id) {
+                                // skip sensor data that does not have a sensor ID yet
+                                Log.w(TAG, "cannot find sensor ID for " + sensorName + " ("
+                                        + sensorDesc + ")");
+                                cursor.moveToNext();
+                                continue;
+                            }
+                            sensorEntry.put("sensor_id", id);
                             data = new JSONArray();
                         } else {
                             data = sensorEntry.getJSONArray("data");
@@ -378,7 +388,7 @@ public class MsgHandler extends Service {
                             where, null);
                     if (deleted == dataPoints.length()) {
                         // Log.v(TAG, "Deleted all " + deleted + " '" + sensorName +
-                         //"' points from the persistant storage");
+                        // "' points from the persistant storage");
                     } else {
                         Log.w(TAG, "Wrong number of '" + sensorName
                                 + "' data points deleted after transmission! " + deleted + " vs. "
@@ -386,20 +396,21 @@ public class MsgHandler extends Service {
                     }
                 } catch (IllegalArgumentException e) {
                     Log.e(TAG, "Error deleting points from Local Storage!", e);
-                }   
+                }
             }
-            
+
             // check if there is more data left
-            SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
             int maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT;
-            
-            if(pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
-            	maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
-            
-            // there is probably more data, try to send more           
-            if(totalDatapoints == maxDataPoints)
-            {
-            	//Log.d(TAG, "There is more data! Sending another batch from the persistant storage.");
+
+            if (pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+                maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
+
+            // there is probably more data, try to send more
+            if (totalDatapoints == maxDataPoints) {
+                // Log.d(TAG,
+                // "There is more data! Sending another batch from the persistant storage.");
 
                 // prepare the data to give to the transmitters
                 Bundle msgData = new Bundle();

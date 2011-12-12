@@ -1,33 +1,36 @@
 package nl.sense_os.service;
 
-import java.util.HashMap;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.os.Build;
+import android.util.Log;
 
 import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.os.Build;
-import android.util.Log;
+import java.util.HashMap;
 
 /**
  * Class that ensures that all the phone's sensors are known at CommonSense.
  */
 public class SensorCreator {
 
-    private static final String TAG = "Sensor Registrator";
+    private static final String TAG = "Sensor Creator";
 
-    private static void checkAmbienceSensors(Context context, JSONArray registered) {
+    private static void checkAmbienceSensors(Context context) {
 
         // preallocate objects
         SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
-        String name, displayName, description, dataType, sensorValue;
-        HashMap<String, Object> jsonFields = new HashMap<String, Object>();
+        String name, displayName, description, dataType, value;
+        HashMap<String, Object> dataFields = new HashMap<String, Object>();
 
         // match light sensor
         sensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -36,14 +39,12 @@ public class SensorCreator {
             displayName = SensorNames.LIGHT;
             description = sensor.getName();
             dataType = SenseDataTypes.JSON;
-            jsonFields.clear();
-            jsonFields.put("lux", 0);
-            sensorValue = new JSONObject(jsonFields).toString();
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
-            }
+            dataFields.clear();
+            dataFields.put("lux", 0);
+            value = new JSONObject(dataFields).toString();
+            checkSensor(context, name, displayName, dataType, description, value);
+        } else {
+            Log.w(TAG, "No light sensor present!");
         }
 
         // match noise sensor
@@ -51,11 +52,8 @@ public class SensorCreator {
         displayName = "noise";
         description = SensorNames.NOISE;
         dataType = SenseDataTypes.FLOAT;
-        sensorValue = "0.0";
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        value = "0.0";
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match pressure sensor
         sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
@@ -64,88 +62,79 @@ public class SensorCreator {
             displayName = "";
             description = sensor.getName();
             dataType = SenseDataTypes.JSON;
-            jsonFields.clear();
-            jsonFields.put("newton", 0);
-            sensorValue = new JSONObject(jsonFields).toString();
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
-            }
+            dataFields.clear();
+            dataFields.put("newton", 0);
+            value = new JSONObject(dataFields).toString();
+            checkSensor(context, name, displayName, dataType, description, value);
+        } else {
+            Log.w(TAG, "No pressure sensor present!");
         }
     }
 
-    private static void checkDeviceScanSensors(Context context, JSONArray registered) {
+    private static void checkDeviceScanSensors(Context context) {
 
         // preallocate objects
-        String name, displayName, description, dataType, sensorValue;
-        HashMap<String, Object> jsonFields = new HashMap<String, Object>();
+        String name, displayName, description, dataType, value;
+        HashMap<String, Object> dataFields = new HashMap<String, Object>();
 
         // match Bluetooth scan
         name = SensorNames.BLUETOOTH_DISCOVERY;
         displayName = "bluetooth scan";
         description = SensorNames.BLUETOOTH_DISCOVERY;
         dataType = SenseDataTypes.JSON;
-        jsonFields.clear();
-        jsonFields.put("name", "string");
-        jsonFields.put("address", "string");
-        jsonFields.put("rssi", 0);
-        sensorValue = new JSONObject(jsonFields).toString();
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        dataFields.clear();
+        dataFields.put("name", "string");
+        dataFields.put("address", "string");
+        dataFields.put("rssi", 0);
+        value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match Wi-Fi scan
         name = SensorNames.WIFI_SCAN;
         displayName = "wi-fi scan";
         description = SensorNames.WIFI_SCAN;
         dataType = SenseDataTypes.JSON;
-        jsonFields.clear();
-        jsonFields.put("ssid", "string");
-        jsonFields.put("bssid", "string");
-        jsonFields.put("frequency", 0);
-        jsonFields.put("rssi", 0);
-        jsonFields.put("capabilities", "string");
-        sensorValue = new JSONObject(jsonFields).toString();
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        dataFields.clear();
+        dataFields.put("ssid", "string");
+        dataFields.put("bssid", "string");
+        dataFields.put("frequency", 0);
+        dataFields.put("rssi", 0);
+        dataFields.put("capabilities", "string");
+        value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
     }
 
-    private static void checkLocationSensors(Context context, JSONArray registered) {
+    private static void checkLocationSensors(Context context) {
+
         // match location sensor
         String name = SensorNames.LOCATION;
         String displayName = SensorNames.LOCATION;
         String description = SensorNames.LOCATION;
         String dataType = SenseDataTypes.JSON;
-        HashMap<String, Object> jsonFields = new HashMap<String, Object>();
-        jsonFields.put("longitude", 1.0);
-        jsonFields.put("latitude", 1.0);
-        jsonFields.put("altitude", 1.0);
-        jsonFields.put("accuracy", 1.0);
-        jsonFields.put("speed", 1.0);
-        jsonFields.put("bearing", 1.0f);
-        jsonFields.put("provider", "string");
-        String sensorValue = new JSONObject(jsonFields).toString();
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        HashMap<String, Object> dataFields = new HashMap<String, Object>();
+        dataFields.put("longitude", 1.0);
+        dataFields.put("latitude", 1.0);
+        dataFields.put("altitude", 1.0);
+        dataFields.put("accuracy", 1.0);
+        dataFields.put("speed", 1.0);
+        dataFields.put("bearing", 1.0f);
+        dataFields.put("provider", "string");
+        String value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
     }
 
-    private static void checkMotionSensors(Context context, JSONArray registered) {
+    private static void checkMotionSensors(Context context) {
 
         // preallocate objects
         SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
-        String name, displayName, description, dataType, sensorValue;
+        String name, displayName, description, dataType, value;
         HashMap<String, Object> jsonFields = new HashMap<String, Object>();
 
-        // match accelerometer
         sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (null != sensor) {
+
+            // match accelerometer
             name = SensorNames.ACCELEROMETER;
             displayName = "acceleration";
             description = sensor.getName();
@@ -154,63 +143,61 @@ public class SensorCreator {
             jsonFields.put("x-axis", 1.0);
             jsonFields.put("y-axis", 1.0);
             jsonFields.put("z-axis", 1.0);
-            sensorValue = new JSONObject(jsonFields).toString();
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
+            value = new JSONObject(jsonFields).toString();
+            checkSensor(context, name, displayName, dataType, description, value);
+
+            // match accelerometer (epi)
+            SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
+            if (mainPrefs.getBoolean(Main.Motion.EPIMODE, false)) {
+                name = SensorNames.ACCELEROMETER_EPI;
+                displayName = "acceleration (epi-mode)";
+                description = sensor.getName();
+                dataType = SenseDataTypes.JSON;
+                jsonFields.clear();
+                jsonFields.put("interval", 0);
+                jsonFields.put("data", new JSONArray());
+                value = new JSONObject(jsonFields).toString();
+                checkSensor(context, name, displayName, dataType, description, value);
             }
 
-            name = SensorNames.ACCELEROMETER_EPI;
-            displayName = "acceleration (epi-mode)";
-            description = sensor.getName();
-            dataType = SenseDataTypes.JSON;
-            jsonFields.clear();
-            jsonFields.put("interval", 0);
-            jsonFields.put("data", new JSONArray());
-            sensorValue = new JSONObject(jsonFields).toString();
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
+            // match motion energy
+            if (mainPrefs.getBoolean(Main.Motion.MOTION_ENERGY, false)) {
+                name = SensorNames.MOTION_ENERGY;
+                displayName = SensorNames.MOTION_ENERGY;
+                description = SensorNames.MOTION_ENERGY;
+                dataType = SenseDataTypes.FLOAT;
+                value = "1.0";
+                checkSensor(context, name, displayName, dataType, description, value);
             }
 
-            name = SensorNames.MOTION_ENERGY;
-            displayName = SensorNames.MOTION_ENERGY;
-            description = SensorNames.MOTION_ENERGY;
-            dataType = SenseDataTypes.FLOAT;
-            sensorValue = "1.0";
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
+            // match fall detector
+            if (mainPrefs.getBoolean(Main.Motion.FALL_DETECT, false)) {
+                name = SensorNames.FALL_DETECTOR;
+                displayName = "fall";
+                description = "human fall";
+                dataType = SenseDataTypes.BOOL;
+                value = "true";
+                checkSensor(context, name, displayName, dataType, description, value);
             }
 
-            name = SensorNames.FALL_DETECTOR;
-            displayName = "fall";
-            description = "human fall";
-            dataType = SenseDataTypes.BOOL;
-            sensorValue = "true";
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
+            // match fall detector
+            if (mainPrefs.getBoolean(Main.Motion.FALL_DETECT_DEMO, false)) {
+                name = SensorNames.FALL_DETECTOR;
+                displayName = "fall";
+                description = "demo fall";
+                dataType = SenseDataTypes.BOOL;
+                value = "true";
+                checkSensor(context, name, displayName, dataType, description, value);
             }
 
-            name = SensorNames.FALL_DETECTOR;
-            displayName = "fall";
-            description = "demo fall";
-            dataType = SenseDataTypes.BOOL;
-            sensorValue = "true";
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
-            }
+        } else {
+            Log.w(TAG, "No accelerometer present!");
         }
 
         // match linear acceleration sensor
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+
             sensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
             if (null != sensor) {
                 name = SensorNames.LIN_ACCELERATION;
@@ -221,12 +208,11 @@ public class SensorCreator {
                 jsonFields.put("x-axis", 1.0);
                 jsonFields.put("y-axis", 1.0);
                 jsonFields.put("z-axis", 1.0);
-                sensorValue = new JSONObject(jsonFields).toString();
-                if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                        description)) {
-                    SenseApi.registerSensor(context, name, displayName, description, dataType,
-                            sensorValue);
-                }
+                value = new JSONObject(jsonFields).toString();
+                checkSensor(context, name, displayName, dataType, description, value);
+
+            } else {
+                Log.w(TAG, "No linear acceleration sensor present!");
             }
         }
 
@@ -241,12 +227,11 @@ public class SensorCreator {
             jsonFields.put("azimuth", 1.0);
             jsonFields.put("pitch", 1.0);
             jsonFields.put("roll", 1.0);
-            sensorValue = new JSONObject(jsonFields).toString();
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
-            }
+            value = new JSONObject(jsonFields).toString();
+            checkSensor(context, name, displayName, dataType, description, value);
+
+        } else {
+            Log.w(TAG, "No orientation sensor present!");
         }
 
         // match gyroscope
@@ -257,52 +242,45 @@ public class SensorCreator {
             description = sensor.getName();
             dataType = SenseDataTypes.JSON;
             jsonFields.clear();
-            jsonFields.put("azimuth", 1.0);
-            jsonFields.put("pitch", 1.0);
-            jsonFields.put("roll", 1.0);
-            sensorValue = new JSONObject(jsonFields).toString();
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
-            }
+            jsonFields.put("azimuth rate", 1.0);
+            jsonFields.put("pitch rate", 1.0);
+            jsonFields.put("roll rate", 1.0);
+            value = new JSONObject(jsonFields).toString();
+            checkSensor(context, name, displayName, dataType, description, value);
+
+        } else {
+            Log.w(TAG, "No gyroscope present!");
         }
     }
 
-    private static void checkPhoneStateSensors(Context context, JSONArray registered) {
+    private static void checkPhoneStateSensors(Context context) {
 
         // preallocate objects
         SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
-        String name, displayName, description, dataType, sensorValue;
-        HashMap<String, Object> jsonFields = new HashMap<String, Object>();
+        String name, displayName, description, dataType, value;
+        HashMap<String, Object> dataFields = new HashMap<String, Object>();
 
         // match battery sensor
         name = SensorNames.BATTERY_SENSOR;
         displayName = "battery state";
         description = SensorNames.BATTERY_SENSOR;
         dataType = SenseDataTypes.JSON;
-        jsonFields.clear();
-        jsonFields.put("status", "string");
-        jsonFields.put("level", "string");
-        sensorValue = new JSONObject(jsonFields).toString();
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        dataFields.clear();
+        dataFields.put("status", "string");
+        dataFields.put("level", "string");
+        value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match screen activity
         name = SensorNames.SCREEN_ACTIVITY;
         displayName = SensorNames.SCREEN_ACTIVITY;
         description = SensorNames.SCREEN_ACTIVITY;
         dataType = SenseDataTypes.JSON;
-        jsonFields.clear();
-        jsonFields.put("screen", "string");
-        sensorValue = new JSONObject(jsonFields).toString();
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        dataFields.clear();
+        dataFields.put("screen", "string");
+        value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match proximity
         sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -311,14 +289,12 @@ public class SensorCreator {
             displayName = SensorNames.PROXIMITY;
             description = sensor.getName();
             dataType = SenseDataTypes.JSON;
-            jsonFields.clear();
-            jsonFields.put("distance", 1.0);
-            sensorValue = new JSONObject(jsonFields).toString();
-            if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                    description)) {
-                SenseApi.registerSensor(context, name, displayName, description, dataType,
-                        sensorValue);
-            }
+            dataFields.clear();
+            dataFields.put("distance", 1.0);
+            value = new JSONObject(dataFields).toString();
+            checkSensor(context, name, displayName, dataType, description, value);
+        } else {
+            Log.w(TAG, "No proximity sensor present!");
         }
 
         // match call state
@@ -326,82 +302,83 @@ public class SensorCreator {
         displayName = SensorNames.CALL_STATE;
         description = SensorNames.CALL_STATE;
         dataType = SenseDataTypes.JSON;
-        jsonFields.clear();
-        jsonFields.put("state", "string");
-        jsonFields.put("incomingNumber", "string");
-        sensorValue = new JSONObject(jsonFields).toString();
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        dataFields.clear();
+        dataFields.put("state", "string");
+        dataFields.put("incomingNumber", "string");
+        value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match connection type
         name = SensorNames.CONN_TYPE;
         displayName = "network type";
         description = SensorNames.CONN_TYPE;
         dataType = SenseDataTypes.STRING;
-        sensorValue = "string";
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        value = "string";
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match ip address
         name = SensorNames.IP_ADDRESS;
         displayName = SensorNames.IP_ADDRESS;
         description = SensorNames.IP_ADDRESS;
         dataType = SenseDataTypes.STRING;
-        sensorValue = "string";
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        value = "string";
+        checkSensor(context, name, displayName, dataType, description, value);
 
-        // match ip address
+        // match messages waiting sensor
         name = SensorNames.UNREAD_MSG;
         displayName = "message waiting";
         description = SensorNames.UNREAD_MSG;
         dataType = SenseDataTypes.BOOL;
-        sensorValue = "true";
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        value = "true";
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match data connection
         name = SensorNames.DATA_CONN;
         displayName = SensorNames.DATA_CONN;
         description = SensorNames.DATA_CONN;
         dataType = SenseDataTypes.STRING;
-        sensorValue = "string";
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        value = "string";
+        checkSensor(context, name, displayName, dataType, description, value);
 
-        // match data connection
+        // match servie state
         name = SensorNames.SERVICE_STATE;
         displayName = SensorNames.SERVICE_STATE;
         description = SensorNames.SERVICE_STATE;
-        dataType = SenseDataTypes.STRING;
-        sensorValue = "string";
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
-        }
+        dataType = SenseDataTypes.JSON;
+        dataFields.clear();
+        dataFields.put("state", "string");
+        dataFields.put("phone number", "string");
+        dataFields.put("manualSet", true);
+        value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
 
         // match signal strength
         name = SensorNames.SIGNAL_STRENGTH;
         displayName = SensorNames.SIGNAL_STRENGTH;
         description = SensorNames.SIGNAL_STRENGTH;
         dataType = SenseDataTypes.JSON;
-        jsonFields.clear();
-        jsonFields.put("GSM signal strength", 1);
-        jsonFields.put("GSM bit error rate", 1);
-        sensorValue = new JSONObject(jsonFields).toString();
-        if (null == SenseApi.getSensorId(context, name, displayName, sensorValue, dataType,
-                description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, sensorValue);
+        dataFields.clear();
+        dataFields.put("GSM signal strength", 1);
+        dataFields.put("GSM bit error rate", 1);
+        value = new JSONObject(dataFields).toString();
+        checkSensor(context, name, displayName, dataType, description, value);
+    }
+
+    /**
+     * Ensures existence of a sensor at CommonSense, adding it to the list of registered sensors if
+     * it was newly created.
+     * 
+     * @param context
+     * @param name
+     * @param displayName
+     * @param dataType
+     * @param description
+     * @param value
+     */
+    private static void checkSensor(Context context, String name, String displayName,
+            String dataType, String description, String value) {
+        if (null == SenseApi.getSensorId(context, name, displayName, value, dataType, description)) {
+            SenseApi.registerSensor(context, name, displayName, description, dataType, value);
         }
     }
 
@@ -411,7 +388,7 @@ public class SensorCreator {
      * 
      * @param context
      */
-    public static void checkSensorsAtCommonSense(Context context) {
+    public static synchronized void checkSensorsAtCommonSense(Context context) {
 
         // get list of known sensors at CommonSense
         JSONArray registered = SenseApi.getRegisteredSensors(context);
@@ -421,10 +398,10 @@ public class SensorCreator {
             return;
         }
 
-        checkAmbienceSensors(context, registered);
-        checkDeviceScanSensors(context, registered);
-        checkLocationSensors(context, registered);
-        checkMotionSensors(context, registered);
-        checkPhoneStateSensors(context, registered);
+        checkAmbienceSensors(context);
+        checkDeviceScanSensors(context);
+        checkLocationSensors(context);
+        checkMotionSensors(context);
+        checkPhoneStateSensors(context);
     }
 }

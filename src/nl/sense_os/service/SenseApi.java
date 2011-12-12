@@ -3,27 +3,13 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.zip.GZIPOutputStream;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Build;
+import android.os.RemoteException;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -36,13 +22,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Build;
-import android.os.RemoteException;
-import android.telephony.TelephonyManager;
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.zip.GZIPOutputStream;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class SenseApi {
 
@@ -288,28 +289,42 @@ public class SenseApi {
 
             if (null != sensors) {
 
-                // check all the sensors in the list
+                // check sensors with similar names in the list
+                List<JSONObject> similar = new ArrayList<JSONObject>();
                 for (int x = 0; x < sensors.length(); x++) {
                     JSONObject sensor = (JSONObject) sensors.get(x);
 
-                    if (sensor.getString("device_type").equalsIgnoreCase(deviceType)
-                            && sensor.getString("name").equalsIgnoreCase(sensorName)
-                            && sensor.getString("data_type").equalsIgnoreCase(dataType)) {
-                        // found the right sensor
-                        return sensor.getString("id");
+                    if (sensor.getString("name").equalsIgnoreCase(sensorName)) {
+                        similar.add(sensor);
                     }
                 }
+
+                // if there are multiple sensors with the same name, also check other fields
+                if (similar.size() > 1) {
+                    for (JSONObject sensor : similar) {
+                        if (sensor.getString("device_type").equalsIgnoreCase(deviceType)
+                                && sensor.getString("data_type").equalsIgnoreCase(dataType)) {
+                            return sensor.getString("id");
+                        }
+                    }
+                    // if we make it here, there was no exact match...
+                    return similar.get(0).getString("id");
+
+                } else if (similar.size() == 1) {
+                    // only one sensor with the correct name
+                    return similar.get(0).getString("id");
+
+                } else {
+                    // sensor does not exist (yet)
+                    return null;
+                }
+
             } else {
                 // couldn't get the list of sensors, probably a connection problem: give up
                 Log.w(TAG, "Failed to get ID for sensor '" + sensorName
                         + "': there was an error getting the list of sensors");
                 return null;
             }
-
-            // Sensor not found in current list of sensors, create it at CommonSense
-            return null;
-            // return registerSensor(context, sensorName, displayName, deviceType, dataType,
-            // sensorValue);
 
         } catch (Exception e) {
             Log.e(TAG, "Failed to get ID for sensor '" + sensorName + "': Exception occurred:", e);
@@ -695,8 +710,8 @@ public class SenseApi {
         HttpURLConnection urlConnection = null;
         HashMap<String, String> result = new HashMap<String, String>();
         try {
-            Log.d(TAG, "API request: " + (content == null ? "GET" : "POST") + " " + urlString
-                    + " cookie:" + cookie);
+            // Log.d(TAG, "API request: " + (content == null ? "GET" : "POST") + " " + urlString
+            // + " cookie:" + cookie);
 
             // get compression preference
             final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
