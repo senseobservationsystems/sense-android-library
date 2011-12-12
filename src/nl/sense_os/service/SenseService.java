@@ -3,27 +3,10 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URLEncoder;
+import java.util.HashMap;
 
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
@@ -50,10 +33,27 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URLEncoder;
-import java.util.HashMap;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.os.RemoteException;
+import android.util.Log;
+import android.widget.Toast;
 
 public class SenseService extends Service {
 
@@ -637,7 +637,7 @@ public class SenseService extends Service {
         Log.i(TAG, "Logged in!");
 
         // Retrieve the online registered sensor list
-        SenseApi.getRegisteredSensors(this);
+        SensorCreator.checkSensorsAtCommonSense(this);
 
         // start database leeglepelaar
         startTransmitAlarms();

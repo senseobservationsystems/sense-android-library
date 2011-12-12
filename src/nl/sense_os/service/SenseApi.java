@@ -3,25 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Build;
-import android.os.RemoteException;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
-import nl.sense_os.service.constants.SenseUrls;
-
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -43,6 +24,25 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SenseUrls;
+
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Build;
+import android.os.RemoteException;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public class SenseApi {
 
@@ -307,8 +307,9 @@ public class SenseApi {
             }
 
             // Sensor not found in current list of sensors, create it at CommonSense
-            return registerSensor(context, sensorName, displayName, deviceType, dataType,
-                    sensorValue);
+            return null;
+            // return registerSensor(context, sensorName, displayName, deviceType, dataType,
+            // sensorValue);
 
         } catch (Exception e) {
             Log.e(TAG, "Failed to get ID for sensor '" + sensorName + "': Exception occurred:", e);
@@ -561,7 +562,7 @@ public class SenseApi {
             authEditor.putString(Auth.SENSOR_LIST, sensors.toString());
             authEditor.commit();
 
-            // Log.v(TAG, "Created sensor: '" + sensorName + "'");
+            Log.v(TAG, "Created sensor: '" + sensorName + "'");
 
             // get device properties from preferences, so it matches the properties in CommonSense
             final String device_uuid = ((TelephonyManager) context
@@ -694,7 +695,8 @@ public class SenseApi {
         HttpURLConnection urlConnection = null;
         HashMap<String, String> result = new HashMap<String, String>();
         try {
-           //  Log.d(TAG, "API request: " + (content == null ? "GET" : "POST") + " " + urlString+ " cookie:"+cookie);
+            Log.d(TAG, "API request: " + (content == null ? "GET" : "POST") + " " + urlString
+                    + " cookie:" + cookie);
 
             // get compression preference
             final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
