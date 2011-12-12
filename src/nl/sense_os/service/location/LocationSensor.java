@@ -540,7 +540,8 @@ public class LocationSensor {
             setNetworkListening(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+        if (!isGpsAllowed && !isNetworkAllowed
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             Log.v(TAG, "Start passively listening to location updates for other apps");
             setPassiveListening(true);
         }
