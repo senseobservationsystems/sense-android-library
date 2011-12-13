@@ -88,7 +88,7 @@ public class ZephyrHxM {
                 // check if there is a paired device with the name HxM
                 Set<android.bluetooth.BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
                 // If there are paired devices
-                boolean foundDevice = false;
+                boolean connected = false;
                 if (pairedDevices != null) {
                     // Loop through paired devices
                     for (BluetoothDevice device : pairedDevices) {
@@ -110,7 +110,7 @@ public class ZephyrHxM {
                                 SensorCreator.checkSensorsAtCommonSense(context, device.getName(),
                                         device.getAddress());
 
-                                foundDevice = true;
+                                connected = true;
 
                             } catch (Exception e) {
                                 connectionErrorCount++;
@@ -124,8 +124,8 @@ public class ZephyrHxM {
                     }
                 }
 
-                if (!foundDevice) {
-                    Log.v(TAG, "No paired HxM device found. Sleeping for 10 seconds");
+                if (!connected) {
+                    Log.v(TAG, "Failed to connect to HxM device. Sleeping for 10 seconds");
                     connectHandler.postDelayed(hxmConnectThread = new HxMConnectThread(), 10000);
                 }
 
@@ -391,6 +391,10 @@ public class ZephyrHxM {
         }
     }
 
+    /**
+     * Helper class that creates the sensors for the Zephyr HxM, adding them to a seperate HM device
+     * instead of using the phone as a device.
+     */
     private static class SensorCreator {
 
         /**
@@ -583,8 +587,8 @@ public class ZephyrHxM {
     private final Context context;
     private boolean hxmEnabled = false;
     private UUID serial_uid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-    HandlerThread connectHT = null;
-    HandlerThread updateHT = null;
+    private HandlerThread connectHT = null;
+    private HandlerThread updateHT = null;
     private Handler connectHandler = null;// new Handler(Looper.getMainLooper());
     private Handler updateHandler = null; // new Handler(Looper.getMainLooper());
     private int updateInterval = 0;
@@ -611,7 +615,7 @@ public class ZephyrHxM {
         return updateInterval;
     }
 
-    void sendNotification(String text) {
+    private void sendNotification(String text) {
         NotificationManager mgr = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         int icon = R.drawable.ic_stat_notify_sense_alert;
