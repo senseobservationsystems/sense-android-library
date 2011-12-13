@@ -728,6 +728,9 @@ public class SenseApi {
             } catch (IOException e) {
                 inputStream = urlConnection.getErrorStream();
             }
+            if (null == inputStream) {
+                throw new IOException("could not get InputStream");
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream), 1024);
             String line;
             StringBuffer responseContent = new StringBuffer();
