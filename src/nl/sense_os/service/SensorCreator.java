@@ -1,11 +1,6 @@
 package nl.sense_os.service;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.os.Build;
-import android.util.Log;
+import java.util.HashMap;
 
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -15,7 +10,12 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.os.Build;
+import android.util.Log;
 
 /**
  * Class that ensures that all the phone's sensors are known at CommonSense.
@@ -377,8 +377,9 @@ public class SensorCreator {
      */
     private static void checkSensor(Context context, String name, String displayName,
             String dataType, String description, String value) {
-        if (null == SenseApi.getSensorId(context, name, displayName, value, dataType, description)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, value);
+        if (null == SenseApi.getSensorId(context, name, description, dataType, null)) {
+            SenseApi.registerSensor(context, name, displayName, description, dataType, value, null,
+                    null);
         }
     }
 
@@ -389,14 +390,6 @@ public class SensorCreator {
      * @param context
      */
     public static synchronized void checkSensorsAtCommonSense(Context context) {
-
-        // get list of known sensors at CommonSense
-        JSONArray registered = SenseApi.getRegisteredSensors(context);
-
-        if (null == registered) {
-            Log.d(TAG, "failed to get registered sensors from Sense API");
-            return;
-        }
 
         checkAmbienceSensors(context);
         checkDeviceScanSensors(context);

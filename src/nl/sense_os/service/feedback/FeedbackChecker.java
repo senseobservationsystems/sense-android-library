@@ -3,10 +3,7 @@
  *************************************************************************************************/
 package nl.sense_os.service.feedback;
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
+import java.util.HashMap;
 
 import nl.sense_os.service.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
@@ -14,8 +11,10 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 
 public class FeedbackChecker extends IntentService {
 
@@ -61,19 +60,12 @@ public class FeedbackChecker extends IntentService {
      */
     private String getFeedbackUrl(String sensor_name) {
 
-        // prepare dummy JSON object as value to create new feedback sensor
-        Map<String, Object> jsonValues = new HashMap<String, Object>();
-        jsonValues.put("action", "none");
-        jsonValues.put("status", "idle");
-        jsonValues.put("uri", "http://foo.bar");
-
         // get URL of feedback sensor data
         String sensorName = sensor_name;
-        String sensorValue = new JSONObject(jsonValues).toString();
         String dataType = "json";
-        String deviceType = sensor_name;
+        String description = sensor_name;
 
-        return SenseApi.getSensorUrl(this, sensorName, "", sensorValue, dataType, deviceType);
+        return SenseApi.getSensorUrl(this, sensorName, description, dataType, null);
     }
 
     /**
