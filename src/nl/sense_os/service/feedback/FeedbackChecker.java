@@ -3,12 +3,14 @@
  *************************************************************************************************/
 package nl.sense_os.service.feedback;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import nl.sense_os.service.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.IntentService;
@@ -27,20 +29,20 @@ public class FeedbackChecker extends IntentService {
 
     private void checkFeedback(String sensorName, String actionAfterCheck) {
 
-        String url = getFeedbackUrl(sensorName);
+        try {
+            String url = getFeedbackUrl(sensorName);
 
-        if (null != url) {
-            // only get the last value
-            url += "?last=1";
+            if (null != url) {
+                // only get the last value
+                url += "?last=1";
 
-            // get cookie for authentication
-            final SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
-                    MODE_PRIVATE);
-            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+                // get cookie for authentication
+                final SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
+                        MODE_PRIVATE);
+                String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-            // get last feedback sensor value
-            if (cookie != null) {
-                try {
+                // get last feedback sensor value
+                if (cookie != null) {
                     HashMap<String, String> response = SenseApi.request(this, url, null, cookie);
 
                     JSONObject content = new JSONObject(response.get("content"));
@@ -48,17 +50,21 @@ public class FeedbackChecker extends IntentService {
 
                     sendFeedback(content, actionAfterCheck);
 
-                } catch (Exception e) {
-                    Log.e(TAG, "Exception checking feedback sensor", e);
                 }
+            } else {
+                Log.w(TAG, "Could not check feedback sensor: sensor ID is not know yet");
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Exception checking feedback sensor", e);
         }
     }
 
     /**
      * @return URL of the feedback sensor for this user on CommonSense
+     * @throws JSONException
+     * @throws IOException
      */
-    private String getFeedbackUrl(String sensor_name) {
+    private String getFeedbackUrl(String sensor_name) throws IOException, JSONException {
 
         // get URL of feedback sensor data
         String sensorName = sensor_name;

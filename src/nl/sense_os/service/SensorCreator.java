@@ -369,17 +369,27 @@ public class SensorCreator {
      * it was newly created.
      * 
      * @param context
+     *            Context for setting up communication with CommonSense
      * @param name
+     *            Sensor name.
      * @param displayName
+     *            Pretty display name for the sensor.
      * @param dataType
+     *            Sensor data type.
      * @param description
+     *            Sensor description (previously 'device_type')
      * @param value
+     *            Dummy sensor value (used for producing a data structure).
      */
     private static void checkSensor(Context context, String name, String displayName,
             String dataType, String description, String value) {
-        if (null == SenseApi.getSensorId(context, name, description, dataType, null)) {
-            SenseApi.registerSensor(context, name, displayName, description, dataType, value, null,
-                    null);
+        try {
+            if (null == SenseApi.getSensorId(context, name, description, dataType, null)) {
+                SenseApi.registerSensor(context, name, displayName, description, dataType, value,
+                        null, null);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to check '" + name + "' sensor at CommonSense");
         }
     }
 
@@ -388,6 +398,7 @@ public class SensorCreator {
      * sensor IDs.
      * 
      * @param context
+     *            Context for communication with CommonSense.
      */
     public static synchronized void checkSensorsAtCommonSense(Context context) {
 

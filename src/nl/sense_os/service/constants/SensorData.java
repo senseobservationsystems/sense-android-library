@@ -208,7 +208,7 @@ public class SensorData {
         public static final String REACTION_TIME = "reaction_time";
 
         /**
-         * strides sensor (stappenteller) for Zephyr HxM external sensor
+         * speed sensor for Zephyr HxM external sensor
          */
         public static final String SPEED = "speed";
 

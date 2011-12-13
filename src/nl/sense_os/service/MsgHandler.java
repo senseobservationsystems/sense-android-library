@@ -6,6 +6,7 @@ package nl.sense_os.service;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -159,7 +160,12 @@ public class MsgHandler extends Service {
          */
         private void postData(JSONObject transmission) throws JSONException, MalformedURLException {
 
-            HashMap<String, String> response = SenseApi.request(context, url, transmission, cookie);
+            HashMap<String, String> response = null;
+            try {
+                response = SenseApi.request(context, url, transmission, cookie);
+            } catch (IOException e) {
+                // handle failure later
+            }
 
             if (response == null) {
                 // Error when sending
@@ -194,9 +200,9 @@ public class MsgHandler extends Service {
          * {@link MsgHandler#sendSensorData(String, String, String, JSONObject)}.
          * 
          * @throws JSONException
-         * @throws MalformedURLException
+         * @throws IOException
          */
-        private void transmit() throws JSONException, MalformedURLException {
+        private void transmit() throws JSONException, IOException {
 
             // make sure the device stays awake while transmitting
             wakeLock = getWakeLock();
@@ -540,8 +546,7 @@ public class MsgHandler extends Service {
                         .getSensorUrl(context, name, description, dataType, deviceUuid);
 
                 if (url == null) {
-                    Log.w(TAG, "Received invalid sensor URL for '" + name
-                            + "': data will be retried.");
+                    Log.w(TAG, "No sensor ID for '" + name + "' (yet): data will be retried.");
                     return;
                 }
 
@@ -667,7 +672,7 @@ public class MsgHandler extends Service {
                         deviceUuid);
 
                 if (urlStr == null) {
-                    Log.w(TAG, "Received invalid sensor URL for '" + sensorName + "'. Data lost.");
+                    Log.w(TAG, "No sensor ID for '" + sensorName + "' (yet). Data is lost.");
                     return;
                 }
 
