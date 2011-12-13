@@ -15,6 +15,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -160,7 +161,7 @@ public class MsgHandler extends Service {
          */
         private void postData(JSONObject transmission) throws JSONException, MalformedURLException {
 
-            HashMap<String, String> response = null;
+            Map<String, String> response = null;
             try {
                 response = SenseApi.request(context, url, transmission, cookie);
             } catch (IOException e) {
@@ -550,7 +551,8 @@ public class MsgHandler extends Service {
                     return;
                 }
 
-                HashMap<String, String> response = SenseApi.request(context, url, data, cookie);
+                Map<String, String> response = SenseApi.request(context, url, data, cookie);
+
                 // Error when sending
                 if ((response == null) || !response.get("http response code").equals("201")) {
 

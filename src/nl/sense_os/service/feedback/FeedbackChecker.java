@@ -4,7 +4,7 @@
 package nl.sense_os.service.feedback;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import nl.sense_os.service.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
@@ -43,7 +43,7 @@ public class FeedbackChecker extends IntentService {
 
                 // get last feedback sensor value
                 if (cookie != null) {
-                    HashMap<String, String> response = SenseApi.request(this, url, null, cookie);
+                    Map<String, String> response = SenseApi.request(this, url, null, cookie);
 
                     JSONObject content = new JSONObject(response.get("content"));
                     // parseFeedback(content);
