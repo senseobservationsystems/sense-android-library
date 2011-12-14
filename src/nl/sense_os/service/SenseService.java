@@ -641,21 +641,10 @@ public class SenseService extends Service {
     private void onLogIn() {
         Log.i(TAG, "Logged in!");
 
-        HandlerThread ht = new HandlerThread("on login");
-        ht.start();
-        new Handler(ht.getLooper()) {
-            public void handleMessage(Message msg) {
+        // start database leeglepelaar
+        DataTransmitter.scheduleTransmissions(this);
 
-                // Retrieve the online registered sensor list
-                SensorCreator.checkSensorsAtCommonSense(SenseService.this);
-
-                // start database leeglepelaar
-                startTransmitAlarms();
-
-                checkVersion();
-            };
-
-        }.sendEmptyMessage(0);
+        checkVersion();
     }
 
     /**
@@ -667,7 +656,7 @@ public class SenseService extends Service {
         // update login status
         state.setLoggedIn(false);
 
-        stopTransmitAlarms();
+        DataTransmitter.stopTransmissions(this);
 
         // completely stop the MsgHandler service
         stopService(new Intent(getString(R.string.action_sense_new_data)));
@@ -680,20 +669,6 @@ public class SenseService extends Service {
             stopSensorModules();
             startSensorModules();
         }
-    }
-
-    /**
-     * Deprecated method for starting the service, used in Android 1.6 and older.
-     */
-    @Override
-    public void onStart(Intent intent, int startid) {
-        onStartCompat(intent, 0, startid);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        onStartCompat(intent, flags, startId);
-        return START_NOT_STICKY; // not sticky: Sense checks its own alive state
     }
 
     /**
@@ -710,7 +685,8 @@ public class SenseService extends Service {
      *            A unique integer representing this specific request to start. Use with
      *            {@link #stopSelfResult(int)}.
      */
-    private void onStartCompat(final Intent intent, int flags, int startId) {
+    @Override
+    public int onStartCommand(final Intent intent, int flags, int startId) {
         // Log.v(TAG, "onStart...");
 
         HandlerThread startThread = new HandlerThread("Start thread",
@@ -757,13 +733,14 @@ public class SenseService extends Service {
                 }
             };
         }.sendEmptyMessage(0);
+
+        return START_NOT_STICKY;
     }
 
     private void onSyncRateChange() {
         // Log.v(TAG, "Sync rate changed...");
         if (state.isStarted()) {
-            stopTransmitAlarms();
-            startTransmitAlarms();
+            DataTransmitter.scheduleTransmissions(this);
         }
 
         // update any widgets
@@ -854,16 +831,6 @@ public class SenseService extends Service {
     }
 
     /**
-     * Starts the checks that periodically check if the service is still alive. Should be started
-     * immediately after sensing starts.
-     */
-    private void startAliveChecks() {
-        // Log.v(TAG, "Start periodic checks if Sense is still alive...");
-        state.setStarted(true);
-        AliveChecker.scheduleChecks(this);
-    }
-
-    /**
      * Makes this service a foreground service, as important as 'real' activities. As a reminder
      * that the service is running, a notification is shown in the status bar.
      */
@@ -913,7 +880,8 @@ public class SenseService extends Service {
             return;
         }
 
-        startAliveChecks();
+        state.setStarted(true);
+        AliveChecker.scheduleChecks(this);
 
         // update state
         state.setForeground(true);
@@ -924,6 +892,9 @@ public class SenseService extends Service {
      * preferences.
      */
     private void startSensorModules() {
+
+        // make sure the IDs of all sensors are known
+        SensorRegistration.checkSensorsAtCommonSense(this);
 
         final SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS,
                 MODE_PRIVATE);
@@ -967,28 +938,13 @@ public class SenseService extends Service {
     }
 
     /**
-     * Start periodic broadcast to trigger the MsgHandler to flush its buffer to CommonSense.
-     */
-    private void startTransmitAlarms() {
-        // Log.v(TAG, "Start periodic data transmission alarms...");
-        DataTransmitter.scheduleTransmissions(this);
-    }
-
-    /**
-     * Stops the periodic checks to keep the service alive.
-     */
-    private void stopAliveChecks() {
-        state.setStarted(false);
-        AliveChecker.stopChecks(this);
-    }
-
-    /**
      * Lowers importance of this service back to normal again.
      */
     private void stopForegroundCompat() {
         // Log.v(TAG, "Remove foreground status...");
 
-        stopAliveChecks();
+        state.setStarted(false);
+        AliveChecker.stopChecks(this);
 
         try {
             // try the newer stopForeground(boolean) method
@@ -1061,13 +1017,6 @@ public class SenseService extends Service {
 
         // send broadcast that something has changed in the status
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
-    }
-
-    /**
-     * Stops the periodic alarms to flush the MsgHandler buffer to CommonSense.
-     */
-    private void stopTransmitAlarms() {
-        DataTransmitter.stopTransmissions(this);
     }
 
     private void toggleAmbience(boolean active) {
