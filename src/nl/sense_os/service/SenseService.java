@@ -3,27 +3,10 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
@@ -50,10 +33,27 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URLEncoder;
-import java.util.HashMap;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.os.RemoteException;
+import android.util.Log;
+import android.widget.Toast;
 
 public class SenseService extends Service {
 
@@ -508,7 +508,7 @@ public class SenseService extends Service {
             }
 
             String url = SenseUrls.VERSION + "?version=" + versionName;
-            HashMap<String, String> response = SenseApi.request(this, url, null, null);
+            Map<String, String> response = SenseApi.request(this, url, null, null);
             JSONObject content = new JSONObject(response.get("content"));
 
             if (content.getString("message").length() > 0) {
@@ -552,7 +552,12 @@ public class SenseService extends Service {
         // try to log in
         int result = -1;
         if ((username != null) && (pass != null)) {
-            result = SenseApi.login(this, username, pass);
+            try {
+                result = SenseApi.login(this, username, pass);
+            } catch (Exception e) {
+                Log.w(TAG, "Exception during login: '" + e.getMessage() + "'. Connection problems?");
+                // handle result later
+            }
 
             if (0 == result) {
                 // logged in successfully
@@ -633,14 +638,11 @@ public class SenseService extends Service {
      * Method is synchronized to make sure {@link SenseApi#getRegisteredSensors(Context)} is only
      * called by one thread at a time.
      */
-    private synchronized void onLogIn() {
+    private void onLogIn() {
         Log.i(TAG, "Logged in!");
 
-        // Retrieve the online registered sensor list
-        SenseApi.getRegisteredSensors(this);
-
         // start database leeglepelaar
-        startTransmitAlarms();
+        DataTransmitter.scheduleTransmissions(this);
 
         checkVersion();
     }
@@ -654,7 +656,7 @@ public class SenseService extends Service {
         // update login status
         state.setLoggedIn(false);
 
-        stopTransmitAlarms();
+        DataTransmitter.stopTransmissions(this);
 
         // completely stop the MsgHandler service
         stopService(new Intent(getString(R.string.action_sense_new_data)));
@@ -667,20 +669,6 @@ public class SenseService extends Service {
             stopSensorModules();
             startSensorModules();
         }
-    }
-
-    /**
-     * Deprecated method for starting the service, used in Android 1.6 and older.
-     */
-    @Override
-    public void onStart(Intent intent, int startid) {
-        onStartCompat(intent, 0, startid);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        onStartCompat(intent, flags, startId);
-        return START_NOT_STICKY; // not sticky: Sense checks its own alive state
     }
 
     /**
@@ -697,7 +685,8 @@ public class SenseService extends Service {
      *            A unique integer representing this specific request to start. Use with
      *            {@link #stopSelfResult(int)}.
      */
-    private void onStartCompat(final Intent intent, int flags, int startId) {
+    @Override
+    public int onStartCommand(final Intent intent, int flags, int startId) {
         // Log.v(TAG, "onStart...");
 
         HandlerThread startThread = new HandlerThread("Start thread",
@@ -744,13 +733,14 @@ public class SenseService extends Service {
                 }
             };
         }.sendEmptyMessage(0);
+
+        return START_NOT_STICKY;
     }
 
     private void onSyncRateChange() {
         // Log.v(TAG, "Sync rate changed...");
         if (state.isStarted()) {
-            stopTransmitAlarms();
-            startTransmitAlarms();
+            DataTransmitter.scheduleTransmissions(this);
         }
 
         // update any widgets
@@ -802,8 +792,15 @@ public class SenseService extends Service {
         if ((null != username) && (null != password)) {
             // Log.v(TAG, "Registering... Username: " + username + ", password hash: " + hashPass);
 
-            registered = SenseApi.registerUser(this, username, hashPass, name, surname, email,
-                    mobile);
+            try {
+                registered = SenseApi.registerUser(this, username, hashPass, name, surname, email,
+                        mobile);
+            } catch (Exception e) {
+                Log.w(TAG, "Exception during registration: '" + e.getMessage()
+                        + "'. Connection problems?");
+                // handle result later
+            }
+
             if (registered == 0) {
                 login();
             } else {
@@ -831,16 +828,6 @@ public class SenseService extends Service {
                 Toast.makeText(SenseService.this, message, Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    /**
-     * Starts the checks that periodically check if the service is still alive. Should be started
-     * immediately after sensing starts.
-     */
-    private void startAliveChecks() {
-        // Log.v(TAG, "Start periodic checks if Sense is still alive...");
-        state.setStarted(true);
-        AliveChecker.scheduleChecks(this);
     }
 
     /**
@@ -893,7 +880,8 @@ public class SenseService extends Service {
             return;
         }
 
-        startAliveChecks();
+        state.setStarted(true);
+        AliveChecker.scheduleChecks(this);
 
         // update state
         state.setForeground(true);
@@ -904,6 +892,9 @@ public class SenseService extends Service {
      * preferences.
      */
     private void startSensorModules() {
+
+        // make sure the IDs of all sensors are known
+        SensorRegistration.checkSensorsAtCommonSense(this);
 
         final SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS,
                 MODE_PRIVATE);
@@ -947,28 +938,13 @@ public class SenseService extends Service {
     }
 
     /**
-     * Start periodic broadcast to trigger the MsgHandler to flush its buffer to CommonSense.
-     */
-    private void startTransmitAlarms() {
-        // Log.v(TAG, "Start periodic data transmission alarms...");
-        DataTransmitter.scheduleTransmissions(this);
-    }
-
-    /**
-     * Stops the periodic checks to keep the service alive.
-     */
-    private void stopAliveChecks() {
-        state.setStarted(false);
-        AliveChecker.stopChecks(this);
-    }
-
-    /**
      * Lowers importance of this service back to normal again.
      */
     private void stopForegroundCompat() {
         // Log.v(TAG, "Remove foreground status...");
 
-        stopAliveChecks();
+        state.setStarted(false);
+        AliveChecker.stopChecks(this);
 
         try {
             // try the newer stopForeground(boolean) method
@@ -1041,13 +1017,6 @@ public class SenseService extends Service {
 
         // send broadcast that something has changed in the status
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
-    }
-
-    /**
-     * Stops the periodic alarms to flush the MsgHandler buffer to CommonSense.
-     */
-    private void stopTransmitAlarms() {
-        DataTransmitter.stopTransmissions(this);
     }
 
     private void toggleAmbience(boolean active) {

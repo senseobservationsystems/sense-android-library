@@ -85,6 +85,13 @@ public class SensorData {
          * TYPE: integer status code: 0 (not sent), or 1 (sent)
          */
         public static final String TRANSMIT_STATE = "transmit_state";
+        /**
+         * Device UUID of the sensor. Use this for sensors that are originated from
+         * "external sensors", or leave <code>null</code> to use the phone as default device.<br>
+         * <br>
+         * TYPE: String
+         */
+        public static final String DEVICE_UUID = "device_uuid";
 
         private DataPoint() {
             // class should not be instantiated
@@ -201,7 +208,7 @@ public class SensorData {
         public static final String REACTION_TIME = "reaction_time";
 
         /**
-         * strides sensor (stappenteller) for Zephyr HxM external sensor
+         * speed sensor for Zephyr HxM external sensor
          */
         public static final String SPEED = "speed";
 

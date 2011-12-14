@@ -19,7 +19,6 @@ import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -51,7 +50,7 @@ public class LocalStorage {
     private static class DbHelper extends SQLiteOpenHelper {
 
         protected static final String DATABASE_NAME = "persitent_storage.sqlite3";
-        protected static final int DATABASE_VERSION = 2;
+        protected static final int DATABASE_VERSION = 3;
 
         DbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -67,6 +66,7 @@ public class LocalStorage {
             sb.append(", " + DataPoint.DATA_TYPE + " STRING");
             sb.append(", " + DataPoint.TIMESTAMP + " INTEGER");
             sb.append(", " + DataPoint.VALUE + " STRING");
+            sb.append(", " + DataPoint.DEVICE_UUID + " STRING");
             sb.append(", " + DataPoint.TRANSMIT_STATE + " INTEGER");
             sb.append(");");
             db.execSQL(sb.toString());
@@ -189,8 +189,8 @@ public class LocalStorage {
 
         // check for buffer overflows
         if (index >= MAX_VOLATILE_VALUES) {
-           //  Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '" +
-           //  key + "'. Send to persistent storage...");
+            // Log.d(TAG, "Buffer overflow! More than " + MAX_VOLATILE_VALUES + " points for '" +
+            // key + "'. Send to persistent storage...");
 
             // find out how many values have to be put in the persistant storage
             int persistFrom = -1;
@@ -252,7 +252,7 @@ public class LocalStorage {
                     + (System.currentTimeMillis() - 1000l * 60 * 60 * 24);
             int deleted = db.delete(TABLE_PERSISTENT, where, null);
             if (deleted > 0) {
-               //  Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
+                // Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
             }
 
             // insert new points to persistent storage
@@ -274,8 +274,9 @@ public class LocalStorage {
         // default projection
         if (projection == null) {
             projection = new String[] { BaseColumns._ID, DataPoint.SENSOR_NAME,
-                    DataPoint.SENSOR_DESCRIPTION, DataPoint.DATA_TYPE, DataPoint.VALUE,
-                    DataPoint.TIMESTAMP, DataPoint.TRANSMIT_STATE };
+                    DataPoint.DISPLAY_NAME, DataPoint.SENSOR_DESCRIPTION, DataPoint.DATA_TYPE,
+                    DataPoint.VALUE, DataPoint.TIMESTAMP, DataPoint.DEVICE_UUID,
+                    DataPoint.TRANSMIT_STATE };
         }
 
         // query based on URI
@@ -311,16 +312,17 @@ public class LocalStorage {
     private Cursor queryPersistent(Uri uri, String[] projection, String where,
             String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        
-        SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-        String limitStr = ""+QUERY_RESULTS_LIMIT;
-        
-        if(pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
-        	limitStr = ""+QUERY_RESULTS_LIMIT_EPI_MODE;        
-              
+
+        SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        String limitStr = "" + QUERY_RESULTS_LIMIT;
+
+        if (pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+            limitStr = "" + QUERY_RESULTS_LIMIT_EPI_MODE;
+
         Cursor persistentResult = db.query(TABLE_PERSISTENT, projection, where, selectionArgs,
                 null, null, sortOrder, limitStr);
-      
+
         return persistentResult;
     }
 

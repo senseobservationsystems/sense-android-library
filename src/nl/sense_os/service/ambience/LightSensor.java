@@ -17,10 +17,13 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LightSensor implements SensorEventListener {
+
     private static final String TAG = "Sense Light Sensor";
+
     private long sampleDelay = 0; // in milliseconds
     private long[] lastSampleTimes = new long[50];
     private Context context;
@@ -33,7 +36,10 @@ public class LightSensor implements SensorEventListener {
     public LightSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensors = smgr.getSensorList(Sensor.TYPE_ALL);
+        sensors = new ArrayList<Sensor>();
+        if (null != smgr.getDefaultSensor(Sensor.TYPE_LIGHT)) {
+            sensors.add(smgr.getDefaultSensor(Sensor.TYPE_LIGHT));
+        }
     }
 
     @Override
