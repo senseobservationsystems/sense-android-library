@@ -107,8 +107,8 @@ public class ZephyrHxM {
                                 processZHxMMessage = new ProcessZephyrHxMMessage(device.getName(),
                                         device.getAddress());
                                 updateHandler.post(updateThread = new UpdateThread());
-                                SensorCreator.checkSensorsAtCommonSense(context, device.getName(),
-                                        device.getAddress());
+                                SensorRegistration.checkSensorsAtCommonSense(context,
+                                        device.getName(), device.getAddress());
 
                                 connected = true;
 
@@ -395,7 +395,7 @@ public class ZephyrHxM {
      * Helper class that creates the sensors for the Zephyr HxM, adding them to a seperate HM device
      * instead of using the phone as a device.
      */
-    private static class SensorCreator {
+    private static class SensorRegistration {
 
         /**
          * Ensures existence of a sensor at CommonSense, adding it to the list of registered sensors
@@ -417,8 +417,9 @@ public class ZephyrHxM {
          *            Type of device that the sensor belongs to.
          * @param deviceUuid
          *            UUID of the sensor's device.
+         * @return true if the sensor ID was found or created
          */
-        private static void checkSensor(Context context, String name, String displayName,
+        private static boolean checkSensor(Context context, String name, String displayName,
                 String dataType, String description, String value, String deviceType,
                 String deviceUuid) {
             try {
@@ -428,7 +429,9 @@ public class ZephyrHxM {
                 }
             } catch (Exception e) {
                 Log.w(TAG, "Failed to check '" + name + "' sensor at CommonSense");
+                return false;
             }
+            return true;
         }
 
         /**
@@ -442,11 +445,14 @@ public class ZephyrHxM {
          *            sensor to the phone itself.
          * @param deviceUuid
          *            The UUID of the sensor's device.
+         * @return true if all sensors IDs were found or created
          */
-        static void checkSensorsAtCommonSense(Context context, String deviceType, String deviceUuid) {
+        static boolean checkSensorsAtCommonSense(Context context, String deviceType,
+                String deviceUuid) {
 
             // preallocate
             String name, displayName, description, dataType, value;
+            boolean success = true;
 
             // match heart rate sensor
             name = SensorNames.HEART_RATE;
@@ -454,8 +460,8 @@ public class ZephyrHxM {
             description = "HxM " + deviceType;
             dataType = SenseDataTypes.INT;
             value = "0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match speed sensor
             name = SensorNames.SPEED;
@@ -463,8 +469,8 @@ public class ZephyrHxM {
             description = "HxM " + deviceType;
             dataType = SenseDataTypes.FLOAT;
             value = "0.0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match distance sensor
             name = SensorNames.DISTANCE;
@@ -472,8 +478,8 @@ public class ZephyrHxM {
             description = "HxM " + deviceType;
             dataType = SenseDataTypes.FLOAT;
             value = "0.0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match battery charge sensor
             name = SensorNames.BATTERY_CHARGE;
@@ -481,8 +487,8 @@ public class ZephyrHxM {
             description = "HxM " + deviceType;
             dataType = SenseDataTypes.INT;
             value = "0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match strides sensor
             name = SensorNames.STRIDES;
@@ -490,8 +496,10 @@ public class ZephyrHxM {
             description = "HxM " + deviceType;
             dataType = SenseDataTypes.INT;
             value = "0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
+
+            return success;
         }
     }
 

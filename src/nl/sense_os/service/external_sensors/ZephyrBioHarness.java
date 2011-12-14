@@ -95,7 +95,7 @@ public class ZephyrBioHarness {
 
                                     processZBHMessage = new ProcessZephyrBioHarnessMessage(
                                             device.getName(), device.getAddress());
-                                    SensorCreator.checkSensorsAtCommonSense(context,
+                                    SensorRegistration.checkSensorsAtCommonSense(context,
                                             device.getName(), device.getAddress());
                                     updateHandler.post(updateThread = new UpdateThread());
                                     connected = true;
@@ -290,7 +290,7 @@ public class ZephyrBioHarness {
      * Helper class that creates the sensors for the Zephyr HxM, adding them to a seperate HM device
      * instead of using the phone as a device.
      */
-    private static class SensorCreator {
+    private static class SensorRegistration {
 
         /**
          * Ensures existence of a sensor at CommonSense, adding it to the list of registered sensors
@@ -312,8 +312,9 @@ public class ZephyrBioHarness {
          *            Type of device that the sensor belongs to.
          * @param deviceUuid
          *            UUID of the sensor's device.
+         * @return true if the sensor ID was found or created
          */
-        private static void checkSensor(Context context, String name, String displayName,
+        private static boolean checkSensor(Context context, String name, String displayName,
                 String dataType, String description, String value, String deviceType,
                 String deviceUuid) {
             try {
@@ -323,7 +324,9 @@ public class ZephyrBioHarness {
                 }
             } catch (Exception e) {
                 Log.w(TAG, "Failed to check '" + name + "' sensor at CommonSense");
+                return false;
             }
+            return true;
         }
 
         /**
@@ -338,10 +341,12 @@ public class ZephyrBioHarness {
          * @param deviceUuid
          *            The UUID of the sensor's device.
          */
-        static void checkSensorsAtCommonSense(Context context, String deviceType, String deviceUuid) {
+        static boolean checkSensorsAtCommonSense(Context context, String deviceType,
+                String deviceUuid) {
 
             // preallocate
             String name, displayName, description, dataType, value;
+            boolean success = true;
 
             // match accelerometer
             name = SensorNames.ACCELEROMETER;
@@ -349,8 +354,8 @@ public class ZephyrBioHarness {
             description = "BioHarness " + deviceType;
             dataType = SenseDataTypes.JSON;
             value = "0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match heart rate
             name = SensorNames.HEART_RATE;
@@ -358,8 +363,8 @@ public class ZephyrBioHarness {
             description = "BioHarness " + deviceType;
             dataType = SenseDataTypes.INT;
             value = "0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match respiration rate sensor
             name = SensorNames.RESPIRATION;
@@ -367,8 +372,8 @@ public class ZephyrBioHarness {
             description = "BioHarness " + deviceType;
             dataType = SenseDataTypes.FLOAT;
             value = "0.0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match skin temperature sensor
             name = SensorNames.TEMPERATURE;
@@ -376,8 +381,8 @@ public class ZephyrBioHarness {
             description = "BioHarness " + deviceType;
             dataType = SenseDataTypes.FLOAT;
             value = "0.0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match battery level sensor
             name = SensorNames.BATTERY_LEVEL;
@@ -385,8 +390,8 @@ public class ZephyrBioHarness {
             description = "BioHarness " + deviceType;
             dataType = SenseDataTypes.INT;
             value = "0";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
 
             // match worn status sensor
             name = SensorNames.WORN_STATUS;
@@ -394,8 +399,10 @@ public class ZephyrBioHarness {
             description = "BioHarness " + deviceType;
             dataType = SenseDataTypes.BOOL;
             value = "true";
-            checkSensor(context, name, displayName, dataType, description, value, deviceType,
-                    deviceUuid);
+            success &= checkSensor(context, name, displayName, dataType, description, value,
+                    deviceType, deviceUuid);
+
+            return success;
         }
     }
 

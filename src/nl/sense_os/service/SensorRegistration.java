@@ -20,17 +20,25 @@ import android.util.Log;
 /**
  * Class that ensures that all the phone's sensors are known at CommonSense.
  */
-public class SensorCreator {
+public class SensorRegistration {
 
-    private static final String TAG = "Sensor Creator";
+    private static final String TAG = "Sensor Registration";
 
-    private static void checkAmbienceSensors(Context context) {
+    /**
+     * Checks the IDs for light, noise, pressure sensors.
+     * 
+     * @param context
+     *            Context for communication with CommonSense.
+     * @return true if all sensor IDs are found or created
+     */
+    private static boolean checkAmbienceSensors(Context context) {
 
         // preallocate objects
         SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
         String name, displayName, description, dataType, value;
         HashMap<String, Object> dataFields = new HashMap<String, Object>();
+        boolean success = true;
 
         // match light sensor
         sensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -42,7 +50,7 @@ public class SensorCreator {
             dataFields.clear();
             dataFields.put("lux", 0);
             value = new JSONObject(dataFields).toString();
-            checkSensor(context, name, displayName, dataType, description, value);
+            success &= checkSensor(context, name, displayName, dataType, description, value);
         } else {
             Log.w(TAG, "No light sensor present!");
         }
@@ -53,7 +61,7 @@ public class SensorCreator {
         description = SensorNames.NOISE;
         dataType = SenseDataTypes.FLOAT;
         value = "0.0";
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match pressure sensor
         sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
@@ -65,17 +73,27 @@ public class SensorCreator {
             dataFields.clear();
             dataFields.put("newton", 0);
             value = new JSONObject(dataFields).toString();
-            checkSensor(context, name, displayName, dataType, description, value);
+            success &= checkSensor(context, name, displayName, dataType, description, value);
         } else {
             Log.w(TAG, "No pressure sensor present!");
         }
+
+        return success;
     }
 
-    private static void checkDeviceScanSensors(Context context) {
+    /**
+     * Checks the IDs for Bluetooth and Wi-Fi scan sensors.
+     * 
+     * @param context
+     *            Context for communication with CommonSense.
+     * @return true if all sensor IDs are found or created
+     */
+    private static boolean checkDeviceScanSensors(Context context) {
 
         // preallocate objects
         String name, displayName, description, dataType, value;
         HashMap<String, Object> dataFields = new HashMap<String, Object>();
+        boolean success = true;
 
         // match Bluetooth scan
         name = SensorNames.BLUETOOTH_DISCOVERY;
@@ -87,7 +105,7 @@ public class SensorCreator {
         dataFields.put("address", "string");
         dataFields.put("rssi", 0);
         value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match Wi-Fi scan
         name = SensorNames.WIFI_SCAN;
@@ -101,10 +119,19 @@ public class SensorCreator {
         dataFields.put("rssi", 0);
         dataFields.put("capabilities", "string");
         value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
+
+        return success;
     }
 
-    private static void checkLocationSensors(Context context) {
+    /**
+     * Checks the ID for the location sensor
+     * 
+     * @param context
+     *            Context for communication with CommonSense.
+     * @return true if the sensor ID is found or created
+     */
+    private static boolean checkLocationSensors(Context context) {
 
         // match location sensor
         String name = SensorNames.LOCATION;
@@ -120,16 +147,24 @@ public class SensorCreator {
         dataFields.put("bearing", 1.0f);
         dataFields.put("provider", "string");
         String value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        return checkSensor(context, name, displayName, dataType, description, value);
     }
 
-    private static void checkMotionSensors(Context context) {
+    /**
+     * Checks the IDs for the accelerometer, orientation, fall detector, motion energy sensors.
+     * 
+     * @param context
+     *            Context for communication with CommonSense.
+     * @return true if the sensor ID is found or created
+     */
+    private static boolean checkMotionSensors(Context context) {
 
         // preallocate objects
         SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
         String name, displayName, description, dataType, value;
         HashMap<String, Object> jsonFields = new HashMap<String, Object>();
+        boolean success = true;
 
         sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (null != sensor) {
@@ -144,7 +179,7 @@ public class SensorCreator {
             jsonFields.put("y-axis", 1.0);
             jsonFields.put("z-axis", 1.0);
             value = new JSONObject(jsonFields).toString();
-            checkSensor(context, name, displayName, dataType, description, value);
+            success &= checkSensor(context, name, displayName, dataType, description, value);
 
             // match accelerometer (epi)
             SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -158,7 +193,7 @@ public class SensorCreator {
                 jsonFields.put("interval", 0);
                 jsonFields.put("data", new JSONArray());
                 value = new JSONObject(jsonFields).toString();
-                checkSensor(context, name, displayName, dataType, description, value);
+                success &= checkSensor(context, name, displayName, dataType, description, value);
             }
 
             // match motion energy
@@ -168,7 +203,7 @@ public class SensorCreator {
                 description = SensorNames.MOTION_ENERGY;
                 dataType = SenseDataTypes.FLOAT;
                 value = "1.0";
-                checkSensor(context, name, displayName, dataType, description, value);
+                success &= checkSensor(context, name, displayName, dataType, description, value);
             }
 
             // match fall detector
@@ -178,7 +213,7 @@ public class SensorCreator {
                 description = "human fall";
                 dataType = SenseDataTypes.BOOL;
                 value = "true";
-                checkSensor(context, name, displayName, dataType, description, value);
+                success &= checkSensor(context, name, displayName, dataType, description, value);
             }
 
             // match fall detector
@@ -188,7 +223,7 @@ public class SensorCreator {
                 description = "demo fall";
                 dataType = SenseDataTypes.BOOL;
                 value = "true";
-                checkSensor(context, name, displayName, dataType, description, value);
+                success &= checkSensor(context, name, displayName, dataType, description, value);
             }
 
         } else {
@@ -209,7 +244,7 @@ public class SensorCreator {
                 jsonFields.put("y-axis", 1.0);
                 jsonFields.put("z-axis", 1.0);
                 value = new JSONObject(jsonFields).toString();
-                checkSensor(context, name, displayName, dataType, description, value);
+                success &= checkSensor(context, name, displayName, dataType, description, value);
 
             } else {
                 Log.w(TAG, "No linear acceleration sensor present!");
@@ -228,7 +263,7 @@ public class SensorCreator {
             jsonFields.put("pitch", 1.0);
             jsonFields.put("roll", 1.0);
             value = new JSONObject(jsonFields).toString();
-            checkSensor(context, name, displayName, dataType, description, value);
+            success &= checkSensor(context, name, displayName, dataType, description, value);
 
         } else {
             Log.w(TAG, "No orientation sensor present!");
@@ -246,20 +281,31 @@ public class SensorCreator {
             jsonFields.put("pitch rate", 1.0);
             jsonFields.put("roll rate", 1.0);
             value = new JSONObject(jsonFields).toString();
-            checkSensor(context, name, displayName, dataType, description, value);
+            success &= checkSensor(context, name, displayName, dataType, description, value);
 
         } else {
             Log.w(TAG, "No gyroscope present!");
         }
+
+        return success;
     }
 
-    private static void checkPhoneStateSensors(Context context) {
+    /**
+     * Checks IDs for the battery, screen activity, proximity, cal state, connection type, service
+     * state, signal strength sensors.
+     * 
+     * @param context
+     *            Context for communication with CommonSense.
+     * @return true if all of the sensor IDs were found or created
+     */
+    private static boolean checkPhoneStateSensors(Context context) {
 
         // preallocate objects
         SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
         String name, displayName, description, dataType, value;
         HashMap<String, Object> dataFields = new HashMap<String, Object>();
+        boolean success = true;
 
         // match battery sensor
         name = SensorNames.BATTERY_SENSOR;
@@ -270,7 +316,7 @@ public class SensorCreator {
         dataFields.put("status", "string");
         dataFields.put("level", "string");
         value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match screen activity
         name = SensorNames.SCREEN_ACTIVITY;
@@ -280,7 +326,7 @@ public class SensorCreator {
         dataFields.clear();
         dataFields.put("screen", "string");
         value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match proximity
         sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -292,7 +338,7 @@ public class SensorCreator {
             dataFields.clear();
             dataFields.put("distance", 1.0);
             value = new JSONObject(dataFields).toString();
-            checkSensor(context, name, displayName, dataType, description, value);
+            success &= checkSensor(context, name, displayName, dataType, description, value);
         } else {
             Log.w(TAG, "No proximity sensor present!");
         }
@@ -306,7 +352,7 @@ public class SensorCreator {
         dataFields.put("state", "string");
         dataFields.put("incomingNumber", "string");
         value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match connection type
         name = SensorNames.CONN_TYPE;
@@ -314,7 +360,7 @@ public class SensorCreator {
         description = SensorNames.CONN_TYPE;
         dataType = SenseDataTypes.STRING;
         value = "string";
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match ip address
         name = SensorNames.IP_ADDRESS;
@@ -322,7 +368,7 @@ public class SensorCreator {
         description = SensorNames.IP_ADDRESS;
         dataType = SenseDataTypes.STRING;
         value = "string";
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match messages waiting sensor
         name = SensorNames.UNREAD_MSG;
@@ -330,7 +376,7 @@ public class SensorCreator {
         description = SensorNames.UNREAD_MSG;
         dataType = SenseDataTypes.BOOL;
         value = "true";
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match data connection
         name = SensorNames.DATA_CONN;
@@ -338,7 +384,7 @@ public class SensorCreator {
         description = SensorNames.DATA_CONN;
         dataType = SenseDataTypes.STRING;
         value = "string";
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match servie state
         name = SensorNames.SERVICE_STATE;
@@ -350,7 +396,7 @@ public class SensorCreator {
         dataFields.put("phone number", "string");
         dataFields.put("manualSet", true);
         value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
 
         // match signal strength
         name = SensorNames.SIGNAL_STRENGTH;
@@ -361,7 +407,9 @@ public class SensorCreator {
         dataFields.put("GSM signal strength", 1);
         dataFields.put("GSM bit error rate", 1);
         value = new JSONObject(dataFields).toString();
-        checkSensor(context, name, displayName, dataType, description, value);
+        success &= checkSensor(context, name, displayName, dataType, description, value);
+
+        return success;
     }
 
     /**
@@ -380,8 +428,9 @@ public class SensorCreator {
      *            Sensor description (previously 'device_type')
      * @param value
      *            Dummy sensor value (used for producing a data structure).
+     * @return true if the sensor's ID was found or created
      */
-    private static void checkSensor(Context context, String name, String displayName,
+    private static boolean checkSensor(Context context, String name, String displayName,
             String dataType, String description, String value) {
         try {
             if (null == SenseApi.getSensorId(context, name, description, dataType, null)) {
@@ -390,7 +439,9 @@ public class SensorCreator {
             }
         } catch (Exception e) {
             Log.w(TAG, "Failed to check '" + name + "' sensor at CommonSense");
+            return false;
         }
+        return true;
     }
 
     /**
@@ -399,13 +450,13 @@ public class SensorCreator {
      * 
      * @param context
      *            Context for communication with CommonSense.
+     * @return true if all sensor IDs are found or created
      */
-    public static synchronized void checkSensorsAtCommonSense(Context context) {
-
-        checkAmbienceSensors(context);
-        checkDeviceScanSensors(context);
-        checkLocationSensors(context);
-        checkMotionSensors(context);
-        checkPhoneStateSensors(context);
+    public static synchronized boolean checkSensorsAtCommonSense(Context context) {
+        boolean success = checkAmbienceSensors(context);
+        success &= checkDeviceScanSensors(context);
+        success &= checkLocationSensors(context) && checkMotionSensors(context);
+        success &= checkPhoneStateSensors(context);
+        return success;
     }
 }
