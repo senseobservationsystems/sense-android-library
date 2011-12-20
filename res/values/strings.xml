@@ -10,7 +10,6 @@
        
     <!-- actions for generic Sense Platform, overwrite when bundling Sense into another app -->
     <string name="action_sense_app">nl.sense_os.platform.SenseApp</string>
-    <string name="action_sense_settings">nl.sense_os.platform.SenseSettings</string>
     <string name="action_sense_service">nl.sense_os.platform.SenseService</string>
     <string name="action_sense_new_data">nl.sense_os.platform.MsgHandler.NEW_DATA</string>
     <string name="action_sense_send_data">nl.sense_os.platform.MsgHandler.SEND_DATA</string>
@@ -20,19 +19,7 @@
     <string name="action_sense_data_transmit_alarm">nl.sense_os.platform.DataTransmit</string>
     
     <!-- actions for the app widget -->
-    <string name="action_widget_update">nl.sense_os.platform.AppWidgetUpdate</string>
-    <string name="action_widget_start_phone_state">nl.sense_os.platform.StartPhoneState</string>
-    <string name="action_widget_start_location">nl.sense_os.platform.StartLocation</string>
-    <string name="action_widget_start_motion">nl.sense_os.platform.StartMotion</string>
-    <string name="action_widget_start_ambience">nl.sense_os.platform.StartAmbience</string>
-    <string name="action_widget_start_devices">nl.sense_os.platform.StartDevices</string>
-    <string name="action_widget_start_external">nl.sense_os.platform.StartExternal</string>
-    <string name="action_widget_stop_phone_state">nl.sense_os.platform.StopPhoneState</string>
-    <string name="action_widget_stop_location">nl.sense_os.platform.StopLocation</string>
-    <string name="action_widget_stop_motion">nl.sense_os.platform.StopMotion</string>
-    <string name="action_widget_stop_ambience">nl.sense_os.platform.StopAmbience</string>
-    <string name="action_widget_stop_devices">nl.sense_os.platform.StopDevices</string>
-    <string name="action_widget_stop_external">nl.sense_os.platform.StopExternal</string>        
+    <string name="action_widget_update">nl.sense_os.platform.AppWidgetUpdate</string>  
 
     <!-- LocalStorage authority, overwrite when bundling Sense into another app -->
     <string name="local_storage_authority">nl.sense_os.platform.provider.LocalStorage</string>
