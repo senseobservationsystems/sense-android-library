@@ -34,7 +34,7 @@ public abstract class SensorRegistrator {
      *            UUID of the sensor's device.
      * @return true if the sensor ID was found or created
      */
-    protected boolean checkSensor(String name, String displayName, String dataType,
+    protected synchronized boolean checkSensor(String name, String displayName, String dataType,
             String description, String value, String deviceType, String deviceUuid) {
         try {
             if (null == SenseApi.getSensorId(context, name, description, dataType, deviceUuid)) {
@@ -42,8 +42,8 @@ public abstract class SensorRegistrator {
                         deviceType, deviceUuid);
             }
         } catch (Exception e) {
-            Log.w("CommonSense sensor registration", "Failed to check '" + name
-                    + "' sensor at CommonSense");
+            Log.w("CommonSense sensor registration", "failed to check '" + name
+                    + "' sensor at CommonSense! " + e + ": '" + e.getMessage() + "'");
             return false;
         }
         return true;
