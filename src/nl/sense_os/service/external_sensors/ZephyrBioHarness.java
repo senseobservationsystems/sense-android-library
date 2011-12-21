@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import nl.sense_os.service.R;
-import nl.sense_os.service.SenseApi;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.External;
@@ -93,9 +92,11 @@ public class ZephyrBioHarness {
                                     btSocket = device.createRfcommSocketToServiceRecord(serial_uid);
                                     btSocket.connect();
 
-                                    processZBHMessage = new ProcessZephyrBioHarnessMessage(
+                                    // check sensor IDs
+                                    new ZephyrBioHarnessRegistrator(context).verifySensorIds(
                                             device.getName(), device.getAddress());
-                                    SensorRegistration.checkSensorsAtCommonSense(context,
+
+                                    processZBHMessage = new ProcessZephyrBioHarnessMessage(
                                             device.getName(), device.getAddress());
                                     updateHandler.post(updateThread = new UpdateThread());
                                     connected = true;
@@ -283,126 +284,6 @@ public class ZephyrBioHarness {
             }
             intent.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
             context.startService(intent);
-        }
-    }
-
-    /**
-     * Helper class that creates the sensors for the Zephyr HxM, adding them to a seperate HM device
-     * instead of using the phone as a device.
-     */
-    private static class SensorRegistration {
-
-        /**
-         * Ensures existence of a sensor at CommonSense, adding it to the list of registered sensors
-         * if it was newly created.
-         * 
-         * @param context
-         *            Context for setting up communication with CommonSense
-         * @param name
-         *            Sensor name.
-         * @param displayName
-         *            Pretty display name for the sensor.
-         * @param dataType
-         *            Sensor data type.
-         * @param description
-         *            Sensor description (previously 'device_type')
-         * @param value
-         *            Dummy sensor value (used for producing a data structure).
-         * @param deviceType
-         *            Type of device that the sensor belongs to.
-         * @param deviceUuid
-         *            UUID of the sensor's device.
-         * @return true if the sensor ID was found or created
-         */
-        private static boolean checkSensor(Context context, String name, String displayName,
-                String dataType, String description, String value, String deviceType,
-                String deviceUuid) {
-            try {
-                if (null == SenseApi.getSensorId(context, name, description, dataType, deviceUuid)) {
-                    SenseApi.registerSensor(context, name, displayName, description, dataType,
-                            value, deviceType, deviceUuid);
-                }
-            } catch (Exception e) {
-                Log.w(TAG, "Failed to check '" + name + "' sensor at CommonSense");
-                return false;
-            }
-            return true;
-        }
-
-        /**
-         * Ensures that all of the phone's sensors exist at CommonSense, and that the phone knows
-         * their sensor IDs.
-         * 
-         * @param context
-         *            Context for communication with CommonSense.
-         * @param deviceType
-         *            The type of device that the sensor is connected to. Use null to connect the
-         *            sensor to the phone itself.
-         * @param deviceUuid
-         *            The UUID of the sensor's device.
-         */
-        static boolean checkSensorsAtCommonSense(Context context, String deviceType,
-                String deviceUuid) {
-
-            // preallocate
-            String name, displayName, description, dataType, value;
-            boolean success = true;
-
-            // match accelerometer
-            name = SensorNames.ACCELEROMETER;
-            displayName = "acceleration";
-            description = "BioHarness " + deviceType;
-            dataType = SenseDataTypes.JSON;
-            value = "0";
-            success &= checkSensor(context, name, displayName, dataType, description, value,
-                    deviceType, deviceUuid);
-
-            // match heart rate
-            name = SensorNames.HEART_RATE;
-            displayName = SensorNames.HEART_RATE;
-            description = "BioHarness " + deviceType;
-            dataType = SenseDataTypes.INT;
-            value = "0";
-            success &= checkSensor(context, name, displayName, dataType, description, value,
-                    deviceType, deviceUuid);
-
-            // match respiration rate sensor
-            name = SensorNames.RESPIRATION;
-            displayName = SensorNames.RESPIRATION;
-            description = "BioHarness " + deviceType;
-            dataType = SenseDataTypes.FLOAT;
-            value = "0.0";
-            success &= checkSensor(context, name, displayName, dataType, description, value,
-                    deviceType, deviceUuid);
-
-            // match skin temperature sensor
-            name = SensorNames.TEMPERATURE;
-            displayName = "skin temperature";
-            description = "BioHarness " + deviceType;
-            dataType = SenseDataTypes.FLOAT;
-            value = "0.0";
-            success &= checkSensor(context, name, displayName, dataType, description, value,
-                    deviceType, deviceUuid);
-
-            // match battery level sensor
-            name = SensorNames.BATTERY_LEVEL;
-            displayName = SensorNames.BATTERY_LEVEL;
-            description = "BioHarness " + deviceType;
-            dataType = SenseDataTypes.INT;
-            value = "0";
-            success &= checkSensor(context, name, displayName, dataType, description, value,
-                    deviceType, deviceUuid);
-
-            // match worn status sensor
-            name = SensorNames.WORN_STATUS;
-            displayName = SensorNames.WORN_STATUS;
-            description = "BioHarness " + deviceType;
-            dataType = SenseDataTypes.BOOL;
-            value = "true";
-            success &= checkSensor(context, name, displayName, dataType, description, value,
-                    deviceType, deviceUuid);
-
-            return success;
         }
     }
 

@@ -11,6 +11,9 @@ import java.util.Map;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
+import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.commonsense.PhoneSensorRegistrator;
+import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
@@ -894,7 +897,13 @@ public class SenseService extends Service {
     private void startSensorModules() {
 
         // make sure the IDs of all sensors are known
-        SensorRegistration.checkSensorsAtCommonSense(this);
+        SensorRegistrator reg = new PhoneSensorRegistrator(this);
+        boolean sensorsRegged = reg.verifySensorIds(null, null);
+        if (sensorsRegged) {
+            Log.v(TAG, "successfully verified the sensor IDs");
+        } else {
+            Log.w(TAG, "could not verify the sensor ID for all sensors! retry later...");
+        }
 
         final SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS,
                 MODE_PRIVATE);

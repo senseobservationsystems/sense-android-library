@@ -6,7 +6,7 @@ package nl.sense_os.service.feedback;
 import java.io.IOException;
 import java.util.Map;
 
-import nl.sense_os.service.SenseApi;
+import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 
