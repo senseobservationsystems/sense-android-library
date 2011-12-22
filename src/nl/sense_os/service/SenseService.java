@@ -929,13 +929,19 @@ public class SenseService extends Service {
     private void startSensorModules() {
 
         // make sure the IDs of all sensors are known
-        SensorRegistrator reg = new PhoneSensorRegistrator(this);
-        boolean sensorsRegged = reg.verifySensorIds(null, null);
-        if (sensorsRegged) {
-            Log.v(TAG, "successfully verified the sensor IDs");
-        } else {
-            Log.w(TAG, "could not verify the sensor ID for all sensors! should retry later...");
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                SensorRegistrator reg = new PhoneSensorRegistrator(SenseService.this);
+                boolean sensorsRegged = reg.verifySensorIds(null, null);
+                if (sensorsRegged) {
+                    Log.v(TAG, "successfully verified the sensor IDs");
+                } else {
+                    Log.w(TAG,
+                            "could not verify the sensor ID for all sensors! should retry later...");
+                }
+            }
+        }.start();
 
         final SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS,
                 MODE_PRIVATE);

@@ -132,31 +132,46 @@ public class SensePlugin extends Plugin {
         if (null != service) {
 
             // get the parameters
-            String username = null, password = null;
-            username = data.getString(0);
-            password = data.getString(1);
+            final String username = data.getString(0);
+            final String password = data.getString(1);
 
             Log.d(TAG, "username=" + username + ", pasword=" + password);
 
-            // try the login
-            int result = service.changeLogin(username, password);
+            // try the login on a separate Thread
+            new Thread() {
+                public void run() {
+                    int result = -1;
+                    try {
+                        result = service.changeLogin(username, password);
+                    } catch (RemoteException e) {
+                        // handle result below
+                    }
 
-            // check the result
-            switch (result) {
-            case 0:
-                Log.v(TAG, "Logged in as '" + username + "'");
-                return new PluginResult(Status.OK, result);
-            case -1:
-                Log.v(TAG, "Login failed! Connectivity problems?");
-                return new PluginResult(Status.IO_EXCEPTION,
-                        "Error loggin in, probably connectivity problems.");
-            case -2:
-                Log.v(TAG, "Login failed! Invalid username or password.");
-                return new PluginResult(Status.ERROR, "Invalid username or password.");
-            default:
-                Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
-                return new PluginResult(Status.ERROR, "Unexpected result: " + result);
-            }
+                    // check the result
+                    switch (result) {
+                    case 0:
+                        Log.v(TAG, "Logged in as '" + username + "'");
+                        success(new PluginResult(Status.OK, result), callbackId);
+                        break;
+                    case -1:
+                        Log.v(TAG, "Login failed! Connectivity problems?");
+                        error(new PluginResult(Status.IO_EXCEPTION,
+                                "Error loggin in, probably connectivity problems."), callbackId);
+                        break;
+                    case -2:
+                        Log.v(TAG, "Login failed! Invalid username or password.");
+                        error(new PluginResult(Status.ERROR, "Invalid username or password."),
+                                callbackId);
+                        break;
+                    default:
+                        Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
+                        error(new PluginResult(Status.ERROR, "Unexpected result: " + result),
+                                callbackId);
+                    }
+                };
+            }.start();
+
+            return new PluginResult(Status.NO_RESULT);
 
         } else {
             Log.e(TAG, "No connection to the Sense Platform service.");
