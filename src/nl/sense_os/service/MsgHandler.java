@@ -931,7 +931,7 @@ public class MsgHandler extends Service {
             // get the cookie
             final SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
                     Context.MODE_PRIVATE);
-            String cookie = prefs.getString(Auth.LOGIN_COOKIE, "");
+            String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
 
             // prepare the data to give to the transmitters
             Bundle msgData = new Bundle();
@@ -1078,7 +1078,7 @@ public class MsgHandler extends Service {
 
                 // get cookie for transmission
                 SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-                String cookie = prefs.getString(Auth.LOGIN_COOKIE, "");
+                String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
 
                 if (cookie.length() > 0) {
                     ++nrOfSendMessageThreads;

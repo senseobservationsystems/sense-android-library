@@ -11,8 +11,8 @@ import java.util.Map;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
-import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.PhoneSensorRegistrator;
+import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
@@ -159,7 +159,7 @@ public class SenseService extends Service {
         @Override
         public boolean getPrefBool(String key, boolean defValue) throws RemoteException {
             // Log.v(TAG, "Get preference: " + key);
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            SharedPreferences prefs;
             if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
                     || key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
                     || key.equals(Status.MAIN) || key.equals(Status.MOTION)
@@ -168,6 +168,8 @@ public class SenseService extends Service {
                 prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
             } else if (key.equals(Auth.DEV_MODE)) {
                 prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+            } else {
+                prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
             }
 
             // return the preference value
@@ -203,9 +205,11 @@ public class SenseService extends Service {
         @Override
         public long getPrefLong(String key, long defValue) throws RemoteException {
             // Log.v(TAG, "Get preference: " + key);
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            SharedPreferences prefs;
             if (key.equals(Auth.SENSOR_LIST_TIME)) {
                 prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+            } else {
+                prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
             }
 
             try {
@@ -218,12 +222,15 @@ public class SenseService extends Service {
         @Override
         public String getPrefString(String key, String defValue) throws RemoteException {
             // Log.v(TAG, "Get preference: " + key);
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            SharedPreferences prefs;
             if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
                     || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST)
                     || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
                     || key.equals(Auth.PHONE_TYPE)) {
                 prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+            } else {
+                // all other preferences
+                prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
             }
 
             // return the preference value
@@ -258,7 +265,7 @@ public class SenseService extends Service {
         public void setPrefBool(String key, boolean value) throws RemoteException {
             // Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
 
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            SharedPreferences prefs;
             if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
                     || key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
                     || key.equals(Status.MAIN) || key.equals(Status.MOTION)
@@ -267,6 +274,8 @@ public class SenseService extends Service {
                 prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
             } else if (key.equals(Auth.DEV_MODE)) {
                 prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+            } else {
+                prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
             }
 
             // store value
@@ -311,9 +320,11 @@ public class SenseService extends Service {
         @Override
         public void setPrefLong(String key, long value) throws RemoteException {
             // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            SharedPreferences prefs;
             if (key.equals(Auth.SENSOR_LIST_TIME)) {
                 prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+            } else {
+                prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
             }
 
             // store value
@@ -326,12 +337,15 @@ public class SenseService extends Service {
         @Override
         public void setPrefString(String key, String value) throws RemoteException {
             // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            SharedPreferences prefs;
             if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
                     || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST)
                     || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
                     || key.equals(Auth.PHONE_TYPE)) {
                 prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+            } else {
+                // all other preferences
+                prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
             }
 
             // store value
@@ -473,25 +487,28 @@ public class SenseService extends Service {
         // clear cached settings of the previous user (i.e. device id)
         final SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
                 MODE_PRIVATE);
-        final Editor editor = authPrefs.edit();
+        final Editor authEditor = authPrefs.edit();
 
-        // save new username and password in the preferences
-        editor.putString(Auth.LOGIN_USERNAME, username);
-
+        // hash password
+        String hashedPass;
         boolean skipHash = getPackageName().equals("nl.sense_os.ivitality");
         if (!skipHash) {
-            editor.putString(Auth.LOGIN_PASS, SenseApi.hashPassword(password));
+            hashedPass = SenseApi.hashPassword(password);
         } else {
             Log.w(TAG, "Skip password hashing!");
-            editor.putString(Auth.LOGIN_PASS, password);
+            hashedPass = password;
         }
 
+        // save new username and password in the preferences
+        authEditor.putString(Auth.LOGIN_USERNAME, username);
+        authEditor.putString(Auth.LOGIN_PASS, hashedPass);
+
         // remove old session data
-        editor.remove(Auth.DEVICE_ID);
-        editor.remove(Auth.DEVICE_TYPE);
-        editor.remove(Auth.LOGIN_COOKIE);
-        editor.remove(Auth.SENSOR_LIST);
-        editor.commit();
+        authEditor.remove(Auth.DEVICE_ID);
+        authEditor.remove(Auth.DEVICE_TYPE);
+        authEditor.remove(Auth.LOGIN_COOKIE);
+        authEditor.remove(Auth.SENSOR_LIST);
+        authEditor.commit();
 
         return login();
     }
@@ -558,26 +575,30 @@ public class SenseService extends Service {
             try {
                 result = SenseApi.login(this, username, pass);
             } catch (Exception e) {
-                Log.w(TAG, "Exception during login: '" + e.getMessage() + "'. Connection problems?");
-                // handle result later
+                Log.w(TAG, "Exception during login! " + e + ": '" + e.getMessage() + "'");
+                // handle result below
             }
-
-            if (0 == result) {
-                // logged in successfully
-                state.setLoggedIn(true);
-                onLogIn();
-            } else if (-2 == result) {
-                Log.w(TAG, "Login forbidden!");
-                state.setLoggedIn(false);
-            } else {
-                Log.w(TAG, "Login failed!");
-                state.setLoggedIn(false);
-            }
-
         } else {
-            Log.w(TAG, "Cannot login: username or password unavailable... Username: " + username
-                    + ", password: " + pass);
+            Log.w(TAG, "Cannot login: username or password unavailable...");
+            Log.d(TAG, "Username: " + username + ", password: " + pass);
+        }
+
+        // handle the result
+        switch (result) {
+        case 0: // logged in successfully
+            state.setLoggedIn(true);
+            onLogIn();
+            break;
+        case -1: // error
+            Log.w(TAG, "Login failed!");
             state.setLoggedIn(false);
+            break;
+        case -2: // forbidden
+            Log.w(TAG, "Login forbidden!");
+            state.setLoggedIn(false);
+            break;
+        default:
+            Log.e(TAG, "Unexpected login result: " + result);
         }
 
         return result;
@@ -801,20 +822,31 @@ public class SenseService extends Service {
             } catch (Exception e) {
                 Log.w(TAG, "Exception during registration: '" + e.getMessage()
                         + "'. Connection problems?");
-                // handle result later
-            }
-
-            if (registered == 0) {
-                login();
-            } else {
-                Log.w(TAG, "Registration failed");
-                state.setLoggedIn(false);
+                // handle result below
             }
         } else {
-            // Log.d(TAG, "Cannot register: username or password unavailable... Username: " +
-            // username + ", password hash: " + hashPass);
-            state.setLoggedIn(false);
+            Log.w(TAG, "Cannot register: username or password unavailable...");
+            Log.d(TAG, "Username: " + username + ", password hash: " + hashPass);
         }
+
+        // handle result
+        switch (registered) {
+        case 0:
+            Log.i(TAG, "Successful registration for '" + username + "'");
+            login();
+            break;
+        case -1:
+            Log.w(TAG, "Registration failed");
+            state.setLoggedIn(false);
+            break;
+        case -2:
+            Log.w(TAG, "Registration failed: user already exists");
+            state.setLoggedIn(false);
+            break;
+        default:
+            Log.w(TAG, "Unexpected registration result: " + registered);
+        }
+
         return registered;
     }
 
@@ -902,7 +934,7 @@ public class SenseService extends Service {
         if (sensorsRegged) {
             Log.v(TAG, "successfully verified the sensor IDs");
         } else {
-            Log.w(TAG, "could not verify the sensor ID for all sensors! retry later...");
+            Log.w(TAG, "could not verify the sensor ID for all sensors! should retry later...");
         }
 
         final SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS,

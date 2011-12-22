@@ -3,6 +3,18 @@
  *************************************************************************************************/
 package nl.sense_os.service.popquiz;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,18 +38,6 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class PopQuiz extends Activity {
     /**
@@ -96,7 +96,8 @@ public class PopQuiz extends Activity {
         // get registered activity and login name from preferences
         final SharedPreferences loginPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
                 MODE_PRIVATE);
-        String name = loginPrefs.getString(Auth.LOGIN_USERNAME, "ERROR");
+        String name = loginPrefs.getString(Auth.LOGIN_USERNAME,
+                getString(android.R.string.unknownName));
 
         final SharedPreferences popPrefs = getSharedPreferences(SenseAlarmManager.PREFS_LOCATION,
                 MODE_PRIVATE);
@@ -228,8 +229,8 @@ public class PopQuiz extends Activity {
 
         // get login name from preferences
         final SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-        String nameString = prefs.getString(Auth.LOGIN_USERNAME, "ERROR");
-        if (nameString.equals("ERROR")) {
+        String nameString = prefs.getString(Auth.LOGIN_USERNAME, null);
+        if (null == nameString) {
             Log.e(TAG, "Cannot fetch name from preferences.");
             return null;
         }

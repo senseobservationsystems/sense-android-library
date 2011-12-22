@@ -226,7 +226,7 @@ public class SenseApi {
 
         } else {
             // request fresh list of sensors for this device from CommonSense
-            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, "NO_COOKIE");
+            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
             boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
             String url = devMode ? SenseUrls.DEV_SENSORS : SenseUrls.SENSORS;
             url = url.replaceFirst("<id>", "" + deviceId);
@@ -441,28 +441,43 @@ public class SenseApi {
 
         // if response code is not 200 (OK), the login was incorrect
         String responseCode = response.get("http response code");
+        int result = -1;
         if ("403".equalsIgnoreCase(responseCode)) {
-            Log.e(TAG, "CommonSense login refused! Response: forbidden!");
-            return -2;
+            Log.w(TAG, "CommonSense login refused! Response: forbidden!");
+            result = -2;
         } else if (!"200".equalsIgnoreCase(responseCode)) {
-            Log.e(TAG, "CommonSense login failed! Response: " + responseCode);
-            return -1;
+            Log.w(TAG, "CommonSense login failed! Response: " + responseCode);
+            result = -1;
+        } else {
+            // received 200 response
+            result = 0;
         }
 
         // get the cookie from the response
         String cookie = response.get("set-cookie");
         if (response.get("set-cookie") == null) {
             // something went horribly wrong
-            Log.e(TAG, "CommonSense login failed: no cookie received?!");
-            return -1;
+            Log.w(TAG, "CommonSense login failed: no cookie received?!");
+            result = -1;
         }
 
-        // store cookie in the preferences
-        authEditor.putString(Auth.LOGIN_COOKIE, cookie);
-        authEditor.commit();
+        // handle result
+        switch (result) {
+        case 0: // logged in
+            authEditor.putString(Auth.LOGIN_COOKIE, cookie);
+            authEditor.commit();
+            break;
+        case -1: // error
+            break;
+        case -2: // unauthorized
+            authEditor.remove(Auth.LOGIN_COOKIE);
+            authEditor.commit();
+            break;
+        default:
+            Log.e(TAG, "Unexpected login result: " + result);
+        }
 
-        Log.i(TAG, "'" + username + "' logged in at CommonSense...");
-        return 0;
+        return result;
     }
 
     /**
@@ -502,7 +517,7 @@ public class SenseApi {
         final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
                 Context.MODE_PRIVATE);
         final boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, "");
+        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
         // prepare request to create new sensor
         String url = devMode ? SenseUrls.DEV_CREATE_SENSOR : SenseUrls.CREATE_SENSOR;
@@ -600,16 +615,9 @@ public class SenseApi {
             String surname, String email, String mobile) throws JSONException, IOException {
 
         // clear cached settings of the previous user
-        final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+        SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
                 Context.MODE_PRIVATE);
-        final Editor authEditor = authPrefs.edit();
-        authEditor.remove(Auth.DEVICE_ID);
-        authEditor.remove(Auth.DEVICE_TYPE);
-        authEditor.remove(Auth.LOGIN_COOKIE);
-        authEditor.remove(Auth.SENSOR_LIST);
-        authEditor.commit();
-
-        final boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+        boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
 
         final String url = devMode ? SenseUrls.DEV_REG : SenseUrls.REG;
 
@@ -636,17 +644,18 @@ public class SenseApi {
         Map<String, String> response = SenseApi.request(context, url, data, null);
 
         String responseCode = response.get("http response code");
+        int result = -1;
         if ("201".equalsIgnoreCase(responseCode)) {
-            Log.i(TAG, "CommonSense registration successful for '" + username + "'");
+            result = 0;
         } else if ("409".equalsIgnoreCase(responseCode)) {
             Log.e(TAG, "Error registering new user! User already exists");
-            return -2;
+            result = -2;
         } else {
             Log.e(TAG, "Error registering new user! Response code: " + responseCode);
-            return -1;
+            result = -1;
         }
 
-        return 0;
+        return result;
     }
 
     /**
