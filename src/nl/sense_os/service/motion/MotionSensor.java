@@ -3,6 +3,21 @@
  *************************************************************************************************/
 package nl.sense_os.service.motion;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.states.EpiStateMonitor;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -20,24 +35,45 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.Motion;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.states.EpiStateMonitor;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
 public class MotionSensor implements SensorEventListener {
 
-    private static final String TAG = "Sense MotionSensor";
+    /**
+     * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
+     * the screen turns off.
+     */
+    private class ScreenOffListener extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Check action just to be on the safe side.
+            if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                return;
+            }
+
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
+            boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
+            if (useFix) {
+                // wait half a second and re-register
+                Runnable restartSensing = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // Unregisters the motion listener and registers it again.
+                        // Log.v(TAG, "Screen went off, re-registering the Motion sensor");
+                        stopMotionSensing();
+                        startMotionSensing(sampleDelay);
+                    };
+                };
+
+                new Handler().postDelayed(restartSensing, 500);
+            }
+        }
+    }
+
+    private static final String TAG = "Sense Motion";
+
+    private final BroadcastReceiver screenOffListener = new ScreenOffListener();
 
     private final FallDetector fallDetector = new FallDetector();
     private final Context context;
@@ -547,8 +583,23 @@ public class MotionSensor implements SensorEventListener {
         motionSensingActive = true;
         setSampleDelay(sampleDelay);
         registerSensors();
-
         startWakeUpAlarms();
+        enableScreenOffListener(true);
+    }
+
+    private void enableScreenOffListener(boolean enable) {
+        if (enable) {
+            // Register the receiver for SCREEN OFF events
+            IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+            context.registerReceiver(screenOffListener, filter);
+        } else {
+            // Unregister the receiver for SCREEN OFF events
+            try {
+                context.unregisterReceiver(screenOffListener);
+            } catch (IllegalArgumentException e) {
+                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
+            }
+        }
     }
 
     /**

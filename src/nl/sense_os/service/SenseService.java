@@ -3,8 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -19,7 +17,6 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.External;
-import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
@@ -39,15 +36,11 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -59,89 +52,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class SenseService extends Service {
-
-    /**
-     * BroadcastReceiver that listens for changes in the network connectivity and updates the logged
-     * in status accordingly.
-     */
-    private class ConnectivityListener extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-
-            if (!state.isStarted()) {
-                // Log.v(TAG, "Connectivity changed, but service is not activated...");
-                return;
-            }
-
-            ConnectivityManager mgr = (ConnectivityManager) context
-                    .getSystemService(CONNECTIVITY_SERVICE);
-            final NetworkInfo info = mgr.getActiveNetworkInfo();
-            if ((null != info) && info.isConnectedOrConnecting()) {
-
-                // check that we are not logged in yet before logging in
-                if (false == state.isLoggedIn()) {
-                    // Log.v(TAG, "Regained connectivity! Try to log in...");
-
-                    // thread for undisturbed execution
-                    HandlerThread connectionThread = new HandlerThread("Connectivity thread");
-                    connectionThread.start();
-                    final Handler handler = new Handler(connectionThread.getLooper());
-
-                    // post login task
-                    handler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            login();
-                            handler.getLooper().quit();
-                        }
-                    });
-
-                } else {
-                    // still connected, stay logged in
-                }
-
-            } else {
-                // login not possible without connection
-                // Log.v(TAG, "Lost connectivity! Updating login status...");
-                state.setLoggedIn(false);
-            }
-        }
-    };
-
-    /**
-     * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
-     * the screen turns off.
-     */
-    private class ScreenOffListener extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Check action just to be on the safe side.
-            if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                return;
-            }
-
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-            boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
-            if (state.isMotionActive() && useFix) {
-                // wait half a second and re-register
-                Runnable motionThread = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // Unregisters the motion listener and registers it again.
-                        // Log.v(TAG, "Screen went off, re-registering the Motion sensor");
-                        toggleMotion(false);
-                        toggleMotion(true);
-                    };
-                };
-
-                new Handler().postDelayed(motionThread, 500);
-            }
-        }
-    }
 
     /**
      * Implementation of the service's AIDL interface.
@@ -432,7 +342,7 @@ public class SenseService extends Service {
     /**
      * Intent action to force a re-login attempt when the service is started.
      */
-    public static final String INTENT_EXTRA_RELOGIN = "action_relogin";
+    public static final String EXTRA_RELOGIN = "relogin";
 
     /**
      * Intent action for broadcasts that the service state has changed.
@@ -442,10 +352,6 @@ public class SenseService extends Service {
     private final ISenseService.Stub binder = new SenseServiceStub();
 
     private ServiceStateHelper state;
-
-    // broadcast receivers
-    private final BroadcastReceiver screenOffListener = new ScreenOffListener();
-    private final ConnectivityListener connectivityListener = new ConnectivityListener();
 
     private BatterySensor batterySensor;
     private DeviceProximity deviceProximity;
@@ -620,29 +526,11 @@ public class SenseService extends Service {
         super.onCreate();
 
         state = ServiceStateHelper.getInstance(this);
-
-        // register broadcast receiver for login in case of Internet connection changes
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(connectivityListener, filter);
     }
 
     @Override
     public void onDestroy() {
         // Log.v(TAG, "----------> Sense Platform service is being destroyed... <----------");
-
-        // stop listening for possibility to login
-        try {
-            unregisterReceiver(connectivityListener);
-        } catch (IllegalArgumentException e) {
-            // Log.d(TAG, "Ignoring exception when trying to unregister connectivity listener");
-        }
-
-        // stop listening to screen off receiver
-        try {
-            unregisterReceiver(screenOffListener);
-        } catch (IllegalArgumentException e) {
-            // Log.d(TAG, "Ignoring exception when trying to unregister screen off listener");
-        }
 
         // stop active sensing components
         stopSensorModules();
@@ -651,7 +539,7 @@ public class SenseService extends Service {
         onLogOut();
 
         // stop the main service
-        stopForegroundCompat();
+        stopForeground(true);
 
         super.onDestroy();
     }
@@ -727,23 +615,26 @@ public class SenseService extends Service {
                     state.setStarted(prefs.getBoolean(Status.MAIN, true));
                     if (false == state.isStarted()) {
                         Log.w(TAG, "Sense service was started when the main status is not set!");
-                        stopForegroundCompat();
+                        AliveChecker.stopChecks(SenseService.this);
+                        stopForeground(true);
+                        state.setForeground(false);
                         return;
                     }
 
                     // make service as important as regular activities
                     if (false == state.isForeground()) {
-                        startForegroundCompat();
+                        Notification n = ServiceStateHelper.getInstance(SenseService.this)
+                                .getStateNotification();
+                        startForeground(ServiceStateHelper.NOTIF_ID, n);
+                        state.setForeground(true);
+                        AliveChecker.scheduleChecks(SenseService.this);
                     }
 
-                    // intent is null when the Service is recreated by Android after it was killed
-                    boolean relogin = true;
-                    if (null != intent) {
-                        relogin = intent.getBooleanExtra(INTENT_EXTRA_RELOGIN, false);
-                    }
-
-                    // try to login immediately
-                    if ((false == state.isLoggedIn()) || relogin) {
+                    // re-login if necessary
+                    boolean relogin = !state.isLoggedIn();
+                    relogin |= (null == intent); // intent is null when Service was killed
+                    relogin |= (null != intent) && intent.getBooleanExtra(EXTRA_RELOGIN, false);
+                    if (relogin) {
                         login();
                     } else {
                         checkVersion();
@@ -866,63 +757,6 @@ public class SenseService extends Service {
     }
 
     /**
-     * Makes this service a foreground service, as important as 'real' activities. As a reminder
-     * that the service is running, a notification is shown in the status bar.
-     */
-    private void startForegroundCompat() {
-        // Log.v(TAG, "Enable foreground status...");
-
-        // call startForeground in fancy way so old systems do not get confused by unknown methods
-        try {
-            // try newer startForeground(int, Notification) method
-            final Class<?>[] startForegroundSignature = new Class[] { int.class, Notification.class };
-            Method startForeground = getClass().getMethod("startForeground",
-                    startForegroundSignature);
-
-            // create notification
-            Notification n = state.getStateNotification();
-
-            // call the startForeground method
-            Object[] startArgs = { Integer.valueOf(ServiceStateHelper.NOTIF_ID), n };
-            startForeground.invoke(this, startArgs);
-
-        } catch (NoSuchMethodException e) {
-            // try older setForeground(boolean) method
-            final Class<?>[] setForegroundSignature = new Class[] { boolean.class };
-            Method setForeground = null;
-
-            // call the setForeground methods
-            try {
-                setForeground = getClass().getMethod("setForeground", setForegroundSignature);
-
-                // call the setForeground method
-                Object[] startArgs = { Boolean.TRUE };
-                setForeground.invoke(this, startArgs);
-
-            } catch (Exception e1) {
-                // Should not happen.
-                Log.e(TAG, "Unable to invoke setForeground(boolean)", e1);
-                return;
-            }
-
-        } catch (InvocationTargetException e) {
-            // Should not happen.
-            Log.e(TAG, "Unable to invoke startForeground(int, Notification)", e);
-            return;
-        } catch (IllegalAccessException e) {
-            // Should not happen.
-            Log.e(TAG, "Unable to invoke startForeground(int, Notification)", e);
-            return;
-        }
-
-        state.setStarted(true);
-        AliveChecker.scheduleChecks(this);
-
-        // update state
-        state.setForeground(true);
-    }
-
-    /**
      * Toggles the individual sensor modules according to the status that was stored in the
      * preferences.
      */
@@ -982,57 +816,6 @@ public class SenseService extends Service {
 
         // send broadcast that something has changed in the status
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
-    }
-
-    /**
-     * Lowers importance of this service back to normal again.
-     */
-    private void stopForegroundCompat() {
-        // Log.v(TAG, "Remove foreground status...");
-
-        state.setStarted(false);
-        AliveChecker.stopChecks(this);
-
-        try {
-            // try the newer stopForeground(boolean) method
-            final Class<?>[] stopForegroundSignature = new Class[] { boolean.class };
-            Method stopForeground = getClass().getMethod("stopForeground", stopForegroundSignature);
-
-            // call the stopForeground method
-            Object[] stopArgs = { Boolean.TRUE };
-            stopForeground.invoke(this, stopArgs);
-
-        } catch (NoSuchMethodException e) {
-            // try older setForeground(boolean) method
-            final Class<?>[] setForegroundSignature = new Class[] { boolean.class };
-            Method setForeground = null;
-
-            // call the setForeground methods
-            try {
-                setForeground = getClass().getMethod("setForeground", setForegroundSignature);
-
-                // call the setForeground method
-                Object[] startArgs = { Boolean.FALSE };
-                setForeground.invoke(this, startArgs);
-
-            } catch (Exception e1) {
-                // Should not happen.
-                Log.e(TAG, "Unable to invoke setForeground(boolean)", e1);
-                return;
-            }
-
-        } catch (InvocationTargetException e) {
-            // Should not happen.
-            Log.w(TAG, "Unable to invoke stopForeground", e);
-            return;
-        } catch (IllegalAccessException e) {
-            // Should not happen.
-            Log.w(TAG, "Unable to invoke stopForeground", e);
-            return;
-        }
-
-        // update state field
-        state.setForeground(false);
     }
 
     /**
@@ -1472,7 +1255,11 @@ public class SenseService extends Service {
             }
             onLogOut();
             stopSensorModules();
-            stopForegroundCompat();
+
+            state.setStarted(false);
+            AliveChecker.stopChecks(this);
+            stopForeground(true);
+            state.setForeground(false);
         }
     }
 
@@ -1482,10 +1269,6 @@ public class SenseService extends Service {
             state.setMotionActive(active);
 
             if (true == active) {
-
-                // Register the receiver for SCREEN OFF events
-                IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-                registerReceiver(screenOffListener, filter);
 
                 // check motion sensor presence
                 if (motionSensor != null) {
@@ -1545,13 +1328,6 @@ public class SenseService extends Service {
                 });
 
             } else {
-
-                // Unregister the receiver for SCREEN OFF events
-                try {
-                    unregisterReceiver(screenOffListener);
-                } catch (IllegalArgumentException e) {
-                    // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
-                }
 
                 // stop sensing
                 if (null != motionSensor) {

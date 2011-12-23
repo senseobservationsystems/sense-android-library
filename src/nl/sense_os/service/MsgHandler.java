@@ -181,7 +181,7 @@ public class MsgHandler extends Service {
                 if (statusCode.compareToIgnoreCase("403") == 0) {
                     final Intent serviceIntent = new Intent(
                             getString(R.string.action_sense_service));
-                    serviceIntent.putExtra(SenseService.INTENT_EXTRA_RELOGIN, true);
+                    serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
                     context.startService(serviceIntent);
                 }
 
@@ -561,7 +561,7 @@ public class MsgHandler extends Service {
                     if ((response != null) && response.get("http response code").equals("403")) {
                         final Intent serviceIntent = new Intent(
                                 getString(R.string.action_sense_service));
-                        serviceIntent.putExtra(SenseService.INTENT_EXTRA_RELOGIN, true);
+                        serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
                         context.startService(serviceIntent);
                     }
 
