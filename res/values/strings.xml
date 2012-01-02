@@ -7,6 +7,8 @@
     <string name="stat_notify_content_off_loggedout">Sensors inactive, no connection to CommonSense</string>  
     <string name="stat_notify_content_on_loggedin">"Sensors active, logged in as \'%s\'"</string> 
     <string name="stat_notify_content_on_loggedout">Sensors active, no connection to CommonSense</string>
+    <string name="nfc_dialog_title">NFC tag discovered</string>
+    <string name="nfc_dialog_msg">Tag ID: \'%s\'\n\nSave tag in CommonSense?"</string>
        
     <!-- actions for generic Sense Platform, overwrite when bundling Sense into another app -->
     <string name="action_sense_app">nl.sense_os.platform.SenseApp</string>

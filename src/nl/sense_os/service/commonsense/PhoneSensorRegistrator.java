@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.nfc.NfcManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -122,6 +123,23 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         dataFields.put("capabilities", "string");
         value = new JSONObject(dataFields).toString();
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
+
+        // match NFC scan
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+            NfcManager nm = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
+            if (null != nm.getDefaultAdapter()) {
+                name = SensorNames.NFC_SCAN;
+                displayName = "nfc scan";
+                description = SensorNames.NFC_SCAN;
+                dataType = SenseDataTypes.JSON;
+                dataFields.clear();
+                dataFields.put("id", "string");
+                dataFields.put("technology", "string");
+                dataFields.put("message", "string");
+                value = new JSONObject(dataFields).toString();
+                success &= checkSensor(name, displayName, dataType, description, value, null, null);
+            }
+        }
 
         return success;
     }

@@ -285,5 +285,11 @@ SensePlatform.PREF_ZEPHYR_HXM = "zephyrHxM";
 SensePlatform.PREF_ODB2DONGLE = "obd2dongle";
 
 PhoneGap.addConstructor(function() {
-    PhoneGap.addPlugin("sense", new SensePlatform());
+    try {
+        PhoneGap.addPlugin("sense", new SensePlatform());
+    } catch (e) {
+        // do it again to fix a bug in iOS:
+        if (!window.plugins) window.plugins = {};
+        if (!window.plugins.sense) window.plugins.sense = new SensePlatform();
+    }
 });

@@ -137,6 +137,11 @@ public class SensorData {
         public static final String WIFI_SCAN = "wifi scan";
 
         /**
+         * Wi-Fi scan sensor. Part of the Neighboring Devices sensors.
+         */
+        public static final String NFC_SCAN = "nfc_scan";
+
+        /**
          * Accelerometer. Part of the Motion sensors, also used in Zephyr BioHarness external
          * sensor.
          */

@@ -140,17 +140,23 @@ public class SensePrefs {
 
         public static class DevProx {
             /**
-             * Key for preference that toggles use of Bluetooth in the DeviceProximity sensor.
+             * Key for preference that toggles use of Bluetooth in the Device Proximity sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String BLUETOOTH = "proximity_bt";
             /**
-             * Key for preference that toggles use of Wi-Fi in the DeviceProximity sensor.
+             * Key for preference that toggles use of Wi-Fi in the Device Proximity sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String WIFI = "proximity_wifi";
+            /**
+             * Key for preference that toggles use of NFC in the Device Proximity sensor.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String NFC = "proximity_nfc";
         }
 
         public static class External {
