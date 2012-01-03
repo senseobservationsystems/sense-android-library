@@ -42,8 +42,8 @@ public abstract class SensorRegistrator {
                         deviceType, deviceUuid);
             }
         } catch (Exception e) {
-            Log.w("CommonSense sensor registration", "failed to check '" + name
-                    + "' sensor at CommonSense! " + e + ": '" + e.getMessage() + "'");
+            Log.w("CommonSense sensor registration", "Failed to check '" + name
+                    + "' sensor ID at CommonSense! " + e);
             return false;
         }
         return true;
