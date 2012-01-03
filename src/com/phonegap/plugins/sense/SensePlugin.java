@@ -65,7 +65,7 @@ public class SensePlugin extends Plugin {
             // only for ivitality
             String packageName = ctx.getPackageName();
             if (packageName.equals("nl.sense_os.ivitality")) {
-                Log.d(TAG, "Set iVitality sensor settings");
+                Log.w(TAG, "Set iVitality sensor settings");
                 try {
                     service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
                     service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
@@ -135,7 +135,7 @@ public class SensePlugin extends Plugin {
             final String username = data.getString(0);
             final String password = data.getString(1);
 
-            Log.d(TAG, "username=" + username + ", pasword=" + password);
+            // Log.d(TAG, "username=" + username + ", password=" + password);
 
             // try the login on a separate Thread
             new Thread() {
@@ -156,7 +156,7 @@ public class SensePlugin extends Plugin {
                     case -1:
                         Log.v(TAG, "Login failed! Connectivity problems?");
                         error(new PluginResult(Status.IO_EXCEPTION,
-                                "Error loggin in, probably connectivity problems."), callbackId);
+                                "Error logging in, probably connectivity problems."), callbackId);
                         break;
                     case -2:
                         Log.v(TAG, "Login failed! Invalid username or password.");
@@ -192,7 +192,7 @@ public class SensePlugin extends Plugin {
      */
     @Override
     public PluginResult execute(String action, final JSONArray data, final String callbackId) {
-        Log.d(TAG, "Execute action: '" + action + "'");
+        // Log.d(TAG, "Execute action: '" + action + "'");
         try {
             if (Actions.INIT.equals(action)) {
                 return init(data, callbackId);
@@ -287,7 +287,7 @@ public class SensePlugin extends Plugin {
 
                         @Override
                         public void run() {
-                            Log.d(TAG, "Received Sense Platform service status: " + status);
+                            // Log.d(TAG, "Received Sense Platform service status: " + status);
                             SensePlugin.this.success(new PluginResult(Status.OK, status),
                                     callbackId);
                         }
@@ -336,10 +336,10 @@ public class SensePlugin extends Plugin {
             }
         }
         if (returnvalue.length() == 0) {
-            Log.d(TAG, "No '" + sensorName + "' data points found in the local storage");
+            Log.v(TAG, "No '" + sensorName + "' data points found in the local storage");
             return new PluginResult(Status.NO_RESULT);
         }
-        Log.d(TAG, "Found " + returnvalue.length() + " '" + sensorName
+        Log.v(TAG, "Found " + returnvalue.length() + " '" + sensorName
                 + "' data points in the local storage");
         return new PluginResult(Status.OK, returnvalue);
     }
@@ -477,12 +477,12 @@ public class SensePlugin extends Plugin {
         if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
                 || key.equals(Auth.LOGIN_USERNAME)) {
             String value = data.getString(1);
-            Log.d(TAG, "Set preference '" + key + "': '" + value + "'");
+            Log.v(TAG, "Set preference '" + key + "': '" + value + "'");
             service.setPrefString(key, value);
             return new PluginResult(Status.OK);
         } else {
             boolean value = data.getBoolean(1);
-            Log.d(TAG, "Set preference '" + key + "': " + value);
+            Log.v(TAG, "Set preference '" + key + "': " + value);
             service.setPrefBool(key, value);
             return new PluginResult(Status.OK);
         }
