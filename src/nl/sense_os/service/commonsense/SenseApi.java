@@ -14,7 +14,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +31,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.json.JSONArray;
@@ -274,35 +274,28 @@ public class SenseApi {
         // get list of all registered sensors for this device
         JSONArray sensors = getRegisteredSensors(context, deviceUuid);
 
-        // check sensors with similar names in the list
-        List<JSONObject> similar = new ArrayList<JSONObject>();
+        // check sensors with similar names and descriptions in the list
         for (int i = 0; i < sensors.length(); i++) {
             JSONObject sensor = (JSONObject) sensors.get(i);
 
-            if (sensor.getString("name").equalsIgnoreCase(name)) {
-                similar.add(sensor);
-            }
-        }
+            if (sensor.getString("name").equalsIgnoreCase(name)
+                    && sensor.getString("device_type").equalsIgnoreCase(description)
+                    && sensor.getString("data_type").equalsIgnoreCase(dataType)) {
+                return sensor.getString("id");
 
-        // if there are multiple sensors with the same name, also check other fields
-        if (similar.size() > 1) {
-            for (JSONObject sensor : similar) {
-                if (sensor.getString("device_type").equalsIgnoreCase(description)
-                        && sensor.getString("data_type").equalsIgnoreCase(dataType)) {
+            } else if (name.equals(SensorNames.ACCELEROMETER) || name.equals(SensorNames.ORIENT)
+                    || name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
+                    || name.equals(SensorNames.MAGNET_FIELD)) {
+                // special case to take care of changed motion sensor descriptions since Gingerbread
+                if (name.equals(sensor.getString("name"))) {
+                    Log.v(TAG, "Use inexact match for '" + name + "' sensor ID...");
                     return sensor.getString("id");
                 }
             }
-            // if we make it here, there was no exact match...
-            return similar.get(0).getString("id");
-
-        } else if (similar.size() == 1) {
-            // only one sensor with the correct name
-            return similar.get(0).getString("id");
-
-        } else {
-            // sensor does not exist (yet)
-            return null;
         }
+
+        // if we make it here, the sensor does not exist (yet)
+        return null;
     }
 
     /**
