@@ -23,6 +23,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
@@ -74,9 +75,9 @@ public class MsgHandler extends Service {
         public AbstractDataTransmitHandler(Context context, Looper looper) {
             super(looper);
             this.context = context;
-            final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                     Context.MODE_PRIVATE);
-            boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+            boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
             url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/")
                     : SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
         }

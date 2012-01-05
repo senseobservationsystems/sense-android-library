@@ -55,12 +55,6 @@ public class SensePrefs {
          */
         public static final String SENSOR_LIST_COMPLETE_TIME = "sensor_list_complete_timestamp";
         /**
-         * Key to use the development version of CommonSense.
-         * 
-         * @see SensePrefs#AUTH_PREFS
-         */
-        public static final String DEV_MODE = "devmode";
-        /**
          * Key for storing the online device id.
          * 
          * @see SensePrefs#AUTH_PREFS
@@ -98,6 +92,12 @@ public class SensePrefs {
     public static class Main {
 
         public static class Advanced {
+            /**
+             * Key to use the development version of CommonSense.
+             * 
+             * @see SensePrefs#AUTH_PREFS
+             */
+            public static final String DEV_MODE = "devmode";
             /**
              * Key for preference that toggles use of compression for transmission. Default is true.
              * 

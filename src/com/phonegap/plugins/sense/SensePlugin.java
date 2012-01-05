@@ -34,6 +34,7 @@ public class SensePlugin extends Plugin {
 
     private static class Actions {
         static final String CHANGE_LOGIN = "change_login";
+        static final String LOGOUT = "logout";
         static final String GET_DATA = "get_data";
         static final String GET_STATUS = "get_status";
         static final String GET_SESSION = "get_session";
@@ -198,12 +199,16 @@ public class SensePlugin extends Plugin {
                 return init(data, callbackId);
             } else if (Actions.CHANGE_LOGIN.equals(action)) {
                 return changeLogin(data, callbackId);
+            } else if (Actions.GET_DATA.equals(action)) {
+                return getValues(data, callbackId);
             } else if (Actions.GET_PREF.equals(action)) {
                 return getPreference(data, callbackId);
             } else if (Actions.GET_STATUS.equals(action)) {
                 return getStatus(data, callbackId);
             } else if (Actions.GET_SESSION.equals(action)) {
                 return getSession(data, callbackId);
+            } else if (Actions.LOGOUT.equals(action)) {
+                return logout(data, callbackId);
             } else if (Actions.REGISTER.equals(action)) {
                 return register(data, callbackId);
             } else if (Actions.SET_PREF.equals(action)) {
@@ -222,8 +227,6 @@ public class SensePlugin extends Plugin {
                 return togglePhoneState(data, callbackId);
             } else if (Actions.TOGGLE_POSITION.equals(action)) {
                 return togglePosition(data, callbackId);
-            } else if (Actions.GET_DATA.equals(action)) {
-                return getValues(data, callbackId);
             } else {
                 Log.e(TAG, "Invalid action: '" + action + "'");
                 return new PluginResult(Status.INVALID_ACTION);
@@ -239,6 +242,11 @@ public class SensePlugin extends Plugin {
             Log.e(TAG, "Unexpected error while executing action: " + action, e);
             return new PluginResult(Status.ERROR, e.getMessage());
         }
+    }
+
+    private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
+        service.logout();
+        return new PluginResult(Status.OK);
     }
 
     private PluginResult getPreference(JSONArray data, String callbackId) throws JSONException,

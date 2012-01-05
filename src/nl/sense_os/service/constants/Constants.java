@@ -2,18 +2,17 @@ package nl.sense_os.service.constants;
 
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
-import nl.sense_os.service.constants.SensePrefs.Main.Location;
-import nl.sense_os.service.constants.SensePrefs.Main.Motion;
-import nl.sense_os.service.constants.SensePrefs.Main.Quiz;
 import nl.sense_os.service.constants.SensePrefs.Main.External.MyGlucoHealth;
 import nl.sense_os.service.constants.SensePrefs.Main.External.TanitaScale;
 import nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrBioHarness;
 import nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrHxM;
-
+import nl.sense_os.service.constants.SensePrefs.Main.Location;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensePrefs.Main.Quiz;
+import nl.sense_os.service.constants.SensePrefs.Status;
 import android.content.Context;
 
 /**
@@ -177,9 +176,9 @@ public class Constants {
      * Key to use the development version of CommonSense.
      * 
      * @see #AUTHENTICATION_PREFS
-     * @deprecated Use {@link Auth#DEV_MODE} instead
+     * @deprecated Use {@link Advanced#DEV_MODE} instead
      */
-    public static final String PREF_DEV_MODE = Auth.DEV_MODE;
+    public static final String PREF_DEV_MODE = Advanced.DEV_MODE;
 
     /**
      * Key for storing the online device id.

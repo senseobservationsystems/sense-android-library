@@ -18,6 +18,11 @@ interface ISenseService
     int changeLogin(String username, String password);
     
     /**
+     * Logs out a user, destroying his or her records.
+     */
+    void logout();
+    
+    /**
      * Registers a new user at CommonSense and logs in immediately.
      *
      * @param username 
