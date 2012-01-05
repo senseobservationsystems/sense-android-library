@@ -235,7 +235,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             // match fall detector
             if (mainPrefs.getBoolean(Main.Motion.FALL_DETECT_DEMO, false)) {
                 name = SensorNames.FALL_DETECTOR;
-                displayName = "fall";
+                displayName = "fall (demo)";
                 description = "demo fall";
                 dataType = SenseDataTypes.BOOL;
                 value = "true";
