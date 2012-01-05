@@ -1,7 +1,7 @@
 /**************************************************************************************************
  * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
  *************************************************************************************************/
-package nl.sense_os.service;
+package nl.sense_os.service.commonsense;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -14,7 +14,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +25,13 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.json.JSONArray;
@@ -97,7 +98,7 @@ public class SenseApi {
      */
     public static int getDeviceId(Context context, String uuid) throws IOException, JSONException {
 
-        final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+        SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
                 Context.MODE_PRIVATE);
 
         // append name and UUID to the preference keys
@@ -129,7 +130,11 @@ public class SenseApi {
         }
 
         // get list of devices that are already registered at CommonSense for this user
-        boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+        SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+        if (devMode)
+            Log.i(TAG, "Using developmentserver to get device ID");
         String url = devMode ? SenseUrls.DEV_DEVICES : SenseUrls.DEVICES;
         String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
@@ -225,8 +230,12 @@ public class SenseApi {
 
         } else {
             // request fresh list of sensors for this device from CommonSense
-            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, "NO_COOKIE");
-            boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
+            boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+            if (devMode)
+                Log.i(TAG, "Using developmentserver to get registered sensors");
             String url = devMode ? SenseUrls.DEV_SENSORS : SenseUrls.SENSORS;
             url = url.replaceFirst("<id>", "" + deviceId);
             Map<String, String> response = SenseApi.request(context, url, null, cookie);
@@ -273,35 +282,28 @@ public class SenseApi {
         // get list of all registered sensors for this device
         JSONArray sensors = getRegisteredSensors(context, deviceUuid);
 
-        // check sensors with similar names in the list
-        List<JSONObject> similar = new ArrayList<JSONObject>();
+        // check sensors with similar names and descriptions in the list
         for (int i = 0; i < sensors.length(); i++) {
             JSONObject sensor = (JSONObject) sensors.get(i);
 
-            if (sensor.getString("name").equalsIgnoreCase(name)) {
-                similar.add(sensor);
-            }
-        }
+            if (sensor.getString("name").equalsIgnoreCase(name)
+                    && sensor.getString("device_type").equalsIgnoreCase(description)
+                    && sensor.getString("data_type").equalsIgnoreCase(dataType)) {
+                return sensor.getString("id");
 
-        // if there are multiple sensors with the same name, also check other fields
-        if (similar.size() > 1) {
-            for (JSONObject sensor : similar) {
-                if (sensor.getString("device_type").equalsIgnoreCase(description)
-                        && sensor.getString("data_type").equalsIgnoreCase(dataType)) {
+            } else if (name.equals(SensorNames.ACCELEROMETER) || name.equals(SensorNames.ORIENT)
+                    || name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
+                    || name.equals(SensorNames.MAGNET_FIELD)) {
+                // special case to take care of changed motion sensor descriptions since Gingerbread
+                if (name.equals(sensor.getString("name"))) {
+                    Log.w(TAG, "Using inexact match for '" + name + "' sensor ID...");
                     return sensor.getString("id");
                 }
             }
-            // if we make it here, there was no exact match...
-            return similar.get(0).getString("id");
-
-        } else if (similar.size() == 1) {
-            // only one sensor with the correct name
-            return similar.get(0).getString("id");
-
-        } else {
-            // sensor does not exist (yet)
-            return null;
         }
+
+        // if we make it here, the sensor does not exist (yet)
+        return null;
     }
 
     /**
@@ -334,9 +336,9 @@ public class SenseApi {
             return null;
         }
 
-        final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+        SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
-        final boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+        boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
 
         // found the right sensor
         if (dataType.equals(SenseDataTypes.FILE)) {
@@ -428,7 +430,12 @@ public class SenseApi {
         final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
                 Context.MODE_PRIVATE);
         final Editor authEditor = authPrefs.edit();
-        final boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+
+        SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+        if (devMode)
+            Log.i(TAG, "Using developmentserver to log in");
 
         final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
         final JSONObject user = new JSONObject();
@@ -440,28 +447,43 @@ public class SenseApi {
 
         // if response code is not 200 (OK), the login was incorrect
         String responseCode = response.get("http response code");
+        int result = -1;
         if ("403".equalsIgnoreCase(responseCode)) {
-            Log.e(TAG, "CommonSense login refused! Response: forbidden!");
-            return -2;
+            Log.w(TAG, "CommonSense login refused! Response: forbidden!");
+            result = -2;
         } else if (!"200".equalsIgnoreCase(responseCode)) {
-            Log.e(TAG, "CommonSense login failed! Response: " + responseCode);
-            return -1;
+            Log.w(TAG, "CommonSense login failed! Response: " + responseCode);
+            result = -1;
+        } else {
+            // received 200 response
+            result = 0;
         }
 
         // get the cookie from the response
         String cookie = response.get("set-cookie");
         if (response.get("set-cookie") == null) {
             // something went horribly wrong
-            Log.e(TAG, "CommonSense login failed: no cookie received?!");
-            return -1;
+            Log.w(TAG, "CommonSense login failed: no cookie received?!");
+            result = -1;
         }
 
-        // store cookie in the preferences
-        authEditor.putString(Auth.LOGIN_COOKIE, cookie);
-        authEditor.commit();
+        // handle result
+        switch (result) {
+        case 0: // logged in
+            authEditor.putString(Auth.LOGIN_COOKIE, cookie);
+            authEditor.commit();
+            break;
+        case -1: // error
+            break;
+        case -2: // unauthorized
+            authEditor.remove(Auth.LOGIN_COOKIE);
+            authEditor.commit();
+            break;
+        default:
+            Log.e(TAG, "Unexpected login result: " + result);
+        }
 
-        Log.i(TAG, "'" + username + "' logged in at CommonSense...");
-        return 0;
+        return result;
     }
 
     /**
@@ -500,8 +522,11 @@ public class SenseApi {
 
         final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
                 Context.MODE_PRIVATE);
-        final boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, "");
+        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+
+        SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
 
         // prepare request to create new sensor
         String url = devMode ? SenseUrls.DEV_CREATE_SENSOR : SenseUrls.CREATE_SENSOR;
@@ -556,7 +581,7 @@ public class SenseApi {
             deviceType = getDefaultDeviceType(context);
         }
 
-        Log.v(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
+        // Log.v(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
 
         // Add sensor to this device at CommonSense
         url = devMode ? SenseUrls.DEV_ADD_SENSOR_TO_DEVICE : SenseUrls.ADD_SENSOR_TO_DEVICE;
@@ -598,17 +623,9 @@ public class SenseApi {
     public static int registerUser(Context context, String username, String password, String name,
             String surname, String email, String mobile) throws JSONException, IOException {
 
-        // clear cached settings of the previous user
-        final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+        SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
-        final Editor authEditor = authPrefs.edit();
-        authEditor.remove(Auth.DEVICE_ID);
-        authEditor.remove(Auth.DEVICE_TYPE);
-        authEditor.remove(Auth.LOGIN_COOKIE);
-        authEditor.remove(Auth.SENSOR_LIST);
-        authEditor.commit();
-
-        final boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+        boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
 
         final String url = devMode ? SenseUrls.DEV_REG : SenseUrls.REG;
 
@@ -635,17 +652,18 @@ public class SenseApi {
         Map<String, String> response = SenseApi.request(context, url, data, null);
 
         String responseCode = response.get("http response code");
+        int result = -1;
         if ("201".equalsIgnoreCase(responseCode)) {
-            Log.i(TAG, "CommonSense registration successful for '" + username + "'");
+            result = 0;
         } else if ("409".equalsIgnoreCase(responseCode)) {
             Log.e(TAG, "Error registering new user! User already exists");
-            return -2;
+            result = -2;
         } else {
             Log.e(TAG, "Error registering new user! Response code: " + responseCode);
-            return -1;
+            result = -1;
         }
 
-        return 0;
+        return result;
     }
 
     /**

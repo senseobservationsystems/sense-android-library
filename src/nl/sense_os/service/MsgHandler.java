@@ -18,10 +18,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
@@ -73,9 +75,9 @@ public class MsgHandler extends Service {
         public AbstractDataTransmitHandler(Context context, Looper looper) {
             super(looper);
             this.context = context;
-            final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                     Context.MODE_PRIVATE);
-            boolean devMode = authPrefs.getBoolean(Auth.DEV_MODE, false);
+            boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
             url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/")
                     : SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
         }
@@ -180,7 +182,7 @@ public class MsgHandler extends Service {
                 if (statusCode.compareToIgnoreCase("403") == 0) {
                     final Intent serviceIntent = new Intent(
                             getString(R.string.action_sense_service));
-                    serviceIntent.putExtra(SenseService.INTENT_EXTRA_RELOGIN, true);
+                    serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
                     context.startService(serviceIntent);
                 }
 
@@ -560,7 +562,7 @@ public class MsgHandler extends Service {
                     if ((response != null) && response.get("http response code").equals("403")) {
                         final Intent serviceIntent = new Intent(
                                 getString(R.string.action_sense_service));
-                        serviceIntent.putExtra(SenseService.INTENT_EXTRA_RELOGIN, true);
+                        serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
                         context.startService(serviceIntent);
                     }
 
@@ -930,7 +932,7 @@ public class MsgHandler extends Service {
             // get the cookie
             final SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
                     Context.MODE_PRIVATE);
-            String cookie = prefs.getString(Auth.LOGIN_COOKIE, "");
+            String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
 
             // prepare the data to give to the transmitters
             Bundle msgData = new Bundle();
@@ -1077,7 +1079,7 @@ public class MsgHandler extends Service {
 
                 // get cookie for transmission
                 SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-                String cookie = prefs.getString(Auth.LOGIN_COOKIE, "");
+                String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
 
                 if (cookie.length() > 0) {
                     ++nrOfSendMessageThreads;
