@@ -3,6 +3,21 @@
  *************************************************************************************************/
 package nl.sense_os.service.motion;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.states.EpiStateMonitor;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -20,29 +35,46 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.Motion;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.states.EpiStateMonitor;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
 public class MotionSensor implements SensorEventListener {
 
-    private static final String TAG = "Sense MotionSensor";
-
     /**
-     * Stand-in for Sensor.TYPE_LINEAR_ACCELERATION constant for API < 9.
+     * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
+     * the screen turns off.
      */
-    private static final int TYPE_LINEAR_ACCELERATION = 10;
+    private class ScreenOffListener extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Check action just to be on the safe side.
+            if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                return;
+            }
+
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
+            boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
+            if (useFix) {
+                // wait half a second and re-register
+                Runnable restartSensing = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // Unregisters the motion listener and registers it again.
+                        // Log.v(TAG, "Screen went off, re-registering the Motion sensor");
+                        stopMotionSensing();
+                        startMotionSensing(sampleDelay);
+                    };
+                };
+
+                new Handler().postDelayed(restartSensing, 500);
+            }
+        }
+    }
+
+    private static final String TAG = "Sense Motion";
+
+    private final BroadcastReceiver screenOffListener = new ScreenOffListener();
+
     private final FallDetector fallDetector = new FallDetector();
     private final Context context;
     private boolean isFallDetectMode;
@@ -119,7 +151,7 @@ public class MotionSensor implements SensorEventListener {
                 case 0:
                     if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
                             || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
-                            || sensor.getType() == TYPE_LINEAR_ACCELERATION) {
+                            || sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
                         json.put("x-axis", value);
                     } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
                             || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -132,7 +164,7 @@ public class MotionSensor implements SensorEventListener {
                 case 1:
                     if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
                             || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
-                            || sensor.getType() == TYPE_LINEAR_ACCELERATION) {
+                            || sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
                         json.put("y-axis", value);
                     } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
                             || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -145,7 +177,7 @@ public class MotionSensor implements SensorEventListener {
                 case 2:
                     if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
                             || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
-                            || sensor.getType() == TYPE_LINEAR_ACCELERATION) {
+                            || sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
                         json.put("z-axis", value);
                     } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
                             || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -181,7 +213,7 @@ public class MotionSensor implements SensorEventListener {
         // approximate linear acceleration if we have no special sensor for it
         if (!hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == event.sensor.getType()) {
             linAcc = calcLinAcc(event.values);
-        } else if (hasLinAccSensor && TYPE_LINEAR_ACCELERATION == event.sensor.getType()) {
+        } else if (hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == event.sensor.getType()) {
             linAcc = event.values;
         } else {
             // sensor is not the right type
@@ -344,7 +376,7 @@ public class MotionSensor implements SensorEventListener {
 
         // if motion energy sensor is active, determine energy of every sample
         boolean isEnergySample = !hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == sensor.getType()
-                || hasLinAccSensor && TYPE_LINEAR_ACCELERATION == sensor.getType();
+                || hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == sensor.getType();
         if (isEnergyMode && isEnergySample) {
             doEnergySample(event);
         }
@@ -391,7 +423,7 @@ public class MotionSensor implements SensorEventListener {
         case Sensor.TYPE_GYROSCOPE:
             sensorName = SensorNames.GYRO;
             break;
-        case TYPE_LINEAR_ACCELERATION:
+        case Sensor.TYPE_LINEAR_ACCELERATION:
             sensorName = SensorNames.LIN_ACCELERATION;
             break;
         default:
@@ -523,22 +555,51 @@ public class MotionSensor implements SensorEventListener {
 
         SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
-        sensors.addAll(mgr.getSensorList(Sensor.TYPE_ACCELEROMETER));
+
+        // add accelerometer
+        if (null != mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) {
+            sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        }
+
         if (!isEpiMode) {
-            sensors.addAll(mgr.getSensorList(Sensor.TYPE_ORIENTATION));
-            sensors.addAll(mgr.getSensorList(Sensor.TYPE_GYROSCOPE));
-            if (Build.VERSION.SDK_INT >= 9) {
+            // add orientation sensor
+            if (null != mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION)) {
+                sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION));
+            }
+            // add gyroscope
+            if (null != mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE)) {
+                sensors.add(mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+            }
+            // add linear acceleration
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                 // only devices with gingerbread+ have linear acceleration sensors
-                sensors.addAll(mgr.getSensorList(TYPE_LINEAR_ACCELERATION));
-                hasLinAccSensor = mgr.getSensorList(TYPE_LINEAR_ACCELERATION).size() > 0;
+                if (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
+                    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+                    hasLinAccSensor = true;
+                }
             }
         }
 
         motionSensingActive = true;
         setSampleDelay(sampleDelay);
         registerSensors();
-
         startWakeUpAlarms();
+        enableScreenOffListener(true);
+    }
+
+    private void enableScreenOffListener(boolean enable) {
+        if (enable) {
+            // Register the receiver for SCREEN OFF events
+            IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+            context.registerReceiver(screenOffListener, filter);
+        } else {
+            // Unregister the receiver for SCREEN OFF events
+            try {
+                context.unregisterReceiver(screenOffListener);
+            } catch (IllegalArgumentException e) {
+                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
+            }
+        }
     }
 
     /**

@@ -3,6 +3,17 @@
  *************************************************************************************************/
 package nl.sense_os.service.location;
 
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.storage.LocalStorage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -15,19 +26,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class LocationSensor {
 
@@ -98,6 +99,7 @@ public class LocationSensor {
     private final LocationManager locMgr;
     private final MyLocationListener gpsListener;
     private final MyLocationListener nwListener;
+    private final MyLocationListener pasListener;
 
     private long time;
     private float distance;
@@ -126,6 +128,7 @@ public class LocationSensor {
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         gpsListener = new MyLocationListener();
         nwListener = new MyLocationListener();
+        pasListener = new MyLocationListener();
     }
 
     /**
@@ -138,7 +141,7 @@ public class LocationSensor {
 
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
-        boolean selfAwareMode = mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
+        boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
 
         if (selfAwareMode) {
             // Log.v(TAG, "Check location sensor settings...");
@@ -216,14 +219,8 @@ public class LocationSensor {
     private void getLastKnownLocation() {
 
         // get the most recent location fixes
-        Location gpsFix = null;
-        Location nwFix = null;
-        if (isGpsAllowed) {
-            gpsFix = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        if (isNetworkAllowed) {
-            nwFix = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
+        Location gpsFix = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location nwFix = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         // see which is best
         if (null != gpsFix || null != nwFix) {
@@ -497,6 +494,15 @@ public class LocationSensor {
         }
     }
 
+    private void setPassiveListening(boolean listen) {
+        if (listen) {
+            locMgr.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, time, distance,
+                    pasListener);
+        } else {
+            locMgr.removeUpdates(pasListener);
+        }
+    }
+
     /**
      * @param time
      *            Minimum time between location refresh attempts.
@@ -533,8 +539,11 @@ public class LocationSensor {
             // Log.v(TAG, "Start listening to location updates from Network");
             setNetworkListening(true);
         }
-        if (!isGpsAllowed && !isNetworkAllowed) {
-            Log.w(TAG, "No location provider available");
+
+        if (!isGpsAllowed && !isNetworkAllowed
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            Log.v(TAG, "Start passively listening to location updates for other apps");
+            setPassiveListening(true);
         }
     }
 
@@ -559,5 +568,6 @@ public class LocationSensor {
     private void stopListening() {
         setGpsListening(false);
         setNetworkListening(false);
+        setPassiveListening(false);
     }
 }

@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -48,7 +50,7 @@ public class LocalStorage {
     private static class DbHelper extends SQLiteOpenHelper {
 
         protected static final String DATABASE_NAME = "persitent_storage.sqlite3";
-        protected static final int DATABASE_VERSION = 2;
+        protected static final int DATABASE_VERSION = 3;
 
         DbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -64,6 +66,7 @@ public class LocalStorage {
             sb.append(", " + DataPoint.DATA_TYPE + " STRING");
             sb.append(", " + DataPoint.TIMESTAMP + " INTEGER");
             sb.append(", " + DataPoint.VALUE + " STRING");
+            sb.append(", " + DataPoint.DEVICE_UUID + " STRING");
             sb.append(", " + DataPoint.TRANSMIT_STATE + " INTEGER");
             sb.append(");");
             db.execSQL(sb.toString());
@@ -87,6 +90,8 @@ public class LocalStorage {
     private static final int PERSISTED_VALUES_URI = 2;
     private static final int REMOTE_VALUES_URI = 3;
     private static final int MAX_VOLATILE_VALUES = 100;
+    public static final int QUERY_RESULTS_LIMIT = 10000;
+    public static final int QUERY_RESULTS_LIMIT_EPI_MODE = 60;
 
     private static long count = 0;
 
@@ -244,7 +249,7 @@ public class LocalStorage {
 
             // do not store data points that are more than 24 hours old
             String where = DataPoint.TIMESTAMP + "<"
-                    + (System.currentTimeMillis() - 1000 * 60 * 60 * 24);
+                    + (System.currentTimeMillis() - 1000l * 60 * 60 * 24);
             int deleted = db.delete(TABLE_PERSISTENT, where, null);
             if (deleted > 0) {
                 // Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");
@@ -269,8 +274,9 @@ public class LocalStorage {
         // default projection
         if (projection == null) {
             projection = new String[] { BaseColumns._ID, DataPoint.SENSOR_NAME,
-                    DataPoint.SENSOR_DESCRIPTION, DataPoint.DATA_TYPE, DataPoint.VALUE,
-                    DataPoint.TIMESTAMP, DataPoint.TRANSMIT_STATE };
+                    DataPoint.DISPLAY_NAME, DataPoint.SENSOR_DESCRIPTION, DataPoint.DATA_TYPE,
+                    DataPoint.VALUE, DataPoint.TIMESTAMP, DataPoint.DEVICE_UUID,
+                    DataPoint.TRANSMIT_STATE };
         }
 
         // query based on URI
@@ -306,8 +312,17 @@ public class LocalStorage {
     private Cursor queryPersistent(Uri uri, String[] projection, String where,
             String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        String limitStr = "" + QUERY_RESULTS_LIMIT;
+
+        if (pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+            limitStr = "" + QUERY_RESULTS_LIMIT_EPI_MODE;
+
         Cursor persistentResult = db.query(TABLE_PERSISTENT, projection, where, selectionArgs,
-                null, null, sortOrder);
+                null, null, sortOrder, limitStr);
+
         return persistentResult;
     }
 

@@ -3,16 +3,15 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SenseStatusCodes;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SenseStatusCodes;
 
 public class ServiceStateHelper {
 
@@ -80,7 +79,8 @@ public class ServiceStateHelper {
         // username will be substituted into the content text
         final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
                 Context.MODE_PRIVATE);
-        String username = authPrefs.getString(Auth.LOGIN_USERNAME, "UNKNOWN");
+        String username = authPrefs.getString(Auth.LOGIN_USERNAME,
+                context.getString(android.R.string.unknownName));
 
         // action to take when the notification is tapped
         final Intent notifIntent = new Intent(context.getString(R.string.stat_notify_action));

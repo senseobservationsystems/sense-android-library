@@ -55,12 +55,6 @@ public class SensePrefs {
          */
         public static final String SENSOR_LIST_COMPLETE_TIME = "sensor_list_complete_timestamp";
         /**
-         * Key to use the development version of CommonSense.
-         * 
-         * @see SensePrefs#AUTH_PREFS
-         */
-        public static final String DEV_MODE = "devmode";
-        /**
          * Key for storing the online device id.
          * 
          * @see SensePrefs#AUTH_PREFS
@@ -98,6 +92,12 @@ public class SensePrefs {
     public static class Main {
 
         public static class Advanced {
+            /**
+             * Key to use the development version of CommonSense.
+             * 
+             * @see SensePrefs#AUTH_PREFS
+             */
+            public static final String DEV_MODE = "devmode";
             /**
              * Key for preference that toggles use of compression for transmission. Default is true.
              * 
@@ -140,17 +140,23 @@ public class SensePrefs {
 
         public static class DevProx {
             /**
-             * Key for preference that toggles use of Bluetooth in the DeviceProximity sensor.
+             * Key for preference that toggles use of Bluetooth in the Device Proximity sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String BLUETOOTH = "proximity_bt";
             /**
-             * Key for preference that toggles use of Wi-Fi in the DeviceProximity sensor.
+             * Key for preference that toggles use of Wi-Fi in the Device Proximity sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String WIFI = "proximity_wifi";
+            /**
+             * Key for preference that toggles use of NFC in the Device Proximity sensor.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String NFC = "proximity_nfc";
         }
 
         public static class External {

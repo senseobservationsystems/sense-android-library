@@ -6,6 +6,7 @@ package nl.sense_os.service;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,12 +15,15 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
@@ -71,7 +75,11 @@ public class MsgHandler extends Service {
         public AbstractDataTransmitHandler(Context context, Looper looper) {
             super(looper);
             this.context = context;
-            url = SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
+            boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+            url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/")
+                    : SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
         }
 
         /**
@@ -106,8 +114,8 @@ public class MsgHandler extends Service {
                 }
             } catch (Exception e) {
                 if (null != e.getMessage()) {
-                    Log.e(TAG, "Exception sending buffered data: " + e.getMessage()
-                            + " Data will be resent later.");
+                    Log.e(TAG, "Exception sending buffered data: '" + e.getMessage()
+                            + "'. Data will be resent later.");
                 } else {
                     Log.e(TAG, "Exception sending cursor data. Data will be resent later.", e);
                 }
@@ -155,7 +163,12 @@ public class MsgHandler extends Service {
          */
         private void postData(JSONObject transmission) throws JSONException, MalformedURLException {
 
-            HashMap<String, String> response = SenseApi.request(context, url, transmission, cookie);
+            Map<String, String> response = null;
+            try {
+                response = SenseApi.request(context, url, transmission, cookie);
+            } catch (IOException e) {
+                // handle failure later
+            }
 
             if (response == null) {
                 // Error when sending
@@ -169,7 +182,7 @@ public class MsgHandler extends Service {
                 if (statusCode.compareToIgnoreCase("403") == 0) {
                     final Intent serviceIntent = new Intent(
                             getString(R.string.action_sense_service));
-                    serviceIntent.putExtra(SenseService.INTENT_EXTRA_RELOGIN, true);
+                    serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
                     context.startService(serviceIntent);
                 }
 
@@ -187,12 +200,12 @@ public class MsgHandler extends Service {
         /**
          * Transmits the data points from {@link #cursor} to CommonSense. Any "file" type data
          * points will be sent separately via
-         * {@link MsgHandler#sendSensorData(String, JSONObject, String, String)}.
+         * {@link MsgHandler#sendSensorData(String, String, String, JSONObject)}.
          * 
          * @throws JSONException
-         * @throws MalformedURLException
+         * @throws IOException
          */
-        private void transmit() throws JSONException, MalformedURLException {
+        private void transmit() throws JSONException, IOException {
 
             // make sure the device stays awake while transmitting
             wakeLock = getWakeLock();
@@ -204,26 +217,32 @@ public class MsgHandler extends Service {
 
                 // organize the data into a hash map sorted by sensor
                 sensorDataMap = new HashMap<String, JSONObject>();
-                String sensorName, displayName, sensorDesc, dataType, value;
+                String name, description, dataType, value, deviceUuid;
                 long timestamp;
                 int points = 0;
                 while ((points < MAX_POST_DATA) && !cursor.isAfterLast()) {
 
                     // get the data point details
-                    sensorName = cursor.getString(cursor
-                            .getColumnIndexOrThrow(DataPoint.SENSOR_NAME));
                     try {
-                        // TODO ugly solution
-                        displayName = cursor.getString(cursor
-                                .getColumnIndexOrThrow(DataPoint.DISPLAY_NAME));
+                        name = cursor
+                                .getString(cursor.getColumnIndexOrThrow(DataPoint.SENSOR_NAME));
+                        description = cursor.getString(cursor
+                                .getColumnIndexOrThrow(DataPoint.SENSOR_DESCRIPTION));
+                        dataType = cursor.getString(cursor
+                                .getColumnIndexOrThrow(DataPoint.DATA_TYPE));
+                        value = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.VALUE));
+                        timestamp = cursor.getLong(cursor
+                                .getColumnIndexOrThrow(DataPoint.TIMESTAMP));
+                        deviceUuid = cursor.getString(cursor
+                                .getColumnIndexOrThrow(DataPoint.DEVICE_UUID));
                     } catch (IllegalArgumentException e) {
-                        displayName = sensorName;
+                        // something is wrong with this data point, skip it
+                        Log.w(TAG,
+                                "Exception getting data point details from cursor: '"
+                                        + e.getMessage() + "'. Skip data point...");
+                        cursor.moveToNext();
+                        continue;
                     }
-                    sensorDesc = cursor.getString(cursor
-                            .getColumnIndexOrThrow(DataPoint.SENSOR_DESCRIPTION));
-                    dataType = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.DATA_TYPE));
-                    value = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.VALUE));
-                    timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(DataPoint.TIMESTAMP));
 
                     // "normal" data is added to the map until we reach the max amount of points
                     if (!dataType.equals(SenseDataTypes.FILE)) {
@@ -234,13 +253,22 @@ public class MsgHandler extends Service {
                         jsonDataPoint.put("value", value);
 
                         // put the new value Object in the appropriate sensor's data
-                        String key = sensorName + sensorDesc;
+                        String key = name + description;
                         JSONObject sensorEntry = sensorDataMap.get(key);
                         JSONArray data = null;
                         if (sensorEntry == null) {
                             sensorEntry = new JSONObject();
-                            sensorEntry.put("sensor_id", SenseApi.getSensorId(context, sensorName,
-                                    displayName, value, dataType, sensorDesc));
+                            String id = SenseApi.getSensorId(context, name, description, dataType,
+                                    deviceUuid);
+                            if (null == id) {
+                                // skip sensor data that does not have a sensor ID yet
+                                Log.w(TAG, "cannot find sensor ID for " + name + " (" + description
+                                        + ")");
+                                cursor.moveToNext();
+                                continue;
+                            }
+                            sensorEntry.put("sensor_id", id);
+                            sensorEntry.put("sensor_name", name);
                             data = new JSONArray();
                         } else {
                             data = sensorEntry.getJSONArray("data");
@@ -266,7 +294,7 @@ public class MsgHandler extends Service {
                         dataArray.put(data);
                         sensorData.put("data", dataArray);
 
-                        sendSensorData(sensorName, displayName, sensorData, dataType, sensorDesc);
+                        sendSensorData(name, description, dataType, deviceUuid, sensorData);
                     }
 
                     cursor.moveToNext();
@@ -334,29 +362,18 @@ public class MsgHandler extends Service {
             Log.i(TAG, "Sent old sensor data from persistant storage! Raw data size: "
                     + humanReadableByteCount(bytes, false));
 
-            JSONArray sensors = SenseApi.getRegisteredSensors(context);
-            if (sensors == null) {
-                Log.e(TAG, "List of registered sensors is unavailable right after data transfer?!");
-                return;
-            }
-
+            int totalDatapoints = 0;
             JSONArray sensorDatas = transmission.getJSONArray("sensors");
             for (int i = 0; i < sensorDatas.length(); i++) {
 
                 JSONObject sensorData = sensorDatas.getJSONObject(i);
 
                 // get the name of the sensor, to use in the ContentResolver query
-                String sensorId = sensorData.getString("sensor_id");
-                String sensorName = null;
-                for (int j = 0; j < sensors.length(); j++) {
-                    if (sensorId.equals(sensors.getJSONObject(j).get("id"))) {
-                        sensorName = sensors.getJSONObject(j).getString("name");
-                        break;
-                    }
-                }
+                String sensorName = sensorData.getString("sensor_name");
 
                 // select points for this sensor, between the first and the last time stamp
                 JSONArray dataPoints = sensorData.getJSONArray("data");
+                totalDatapoints += dataPoints.length();
                 String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
                 String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
                         "date");
@@ -384,6 +401,28 @@ public class MsgHandler extends Service {
                 } catch (IllegalArgumentException e) {
                     Log.e(TAG, "Error deleting points from Local Storage!", e);
                 }
+            }
+
+            // check if there is more data left
+            SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
+            int maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT;
+
+            if (pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+                maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
+
+            // there is probably more data, try to send more
+            if (totalDatapoints == maxDataPoints) {
+                // Log.d(TAG,
+                // "There is more data! Sending another batch from the persistant storage.");
+
+                // prepare the data to give to the transmitters
+                Bundle msgData = new Bundle();
+                msgData.putString("cookie", cookie);
+
+                Message msg = Message.obtain();
+                msg.setData(msgData);
+                persistedDataTransmitter.sendMessage(msg);
             }
         }
     }
@@ -433,26 +472,13 @@ public class MsgHandler extends Service {
             ContentValues values = new ContentValues();
             values.put(DataPoint.TRANSMIT_STATE, 1);
 
-            JSONArray sensors = SenseApi.getRegisteredSensors(context);
-            if (sensors == null) {
-                Log.e(TAG, "List of registered sensors is unavailable right after data transfer?!");
-                return;
-            }
-
             JSONArray sensorDatas = transmission.getJSONArray("sensors");
             for (int i = 0; i < sensorDatas.length(); i++) {
 
                 JSONObject sensorData = sensorDatas.getJSONObject(i);
 
                 // get the name of the sensor, to use in the ContentResolver query
-                String sensorId = sensorData.getString("sensor_id");
-                String sensorName = null;
-                for (int j = 0; j < sensors.length(); j++) {
-                    if (sensorId.equals(sensors.getJSONObject(j).get("id"))) {
-                        sensorName = sensors.getJSONObject(j).getString("name");
-                        break;
-                    }
-                }
+                String sensorName = sensorData.getString("sensor_name");
 
                 // select points for this sensor, between the first and the last time stamp
                 JSONArray dataPoints = sensorData.getJSONArray("data");
@@ -490,38 +516,24 @@ public class MsgHandler extends Service {
     private class SendDataThread extends Handler {
 
         private final String cookie;
-        private final String sensorName;
-        private final String displayName;
-        private final String deviceType;
+        private final String name;
+        private final String description;
         private final String dataType;
+        private final String deviceUuid;
         private final Context context;
         private final JSONObject data;
         private WakeLock wakeLock;
 
-        public SendDataThread(String cookie, JSONObject data, String sensorName,
-                String displayName, String dataType, String deviceType, Context context,
-                Looper looper) {
+        public SendDataThread(String cookie, JSONObject data, String name, String description,
+                String dataType, String deviceUuid, Context context, Looper looper) {
             super(looper);
             this.cookie = cookie;
             this.data = data;
-            this.sensorName = sensorName;
-            this.displayName = displayName;
+            this.name = name;
+            this.deviceUuid = deviceUuid;
             this.dataType = dataType;
-            this.deviceType = deviceType != null ? deviceType : sensorName;
+            this.description = description != null ? description : name;
             this.context = context;
-        }
-
-        private String getSensorUrl() {
-            String url = null;
-            try {
-                String sensorValue = (String) ((JSONObject) ((JSONArray) data.get("data")).get(0))
-                        .get("value");
-                url = MsgHandler.this.getSensorUrl(context, sensorName, displayName, sensorValue,
-                        dataType, deviceType);
-            } catch (Exception e) {
-                Log.e(TAG, "Exception retrieving sensor URL from API", e);
-            }
-            return url;
         }
 
         @Override
@@ -533,15 +545,16 @@ public class MsgHandler extends Service {
                 wakeLock.acquire();
 
                 // get sensor URL at CommonSense
-                String url = getSensorUrl();
+                String url = SenseApi
+                        .getSensorUrl(context, name, description, dataType, deviceUuid);
 
                 if (url == null) {
-                    Log.w(TAG, "Received invalid sensor URL for '" + sensorName
-                            + "': data will be retried.");
+                    Log.w(TAG, "No sensor ID for '" + name + "' (yet): data will be retried.");
                     return;
                 }
 
-                HashMap<String, String> response = SenseApi.request(context, url, data, cookie);
+                Map<String, String> response = SenseApi.request(context, url, data, cookie);
+
                 // Error when sending
                 if ((response == null) || !response.get("http response code").equals("201")) {
 
@@ -549,36 +562,37 @@ public class MsgHandler extends Service {
                     if ((response != null) && response.get("http response code").equals("403")) {
                         final Intent serviceIntent = new Intent(
                                 getString(R.string.action_sense_service));
-                        serviceIntent.putExtra(SenseService.INTENT_EXTRA_RELOGIN, true);
+                        serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
                         context.startService(serviceIntent);
                     }
 
                     // Show the HTTP response Code
                     if (response != null) {
-                        Log.w(TAG, "Failed to send '" + sensorName + "' data. Response code:"
-                                + response.get("http response code") + ", Response content: '"
-                                + response.get("content") + "'\nData will be retried");
+                        Log.w(TAG,
+                                "Failed to send '" + name + "' data. Response code:"
+                                        + response.get("http response code")
+                                        + ", Response content: '" + response.get("content")
+                                        + "'\nData will be retried");
                     } else {
-                        Log.w(TAG, "Failed to send '" + sensorName
-                                + "' data.\nData will be retried.");
+                        Log.w(TAG, "Failed to send '" + name + "' data.\nData will be retried.");
                     }
                 }
 
                 // Data sent successfully
                 else {
                     int bytes = data.toString().getBytes().length;
-                    Log.i(TAG, "Sent '" + sensorName + "' data! Raw data size: " + bytes + " bytes");
+                    Log.i(TAG, "Sent '" + name + "' data! Raw data size: " + bytes + " bytes");
 
                     onTransmitSuccess();
                 }
 
             } catch (Exception e) {
                 if (null != e.getMessage()) {
-                    Log.e(TAG, "Exception sending '" + sensorName
-                            + "' data, data will be retried: " + e.getMessage());
-                } else {
                     Log.e(TAG,
-                            "Exception sending '" + sensorName + "' data, data will be retried.", e);
+                            "Exception sending '" + name + "' data, data will be retried: "
+                                    + e.getMessage());
+                } else {
+                    Log.e(TAG, "Exception sending '" + name + "' data, data will be retried.", e);
                 }
 
             } finally {
@@ -598,7 +612,7 @@ public class MsgHandler extends Service {
                     "date");
             long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
             long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
-            String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
+            String where = DataPoint.SENSOR_NAME + "='" + name + "'" + " AND "
                     + DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
                     + max;
 
@@ -630,37 +644,22 @@ public class MsgHandler extends Service {
         private final String cookie;
         private final JSONObject data;
         private final String sensorName;
-        private final String displayName;
         private final String dataType;
         private final String deviceType;
+        private final String deviceUuid;
         private final Context context;
         private WakeLock wakeLock;
 
-        public SendFileThread(String cookie, JSONObject data, String sensorName,
-                String displayName, String dataType, String deviceType, Context context,
-                Looper looper) {
+        public SendFileThread(String cookie, JSONObject data, String name, String description,
+                String dataType, String deviceUuid, Context context, Looper looper) {
             super(looper);
             this.cookie = cookie;
             this.data = data;
-            this.sensorName = sensorName;
-            this.displayName = displayName;
+            this.sensorName = name;
             this.dataType = dataType;
-            this.deviceType = deviceType;
+            this.deviceType = description;
+            this.deviceUuid = deviceUuid;
             this.context = context;
-        }
-
-        private String getSensorUrl() {
-            String url = null;
-            try {
-                final String f_deviceType = deviceType != null ? deviceType : sensorName;
-                String dataStructure = (String) ((JSONObject) ((JSONArray) data.get("data")).get(0))
-                        .get("value");
-                url = MsgHandler.this.getSensorUrl(context, sensorName, displayName, dataStructure,
-                        dataType, f_deviceType);
-            } catch (Exception e) {
-                Log.e(TAG, "Exception retrieving sensor URL from API", e);
-            }
-            return url;
         }
 
         @Override
@@ -672,10 +671,12 @@ public class MsgHandler extends Service {
                 wakeLock.acquire();
 
                 // get sensor URL from CommonSense
-                String urlStr = getSensorUrl();
+                String f_deviceType = deviceType != null ? deviceType : sensorName;
+                String urlStr = SenseApi.getSensorUrl(context, sensorName, f_deviceType, dataType,
+                        deviceUuid);
 
                 if (urlStr == null) {
-                    Log.w(TAG, "Received invalid sensor URL for '" + sensorName + "'. Data lost.");
+                    Log.w(TAG, "No sensor ID for '" + sensorName + "' (yet). Data is lost.");
                     return;
                 }
 
@@ -837,19 +838,6 @@ public class MsgHandler extends Service {
         }
     }
 
-    /**
-     * Calls through to the Sense API class. This method is synchronized to make sure that multiple
-     * thread do not create multiple sensors at the same time.
-     * 
-     * @return The URL of the sensor at CommonSense, or null if an error occurred.
-     */
-    private synchronized String getSensorUrl(Context context, String sensorName,
-            String displayName, String sensorValue, String dataType, String deviceType) {
-        String url = SenseApi.getSensorUrl(context, sensorName, displayName, sensorValue, dataType,
-                deviceType);
-        return url;
-    }
-
     private WakeLock getWakeLock() {
         if (null == wakeLock) {
             PowerManager powerMgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -881,13 +869,14 @@ public class MsgHandler extends Service {
             // get data point details from Intent
             String sensorName = intent.getStringExtra(DataPoint.SENSOR_NAME);
             String displayName = intent.getStringExtra(DataPoint.DISPLAY_NAME);
+            String description = intent.getStringExtra(DataPoint.SENSOR_DESCRIPTION);
             String dataType = intent.getStringExtra(DataPoint.DATA_TYPE);
+            String deviceUuid = intent.getStringExtra(DataPoint.DEVICE_UUID);
             long timestamp = intent.getLongExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
             String timeInSecs = formatter.format(timestamp / 1000.0d);
-            String deviceType = intent.getStringExtra(DataPoint.SENSOR_DESCRIPTION);
 
             // defaults
-            deviceType = deviceType != null ? deviceType : sensorName;
+            description = description != null ? description : sensorName;
             displayName = displayName != null ? displayName : sensorName;
 
             // Log.d(TAG, "name: '" + sensorName + "', display: '" + displayName +
@@ -910,8 +899,8 @@ public class MsgHandler extends Service {
             }
 
             // put the data point in the local storage
-            insertToLocalStorage(sensorName, displayName, deviceType, dataType, timestamp,
-                    sensorValue);
+            insertToLocalStorage(sensorName, displayName, description, dataType, deviceUuid,
+                    timestamp, sensorValue);
 
             // check if we can send the data point immediately
             SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -930,7 +919,7 @@ public class MsgHandler extends Service {
                 dataArray.put(data);
                 sensorData.put("data", dataArray);
 
-                sendSensorData(sensorName, displayName, sensorData, dataType, deviceType);
+                sendSensorData(sensorName, description, dataType, deviceUuid, sensorData);
             }
 
         } catch (Exception e) {
@@ -943,7 +932,7 @@ public class MsgHandler extends Service {
             // get the cookie
             final SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
                     Context.MODE_PRIVATE);
-            String cookie = prefs.getString(Auth.LOGIN_COOKIE, "");
+            String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
 
             // prepare the data to give to the transmitters
             Bundle msgData = new Bundle();
@@ -963,22 +952,32 @@ public class MsgHandler extends Service {
      * Inserts a data point as new row in the local storage. Removal of old points is done
      * automatically.
      * 
-     * @param sensorName
+     * @param name
+     *            Sensor name.
      * @param displayName
-     * @param sensorDescription
+     *            Sensor display name.
+     * @param description
+     *            Sensor description (previously 'device_type')
      * @param dataType
+     *            Sensor data type
+     * @param deviceUuid
+     *            (Optional) UUID of the sensor's device. Set null to use the phone as the the
+     *            default device
      * @param timestamp
+     *            Data point time stamp
      * @param value
+     *            Data point value
      */
-    private void insertToLocalStorage(String sensorName, String displayName,
-            String sensorDescription, String dataType, long timestamp, String value) {
+    private void insertToLocalStorage(String name, String displayName, String description,
+            String dataType, String deviceUuid, long timestamp, String value) {
 
         // new value
         ContentValues values = new ContentValues();
-        values.put(DataPoint.SENSOR_NAME, sensorName);
+        values.put(DataPoint.SENSOR_NAME, name);
         values.put(DataPoint.DISPLAY_NAME, displayName);
-        values.put(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
+        values.put(DataPoint.SENSOR_DESCRIPTION, description);
         values.put(DataPoint.DATA_TYPE, dataType);
+        values.put(DataPoint.DEVICE_UUID, deviceUuid);
         values.put(DataPoint.TIMESTAMP, timestamp);
         values.put(DataPoint.VALUE, value);
         values.put(DataPoint.TRANSMIT_STATE, 0);
@@ -1056,15 +1055,31 @@ public class MsgHandler extends Service {
         return START_NOT_STICKY;
     }
 
-    private void sendSensorData(final String sensorName, final String displayName,
-            final JSONObject sensorData, final String dataType, final String deviceType) {
+    /**
+     * Sends data points for one sensor to CommonSense.
+     * 
+     * @param name
+     *            Sensor name, used to determine the sensor ID at CommonSense
+     * @param description
+     *            Sensor description (previously 'device_type'), used to determine the sensor ID at
+     *            CommonSense
+     * @param dataType
+     *            Sensor data type, used to determine the sensor ID at CommonSense
+     * @param deviceUuid
+     *            (Optional) UUID of the sensor's device. Set null to use this phone as the default
+     *            device.
+     * @param sensorData
+     *            JSON Object with the sensor data.
+     */
+    private void sendSensorData(String name, String description, String dataType,
+            String deviceUuid, JSONObject sensorData) {
 
         try {
             if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
 
                 // get cookie for transmission
                 SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-                String cookie = prefs.getString(Auth.LOGIN_COOKIE, "");
+                String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
 
                 if (cookie.length() > 0) {
                     ++nrOfSendMessageThreads;
@@ -1074,15 +1089,15 @@ public class MsgHandler extends Service {
                         // create handler thread and run task on there
                         HandlerThread ht = new HandlerThread("sendFileThread");
                         ht.start();
-                        new SendFileThread(cookie, sensorData, sensorName, displayName, dataType,
-                                deviceType, this, ht.getLooper()).sendEmptyMessage(0);
+                        new SendFileThread(cookie, sensorData, name, description, dataType,
+                                deviceUuid, this, ht.getLooper()).sendEmptyMessage(0);
 
                     } else {
                         // create handler thread and run task on there
                         HandlerThread ht = new HandlerThread("sendDataPointThread");
                         ht.start();
-                        new SendDataThread(cookie, sensorData, sensorName, displayName, dataType,
-                                deviceType, this, ht.getLooper()).sendEmptyMessage(0);
+                        new SendDataThread(cookie, sensorData, name, description, dataType,
+                                deviceUuid, this, ht.getLooper()).sendEmptyMessage(0);
 
                     }
                 } else {
