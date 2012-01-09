@@ -554,6 +554,8 @@ public class SenseService extends Service {
         // update login status
         state.setLoggedIn(true);
 
+        startSensorModules();
+
         // start database leeglepelaar
         DataTransmitter.scheduleTransmissions(this);
 
@@ -754,21 +756,22 @@ public class SenseService extends Service {
 
         // make sure the IDs of all sensors are known
         new Thread() {
+
             @Override
             public void run() {
+                // run in separate Thread to prevent NetworkOnMainThread exceptions in Android 3.0+
                 SensorRegistrator reg = new PhoneSensorRegistrator(SenseService.this);
                 boolean sensorsRegged = reg.verifySensorIds(null, null);
                 if (sensorsRegged) {
                     Log.v(TAG, "successfully verified the sensor IDs");
                 } else {
-                    Log.w(TAG,
-                            "could not verify the sensor ID for all sensors! should retry later...");
+                    Log.w(TAG, "could not verify sensor IDs for all sensors! should retry later...");
                 }
             }
         }.start();
 
         SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-        if (statusPrefs.getBoolean(Status.MAIN, false)) {
+        if (statusPrefs.getBoolean(Status.MAIN, true)) {
             togglePhoneState(statusPrefs.getBoolean(Status.PHONESTATE, false));
             toggleLocation(statusPrefs.getBoolean(Status.LOCATION, false));
             toggleAmbience(statusPrefs.getBoolean(Status.AMBIENCE, false));
@@ -1204,9 +1207,8 @@ public class SenseService extends Service {
             }
 
         } else {
-            if (state.isStarted()) {
-                Log.i(TAG, "Stop service...");
-            }
+            Log.i(TAG, "Stop service...");
+
             onLogOut();
             stopSensorModules();
 
