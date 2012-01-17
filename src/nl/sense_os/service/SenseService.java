@@ -21,7 +21,7 @@ import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.deviceprox.DeviceProximity;
-import nl.sense_os.service.external_sensors.OBD2Dongle;
+import nl.sense_os.service.external_sensors.OBD2Sensor;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
 import nl.sense_os.service.location.LocationSensor;
@@ -364,7 +364,7 @@ public class SenseService extends Service {
     private SensePhoneState phoneStateListener;
     private ZephyrBioHarness es_bioHarness;
     private ZephyrHxM es_HxM;
-    private OBD2Dongle es_obd2dongle;
+    private OBD2Sensor es_obd2sensor;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -1016,10 +1016,10 @@ public class SenseService extends Service {
                 }
 
                 // check OBD-II dongle presence
-                if (null != es_obd2dongle) {
+                if (null != es_obd2sensor) {
                     Log.w(TAG, "OBD-II dongle is already present!");
-                    es_obd2dongle.stop();
-                    es_obd2dongle = null;
+                    es_obd2sensor.stop();
+                    es_obd2sensor = null;
                 }
 
                 if ((extSensorsThread != null) && extSensorsThread.isAlive()) {
@@ -1063,7 +1063,8 @@ public class SenseService extends Service {
 
                     @Override
                     public void run() {
-                        if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
+                        Log.d(TAG, "Attempting to start External Sensors");
+                    	if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
                             es_bioHarness = new ZephyrBioHarness(SenseService.this);
                             es_bioHarness.startBioHarness(finalInterval);
                         }
@@ -1071,9 +1072,13 @@ public class SenseService extends Service {
                             es_HxM = new ZephyrHxM(SenseService.this);
                             es_HxM.startHxM(finalInterval);
                         }
-                        if (mainPrefs.getBoolean(External.OBD2Dongle.MAIN, false)) {
-                            es_obd2dongle = new OBD2Dongle(SenseService.this);
-                            es_obd2dongle.start(finalInterval);
+                        if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
+                            Log.d(TAG, "Attempting to start OBD2");
+                        	es_obd2sensor = new OBD2Sensor(SenseService.this);
+                            es_obd2sensor.start(finalInterval);
+                        }
+                        else{
+                            Log.d(TAG, "NOT attempting to start OBD2");                        	
                         }
                     }
                 });
@@ -1095,10 +1100,10 @@ public class SenseService extends Service {
                 }
 
                 // check OBD-II dongle presence
-                if (null != es_obd2dongle) {
-                    Log.w(TAG, "OBD-II dongle is already present!");
-                    es_obd2dongle.stop();
-                    es_obd2dongle = null;
+                if (null != es_obd2sensor) {
+                    Log.w(TAG, "OBD-II sensor is already present!");
+                    es_obd2sensor.stop();
+                    es_obd2sensor = null;
                 }
 
                 if ((extSensorsThread != null) && extSensorsThread.isAlive()) {
