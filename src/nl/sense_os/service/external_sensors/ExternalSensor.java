@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,6 +43,7 @@ public abstract class ExternalSensor {
 	protected BluetoothAdapter mBluetoothAdapter = null;
     protected BluetoothSocket mBluetoothSocket = null;
     protected UpdateThread updateThread;
+    protected LinkedList<Runnable> runningThreads = new LinkedList<Runnable>();
     protected InputStream mmInStream;
     protected OutputStream mmOutStream;
 	
@@ -51,27 +53,39 @@ public abstract class ExternalSensor {
 	public ExternalSensor(Context context){
 		this.context = context;
         updateHandlerThread = new HandlerThread("HandlerThread for External Sensor");
+        updateHandlerThread.start();
 		updateHandler = new Handler(updateHandlerThread.getLooper());
+		Log.v(TAG, "created "+this.getClass().toString());
 	}
 	
 	public void start(int interval){
+		Log.v(TAG, "starting "+this.getClass().toString());
 		this.setUpdateInterval(interval);
 		this.startAdapter();
 	}
 	
 	public void stop(){
 		//if connected, close the connection
+		Log.v(TAG, "stopping "+this.getClass().toString());
+		//stop listening for bluetooth changes
+		context.unregisterReceiver(bluetoothReceiver);
 		if(connected){
+			//try to close the bluetooth socket
 			try {
 				mBluetoothSocket.close();
 			} catch (IOException e) {
 				Log.e(TAG, "Error on stopping service", e);
 			}
+			//and stop polling the sensor, stop all running threads
 			if(updateThread != null){
-				updateHandler.removeCallbacks(updateThread);
+				for (Runnable r : runningThreads){
+					updateHandler.removeCallbacks(r);
+				}
+				runningThreads.clear();
 			}
 			connected = false;			
 		}
+		Log.v(TAG, this.getClass().toString() + " stopped");
 	}
 	
 	public void setUpdateInterval(int interval){
@@ -86,7 +100,8 @@ public abstract class ExternalSensor {
 	 * Tries to connect to the external sensor using the local {@link BluetoothAdapter}
 	 */
 	protected void startAdapter(){
-        // Get local BluetoothAdapter
+		Log.v(TAG, "starting adapter " + this.getClass().toString());
+		// Get local BluetoothAdapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         
         // if there is at least a BluetoothAdapter
@@ -116,7 +131,8 @@ public abstract class ExternalSensor {
     private BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
+    		Log.v(TAG, "state change sensed by " + this.getClass().toString());
+        	String action = intent.getAction();
             //if the state has changed, and the BluetoothAdapter has been turned on, setup the sensor
             if(action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)){
             	final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,BluetoothAdapter.STATE_OFF);
@@ -131,6 +147,7 @@ public abstract class ExternalSensor {
 	protected boolean connectSensor() {
 		//only attempt to setup the sensor if this has not yet been done
 		if(!connected){
+    		Log.v(TAG, "attempting to connect Sensor " + this.getClass().toString());
 			//first, get the paired devices
 			Set<BluetoothDevice> pairedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
 			
@@ -138,13 +155,13 @@ public abstract class ExternalSensor {
 			for (BluetoothDevice currentdevice : pairedDevices) {
 				//check if this is the correct device
 				if(isDevice(currentdevice)){
-					tryConnect(currentdevice);
 	                //try to connect
-	                connected = tryConnect(currentdevice);
+	                connected = tryConnectSocket(currentdevice);
 	                if(connected){
 	                	Log.v(TAG, "Socket is connected, starting updateThread");
 	                	updateThread = new UpdateThread();
 	                	updateHandler.post(updateThread);
+	                	runningThreads.add(updateThread);
 	                    return true;
 	                }
 				}
@@ -168,7 +185,7 @@ public abstract class ExternalSensor {
 	 * 
 	 * @return whether or not a Socket connection was established
 	 */
-	protected boolean tryConnect(BluetoothDevice dev){
+	protected boolean tryConnectSocket(BluetoothDevice dev){
         Log.v(TAG, "Attempting to connect to bluetooth socket");
         try {
         	mBluetoothSocket = dev.createRfcommSocketToServiceRecord(serial_uuid);
@@ -177,7 +194,8 @@ public abstract class ExternalSensor {
             return true;
         }
         catch(IOException e){
-            Log.v(TAG, "standard method for socket connection failed, attempting to use reflection work aroud", e);
+            Log.w(TAG, "Standard method for socket connection failed");
+            Log.v(TAG, "Attempting reflection work aroud for connecting socket");
             try {
             	Method m = dev.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
                 mBluetoothSocket = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));
@@ -187,9 +205,13 @@ public abstract class ExternalSensor {
             }
             //if all has failed, stop this sensor
             catch (Exception ex) {
-                Log.e(TAG, "workaround method also failed to connect to " + dev.getName(), ex);
+                Log.w(TAG, "workaround method also failed to connect to " + dev.getName());
                 return false;
             }
+        }
+        catch (Exception ex){
+            Log.e(TAG, "attempt at connecting socket to " + dev.getName() + "failed" , ex);
+            return false;
         }
 	}
 	
@@ -219,9 +241,9 @@ public abstract class ExternalSensor {
             	if(sensorinitialized){
                 	pollSensor();            		
                     try {
-    					this.wait(updateinterval);
+                    	Thread.sleep(updateinterval);
     				} catch (InterruptedException e) {
-    					Log.e(TAG, "UpdateThread not able to wait: ",e);
+    					Log.w(TAG, "UpdateThread was interrupted in its sleep");
     				}
             	}
             	else{
