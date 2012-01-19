@@ -461,7 +461,7 @@ public class SenseApi {
 
         // get the cookie from the response
         String cookie = response.get("set-cookie");
-        if (response.get("set-cookie") == null) {
+        if (result == 0 && response.get("set-cookie") == null) {
             // something went horribly wrong
             Log.w(TAG, "CommonSense login failed: no cookie received?!");
             result = -1;
