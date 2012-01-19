@@ -3,6 +3,26 @@
  *************************************************************************************************/
 package nl.sense_os.service.commonsense;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Build;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import nl.sense_os.service.ISenseService;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,26 +44,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
-import nl.sense_os.service.ISenseService;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
-import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Build;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 
 public class SenseApi {
 
@@ -104,6 +104,7 @@ public class SenseApi {
         // append name and UUID to the preference keys
         String keyDeviceId = uuid == null ? Auth.DEVICE_ID : Auth.DEVICE_ID + uuid;
         String keyIdTime = uuid == null ? Auth.DEVICE_ID_TIME : Auth.DEVICE_ID_TIME + uuid;
+        String keySensorList = uuid == null ? Auth.SENSOR_LIST : Auth.SENSOR_LIST + uuid;
 
         // try to get the device ID from the cache
         try {
@@ -139,6 +140,12 @@ public class SenseApi {
         String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
 
+        String responseCode = response.get("http response code");
+        if (!"200".equals(responseCode)) {
+            Log.w(TAG, "Failed to get list of devices! Response code: " + responseCode);
+            throw new IOException("Incorrect response from CommonSense: " + responseCode);
+        }
+
         // check if this device is in the list
         JSONObject content = new JSONObject(response.get("content"));
         JSONArray deviceList = content.getJSONArray("devices");
@@ -163,7 +170,7 @@ public class SenseApi {
                 editor.putString(Auth.DEVICE_TYPE, device.getString("type"));
                 editor.putInt(keyDeviceId, deviceId);
                 editor.putLong(keyIdTime, System.currentTimeMillis());
-                editor.remove(Auth.SENSOR_LIST);
+                editor.remove(keySensorList);
                 editor.commit();
                 return deviceId;
             }
@@ -239,6 +246,12 @@ public class SenseApi {
             String url = devMode ? SenseUrls.DEV_SENSORS : SenseUrls.SENSORS;
             url = url.replaceFirst("<id>", "" + deviceId);
             Map<String, String> response = SenseApi.request(context, url, null, cookie);
+
+            String responseCode = response.get("http response code");
+            if (!"200".equals(responseCode)) {
+                Log.w(TAG, "Failed to get list of sensors! Response code: " + responseCode);
+                throw new IOException("Incorrect response from CommonSense: " + responseCode);
+            }
 
             // parse response and store the list
             JSONObject content = new JSONObject(response.get("content"));
@@ -554,10 +567,10 @@ public class SenseApi {
         Map<String, String> response = request(context, url, postData, cookie);
 
         // check response code
-        if (response.get("http response code").compareToIgnoreCase("201") != 0) {
-            String code = response.get("http response code");
-            Log.e(TAG, "Error creating sensor. Got response code: " + code);
-            return null;
+        String code = response.get("http response code");
+        if (!"201".equals(code)) {
+            Log.e(TAG, "Failed to register sensor at CommonSense! Response code: " + code);
+            throw new IOException("Incorrect response from CommonSense: " + code);
         }
 
         // retrieve the newly created sensor ID
@@ -581,8 +594,6 @@ public class SenseApi {
             deviceType = getDefaultDeviceType(context);
         }
 
-        // Log.v(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
-
         // Add sensor to this device at CommonSense
         url = devMode ? SenseUrls.DEV_ADD_SENSOR_TO_DEVICE : SenseUrls.ADD_SENSOR_TO_DEVICE;
         url = url.replaceFirst("<id>", id);
@@ -594,11 +605,14 @@ public class SenseApi {
 
         response = request(context, url, postData, cookie);
 
-        if (response.get("http response code").compareToIgnoreCase("201") != 0) {
-            String code = response.get("http response code");
-            Log.e(TAG, "Error adding sensor to device. Got response code: " + code);
-            return null;
+        // check response code
+        code = response.get("http response code");
+        if (!"201".equals(code)) {
+            Log.e(TAG, "Failed to add sensor to device at CommonSense! Response code: " + code);
+            throw new IOException("Incorrect response from CommonSense: " + code);
         }
+
+        // Log.v(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
 
         // return the new sensor ID
         return id;
