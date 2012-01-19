@@ -5,6 +5,8 @@ package nl.sense_os.service;
 
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
@@ -755,20 +757,7 @@ public class SenseService extends Service {
         Log.v(TAG, "Start sensor modules...");
 
         // make sure the IDs of all sensors are known
-        new Thread() {
-
-            @Override
-            public void run() {
-                // run in separate Thread to prevent NetworkOnMainThread exceptions in Android 3.0+
-                SensorRegistrator reg = new PhoneSensorRegistrator(SenseService.this);
-                boolean sensorsRegged = reg.verifySensorIds(null, null);
-                if (sensorsRegged) {
-                    Log.v(TAG, "successfully verified the sensor IDs");
-                } else {
-                    Log.w(TAG, "could not verify sensor IDs for all sensors! should retry later...");
-                }
-            }
-        }.start();
+        verifySensorIds();
 
         SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
         if (statusPrefs.getBoolean(Status.MAIN, true)) {
@@ -785,6 +774,32 @@ public class SenseService extends Service {
 
         // send broadcast that something has changed in the status
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+    }
+
+    private void verifySensorIds() {
+
+        // run in separate Thread to prevent NetworkOnMainThread exceptions in Android 3.0+
+        new Thread() {
+
+            @Override
+            public void run() {
+                SensorRegistrator reg = new PhoneSensorRegistrator(SenseService.this);
+                boolean sensorsRegged = reg.verifySensorIds(null, null);
+                if (sensorsRegged) {
+                    Log.v(TAG, "Successfully verified the sensor IDs");
+
+                } else {
+                    Log.w(TAG, "Could not verify sensor IDs for all sensors! Retry in 10 seconds");
+                    new Timer().schedule(new TimerTask() {
+
+                        @Override
+                        public void run() {
+                            verifySensorIds();
+                        }
+                    }, 10000);
+                }
+            }
+        }.start();
     }
 
     /**
