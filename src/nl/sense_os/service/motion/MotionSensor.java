@@ -3,21 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.motion;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.Motion;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.states.EpiStateMonitor;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -34,6 +19,21 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.states.EpiStateMonitor;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class MotionSensor implements SensorEventListener {
 
@@ -668,6 +668,7 @@ public class MotionSensor implements SensorEventListener {
             context.stopService(new Intent(context, EpiStateMonitor.class));
         }
 
+        enableScreenOffListener(false);
         stopWakeUpAlarms();
     }
 
