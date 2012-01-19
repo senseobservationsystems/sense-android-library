@@ -3,17 +3,28 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import java.net.URLEncoder;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.Service;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.os.RemoteException;
+import android.util.Log;
+import android.widget.Toast;
 
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
 import nl.sense_os.service.commonsense.PhoneSensorRegistrator;
 import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
@@ -35,22 +46,10 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.app.Service;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+import java.net.URLEncoder;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SenseService extends Service {
 
@@ -373,6 +372,9 @@ public class SenseService extends Service {
      */
     private final Handler toastHandler = new Handler(Looper.getMainLooper());
 
+    private final Timer sensorVerifyTimer = new Timer();
+    private TimerTask sensorVerifyTask;
+
     // separate threads for the sensing modules
     private HandlerThread ambienceThread, motionThread, deviceProxThread, extSensorsThread,
             locationThread, phoneStateThread;
@@ -542,6 +544,8 @@ public class SenseService extends Service {
 
         // stop the main service
         stopForeground(true);
+
+        sensorVerifyTimer.cancel();
 
         super.onDestroy();
     }
@@ -757,7 +761,14 @@ public class SenseService extends Service {
         Log.v(TAG, "Start sensor modules...");
 
         // make sure the IDs of all sensors are known
-        verifySensorIds();
+        new Thread() {
+
+            @Override
+            public void run() {
+                // run in separate thread to avoid NetworkOnMainThread exception
+                verifySensorIds();
+            }
+        }.start();
 
         SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
         if (statusPrefs.getBoolean(Status.MAIN, true)) {
@@ -776,30 +787,25 @@ public class SenseService extends Service {
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
     }
 
-    private void verifySensorIds() {
+    private synchronized void verifySensorIds() {
 
-        // run in separate Thread to prevent NetworkOnMainThread exceptions in Android 3.0+
-        new Thread() {
+        if (null != sensorVerifyTask) {
+            sensorVerifyTask.cancel();
+        }
 
-            @Override
-            public void run() {
-                SensorRegistrator reg = new PhoneSensorRegistrator(SenseService.this);
-                boolean sensorsRegged = reg.verifySensorIds(null, null);
-                if (sensorsRegged) {
-                    Log.v(TAG, "Successfully verified the sensor IDs");
+        if (new PhoneSensorRegistrator(SenseService.this).verifySensorIds(null, null)) {
+            Log.v(TAG, "Sensor IDs verified");
+        } else {
+            Log.w(TAG, "Failed to verify the sensor IDs! Retry in 10 seconds");
+            sensorVerifyTask = new TimerTask() {
 
-                } else {
-                    Log.w(TAG, "Could not verify sensor IDs for all sensors! Retry in 10 seconds");
-                    new Timer().schedule(new TimerTask() {
-
-                        @Override
-                        public void run() {
-                            verifySensorIds();
-                        }
-                    }, 10000);
+                @Override
+                public void run() {
+                    verifySensorIds();
                 }
-            }
-        }.start();
+            };
+            sensorVerifyTimer.schedule(sensorVerifyTask, 10000);
+        }
     }
 
     /**
@@ -1079,7 +1085,7 @@ public class SenseService extends Service {
                     @Override
                     public void run() {
                         Log.d(TAG, "Attempting to start External Sensors");
-                    	if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
+                        if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
                             es_bioHarness = new ZephyrBioHarness(SenseService.this);
                             es_bioHarness.startBioHarness(finalInterval);
                         }
@@ -1089,11 +1095,10 @@ public class SenseService extends Service {
                         }
                         if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
                             Log.d(TAG, "Attempting to start OBD2");
-                        	es_obd2sensor = new OBD2Sensor(SenseService.this);
+                            es_obd2sensor = new OBD2Sensor(SenseService.this);
                             es_obd2sensor.start(finalInterval);
-                        }
-                        else{
-                            Log.d(TAG, "NOT attempting to start OBD2");                        	
+                        } else {
+                            Log.d(TAG, "NOT attempting to start OBD2");
                         }
                     }
                 });

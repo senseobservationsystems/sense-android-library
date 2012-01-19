@@ -1,6 +1,12 @@
 package nl.sense_os.service.commonsense;
 
-import java.util.HashMap;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.nfc.NfcManager;
+import android.os.Build;
+import android.util.Log;
 
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -10,13 +16,7 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.nfc.NfcManager;
-import android.os.Build;
-import android.util.Log;
+import java.util.HashMap;
 
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
@@ -427,7 +427,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
     }
 
     @Override
-    public boolean verifySensorIds(String deviceType, String deviceUuid) {
+    public synchronized boolean verifySensorIds(String deviceType, String deviceUuid) {
         boolean success = checkAmbienceSensors();
         success &= checkDeviceScanSensors();
         success &= checkLocationSensors();
