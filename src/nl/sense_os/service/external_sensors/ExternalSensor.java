@@ -68,7 +68,12 @@ public abstract class ExternalSensor {
 		//if connected, close the connection
 		Log.v(TAG, "stopping "+this.getClass().toString());
 		//stop listening for bluetooth changes
-		context.unregisterReceiver(bluetoothReceiver);
+		try{
+			context.unregisterReceiver(bluetoothReceiver);	
+		}
+		catch (Exception e) {
+			Log.e(TAG, "unable to unregister bluetoothReceiver, probably due to it not being registred");
+		}
 		if(connected){
 			//try to close the bluetooth socket
 			try {
@@ -76,14 +81,12 @@ public abstract class ExternalSensor {
 			} catch (IOException e) {
 				Log.e(TAG, "Error on stopping service", e);
 			}
+			connected = false;
 			//and stop polling the sensor, stop all running threads
-			if(updateThread != null){
-				for (Runnable r : runningThreads){
-					updateHandler.removeCallbacks(r);
-				}
-				runningThreads.clear();
+			for (Runnable r : runningThreads){
+				updateHandler.removeCallbacks(r);
 			}
-			connected = false;			
+			runningThreads.clear();
 		}
 		Log.v(TAG, this.getClass().toString() + " stopped");
 	}
@@ -215,11 +218,19 @@ public abstract class ExternalSensor {
         }
 	}
 	
+    protected String devicename;
+    protected String deviceadress;
+	
 	public class UpdateThread implements Runnable{
         private boolean sensorinitialized = false;
 
         public UpdateThread(){
             if (mBluetoothSocket != null) {
+            	devicename = mBluetoothSocket.getRemoteDevice().getName();
+            	deviceadress = mBluetoothSocket.getRemoteDevice().getAddress();
+            	boolean gelukt = (new OBD2SensorRegistrator(context)).verifySensorIds(devicename, deviceadress);
+            	Log.v(TAG, "HOI is het gelukt? "+gelukt);
+            	Log.v(TAG, "HALLO1 devicename: "+devicename+", deviceadress: "+deviceadress);
                 if (mmInStream == null || mmOutStream == null) {
                     try {
                         mmInStream = mBluetoothSocket.getInputStream();
@@ -236,19 +247,21 @@ public abstract class ExternalSensor {
 
         @Override
         public void run() {
-        	//while the connection is alive, poll every updateInterval 
+        	//while the connection is alive, poll every updateInterval
+        	long nextpoll, sleeptimer;
             while (connected) {
-            	if(sensorinitialized){
-                	pollSensor();            		
-                    try {
-                    	Thread.sleep(updateinterval);
-    				} catch (InterruptedException e) {
-    					Log.w(TAG, "UpdateThread was interrupted in its sleep");
-    				}
-            	}
-            	else{
+            	nextpoll = System.currentTimeMillis() + updateinterval;
+            	if(sensorinitialized)
+                	pollSensor();
+            	else
                 	sensorinitialized = initializeSensor();
-            	}
+                try {
+                	if((sleeptimer = nextpoll - System.currentTimeMillis()) > 0)
+                		Thread.sleep(sleeptimer);
+				} catch (InterruptedException e) {
+					Log.w(TAG, "UpdateThread was interrupted in its sleep");
+				}
+
             }
         }
 
