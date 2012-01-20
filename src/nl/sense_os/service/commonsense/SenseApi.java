@@ -3,26 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.commonsense;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Build;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-
-import nl.sense_os.service.ISenseService;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
-import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -44,6 +24,26 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import nl.sense_os.service.ISenseService;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Build;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public class SenseApi {
 
@@ -223,7 +223,7 @@ public class SenseApi {
         }
 
         // if we make it here, the list was not in the cache
-        // Log.v(TAG, "List of sensor IDs is missing or outdated, refreshing...");
+        Log.v(TAG, "List of sensor IDs is missing or outdated, refreshing...");
 
         // get device ID to use in communication with CommonSense
         int deviceId = getDeviceId(context, deviceUuid);
@@ -314,6 +314,10 @@ public class SenseApi {
                 }
             }
         }
+
+        // Log.d(TAG, "Could not find ID for " + name + " (" + description + " " + dataType
+        // + ") @device: " + deviceUuid);
+        // Log.d(TAG, "Device sensors: " + sensors);
 
         // if we make it here, the sensor does not exist (yet)
         return null;

@@ -3,22 +3,10 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.app.Service;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+import java.net.URLEncoder;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
@@ -46,10 +34,22 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.Service;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.os.RemoteException;
+import android.util.Log;
+import android.widget.Toast;
 
 public class SenseService extends Service {
 
@@ -1107,21 +1107,21 @@ public class SenseService extends Service {
 
                 // stop sensing
                 if (null != es_bioHarness) {
-                    Log.w(TAG, "Bioharness sensor is already present!");
+                    // Log.w(TAG, "Bioharness sensor is already present!");
                     es_bioHarness.stopBioHarness();
                     es_bioHarness = null;
                 }
 
                 // check HxM sensor presence
                 if (null != es_HxM) {
-                    Log.w(TAG, "HxM sensor is already present!");
+                    // Log.w(TAG, "HxM sensor is already present!");
                     es_HxM.stopHxM();
                     es_HxM = null;
                 }
 
                 // check OBD-II dongle presence
                 if (null != es_obd2sensor) {
-                    Log.w(TAG, "OBD-II sensor is already present!");
+                    // Log.w(TAG, "OBD-II sensor is already present!");
                     es_obd2sensor.stop();
                     es_obd2sensor = null;
                 }
