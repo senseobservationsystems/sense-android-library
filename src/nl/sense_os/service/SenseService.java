@@ -565,6 +565,10 @@ public class SenseService extends Service {
         // start database leeglepelaar
         DataTransmitter.scheduleTransmissions(this);
 
+        // store this login
+        SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+        prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
+
         checkVersion();
     }
 

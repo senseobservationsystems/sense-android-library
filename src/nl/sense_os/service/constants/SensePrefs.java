@@ -423,6 +423,12 @@ public class SensePrefs {
          * @see SensePrefs#MAIN_PREFS
          */
         public static final String LAST_STATUS = "last_status";
+        /**
+         * Key for preference that stores a flag for first login.
+         * 
+         * @see SensePrefs#MAIN_PREFS
+         */
+        public static final String LAST_LOGGED_IN = "never_logged_in";
     }
 
     /**
