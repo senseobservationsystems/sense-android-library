@@ -84,7 +84,7 @@ public class ServiceStateHelper {
 
         // action to take when the notification is tapped
         final Intent notifIntent = new Intent(context.getString(R.string.stat_notify_action));
-        notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         final PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notifIntent, 0);
 
         // time of the notification
