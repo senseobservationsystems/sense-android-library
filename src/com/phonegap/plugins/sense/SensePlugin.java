@@ -66,7 +66,7 @@ public class SensePlugin extends Plugin {
             // only for ivitality
             String packageName = ctx.getPackageName();
             if (packageName.equals("nl.sense_os.ivitality")) {
-                Log.w(TAG, "Set iVitality sensor settings");
+                Log.w(TAG, "Set special iVitality sensor settings");
                 try {
                     service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
                     service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
@@ -136,7 +136,7 @@ public class SensePlugin extends Plugin {
             final String username = data.getString(0);
             final String password = data.getString(1);
 
-            // Log.d(TAG, "username=" + username + ", password=" + password);
+            Log.d(TAG, "New username: '" + username + "'");
 
             // try the login on a separate Thread
             new Thread() {
@@ -498,10 +498,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleAmbience(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle ambience sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + "  ambience sensors");
 
         // do the call
         if (null != service) {
@@ -516,10 +516,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleExternal(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle external sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + "  external sensors");
 
         // do the call
         if (null != service) {
@@ -534,10 +534,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleMain(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle main status");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + "  main status");
 
         // do the call
         if (null != service) {
@@ -552,10 +552,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleMotion(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle motion sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + "  motion sensors");
 
         // do the call
         if (null != service) {
@@ -570,10 +570,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleNeighboringDevices(JSONArray data, String callbackId)
             throws JSONException, RemoteException {
-        Log.v(TAG, "Toggle neighboring devices sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + "  neighboring devices sensors");
 
         // do the call
         if (null != service) {
@@ -588,10 +588,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult togglePhoneState(JSONArray data, String callbackId) throws JSONException,
             RemoteException {
-        Log.v(TAG, "Toggle phone state sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + "  phone state sensors");
 
         // do the call
         if (null != service) {
@@ -606,10 +606,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult togglePosition(JSONArray data, String callbackId) throws JSONException,
             RemoteException {
-        Log.v(TAG, "Toggle position sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + "  position sensors");
 
         // do the call
         if (null != service) {
