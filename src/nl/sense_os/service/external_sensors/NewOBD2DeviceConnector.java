@@ -360,9 +360,10 @@ public class NewOBD2DeviceConnector implements Runnable{
     			if(socket != null && input != null){
 		    		char currentchar = 0;
 		    		while (input != null) {
-							currentchar = (char)input.read();
+							try{currentchar = (char)input.read();}
+							catch (IOException e){return;}
 							if(currentchar == '>')
-								break;
+								return;
 							//valid characters for the response
 							if(currentchar >= 32 && currentchar <=  127){
 								databuffer += currentchar;
