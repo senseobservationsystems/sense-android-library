@@ -22,6 +22,8 @@ import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.deviceprox.DeviceProximity;
+import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
+import nl.sense_os.service.external_sensors.OBD2DeviceRegistrator;
 import nl.sense_os.service.external_sensors.OBD2Sensor;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
@@ -365,7 +367,7 @@ public class SenseService extends Service {
     private SensePhoneState phoneStateListener;
     private ZephyrBioHarness es_bioHarness;
     private ZephyrHxM es_HxM;
-    private OBD2Sensor es_obd2sensor;
+    private NewOBD2DeviceConnector es_obd2sensor;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -1099,8 +1101,8 @@ public class SenseService extends Service {
                         }
                         if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
                             Log.d(TAG, "Attempting to start OBD2");
-                            es_obd2sensor = new OBD2Sensor(SenseService.this);
-                            es_obd2sensor.start(finalInterval);
+                            es_obd2sensor = new NewOBD2DeviceConnector(SenseService.this, finalInterval);
+                            es_obd2sensor.run();
                         } else {
                             Log.d(TAG, "NOT attempting to start OBD2");
                         }
