@@ -48,13 +48,15 @@ public class NewOBD2DeviceConnector implements Runnable{
 	public NewOBD2DeviceConnector(Context context, BluetoothDevice device, int interval){
 		this.context = context;
 		this.device = device;
-		this.interval = interval;
+		if(interval < 0)
+			this.interval = 1;
+		else
+			this.interval = interval;
+		
 	}
 
 	public NewOBD2DeviceConnector(Context context, int interval){
-		this.context = context;
-		this.device = null;
-		this.interval = interval;
+		this(context, null, interval);
 	}
 	
 	@Override
@@ -138,6 +140,13 @@ public class NewOBD2DeviceConnector implements Runnable{
 					case READY:
 						currentState = pollSensors();
 					case STOPPED:
+						try {
+							if(socket != null)
+								socket.close();
+						} catch (Exception e) {
+							Log.e(TAG,"Error closing socket in stopped state");
+						}
+						socket = null;
 						break;
 					default:
 						currentState = State.AWAITING_BLUETOOTH;
@@ -145,7 +154,9 @@ public class NewOBD2DeviceConnector implements Runnable{
 				}
 				if(lastrun + interval < System.currentTimeMillis()){
 					try {
-						Thread.sleep(interval - (System.currentTimeMillis()-lastrun));
+						long sleepTime = interval - (System.currentTimeMillis()-lastrun);
+						sleepTime = sleepTime<0?1:sleepTime;
+						Thread.sleep(sleepTime);
 					} catch (InterruptedException e) {
 						Log.e(TAG, "Interrupted while sleeping: ", e);
 						currentState = State.STOPPED;
@@ -162,7 +173,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		    if(btReceiver != null)
 		    	context.unregisterReceiver(btReceiver);
 		    btReceiver = null;
-		    currentState = State.AWAITING_BLUETOOTH;
+		    currentState = State.STOPPED;
 		}
 
 		protected State doCheckBluetooth() {
@@ -209,6 +220,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 				return State.CONNECTION_READY;
 			} catch (IOException e) {
 				//Stop if no good socket was created
+				Log.e(TAG, "Error in getting stream in doconnectsocket", e);
 				return State.STOPPED;
 			}
 		}
@@ -270,12 +282,12 @@ public class NewOBD2DeviceConnector implements Runnable{
 		                    	currentState = State.BLUETOOTH_ENABLED;
 		                    }
 		                }
-		            }
-		            else{
-		            	if (state != BluetoothAdapter.STATE_ON){
-		            		currentState = State.AWAITING_BLUETOOTH;
-		            	}
-		            }
+		                else{
+			            	if (state != BluetoothAdapter.STATE_ON){
+			            		currentState = State.AWAITING_BLUETOOTH;
+			            	}
+			            }
+		            }		          
 		    	}
 		    	else{
 		    		Log.e(TAG, "why is this method still running, stop method is not functioning properly");
@@ -315,7 +327,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 	        try {
 	        	tempsocket = dev.createRfcommSocketToServiceRecord(serial_uuid);
 	        	tempsocket.connect();
-	            Log.v(TAG, "Connected to "+ dev.getAddress() +" via normal method");
+	           // Log.v(TAG, "Connected to "+ dev.getAddress() +" via normal method");
 	            return tempsocket;
 	        } catch (IOException e) {
 	            try {
@@ -323,11 +335,12 @@ public class NewOBD2DeviceConnector implements Runnable{
 	            		return connectSocket(dev);
 	            	else
 	            	{
-	            		Method m = dev.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
-	            		tempsocket = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));
-	            		tempsocket.connect();
-	            		Log.v(TAG, "Connected to "+dev.getName()+" via reflection work aroud");
-	            		return tempsocket;
+	            		//Method m = dev.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
+	            		//tempsocket = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));
+	            		//tempsocket.connect();
+	            		//Log.v(TAG, "Connected to "+dev.getName()+" via reflection work aroud");
+	            		//return tempsocket;
+	            		return null;
 	            	}
 	            }
 	            // if all has failed, stop this sensor
