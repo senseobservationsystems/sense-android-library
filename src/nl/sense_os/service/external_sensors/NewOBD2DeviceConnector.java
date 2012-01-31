@@ -107,8 +107,8 @@ public class NewOBD2DeviceConnector implements Runnable{
 		protected InputStream input;
 		protected OutputStream output;
 		
-		//Hayes Command set: perform a warm start, turn automatic formatting ON, turn headers ON 
-		final String[] hayescommands = {"AT WS", "AT CAF 1", "AT H 1"};
+		//Hayes Command set: turn automatic formatting ON, turn headers ON 
+		final String[] hayescommands = {"AT CAF 1", "AT H 1"};
 		
 		//OBD variables
 		private HashMap<String, String> verifiedsensors = new HashMap<String, String>();
@@ -139,7 +139,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 						currentState = doInitializeUsingHayes();
 						break;
 					case READY:
-						currentState = pollSensors();
+						currentState = doPollSensors();
 					case STOPPED:
 						try {
 							if(socket != null)
@@ -227,14 +227,13 @@ public class NewOBD2DeviceConnector implements Runnable{
 		}
 
 		protected State doWaitForBoot() {
-			databuffer += readUntilPrompt();
-			if(databuffer.contains("ELM327"))
+			if(sendCommand("AT WS", "ELM327"))
 				return State.DEVICE_POWERED;
 			return State.CONNECTION_READY;
 		}
 
 		protected State doInitializeUsingHayes() {
-			//wait until the ELM unit is powered and connected
+			//if the ELM unit is powered and connected, initialize using a set of Hayes commands
 			for(String command: hayescommands){
 				if(!sendHayesCommand(command))
 					return State.DEVICE_POWERED;
@@ -242,7 +241,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 			return State.READY;
 		}
 
-		protected State pollSensors() {
+		protected State doPollSensors() {
 			try{
 				//TODO select which sensors to poll depending on preferences
 				//TODO implementing pollMonitorStatus (is bit-encoded)
@@ -356,53 +355,54 @@ public class NewOBD2DeviceConnector implements Runnable{
 	    }
 		
 		//The ‘>’ character indicates that the device is in the idle state, ready to receive characters.
-		private String readUntilPrompt(){
-			String response = "";
-    		try {			
-			while(socket != null && input != null){
-	    		char currentchar = 0;
-				
-	    		
-					while (input != null) {
-						currentchar = (char)input.read();
-						if(currentchar == '>')
-							break;
-						//valid characters for the response
-						if(currentchar >= 32 && currentchar <=  127){
-							response += currentchar;
+		private void readUntilPrompt(){
+    		try {
+    			if(socket != null && input != null){
+		    		char currentchar = 0;
+		    		while (input != null) {
+							currentchar = (char)input.read();
+							if(currentchar == '>')
+								break;
+							//valid characters for the response
+							if(currentchar >= 32 && currentchar <=  127){
+								databuffer += currentchar;
+							}
+							//represent CR/LF characters as |
+							else if (currentchar == 13 || currentchar == 10){
+								databuffer += "|";
+							}
 						}
-						//represent CR/LF characters as |
-						else if (currentchar == 13 || currentchar == 10){
-							response += "|";
-						}
-					}
-				
 				}			
     		} catch (Exception e) {
-				Log.e(TAG, "Exception in readUntilPrompt, response thusfar: "+response);
-				
+				Log.e(TAG, "Exception in readUntilPrompt, buffer thusfar: "+databuffer);
 			}
-    		return response;
 		}
-		
+
+    	private void clearBuffer() {
+    		databuffer = "";
+		}
+
 		/**
     	 * 
     	 * @param command the Hayes command (AT command) to be sent
     	 * @return whether or not the execution of this command was successful
     	 */
 		private boolean sendHayesCommand(String command) {
-    		return sendCommand(command, "OK") != null;
+    		clearBuffer();
+			return sendCommand(command, "OK");
     	}
-    	
-    	/**
+
+		/**
     	 * 
     	 * @param command the Mode and PID for the OBD-command to be checked
     	 * @return the formatted response gotten, or null iff the command was invalid
     	 */
 		private String[] sendOBDCommand(String command){
-    		if(command != null && command.length()>=2){
+			clearBuffer();
+			if(command != null && command.length()>=2){
     			String validresponse = (char)(command.toCharArray()[0] + 4) + command.substring(1);
-    			String[] responses = sendCommand(command, validresponse).split("|");
+    			sendCommand(command, validresponse);
+    			String[] responses = databuffer.split("|");
     			for(String response: responses){
     				if(response.contains(validresponse))
     					return response.split(" ");
@@ -411,7 +411,7 @@ public class NewOBD2DeviceConnector implements Runnable{
     		return null;
     	}
     	
-    	private String sendCommand(String command, String validresponse){
+    	private boolean sendCommand(String command, String validresponse){
 			long deadline = System.currentTimeMillis() + timeout;
 			
 			boolean commandsent = false;
@@ -427,14 +427,18 @@ public class NewOBD2DeviceConnector implements Runnable{
 				}
 			}
 		
-			String datareceived = "";
 			//try to find the reply 'OK' which indicates a correct reading of the Hayes command
 			while(System.currentTimeMillis() < deadline){
-				datareceived += readUntilPrompt();
-				if(datareceived.contains(validresponse))
-					return datareceived;
+				readUntilPrompt();
+				if(databuffer.contains(validresponse))
+					return true;
+				try {
+					Thread.sleep(sleeptime);
+				} catch (InterruptedException e) {
+					Log.e(TAG, "InterruptedException while sleeping in SendATcommand");
+				}
 			}
-			return null;		
+			return false;
 		}
 
 		//messages to the ELM327 must be terminated with a CR character (#0D) before it will be acted upon
