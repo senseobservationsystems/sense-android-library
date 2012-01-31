@@ -127,6 +127,12 @@ public class SensePrefs {
              */
             public static final String LIGHT = "ambience_light";
             /**
+             * Key for preference that toggles use of camera light sensor in ambience sensing.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String CAMERA_LIGHT = "ambience_camera_light";            
+            /**
              * Key for preference that toggles use of the microphone in ambience sensing.
              * 
              * @see SensePrefs#MAIN_PREFS

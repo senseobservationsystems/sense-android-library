@@ -94,11 +94,13 @@ public class NewOBD2DeviceConnector implements Runnable{
         }
 	}
 	
+	
+	InputStream input;
+	OutputStream output;
+	String databuffer = "";
+	
 	public class StateMachine implements Runnable{
-		protected BTReceiver btReceiver;
-		protected InputStream input;
-		protected OutputStream output;
-		protected String databuffer = "";
+		BTReceiver btReceiver;
 		
 		@Override
 		public void run() {
@@ -142,7 +144,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 						Log.v(TAG, "socket == null?"+ (socket == null)); 
 						if(socket == null)
 							break;
-						Log.v(TAG, "socket.isConnected(): "+ socket.isConnected());
+						//Log.v(TAG, "socket.isConnected(): "+ socket.isConnected());
 						try{
 							input = socket.getInputStream();
 							output = socket.getOutputStream();
@@ -155,7 +157,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 					case ERROR:
 						break;
 					default:
-						if(socket != null && socket.isConnected()){
+						if(socket != null ){
 							if(currentState == State.CONNECTION_READY){
 							//wait until the device is ready to receive HAYES-commands
 							databuffer += readUntilPrompt();
@@ -180,21 +182,29 @@ public class NewOBD2DeviceConnector implements Runnable{
 				}
 			}
 			Log.v(TAG, "ENDING AT currentState: "+currentState);
-			if(currentState != State.ERROR)
+			if(currentState != State.ERROR && sensorsenabled)
 				runStateMachine();
 			else
 				stop();
 		}
 		
 		protected void runStateMachine(){
+			try
+			{
 			long timepast = System.currentTimeMillis() - lastrun;
 			if(currentState != previousState || timepast > interval){
 				Log.v(TAG, "RUN StateMachine NOW");
-				stateMachineHandler.post(stateMachine = new StateMachine());
+				if(stateMachineHandler != null)
+					stateMachineHandler.post(stateMachine = new StateMachine());
 			}
 			else{
 				Log.v(TAG, "RUN StateMachine in "+(interval -timepast) +"milliseconds");
-				stateMachineHandler.postDelayed(stateMachine = new StateMachine(), interval - timepast);
+				if(stateMachineHandler != null)
+					stateMachineHandler.postDelayed(stateMachine = new StateMachine(), interval - timepast);
+			}
+			}catch(Exception e)
+			{
+				Log.d(TAG, "Error in runstatemachine",e);
 			}
 		}
 
@@ -223,7 +233,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		                }
 		            }
 		            else{
-		            	if (state != BluetoothAdapter.STATE_ON && state != BluetoothAdapter.STATE_CONNECTED && state != BluetoothAdapter.STATE_CONNECTING){
+		            	if (state != BluetoothAdapter.STATE_ON){
 		            		currentState = State.AWAITING_BLUETOOTH;
 		            		runStateMachine();
 		            	}
@@ -238,29 +248,19 @@ public class NewOBD2DeviceConnector implements Runnable{
 		protected BluetoothSocket connectSocket() {
 			//try to create a connection to a bluetooth device
 			BluetoothSocket tempsocket;
-			if(device != null){
-				try {
-					tempsocket = connectSocket(device);
-					if(tempsocket != null){
-						tempsocket.connect();
-						return tempsocket;
-					}
-				} catch (IOException e) {
-					Log.v(TAG, "Given device "+device+" was not an available device");
-				}
+			if(device != null){				
+				tempsocket = connectSocket(device);
+				if(tempsocket != null){
+					return tempsocket;
+				}				
 			}
 		
 			Set<BluetoothDevice> paireddevices = adapter.getBondedDevices();
 			for(BluetoothDevice tempdev: paireddevices){
 				if(tempdev.getName().contains("OBD")){
-					try {
-						tempsocket = connectSocket(tempdev);
-						if(tempsocket != null){
-							tempsocket.connect();
-							return tempsocket;
-						}
-					} catch (IOException e) {
-						Log.v(TAG, "Device "+tempdev+" was not an available device", e);
+					tempsocket = connectSocket(tempdev);
+					if(tempsocket != null){						
+						return tempsocket;
 					}
 				}
 			}
@@ -277,23 +277,28 @@ public class NewOBD2DeviceConnector implements Runnable{
 	        try {
 	        	tempsocket = dev.createRfcommSocketToServiceRecord(serial_uuid);
 	        	tempsocket.connect();
-	            Log.v(TAG, "Connected to "+ dev.getName() +" via normal method");
+	            Log.v(TAG, "Connected to "+ dev.getAddress() +" via normal method");
 	            return tempsocket;
 	        } catch (IOException e) {
 	            try {
-	                Method m = dev.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
-	                tempsocket = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));
-	                tempsocket.connect();
-	                Log.v(TAG, "Connected to "+dev.getName()+" via reflection work aroud");
-	                return tempsocket;
+	            	if(e.toString().contains("Service"))
+	            		return connectSocket(dev);
+	            	else
+	            	{
+	            		Method m = dev.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
+	            		tempsocket = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));
+	            		tempsocket.connect();
+	            		Log.v(TAG, "Connected to "+dev.getName()+" via reflection work aroud");
+	            		return tempsocket;
+	            	}
 	            }
 	            // if all has failed, stop this sensor
 	            catch (Exception ex) {
-	                //Log.w(TAG, "No socket connected to " + dev.getName(), ex);
+	                Log.d(TAG, "No socket connected to " + dev.getName(), ex);
 	                return null;
 	            }
 	        } catch (Exception ex) {
-	            //Log.e(TAG, "Failed to connect socket to " + dev.getName(), ex);
+	            Log.e(TAG, "Failed to connect socket to " + dev.getName(), ex);
 	            return null;
 	        }
 	    }
@@ -301,11 +306,12 @@ public class NewOBD2DeviceConnector implements Runnable{
 		//The ‘>’ character indicates that the device is in the idle state, ready to receive characters.
 		protected String readUntilPrompt(){
 			String response = "";
-			while(socket.isConnected()){
+    		try {			
+			while(socket != null && input != null){
 	    		char currentchar = 0;
 				
-	    		try {
-					while (input.available()>0) {
+	    		
+					while (input != null && input.available()>0) {
 						currentchar = (char)input.read();
 						if(currentchar == '>')
 							break;
@@ -318,11 +324,13 @@ public class NewOBD2DeviceConnector implements Runnable{
 							response += "|";
 						}
 					}
-				} catch (IOException e) {
-					Log.e(TAG, "IOException in readUntilPrompt, response thusfar: "+response);
-				}
+				
+				}			
+    		} catch (Exception e) {
+				Log.e(TAG, "Exception in readUntilPrompt, response thusfar: "+response);
+				
 			}
-			return response;
+    		return response;
 		}
 		
 		//perform a warm start, turn automatic formatting ON, turn headers ON 
@@ -395,15 +403,14 @@ public class NewOBD2DeviceConnector implements Runnable{
 
 		//messages to the ELM327 must be terminated with a CR character (#0D) before it will be acted upon
 		protected boolean trySend(String data){
-			if(socket.isConnected()){
-				byte bytestosend[] = (data + "\r").getBytes();
-				try {
+			try {
+				if(socket != null){
+					byte bytestosend[] = (data + "\r").getBytes();
 					output.write(bytestosend);
 					return true;
-				} catch (IOException e) {
-					Log.e(TAG, "IOException sending ("+data+")");
-					return false;
-				}
+				}				
+			} catch (IOException e) {
+				Log.e(TAG, "IOException sending ("+data+")");				
 			}
 			return false;
 		}

@@ -125,6 +125,11 @@ public class SensorData {
          * Light sensor. Part of the Ambience sensors.
          */
         public static final String LIGHT = "light";
+       
+        /**
+         * Camera Light sensor. Part of the Ambience sensors.
+         */
+        public static final String CAMERA_LIGHT = "camera_light";
 
         /**
          * Bluetooth discovery sensor. Part of the Neighboring Devices sensors.

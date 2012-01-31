@@ -2,6 +2,7 @@ package nl.sense_os.service.commonsense;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.nfc.NfcManager;
@@ -30,7 +31,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
     private static final String TAG = "Sensor Registration";
 
     /**
-     * Checks the IDs for light, noise, pressure sensors.
+     * Checks the IDs for light, camera light, noise, pressure sensors.
      * 
      * @param context
      *            Context for communication with CommonSense.
@@ -58,6 +59,19 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {
             Log.w(TAG, "No light sensor present!");
+        }
+        
+        // match camera light sensor
+        for(int camera_id = 0; camera_id < Camera.getNumberOfCameras(); ++camera_id)
+        {
+		    name = SensorNames.CAMERA_LIGHT;
+		    displayName = "Camera Light";
+		    description = "camera " + camera_id + " average luminance";
+		    dataType = SenseDataTypes.JSON;
+		    dataFields.clear();
+		    dataFields.put("lux", 0);
+		    value = new JSONObject(dataFields).toString();
+		    success &= checkSensor(name, displayName, dataType, description, value, null, null);
         }
 
         // match noise sensor
