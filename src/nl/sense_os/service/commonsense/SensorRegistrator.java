@@ -34,7 +34,7 @@ public abstract class SensorRegistrator {
      *            UUID of the sensor's device.
      * @return true if the sensor ID was found or created
      */
-    protected synchronized boolean checkSensor(String name, String displayName, String dataType,
+    public synchronized boolean checkSensor(String name, String displayName, String dataType,
             String description, String value, String deviceType, String deviceUuid) {
         try {
             if (null == SenseApi.getSensorId(context, name, description, dataType, deviceUuid)) {
