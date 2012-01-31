@@ -132,7 +132,8 @@ public class NewOBD2DeviceConnector implements Runnable{
 						currentState = doConnectSocket();
 						break;
 					case CONNECTION_READY:
-						currentState = doWaitForBoot();
+						//currentState = doWaitForBoot();
+						currentState = State.DEVICE_POWERED;
 						break;
 					case DEVICE_POWERED:
 						currentState = doInitializeUsingHayes();
@@ -327,7 +328,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 	        try {
 	        	tempsocket = dev.createRfcommSocketToServiceRecord(serial_uuid);
 	        	tempsocket.connect();
-	           // Log.v(TAG, "Connected to "+ dev.getAddress() +" via normal method");
+	        	Log.d(TAG, "Connected to obd2 via normal method");
 	            return tempsocket;
 	        } catch (IOException e) {
 	            try {
@@ -340,17 +341,17 @@ public class NewOBD2DeviceConnector implements Runnable{
 	            		//tempsocket.connect();
 	            		//Log.v(TAG, "Connected to "+dev.getName()+" via reflection work aroud");
 	            		//return tempsocket;
-	            		return null;
+	            		return socket;
 	            	}
 	            }
 	            // if all has failed, stop this sensor
 	            catch (Exception ex) {
 	                Log.d(TAG, "No socket connected to " + dev.getName(), ex);
-	                return null;
+	                return socket;
 	            }
 	        } catch (Exception ex) {
 	            Log.e(TAG, "Failed to connect socket to " + dev.getName(), ex);
-	            return null;
+	            return socket;
 	        }
 	    }
 		
@@ -362,7 +363,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 	    		char currentchar = 0;
 				
 	    		
-					while (input != null && input.available()>0) {
+					while (input != null) {
 						currentchar = (char)input.read();
 						if(currentchar == '>')
 							break;
