@@ -25,7 +25,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-public class NewOBD2DeviceConnector extends BluetoothDeviceConnector{
+public class NewOBD2DeviceConnector implements Runnable{
 	protected final String TAG = "OBD-II";
     protected final UUID serial_uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 	
@@ -73,7 +73,6 @@ public class NewOBD2DeviceConnector extends BluetoothDeviceConnector{
         stateMachineHandler.post(stateMachine = new StateMachine());
 	}
 
-	@Override
 	public void stop() {
 		sensorsenabled = false;
 		Log.v(TAG, "stopping OBD2DeviceConnector");
@@ -136,18 +135,23 @@ public class NewOBD2DeviceConnector extends BluetoothDeviceConnector{
 						}
 			            else
 			            	currentState = State.ERROR;
+						break;
 					case BLUETOOTH_ENABLED:
 						//try to connect to an OBD2 Dongle
 						socket = connectSocket();
+						Log.v(TAG, "socket == null?"+ (socket == null)); 
 						if(socket == null)
-							return;
+							break;
+						Log.v(TAG, "socket.isConnected(): "+ socket.isConnected());
 						try{
 							input = socket.getInputStream();
 							output = socket.getOutputStream();
 							currentState = State.CONNECTION_READY;
+							break;
 						} catch (IOException e) {
 							currentState = State.ERROR;
 						}
+						break;
 					case ERROR:
 						break;
 					default:
@@ -172,6 +176,7 @@ public class NewOBD2DeviceConnector extends BluetoothDeviceConnector{
 							//return to the BLUETOOTH_ENABLED state, to create a new socket
 							currentState = State.BLUETOOTH_ENABLED;
 						}
+						break;
 				}
 			}
 			Log.v(TAG, "ENDING AT currentState: "+currentState);
@@ -238,7 +243,6 @@ public class NewOBD2DeviceConnector extends BluetoothDeviceConnector{
 					tempsocket = connectSocket(device);
 					if(tempsocket != null){
 						tempsocket.connect();
-						currentState = State.CONNECTION_READY;
 						return tempsocket;
 					}
 				} catch (IOException e) {
@@ -253,7 +257,6 @@ public class NewOBD2DeviceConnector extends BluetoothDeviceConnector{
 						tempsocket = connectSocket(tempdev);
 						if(tempsocket != null){
 							tempsocket.connect();
-							currentState = State.CONNECTION_READY;
 							return tempsocket;
 						}
 					} catch (IOException e) {

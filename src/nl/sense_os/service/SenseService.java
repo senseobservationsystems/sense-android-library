@@ -23,8 +23,6 @@ import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
-import nl.sense_os.service.external_sensors.OBD2DeviceRegistrator;
-import nl.sense_os.service.external_sensors.OBD2Sensor;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
 import nl.sense_os.service.location.LocationSensor;
