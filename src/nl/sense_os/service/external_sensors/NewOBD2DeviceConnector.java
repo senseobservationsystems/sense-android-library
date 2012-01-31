@@ -29,21 +29,22 @@ public class NewOBD2DeviceConnector implements Runnable{
 	protected final String TAG = "OBD-II";
     protected final UUID serial_uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 	
-	enum State {AWAITING_BLUETOOTH, BLUETOOTH_ENABLED, CONNECTION_READY, DEVICE_POWERED, READY, ERROR}
+    //remember the state you are in
+	enum State {AWAITING_BLUETOOTH, BLUETOOTH_ENABLED, CONNECTION_READY, DEVICE_POWERED, READY, STOPPED}
 	protected State previousState, currentState;
 	protected boolean sensorsenabled = false;
 	
+	//handling threads
     protected Handler stateMachineHandler = null;
     protected HandlerThread stateMachineHandlerThread = null;
     protected StateMachine stateMachine = null;
 
+    //global variables
 	protected final Context context;
-	protected BluetoothDevice device;
 	protected final int interval;
-	protected long lastrun = System.currentTimeMillis();
-	protected BluetoothAdapter adapter;
-	protected BluetoothSocket socket;
-	
+	protected BluetoothDevice device;
+	protected String databuffer = "";
+		
 	public NewOBD2DeviceConnector(Context context, BluetoothDevice device, int interval){
 		this.context = context;
 		this.device = device;
@@ -93,130 +94,169 @@ public class NewOBD2DeviceConnector implements Runnable{
             Log.e(TAG, "Exception in stopping BluetoothDeviceRegistrator:", e);
         }
 	}
-	
-	
-	InputStream input;
-	OutputStream output;
-	String databuffer = "";
-	
+		
 	public class StateMachine implements Runnable{
-		BTReceiver btReceiver;
+		protected long lastrun = System.currentTimeMillis();
+
+		//connection variables
+		protected BluetoothAdapter adapter;
+		protected BTReceiver btReceiver;
+		protected BluetoothSocket socket;
+		protected InputStream input;
+		protected OutputStream output;
+		
+		//Hayes Command set: perform a warm start, turn automatic formatting ON, turn headers ON 
+		final String[] hayescommands = {"AT WS", "AT CAF 1", "AT H 1"};
+		
+		//OBD variables
+		private HashMap<String, String> verifiedsensors = new HashMap<String, String>();
+		private EmptyRegistrator registrator = new EmptyRegistrator(context);
+		
+		//OBD timer variables 
+		private final int timeout = 20000;
+		private final int sleeptime = 500;
 		
 		@Override
 		public void run() {
 			lastrun = System.currentTimeMillis();
-			if(sensorsenabled){
+			while(sensorsenabled && currentState != State.STOPPED){
 				Log.v(TAG, "Current State: "+currentState+" (past:"+previousState+")");
 				previousState = currentState;
 				switch (currentState){
 					case AWAITING_BLUETOOTH:
-						//try to locate the default bluetooth adapter, exit in error if this is impossible
-			            try { adapter = BluetoothAdapter.getDefaultAdapter(); } 
-			            catch (Exception e) { currentState = State.ERROR; break;}
-			            
-			            if (adapter != null){
-				            
-			                // listen to adapter changes. btReceiver will handle state changes
-							if(btReceiver == null)
-								btReceiver = new BTReceiver();
-				            context.registerReceiver(btReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-				            
-			            	//look at the current state of the adapter 
-			            	//if the adapter is turned on, set the state to BLUETOOTH_ENABLED
-			            	if(adapter.getState() == BluetoothAdapter.STATE_ON){
-			            		currentState = State.BLUETOOTH_ENABLED;
-			            		break;
-			            	}
-			            	else if(adapter.getState() != BluetoothAdapter.STATE_TURNING_ON){
-								Log.v(TAG, "TURNING ON");
-			            		//if the adapter is not being turned on, ask user permission to turn it on
-				                Intent startBt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-				                startBt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				                context.startActivity(startBt);						
-							}
-						}
-			            else
-			            	currentState = State.ERROR;
+						currentState = doCheckBluetooth();
 						break;
 					case BLUETOOTH_ENABLED:
-						//try to connect to an OBD2 Dongle
-						socket = connectSocket();
-						Log.v(TAG, "socket == null?"+ (socket == null)); 
-						if(socket == null)
-							break;
-						//Log.v(TAG, "socket.isConnected(): "+ socket.isConnected());
-						try{
-							input = socket.getInputStream();
-							output = socket.getOutputStream();
-							currentState = State.CONNECTION_READY;
-							break;
-						} catch (IOException e) {
-							currentState = State.ERROR;
-						}
+						currentState = doConnectSocket();
 						break;
-					case ERROR:
+					case CONNECTION_READY:
+						currentState = doWaitForBoot();
+						break;
+					case DEVICE_POWERED:
+						currentState = doInitializeUsingHayes();
+						break;
+					case READY:
+						currentState = pollSensors();
+					case STOPPED:
 						break;
 					default:
-						if(socket != null ){
-							if(currentState == State.CONNECTION_READY){
-							//wait until the device is ready to receive HAYES-commands
-							databuffer += readUntilPrompt();
-							if(databuffer.contains("ELM327"))
-								currentState = State.DEVICE_POWERED;
-							}
-							if(currentState == State.DEVICE_POWERED){
-								if(initializeUsingHayes())
-									currentState = State.READY;
-								else
-									currentState = State.ERROR;
-							}
-							if(currentState == State.READY){
-								pollSensors();
-							}
-						}
-						else{
-							//return to the BLUETOOTH_ENABLED state, to create a new socket
-							currentState = State.BLUETOOTH_ENABLED;
-						}
+						currentState = State.AWAITING_BLUETOOTH;
 						break;
 				}
+				if(lastrun + interval < System.currentTimeMillis()){
+					try {
+						Thread.sleep(interval - (System.currentTimeMillis()-lastrun));
+					} catch (InterruptedException e) {
+						Log.e(TAG, "Interrupted while sleeping: ", e);
+						currentState = State.STOPPED;
+					}
+				}
 			}
-			Log.v(TAG, "ENDING AT currentState: "+currentState);
-			if(currentState != State.ERROR && sensorsenabled)
-				runStateMachine();
-			else
-				stop();
+			Log.v(TAG, "Stopping StateMachine, while in state "+currentState);
+			stop();
 		}
 		
-		protected void runStateMachine(){
-			try
-			{
-			long timepast = System.currentTimeMillis() - lastrun;
-			if(currentState != previousState || timepast > interval){
-				Log.v(TAG, "RUN StateMachine NOW");
-				if(stateMachineHandler != null)
-					stateMachineHandler.post(stateMachine = new StateMachine());
-			}
-			else{
-				Log.v(TAG, "RUN StateMachine in "+(interval -timepast) +"milliseconds");
-				if(stateMachineHandler != null)
-					stateMachineHandler.postDelayed(stateMachine = new StateMachine(), interval - timepast);
-			}
-			}catch(Exception e)
-			{
-				Log.d(TAG, "Error in runstatemachine",e);
-			}
-		}
-
 		public void stop(){
 			Log.v(TAG, "stopping the StateMachine");
 			//removing the btListener
-            if(btReceiver != null)
-            	context.unregisterReceiver(btReceiver);
-            btReceiver = null;
-            currentState = State.AWAITING_BLUETOOTH;
+		    if(btReceiver != null)
+		    	context.unregisterReceiver(btReceiver);
+		    btReceiver = null;
+		    currentState = State.AWAITING_BLUETOOTH;
 		}
-	
+
+		protected State doCheckBluetooth() {
+			//try to locate the default bluetooth adapter, go to State STOPPED if not found
+		    try { adapter = BluetoothAdapter.getDefaultAdapter(); } 
+		    catch (Exception e) { return State.STOPPED;}
+		    
+		    if (adapter != null){
+		        
+		        // listen to adapter changes. btReceiver will handle state changes
+				if(btReceiver == null)
+					btReceiver = new BTReceiver();
+		        context.registerReceiver(btReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+		        
+		    	//look at the current state of the adapter 
+		    	//if the adapter is turned on, set the state to BLUETOOTH_ENABLED
+		    	if(adapter.getState() == BluetoothAdapter.STATE_ON){
+		    		return State.BLUETOOTH_ENABLED;
+		    	}
+		    	else if(adapter.getState() != BluetoothAdapter.STATE_TURNING_ON){
+					Log.v(TAG, "TURNING ON");
+		    		//if the adapter is not being turned on, ask user permission to turn it on
+		            Intent startBt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		            startBt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		            context.startActivity(startBt);
+				}
+		   		return State.AWAITING_BLUETOOTH;
+			}
+		    //no good finding bluetooth, then stop the whole StateMachine
+		    else
+		    	return State.STOPPED;
+		}
+
+		protected State doConnectSocket() {
+			//try to connect to an OBD2 Dongle
+			socket = connectSocket();
+			Log.v(TAG, "socket == null?"+ (socket == null)); 
+			if(socket == null)
+				return State.BLUETOOTH_ENABLED;
+			//Log.v(TAG, "socket.isConnected(): "+ socket.isConnected());
+			try{
+				input = socket.getInputStream();
+				output = socket.getOutputStream();
+				return State.CONNECTION_READY;
+			} catch (IOException e) {
+				//Stop if no good socket was created
+				return State.STOPPED;
+			}
+		}
+
+		protected State doWaitForBoot() {
+			databuffer += readUntilPrompt();
+			if(databuffer.contains("ELM327"))
+				return State.DEVICE_POWERED;
+			return State.CONNECTION_READY;
+		}
+
+		protected State doInitializeUsingHayes() {
+			//wait until the ELM unit is powered and connected
+			for(String command: hayescommands){
+				if(!sendHayesCommand(command))
+					return State.DEVICE_POWERED;
+			}
+			return State.READY;
+		}
+
+		protected State pollSensors() {
+			try{
+				//TODO select which sensors to poll depending on preferences
+				//TODO implementing pollMonitorStatus (is bit-encoded)
+				//pollMonitorStatus();
+				pollEngineLoad();
+				pollEngineCoolant();
+				pollFuelPressure();
+				pollIntakeManifoldPressure();
+				pollEngineRPM();
+				pollVehicleSpeed();
+				pollIntakeAirTemperature();
+				pollThrottlePosition();
+				//TODO: 01 1F en verder volgens aangekruisde waardes
+				/*pollRunTime();
+				pollDistanceTraveledWithMIL();
+				pollFuelLevelInput();
+				pollBarometricPressure();
+				pollRelativeThrottlePosition();
+				pollAmbientAirTemperature();*/
+				//TODO: 01 47 en verder volgens aangekruisde waardes
+				return State.READY;
+			}
+			catch (Exception e){
+				return State.AWAITING_BLUETOOTH;
+			}
+		}
+
 		protected class BTReceiver extends BroadcastReceiver{
 		    @Override
 		    public void onReceive(Context context, Intent intent) {
@@ -228,14 +268,12 @@ public class NewOBD2DeviceConnector implements Runnable{
 		                if (currentState == State.AWAITING_BLUETOOTH){
 		                    if (state == BluetoothAdapter.STATE_ON) {
 		                    	currentState = State.BLUETOOTH_ENABLED;
-		                    	runStateMachine();
 		                    }
 		                }
 		            }
 		            else{
 		            	if (state != BluetoothAdapter.STATE_ON){
 		            		currentState = State.AWAITING_BLUETOOTH;
-		            		runStateMachine();
 		            	}
 		            }
 		    	}
@@ -245,7 +283,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		    }
 		}
 
-		protected BluetoothSocket connectSocket() {
+		private BluetoothSocket connectSocket() {
 			//try to create a connection to a bluetooth device
 			BluetoothSocket tempsocket;
 			if(device != null){				
@@ -272,7 +310,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 	     * 
 	     * @return whether or not a Socket connection was established
 	     */
-	    protected BluetoothSocket connectSocket(BluetoothDevice dev) {
+		private BluetoothSocket connectSocket(BluetoothDevice dev) {
 	    	BluetoothSocket tempsocket;
 	        try {
 	        	tempsocket = dev.createRfcommSocketToServiceRecord(serial_uuid);
@@ -304,7 +342,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 	    }
 		
 		//The ‘>’ character indicates that the device is in the idle state, ready to receive characters.
-		protected String readUntilPrompt(){
+		private String readUntilPrompt(){
 			String response = "";
     		try {			
 			while(socket != null && input != null){
@@ -333,28 +371,12 @@ public class NewOBD2DeviceConnector implements Runnable{
     		return response;
 		}
 		
-		//perform a warm start, turn automatic formatting ON, turn headers ON 
-		String[] hayescommands = {"AT WS", "AT CAF 1", "AT H 1"}; 
-		
-		protected boolean initializeUsingHayes() {
-			//wait until the ELM unit is powered and connected
-			for(String command: hayescommands){
-				if(!sendHayesCommand(command))
-					return false;
-			}
-			return true;
-		}
-		
-		// an internal timer will automatically abort incomplete messages after about 20 seconds
-		protected final int timeout = 20000;
-		protected final int sleeptime = 500;
-
 		/**
     	 * 
     	 * @param command the Hayes command (AT command) to be sent
     	 * @return whether or not the execution of this command was successful
     	 */
-    	protected boolean sendHayesCommand(String command) {
+		private boolean sendHayesCommand(String command) {
     		return sendCommand(command, "OK") != null;
     	}
     	
@@ -363,7 +385,7 @@ public class NewOBD2DeviceConnector implements Runnable{
     	 * @param command the Mode and PID for the OBD-command to be checked
     	 * @return the formatted response gotten, or null iff the command was invalid
     	 */
-    	protected String[] sendOBDCommand(String command){
+		private String[] sendOBDCommand(String command){
     		if(command != null && command.length()>=2){
     			String validresponse = (char)(command.toCharArray()[0] + 4) + command.substring(1);
     			String[] responses = sendCommand(command, validresponse).split("|");
@@ -402,7 +424,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		}
 
 		//messages to the ELM327 must be terminated with a CR character (#0D) before it will be acted upon
-		protected boolean trySend(String data){
+    	private boolean trySend(String data){
 			try {
 				if(socket != null){
 					byte bytestosend[] = (data + "\r").getBytes();
@@ -415,28 +437,6 @@ public class NewOBD2DeviceConnector implements Runnable{
 			return false;
 		}
 
-		protected void pollSensors() {
-			//TODO select which sensors to poll depending on preferences
-			//TODO implementing pollMonitorStatus (is bit-encoded)
-			//pollMonitorStatus();
-			pollEngineLoad();
-			pollEngineCoolant();
-			pollFuelPressure();
-			pollIntakeManifoldPressure();
-			pollEngineRPM();
-			pollVehicleSpeed();
-			pollIntakeAirTemperature();
-			pollThrottlePosition();
-			//TODO: 01 1F en verder volgens aangekruisde waardes
-			/*pollRunTime();
-			pollDistanceTraveledWithMIL();
-			pollFuelLevelInput();
-			pollBarometricPressure();
-			pollRelativeThrottlePosition();
-			pollAmbientAirTemperature();*/
-			//TODO: 01 47 en verder volgens aangekruisde waardes
-		}
-		
 		private void pollMonitorStatus(){
 			String[] hexbytes = sendOBDCommand("01 01");
 			Integer.parseInt(hexbytes[2], 2);
@@ -513,9 +513,6 @@ public class NewOBD2DeviceConnector implements Runnable{
 				SendDataPoint(SensorNames.THROTTLE_POSITION, null, value, SenseDataTypes.FLOAT);
 			}
 		}
-		
-		protected HashMap<String, String> verifiedsensors = new HashMap<String, String>();
-		protected EmptyRegistrator registrator = new EmptyRegistrator(context);
 		
 		private void SendDataPoint(String sensorName, String sensorDescription, Object value, String dataType) {
 			//if necessary, register the sensor
