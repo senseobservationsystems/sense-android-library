@@ -107,12 +107,12 @@ public class NewOBD2DeviceConnector implements Runnable{
 		protected InputStream input;
 		protected OutputStream output;
 		
-		//Hayes Command set: turn automatic formatting ON, turn headers ON 
-		final String[] hayescommands = {"AT CAF 1", "AT H 1"};
+		//Hayes Command set: turn automatic formatting ON, turn headers OFF
+		final String[] hayescommands = {"AT E0", /*"AT CAF 1",*/ "AT H 0"};
 		
 		//OBD variables
 		private HashMap<String, String> verifiedsensors = new HashMap<String, String>();
-		private EmptyRegistrator registrator = new EmptyRegistrator(context);
+		private EmptyRegistrator registrator = new EmptyRegistrator();
 		
 		//OBD timer variables 
 		private final int timeout = 20000;
@@ -132,8 +132,8 @@ public class NewOBD2DeviceConnector implements Runnable{
 						currentState = doConnectSocket();
 						break;
 					case CONNECTION_READY:
-						//currentState = doWaitForBoot();
-						currentState = State.DEVICE_POWERED;
+						Log.v(TAG, "now trying to make sense of the car");
+						currentState = doWaitForBoot();
 						break;
 					case DEVICE_POWERED:
 						currentState = doInitializeUsingHayes();
@@ -170,10 +170,28 @@ public class NewOBD2DeviceConnector implements Runnable{
 		
 		public void stop(){
 			Log.v(TAG, "stopping the StateMachine");
+			
+			//close and remove the socket
+			try{
+				if(socket != null)
+					socket.close();
+			}
+			catch(Exception e){
+				Log.e(TAG, "error while closing socket");
+			}
+			socket = null;
+
+				
 			//removing the btListener
-		    if(btReceiver != null)
-		    	context.unregisterReceiver(btReceiver);
+			try{
+				if(btReceiver != null)
+			    	context.unregisterReceiver(btReceiver);
+			}
+			catch(Exception e){
+				Log.e(TAG, "error while closing socket");
+			}
 		    btReceiver = null;
+
 		    currentState = State.STOPPED;
 		}
 
@@ -211,7 +229,6 @@ public class NewOBD2DeviceConnector implements Runnable{
 		protected State doConnectSocket() {
 			//try to connect to an OBD2 Dongle
 			socket = connectSocket();
-			Log.v(TAG, "socket == null?"+ (socket == null)); 
 			if(socket == null)
 				return State.BLUETOOTH_ENABLED;
 			//Log.v(TAG, "socket.isConnected(): "+ socket.isConnected());
@@ -242,7 +259,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		}
 
 		protected State doPollSensors() {
-			try{
+			{
 				//TODO select which sensors to poll depending on preferences
 				//TODO implementing pollMonitorStatus (is bit-encoded)
 				//pollMonitorStatus();
@@ -263,9 +280,6 @@ public class NewOBD2DeviceConnector implements Runnable{
 				pollAmbientAirTemperature();*/
 				//TODO: 01 47 en verder volgens aangekruisde waardes
 				return State.READY;
-			}
-			catch (Exception e){
-				return State.AWAITING_BLUETOOTH;
 			}
 		}
 
@@ -309,7 +323,8 @@ public class NewOBD2DeviceConnector implements Runnable{
 			for(BluetoothDevice tempdev: paireddevices){
 				if(tempdev.getName().contains("OBD")){
 					tempsocket = connectSocket(tempdev);
-					if(tempsocket != null){						
+					if(tempsocket != null){
+						device = tempdev;
 						return tempsocket;
 					}
 				}
@@ -331,26 +346,20 @@ public class NewOBD2DeviceConnector implements Runnable{
 	            return tempsocket;
 	        } catch (IOException e) {
 	            try {
-	            	if(e.toString().contains("Service"))
-	            		return connectSocket(dev);
-	            	else
-	            	{
-	            		//Method m = dev.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
-	            		//tempsocket = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));
-	            		//tempsocket.connect();
-	            		//Log.v(TAG, "Connected to "+dev.getName()+" via reflection work aroud");
-	            		//return tempsocket;
-	            		return socket;
-	            	}
+            		Method m = dev.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
+            		tempsocket = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));
+            		tempsocket.connect();
+            		Log.v(TAG, "Connected to "+dev.getName()+" via reflection work aroud");
+            		return tempsocket;
 	            }
 	            // if all has failed, stop this sensor
 	            catch (Exception ex) {
 	                Log.d(TAG, "No socket connected to " + dev.getName(), ex);
-	                return socket;
+	                return null;
 	            }
 	        } catch (Exception ex) {
 	            Log.e(TAG, "Failed to connect socket to " + dev.getName(), ex);
-	            return socket;
+	            return null;
 	        }
 	    }
 		
@@ -358,9 +367,15 @@ public class NewOBD2DeviceConnector implements Runnable{
 		private void readUntilPrompt(){
     		try {
     			if(socket != null && input != null){
-		    		char currentchar = 0;
+		    		int currentint;
+    				char currentchar = 0;
 		    		while (input != null) {
-							try{currentchar = (char)input.read();}
+							try{
+								currentint = input.read();
+								if(currentchar == -1)
+									return;
+								currentchar = (char)currentint; 
+							}
 							catch (IOException e){return;}
 							if(currentchar == '>')
 								return;
@@ -403,11 +418,13 @@ public class NewOBD2DeviceConnector implements Runnable{
 			if(command != null && command.length()>=2){
     			String validresponse = (char)(command.toCharArray()[0] + 4) + command.substring(1);
     			sendCommand(command, validresponse);
-    			String[] responses = databuffer.split("|");
+    			String[] responses = databuffer.split("\\|");
     			for(String response: responses){
-    				if(response.contains(validresponse))
+    				if(response != null && response.contains(validresponse)){
     					return response.split(" ");
+    				}
     			}
+    			Log.d(TAG, "No response found to "+command+ " in buffer "+databuffer);
     		}
     		return null;
     	}
@@ -451,7 +468,8 @@ public class NewOBD2DeviceConnector implements Runnable{
 					return true;
 				}				
 			} catch (IOException e) {
-				Log.e(TAG, "IOException sending ("+data+")");				
+				Log.e(TAG, "IOException sending ("+data+")");
+				currentState = State.AWAITING_BLUETOOTH;
 			}
 			return false;
 		}
@@ -464,16 +482,17 @@ public class NewOBD2DeviceConnector implements Runnable{
 		
 		private void pollEngineLoad() {
 			String[] hexbytes = sendOBDCommand("01 04");
-			if(hexbytes.length==3){
+			if(hexbytes != null && hexbytes.length==3){
 				float a = Integer.parseInt(hexbytes[2],16);
 				float value = a * 100f / 255f;
+				Log.v(TAG, "value calculated: "+value);
 				SendDataPoint(SensorNames.ENGINE_LOAD, null, value, SenseDataTypes.FLOAT);
 			}
 		}
 
 		private void pollEngineCoolant() {
 			String[] hexbytes = sendOBDCommand("01 05");
-			if(hexbytes.length==3){
+			if(hexbytes != null && hexbytes.length==3){
 				int a = Integer.parseInt(hexbytes[2],16);
 				int value = a - 40;
 				SendDataPoint(SensorNames.ENGINE_COOLANT, null, value, SenseDataTypes.INT);
@@ -482,7 +501,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 
 		private void pollFuelPressure() {
 			String[] hexbytes = sendOBDCommand("01 0A");
-			if(hexbytes.length==3){
+			if(hexbytes != null && hexbytes.length==3){
 				int a = Integer.parseInt(hexbytes[2],16);
 				int value = a * 3;
 				SendDataPoint(SensorNames.FUEL_PRESSURE, null, value, SenseDataTypes.INT);
@@ -491,7 +510,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 
 		private void pollIntakeManifoldPressure() {
 			String[] hexbytes = sendOBDCommand("01 0B");
-			if(hexbytes.length==3){
+			if(hexbytes != null && hexbytes.length==3){
 				int a = Integer.parseInt(hexbytes[2],16);
 				SendDataPoint(SensorNames.INTAKE_PRESSURE, null, a, SenseDataTypes.INT);
 			}
@@ -499,7 +518,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 
 		private void pollEngineRPM() {
 			String[] hexbytes = sendOBDCommand("01 0C");
-			if(hexbytes.length==4){
+			if(hexbytes != null && hexbytes.length==4){
 	    		float a = Integer.parseInt(hexbytes[2],16);
 	    		float b = Integer.parseInt(hexbytes[3],16);
 	            float value = ((a * 256f) + b) / 4f;
@@ -509,7 +528,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 
 		private void pollVehicleSpeed(){
 			String[] hexbytes = sendOBDCommand("01 0D");
-			if(hexbytes.length==3){
+			if(hexbytes != null && hexbytes.length==3){
 				int value = Integer.parseInt(hexbytes[2],16);
 				SendDataPoint(SensorNames.VEHICLE_SPEED, null, value, SenseDataTypes.INT);
 			}
@@ -517,7 +536,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		
 		private void pollIntakeAirTemperature(){
 			String[] hexbytes = sendOBDCommand("01 0F");
-			if(hexbytes.length==3){
+			if(hexbytes != null && hexbytes.length==3){
 				int a = Integer.parseInt(hexbytes[2],16);
 				int value = a-40;
 				SendDataPoint(SensorNames.INTAKE_TEMPERATURE, null, value, SenseDataTypes.INT);
@@ -526,7 +545,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		
 		private void pollThrottlePosition(){
 			String[] hexbytes = sendOBDCommand("01 11");
-			if(hexbytes.length==3){
+			if(hexbytes != null && hexbytes.length==3){
 				float a = Integer.parseInt(hexbytes[2],16);
 				float value = (a*100)/255;
 				SendDataPoint(SensorNames.THROTTLE_POSITION, null, value, SenseDataTypes.FLOAT);
@@ -535,7 +554,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		
 		private void SendDataPoint(String sensorName, String sensorDescription, Object value, String dataType) {
 			//if necessary, register the sensor
-			if(!verifiedsensors.get(sensorName).equals(sensorDescription)){
+			if(!verifiedsensors.containsKey(sensorName) || verifiedsensors.get(sensorName).equals(sensorDescription)){
 				if(registrator.checkSensor(sensorName, sensorDescription, dataType, device.getName() +" ("+device.getAddress()+")", ""+ value, device.getName(), device.getAddress())){
 					verifiedsensors.put(sensorName, sensorDescription);
 				}
@@ -565,8 +584,8 @@ public class NewOBD2DeviceConnector implements Runnable{
 		}
 		
 		private class EmptyRegistrator extends SensorRegistrator{
-			public EmptyRegistrator(Context context) {
-				super(context);
+			public EmptyRegistrator() {
+				super(NewOBD2DeviceConnector.this.context);
 			}
 
 			@Override
