@@ -119,7 +119,7 @@ public class CameraLightSensor {
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 			i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
 			context.startService(i);
-			Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
+			//Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
 			nextUpdate(camera_id);
 		}
 	}

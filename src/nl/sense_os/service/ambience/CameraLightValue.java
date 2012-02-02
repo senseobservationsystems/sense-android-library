@@ -40,7 +40,10 @@ public class CameraLightValue{
 				return false;
 			else			
 			{
-				cameraDevices[camera_id] = Camera.open(camera_id);	
+				cameraDevices[camera_id] = Camera.open(camera_id);
+				Camera.Parameters parameters = cameraDevices[camera_id].getParameters();
+				parameters.setExposureCompensation(0);
+				parameters.setWhiteBalance("daylight");				
 				cameraDevices[camera_id].setPreviewCallback(new CameraPreviewCallback(camera_id, camlightCallback));		
 				cameraDevices[camera_id].startPreview();				
 			}
@@ -90,8 +93,7 @@ public class CameraLightValue{
 		private float calculateLightValue(byte[] data, int width, int height)
 		{
 			try
-			{
-				Log.d(TAG, "Calculating light value");
+			{				
 				float lux = 0;
 				// Data is YCrCb NV21 encoding
 				// the first height*width are Y: luminance values
@@ -99,13 +101,12 @@ public class CameraLightValue{
 				// calculate the average luminance
 				for (int i = 0; i < height*width; i++)	
 				{
-					// conversion to java unsigned byte 
+					// conversion to java unsigned byte					
 					if(data[i] < 0)
-						lux += (data[i]+255);				
+						lux += (data[i]+256);				
 					else
 						lux += data[i];			
 				}
-	
 				return lux /= ((float)width*height);
 			}
 			catch(Exception e)
