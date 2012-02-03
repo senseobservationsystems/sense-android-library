@@ -62,17 +62,19 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         }
         
         // match camera light sensor
-        for(int camera_id = 0; camera_id < Camera.getNumberOfCameras(); ++camera_id)
-        {
-		    name = SensorNames.CAMERA_LIGHT;
-		    displayName = "Camera Light";
-		    description = "camera " + camera_id + " average luminance";
-		    dataType = SenseDataTypes.JSON;
-		    dataFields.clear();
-		    dataFields.put("lux", 0);
-		    value = new JSONObject(dataFields).toString();
-		    success &= checkSensor(name, displayName, dataType, description, value, null, null);
-        }
+        // does not work for 4.0
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)
+	        for(int camera_id = 0; camera_id < Camera.getNumberOfCameras(); ++camera_id)
+	        {
+			    name = SensorNames.CAMERA_LIGHT;
+			    displayName = "Camera Light";
+			    description = "camera " + camera_id + " average luminance";
+			    dataType = SenseDataTypes.JSON;
+			    dataFields.clear();
+			    dataFields.put("lux", 0);
+			    value = new JSONObject(dataFields).toString();
+			    success &= checkSensor(name, displayName, dataType, description, value, null, null);
+	        }
 
         // match noise sensor
         name = SensorNames.NOISE;

@@ -3,14 +3,16 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
+import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.util.Log;
 
+
 public class CameraLightValue{	
 		
 	private String TAG = "Camera Light Value";
-	
+			
 	public Camera[] cameraDevices;
 		
 	public CameraLightValue() {
@@ -40,20 +42,26 @@ public class CameraLightValue{
 				return false;
 			else			
 			{
-				cameraDevices[camera_id] = Camera.open(camera_id);
+				cameraDevices[camera_id] = Camera.open(camera_id);				
 				Camera.Parameters parameters = cameraDevices[camera_id].getParameters();
 				parameters.setExposureCompensation(0);
-				parameters.setWhiteBalance("daylight");				
+				parameters.setWhiteBalance("daylight");
 				cameraDevices[camera_id].setPreviewCallback(new CameraPreviewCallback(camera_id, camlightCallback));		
 				cameraDevices[camera_id].startPreview();				
-			}
-			// what happens to the preview callback if this camera is removed by the garbage collection?
+			}			
 			return true;
 		}
 		catch (Exception e)
 		{
 			Log.e(TAG, "Error getting camera " + camera_id +" "+e.getMessage());
 			cameraDevices[camera_id] = null;
+			try{
+				cameraDevices[camera_id].release();
+			}catch(Exception e2)
+			{
+				Log.e(TAG, "Error releasing the camera " + camera_id +" "+e2.getMessage());
+			}
+			
 			return false;
 		}
 	}	

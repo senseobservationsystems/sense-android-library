@@ -42,6 +42,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -932,9 +933,17 @@ public class SenseService extends Service {
                             lightSensor = new LightSensor(SenseService.this);
                             lightSensor.startLightSensing(finalInterval);
                         }
-                        if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
-                            cameraLightSensor = new CameraLightSensor(SenseService.this);
-                            cameraLightSensor.startLightSensing(finalInterval);
+                        // does not work for 4.0
+                        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)
+                        {
+	                        if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
+	                            cameraLightSensor = new CameraLightSensor(SenseService.this);
+	                            cameraLightSensor.startLightSensing(finalInterval);
+	                        }
+                        }
+                        else
+                        {
+                        	Log.d(TAG,"Camera not supported in 4.0");
                         }
                         if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
                             pressureSensor = new PressureSensor(SenseService.this);
