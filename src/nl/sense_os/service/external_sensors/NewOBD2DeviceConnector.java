@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
@@ -98,7 +99,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 	}
 		
 	public class StateMachine implements Runnable{
-		protected long lastrun = System.currentTimeMillis();
+		protected long runstart = System.currentTimeMillis();
 
 		//connection variables
 		protected BluetoothAdapter adapter;
@@ -111,7 +112,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 		final String[] hayescommands = {"AT E0", /*"AT CAF 1",*/ "AT H 0"};
 		
 		//OBD variables
-		private HashMap<String, String> verifiedsensors = new HashMap<String, String>();
+		private ArrayList<String> verifiedsensors = new ArrayList<String>();
 		private EmptyRegistrator registrator = new EmptyRegistrator();
 		
 		//OBD timer variables 
@@ -120,9 +121,9 @@ public class NewOBD2DeviceConnector implements Runnable{
 		
 		@Override
 		public void run() {
-			lastrun = System.currentTimeMillis();
 			while(sensorsenabled && currentState != State.STOPPED){
-				Log.v(TAG, "Current State: "+currentState+" (past:"+previousState+")");
+				runstart = System.currentTimeMillis();
+				Log.d(TAG, "Current State: "+currentState+" (past:"+previousState+")");
 				previousState = currentState;
 				switch (currentState){
 					case AWAITING_BLUETOOTH:
@@ -140,6 +141,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 						break;
 					case READY:
 						currentState = doPollSensors();
+						break;
 					case STOPPED:
 						try {
 							if(socket != null)
@@ -153,11 +155,12 @@ public class NewOBD2DeviceConnector implements Runnable{
 						currentState = State.AWAITING_BLUETOOTH;
 						break;
 				}
-				if(lastrun + interval < System.currentTimeMillis()){
+				long sleeptime = interval - (System.currentTimeMillis()-runstart);
+				//Log.v(TAG, "currentState == previousState? " + (currentState == previousState));
+				//Log.v(TAG, "sleeptime: " + sleeptime + " milliseconds");
+				if(currentState == previousState && sleeptime > 0){
 					try {
-						long sleepTime = interval - (System.currentTimeMillis()-lastrun);
-						sleepTime = sleepTime<0?1:sleepTime;
-						Thread.sleep(sleepTime);
+						Thread.sleep(sleeptime);
 					} catch (InterruptedException e) {
 						Log.e(TAG, "Interrupted while sleeping: ", e);
 						currentState = State.STOPPED;
@@ -235,6 +238,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 			try{
 				input = socket.getInputStream();
 				output = socket.getOutputStream();
+				verifiedsensors =  new ArrayList<String>();
 				return State.CONNECTION_READY;
 			} catch (IOException e) {
 				//Stop if no good socket was created
@@ -260,12 +264,13 @@ public class NewOBD2DeviceConnector implements Runnable{
 
 		protected State doPollSensors() {
 			{
+				
 				//TODO select which sensors to poll depending on preferences
 				//TODO implementing pollMonitorStatus (is bit-encoded)
 				//pollMonitorStatus();
 				pollEngineLoad();
 				pollEngineCoolant();
-				pollFuelPressure();
+				pollFuelPressure(); //gives NumberFormatException when run in simulator
 				pollIntakeManifoldPressure();
 				pollEngineRPM();
 				pollVehicleSpeed();
@@ -367,20 +372,21 @@ public class NewOBD2DeviceConnector implements Runnable{
 		private void readUntilPrompt(){
     		try {
     			if(socket != null && input != null){
-		    		int currentint;
+		    		int currentint = -1;
     				char currentchar = 0;
 		    		while (input != null) {
 							try{
 								currentint = input.read();
-								if(currentchar == -1)
+								if(currentchar == -1){
 									return;
-								currentchar = (char)currentint; 
+								}
+								currentchar = (char)currentint;
 							}
 							catch (IOException e){return;}
 							if(currentchar == '>')
 								return;
 							//valid characters for the response
-							if(currentchar >= 32 && currentchar <=  127){
+							else if(currentchar >= 32 && currentchar <=  127){
 								databuffer += currentchar;
 							}
 							//represent CR/LF characters as |
@@ -388,6 +394,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 								databuffer += "|";
 							}
 						}
+					Log.v(TAG, "DATABUFFER: "+databuffer);
 				}			
     		} catch (Exception e) {
 				Log.e(TAG, "Exception in readUntilPrompt, buffer thusfar: "+databuffer);
@@ -395,7 +402,9 @@ public class NewOBD2DeviceConnector implements Runnable{
 		}
 
     	private void clearBuffer() {
-    		databuffer = "";
+    		int index = databuffer.lastIndexOf("\\|");
+    		if(index > -1 && index < databuffer.length())
+    			databuffer = databuffer.substring(index);
 		}
 
 		/**
@@ -404,7 +413,6 @@ public class NewOBD2DeviceConnector implements Runnable{
     	 * @return whether or not the execution of this command was successful
     	 */
 		private boolean sendHayesCommand(String command) {
-    		clearBuffer();
 			return sendCommand(command, "OK");
     	}
 
@@ -414,26 +422,27 @@ public class NewOBD2DeviceConnector implements Runnable{
     	 * @return the formatted response gotten, or null iff the command was invalid
     	 */
 		private String[] sendOBDCommand(String command){
-			clearBuffer();
 			if(command != null && command.length()>=2){
     			String validresponse = (char)(command.toCharArray()[0] + 4) + command.substring(1);
     			sendCommand(command, validresponse);
     			String[] responses = databuffer.split("\\|");
     			for(String response: responses){
     				if(response != null && response.contains(validresponse)){
+    					//Log.d(TAG, "response found to "+command+ ", response: "+response);
     					return response.split(" ");
     				}
     			}
-    			Log.d(TAG, "No response found to "+command+ " in buffer "+databuffer);
+    			//Log.d(TAG, "No response found to "+command+ " in buffer "+databuffer);
     		}
     		return null;
     	}
     	
     	private boolean sendCommand(String command, String validresponse){
+    		clearBuffer();
 			long deadline = System.currentTimeMillis() + timeout;
 			
 			boolean commandsent = false;
-			//first try and send the AT command
+			//first try and send the command
 			while(System.currentTimeMillis() < deadline){
 				commandsent = trySend(command);
 				if(commandsent)
@@ -441,19 +450,21 @@ public class NewOBD2DeviceConnector implements Runnable{
 				try {
 					Thread.sleep(sleeptime);
 				} catch (InterruptedException e) {
-					Log.e(TAG, "InterruptedException while sleeping in SendATcommand");
+					Log.e(TAG, "InterruptedException while sleeping in sendCommand");
 				}
 			}
 		
-			//try to find the reply 'OK' which indicates a correct reading of the Hayes command
+			//try to find the reply which indicates a correct reading of the command
 			while(System.currentTimeMillis() < deadline){
 				readUntilPrompt();
-				if(databuffer.contains(validresponse))
+				if(databuffer.contains(validresponse)){
+					databuffer = databuffer.substring(databuffer.indexOf(validresponse));
 					return true;
+				}
 				try {
 					Thread.sleep(sleeptime);
 				} catch (InterruptedException e) {
-					Log.e(TAG, "InterruptedException while sleeping in SendATcommand");
+					Log.e(TAG, "InterruptedException while sleeping in sendCommand");
 				}
 			}
 			return false;
@@ -483,80 +494,120 @@ public class NewOBD2DeviceConnector implements Runnable{
 		private void pollEngineLoad() {
 			String[] hexbytes = sendOBDCommand("01 04");
 			if(hexbytes != null && hexbytes.length==3){
-				float a = Integer.parseInt(hexbytes[2],16);
-				float value = a * 100f / 255f;
-				Log.v(TAG, "value calculated: "+value);
-				SendDataPoint(SensorNames.ENGINE_LOAD, null, value, SenseDataTypes.FLOAT);
+				try{	
+					float a = Integer.parseInt(hexbytes[2],16);
+					float value = a * 100f / 255f;
+					SendDataPoint(SensorNames.ENGINE_LOAD, "percent", value, SenseDataTypes.FLOAT);
+				}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollEngineLoad NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]);
+				} 
 			}
 		}
 
 		private void pollEngineCoolant() {
 			String[] hexbytes = sendOBDCommand("01 05");
 			if(hexbytes != null && hexbytes.length==3){
-				int a = Integer.parseInt(hexbytes[2],16);
-				int value = a - 40;
-				SendDataPoint(SensorNames.ENGINE_COOLANT, null, value, SenseDataTypes.INT);
+				try{
+					int a = Integer.parseInt(hexbytes[2],16);
+					int value = a - 40;
+					SendDataPoint(SensorNames.ENGINE_COOLANT, "degrees celcius", value, SenseDataTypes.INT);
+				}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollEngineCoolant NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]);
+				}
 			}
 		}	
 
 		private void pollFuelPressure() {
 			String[] hexbytes = sendOBDCommand("01 0A");
 			if(hexbytes != null && hexbytes.length==3){
-				int a = Integer.parseInt(hexbytes[2],16);
-				int value = a * 3;
-				SendDataPoint(SensorNames.FUEL_PRESSURE, null, value, SenseDataTypes.INT);
+				try{
+					int a = Integer.parseInt(hexbytes[2],16);
+					int value = a * 3;
+					SendDataPoint(SensorNames.FUEL_PRESSURE, "kPa (gauge)", value, SenseDataTypes.INT);
+				}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollFuelPressure NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]);
+				}
 			}
+			
 		}
 
 		private void pollIntakeManifoldPressure() {
 			String[] hexbytes = sendOBDCommand("01 0B");
 			if(hexbytes != null && hexbytes.length==3){
-				int a = Integer.parseInt(hexbytes[2],16);
-				SendDataPoint(SensorNames.INTAKE_PRESSURE, null, a, SenseDataTypes.INT);
+				try{
+					int a = Integer.parseInt(hexbytes[2],16);
+					SendDataPoint(SensorNames.INTAKE_PRESSURE, "kPa (absolute)", a, SenseDataTypes.INT);
+				}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollFuelPressure NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]);
+				}
 			}
 		}
 
 		private void pollEngineRPM() {
 			String[] hexbytes = sendOBDCommand("01 0C");
 			if(hexbytes != null && hexbytes.length==4){
-	    		float a = Integer.parseInt(hexbytes[2],16);
-	    		float b = Integer.parseInt(hexbytes[3],16);
-	            float value = ((a * 256f) + b) / 4f;
-				SendDataPoint(SensorNames.ENGINE_RPM, null, value, SenseDataTypes.FLOAT);
-			}
+	    		try{
+	    			float a = Integer.parseInt(hexbytes[2],16);
+		    		float b = Integer.parseInt(hexbytes[3],16);
+		            float value = ((a * 256f) + b) / 4f;
+					SendDataPoint(SensorNames.ENGINE_RPM, "rpm", value, SenseDataTypes.FLOAT);
+	    		}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollEngineRPM NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]+" "+hexbytes[3]);
+				}
+	    	}
 		}
 
 		private void pollVehicleSpeed(){
 			String[] hexbytes = sendOBDCommand("01 0D");
 			if(hexbytes != null && hexbytes.length==3){
-				int value = Integer.parseInt(hexbytes[2],16);
-				SendDataPoint(SensorNames.VEHICLE_SPEED, null, value, SenseDataTypes.INT);
+				try{
+					int value = Integer.parseInt(hexbytes[2],16);
+					SendDataPoint(SensorNames.VEHICLE_SPEED, "kmh", value, SenseDataTypes.INT);
+				}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollVehicleSpeed NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]);
+				}
 			}
 		}
 		
 		private void pollIntakeAirTemperature(){
 			String[] hexbytes = sendOBDCommand("01 0F");
 			if(hexbytes != null && hexbytes.length==3){
-				int a = Integer.parseInt(hexbytes[2],16);
-				int value = a-40;
-				SendDataPoint(SensorNames.INTAKE_TEMPERATURE, null, value, SenseDataTypes.INT);
+				try{
+					int a = Integer.parseInt(hexbytes[2],16);
+					int value = a-40;
+					SendDataPoint(SensorNames.INTAKE_TEMPERATURE, "degrees celcius", value, SenseDataTypes.INT);
+				}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollIntakeAirTemperature NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]);
+				}
 			}
 		}
 		
 		private void pollThrottlePosition(){
 			String[] hexbytes = sendOBDCommand("01 11");
 			if(hexbytes != null && hexbytes.length==3){
-				float a = Integer.parseInt(hexbytes[2],16);
-				float value = (a*100)/255;
-				SendDataPoint(SensorNames.THROTTLE_POSITION, null, value, SenseDataTypes.FLOAT);
+				try{
+					float a = Integer.parseInt(hexbytes[2],16);
+					float value = (a*100)/255;
+					SendDataPoint(SensorNames.THROTTLE_POSITION, "percent", value, SenseDataTypes.FLOAT);
+				}
+				catch(NumberFormatException ex){
+					Log.e(TAG, "pollThrottlePosition NumberFormatException on : "+hexbytes[0]+" "+ hexbytes[1]+" "+hexbytes[2]);
+				}
 			}
 		}
 		
-		private void SendDataPoint(String sensorName, String sensorDescription, Object value, String dataType) {
+		private boolean SendDataPoint(String sensorName, String sensorDescription, Object value, String dataType) {
 			//if necessary, register the sensor
-			if(!verifiedsensors.containsKey(sensorName) || verifiedsensors.get(sensorName).equals(sensorDescription)){
-				if(registrator.checkSensor(sensorName, sensorDescription, dataType, device.getName() +" ("+device.getAddress()+")", ""+ value, device.getName(), device.getAddress())){
-					verifiedsensors.put(sensorName, sensorDescription);
+			if(!verifiedsensors.contains(sensorName)){
+				if(registrator.checkSensor(sensorName, sensorName, dataType, sensorDescription, value.toString(), device.getName(), device.getAddress())){
+					verifiedsensors.add(sensorName);
 				}
 			}
 			
@@ -580,7 +631,11 @@ public class NewOBD2DeviceConnector implements Runnable{
 	            Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
 	        }
 	        intent.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
-	        context.startService(intent);
+
+	        boolean itemsent = (context.startService(intent) != null);
+			if(!itemsent)
+				Log.e(TAG, "Sending of DataPoint: "+sensorName+" "+value+" "+sensorDescription + "    FAILED !!!");
+	        return itemsent;
 		}
 		
 		private class EmptyRegistrator extends SensorRegistrator{
