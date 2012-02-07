@@ -300,17 +300,17 @@ public class SensorData {
         /**
          * Monitor status since DTCs cleared. Part of the OBD-II sensors.
          */
-        public static final String MONITOR_STATUS = "Monitor status";
+        public static final String MONITOR_STATUS = "monitor status";
 
         /**
          * Fuel system status. Part of the OBD-II sensors.
          */
-        public static final String FUEL_SYSTEM_STATUS = "Fuel system status";
+        public static final String FUEL_SYSTEM_STATUS = "fuel system status";
 
         /**
          * Calculated engine load. Part of the OBD-II sensors.
          */
-        public static final String ENGINE_LOAD = "engine load";
+        public static final String ENGINE_LOAD = "calculated engine load value";
 
         /**
          * Engine coolant. Part of the OBD-II sensors.
@@ -380,12 +380,12 @@ public class SensorData {
         /**
          * Auxiliary input status. Part of the OBD-II sensors.
          */
-        public static final String AUXILIARY_INPUT = "Auxiliary input status";
+        public static final String AUXILIARY_INPUT = "auxiliary input status";
 
         /**
          * Run time since engine start. Part of the OBD-II sensors.
          */
-        public static final String RUN_TIME = "Run time";
+        public static final String RUN_TIME = "run time";
 
         private SensorNames() {
             // class should not be instantiated
