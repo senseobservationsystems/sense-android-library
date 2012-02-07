@@ -32,14 +32,19 @@ import com.phonegap.api.PluginResult.Status;
 
 public class SensePlugin extends Plugin {
 
+    /**
+     * Standard action labels that correspond to the actions that are used in the JavaScript part of
+     * the plugin.
+     */
     private static class Actions {
+        static final String ADD_DATA_POINT = "add_data_point";
         static final String CHANGE_LOGIN = "change_login";
-        static final String LOGOUT = "logout";
         static final String GET_DATA = "get_data";
         static final String GET_STATUS = "get_status";
         static final String GET_SESSION = "get_session";
         static final String GET_PREF = "get_pref";
         static final String INIT = "init";
+        static final String LOGOUT = "logout";
         static final String REGISTER = "register";
         static final String SET_PREF = "set_pref";
         static final String TOGGLE_MAIN = "toggle_main";
@@ -113,14 +118,64 @@ public class SensePlugin extends Plugin {
     private boolean isServiceBound;
     private ISenseService service;
 
+    private PhoneGapSensorRegistrator sensorRegistrator;
+
+    private PluginResult addDataPoint(JSONArray data, String callbackId) throws JSONException {
+
+        // get the parameters
+        final String name = data.getString(0);
+        final String displayName = data.getString(1);
+        final String description = data.getString(2);
+        final String dataType = data.getString(3);
+        final String value = data.getString(4);
+        final long timestamp = data.getLong(5);
+        Log.d(TAG, "Add data point... name: '" + name + "', display name: '" + displayName
+                + "', description: '" + description + "', data type: '" + dataType + "', value: '"
+                + value + "', timestamp: '" + timestamp + "'");
+
+        // verify sensor ID
+        if (null == sensorRegistrator) {
+            sensorRegistrator = new PhoneGapSensorRegistrator(ctx);
+        }
+        new Thread() {
+
+            @Override
+            public void run() {
+                sensorRegistrator.checkSensor(name, displayName, dataType, description, value,
+                        null, null);
+            }
+        }.start();
+
+        // send data point
+        String action = ctx.getString(nl.sense_os.service.R.string.action_sense_new_data);
+        Intent intent = new Intent(action);
+        intent.putExtra(DataPoint.SENSOR_NAME, name);
+        intent.putExtra(DataPoint.DISPLAY_NAME, displayName);
+        intent.putExtra(DataPoint.SENSOR_DESCRIPTION, description);
+        intent.putExtra(DataPoint.DATA_TYPE, dataType);
+        intent.putExtra(DataPoint.VALUE, value);
+        intent.putExtra(DataPoint.TIMESTAMP, timestamp);
+        ComponentName serviceName = ctx.startService(intent);
+
+        if (null != serviceName) {
+            return new PluginResult(Status.OK);
+        } else {
+            Log.w(TAG, "Could not start MsgHandler service!");
+            return new PluginResult(Status.ERROR, "could not add data to Sense service");
+        }
+    }
+
     /**
      * Binds to the Sense Service, creating it if necessary.
      */
     private void bindToSenseService() {
         if (!isServiceBound) {
-            Log.v(TAG, "Try to connect to Sense Platform service");
+            Log.v(TAG, "Try to connect with Sense Platform service");
             final Intent service = new Intent(ctx.getString(R.string.action_sense_service));
             isServiceBound = ctx.bindService(service, conn, Context.BIND_AUTO_CREATE);
+            if (!isServiceBound) {
+                Log.w(TAG, "Failed to connect with the Sense Platform service!");
+            }
         } else {
             // already bound
         }
@@ -197,6 +252,8 @@ public class SensePlugin extends Plugin {
         try {
             if (Actions.INIT.equals(action)) {
                 return init(data, callbackId);
+            } else if (Actions.ADD_DATA_POINT.equals(action)) {
+                return addDataPoint(data, callbackId);
             } else if (Actions.CHANGE_LOGIN.equals(action)) {
                 return changeLogin(data, callbackId);
             } else if (Actions.GET_DATA.equals(action)) {
@@ -242,11 +299,6 @@ public class SensePlugin extends Plugin {
             Log.e(TAG, "Unexpected error while executing action: " + action, e);
             return new PluginResult(Status.ERROR, e.getMessage());
         }
-    }
-
-    private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
-        service.logout();
-        return new PluginResult(Status.OK);
     }
 
     private PluginResult getPreference(JSONArray data, String callbackId) throws JSONException,
@@ -410,6 +462,11 @@ public class SensePlugin extends Plugin {
         } else {
             return super.isSynch(action);
         }
+    }
+
+    private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
+        service.logout();
+        return new PluginResult(Status.OK);
     }
 
     /**
