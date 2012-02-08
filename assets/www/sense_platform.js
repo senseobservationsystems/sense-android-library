@@ -3,7 +3,7 @@ function SensePlatform() {
 }
 
 /**
- * Initializes the Sense Platform plugin. 
+ * Initializes the Sense Platform plugin.
  */
 SensePlatform.prototype.init = function() {
     var successCallback = function(result) {
@@ -18,8 +18,40 @@ SensePlatform.prototype.init = function() {
 };
 
 /**
- * @param username 
- * @param password 
+ * Adds a new data point to one of the Sense user's sensors. The data point will be put in Sense's
+ * buffer on the until it is synchronized with CommonSense. The sync rate depends on the
+ * application.
+ * 
+ * @param name
+ *            String with name of the sensor that the data belongs to. Typically this should be one
+ *            of the standardized sensor names that are used throughout CommonSense.
+ * @param displayName
+ *            String with pretty display name for the sensor. (Optional)
+ * @param description
+ *            String with description of the sensor, e.g. the hardware model name. (Optional)
+ * @param dataType
+ *            String with data type of the sensor. Can be "bool", "float", "int", "json", "string".
+ * @param value
+ *            String with value for the data point. Take care to escape any slashes and quotes.
+ * @param timestamp
+ *            Number with timestamp of the data point, in milliseconds since epoch.
+ * @param successCallback
+ *            The callback which will be called when the point was successfully given to Sense.
+ * @param failureCallback
+ *            The callback which will be called when Sense login fails
+ */
+SensePlatform.prototype.addDataPoint = function(name, displayName, description, dataType, value,
+        timestamp, successCallback, failureCallback) {
+    if (!window.plugins.sense.isInitialized) {
+        window.plugins.sense.init();
+    }
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'add_data_point', [
+            name, displayName, description, dataType, value, timestamp ]);
+};
+
+/**
+ * @param username
+ * @param password
  * @param successCallback
  *            The callback which will be called when Sense login is successful
  * @param failureCallback
@@ -29,41 +61,58 @@ SensePlatform.prototype.changeLogin = function(username, password, successCallba
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'change_login', [username, password]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'change_login', [
+            username, password ]);
 };
 
 /**
- * @param sensorName
+ * @param username
+ * @param password
+ * @param successCallback
+ *            The callback which will be called when Sense login is successful
+ * @param failureCallback
+ *            The callback which will be called when Sense login fails
+ */
+SensePlatform.prototype.logout = function(successCallback, failureCallback) {
+    if (!window.plugins.sense.isInitialized) {
+        window.plugins.sense.init();
+    }
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'logout', []);
+};
+
+/**
+ * @param name
  *            String containing sensor name to lookup
  * @param successCallback
  *            The callback which will be called when sensor data was retrieved
  * @param failureCallback
  *            The callback which will be called when execution fails
- *            
+ * 
  * @return JSONArray containing data
  */
-SensePlatform.prototype.getData = function(sensorName, successCallback, failureCallback) {
+SensePlatform.prototype.getData = function(name, successCallback, failureCallback) {
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_data', [sensorName]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_data', [ name ]);
 };
 
 /**
  * @param key
- *            String containing preference key to retrieve
+ *            String containing preference key to retrieve. A list of keys is provided with the
+ *            SensePlatform class.
  * @param successCallback
  *            The callback which will be called when preference is successfully retrieved
  * @param failureCallback
  *            The callback which will be called when execution fails
- *            
+ * 
  * @return JSONArray containing data
  */
 SensePlatform.prototype.getPref = function(key, successCallback, failureCallback) {
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_pref', [key]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_pref', [ key ]);
 };
 
 /**
@@ -93,41 +142,45 @@ SensePlatform.prototype.getSessionId = function(successCallback, failureCallback
 };
 
 /**
- * @param username 
- * @param password 
- * @param firstName 
- * @param surname 
- * @param email 
- * @param phone 
+ * @param username
+ * @param password
+ * @param firstName
+ * @param surname
+ * @param email
+ * @param phone
  * @param successCallback
  *            The callback which will be called when Sense registration is successful
  * @param failureCallback
  *            The callback which will be called when Sense registration fails
  */
-SensePlatform.prototype.register = function(username, password, firstName, surname, email, phone, successCallback, failureCallback) {
+SensePlatform.prototype.register = function(username, password, firstName, surname, email, phone,
+        successCallback, failureCallback) {
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'register', [username, password, firstName, surname, email, phone]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'register', [ username,
+            password, firstName, surname, email, phone ]);
 };
 
 /**
  * @param key
- *            String containing preference key to set
+ *            String containing preference key to set. A list of valid keys is provided with the
+ *            SensePlatform class.
  * @param value
  *            String containing preference value to set
  * @param successCallback
  *            The callback which will be called when preference is successfully set
  * @param failureCallback
  *            The callback which will be called when execution fails
- *            
+ * 
  * @return JSONArray containing data
  */
 SensePlatform.prototype.setPref = function(key, value, successCallback, failureCallback) {
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'set_pref', [key, value]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'set_pref', [ key,
+            value ]);
 };
 
 /**
@@ -142,7 +195,8 @@ SensePlatform.prototype.toggleMain = function(active, successCallback, failureCa
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_main', [active]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_main',
+            [ active ]);
 };
 
 /**
@@ -157,7 +211,8 @@ SensePlatform.prototype.toggleAmbience = function(active, successCallback, failu
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_ambience', [active]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_ambience',
+            [ active ]);
 };
 
 /**
@@ -172,7 +227,8 @@ SensePlatform.prototype.toggleExternal = function(active, successCallback, failu
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_external', [active]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_external',
+            [ active ]);
 };
 
 /**
@@ -187,7 +243,8 @@ SensePlatform.prototype.togglePosition = function(active, successCallback, failu
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_position', [active]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_position',
+            [ active ]);
 };
 
 /**
@@ -202,14 +259,16 @@ SensePlatform.prototype.toggleMotion = function(active, successCallback, failure
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_motion', [active]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_motion',
+            [ active ]);
 };
 
 /**
  * @param active
  *            boolean to indicate desired state
  * @param successCallback
- *            The callback which will be called when neighboring devices sensor status is successfully changed
+ *            The callback which will be called when neighboring devices sensor status is
+ *            successfully changed
  * @param failureCallback
  *            The callback which will be called when execution fails
  */
@@ -217,14 +276,16 @@ SensePlatform.prototype.toggleNeighDev = function(active, successCallback, failu
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_neighdev', [active]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_neighdev',
+            [ active ]);
 };
 
 /**
  * @param active
  *            boolean to indicate desired state
  * @param successCallback
- *            The callback which will be called when phone state sensor status is successfully changed
+ *            The callback which will be called when phone state sensor status is successfully
+ *            changed
  * @param failureCallback
  *            The callback which will be called when execution fails
  */
@@ -232,7 +293,8 @@ SensePlatform.prototype.togglePhoneState = function(active, successCallback, fai
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_phonestate', [active]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'toggle_phonestate',
+            [ active ]);
 };
 
 /* status codes */
@@ -252,17 +314,27 @@ SensePlatform.PREF_SAMPLE_RATE = "commonsense_rate";
 SensePlatform.PREF_SYNC_RATE = "sync_rate";
 SensePlatform.PREF_AUTOSTART = "autostart";
 
-/* keys for advanced prefs */
-SensePlatform.PREF_USE_COMMONSENSE = "use_commonsense";
-SensePlatform.PREF_COMPRESS = "compression";
+/* keys for phone state sensors */
+SensePlatform.PREF_BATTERY = "phonestate_battery";
+SensePlatform.PREF_SCREEN_ACTIVITY = "phonestate_screen_activity";
+SensePlatform.PREF_PROXIMITY = "phonestate_proximity";
+SensePlatform.PREF_IP_ADDRESS = "phonestate_ip";
+SensePlatform.PREF_DATA_CONNECTION = "phonestate_data_connection";
+SensePlatform.PREF_UNREAD_MSG = "phonestate_unread_msg";
+SensePlatform.PREF_SERVICE_STATE = "phonestate_service_state";
+SensePlatform.PREF_SIGNAL_STRENGTH = "phonestate_signal_strength";
+SensePlatform.PREF_CALL_STATE = "phonestate_call_state";
 
 /* keys for ambience sensor prefs */
+SensePlatform.PREF_CAMERA_LIGHT = "ambience_camera_light";
 SensePlatform.PREF_LIGHT = "ambience_light";
 SensePlatform.PREF_MIC = "ambience_mic";
+SensePlatform.PREF_PRESSURE = "ambience_pressure";
 
 /* keys for device proximity sensor prefs */
 SensePlatform.PREF_BLUETOOTH = "proximity_bt";
 SensePlatform.PREF_WIFI = "proximity_wifi";
+SensePlatform.PREF_NFC = "proximity_nfc";
 
 /* keys for location sensor prefs */
 SensePlatform.PREF_GPS = "location_gps";
@@ -282,8 +354,21 @@ SensePlatform.PREF_MYGLUCOHEALTH = "myglucohealth";
 SensePlatform.PREF_TANITASCALE = "tanita_scale";
 SensePlatform.PREF_ZEPHYR_BIOHARNESS = "zephyrBioHarness";
 SensePlatform.PREF_ZEPHYR_HXM = "zephyrHxM";
-SensePlatform.PREF_ODB2DONGLE = "obd2dongle";
+SensePlatform.PREF_OBD2 = "obd2sensor";
+
+/* keys for advanced prefs */
+SensePlatform.PREF_DEV_MODE = "devmode";
+SensePlatform.PREF_USE_COMMONSENSE = "use_commonsense";
+SensePlatform.PREF_COMPRESS = "compression";
 
 PhoneGap.addConstructor(function() {
-    PhoneGap.addPlugin("sense", new SensePlatform());
+    try {
+        PhoneGap.addPlugin("sense", new SensePlatform());
+    } catch (e) {
+        // do it again to fix a bug in iOS:
+        if (!window.plugins)
+            window.plugins = {};
+        if (!window.plugins.sense)
+            window.plugins.sense = new SensePlatform();
+    }
 });
