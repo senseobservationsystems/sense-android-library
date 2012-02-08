@@ -79,6 +79,7 @@ public class SensePlugin extends Plugin {
                     service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
                     service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
                     service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
+                    service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, false);
                     service.toggleAmbience(true);
 
                     service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
@@ -183,7 +184,7 @@ public class SensePlugin extends Plugin {
 
     private PluginResult changeLogin(final JSONArray data, final String callbackId)
             throws JSONException, RemoteException {
-        Log.v(TAG, "Change login");
+        Log.v(TAG, "Change login " + callbackId);
 
         if (null != service) {
 
@@ -193,40 +194,34 @@ public class SensePlugin extends Plugin {
 
             Log.d(TAG, "New username: '" + username + "'");
 
-            // try the login on a separate Thread
-            new Thread() {
-                public void run() {
-                    int result = -1;
-                    try {
-                        result = service.changeLogin(username, password);
-                    } catch (RemoteException e) {
-                        // handle result below
-                    }
+            int result = -1;
+            try {
+                result = service.changeLogin(username, password);
+            } catch (RemoteException e) {
+                // handle result below
+            }
 
-                    // check the result
-                    switch (result) {
-                    case 0:
-                        Log.v(TAG, "Logged in as '" + username + "'");
-                        success(new PluginResult(Status.OK, result), callbackId);
-                        break;
-                    case -1:
-                        Log.v(TAG, "Login failed! Connectivity problems?");
-                        error(new PluginResult(Status.IO_EXCEPTION,
-                                "Error logging in, probably connectivity problems."), callbackId);
-                        break;
-                    case -2:
-                        Log.v(TAG, "Login failed! Invalid username or password.");
-                        error(new PluginResult(Status.ERROR, "Invalid username or password."),
-                                callbackId);
-                        break;
-                    default:
-                        Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
-                        error(new PluginResult(Status.ERROR, "Unexpected result: " + result),
-                                callbackId);
-                    }
-                };
-            }.start();
+            // check the result
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Logged in as '" + username + "' " + callbackId);
+                success(new PluginResult(Status.OK, result), callbackId);
+                break;
+            case -1:
+                Log.v(TAG, "Login failed! Connectivity problems?");
+                error(new PluginResult(Status.IO_EXCEPTION,
+                        "Error logging in, probably connectivity problems."), callbackId);
+                break;
+            case -2:
+                Log.v(TAG, "Login failed! Invalid username or password.");
+                error(new PluginResult(Status.ERROR, "Invalid username or password."), callbackId);
+                break;
+            default:
+                Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
+                error(new PluginResult(Status.ERROR, "Unexpected result: " + result), callbackId);
+            }
 
+            // the result was already sent back to JavaScript via success() or error()
             return new PluginResult(Status.NO_RESULT);
 
         } else {
@@ -439,9 +434,9 @@ public class SensePlugin extends Plugin {
         if (Actions.INIT.equals(action)) {
             return true;
         } else if (Actions.CHANGE_LOGIN.equals(action)) {
-            return true;
+            return false;
         } else if (Actions.REGISTER.equals(action)) {
-            return true;
+            return false;
         } else if (Actions.GET_STATUS.equals(action)) {
             return true;
         } else if (Actions.GET_PREF.equals(action)) {
@@ -510,26 +505,27 @@ public class SensePlugin extends Plugin {
         }
 
         // check the result
-        Status status = null;
         switch (result) {
         case 0:
             Log.v(TAG, "Registered '" + username + "'");
-            status = Status.OK;
+            success(new PluginResult(Status.OK, result), callbackId);
             break;
         case -1:
             Log.v(TAG, "Registration failed! Connectivity problems?");
-            status = Status.IO_EXCEPTION;
+            error(new PluginResult(Status.IO_EXCEPTION, result), callbackId);
             break;
         case -2:
             Log.v(TAG, "Registration failed! Username already taken.");
-            status = Status.ERROR;
+            error(new PluginResult(Status.ERROR, result), callbackId);
             break;
         default:
             Log.w(TAG, "Unexpected registration result! Unexpected registration result: " + result);
-            status = Status.ERROR;
+            error(new PluginResult(Status.ERROR, result), callbackId);
             break;
         }
-        return new PluginResult(status, result);
+
+        // the result was already sent back to JavaScript via success() or error()
+        return new PluginResult(Status.NO_RESULT);
     }
 
     private PluginResult setPreference(JSONArray data, String callbackId) throws JSONException,
