@@ -494,6 +494,10 @@ public class LocationSensor {
         }
     }
 
+    /**
+     * Listens to passive location provider. Should only be called in Android versions where the
+     * provider is available.
+     */
     private void setPassiveListening(boolean listen) {
         if (listen) {
             locMgr.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, time, distance,
