@@ -1,13 +1,6 @@
 package nl.sense_os.service.commonsense;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.nfc.NfcManager;
-import android.os.Build;
-import android.util.Log;
+import java.util.HashMap;
 
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -17,7 +10,14 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.nfc.NfcManager;
+import android.os.Build;
+import android.util.Log;
 
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
@@ -60,21 +60,33 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         } else {
             Log.w(TAG, "No light sensor present!");
         }
-        
-        // match camera light sensor
-        // does not work for 4.0
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)
-	        for(int camera_id = 0; camera_id < Camera.getNumberOfCameras(); ++camera_id)
-	        {
-			    name = SensorNames.CAMERA_LIGHT;
-			    displayName = "Camera Light";
-			    description = "camera " + camera_id + " average luminance";
-			    dataType = SenseDataTypes.JSON;
-			    dataFields.clear();
-			    dataFields.put("lux", 0);
-			    value = new JSONObject(dataFields).toString();
-			    success &= checkSensor(name, displayName, dataType, description, value, null, null);
-	        }
+
+        // match camera light sensor (only for Android < 4.0)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            // multiple camera support starting from Android 2.3
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+                for (int camera_id = 0; camera_id < Camera.getNumberOfCameras(); ++camera_id) {
+                    name = SensorNames.CAMERA_LIGHT;
+                    displayName = "Camera Light";
+                    description = "camera " + camera_id + " average luminance";
+                    dataType = SenseDataTypes.JSON;
+                    dataFields.clear();
+                    dataFields.put("lux", 0);
+                    value = new JSONObject(dataFields).toString();
+                    success &= checkSensor(name, displayName, dataType, description, value, null,
+                            null);
+                }
+            } else {
+                name = SensorNames.CAMERA_LIGHT;
+                displayName = "Camera Light";
+                description = "camera average luminance";
+                dataType = SenseDataTypes.JSON;
+                dataFields.clear();
+                dataFields.put("lux", 0);
+                value = new JSONObject(dataFields).toString();
+                success &= checkSensor(name, displayName, dataType, description, value, null, null);
+            }
+        }
 
         // match noise sensor
         name = SensorNames.NOISE;
@@ -92,7 +104,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             description = sensor.getName();
             dataType = SenseDataTypes.JSON;
             dataFields.clear();
-            dataFields.put("newton", 0);
+            dataFields.put("millibar", 0);
             value = new JSONObject(dataFields).toString();
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {

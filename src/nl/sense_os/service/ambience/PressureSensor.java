@@ -3,6 +3,13 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -11,14 +18,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PressureSensor implements SensorEventListener {
 
@@ -65,7 +64,7 @@ public class PressureSensor implements SensorEventListener {
             for (float value : event.values) {
                 if (x == 0) {
                     if (sensor.getType() == Sensor.TYPE_PRESSURE)
-                        jsonString += "\"newton\":" + value;
+                        jsonString += "\"millibar\":" + value;
                 }
                 x++;
             }
