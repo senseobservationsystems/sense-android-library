@@ -12,6 +12,7 @@ import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
+import nl.sense_os.service.ambience.TemperatureSensor;
 import nl.sense_os.service.commonsense.PhoneSensorRegistrator;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
@@ -359,6 +360,7 @@ public class SenseService extends Service {
     private DeviceProximity deviceProximity;
     private LightSensor lightSensor;
     private CameraLightSensor cameraLightSensor;
+    private TemperatureSensor temperatureSensor;
     private LocationSensor locListener;
     private MotionSensor motionSensor;
     private NoiseSensor noiseSensor;
@@ -881,6 +883,13 @@ public class SenseService extends Service {
                     pressureSensor = null;
                 }
 
+                // check pressure sensor presence
+                if (temperatureSensor != null) {
+                    Log.w(TAG, "temperature sensor is already present!");
+                    temperatureSensor.stopSensing();
+                    temperatureSensor = null;
+                }
+
                 if ((ambienceThread != null) && ambienceThread.isAlive()) {
                     Log.w(TAG, "Ambience thread is already present! Quitting the thread...");
                     ambienceThread.getLooper().quit();
@@ -941,11 +950,21 @@ public class SenseService extends Service {
                                 cameraLightSensor.startLightSensing(finalInterval);
                             }
                         } else {
-                            Log.d(TAG, "Camera is not supported in this version of Android");
+                            // Log.v(TAG, "Camera is not supported in this version of Android");
                         }
                         if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
                             pressureSensor = new PressureSensor(SenseService.this);
                             pressureSensor.startPressureSensing(finalInterval);
+                        }
+                        // only available from Android 2.3 up to 4.0
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
+                                temperatureSensor = new TemperatureSensor(SenseService.this);
+                                temperatureSensor.startSensing(finalInterval);
+                            }
+                        } else {
+                            // Log.v(TAG,
+                            // "Temperature sensor is not supported in this version of Android");
                         }
                     }
                 });
@@ -968,6 +987,10 @@ public class SenseService extends Service {
                 if (null != pressureSensor) {
                     pressureSensor.stopPressureSensing();
                     pressureSensor = null;
+                }
+                if (null != temperatureSensor) {
+                    temperatureSensor.stopSensing();
+                    temperatureSensor = null;
                 }
 
                 if ((ambienceThread != null) && ambienceThread.isAlive()) {

@@ -131,7 +131,7 @@ public class SensePrefs {
              * 
              * @see SensePrefs#MAIN_PREFS
              */
-            public static final String CAMERA_LIGHT = "ambience_camera_light";            
+            public static final String CAMERA_LIGHT = "ambience_camera_light";
             /**
              * Key for preference that toggles use of the microphone in ambience sensing.
              * 
@@ -139,9 +139,17 @@ public class SensePrefs {
              */
             public static final String MIC = "ambience_mic";
             /**
+             * Key for preference that toggles use of the pressure sensor in ambience sensing.
+             * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String PRESSURE = "ambience_pressure";
+            /**
+             * Key for preference that toggles use of the temperature sensor in ambience sensing.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String TEMPERATURE = "ambience_temperature";
         }
 
         public static class DevProx {

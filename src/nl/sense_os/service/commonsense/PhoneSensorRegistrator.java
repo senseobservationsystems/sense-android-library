@@ -17,7 +17,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.nfc.NfcManager;
 import android.os.Build;
-import android.util.Log;
 
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
@@ -28,7 +27,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         super(context);
     }
 
-    private static final String TAG = "Sensor Registration";
+    // private static final String TAG = "Sensor Registration";
 
     /**
      * Checks the IDs for light, camera light, noise, pressure sensors.
@@ -58,7 +57,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             value = new JSONObject(dataFields).toString();
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {
-            Log.w(TAG, "No light sensor present!");
+            // Log.v(TAG, "No light sensor present!");
         }
 
         // match camera light sensor (only for Android < 4.0)
@@ -76,15 +75,6 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
                     success &= checkSensor(name, displayName, dataType, description, value, null,
                             null);
                 }
-            } else {
-                name = SensorNames.CAMERA_LIGHT;
-                displayName = "Camera Light";
-                description = "camera average luminance";
-                dataType = SenseDataTypes.JSON;
-                dataFields.clear();
-                dataFields.put("lux", 0);
-                value = new JSONObject(dataFields).toString();
-                success &= checkSensor(name, displayName, dataType, description, value, null, null);
             }
         }
 
@@ -108,7 +98,23 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             value = new JSONObject(dataFields).toString();
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {
-            Log.w(TAG, "No pressure sensor present!");
+            // Log.v(TAG, "No pressure sensor present!");
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            sensor = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            if (null != sensor) {
+                name = SensorNames.AMBIENT_TEMPERATURE;
+                displayName = "ambient temperature";
+                description = sensor.getName();
+                dataType = SenseDataTypes.JSON;
+                dataFields.clear();
+                dataFields.put("celsius", 0);
+                value = new JSONObject(dataFields).toString();
+                success &= checkSensor(name, displayName, dataType, description, value, null, null);
+            } else {
+                // Log.v(TAG, "No ambient temperature sensor present!");
+            }
         }
 
         return success;
@@ -271,7 +277,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             }
 
         } else {
-            Log.w(TAG, "No accelerometer present!");
+            // Log.v(TAG, "No accelerometer present!");
         }
 
         // match linear acceleration sensor
@@ -291,7 +297,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
                 success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
             } else {
-                Log.w(TAG, "No linear acceleration sensor present!");
+                // Log.v(TAG, "No linear acceleration sensor present!");
             }
         }
 
@@ -310,7 +316,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         } else {
-            Log.w(TAG, "No orientation sensor present!");
+            // Log.v(TAG, "No orientation sensor present!");
         }
 
         // match gyroscope
@@ -328,7 +334,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         } else {
-            Log.w(TAG, "No gyroscope present!");
+            // Log.v(TAG, "No gyroscope present!");
         }
 
         return success;
@@ -382,7 +388,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             value = new JSONObject(dataFields).toString();
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {
-            Log.w(TAG, "No proximity sensor present!");
+            // Log.v(TAG, "No proximity sensor present!");
         }
 
         // match call state
@@ -428,7 +434,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         value = "string";
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
-        // match servie state
+        // match service state
         name = SensorNames.SERVICE_STATE;
         displayName = SensorNames.SERVICE_STATE;
         description = SensorNames.SERVICE_STATE;

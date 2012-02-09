@@ -125,7 +125,7 @@ public class SensorData {
          * Light sensor. Part of the Ambience sensors.
          */
         public static final String LIGHT = "light";
-       
+
         /**
          * Camera Light sensor. Part of the Ambience sensors.
          */
@@ -386,6 +386,11 @@ public class SensorData {
          * Run time since engine start. Part of the OBD-II sensors.
          */
         public static final String RUN_TIME = "run time";
+
+        /**
+         * Ambient temperature sensor. From API >= 14
+         */
+        public static final String AMBIENT_TEMPERATURE = "ambient_temperature";
 
         private SensorNames() {
             // class should not be instantiated
