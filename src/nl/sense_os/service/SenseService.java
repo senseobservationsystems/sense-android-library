@@ -177,7 +177,7 @@ public class SenseService extends Service {
         }
 
         @Override
-        public void setPrefBool(String key, boolean value) throws RemoteException {
+        public void setPrefBool(String key, final boolean value) throws RemoteException {
             // Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
 
             SharedPreferences prefs;
@@ -198,11 +198,18 @@ public class SenseService extends Service {
             } else if (key.equals(Advanced.DEV_MODE) && state.isLoggedIn()) {
                 logout();
             } else if (key.equals(Advanced.USE_COMMONSENSE)) {
-                if (value) {
-                    login();
-                } else {
-                    logout();
-                }
+                // login on a separate thread
+                new Thread() {
+                    public void run() {
+                        if (value) {
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in...");
+                            login();
+                        } else {
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: logging out...");
+                            logout();
+                        }
+                    }
+                }.start();
             }
         }
 
@@ -535,8 +542,7 @@ public class SenseService extends Service {
      */
     @Override
     public void onCreate() {
-        // Log.v(TAG,
-        // "---------->  Sense Platform service is being created...  <----------");
+        // Log.v(TAG, "---------->  Sense Platform service is being created...  <----------");
         super.onCreate();
 
         state = ServiceStateHelper.getInstance(this);
@@ -544,8 +550,7 @@ public class SenseService extends Service {
 
     @Override
     public void onDestroy() {
-        // Log.v(TAG,
-        // "----------> Sense Platform service is being destroyed... <----------");
+        // Log.v(TAG, "----------> Sense Platform service is being destroyed... <----------");
 
         // stop active sensing components
         stopSensorModules();
