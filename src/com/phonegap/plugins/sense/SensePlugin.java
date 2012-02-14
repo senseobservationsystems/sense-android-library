@@ -100,6 +100,17 @@ public class SensePlugin extends Plugin {
                 } catch (RemoteException e) {
                     Log.e(TAG, "Failed to init default sense setttings");
                 }
+            } else if (packageName.equals("nl.ask.paige.app")) {
+                // Log.w(TAG, "Set special Paige sensor settings");
+                // try {
+                // service.setPrefBool(SensePrefs.Main.Advanced.USE_COMMONSENSE, true);
+                //
+                // service.setPrefBool(SensePrefs.Main.Motion.FALL_DETECT_DEMO, true);
+                // service.toggleMotion(true);
+                //
+                // } catch (RemoteException e) {
+                // Log.e(TAG, "Failed to init default sense setttings");
+                // }
             }
         }
 
@@ -184,15 +195,16 @@ public class SensePlugin extends Plugin {
 
     private PluginResult changeLogin(final JSONArray data, final String callbackId)
             throws JSONException, RemoteException {
-        Log.v(TAG, "Change login " + callbackId);
+        Log.v(TAG, "Change login");
 
         if (null != service) {
 
             // get the parameters
-            final String username = data.getString(0);
+            final String username = data.getString(0).toLowerCase();
             final String password = data.getString(1);
 
             Log.d(TAG, "New username: '" + username + "'");
+            Log.d(TAG, "New password: '" + password + "'");
 
             int result = -1;
             try {
@@ -554,7 +566,7 @@ public class SensePlugin extends Plugin {
 
         // get the argument
         boolean active = data.getBoolean(0);
-        Log.v(TAG, (active ? "Enable" : "Disable") + "  ambience sensors");
+        Log.v(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
 
         // do the call
         if (null != service) {
@@ -572,7 +584,7 @@ public class SensePlugin extends Plugin {
 
         // get the argument
         boolean active = data.getBoolean(0);
-        Log.v(TAG, (active ? "Enable" : "Disable") + "  external sensors");
+        Log.v(TAG, (active ? "Enable" : "Disable") + " external sensors");
 
         // do the call
         if (null != service) {
@@ -590,7 +602,7 @@ public class SensePlugin extends Plugin {
 
         // get the argument
         boolean active = data.getBoolean(0);
-        Log.v(TAG, (active ? "Enable" : "Disable") + "  main status");
+        Log.v(TAG, (active ? "Enable" : "Disable") + " main status");
 
         // do the call
         if (null != service) {
@@ -608,7 +620,7 @@ public class SensePlugin extends Plugin {
 
         // get the argument
         boolean active = data.getBoolean(0);
-        Log.v(TAG, (active ? "Enable" : "Disable") + "  motion sensors");
+        Log.v(TAG, (active ? "Enable" : "Disable") + " motion sensors");
 
         // do the call
         if (null != service) {
@@ -626,7 +638,7 @@ public class SensePlugin extends Plugin {
 
         // get the argument
         boolean active = data.getBoolean(0);
-        Log.v(TAG, (active ? "Enable" : "Disable") + "  neighboring devices sensors");
+        Log.v(TAG, (active ? "Enable" : "Disable") + " neighboring devices sensors");
 
         // do the call
         if (null != service) {
@@ -644,7 +656,7 @@ public class SensePlugin extends Plugin {
 
         // get the argument
         boolean active = data.getBoolean(0);
-        Log.v(TAG, (active ? "Enable" : "Disable") + "  phone state sensors");
+        Log.v(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
 
         // do the call
         if (null != service) {
@@ -662,7 +674,7 @@ public class SensePlugin extends Plugin {
 
         // get the argument
         boolean active = data.getBoolean(0);
-        Log.v(TAG, (active ? "Enable" : "Disable") + "  position sensors");
+        Log.v(TAG, (active ? "Enable" : "Disable") + " position sensors");
 
         // do the call
         if (null != service) {
