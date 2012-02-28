@@ -37,6 +37,7 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
@@ -390,6 +391,7 @@ public class SenseService extends Service {
     private final PhoneSensorRegistrator sensorVerifier = new PhoneSensorRegistrator(this);
     private final Timer sensorVerifyTimer = new Timer();
     private TimerTask sensorVerifyTask;
+    private long sensorVerifyTimeout = 15000;
 
     // separate threads for the sensing modules
     private HandlerThread ambienceThread, motionThread, deviceProxThread, extSensorsThread,
@@ -785,6 +787,7 @@ public class SenseService extends Service {
         // make sure the IDs of all sensors are known
         SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
         boolean useCommonSense = mainPrefs.getBoolean(Advanced.USE_COMMONSENSE, true);
+        sensorVerifyTimeout = 15000;
         if (useCommonSense) {
             // run in separate thread to avoid NetworkOnMainThread exception
             new Thread() {
@@ -822,7 +825,8 @@ public class SenseService extends Service {
         if (sensorVerifier.verifySensorIds(null, null)) {
             Log.v(TAG, "Sensor IDs verified");
         } else {
-            Log.w(TAG, "Failed to verify the sensor IDs! Retry in 10 seconds");
+            Log.w(TAG, "Failed to verify the sensor IDs! Retry in " + (sensorVerifyTimeout / 1000)
+                    + " seconds");
             sensorVerifyTask = new TimerTask() {
 
                 @Override
@@ -830,7 +834,10 @@ public class SenseService extends Service {
                     verifySensorIds();
                 }
             };
-            sensorVerifyTimer.schedule(sensorVerifyTask, 10000);
+            sensorVerifyTimer.schedule(sensorVerifyTask, sensorVerifyTimeout);
+            if (sensorVerifyTimeout < AlarmManager.INTERVAL_FIFTEEN_MINUTES) {
+                sensorVerifyTimeout *= 2;
+            }
         }
     }
 
