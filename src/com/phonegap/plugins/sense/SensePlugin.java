@@ -203,8 +203,8 @@ public class SensePlugin extends Plugin {
             final String username = data.getString(0).toLowerCase();
             final String password = data.getString(1);
 
-            Log.d(TAG, "New username: '" + username + "'");
-            Log.d(TAG, "New password: '" + password + "'");
+            // Log.d(TAG, "New username: '" + username + "'");
+            // Log.d(TAG, "New password: '" + password + "'");
 
             int result = -1;
             try {
@@ -216,7 +216,7 @@ public class SensePlugin extends Plugin {
             // check the result
             switch (result) {
             case 0:
-                Log.v(TAG, "Logged in as '" + username + "' " + callbackId);
+                Log.v(TAG, "Logged in as '" + username + "'");
                 success(new PluginResult(Status.OK, result), callbackId);
                 break;
             case -1:
