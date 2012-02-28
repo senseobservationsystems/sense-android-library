@@ -85,6 +85,19 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         dataType = SenseDataTypes.FLOAT;
         value = "0.0";
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
+        
+        // match noise spectrum
+        name = SensorNames.AUDIO_SPECTRUM;
+        displayName = "audio spectrum";
+        description = "audio spectrum (dB)";
+        dataType = SenseDataTypes.JSON;
+        dataFields.clear();
+        for (int i = 1; i < 23; i++) 
+        {
+        	 dataFields.put(i+" kHz", 0);			
+		}       
+        value = new JSONObject(dataFields).toString();
+        success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         // match pressure sensor
         sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);

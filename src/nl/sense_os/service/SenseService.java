@@ -946,7 +946,7 @@ public class SenseService extends Service {
                     @Override
                     public void run() {
 
-                        if (mainPrefs.getBoolean(Ambience.MIC, true)) {
+                        if (mainPrefs.getBoolean(Ambience.MIC, true) || mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
                             noiseSensor = new NoiseSensor(SenseService.this);
                             noiseSensor.enable(finalInterval);
                         }

@@ -115,6 +115,11 @@ public class SensorData {
          * Noise level sensor. Part of the Ambience sensors.
          */
         public static final String NOISE = "noise_sensor";
+        
+        /**
+         * Audio spectrum sensor. Part of the Ambience sensors.
+         */
+        public static final String AUDIO_SPECTRUM = "audio_spectrum";
 
         /**
          * Microphone output. Part of the Ambience sensors (real-time mode only).

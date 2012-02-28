@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -24,11 +25,15 @@ import android.util.Log;
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import java.io.File;
 import java.math.BigDecimal;
+
+import org.json.JSONObject;
 
 public class NoiseSensor extends PhoneStateListener {
 
@@ -62,52 +67,95 @@ public class NoiseSensor extends PhoneStateListener {
      */
     private class NoiseSampleJob implements Runnable {
 
-        private static final int DEFAULT_SAMPLE_RATE = 8000;
-        /*
-         * samples per second * 2 seconds, 2 bytes
-         */
-        private static final int BUFFER_SIZE = DEFAULT_SAMPLE_RATE * 2 * 2;
-        private static final int RECORDING_TIME_NOISE = 2000;
-        private AudioRecord audioRecord;
+    	private static final int DEFAULT_SAMPLE_RATE = 44100;
+		/*
+		 * samples per second * 2 seconds, 2 bytes
+		 */
+		private static final int RECORDING_TIME_NOISE = 2000;
+		private static final int BYTES_PER_SAMPLE = 2;
+		private static final int BUFFER_SIZE = (int)((float)DEFAULT_SAMPLE_RATE * (float)BYTES_PER_SAMPLE * ((float)RECORDING_TIME_NOISE/1000f));		
+		private AudioRecord audioRecord;
+		private int FFT_TIME_SIZE	= (int) Math.pow(2, (int) (Math.log(BUFFER_SIZE)/Math.log(2)));  // must be power of 2, related to buffer_size
 
-        /**
-         * @param buffer
-         *            The sound bytes to calculate the power for.
-         * @param readBytes
-         *            The number of usable bytes in the buffer.
-         * @return the noise power of the current buffer. In case of an error, -1 is returned.
-         */
-        private double calculateDb(byte[] buffer, int readBytes) {
+		/**
+		 * @param samples
+		 *            The sound data float values to calculate the power for.
+		 * 
+		 * @return the noise power of the current buffer. In case of an error, -1 is returned.
+		 */
+		private double calculateDb(float[] samples) {
 
-            double dB = 0;
-            try {
-                if (!isEnabled) {
-                    Log.w(TAG, "Noise sensor is disabled, skipping noise power calculation...");
-                    return -1;
-                }
+			double dB = 0;
+			try {
+				if (!isEnabled) {
+					Log.w(TAG, "Noise sensor is disabled, skipping noise power calculation...");
+					return -1;
+				}
 
-                if (readBytes <= 0) {
-                    Log.e(TAG, "Error reading AudioRecord buffer: " + readBytes);
-                    return -1;
-                }
-                double ldb = 0;
-                for (int x = 0; x < readBytes - 1; x = x + 2) {
-                    // it looks like little endian
-                    double val = buffer[x + 1] << 8 | buffer[x];
-                    ldb += val * val;
-                    // dB += Math.abs(buffer[x]);
-                }
+				if (samples.length <= 0) {
+					Log.e(TAG, "Error reading AudioRecord buffer: " + samples.length);
+					return -1;
+				}
+				double ldb = 0;
+				for (int x = 0; x < samples.length ; ++x) 
+				{					
+					ldb += ((double)samples[x]*(double)samples[x]);
+				}
 
-                ldb /= (double) readBytes / 2;
-                dB = 20.0 * Math.log10(Math.sqrt(ldb));
+				ldb /= (double) samples.length;
+				dB = 20.0 * Math.log10(Math.sqrt(ldb));
 
-            } catch (Exception e) {
-                Log.e(TAG, "Exception calculating noise Db!", e);
-                return -1;
-            }
+			} catch (Exception e) {
+				Log.e(TAG, "Exception calculating noise Db!", e);
+				return -1;
+			}
 
-            return dB;
-        }
+			return dB;
+		}
+
+		private double[] calculateSpectrum(float[] samples)
+		{
+			float[] samplesCopy = new float[FFT_TIME_SIZE];
+			int minIndex = Math.min(samplesCopy.length, samples.length);
+			// float referenceValue = 0.00002f; // leave out reference
+			for (int i = 0; i < minIndex; i++) 
+				samplesCopy[i] = samples[i];
+			samples = samplesCopy;
+
+
+			double[] bins = new double[(int)Math.round((DEFAULT_SAMPLE_RATE/1000)/2)];
+			FFT fft = new FFT(FFT_TIME_SIZE, DEFAULT_SAMPLE_RATE);        
+			fft.linAverages(bins.length); // average divided over 22 bins
+			fft.forward(samples);            
+			// create smaller bins
+			for (int i = 0; i < bins.length; i++) 
+			{   				
+				bins[i] = fft.getAvg(i);
+				bins[i] = 20.0 * Math.log10(Math.sqrt(bins[i]));				
+			}
+			return bins;  
+		}
+
+		private float[] audioToFloat(byte[] buffer, int readBytes)
+		{
+			float []samples = new float[readBytes/2];
+	    	 int cnt = 0;   
+	         for (int x = 0; x < readBytes - 1; x = x + 2) {
+	        	 double sample = 0;
+	             for (int b = 0; b < BYTES_PER_SAMPLE; b++) 
+	             {                	
+	                 int v = (int) buffer[x + b];
+	                 if (b < BYTES_PER_SAMPLE - 1 || BYTES_PER_SAMPLE == 1) 
+	                 {
+	                     v &= 0xFF;
+	                 }
+	                 sample += v << (b * 8);
+	             }            	 
+	             samples[cnt++] = (float)sample;
+	         }
+	         return samples;
+		}
+
 
         /**
          * @return <code>true</code> if {@link #audioRecord} was initialized successfully
@@ -197,13 +245,19 @@ public class NoiseSensor extends PhoneStateListener {
                             }
                         }
 
-                        double dB = calculateDb(totalBuffer, readCount);
-
-                        if (dB < 0 || Double.valueOf(dB).isNaN()) {
-                            // there was an error calculating the noise power
-                            Log.w(TAG, "Impossible noise value: " + dB + ". No new data point.");
-
-                        } else {
+                        float[] samples = audioToFloat(totalBuffer, readCount);
+						double dB = -1;
+						double[] spectrum = null;
+						if(samples != null)
+						{
+							SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+							if(mainPrefs.getBoolean(Ambience.MIC, true))
+								dB = calculateDb(samples);
+							if(mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true))
+								spectrum = calculateSpectrum(samples);							
+						}
+						
+                        if (dB != -1 && !Double.valueOf(dB).isNaN()) {
                             // Log.v(TAG, "Sampled noise level: " + dB);
 
                             // pass message to the MsgHandler
@@ -215,6 +269,23 @@ public class NoiseSensor extends PhoneStateListener {
                             sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
                             sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
                             context.startService(sensorData);
+                        }
+                        
+                        if(spectrum != null)
+                        {
+                        	JSONObject jsonSpectrum = new JSONObject();
+
+                        	for (int i = 0; i < spectrum.length; i++) {
+								jsonSpectrum.put((i+1)+" kHz", spectrum[i]);								
+							}
+                        	
+                        	Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
+                        	sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.AUDIO_SPECTRUM);
+                        	sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION, "audio spectrum (dB)");
+                        	sensorData.putExtra(DataPoint.VALUE, jsonSpectrum.toString());
+                        	sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+                        	sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                        	context.startService(sensorData);
                         }
 
                     } catch (Exception e) {
