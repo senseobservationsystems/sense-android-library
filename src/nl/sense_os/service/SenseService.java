@@ -33,6 +33,7 @@ import nl.sense_os.service.phonestate.BatterySensor;
 import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONObject;
 
@@ -545,8 +546,7 @@ public class SenseService extends Service {
     @Override
     public void onCreate() {
         // Log.v(TAG, "---------->  Sense Platform service is being created...  <----------");
-        super.onCreate();
-
+        super.onCreate();                
         state = ServiceStateHelper.getInstance(this);
     }
 
@@ -574,7 +574,9 @@ public class SenseService extends Service {
      */
     private void onLogIn() {
         Log.i(TAG, "Logged in!");
-
+        // update ntp time
+        SNTP.getInstance().requestTime(SNTP.HOST_WORLDWIDE, 2000);
+        
         // update login status
         state.setLoggedIn(true);
 

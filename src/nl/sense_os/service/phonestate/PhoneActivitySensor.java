@@ -7,6 +7,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +52,7 @@ public class PhoneActivitySensor {
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.VALUE, json.toString());
             i.putExtra(DataPoint.SENSOR_NAME, SensorNames.SCREEN_ACTIVITY);
-            i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             context.startService(i);
         }
     };

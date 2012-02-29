@@ -14,6 +14,7 @@ import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -630,7 +631,7 @@ public class NewOBD2DeviceConnector implements Runnable{
 	        } else {
 	            Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
 	        }
-	        intent.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+	        intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
 
 	        boolean itemsent = (context.startService(intent) != null);
 			if(!itemsent)

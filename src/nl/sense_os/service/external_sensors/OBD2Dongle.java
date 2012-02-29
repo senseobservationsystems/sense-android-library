@@ -19,6 +19,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -526,7 +527,7 @@ public class OBD2Dongle {
                 i.putExtra(DataPoint.SENSOR_DESCRIPTION, deviceType);
                 i.putExtra(DataPoint.VALUE, getJSON().toString());
                 i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-                i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
                 context.startService(i);
         	}
         	

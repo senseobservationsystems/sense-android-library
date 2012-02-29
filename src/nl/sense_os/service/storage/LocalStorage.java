@@ -10,6 +10,7 @@ import java.util.Map;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.provider.SNTP;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -249,7 +250,7 @@ public class LocalStorage {
 
             // do not store data points that are more than 24 hours old
             String where = DataPoint.TIMESTAMP + "<"
-                    + (System.currentTimeMillis() - 1000l * 60 * 60 * 24);
+                    + (SNTP.getInstance().getTime() - 1000l * 60 * 60 * 24);
             int deleted = db.delete(TABLE_PERSISTENT, where, null);
             if (deleted > 0) {
                 // Log.v(TAG, "Deleted " + deleted + " old data points from persistent storage");

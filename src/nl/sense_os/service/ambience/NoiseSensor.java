@@ -29,6 +29,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -267,7 +268,7 @@ public class NoiseSensor extends PhoneStateListener {
                             sensorData.putExtra(DataPoint.VALUE,
                                     BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
                             sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-                            sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                            sensorData.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
                             context.startService(sensorData);
                         }
                         
@@ -275,8 +276,14 @@ public class NoiseSensor extends PhoneStateListener {
                         {
                         	JSONObject jsonSpectrum = new JSONObject();
 
-                        	for (int i = 0; i < spectrum.length; i++) {
-								jsonSpectrum.put((i+1)+" kHz", spectrum[i]);								
+                        	for (int i = 0; i < spectrum.length; i++) {                        		
+                        		if(spectrum[i] == Double.POSITIVE_INFINITY)
+                        			jsonSpectrum.put((i+1)+" kHz", 140); // max db	
+                        		else if(spectrum[i] != Double.NaN && spectrum[i] != Double.NEGATIVE_INFINITY)
+                            		jsonSpectrum.put((i+1)+" kHz", spectrum[i]); // nothing on the hand
+                        		else
+                        			jsonSpectrum.put((i+1)+" kHz", 0); // nan or to low value
+
 							}
                         	
                         	Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
@@ -284,7 +291,7 @@ public class NoiseSensor extends PhoneStateListener {
                         	sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION, "audio spectrum (dB)");
                         	sensorData.putExtra(DataPoint.VALUE, jsonSpectrum.toString());
                         	sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-                        	sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                        	sensorData.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
                         	context.startService(sensorData);
                         }
 
@@ -395,7 +402,7 @@ public class NoiseSensor extends PhoneStateListener {
                                 i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MIC);
                                 i.putExtra(DataPoint.VALUE, fileName);
                                 i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
-                                i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                                i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
                                 context.startService(i);
 
                                 if (isEnabled && listenInterval == -1 && tmp.equals(soundStreamJob)) {

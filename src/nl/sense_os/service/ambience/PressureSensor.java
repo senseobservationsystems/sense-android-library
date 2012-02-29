@@ -10,6 +10,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -76,7 +77,7 @@ public class PressureSensor implements SensorEventListener {
             i.putExtra(DataPoint.VALUE, jsonString);
             i.putExtra(DataPoint.SENSOR_NAME, sensorName);
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-            i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             context.startService(i);
         }
         if (sampleDelay > 500 && PressureSensingActive) {

@@ -17,6 +17,7 @@ import nl.sense_os.service.ambience.CameraLightValue.CameraLightValueCallback;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 public class CameraLightSensor {
 	
@@ -117,7 +118,7 @@ public class CameraLightSensor {
 			i.putExtra(DataPoint.VALUE, jsonString);
 			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
 			context.startService(i);
 			//Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
 			nextUpdate(camera_id);

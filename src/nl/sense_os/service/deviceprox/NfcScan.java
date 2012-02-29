@@ -10,6 +10,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONObject;
 
@@ -312,7 +313,7 @@ public class NfcScan extends Activity {
         dataPoint.putExtra(DataPoint.SENSOR_NAME, SensorNames.NFC_SCAN);
         dataPoint.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.NFC_SCAN);
         dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        dataPoint.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        dataPoint.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         dataPoint.putExtra(DataPoint.VALUE, value);
         startService(dataPoint);
     }

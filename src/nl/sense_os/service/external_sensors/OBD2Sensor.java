@@ -11,6 +11,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,7 +151,7 @@ public class OBD2Sensor extends ExternalSensor {
         } else {
             Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
         }
-        intent.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         context.startService(intent);
     }
 	
@@ -249,7 +250,7 @@ public class OBD2Sensor extends ExternalSensor {
             //i.putExtra(DataPoint.SENSOR_DESCRIPTION, deviceType);
             i.putExtra(DataPoint.VALUE, getJSON().toString());
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             //TODO: i.putExtra(DataPoint.DEVICE_UUID, )
             context.startService(i);
     	}

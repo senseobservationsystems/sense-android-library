@@ -26,6 +26,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.states.EpiStateMonitor;
 
 import org.json.JSONArray;
@@ -492,7 +493,7 @@ public class MotionSensor implements SensorEventListener {
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
             i.putExtra(DataPoint.VALUE, value);
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-            i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             context.startService(i);
 
         }
@@ -506,7 +507,7 @@ public class MotionSensor implements SensorEventListener {
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, fallDetector.demo ? "demo fall" : "human fall");
         i.putExtra(DataPoint.VALUE, fall);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.BOOL);
-        i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         context.startService(i);
     }
 
@@ -516,7 +517,7 @@ public class MotionSensor implements SensorEventListener {
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
         i.putExtra(DataPoint.VALUE, json.toString());
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         context.startService(i);
     }
 

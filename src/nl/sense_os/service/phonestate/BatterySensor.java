@@ -14,6 +14,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -109,7 +110,7 @@ public class BatterySensor {
                     i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
                     i.putExtra(DataPoint.VALUE, json.toString());
                     i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BATTERY_SENSOR);
-                    i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                    i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
                     lastSampleTime = System.currentTimeMillis();
                     context.startService(i);
                 }
