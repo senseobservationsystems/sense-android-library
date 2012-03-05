@@ -396,6 +396,11 @@ public class SensorData {
          * Ambient temperature sensor. From API >= 14
          */
         public static final String AMBIENT_TEMPERATURE = "ambient_temperature";
+        
+        /**
+         * Feedback sensor
+         */
+        public static final String LOCATION_FEEDBACK = "location feedback";
 
         private SensorNames() {
             // class should not be instantiated

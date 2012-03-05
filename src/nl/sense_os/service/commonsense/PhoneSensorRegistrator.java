@@ -472,6 +472,26 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
 
         return success;
     }
+    
+    /**
+     * Checks the ID for the feedback sensor
+     * 
+     * @return true if the sensor ID is found or created
+     */
+    private boolean checkLocationFeedbackSensor() {
+
+        // match location sensor
+        String name = SensorNames.LOCATION_FEEDBACK;
+        String displayName = SensorNames.LOCATION_FEEDBACK;
+        String description = SensorNames.LOCATION_FEEDBACK;
+        String dataType = SenseDataTypes.JSON;
+        HashMap<String, Object> dataFields = new HashMap<String, Object>();
+        dataFields.put("location", "string");
+        dataFields.put("comment", "string");
+        dataFields.put("duration", 1.0);
+        String value = new JSONObject(dataFields).toString();
+        return checkSensor(name, displayName, dataType, description, value, null, null);
+    }
 
     @Override
     public synchronized boolean verifySensorIds(String deviceType, String deviceUuid) {
@@ -480,6 +500,8 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         success &= checkLocationSensors();
         success &= checkMotionSensors();
         success &= checkPhoneStateSensors();
+        //FIXME: ugly hack, we shouldn't created this sensor by default
+        success &= checkLocationFeedbackSensor();
         return success;
     }
 }
