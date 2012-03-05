@@ -92,7 +92,7 @@ public class ServiceStateHelper {
 
         // create the notification
         Notification note = new Notification(icon, null, when);
-        note.flags = Notification.FLAG_NO_CLEAR;
+        note.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
         note.setLatestEventInfo(context, context.getString(R.string.stat_notify_title),
                 context.getString(contentText, username), contentIntent);
 
