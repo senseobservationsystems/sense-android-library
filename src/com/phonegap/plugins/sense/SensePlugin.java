@@ -12,6 +12,7 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
 
+import org.apache.cordova.api.PluginResult.Status;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +29,6 @@ import android.util.Log;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
 
 public class SensePlugin extends Plugin {
 
@@ -147,7 +147,7 @@ public class SensePlugin extends Plugin {
 
         // verify sensor ID
         if (null == sensorRegistrator) {
-            sensorRegistrator = new PhoneGapSensorRegistrator(ctx);
+            sensorRegistrator = new PhoneGapSensorRegistrator(ctx.getContext());
         }
         new Thread() {
 
@@ -159,7 +159,8 @@ public class SensePlugin extends Plugin {
         }.start();
 
         // send data point
-        String action = ctx.getString(nl.sense_os.service.R.string.action_sense_new_data);
+        String action = ctx.getContext().getString(
+                nl.sense_os.service.R.string.action_sense_new_data);
         Intent intent = new Intent(action);
         intent.putExtra(DataPoint.SENSOR_NAME, name);
         intent.putExtra(DataPoint.DISPLAY_NAME, displayName);
@@ -167,7 +168,7 @@ public class SensePlugin extends Plugin {
         intent.putExtra(DataPoint.DATA_TYPE, dataType);
         intent.putExtra(DataPoint.VALUE, value);
         intent.putExtra(DataPoint.TIMESTAMP, timestamp);
-        ComponentName serviceName = ctx.startService(intent);
+        ComponentName serviceName = ctx.getContext().startService(intent);
 
         if (null != serviceName) {
             return new PluginResult(Status.OK);
@@ -183,8 +184,9 @@ public class SensePlugin extends Plugin {
     private void bindToSenseService() {
         if (!isServiceBound) {
             Log.v(TAG, "Try to connect with Sense Platform service");
-            final Intent service = new Intent(ctx.getString(R.string.action_sense_service));
-            isServiceBound = ctx.bindService(service, conn, Context.BIND_AUTO_CREATE);
+            final Intent service = new Intent(ctx.getContext().getString(
+                    R.string.action_sense_service));
+            isServiceBound = ctx.getContext().bindService(service, conn, Context.BIND_AUTO_CREATE);
             if (!isServiceBound) {
                 Log.w(TAG, "Failed to connect with the Sense Platform service!");
             }
@@ -378,7 +380,8 @@ public class SensePlugin extends Plugin {
         String sensorName = data.getString(0);
         JSONArray returnvalue = new JSONArray();
         try {
-            Uri url = Uri.parse("content://" + ctx.getString(R.string.local_storage_authority)
+            Uri url = Uri.parse("content://"
+                    + ctx.getContext().getString(R.string.local_storage_authority)
                     + DataPoint.CONTENT_URI_PATH);
             String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
             String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
@@ -693,7 +696,7 @@ public class SensePlugin extends Plugin {
     private void unbindFromSenseService() {
         if (true == isServiceBound && null != conn) {
             Log.v(TAG, "Unbind from Sense Platform service");
-            ctx.unbindService(conn);
+            ctx.getContext().unbindService(conn);
         } else {
             // already unbound
         }
