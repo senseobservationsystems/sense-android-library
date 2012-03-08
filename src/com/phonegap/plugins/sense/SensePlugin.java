@@ -80,6 +80,7 @@ public class SensePlugin extends Plugin {
                     service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
                     service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
                     service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
+                    service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
                     service.toggleAmbience(true);
 
                     service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);

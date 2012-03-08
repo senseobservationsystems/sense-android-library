@@ -143,7 +143,7 @@ public class SensePrefs {
              * 
              * @see SensePrefs#MAIN_PREFS
              */
-            public static final String AUDIO_SPECTRUM = "ambience_mic";
+            public static final String AUDIO_SPECTRUM = "ambience_audio_spectrum";
             /**
              * Key for preference that toggles use of the pressure sensor in ambience sensing.
              * 
