@@ -3,7 +3,7 @@ package nl.sense_os.service;
 import nl.sense_os.service.ISenseServiceCallback;
 
 interface ISenseService 
-{	
+{    
     /**
      * Tries to log in at CommonSense using the supplied username and password. After login, the
      * service remembers the username and password.
@@ -12,10 +12,10 @@ interface ISenseService
      *            username for login
      * @param pass
      *            hashed password for login
-     * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
-     *         errors.
+     * @param callback 
+     *            interface to receive callback when login is completed
      */
-    int changeLogin(String username, String password);
+    void changeLogin(String username, String password, ISenseServiceCallback callback);
     
     /**
      * Logs out a user, destroying his or her records.
@@ -37,11 +37,11 @@ interface ISenseService
      *         Email address (optional, null if not required).
      * @param mobile 
      *         Phone number, preferably in E164 format (optional, null if not required).
-     * @return 0 if registration completed successfully, -2 if the user already exists, and -1
-     *         otherwise.
+     * @param callback 
+     *            interface to receive callback when login is completed
      */
-    int register(String username, String password, String name, String surname, String email, 
-            String mobile);
+    void register(String username, String password, String name, String surname, String email, 
+            String mobile, ISenseServiceCallback callback);
     
     /**
      * @param appSecret

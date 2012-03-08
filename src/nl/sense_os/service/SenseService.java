@@ -66,9 +66,23 @@ public class SenseService extends Service {
         private static final String TAG = "SenseServiceStub";
 
         @Override
-        public int changeLogin(String username, String password) throws RemoteException {
+        public void changeLogin(final String username, final String password,
+                final ISenseServiceCallback callback) throws RemoteException {
             // Log.v(TAG, "Change login");
-            return SenseService.this.changeLogin(username, password);
+
+            // perform login on separate thread and respond via callback
+            new Thread() {
+
+                @Override
+                public void run() {
+                    int result = SenseService.this.changeLogin(username, password);
+                    try {
+                        callback.onChangeLoginResult(result);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Failed to call back to bound activity after login change: " + e);
+                    }
+                }
+            }.start();
         }
 
         @Override
@@ -173,9 +187,25 @@ public class SenseService extends Service {
         }
 
         @Override
-        public int register(String username, String password, String name, String surname,
-                String email, String mobile) throws RemoteException {
-            return SenseService.this.register(username, password, name, surname, email, mobile);
+        public void register(final String username, final String password, final String name,
+                final String surname, final String email, final String mobile,
+                final ISenseServiceCallback callback) throws RemoteException {
+            // Log.v(TAG, "Register: '" + username + "'");
+
+            // perform registration on separate thread and respond via callback
+            new Thread() {
+
+                @Override
+                public void run() {
+                    int result = SenseService.this.register(username, password, name, surname,
+                            email, mobile);
+                    try {
+                        callback.onRegisterResult(result);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Failed to call back to bound activity after registration: " + e);
+                    }
+                }
+            }.start();
         }
 
         @Override
@@ -402,26 +432,21 @@ public class SenseService extends Service {
      * Changes login of the Sense service. Removes "private" data of the previous user from the
      * preferences. Can be called by Activities that are bound to the service.
      * 
-     * @return <code>true</code> if login was changed successfully
+     * @param username
+     *            Username
+     * @param password
+     *            Hashed password
+     * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
+     *         errors.
      */
     private int changeLogin(String username, String password) {
 
         logout();
 
-        // hash password
-        String hashedPass;
-        boolean skipHash = getPackageName().equals("nl.sense_os.ivitality");
-        if (!skipHash) {
-            hashedPass = SenseApi.hashPassword(password);
-        } else {
-            Log.w(TAG, "Skip password hashing!");
-            hashedPass = password;
-        }
-
         // save new username and password in the preferences
         Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
         authEditor.putString(Auth.LOGIN_USERNAME, username);
-        authEditor.putString(Auth.LOGIN_PASS, hashedPass);
+        authEditor.putString(Auth.LOGIN_PASS, password);
         authEditor.commit();
 
         return login();
@@ -546,7 +571,7 @@ public class SenseService extends Service {
     @Override
     public void onCreate() {
         // Log.v(TAG, "---------->  Sense Platform service is being created...  <----------");
-        super.onCreate();                
+        super.onCreate();
         state = ServiceStateHelper.getInstance(this);
     }
 
@@ -576,7 +601,7 @@ public class SenseService extends Service {
         Log.i(TAG, "Logged in!");
         // update ntp time
         SNTP.getInstance().requestTime(SNTP.HOST_WORLDWIDE, 2000);
-        
+
         // update login status
         state.setLoggedIn(true);
 
@@ -699,13 +724,15 @@ public class SenseService extends Service {
      * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
      * are bound to the service.
      * 
-     * @param mobile
-     * @param email
-     * @param surname
+     * @param username
+     * @param password
+     *            Unhashed password
      * @param name
-     * 
+     * @param surname
+     * @param email
+     * @param mobile
      * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-     *         any other errors.
+     *         any other unexpected responses.
      */
     private int register(String username, String password, String name, String surname,
             String email, String mobile) {
@@ -948,7 +975,8 @@ public class SenseService extends Service {
                     @Override
                     public void run() {
 
-                        if (mainPrefs.getBoolean(Ambience.MIC, true) || mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
+                        if (mainPrefs.getBoolean(Ambience.MIC, true)
+                                || mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
                             noiseSensor = new NoiseSensor(SenseService.this);
                             noiseSensor.enable(finalInterval);
                         }

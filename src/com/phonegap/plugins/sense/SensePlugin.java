@@ -125,13 +125,83 @@ public class SensePlugin extends Plugin {
         }
     }
 
+    private class SenseServiceCallback extends ISenseServiceCallback.Stub {
+
+        @Override
+        public void statusReport(final int status) throws RemoteException {
+            ctx.runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    // Log.d(TAG, "Received Sense Platform service status: " + status);
+                    SensePlugin.this.success(new PluginResult(Status.OK, status),
+                            getStatusCallbackId);
+                }
+            });
+        }
+
+        @Override
+        public void onChangeLoginResult(int result) throws RemoteException {
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Change login OK");
+                success(new PluginResult(Status.OK, result), changeLoginCallbackId);
+                break;
+            case -1:
+                Log.v(TAG, "Login failed! Connectivity problems?");
+                error(new PluginResult(Status.IO_EXCEPTION,
+                        "Error logging in, probably connectivity problems."), changeLoginCallbackId);
+                break;
+            case -2:
+                Log.v(TAG, "Login failed! Invalid username or password.");
+                error(new PluginResult(Status.ERROR, "Invalid username or password."),
+                        changeLoginCallbackId);
+                break;
+            default:
+                Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
+                error(new PluginResult(Status.ERROR, "Unexpected result: " + result),
+                        changeLoginCallbackId);
+            }
+        }
+
+        @Override
+        public void onRegisterResult(int result) throws RemoteException {
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Registration OK");
+                success(new PluginResult(Status.OK, result), registerCallbackId);
+                break;
+            case -1:
+                Log.v(TAG, "Registration failed! Connectivity problems?");
+                error(new PluginResult(Status.IO_EXCEPTION, result), registerCallbackId);
+                break;
+            case -2:
+                Log.v(TAG, "Registration failed! Username already taken.");
+                error(new PluginResult(Status.ERROR, result), registerCallbackId);
+                break;
+            default:
+                Log.w(TAG, "Unexpected registration result! Unexpected registration result: "
+                        + result);
+                error(new PluginResult(Status.ERROR, result), registerCallbackId);
+                break;
+            }
+        }
+    }
+
     private static final String TAG = "PhoneGap Sense";
+
     private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
+
     private final ServiceConnection conn = new SenseServiceConn();
     private boolean isServiceBound;
     private ISenseService service;
+    private ISenseServiceCallback callback = new SenseServiceCallback();
+    private String getStatusCallbackId;
+    private String changeLoginCallbackId;
 
     private PhoneGapSensorRegistrator sensorRegistrator;
+
+    private String registerCallbackId;
 
     private PluginResult addDataPoint(JSONArray data, String callbackId) throws JSONException {
 
@@ -209,35 +279,18 @@ public class SensePlugin extends Plugin {
             // Log.d(TAG, "New username: '" + username + "'");
             // Log.d(TAG, "New password: '" + password + "'");
 
-            int result = -1;
             try {
-                result = service.changeLogin(username, password);
+                changeLoginCallbackId = callbackId;
+                service.changeLogin(username, password, callback);
             } catch (RemoteException e) {
-                // handle result below
+                return new PluginResult(Status.ERROR, "Error in communcation with Sense service "
+                        + e);
             }
 
-            // check the result
-            switch (result) {
-            case 0:
-                Log.v(TAG, "Logged in as '" + username + "'");
-                success(new PluginResult(Status.OK, result), callbackId);
-                break;
-            case -1:
-                Log.v(TAG, "Login failed! Connectivity problems?");
-                error(new PluginResult(Status.IO_EXCEPTION,
-                        "Error logging in, probably connectivity problems."), callbackId);
-                break;
-            case -2:
-                Log.v(TAG, "Login failed! Invalid username or password.");
-                error(new PluginResult(Status.ERROR, "Invalid username or password."), callbackId);
-                break;
-            default:
-                Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
-                error(new PluginResult(Status.ERROR, "Unexpected result: " + result), callbackId);
-            }
-
-            // the result was already sent back to JavaScript via success() or error()
-            return new PluginResult(Status.NO_RESULT);
+            // keep the callback ID so we can use it when the service returns
+            PluginResult r = new PluginResult(Status.NO_RESULT);
+            r.setKeepCallback(true);
+            return r;
 
         } else {
             Log.e(TAG, "No connection to the Sense Platform service.");
@@ -349,21 +402,8 @@ public class SensePlugin extends Plugin {
 
     private PluginResult getStatus(JSONArray data, final String callbackId) throws RemoteException {
         if (null != service) {
-            service.getStatus(new ISenseServiceCallback.Stub() {
-
-                @Override
-                public void statusReport(final int status) throws RemoteException {
-                    ctx.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            // Log.d(TAG, "Received Sense Platform service status: " + status);
-                            SensePlugin.this.success(new PluginResult(Status.OK, status),
-                                    callbackId);
-                        }
-                    });
-                }
-            });
+            getStatusCallbackId = callbackId;
+            service.getStatus(callback);
         } else {
             Log.e(TAG, "No connection to the Sense Platform service.");
             return new PluginResult(Status.ERROR, "No connection to the Sense Platform service.");
@@ -507,10 +547,10 @@ public class SensePlugin extends Plugin {
         }
 
         // do the registration
-        int result = -1;
         if (null != service) {
             try {
-                result = service.register(username, password, name, surname, email, phone);
+                registerCallbackId = callbackId;
+                service.register(username, password, name, surname, email, phone, callback);
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException while trying to register", e);
                 return new PluginResult(Status.ERROR, e.getMessage());
@@ -520,28 +560,10 @@ public class SensePlugin extends Plugin {
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
         }
 
-        // check the result
-        switch (result) {
-        case 0:
-            Log.v(TAG, "Registered '" + username + "'");
-            success(new PluginResult(Status.OK, result), callbackId);
-            break;
-        case -1:
-            Log.v(TAG, "Registration failed! Connectivity problems?");
-            error(new PluginResult(Status.IO_EXCEPTION, result), callbackId);
-            break;
-        case -2:
-            Log.v(TAG, "Registration failed! Username already taken.");
-            error(new PluginResult(Status.ERROR, result), callbackId);
-            break;
-        default:
-            Log.w(TAG, "Unexpected registration result! Unexpected registration result: " + result);
-            error(new PluginResult(Status.ERROR, result), callbackId);
-            break;
-        }
-
-        // the result was already sent back to JavaScript via success() or error()
-        return new PluginResult(Status.NO_RESULT);
+        // keep the callback ID so we can use it when the service returns
+        PluginResult r = new PluginResult(Status.NO_RESULT);
+        r.setKeepCallback(true);
+        return r;
     }
 
     private PluginResult setPreference(JSONArray data, String callbackId) throws JSONException,
