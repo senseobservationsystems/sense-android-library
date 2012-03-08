@@ -1,9 +1,9 @@
 package nl.sense_os.phonegap;
 
+import org.apache.cordova.DroidGap;
+
 import android.os.Bundle;
 import android.util.Log;
-
-import com.phonegap.DroidGap;
 
 public class PhoneGapExamples extends DroidGap {
 
