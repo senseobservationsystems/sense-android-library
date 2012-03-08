@@ -570,14 +570,14 @@ public class SenseService extends Service {
      */
     @Override
     public void onCreate() {
-        // Log.v(TAG, "---------->  Sense Platform service is being created...  <----------");
+        Log.i(TAG, "Sense Platform is being created...");
         super.onCreate();
         state = ServiceStateHelper.getInstance(this);
     }
 
     @Override
     public void onDestroy() {
-        // Log.v(TAG, "----------> Sense Platform service is being destroyed... <----------");
+        Log.i(TAG, "Sense Platform is being destroyed...");
 
         // stop active sensing components
         stopSensorModules();
@@ -658,7 +658,7 @@ public class SenseService extends Service {
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        // Log.v(TAG, "onStartCommand...");
+        Log.i(TAG, "Sense Platform service is being started...");
 
         HandlerThread startThread = new HandlerThread("Start thread",
                 Process.THREAD_PRIORITY_FOREGROUND);
@@ -829,7 +829,7 @@ public class SenseService extends Service {
         }
 
         SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-        if (statusPrefs.getBoolean(Status.MAIN, true)) {
+        if (statusPrefs.getBoolean(Status.MAIN, false)) {
             togglePhoneState(statusPrefs.getBoolean(Status.PHONESTATE, false));
             toggleLocation(statusPrefs.getBoolean(Status.LOCATION, false));
             toggleAmbience(statusPrefs.getBoolean(Status.AMBIENCE, false));
@@ -1332,10 +1332,8 @@ public class SenseService extends Service {
 
         if (true == active) {
             // properly start the service to start sensing
-            if (!state.isStarted()) {
-                Log.i(TAG, "Start service...");
-                startService(new Intent(getString(R.string.action_sense_service)));
-            }
+            Log.i(TAG, "Start service...");
+            startService(new Intent(getString(R.string.action_sense_service)));
 
         } else {
             Log.i(TAG, "Stop service...");
