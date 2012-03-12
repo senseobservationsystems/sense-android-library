@@ -9,6 +9,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONException;
@@ -38,7 +39,7 @@ public class LocationSensor {
         public void onLocationChanged(Location fix) {
 
             if (null != lastGpsFix) {
-                if (System.currentTimeMillis() - lastGpsFix.getTime() < MIN_SAMPLE_DELAY) {
+                if (SNTP.getInstance().getTime() - lastGpsFix.getTime() < MIN_SAMPLE_DELAY) {
                     // Log.v(TAG, "New location fix is too fast after last one");
                     return;
                 }
@@ -226,7 +227,7 @@ public class LocationSensor {
         if (null != gpsFix || null != nwFix) {
             Location bestFix = null;
             if (null != gpsFix) {
-                if (System.currentTimeMillis() - 1000 * 60 * 60 * 1 < gpsFix.getTime()) {
+                if (SNTP.getInstance().getTime() - 1000 * 60 * 60 * 1 < gpsFix.getTime()) {
                     // recent GPS fix
                     bestFix = gpsFix;
                 }
@@ -266,7 +267,7 @@ public class LocationSensor {
                     DataPoint.VALUE };
             String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LIN_ACCELERATION + "'"
                     + " AND " + DataPoint.TIMESTAMP + ">"
-                    + (System.currentTimeMillis() - timerange);
+                    + (SNTP.getInstance().getTime() - timerange);
             data = LocalStorage.getInstance(context).query(uri, projection, selection, null, null);
 
             if (null == data || data.getCount() == 0) {
@@ -321,12 +322,12 @@ public class LocationSensor {
 
             // check if any updates have been received recently from the GPS sensor
             if (lastGpsFix != null && lastGpsFix.getTime() > listenGpsStart) {
-                if (System.currentTimeMillis() - lastGpsFix.getTime() > maxDelay) {
+                if (SNTP.getInstance().getTime() - lastGpsFix.getTime() > maxDelay) {
                     // no updates for long time
                     Log.d(TAG, "GPS is NOT productive: no updates for a long time");
                     productive = false;
                 }
-            } else if (System.currentTimeMillis() - listenGpsStart > maxDelay) {
+            } else if (SNTP.getInstance().getTime() - listenGpsStart > maxDelay) {
                 // no updates for a long time
                 Log.d(TAG, "GPS is NOT productive: no updates since start listening");
                 productive = false;
@@ -355,7 +356,7 @@ public class LocationSensor {
             String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
                     DataPoint.VALUE };
             String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LOCATION + "'" + " AND "
-                    + DataPoint.TIMESTAMP + ">" + (System.currentTimeMillis() - timerange);
+                    + DataPoint.TIMESTAMP + ">" + (SNTP.getInstance().getTime() - timerange);
             data = LocalStorage.getInstance(context).query(uri, projection, selection, null, null);
 
             if (null == data || data.getCount() < 2) {
@@ -426,7 +427,7 @@ public class LocationSensor {
         boolean tooLong = false;
         long maxDelay = 1000 * 60 * 60; // 1 hour
 
-        if (System.currentTimeMillis() - listenGpsStop > maxDelay) {
+        if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
             // GPS has been turned off for a long time, or was never even started
             Log.d(TAG, "GPS has been turned off for a long time, or was never even started");
             tooLong = true;
@@ -447,7 +448,7 @@ public class LocationSensor {
         // Intent log = new Intent(MsgHandler.ACTION_NEW_MSG);
         // log.putExtra(MsgHandler.KEY_SENSOR_NAME, "GPS logger");
         // log.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "Sense");
-        // log.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        // log.putExtra(MsgHandler.KEY_TIMESTAMP, SNTP.getInstance().getTime());
         // log.putExtra(MsgHandler.KEY_VALUE, "Start: " + msg);
         // log.putExtra(MsgHandler.KEY_DATA_TYPE, "string");
         // context.startService(log);
@@ -458,7 +459,7 @@ public class LocationSensor {
         // Intent log = new Intent(MsgHandler.ACTION_NEW_MSG);
         // log.putExtra(MsgHandler.KEY_SENSOR_NAME, "GPS logger");
         // log.putExtra(MsgHandler.KEY_SENSOR_DEVICE, "Sense");
-        // log.putExtra(MsgHandler.KEY_TIMESTAMP, System.currentTimeMillis());
+        // log.putExtra(MsgHandler.KEY_TIMESTAMP, SNTP.getInstance().getTime());
         // log.putExtra(MsgHandler.KEY_VALUE, "Stop: " + msg);
         // log.putExtra(MsgHandler.KEY_DATA_TYPE, "string");
         // context.startService(log);
@@ -476,11 +477,11 @@ public class LocationSensor {
         if (listen) {
             locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, distance, gpsListener);
             isListeningGps = true;
-            listenGpsStart = System.currentTimeMillis();
+            listenGpsStart = SNTP.getInstance().getTime();
             lastGpsFix = null;
         } else {
             locMgr.removeUpdates(gpsListener);
-            listenGpsStop = System.currentTimeMillis();
+            listenGpsStop = SNTP.getInstance().getTime();
             isListeningGps = false;
         }
     }
@@ -494,6 +495,10 @@ public class LocationSensor {
         }
     }
 
+    /**
+     * Listens to passive location provider. Should only be called in Android versions where the
+     * provider is available.
+     */
     private void setPassiveListening(boolean listen) {
         if (listen) {
             locMgr.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, time, distance,
@@ -521,7 +526,7 @@ public class LocationSensor {
         PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, alarm, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(operation);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), time, operation);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), time, operation);
     }
 
     private void startListening() {

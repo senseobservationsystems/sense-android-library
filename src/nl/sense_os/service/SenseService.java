@@ -5,13 +5,16 @@ package nl.sense_os.service;
 
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
+import nl.sense_os.service.ambience.TemperatureSensor;
 import nl.sense_os.service.commonsense.PhoneSensorRegistrator;
 import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
@@ -21,7 +24,7 @@ import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.deviceprox.DeviceProximity;
-import nl.sense_os.service.external_sensors.OBD2Dongle;
+import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
 import nl.sense_os.service.location.LocationSensor;
@@ -30,16 +33,19 @@ import nl.sense_os.service.phonestate.BatterySensor;
 import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -60,9 +66,23 @@ public class SenseService extends Service {
         private static final String TAG = "SenseServiceStub";
 
         @Override
-        public int changeLogin(String username, String password) throws RemoteException {
+        public void changeLogin(final String username, final String password,
+                final ISenseServiceCallback callback) throws RemoteException {
             // Log.v(TAG, "Change login");
-            return SenseService.this.changeLogin(username, password);
+
+            // perform login on separate thread and respond via callback
+            new Thread() {
+
+                @Override
+                public void run() {
+                    int result = SenseService.this.changeLogin(username, password);
+                    try {
+                        callback.onChangeLoginResult(result);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Failed to call back to bound activity after login change: " + e);
+                    }
+                }
+            }.start();
         }
 
         @Override
@@ -167,13 +187,29 @@ public class SenseService extends Service {
         }
 
         @Override
-        public int register(String username, String password, String name, String surname,
-                String email, String mobile) throws RemoteException {
-            return SenseService.this.register(username, password, name, surname, email, mobile);
+        public void register(final String username, final String password, final String name,
+                final String surname, final String email, final String mobile,
+                final ISenseServiceCallback callback) throws RemoteException {
+            // Log.v(TAG, "Register: '" + username + "'");
+
+            // perform registration on separate thread and respond via callback
+            new Thread() {
+
+                @Override
+                public void run() {
+                    int result = SenseService.this.register(username, password, name, surname,
+                            email, mobile);
+                    try {
+                        callback.onRegisterResult(result);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Failed to call back to bound activity after registration: " + e);
+                    }
+                }
+            }.start();
         }
 
         @Override
-        public void setPrefBool(String key, boolean value) throws RemoteException {
+        public void setPrefBool(String key, final boolean value) throws RemoteException {
             // Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
 
             SharedPreferences prefs;
@@ -194,11 +230,18 @@ public class SenseService extends Service {
             } else if (key.equals(Advanced.DEV_MODE) && state.isLoggedIn()) {
                 logout();
             } else if (key.equals(Advanced.USE_COMMONSENSE)) {
-                if (value) {
-                    login();
-                } else {
-                    logout();
-                }
+                // login on a separate thread
+                new Thread() {
+                    public void run() {
+                        if (value) {
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in...");
+                            login();
+                        } else {
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: logging out...");
+                            logout();
+                        }
+                    }
+                }.start();
             }
         }
 
@@ -355,6 +398,8 @@ public class SenseService extends Service {
     private BatterySensor batterySensor;
     private DeviceProximity deviceProximity;
     private LightSensor lightSensor;
+    private CameraLightSensor cameraLightSensor;
+    private TemperatureSensor temperatureSensor;
     private LocationSensor locListener;
     private MotionSensor motionSensor;
     private NoiseSensor noiseSensor;
@@ -364,12 +409,20 @@ public class SenseService extends Service {
     private SensePhoneState phoneStateListener;
     private ZephyrBioHarness es_bioHarness;
     private ZephyrHxM es_HxM;
-    private OBD2Dongle es_obd2dongle;
+    private NewOBD2DeviceConnector es_obd2sensor;
 
     /**
      * Handler on main application thread to display toasts to the user.
      */
     private final Handler toastHandler = new Handler(Looper.getMainLooper());
+
+    /*
+     * fields that handle verification of the sensor IDs for communication with CommonSense
+     */
+    private final PhoneSensorRegistrator sensorVerifier = new PhoneSensorRegistrator(this);
+    private final Timer sensorVerifyTimer = new Timer();
+    private TimerTask sensorVerifyTask;
+    private long sensorVerifyTimeout = 15000;
 
     // separate threads for the sensing modules
     private HandlerThread ambienceThread, motionThread, deviceProxThread, extSensorsThread,
@@ -379,26 +432,21 @@ public class SenseService extends Service {
      * Changes login of the Sense service. Removes "private" data of the previous user from the
      * preferences. Can be called by Activities that are bound to the service.
      * 
-     * @return <code>true</code> if login was changed successfully
+     * @param username
+     *            Username
+     * @param password
+     *            Hashed password
+     * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
+     *         errors.
      */
     private int changeLogin(String username, String password) {
 
         logout();
 
-        // hash password
-        String hashedPass;
-        boolean skipHash = getPackageName().equals("nl.sense_os.ivitality");
-        if (!skipHash) {
-            hashedPass = SenseApi.hashPassword(password);
-        } else {
-            Log.w(TAG, "Skip password hashing!");
-            hashedPass = password;
-        }
-
         // save new username and password in the preferences
         Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
         authEditor.putString(Auth.LOGIN_USERNAME, username);
-        authEditor.putString(Auth.LOGIN_PASS, hashedPass);
+        authEditor.putString(Auth.LOGIN_PASS, password);
         authEditor.commit();
 
         return login();
@@ -522,15 +570,14 @@ public class SenseService extends Service {
      */
     @Override
     public void onCreate() {
-        // Log.v(TAG, "---------->  Sense Platform service is being created...  <----------");
+        Log.i(TAG, "Sense Platform is being created...");
         super.onCreate();
-
         state = ServiceStateHelper.getInstance(this);
     }
 
     @Override
     public void onDestroy() {
-        // Log.v(TAG, "----------> Sense Platform service is being destroyed... <----------");
+        Log.i(TAG, "Sense Platform is being destroyed...");
 
         // stop active sensing components
         stopSensorModules();
@@ -541,6 +588,8 @@ public class SenseService extends Service {
         // stop the main service
         stopForeground(true);
 
+        sensorVerifyTimer.cancel();
+
         super.onDestroy();
     }
 
@@ -550,12 +599,20 @@ public class SenseService extends Service {
      */
     private void onLogIn() {
         Log.i(TAG, "Logged in!");
+        // update ntp time
+        SNTP.getInstance().requestTime(SNTP.HOST_WORLDWIDE, 2000);
 
         // update login status
         state.setLoggedIn(true);
 
+        startSensorModules();
+
         // start database leeglepelaar
         DataTransmitter.scheduleTransmissions(this);
+
+        // store this login
+        SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+        prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
 
         checkVersion();
     }
@@ -601,7 +658,7 @@ public class SenseService extends Service {
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        // Log.v(TAG, "onStartCommand...");
+        Log.i(TAG, "Sense Platform service is being started...");
 
         HandlerThread startThread = new HandlerThread("Start thread",
                 Process.THREAD_PRIORITY_FOREGROUND);
@@ -632,7 +689,8 @@ public class SenseService extends Service {
 
                     // re-login if necessary
                     boolean relogin = !state.isLoggedIn();
-                    relogin |= (null == intent); // intent is null when Service was killed
+                    relogin |= (null == intent); // intent is null when Service
+                                                 // was killed
                     relogin |= (null != intent) && intent.getBooleanExtra(EXTRA_RELOGIN, false);
                     if (relogin) {
                         login();
@@ -666,13 +724,15 @@ public class SenseService extends Service {
      * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
      * are bound to the service.
      * 
-     * @param mobile
-     * @param email
-     * @param surname
+     * @param username
+     * @param password
+     *            Unhashed password
      * @param name
-     * 
+     * @param surname
+     * @param email
+     * @param mobile
      * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-     *         any other errors.
+     *         any other unexpected responses.
      */
     private int register(String username, String password, String name, String surname,
             String email, String mobile) {
@@ -694,7 +754,8 @@ public class SenseService extends Service {
         // try to register
         int registered = -1;
         if ((null != username) && (null != password)) {
-            // Log.v(TAG, "Registering... Username: " + username + ", password hash: " + hashPass);
+            // Log.v(TAG, "Registering... Username: " + username +
+            // ", password hash: " + hashPass);
 
             try {
                 registered = SenseApi.registerUser(this, username, hashPass, name, surname, email,
@@ -753,19 +814,19 @@ public class SenseService extends Service {
         Log.v(TAG, "Start sensor modules...");
 
         // make sure the IDs of all sensors are known
-        new Thread() {
-            @Override
-            public void run() {
-                SensorRegistrator reg = new PhoneSensorRegistrator(SenseService.this);
-                boolean sensorsRegged = reg.verifySensorIds(null, null);
-                if (sensorsRegged) {
-                    Log.v(TAG, "successfully verified the sensor IDs");
-                } else {
-                    Log.w(TAG,
-                            "could not verify the sensor ID for all sensors! should retry later...");
+        SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+        boolean useCommonSense = mainPrefs.getBoolean(Advanced.USE_COMMONSENSE, true);
+        sensorVerifyTimeout = 15000;
+        if (useCommonSense) {
+            // run in separate thread to avoid NetworkOnMainThread exception
+            new Thread() {
+
+                @Override
+                public void run() {
+                    verifySensorIds();
                 }
-            }
-        }.start();
+            }.start();
+        }
 
         SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
         if (statusPrefs.getBoolean(Status.MAIN, false)) {
@@ -782,6 +843,31 @@ public class SenseService extends Service {
 
         // send broadcast that something has changed in the status
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+    }
+
+    private synchronized void verifySensorIds() {
+
+        if (null != sensorVerifyTask) {
+            sensorVerifyTask.cancel();
+        }
+
+        if (sensorVerifier.verifySensorIds(null, null)) {
+            Log.v(TAG, "Sensor IDs verified");
+        } else {
+            Log.w(TAG, "Failed to verify the sensor IDs! Retry in " + (sensorVerifyTimeout / 1000)
+                    + " seconds");
+            sensorVerifyTask = new TimerTask() {
+
+                @Override
+                public void run() {
+                    verifySensorIds();
+                }
+            };
+            sensorVerifyTimer.schedule(sensorVerifyTask, sensorVerifyTimeout);
+            if (sensorVerifyTimeout < AlarmManager.INTERVAL_FIFTEEN_MINUTES) {
+                sensorVerifyTimeout *= 2;
+            }
+        }
     }
 
     /**
@@ -824,11 +910,25 @@ public class SenseService extends Service {
                     lightSensor = null;
                 }
 
+                // check camera light sensor presence
+                if (null != cameraLightSensor) {
+                    Log.w(TAG, "Camera Light sensor is already present!");
+                    cameraLightSensor.stopLightSensing();
+                    cameraLightSensor = null;
+                }
+
                 // check pressure sensor presence
                 if (pressureSensor != null) {
                     Log.w(TAG, "pressure sensor is already present!");
                     pressureSensor.stopPressureSensing();
                     pressureSensor = null;
+                }
+
+                // check pressure sensor presence
+                if (temperatureSensor != null) {
+                    Log.w(TAG, "temperature sensor is already present!");
+                    temperatureSensor.stopSensing();
+                    temperatureSensor = null;
                 }
 
                 if ((ambienceThread != null) && ambienceThread.isAlive()) {
@@ -875,7 +975,8 @@ public class SenseService extends Service {
                     @Override
                     public void run() {
 
-                        if (mainPrefs.getBoolean(Ambience.MIC, true)) {
+                        if (mainPrefs.getBoolean(Ambience.MIC, true)
+                                || mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
                             noiseSensor = new NoiseSensor(SenseService.this);
                             noiseSensor.enable(finalInterval);
                         }
@@ -883,9 +984,29 @@ public class SenseService extends Service {
                             lightSensor = new LightSensor(SenseService.this);
                             lightSensor.startLightSensing(finalInterval);
                         }
+                        // only available from Android 2.3 up to 4.0
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD
+                                && Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
+                                cameraLightSensor = new CameraLightSensor(SenseService.this);
+                                cameraLightSensor.startLightSensing(finalInterval);
+                            }
+                        } else {
+                            // Log.v(TAG, "Camera is not supported in this version of Android");
+                        }
                         if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
                             pressureSensor = new PressureSensor(SenseService.this);
                             pressureSensor.startPressureSensing(finalInterval);
+                        }
+                        // only available from Android 2.3 up to 4.0
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
+                                temperatureSensor = new TemperatureSensor(SenseService.this);
+                                temperatureSensor.startSensing(finalInterval);
+                            }
+                        } else {
+                            // Log.v(TAG,
+                            // "Temperature sensor is not supported in this version of Android");
                         }
                     }
                 });
@@ -901,9 +1022,17 @@ public class SenseService extends Service {
                     lightSensor.stopLightSensing();
                     lightSensor = null;
                 }
+                if (null != cameraLightSensor) {
+                    cameraLightSensor.stopLightSensing();
+                    cameraLightSensor = null;
+                }
                 if (null != pressureSensor) {
                     pressureSensor.stopPressureSensing();
                     pressureSensor = null;
+                }
+                if (null != temperatureSensor) {
+                    temperatureSensor.stopSensing();
+                    temperatureSensor = null;
                 }
 
                 if ((ambienceThread != null) && ambienceThread.isAlive()) {
@@ -1013,10 +1142,10 @@ public class SenseService extends Service {
                 }
 
                 // check OBD-II dongle presence
-                if (null != es_obd2dongle) {
+                if (null != es_obd2sensor) {
                     Log.w(TAG, "OBD-II dongle is already present!");
-                    es_obd2dongle.stop();
-                    es_obd2dongle = null;
+                    es_obd2sensor.stop();
+                    es_obd2sensor = null;
                 }
 
                 if ((extSensorsThread != null) && extSensorsThread.isAlive()) {
@@ -1060,6 +1189,7 @@ public class SenseService extends Service {
 
                     @Override
                     public void run() {
+                        Log.d(TAG, "Attempting to start External Sensors");
                         if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
                             es_bioHarness = new ZephyrBioHarness(SenseService.this);
                             es_bioHarness.startBioHarness(finalInterval);
@@ -1068,9 +1198,13 @@ public class SenseService extends Service {
                             es_HxM = new ZephyrHxM(SenseService.this);
                             es_HxM.startHxM(finalInterval);
                         }
-                        if (mainPrefs.getBoolean(External.OBD2Dongle.MAIN, false)) {
-                            es_obd2dongle = new OBD2Dongle(SenseService.this);
-                            es_obd2dongle.start(finalInterval);
+                        if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
+                            Log.d(TAG, "Attempting to start OBD2");
+                            es_obd2sensor = new NewOBD2DeviceConnector(SenseService.this,
+                                    finalInterval);
+                            es_obd2sensor.run();
+                        } else {
+                            Log.d(TAG, "NOT attempting to start OBD2");
                         }
                     }
                 });
@@ -1079,23 +1213,23 @@ public class SenseService extends Service {
 
                 // stop sensing
                 if (null != es_bioHarness) {
-                    Log.w(TAG, "Bioharness sensor is already present!");
+                    // Log.w(TAG, "Bioharness sensor is already present!");
                     es_bioHarness.stopBioHarness();
                     es_bioHarness = null;
                 }
 
                 // check HxM sensor presence
                 if (null != es_HxM) {
-                    Log.w(TAG, "HxM sensor is already present!");
+                    // Log.w(TAG, "HxM sensor is already present!");
                     es_HxM.stopHxM();
                     es_HxM = null;
                 }
 
                 // check OBD-II dongle presence
-                if (null != es_obd2dongle) {
-                    Log.w(TAG, "OBD-II dongle is already present!");
-                    es_obd2dongle.stop();
-                    es_obd2dongle = null;
+                if (null != es_obd2sensor) {
+                    // Log.w(TAG, "OBD-II sensor is already present!");
+                    es_obd2sensor.stop();
+                    es_obd2sensor = null;
                 }
 
                 if ((extSensorsThread != null) && extSensorsThread.isAlive()) {
@@ -1198,15 +1332,12 @@ public class SenseService extends Service {
 
         if (true == active) {
             // properly start the service to start sensing
-            if (!state.isStarted()) {
-                Log.i(TAG, "Start service...");
-                startService(new Intent(getString(R.string.action_sense_service)));
-            }
+            Log.i(TAG, "Start service...");
+            startService(new Intent(getString(R.string.action_sense_service)));
 
         } else {
-            if (state.isStarted()) {
-                Log.i(TAG, "Stop service...");
-            }
+            Log.i(TAG, "Stop service...");
+
             onLogOut();
             stopSensorModules();
 

@@ -26,6 +26,7 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
@@ -872,7 +873,7 @@ public class MsgHandler extends Service {
             String description = intent.getStringExtra(DataPoint.SENSOR_DESCRIPTION);
             String dataType = intent.getStringExtra(DataPoint.DATA_TYPE);
             String deviceUuid = intent.getStringExtra(DataPoint.DEVICE_UUID);
-            long timestamp = intent.getLongExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+            long timestamp = intent.getLongExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             String timeInSecs = formatter.format(timestamp / 1000.0d);
 
             // defaults

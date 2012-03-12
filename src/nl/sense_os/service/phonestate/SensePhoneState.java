@@ -24,6 +24,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,7 +133,7 @@ public class SensePhoneState extends PhoneStateListener {
         } else {
             Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
         }
-        intent.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         context.startService(intent);
     }
 

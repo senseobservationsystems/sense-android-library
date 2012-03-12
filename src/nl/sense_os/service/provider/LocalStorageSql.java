@@ -137,7 +137,7 @@ public class LocalStorageSql extends ContentProvider {
         // remove older data points by this sensor
         String removeWhere = DataPoint.SENSOR_NAME + "=?" + " AND " + DataPoint.TIMESTAMP + "<?";
         String[] removeArgs = new String[] { values.getAsString(DataPoint.SENSOR_NAME),
-                "" + (System.currentTimeMillis() - RETENTION_TIME) };
+                "" + (SNTP.getInstance().getTime() - RETENTION_TIME) };
         delete(uri, removeWhere, removeArgs);
 
         long rowId = db.insert(VALUES_TABLE_NAME, BufferedData.ACTIVE, values);

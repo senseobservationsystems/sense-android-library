@@ -127,15 +127,35 @@ public class SensePrefs {
              */
             public static final String LIGHT = "ambience_light";
             /**
+             * Key for preference that toggles use of camera light sensor in ambience sensing.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String CAMERA_LIGHT = "ambience_camera_light";
+            /**
              * Key for preference that toggles use of the microphone in ambience sensing.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String MIC = "ambience_mic";
             /**
+             * Key for preference that toggles use of the audio spectrum in ambience sensing.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String AUDIO_SPECTRUM = "ambience_audio_spectrum";
+            /**
+             * Key for preference that toggles use of the pressure sensor in ambience sensing.
+             * 
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String PRESSURE = "ambience_pressure";
+            /**
+             * Key for preference that toggles use of the temperature sensor in ambience sensing.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String TEMPERATURE = "ambience_temperature";
         }
 
         public static class DevProx {
@@ -264,13 +284,13 @@ public class SensePrefs {
                 public static final String STRIDES = "zephyrHxM_strides";
             }
 
-            public static class OBD2Dongle {
+            public static class OBD2Sensor {
                 /**
-                 * Key for preference that toggles use of the OBD-II dongle.
+                 * Key for preference that toggles use of the OBD-II sensor.
                  * 
                  * @see SensePrefs#MAIN_PREFS
                  */
-                public static final String MAIN = "obd2dongle";
+                public static final String MAIN = "obd2sensor";
             }
         }
 
@@ -423,6 +443,12 @@ public class SensePrefs {
          * @see SensePrefs#MAIN_PREFS
          */
         public static final String LAST_STATUS = "last_status";
+        /**
+         * Key for preference that stores a flag for first login.
+         * 
+         * @see SensePrefs#MAIN_PREFS
+         */
+        public static final String LAST_LOGGED_IN = "never_logged_in";
     }
 
     /**
