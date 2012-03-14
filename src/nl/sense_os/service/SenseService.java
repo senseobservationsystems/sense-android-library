@@ -475,7 +475,7 @@ public class SenseService extends Service {
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo("nl.sense_os.app", 0);
             String versionName = URLEncoder.encode(packageInfo.versionName);
-            Log.i(TAG, "Running Sense Platform version '" + versionName + "'");
+            Log.i(TAG, "Running Sense App version '" + versionName + "'");
 
             if (versionName.equals("unstable")) {
                 return;
@@ -486,16 +486,12 @@ public class SenseService extends Service {
             JSONObject content = new JSONObject(response.get("content"));
 
             if (content.getString("message").length() > 0) {
-                Log.i(TAG, "Newer Sense Platform version available: " + content.toString());
+                Log.i(TAG, "Newer Sense App version available: " + content.toString());
                 showToast(content.getString("message"));
             }
 
         } catch (Exception e) {
-            if (null != e.getMessage()) {
-                Log.e(TAG, "Failed to get Sense Platform version! Message: " + e.getMessage());
-            } else {
-                Log.e(TAG, "Failed to get Sense Platform version!", e);
-            }
+            Log.w(TAG, "Failed to get Sense App version: " + e);
         }
     }
 
