@@ -503,7 +503,7 @@ public class SenseService extends Service {
      * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
      *         errors.
      */
-    private int login() {
+    private synchronized int login() {
         Log.v(TAG, "Log in...");
 
         // check that we are actually allowed to log in
@@ -730,8 +730,8 @@ public class SenseService extends Service {
      * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
      *         any other unexpected responses.
      */
-    private int register(String username, String password, String name, String surname,
-            String email, String mobile) {
+    private synchronized int register(String username, String password, String name,
+            String surname, String email, String mobile) {
 
         // log out before registering a new user
         logout();
@@ -806,7 +806,7 @@ public class SenseService extends Service {
      * Toggles the individual sensor modules according to the status that was stored in the
      * preferences.
      */
-    private void startSensorModules() {
+    private synchronized void startSensorModules() {
         Log.v(TAG, "Start sensor modules...");
 
         // make sure the IDs of all sensors are known
@@ -885,7 +885,7 @@ public class SenseService extends Service {
         sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
     }
 
-    private void toggleAmbience(boolean active) {
+    private synchronized void toggleAmbience(boolean active) {
 
         if (active != state.isAmbienceActive()) {
             state.setAmbienceActive(active);
@@ -1039,7 +1039,7 @@ public class SenseService extends Service {
         }
     }
 
-    private void toggleDeviceProx(boolean active) {
+    private synchronized void toggleDeviceProx(boolean active) {
 
         if (active != state.isDevProxActive()) {
             state.setDevProxActive(active);
@@ -1116,7 +1116,7 @@ public class SenseService extends Service {
         }
     }
 
-    private void toggleExternalSensors(boolean active) {
+    private synchronized void toggleExternalSensors(boolean active) {
 
         if (active != state.isExternalActive()) {
             state.setExternalActive(active);
@@ -1236,7 +1236,7 @@ public class SenseService extends Service {
         }
     }
 
-    private void toggleLocation(boolean active) {
+    private synchronized void toggleLocation(boolean active) {
 
         if (active != state.isLocationActive()) {
             state.setLocationActive(active);
@@ -1323,7 +1323,7 @@ public class SenseService extends Service {
         }
     }
 
-    private void toggleMain(boolean active) {
+    private synchronized void toggleMain(boolean active) {
         // Log.v(TAG, "Toggle main: " + active);
 
         if (true == active) {
@@ -1344,7 +1344,7 @@ public class SenseService extends Service {
         }
     }
 
-    private void toggleMotion(boolean active) {
+    private synchronized void toggleMotion(boolean active) {
 
         if (active != state.isMotionActive()) {
             state.setMotionActive(active);
@@ -1425,7 +1425,7 @@ public class SenseService extends Service {
         }
     }
 
-    private void togglePhoneState(boolean active) {
+    private synchronized void togglePhoneState(boolean active) {
 
         if (active != state.isPhoneStateActive()) {
             ServiceStateHelper.getInstance(this).setPhoneStateActive(active);
@@ -1548,7 +1548,7 @@ public class SenseService extends Service {
         }
     }
 
-    private void togglePopQuiz(boolean active) {
+    private synchronized void togglePopQuiz(boolean active) {
         // if (active != isQuizActive) {
         // this.isQuizActive = active;
         // final SenseAlarmManager mgr = new SenseAlarmManager(this);
