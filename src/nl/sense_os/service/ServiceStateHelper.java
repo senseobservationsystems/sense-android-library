@@ -12,6 +12,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class ServiceStateHelper {
 
@@ -95,6 +96,9 @@ public class ServiceStateHelper {
         note.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
         note.setLatestEventInfo(context, context.getString(R.string.stat_notify_title),
                 context.getString(contentText, username), contentIntent);
+
+        Log.e(TAG, "-----> Notify: " + (isStarted() ? "started" : "NOT started") + "; "
+                + (isLoggedIn() ? "logged in" : "NOT logged in"));
 
         return note;
     }

@@ -301,16 +301,19 @@ public class SenseService extends Service {
             }
 
             // store value
-            boolean stored = prefs.edit().putString(key, value).commit();
-            if (stored == false) {
-                Log.w(TAG, "Preference " + key + " not stored!");
-            }
+            String oldValue = prefs.getString(key, null);
+            if (null != oldValue && !oldValue.equals(value)) {
+                boolean stored = prefs.edit().putString(key, value).commit();
+                if (stored == false) {
+                    Log.w(TAG, "Preference " + key + " not stored!");
+                }
 
-            // special check for sync and sample rate changes
-            if (key.equals(SensePrefs.Main.SAMPLE_RATE)) {
-                onSampleRateChange();
-            } else if (key.equals(SensePrefs.Main.SYNC_RATE)) {
-                onSyncRateChange();
+                // special check for sync and sample rate changes
+                if (key.equals(SensePrefs.Main.SAMPLE_RATE)) {
+                    onSampleRateChange();
+                } else if (key.equals(SensePrefs.Main.SYNC_RATE)) {
+                    onSyncRateChange();
+                }
             }
         }
 
@@ -676,8 +679,7 @@ public class SenseService extends Service {
                 } else {
                     // make service as important as regular activities
                     if (false == state.isForeground()) {
-                        Notification n = ServiceStateHelper.getInstance(SenseService.this)
-                                .getStateNotification();
+                        Notification n = state.getStateNotification();
                         startForeground(ServiceStateHelper.NOTIF_ID, n);
                         state.setForeground(true);
                         AliveChecker.scheduleChecks(SenseService.this);
@@ -807,7 +809,11 @@ public class SenseService extends Service {
      * preferences.
      */
     private synchronized void startSensorModules() {
-        Log.v(TAG, "Start sensor modules...");
+        if (state.isStarted()) {
+            Log.v(TAG, "Start sensor modules (probably already started)...");
+        } else {
+            Log.v(TAG, "Start sensor modules...");
+        }
 
         // make sure the IDs of all sensors are known
         SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -1337,7 +1343,6 @@ public class SenseService extends Service {
             onLogOut();
             stopSensorModules();
 
-            state.setStarted(false);
             AliveChecker.stopChecks(this);
             stopForeground(true);
             state.setForeground(false);
