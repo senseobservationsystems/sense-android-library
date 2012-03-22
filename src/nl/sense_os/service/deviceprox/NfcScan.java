@@ -14,6 +14,7 @@ import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -43,6 +44,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+@TargetApi(10)
 public class NfcScan extends Activity {
 
     private class ParseTask extends AsyncTask<Tag, Void, Boolean> {
