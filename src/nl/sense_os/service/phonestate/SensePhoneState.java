@@ -193,8 +193,7 @@ public class SensePhoneState extends PhoneStateListener {
             events |= PhoneStateListener.LISTEN_SERVICE_STATE;
         }
         if (mainPrefs.getBoolean(PhoneState.SIGNAL_STRENGTH, true)) {
-            events |= PhoneStateListener.LISTEN_SIGNAL_STRENGTH;
-            events |= 256; // PhoneStateListener.LISTEN_SIGNAL_STRENGTHS
+            events |= PhoneStateListener.LISTEN_SIGNAL_STRENGTHS;
         }
 
         if (0 != events) {

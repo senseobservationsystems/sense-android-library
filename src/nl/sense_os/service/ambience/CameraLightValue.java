@@ -68,7 +68,7 @@ public class CameraLightValue {
             }
 
         } else {
-            Log.w(TAG, "Camera is not available in this Android API level: " + Build.VERSION.SDK);
+            Log.w(TAG, "Camera is not available in this Android version: " + Build.VERSION.SDK_INT);
             return false;
         }
     }

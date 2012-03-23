@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 
 public class DataTransmitter extends BroadcastReceiver {
@@ -27,19 +28,26 @@ public class DataTransmitter extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v(TAG, "Received broadcast...");
+        // Log.v(TAG, "Received broadcast");
 
-        SharedPreferences statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
-                Context.MODE_PRIVATE);
+        SharedPreferences statusPrefs;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                    Context.MODE_MULTI_PROCESS);
+        } else {
+            statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                    Context.MODE_PRIVATE);
+        }
         final boolean alive = statusPrefs.getBoolean(Status.MAIN, false);
 
         // check if the service is (supposed to be) alive before scheduling next alarm
         if (true == alive) {
             // start send task
+            Log.i(TAG, "Start transmission");
             Intent task = new Intent(context.getString(R.string.action_sense_send_data));
             context.startService(task);
         } else {
-            Log.v(TAG, "Sense service should not be alive!");
+            // Log.v(TAG, "Sense service should not be alive!");
         }
     }
 

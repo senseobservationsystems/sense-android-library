@@ -150,7 +150,7 @@ public class NfcScan extends Activity {
             break;
         default:
             Log.w(TAG, "Unexpected dialog ID: " + id);
-            dialog = super.onCreateDialog(id);
+            dialog = onCreateDialog(id, null);
         }
         return dialog;
     }

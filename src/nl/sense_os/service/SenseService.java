@@ -234,10 +234,10 @@ public class SenseService extends Service {
                 new Thread() {
                     public void run() {
                         if (value) {
-                            Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in...");
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
                             login();
                         } else {
-                            Log.w(TAG, "USE_COMMONSENSE setting changed: logging out...");
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
                             logout();
                         }
                     }
@@ -288,7 +288,7 @@ public class SenseService extends Service {
 
         @Override
         public void setPrefString(String key, String value) throws RemoteException {
-            // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
+            Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
             SharedPreferences prefs;
             if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
                     || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST)
@@ -302,7 +302,7 @@ public class SenseService extends Service {
 
             // store value
             String oldValue = prefs.getString(key, null);
-            if (null != oldValue && !oldValue.equals(value)) {
+            if (!value.equals(oldValue)) {
                 boolean stored = prefs.edit().putString(key, value).commit();
                 if (stored == false) {
                     Log.w(TAG, "Preference " + key + " not stored!");
@@ -456,7 +456,7 @@ public class SenseService extends Service {
     }
 
     private void logout() {
-        Log.v(TAG, "Log out...");
+        Log.v(TAG, "Log out");
 
         // stop active sensing components
         stopSensorModules();
@@ -477,7 +477,7 @@ public class SenseService extends Service {
     private void checkVersion() {
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo("nl.sense_os.app", 0);
-            String versionName = URLEncoder.encode(packageInfo.versionName);
+            String versionName = URLEncoder.encode(packageInfo.versionName, "UTF-8");
             Log.i(TAG, "Running Sense App version '" + versionName + "'");
 
             if (versionName.equals("unstable")) {
@@ -507,7 +507,7 @@ public class SenseService extends Service {
      *         errors.
      */
     private synchronized int login() {
-        Log.v(TAG, "Log in...");
+        Log.v(TAG, "Log in");
 
         // check that we are actually allowed to log in
         SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -532,7 +532,7 @@ public class SenseService extends Service {
                 // handle result below
             }
         } else {
-            Log.w(TAG, "Cannot login: username or password unavailable...");
+            Log.w(TAG, "Cannot login: username or password unavailable");
             Log.d(TAG, "Username: " + username + ", password: " + pass);
         }
 
@@ -559,7 +559,7 @@ public class SenseService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // Log.v(TAG, "onBind...");
+        // Log.v(TAG, "onBind");
         return binder;
     }
 
@@ -569,14 +569,22 @@ public class SenseService extends Service {
      */
     @Override
     public void onCreate() {
-        Log.i(TAG, "Sense Platform is being created...");
+        Log.i(TAG, "Sense Platform is being created");
         super.onCreate();
         state = ServiceStateHelper.getInstance(this);
+
+        boolean lastMainStatus = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE)
+                .getBoolean(Status.MAIN, false);
+        if (lastMainStatus) {
+            Log.d(TAG, "Last status was running: automatically start sensing again");
+            toggleMain(lastMainStatus);
+        }
+
     }
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "Sense Platform is being destroyed...");
+        Log.i(TAG, "Sense Platform is being destroyed");
 
         // stop active sensing components
         stopSensorModules();
@@ -634,7 +642,7 @@ public class SenseService extends Service {
     }
 
     private void onSampleRateChange() {
-        // Log.v(TAG, "Sample rate changed...");
+        Log.i(TAG, "Sample rate changed");
         if (state.isStarted()) {
             stopSensorModules();
             startSensorModules();
@@ -657,7 +665,7 @@ public class SenseService extends Service {
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        Log.i(TAG, "Sense Platform service is being started...");
+        Log.i(TAG, "Sense Platform service is being started");
 
         HandlerThread startThread = new HandlerThread("Start thread",
                 Process.THREAD_PRIORITY_FOREGROUND);
@@ -708,7 +716,7 @@ public class SenseService extends Service {
     }
 
     private void onSyncRateChange() {
-        // Log.v(TAG, "Sync rate changed...");
+        Log.i(TAG, "Sync rate changed");
         if (state.isStarted()) {
             DataTransmitter.scheduleTransmissions(this);
         }
@@ -752,7 +760,7 @@ public class SenseService extends Service {
         // try to register
         int registered = -1;
         if ((null != username) && (null != password)) {
-            // Log.v(TAG, "Registering... Username: " + username +
+            // Log.v(TAG, "Registering: " + username +
             // ", password hash: " + hashPass);
 
             try {
@@ -764,7 +772,7 @@ public class SenseService extends Service {
                 // handle result below
             }
         } else {
-            Log.w(TAG, "Cannot register: username or password unavailable...");
+            Log.w(TAG, "Cannot register: username or password unavailable");
             Log.d(TAG, "Username: " + username + ", password hash: " + hashPass);
         }
 
@@ -810,9 +818,9 @@ public class SenseService extends Service {
      */
     private synchronized void startSensorModules() {
         if (state.isStarted()) {
-            Log.v(TAG, "Start sensor modules (probably already started)...");
+            Log.v(TAG, "Start sensor modules (probably already started)");
         } else {
-            Log.v(TAG, "Start sensor modules...");
+            Log.v(TAG, "Start sensor modules");
         }
 
         // make sure the IDs of all sensors are known
@@ -934,7 +942,7 @@ public class SenseService extends Service {
                 }
 
                 if ((ambienceThread != null) && ambienceThread.isAlive()) {
-                    Log.w(TAG, "Ambience thread is already present! Quitting the thread...");
+                    Log.w(TAG, "Ambience thread is already present! Quitting the thread");
                     ambienceThread.getLooper().quit();
                     ambienceThread = null;
                 }
@@ -1060,7 +1068,7 @@ public class SenseService extends Service {
                 }
 
                 if ((deviceProxThread != null) && deviceProxThread.isAlive()) {
-                    Log.w(TAG, "Device proximity thread is already present! Quitting the thread...");
+                    Log.w(TAG, "Device proximity thread is already present! Quitting the thread");
                     deviceProxThread.getLooper().quit();
                     deviceProxThread = null;
                 }
@@ -1151,7 +1159,7 @@ public class SenseService extends Service {
                 }
 
                 if ((extSensorsThread != null) && extSensorsThread.isAlive()) {
-                    Log.w(TAG, "Ext. sensors thread is already present! Quitting the thread...");
+                    Log.w(TAG, "Ext. sensors thread is already present! Quitting the thread");
                     extSensorsThread.getLooper().quit();
                     extSensorsThread = null;
                 }
@@ -1257,7 +1265,7 @@ public class SenseService extends Service {
                 }
 
                 if ((locationThread != null) && locationThread.isAlive()) {
-                    Log.w(TAG, "Location thread is already present! Quitting the thread...");
+                    Log.w(TAG, "Location thread is already present! Quitting the thread");
                     locationThread.getLooper().quit();
                     locationThread = null;
                 }
@@ -1330,15 +1338,15 @@ public class SenseService extends Service {
     }
 
     private synchronized void toggleMain(boolean active) {
-        // Log.v(TAG, "Toggle main: " + active);
+        Log.v(TAG, "Toggle main: " + active);
 
         if (true == active) {
             // properly start the service to start sensing
-            Log.i(TAG, "Start service...");
+            Log.i(TAG, "Start service");
             startService(new Intent(getString(R.string.action_sense_service)));
 
         } else {
-            Log.i(TAG, "Stop service...");
+            Log.i(TAG, "Stop service");
 
             onLogOut();
             stopSensorModules();
@@ -1358,13 +1366,13 @@ public class SenseService extends Service {
 
                 // check motion sensor presence
                 if (motionSensor != null) {
-                    Log.w(TAG, "Motion sensor is already present! Stopping the sensor...");
+                    Log.w(TAG, "Motion sensor is already present! Stopping the sensor");
                     motionSensor.stopMotionSensing();
                     motionSensor = null;
                 }
 
                 if ((motionThread != null) && motionThread.isAlive()) {
-                    Log.w(TAG, "Motion thread is already present! Quitting the thread...");
+                    Log.w(TAG, "Motion thread is already present! Quitting the thread");
                     motionThread.getLooper().quit();
                     motionThread = null;
                 }

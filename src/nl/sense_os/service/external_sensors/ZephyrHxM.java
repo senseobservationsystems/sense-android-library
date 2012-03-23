@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class ZephyrHxM {
@@ -514,22 +515,27 @@ public class ZephyrHxM {
     }
 
     private void sendNotification(String text) {
-        NotificationManager mgr = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        int icon = R.drawable.ic_stat_notify_sense_alert;
-        CharSequence tickerText = text;
-        long when = System.currentTimeMillis();
 
-        Notification note = new Notification(icon, tickerText, when);
-        note.defaults |= Notification.FLAG_ONLY_ALERT_ONCE | Notification.DEFAULT_ALL;
-        note.flags |= Notification.FLAG_AUTO_CANCEL | Notification.FLAG_ONLY_ALERT_ONCE;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.drawable.ic_stat_notify_sense_alert);
+        builder.setContentTitle(context.getString(R.string.stat_notify_title));
+        builder.setTicker(text);
+        builder.setWhen(System.currentTimeMillis());
+
+        // set flags
+        builder.setOnlyAlertOnce(true);
+        builder.setDefaults(Notification.DEFAULT_ALL);
+        builder.setAutoCancel(true);
+
+        // start sense when notification is pressed
         final Intent notifIntent = new Intent(context.getString(R.string.action_sense_app));
         notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notifIntent, 0);
-        final CharSequence contentTitle = "Sense Platform";
-        note.setLatestEventInfo(context, contentTitle, tickerText, contentIntent);
-        mgr.notify(2, note);
+        builder.setContentIntent(contentIntent);
 
+        NotificationManager mgr = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        mgr.notify(2, builder.getNotification());
     }
 
     public void setUpdateInterval(int updateInterval) {
