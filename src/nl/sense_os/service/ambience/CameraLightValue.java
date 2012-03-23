@@ -3,6 +3,7 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
+import android.annotation.TargetApi;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.os.Build;
@@ -18,9 +19,11 @@ public class CameraLightValue {
         cameraDevices = new Camera[getNumberOfCameras()];
     }
 
+    @TargetApi(9)
     public int getNumberOfCameras() {
         try {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+
                 return Camera.getNumberOfCameras();
             } else {
                 return 1;
@@ -31,6 +34,7 @@ public class CameraLightValue {
         }
     }
 
+    @TargetApi(9)
     public boolean getLightValue(final int camera_id,
             final CameraLightValueCallback camlightCallback) {
 
@@ -64,7 +68,7 @@ public class CameraLightValue {
             }
 
         } else {
-            Log.w(TAG, "Camera is not available in this Android API level: " + Build.VERSION.SDK);
+            Log.w(TAG, "Camera is not available in this Android version: " + Build.VERSION.SDK_INT);
             return false;
         }
     }

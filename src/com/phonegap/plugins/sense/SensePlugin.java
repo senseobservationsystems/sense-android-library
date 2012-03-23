@@ -67,52 +67,6 @@ public class SensePlugin extends Plugin {
             Log.v(TAG, "Connection to Sense Platform service established...");
             service = ISenseService.Stub.asInterface(binder);
             isServiceBound = true;
-
-            // only for ivitality
-            String packageName = ctx.getPackageName();
-            if (packageName.equals("nl.sense_os.ivitality")) {
-                Log.w(TAG, "Set special iVitality sensor settings");
-                try {
-                    service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
-                    service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
-
-                    service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
-                    service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
-                    service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
-                    service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
-                    service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
-                    service.toggleAmbience(true);
-
-                    service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
-                    service.toggleMotion(true);
-
-                    service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.DATA_CONNECTION, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.IP_ADDRESS, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.SERVICE_STATE, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.SIGNAL_STRENGTH, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.UNREAD_MSG, false);
-                    service.togglePhoneState(true);
-
-                    service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
-                } catch (RemoteException e) {
-                    Log.e(TAG, "Failed to init default sense setttings");
-                }
-            } else if (packageName.equals("nl.ask.paige.app")) {
-                // Log.w(TAG, "Set special Paige sensor settings");
-                // try {
-                // service.setPrefBool(SensePrefs.Main.Advanced.USE_COMMONSENSE, true);
-                //
-                // service.setPrefBool(SensePrefs.Main.Motion.FALL_DETECT_DEMO, true);
-                // service.toggleMotion(true);
-                //
-                // } catch (RemoteException e) {
-                // Log.e(TAG, "Failed to init default sense setttings");
-                // }
-            }
         }
 
         @Override
@@ -146,6 +100,7 @@ public class SensePlugin extends Plugin {
             case 0:
                 Log.v(TAG, "Change login OK");
                 success(new PluginResult(Status.OK, result), changeLoginCallbackId);
+                onLoginSuccess();
                 break;
             case -1:
                 Log.v(TAG, "Login failed! Connectivity problems?");
@@ -249,6 +204,43 @@ public class SensePlugin extends Plugin {
         }
     }
 
+    private void onLoginSuccess() {
+        // special for ivitality
+        String packageName = ctx.getPackageName();
+        if (packageName.equals("nl.sense_os.ivitality")) {
+            Log.w(TAG, "Set special iVitality sensor settings");
+            try {
+                service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+                service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
+
+                service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
+                service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
+                service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
+                service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
+                service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
+                service.toggleAmbience(true);
+
+                service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
+                service.toggleMotion(true);
+
+                service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
+                service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
+                service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
+                service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.DATA_CONNECTION, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.IP_ADDRESS, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.SERVICE_STATE, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.SIGNAL_STRENGTH, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.UNREAD_MSG, false);
+                service.togglePhoneState(true);
+
+                service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to init special sense setttings for ivitality");
+            }
+        }
+    }
+
     /**
      * Binds to the Sense Service, creating it if necessary.
      */
@@ -311,7 +303,7 @@ public class SensePlugin extends Plugin {
      */
     @Override
     public PluginResult execute(String action, final JSONArray data, final String callbackId) {
-        // Log.d(TAG, "Execute action: '" + action + "'");
+        Log.d(TAG, "Execute action: '" + action + "'");
         try {
             if (Actions.INIT.equals(action)) {
                 return init(data, callbackId);

@@ -10,6 +10,7 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
@@ -36,6 +37,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
      *            Context for communication with CommonSense.
      * @return true if all sensor IDs are found or created
      */
+    @TargetApi(9)
     private boolean checkAmbienceSensors() {
 
         // preallocate objects
@@ -85,17 +87,16 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         dataType = SenseDataTypes.FLOAT;
         value = "0.0";
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
-        
+
         // match noise spectrum
         name = SensorNames.AUDIO_SPECTRUM;
         displayName = "audio spectrum";
         description = "audio spectrum (dB)";
         dataType = SenseDataTypes.JSON;
         dataFields.clear();
-        for (int i = 1; i < 23; i++) 
-        {
-        	 dataFields.put(i+" kHz", 0);			
-		}       
+        for (int i = 1; i < 23; i++) {
+            dataFields.put(i + " kHz", 0);
+        }
         value = new JSONObject(dataFields).toString();
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
@@ -138,6 +139,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
      * 
      * @return true if all sensor IDs are found or created
      */
+    @TargetApi(10)
     private boolean checkDeviceScanSensors() {
 
         // preallocate objects
@@ -172,7 +174,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         // match NFC scan
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcManager nm = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
             if (null != nm.getDefaultAdapter()) {
                 name = SensorNames.NFC_SCAN;
@@ -472,7 +474,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
 
         return success;
     }
-    
+
     /**
      * Checks the ID for the feedback sensor
      * 
@@ -500,7 +502,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         success &= checkLocationSensors();
         success &= checkMotionSensors();
         success &= checkPhoneStateSensors();
-        //FIXME: ugly hack, we shouldn't created this sensor by default
+        // FIXME: ugly hack, we shouldn't created this sensor by default
         success &= checkLocationFeedbackSensor();
         return success;
     }

@@ -3,8 +3,27 @@
  *************************************************************************************************/
 package nl.sense_os.service.phonestate;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,27 +37,36 @@ import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.provider.SNTP;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class SensePhoneState extends PhoneStateListener {
 
     private static final String TAG = "Sense PhoneStateListener";
+
+    private class OutgoingCallReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "New outgoing call!");
+            String outgoingNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+            if (null != outgoingNumber) {
+                Log.d(TAG, "Outgoing number: " + outgoingNumber);
+            } else {
+                Log.w(TAG, "Did not get outgoing number!");
+                outgoingNumber = "";
+            }
+
+            try {
+                JSONObject json = new JSONObject();
+                json.put("state", "dialing");
+                json.put("outgoingNumber", outgoingNumber);
+                sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
+            } catch (JSONException e) {
+                Log.w(TAG, "Failed to create data point for outgoing call. " + e);
+            }
+        }
+    }
+
     private final Context context;
+    private BroadcastReceiver outgoingCallReceiver;
     private final TelephonyManager telMgr;
     private Timer transmitTimer = new Timer();
     private boolean lastMsgIndicatorState;
@@ -149,6 +177,11 @@ public class SensePhoneState extends PhoneStateListener {
         int events = 0;
         if (mainPrefs.getBoolean(PhoneState.CALL_STATE, true)) {
             events |= PhoneStateListener.LISTEN_CALL_STATE;
+
+            // listen to outgoing calls
+            outgoingCallReceiver = new OutgoingCallReceiver();
+            context.registerReceiver(outgoingCallReceiver, new IntentFilter(
+                    Intent.ACTION_NEW_OUTGOING_CALL));
         }
         if (mainPrefs.getBoolean(PhoneState.DATA_CONNECTION, true)) {
             events |= PhoneStateListener.LISTEN_DATA_CONNECTION_STATE;
@@ -160,8 +193,7 @@ public class SensePhoneState extends PhoneStateListener {
             events |= PhoneStateListener.LISTEN_SERVICE_STATE;
         }
         if (mainPrefs.getBoolean(PhoneState.SIGNAL_STRENGTH, true)) {
-            events |= PhoneStateListener.LISTEN_SIGNAL_STRENGTH;
-            events |= 256; // PhoneStateListener.LISTEN_SIGNAL_STRENGTHS
+            events |= PhoneStateListener.LISTEN_SIGNAL_STRENGTHS;
         }
 
         if (0 != events) {
@@ -195,11 +227,20 @@ public class SensePhoneState extends PhoneStateListener {
         if (null != transmitTimer) {
             transmitTimer.cancel();
         }
+
+        // clean up outgoing call receiver
+        if (null != outgoingCallReceiver) {
+            try {
+                context.unregisterReceiver(outgoingCallReceiver);
+            } catch (IllegalArgumentException e) {
+                // ignore
+            }
+        }
     }
 
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
-        // Log.d(TAG, "Call state changed...");
+        Log.d(TAG, "Call state changed...");
 
         JSONObject json = new JSONObject();
         try {

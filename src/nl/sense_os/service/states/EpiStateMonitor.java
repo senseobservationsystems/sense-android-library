@@ -3,11 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.states;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
-
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -16,6 +11,11 @@ import nl.sense_os.service.storage.LocalStorage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
 
 public class EpiStateMonitor extends AbstractStateMonitor {
 
@@ -162,9 +162,9 @@ public class EpiStateMonitor extends AbstractStateMonitor {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
+    public int onStartCommand(Intent intent, int flags, int startId) {
         startMonitoring(ACTION_UPDATE_STATE, TIME_RANGE >> 1);
+        return START_STICKY;
     }
 
     @Override
