@@ -55,8 +55,7 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name"
-        android:debuggable="true">
+        android:label="@string/app_name">
 
         <activity
             android:label="@string/app_name" android:name="ExampleApp">
@@ -75,14 +74,16 @@
             android:configChanges="orientation|keyboardHidden"></activity>
         
         <!-- COMPONENTS OF GENERIC SENSE PLATFORM -->
-        <service android:name="nl.sense_os.service.SenseService" >
+        <service android:name="nl.sense_os.service.SenseService"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.SenseService" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-        <service android:name="nl.sense_os.service.MsgHandler" >
+        <service android:name="nl.sense_os.service.MsgHandler"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.MsgHandler.NEW_DATA" />
 
