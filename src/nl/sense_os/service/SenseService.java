@@ -712,7 +712,7 @@ public class SenseService extends Service {
             };
         }.sendEmptyMessage(0);
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private void onSyncRateChange() {
