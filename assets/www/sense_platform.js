@@ -50,6 +50,14 @@ SensePlatform.prototype.addDataPoint = function(name, displayName, description, 
 };
 
 /**
+ * Forces a flush of buffered sensor data to CommonSense. The data is not guaranteed to be removed 
+ * from the phone, this is done by a separate process.
+ */ 
+SensePlatform.prototype.flushBuffer = function(successCallback, failureCallback) {
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'flush_buffer', []);
+};
+
+/**
  * @param username
  * @param password
  * @param successCallback
@@ -326,10 +334,12 @@ SensePlatform.PREF_SIGNAL_STRENGTH = "phonestate_signal_strength";
 SensePlatform.PREF_CALL_STATE = "phonestate_call_state";
 
 /* keys for ambience sensor prefs */
+SensePlatform.PREF_AUDIO_SPECTRUM = "ambience_audio_spectrum";
 SensePlatform.PREF_CAMERA_LIGHT = "ambience_camera_light";
 SensePlatform.PREF_LIGHT = "ambience_light";
 SensePlatform.PREF_MIC = "ambience_mic";
 SensePlatform.PREF_PRESSURE = "ambience_pressure";
+SensePlatform.PREF_TEMPERATURE = "ambience_temperature";
 
 /* keys for device proximity sensor prefs */
 SensePlatform.PREF_BLUETOOTH = "proximity_bt";

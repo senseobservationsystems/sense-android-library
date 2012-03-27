@@ -95,7 +95,7 @@
             function(r){
             alert('Data point stored');
             },
-            function(e){console.log('addDataPoint error: ' + e)});">Add data point for 'pgsensor'</a>  
+            function(e){alert('addDataPoint error: ' + e)});">Add data point for 'pgsensor'</a>  
             
          <a class="btn large" onclick="window.plugins.sense.getData('pgsensor',
             function(r){
@@ -106,7 +106,11 @@
             }
             alert('\'pgsensor\' data: ' + output);
             },
-            function(e){console.log('getData error: ' + e)});">Get 'pgsensor' data</a>  
+            function(e){alert('getData error: ' + e)});">Get 'pgsensor' data</a>  
+            
+        <a class="btn large" onclick="window.plugins.sense.flushBuffer(
+            function(r){alert('Data sent to CommonSense');},
+            function(e){alert('flushBuffer error: ' + e)});">Flush buffer</a>  
             
         <a class="btn large" onclick="window.plugins.sense.getStatus(
             function(r){
