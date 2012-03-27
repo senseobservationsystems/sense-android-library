@@ -73,6 +73,8 @@ public class LocationSensor {
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.TIMESTAMP, fix.getTime());
             context.startService(i);
+            
+            distanceEstimator.addPoint(fix);
         }
 
         @Override
@@ -93,8 +95,10 @@ public class LocationSensor {
 
     private static final String TAG = "Sense LocationSensor";
     private static final String ALARM_ACTION = "nl.sense_os.service.LocationAlarm";
+    private static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
     private static final int ALARM_ID = 56;
     public static final long MIN_SAMPLE_DELAY = 5000; // 5 sec
+	private static final int DISTANCE_ALARM_ID = 70;
 
     private final Context context;
     private final LocationManager locMgr;
@@ -123,6 +127,29 @@ public class LocationSensor {
     private long listenGpsStart;
     private long listenGpsStop;
     private Location lastGpsFix;
+    
+    private TraveledDistanceEstimator distanceEstimator;
+    
+    /**
+     * Receiver for periodic alarms to calculate distance values.
+     */
+    private final BroadcastReceiver distanceAlarmReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        	double distance = distanceEstimator.getTraveledDistance();
+            // pass message to the MsgHandler
+            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+            i.putExtra(DataPoint.SENSOR_NAME, SensorNames.TRAVELED_DISTANCE_1H);
+            i.putExtra(DataPoint.VALUE, (float)distance);
+            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
+            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+            context.startService(i);
+            
+            //start counting again, from the last location
+            distanceEstimator.reset();  
+        }
+    };
 
     public LocationSensor(Context context) {
         this.context = context;
@@ -130,6 +157,7 @@ public class LocationSensor {
         gpsListener = new MyLocationListener();
         nwListener = new MyLocationListener();
         pasListener = new MyLocationListener();
+        distanceEstimator = new TraveledDistanceEstimator();
     }
 
     /**
@@ -520,6 +548,7 @@ public class LocationSensor {
 
         // register to recieve the alarm
         context.registerReceiver(alarmReceiver, new IntentFilter(ALARM_ACTION));
+        context.registerReceiver(distanceAlarmReceiver, new IntentFilter(DISTANCE_ALARM_ACTION));
 
         // start periodic alarm
         Intent alarm = new Intent(ALARM_ACTION);
@@ -527,6 +556,18 @@ public class LocationSensor {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(operation);
         am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), time, operation);
+        
+        // start periodic for distance
+        Intent distanceAlarm = new Intent(DISTANCE_ALARM_ACTION);
+        PendingIntent operation2 = PendingIntent.getBroadcast(context, DISTANCE_ALARM_ID, distanceAlarm, 0);
+        am.cancel(operation2);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 60L * 60 * 1000, operation2);
+
+        /* TODO: this also for 24 hours
+        PendingIntent operation3 = PendingIntent.getBroadcast(context, DISTANCE_ALARM_ID, distanceAlarm, 0);
+        am.cancel(operation3);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 24L * 60 * 60 * 1000, operation3);
+        */
     }
 
     private void startListening() {
@@ -556,6 +597,7 @@ public class LocationSensor {
         // unregister the receiver
         try {
             context.unregisterReceiver(alarmReceiver);
+            context.unregisterReceiver(distanceAlarmReceiver);
         } catch (IllegalArgumentException e) {
             // do nothing
         }
@@ -565,6 +607,11 @@ public class LocationSensor {
         PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, alarm, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(operation);
+        
+        
+        Intent distanceAlarm = new Intent(ALARM_ACTION);
+        PendingIntent operation2 = PendingIntent.getBroadcast(context, DISTANCE_ALARM_ID, distanceAlarm, 0);
+        am.cancel(operation2);
     }
 
     /**

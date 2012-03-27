@@ -402,6 +402,15 @@ public class SensorData {
          */
         public static final String LOCATION_FEEDBACK = "location feedback";
 
+        /* Bluetooth number of neighbours,  count sensor */
+        public static final String BLUETOOTH_NEIGHBOURS_COUNT = "bluetooth neighbours count";
+
+        /* Traveled distance for each day */
+		public static final String TRAVELED_DISTANCE_24H = "traveled distance 24h";
+
+        /* Traveled distance for each hour */
+		public static final String TRAVELED_DISTANCE_1H = "traveled distance 1h";
+
         private SensorNames() {
             // class should not be instantiated
         }

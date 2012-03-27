@@ -158,6 +158,14 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         dataFields.put("rssi", 0);
         value = new JSONObject(dataFields).toString();
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
+        
+        // match Bluetooth neighbours count
+        name = SensorNames.BLUETOOTH_NEIGHBOURS_COUNT;
+        displayName = "bluetooth neighbours count";
+        description = SensorNames.BLUETOOTH_NEIGHBOURS_COUNT;
+        dataType = SenseDataTypes.INT;
+        value = "0";
+        success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         // match Wi-Fi scan
         name = SensorNames.WIFI_SCAN;
@@ -199,7 +207,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
      * @return true if the sensor ID is found or created
      */
     private boolean checkLocationSensors() {
-
+    	boolean succes = true;
         // match location sensor
         String name = SensorNames.LOCATION;
         String displayName = SensorNames.LOCATION;
@@ -214,7 +222,23 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         dataFields.put("bearing", 1.0f);
         dataFields.put("provider", "string");
         String value = new JSONObject(dataFields).toString();
-        return checkSensor(name, displayName, dataType, description, value, null, null);
+        succes &= checkSensor(name, displayName, dataType, description, value, null, null);
+      
+        name = SensorNames.TRAVELED_DISTANCE_1H;
+        displayName = SensorNames.TRAVELED_DISTANCE_1H;
+        description = SensorNames.TRAVELED_DISTANCE_1H;
+        dataType = SenseDataTypes.FLOAT;
+        value = "0.0";
+        succes &= checkSensor(name, displayName, dataType, description, value, null, null);
+
+        name = SensorNames.TRAVELED_DISTANCE_24H;
+        displayName = SensorNames.TRAVELED_DISTANCE_24H;
+        description = SensorNames.TRAVELED_DISTANCE_24H;
+        dataType = SenseDataTypes.FLOAT;
+        value = "0.0";
+        succes &= checkSensor(name, displayName, dataType, description, value, null, null);
+        
+        return succes;
     }
 
     /**
