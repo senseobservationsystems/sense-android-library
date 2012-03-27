@@ -39,6 +39,7 @@ public class SensePlugin extends Plugin {
     private static class Actions {
         static final String ADD_DATA_POINT = "add_data_point";
         static final String CHANGE_LOGIN = "change_login";
+        static final String FLUSH_BUFFER = "flush_buffer";
         static final String GET_DATA = "get_data";
         static final String GET_STATUS = "get_status";
         static final String GET_SESSION = "get_session";
@@ -311,6 +312,8 @@ public class SensePlugin extends Plugin {
                 return addDataPoint(data, callbackId);
             } else if (Actions.CHANGE_LOGIN.equals(action)) {
                 return changeLogin(data, callbackId);
+            } else if (Actions.FLUSH_BUFFER.equals(action)) {
+                return flushBuffer(data, callbackId);
             } else if (Actions.GET_DATA.equals(action)) {
                 return getValues(data, callbackId);
             } else if (Actions.GET_PREF.equals(action)) {
@@ -353,6 +356,16 @@ public class SensePlugin extends Plugin {
         } catch (Exception e) {
             Log.e(TAG, "Unexpected error while executing action: " + action, e);
             return new PluginResult(Status.ERROR, e.getMessage());
+        }
+    }
+
+    private PluginResult flushBuffer(JSONArray data, String callbackId) {
+        Intent flush = new Intent(ctx.getContext().getString(R.string.action_sense_send_data));
+        ComponentName started = ctx.getContext().startService(flush);
+        if (null != started) {
+            return new PluginResult(Status.OK);
+        } else {
+            return new PluginResult(Status.INSTANTIATION_EXCEPTION);
         }
     }
 
