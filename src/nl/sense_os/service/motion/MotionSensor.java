@@ -268,7 +268,7 @@ public class MotionSensor implements SensorEventListener {
                     "{\"interval\":"
                             + Math.round(localBufferTime / dataBuffer[sensor.getType()].length())
                             + ",\"data\":" + dataBuffer[sensor.getType()].toString() + "}");
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIE);
+            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
             i.putExtra(DataPoint.TIMESTAMP, lastLocalSampleTimes[sensor.getType()]);
             context.startService(i);
             dataBuffer[sensor.getType()] = new JSONArray();

@@ -711,7 +711,7 @@ public class Constants {
      */
     public static final String SENSOR_DATA_TYPE_FILE = SenseDataTypes.FILE;
     /**
-     * @deprecated Use {@link SenseDataTypes#JSON_TIME_SERIE} instead
+     * @deprecated Use {@link SenseDataTypes#JSON_TIME_SERIES} instead
      */
-    public static final String SENSOR_DATA_TYPE_JSON_TIME_SERIE = SenseDataTypes.JSON_TIME_SERIE;
+    public static final String SENSOR_DATA_TYPE_JSON_TIME_SERIE = SenseDataTypes.JSON_TIME_SERIES;
 }

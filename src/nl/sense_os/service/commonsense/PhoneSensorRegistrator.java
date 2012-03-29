@@ -130,6 +130,14 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
                 // Log.v(TAG, "No ambient temperature sensor present!");
             }
         }
+        
+        // match loudness sensor
+        name = SensorNames.LOUDNESS;
+        displayName = name;
+        description = SensorNames.LOUDNESS;
+        dataType = SenseDataTypes.FLOAT;
+        value = "0.0";
+        success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         return success;
     }

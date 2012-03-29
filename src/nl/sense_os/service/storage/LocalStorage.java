@@ -248,7 +248,7 @@ public class LocalStorage {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-            // do not store data points that are more than 24 hours old
+            // delete data points that are more than 24 hours old
             String where = DataPoint.TIMESTAMP + "<"
                     + (SNTP.getInstance().getTime() - 1000l * 60 * 60 * 24);
             int deleted = db.delete(TABLE_PERSISTENT, where, null);

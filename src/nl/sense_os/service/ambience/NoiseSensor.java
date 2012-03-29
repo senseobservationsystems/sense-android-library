@@ -320,6 +320,10 @@ public class NoiseSensor extends PhoneStateListener {
                             sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
                             context.startService(sensorData);
                         }
+                        
+                        if (dB != -1 && !Double.valueOf(dB).isNaN()) {
+                        	loudnessSensor.onNewNoise(startTimestamp, dB);
+                        }
 
                     } catch (Exception e) {
                         Log.e(TAG, "Exception starting noise recording!", e);
@@ -515,9 +519,11 @@ public class NoiseSensor extends PhoneStateListener {
     private final Handler noiseSampleHandler = new Handler();
     private NoiseSampleJob noiseSampleJob = null;
     private final AlarmReceiver alarmReceiver = new AlarmReceiver();
+    private LoudnessSensor loudnessSensor;
 
     public NoiseSensor(Context context) {
         this.context = context;
+        loudnessSensor = new LoudnessSensor(context);
     }
 
     /**

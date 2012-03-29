@@ -18,7 +18,7 @@ import android.location.Location;
  *  - third filter points that are in the blacklist; this is needed since sometimes there are
  *   rogue network points that don't get filtered when the number of points is scarce
  * (cluster)
- *  - cluster points that are within each other accuracy, the cluster points is estimated as the
+ *  - cluster points that are within each others accuracy, the cluster point is estimated as the
  *   weighted average of the points, with weights inversely proportional to the accuracies
  * 
  * @author pim
@@ -49,6 +49,7 @@ public class TraveledDistanceEstimator {
 			acc = p.acc;
 		}
 
+		@SuppressWarnings("unused")
 		public PositionPoint(Location p) {
 			timestamp = p.getTime();
 			lat = p.getLatitude();
@@ -84,18 +85,20 @@ public class TraveledDistanceEstimator {
 	private static final double MEDIAN_FILTER_FACTOR = 2;
 	private static final double MEDIAN_FILTER_QUANTILE = 0.5;
 	// parameters of the blacklisting
-	private static final double BLACKLIST_TIMEOUT = 3 * 3600;
-	private static final double MIN_DISTANCE = 30;
+	private static final double BLACKLIST_TIMEOUT = 3 * 3600 * 1000;
+	private static final double BLACKLIST_DISTANCE = 300;
 	private static final int CLEANUP_SIZE = 100; // number of entries in the
 													// blacklist that triggers a
 													// cleanup
 
 	// parameters for the algorithm
-	final double MIN_ACCURACY = 1;
-	final double MAX_SPEED = 100; // anything over 100 m/s is supposed to be
+	private static final double MIN_ACCURACY = 1;
+	private static final double MAX_SPEED = 60; // anything over this speed (m/s) is supposed to be
 									// nonsense
-	final double MIN_CLUSTER_DISTANCE = 10;
-	final double ACCURACY_FACTOR = 1.2;
+	//minimum distance between clusters, excluding accuracy corrections
+	private static final double MIN_CLUSTER_DISTANCE = 20;
+	//multiply this with position accuracy when determining which points to cluster
+	private static final double ACCURACY_FACTOR = 1.5;
 
 	// variables for online calculation
 	double totalDistance_ = 0; // traveled distance
@@ -136,9 +139,13 @@ public class TraveledDistanceEstimator {
 		int idxQuantile = (int) (Math.min(window_.size(), WINDOW_SIZE) * p);
 		return ordered.get(idxQuantile).acc;
 	}
+	
+	public void addPoint(final Location l) {
+		addPoint(l.getTime(), l.getLatitude(), l.getLongitude(), l.getAccuracy());
+	}
 
-	synchronized public void addPoint(final Location l) {
-		PositionPoint pp = new PositionPoint(l);
+	synchronized public void addPoint(double timestamp, double lat, double lon, double acc) {
+		PositionPoint pp = new PositionPoint(timestamp, lat, lon, acc);
 
 		/* Median filter for accuracy outliers */
 		window_.add(pp);
@@ -153,18 +160,22 @@ public class TraveledDistanceEstimator {
 		/* speed check */
 		if (clusterCenter_ != null) {
 			double distance = distanceBetween(clusterCenter_, pp);
-			double dt = pp.timestamp - clusterCenter_.timestamp;
-			if (distance > dt * MAX_SPEED + clusterCenter_.acc + pp.acc
-					+ MIN_DISTANCE) {
-				blackList(pp); // blacklist, so we can avoid this point in the
-								// future
-				return; // reject as outlier
+			double dt = (pp.timestamp - clusterCenter_.timestamp) / 1000;
+			if (distance > dt * MAX_SPEED + clusterCenter_.acc + pp.acc) {
+				//reject this point as outlier
+				
+				if (distance > clusterCenter_.acc + pp.acc
+						+ BLACKLIST_DISTANCE)
+					blackList(pp); // blacklist this point
+				return;
 			}
 		}
 
 		/* check blacklist */
 		if (isBlackListed(pp)) {
-			blackList(pp); // and update timestamp of this entry
+			if (clusterCenter_ != null && distanceBetween(clusterCenter_, pp) > clusterCenter_.acc + pp.acc
+					+ BLACKLIST_DISTANCE)
+				blackList(pp); // and make sure it keeps blacklisted
 			return;
 		}
 

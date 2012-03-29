@@ -902,7 +902,7 @@ public class MsgHandler extends Service {
             } else if (dataType.equals(SenseDataTypes.INT)) {
                 sensorValue += intent.getIntExtra(DataPoint.VALUE, Integer.MIN_VALUE);
             } else if (dataType.equals(SenseDataTypes.JSON)
-                    || dataType.equals(SenseDataTypes.JSON_TIME_SERIE)) {
+                    || dataType.equals(SenseDataTypes.JSON_TIME_SERIES)) {
                 sensorValue += new JSONObject(intent.getStringExtra(DataPoint.VALUE)).toString();
             } else if (dataType.equals(SenseDataTypes.STRING)
                     || dataType.equals(SenseDataTypes.FILE)) {

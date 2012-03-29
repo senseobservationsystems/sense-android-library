@@ -411,6 +411,8 @@ public class SensorData {
         /* Traveled distance for each hour */
 		public static final String TRAVELED_DISTANCE_1H = "traveled distance 1h";
 
+		public static final String LOUDNESS = "loudness";
+
         private SensorNames() {
             // class should not be instantiated
         }
