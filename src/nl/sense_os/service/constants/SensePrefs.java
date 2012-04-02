@@ -505,6 +505,7 @@ public class SensePrefs {
          * Key for the status of the questionnaire. Set to <code>true</code> to enable it.
          * 
          * @see SensePrefs#STATUS_PREFS
+         * @deprecated Sense does not support the questionnaire anymore
          */
         public static final String POPQUIZ = "pop quiz component status";
         /**
@@ -514,23 +515,23 @@ public class SensePrefs {
          */
         public static final String AUTOSTART = "autostart";
     }
-    
+
     public static class SensorSpecifics {
-		public static class Loudness {
-			/**
-			 * Key for learned value of total silence..
-			 * 
-			 * @see SensePrefs#AUTH_PREFS
-			 */
-			public static final String TOTAL_SILENCE = "total_silence";
-			/**
-			 * Key for learned value of highest loudness.
-			 * 
-			 * @see SensePrefs#AUTH_PREFS
-			 */
-			public static final String LOUDEST = "loudest";
-		}
-}
+        public static class Loudness {
+            /**
+             * Key for learned value of total silence..
+             * 
+             * @see SensePrefs#AUTH_PREFS
+             */
+            public static final String TOTAL_SILENCE = "total_silence";
+            /**
+             * Key for learned value of highest loudness.
+             * 
+             * @see SensePrefs#AUTH_PREFS
+             */
+            public static final String LOUDEST = "loudest";
+        }
+    }
 
     /**
      * Name of the shared preferences file used for storing CommonSense authentication data. Use
@@ -566,4 +567,3 @@ public class SensePrefs {
         // private constructor to prevent instantiation
     }
 }
-   
