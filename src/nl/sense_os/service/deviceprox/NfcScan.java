@@ -145,6 +145,12 @@ public class NfcScan extends FragmentActivity {
             return;
         }
 
+        if (!statusPrefs.getBoolean(SensePrefs.Status.DEV_PROX, false)) {
+            Log.v(TAG, "NFC scan is disabled because device proximy is not activated!");
+            finish();
+            return;
+        }
+
         /* check if NFC is enabled in the preferences */
         SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
         if (!mainPrefs.getBoolean(SensePrefs.Main.DevProx.NFC, true)) {
