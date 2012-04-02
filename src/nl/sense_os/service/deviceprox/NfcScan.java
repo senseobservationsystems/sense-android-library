@@ -50,6 +50,7 @@ public class NfcScan extends FragmentActivity {
 
     private class NfcDialog extends DialogFragment {
 
+        @TargetApi(11)
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // create builder

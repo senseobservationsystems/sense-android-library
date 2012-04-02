@@ -7,6 +7,8 @@
     <string name="stat_notify_content_off_loggedout">Sensors inactive, no connection to CommonSense</string>  
     <string name="stat_notify_content_on_loggedin">"Sensors active, logged in as \'%s\'"</string> 
     <string name="stat_notify_content_on_loggedout">Sensors active, no connection to CommonSense</string>
+    
+    <!-- resources for NFC popup dialog -->
     <string name="nfc_dialog_title">NFC tag discovered</string>
     <string name="nfc_dialog_msg">Tag ID: \'%s\'\n\nSave tag in CommonSense?"</string>
        
@@ -25,12 +27,4 @@
 
     <!-- LocalStorage authority, overwrite when bundling Sense into another app -->
     <string name="local_storage_authority">nl.sense_os.platform.provider.LocalStorage</string>
-
-    <!-- old pop quiz stuff -->
-    <string name="pq_missed_done">All missed pop quizzes are completed.</string>
-    <string name="pq_missed_msg">You have missed ?1 pop quizzes.\n\nDo you want to complete these now?</string>
-    <string name="pq_missed_title">Missed pop quiz</string>
-    <string name="pq_welcome_msg1">Time:</string>
-    <string name="pq_welcome_msg2">User:</string>
-    <string name="pq_welcome_title">Pop quiz</string>
 </resources>
