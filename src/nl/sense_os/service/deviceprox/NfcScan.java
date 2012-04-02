@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
@@ -22,7 +21,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
@@ -136,28 +134,6 @@ public class NfcScan extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /* check if the Sense service should be alive */
-        SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-        if (!statusPrefs.getBoolean(SensePrefs.Status.MAIN, false)) {
-            Log.v(TAG, "NFC scan is disabled because Sense is not running!");
-            finish();
-            return;
-        }
-
-        if (!statusPrefs.getBoolean(SensePrefs.Status.DEV_PROX, false)) {
-            Log.v(TAG, "NFC scan is disabled because device proximy is not activated!");
-            finish();
-            return;
-        }
-
-        /* check if NFC is enabled in the preferences */
-        SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-        if (!mainPrefs.getBoolean(SensePrefs.Main.DevProx.NFC, true)) {
-            Log.v(TAG, "NFC scan is disabled in preferences!");
-            finish();
-            return;
-        }
 
         /* parse the tag */
         Tag tag = getIntent().<Tag> getParcelableExtra(NfcAdapter.EXTRA_TAG);
