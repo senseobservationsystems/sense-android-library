@@ -15,7 +15,6 @@ import nl.sense_os.service.provider.SNTP;
 import org.json.JSONObject;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -40,12 +39,52 @@ import android.nfc.tech.NfcF;
 import android.nfc.tech.NfcV;
 import android.nfc.tech.TagTechnology;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 @TargetApi(10)
-public class NfcScan extends Activity {
+public class NfcScan extends FragmentActivity {
+
+    private class NfcDialog extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // create builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                // specifically set dark theme for Android 3.0+
+                builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+            }
+
+            builder.setIcon(android.R.drawable.ic_dialog_alert);
+            builder.setTitle(R.string.nfc_dialog_title);
+            builder.setMessage(getString(R.string.nfc_dialog_msg, tagId));
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    submit();
+                }
+            });
+            builder.setNegativeButton(android.R.string.cancel, null);
+
+            Dialog dialog = builder.create();
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    Log.v(TAG, "Dialog dismissed...");
+                    finish();
+                }
+            });
+            return dialog;
+        }
+    }
 
     private class ParseTask extends AsyncTask<Tag, Void, Boolean> {
         private String error = null;
@@ -88,8 +127,6 @@ public class NfcScan extends Activity {
 
     private static final String TAG = "Sense NFC";
 
-    private static final int DIALOG_TAG_FOUND = 0;
-
     private static final int NOTIF_ID = 0x06FC;
 
     private String tagId;
@@ -122,40 +159,6 @@ public class NfcScan extends Activity {
     }
 
     @Override
-    protected Dialog onCreateDialog(int id) {
-        Dialog dialog;
-        switch (id) {
-        case DIALOG_TAG_FOUND:
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setIcon(android.R.drawable.ic_dialog_alert);
-            builder.setTitle(nl.sense_os.service.R.string.nfc_dialog_title);
-            builder.setMessage(getString(R.string.nfc_dialog_msg, tagId));
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    submit();
-                }
-            });
-            builder.setNegativeButton(android.R.string.cancel, null);
-            dialog = builder.create();
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    Log.v(TAG, "Dialog dismissed...");
-                    finish();
-                }
-            });
-            break;
-        default:
-            Log.w(TAG, "Unexpected dialog ID: " + id);
-            dialog = onCreateDialog(id, null);
-        }
-        return dialog;
-    }
-
-    @Override
     protected void onDestroy() {
         cancelNotification();
         super.onDestroy();
@@ -169,7 +172,12 @@ public class NfcScan extends Activity {
 
     private void onParseSuccess() {
         showNotification();
-        showDialog(DIALOG_TAG_FOUND);
+        showNfcDialog();
+    }
+
+    private void showNfcDialog() {
+        NfcDialog dialog = new NfcDialog();
+        dialog.show(getSupportFragmentManager(), "nfc");
     }
 
     private void cancelNotification() {
@@ -178,16 +186,16 @@ public class NfcScan extends Activity {
     }
 
     private void showNotification() {
-        Notification notification = new Notification();
-        notification.setLatestEventInfo(this, getString(R.string.stat_notify_title),
-                getString(android.R.string.dialog_alert_title),
-                PendingIntent.getActivity(this, 0, new Intent(), 0));
-        notification.defaults |= Notification.DEFAULT_SOUND;
-        notification.when = System.currentTimeMillis();
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+        builder.setWhen(System.currentTimeMillis());
+        builder.setOngoing(true);
+        builder.setContentTitle(getString(R.string.stat_notify_title));
+        builder.setContentText(getString(android.R.string.dialog_alert_title));
+        builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(), 0));
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(NOTIF_ID, notification);
+        nm.notify(NOTIF_ID, builder.getNotification());
     }
 
     private void parseTag(Tag tag) throws ClassNotFoundException, NoSuchMethodException,
