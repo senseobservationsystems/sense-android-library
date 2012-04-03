@@ -505,6 +505,7 @@ public class SensePrefs {
          * Key for the status of the questionnaire. Set to <code>true</code> to enable it.
          * 
          * @see SensePrefs#STATUS_PREFS
+         * @deprecated Sense does not support the questionnaire anymore
          */
         public static final String POPQUIZ = "pop quiz component status";
         /**
@@ -513,6 +514,23 @@ public class SensePrefs {
          * @see SensePrefs#STATUS_PREFS
          */
         public static final String AUTOSTART = "autostart";
+    }
+
+    public static class SensorSpecifics {
+        public static class Loudness {
+            /**
+             * Key for learned value of total silence..
+             * 
+             * @see SensePrefs#AUTH_PREFS
+             */
+            public static final String TOTAL_SILENCE = "total_silence";
+            /**
+             * Key for learned value of highest loudness.
+             * 
+             * @see SensePrefs#AUTH_PREFS
+             */
+            public static final String LOUDEST = "loudest";
+        }
     }
 
     /**
@@ -537,6 +555,13 @@ public class SensePrefs {
      * @see #MAIN_PREFS
      */
     public static final String STATUS_PREFS = "service_status_prefs";
+    /**
+     * Name of the sensor specifics file, used for storing the settings for the Sense service.
+     * 
+     * @see #AUTH_PREFS
+     * @see #STATUS_PREFS
+     */
+    public static final String SENSOR_SPECIFICS = "sensor_specifics";
 
     private SensePrefs() {
         // private constructor to prevent instantiation

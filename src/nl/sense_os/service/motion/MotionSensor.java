@@ -138,6 +138,7 @@ public class MotionSensor implements SensorEventListener {
         return new float[] { values[0] - gravity[0], values[1] - gravity[1], values[2] - gravity[2] };
     }
 
+    @SuppressWarnings("deprecation")
     private JSONObject createJsonValue(SensorEvent event) {
 
         final Sensor sensor = event.sensor;
@@ -268,7 +269,7 @@ public class MotionSensor implements SensorEventListener {
                     "{\"interval\":"
                             + Math.round(localBufferTime / dataBuffer[sensor.getType()].length())
                             + ",\"data\":" + dataBuffer[sensor.getType()].toString() + "}");
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIE);
+            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
             i.putExtra(DataPoint.TIMESTAMP, lastLocalSampleTimes[sensor.getType()]);
             context.startService(i);
             dataBuffer[sensor.getType()] = new JSONArray();
@@ -360,6 +361,7 @@ public class MotionSensor implements SensorEventListener {
         // do nothing
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -526,6 +528,7 @@ public class MotionSensor implements SensorEventListener {
         this.sampleDelay = sampleDelay;
     }
 
+    @SuppressWarnings("deprecation")
     public void startMotionSensing(long sampleDelay) {
 
         final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,

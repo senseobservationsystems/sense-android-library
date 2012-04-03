@@ -8,7 +8,7 @@ public class SenseDataTypes {
     public static final String JSON = "json";
     public static final String STRING = "string";
     public static final String FILE = "file";
-    public static final String JSON_TIME_SERIE = "json time serie";
+    public static final String JSON_TIME_SERIES = "json time serie";
 
     private SenseDataTypes() {
         // private constructor to prevent instantiation

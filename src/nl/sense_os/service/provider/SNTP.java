@@ -16,33 +16,30 @@ package nl.sense_os.service.provider;
  * limitations under the License.
  */
 
-
-import android.os.SystemClock;
-import android.util.Config;
-import android.util.Log;
-
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import android.os.SystemClock;
+import android.util.Log;
+
 /**
  * {@hide}
- *
+ * 
  * Simple SNTP client class for retrieving network time.
- *
+ * 
  * Sample usage:
- * <pre>SNTP client = new SNTP();
- * if (client.requestTime("time.foo.com")) {
+ * 
+ * <pre>
+ * SNTP client = new SNTP();
+ * if (client.requestTime(&quot;time.foo.com&quot;)) {
  *     long now = client.getNtpTime() + SystemClock.elapsedRealtime() - client.getNtpTimeReference();
  * }
  * </pre>
  */
-public class SNTP
-{
+public class SNTP {
     private static final String TAG = "SNTP";
 
-    private static final int REFERENCE_TIME_OFFSET = 16;
     private static final int ORIGINATE_TIME_OFFSET = 24;
     private static final int RECEIVE_TIME_OFFSET = 32;
     private static final int TRANSMIT_TIME_OFFSET = 40;
@@ -51,13 +48,12 @@ public class SNTP
     private static final int NTP_PORT = 123;
     private static final int NTP_MODE_CLIENT = 3;
     private static final int NTP_VERSION = 3;
-    public static final String HOST_WORLDWIDE = "pool.ntp.org";    
+    public static final String HOST_WORLDWIDE = "pool.ntp.org";
     public static final String HOST_ASIA = "asia.pool.ntp.org";
     public static final String HOST_EUROPE = "europe.pool.ntp.org";
     public static final String HOST_NORTH_AMERICA = "north-america.pool.ntp.org";
     public static final String HOST_SOUTH_AMERICA = "south-america.pool.ntp.org";
     public static final String HOST_OCEANIA = "oceania.pool.ntp.org";
-    
 
     // Number of seconds between Jan 1, 1900 and Jan 1, 1970
     // 70 years plus 17 leap days
@@ -71,26 +67,27 @@ public class SNTP
 
     // round trip time in milliseconds
     private long mRoundTripTime;
-    
+
     private long clockOffset = -1;
-    
+
     private static SNTP sntp = null;
-    
+
     /*
      * Nice singleton :)
      */
-    public static SNTP getInstance()
-    {
-    	if(sntp == null)
-    		sntp = new SNTP();
-    	return sntp;
+    public static SNTP getInstance() {
+        if (sntp == null)
+            sntp = new SNTP();
+        return sntp;
     }
 
     /**
      * Sends an SNTP request to the given host and processes the response.
-     *
-     * @param host host name of the server.
-     * @param timeout network timeout in milliseconds.
+     * 
+     * @param host
+     *            host name of the server.
+     * @param timeout
+     *            network timeout in milliseconds.
      * @return true if the transaction was successful.
      */
     public boolean requestTime(String host, int timeout) {
@@ -128,12 +125,12 @@ public class SNTP
             // receiveTime = originateTime + transit + skew
             // responseTime = transmitTime + transit - skew
             // clockOffset = ((receiveTime - originateTime) + (transmitTime - responseTime))/2
-            //             = ((originateTime + transit + skew - originateTime) +
-            //                (transmitTime - (transmitTime + transit - skew)))/2
-            //             = ((transit + skew) + (transmitTime - transmitTime - transit + skew))/2
-            //             = (transit + skew - transit + skew)/2
-            //             = (2 * skew)/2 = skew
-            clockOffset = ((receiveTime - originateTime) + (transmitTime - responseTime))/2;
+            // = ((originateTime + transit + skew - originateTime) +
+            // (transmitTime - (transmitTime + transit - skew)))/2
+            // = ((transit + skew) + (transmitTime - transmitTime - transit + skew))/2
+            // = (transit + skew - transit + skew)/2
+            // = (2 * skew)/2 = skew
+            clockOffset = ((receiveTime - originateTime) + (transmitTime - responseTime)) / 2;
             // if (Config.LOGD) Log.d(TAG, "round trip: " + roundTripTime + " ms");
             // if (Config.LOGD) Log.d(TAG, "clock offset: " + clockOffset + " ms");
 
@@ -143,39 +140,34 @@ public class SNTP
             mNtpTimeReference = responseTicks;
             mRoundTripTime = roundTripTime;
         } catch (Exception e) {
-            if (Config.LOGD) Log.d(TAG, "request time failed: " + e);
+            Log.d(TAG, "request time failed: " + e);
             return false;
         }
 
         return true;
     }
-    
+
     /**
-     * Get the current time, based on NTP clockOffset if or System time 
+     * Get the current time, based on NTP clockOffset if or System time
      * 
      * @return the ntp time from the worldwide pool if available else the system time
      */
-    public long getTime()
-    {
-    	// get the clock offset
-    	if(clockOffset == -1)
-    	{
-	    	if(requestTime(HOST_WORLDWIDE, 1000))
-	    	{	
-	    		return getNtpTime();
-	    	}
-	    	else
-	    	{	    
-	    		clockOffset = 0;
-	    	}
-    	}  	
-    	
-    	return System.currentTimeMillis()+clockOffset;
+    public long getTime() {
+        // get the clock offset
+        if (clockOffset == -1) {
+            if (requestTime(HOST_WORLDWIDE, 1000)) {
+                return getNtpTime();
+            } else {
+                clockOffset = 0;
+            }
+        }
+
+        return System.currentTimeMillis() + clockOffset;
     }
-    
+
     /**
      * Returns the time computed from the NTP transaction.
-     *
+     * 
      * @return time value computed from NTP server response.
      */
     public long getNtpTime() {
@@ -183,9 +175,9 @@ public class SNTP
     }
 
     /**
-     * Returns the reference clock value (value of SystemClock.elapsedRealtime())
-     * corresponding to the NTP time.
-     *
+     * Returns the reference clock value (value of SystemClock.elapsedRealtime()) corresponding to
+     * the NTP time.
+     * 
      * @return reference clock corresponding to the NTP time.
      */
     public long getNtpTimeReference() {
@@ -194,7 +186,7 @@ public class SNTP
 
     /**
      * Returns the round trip time of the NTP transaction
-     *
+     * 
      * @return round trip time in milliseconds.
      */
     public long getRoundTripTime() {
@@ -206,9 +198,9 @@ public class SNTP
      */
     private long read32(byte[] buffer, int offset) {
         byte b0 = buffer[offset];
-        byte b1 = buffer[offset+1];
-        byte b2 = buffer[offset+2];
-        byte b3 = buffer[offset+3];
+        byte b1 = buffer[offset + 1];
+        byte b2 = buffer[offset + 2];
+        byte b3 = buffer[offset + 3];
 
         // convert signed bytes to unsigned values
         int i0 = ((b0 & 0x80) == 0x80 ? (b0 & 0x7F) + 0x80 : b0);
@@ -216,40 +208,40 @@ public class SNTP
         int i2 = ((b2 & 0x80) == 0x80 ? (b2 & 0x7F) + 0x80 : b2);
         int i3 = ((b3 & 0x80) == 0x80 ? (b3 & 0x7F) + 0x80 : b3);
 
-        return ((long)i0 << 24) + ((long)i1 << 16) + ((long)i2 << 8) + (long)i3;
+        return ((long) i0 << 24) + ((long) i1 << 16) + ((long) i2 << 8) + (long) i3;
     }
 
     /**
-     * Reads the NTP time stamp at the given offset in the buffer and returns 
-     * it as a system time (milliseconds since January 1, 1970).
-     */    
+     * Reads the NTP time stamp at the given offset in the buffer and returns it as a system time
+     * (milliseconds since January 1, 1970).
+     */
     private long readTimeStamp(byte[] buffer, int offset) {
         long seconds = read32(buffer, offset);
         long fraction = read32(buffer, offset + 4);
-        return ((seconds - OFFSET_1900_TO_1970) * 1000) + ((fraction * 1000L) / 0x100000000L);        
+        return ((seconds - OFFSET_1900_TO_1970) * 1000) + ((fraction * 1000L) / 0x100000000L);
     }
 
     /**
-     * Writes system time (milliseconds since January 1, 1970) as an NTP time stamp 
-     * at the given offset in the buffer.
-     */    
+     * Writes system time (milliseconds since January 1, 1970) as an NTP time stamp at the given
+     * offset in the buffer.
+     */
     private void writeTimeStamp(byte[] buffer, int offset, long time) {
         long seconds = time / 1000L;
         long milliseconds = time - seconds * 1000L;
         seconds += OFFSET_1900_TO_1970;
 
         // write seconds in big endian format
-        buffer[offset++] = (byte)(seconds >> 24);
-        buffer[offset++] = (byte)(seconds >> 16);
-        buffer[offset++] = (byte)(seconds >> 8);
-        buffer[offset++] = (byte)(seconds >> 0);
+        buffer[offset++] = (byte) (seconds >> 24);
+        buffer[offset++] = (byte) (seconds >> 16);
+        buffer[offset++] = (byte) (seconds >> 8);
+        buffer[offset++] = (byte) (seconds >> 0);
 
         long fraction = milliseconds * 0x100000000L / 1000L;
         // write fraction in big endian format
-        buffer[offset++] = (byte)(fraction >> 24);
-        buffer[offset++] = (byte)(fraction >> 16);
-        buffer[offset++] = (byte)(fraction >> 8);
+        buffer[offset++] = (byte) (fraction >> 24);
+        buffer[offset++] = (byte) (fraction >> 16);
+        buffer[offset++] = (byte) (fraction >> 8);
         // low order bits should be random data
-        buffer[offset++] = (byte)(Math.random() * 255.0);
+        buffer[offset++] = (byte) (Math.random() * 255.0);
     }
 }

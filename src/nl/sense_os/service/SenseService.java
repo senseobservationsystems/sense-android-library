@@ -85,6 +85,7 @@ public class SenseService extends Service {
             }.start();
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public boolean getPrefBool(String key, boolean defValue) throws RemoteException {
             // Log.v(TAG, "Get preference: " + key);
@@ -208,6 +209,7 @@ public class SenseService extends Service {
             }.start();
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public void setPrefBool(String key, final boolean value) throws RemoteException {
             // Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
@@ -375,10 +377,7 @@ public class SenseService extends Service {
 
         @Override
         public void togglePopQuiz(boolean active) {
-            // Log.v(TAG, "Toggle questionnaire: " + active);
-            SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-            prefs.edit().putBoolean(Status.POPQUIZ, active).commit();
-            SenseService.this.togglePopQuiz(active);
+            Log.w(TAG, "Toggle questionnaire ignored: this functionality is no longer supported!");
         }
     }
 
@@ -712,7 +711,7 @@ public class SenseService extends Service {
             };
         }.sendEmptyMessage(0);
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private void onSyncRateChange() {
@@ -846,7 +845,6 @@ public class SenseService extends Service {
             toggleMotion(statusPrefs.getBoolean(Status.MOTION, false));
             toggleDeviceProx(statusPrefs.getBoolean(Status.DEV_PROX, false));
             toggleExternalSensors(statusPrefs.getBoolean(Status.EXTERNAL, false));
-            togglePopQuiz(statusPrefs.getBoolean(Status.POPQUIZ, false));
 
             state.setStarted(true);
         }
@@ -890,7 +888,6 @@ public class SenseService extends Service {
         toggleLocation(false);
         toggleAmbience(false);
         togglePhoneState(false);
-        togglePopQuiz(false);
         toggleExternalSensors(false);
 
         state.setStarted(false);
@@ -1559,23 +1556,5 @@ public class SenseService extends Service {
                 }
             }
         }
-    }
-
-    private synchronized void togglePopQuiz(boolean active) {
-        // if (active != isQuizActive) {
-        // this.isQuizActive = active;
-        // final SenseAlarmManager mgr = new SenseAlarmManager(this);
-        // if (true == active) {
-        //
-        // // create alarm
-        // mgr.createSyncAlarm();
-        // this.isQuizActive = mgr.createEntry(0, 1);
-        // } else {
-        //
-        // // cancel alarm
-        // mgr.cancelEntry();
-        // mgr.cancelSyncAlarm();
-        // }
-        // }
     }
 }

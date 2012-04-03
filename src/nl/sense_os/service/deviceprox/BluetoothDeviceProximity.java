@@ -65,7 +65,6 @@ public class BluetoothDeviceProximity {
                 }
 
                 if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-
                     try {
                         for (Map<android.bluetooth.BluetoothDevice, Short> value : deviceArray) {
                             android.bluetooth.BluetoothDevice btd = value.entrySet().iterator()
@@ -84,6 +83,19 @@ public class BluetoothDeviceProximity {
                             i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
                             BluetoothDeviceProximity.this.context.startService(i);
                         }
+
+                        // add count of bluetooth devices as a separate sensor value
+                        int nrBluetoothNeighbours = deviceArray.size();
+
+                        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+                        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_NEIGHBOURS_COUNT);
+                        i.putExtra(DataPoint.VALUE, nrBluetoothNeighbours);
+                        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.INT);
+                        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+                        BluetoothDeviceProximity.this.context.startService(i);
+                        Log.v(TAG, "Found " + nrBluetoothNeighbours + " bluetooth neighbours");
+
+                        
 
                     } catch (JSONException e) {
                         Log.e(TAG, "JSONException preparing bluetooth scan data");
