@@ -172,7 +172,9 @@ public class SensePlugin extends Plugin {
                 };
             }.start();
 
-            return new PluginResult(Status.NO_RESULT);
+            PluginResult r = new PluginResult(Status.NO_RESULT);
+            r.setKeepCallback(true);
+            return r;
 
         } else {
             Log.e(TAG, "No connection to the Sense Platform service.");
