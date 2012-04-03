@@ -1,37 +1,134 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <meta name="viewport" content="width=320; user-scalable=no" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>PhoneGap</title>
-	<link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
-	<script type="text/javascript" charset="utf-8" src="phonegap-1.0.0.js"></script>
-    <script type="text/javascript" charset="utf-8" src="main.js"></script> 
-  </head>
-  <body onload="init();" id="stage" class="theme">
-    <h1>Welcome to PhoneGap!</h1>
-    <h2>this file is located at assets/www/index.html</h2>
-    <div id="info">
-        <h4>Platform: <span id="platform"> &nbsp;</span>,   Version: <span id="version">&nbsp;</span></h4>
-        <h4>UUID: <span id="uuid"> &nbsp;</span>,   Name: <span id="name">&nbsp;</span></h4>
-        <h4>Width: <span id="width"> &nbsp;</span>,   Height: <span id="height">&nbsp;
-                   </span>, Color Depth: <span id="colorDepth"></span></h4>
-     </div>     
-    <dl id="accel-data">
-      <dt>X:</dt><dd id="x">&nbsp;</dd>
-      <dt>Y:</dt><dd id="y">&nbsp;</dd>
-      <dt>Z:</dt><dd id="z">&nbsp;</dd>
-    </dl>    
-    <a href="#" class="btn large" onclick="toggleAccel();">Toggle Accelerometer</a>
-    <a href="#" class="btn large" onclick="getLocation();">Get Location</a>
-	<a href="tel://411" class="btn large">Call 411</a>
-    <a href="#" class="btn large" onclick="beep();">Beep</a>
-    <a href="#" class="btn large" onclick="vibrate();">Vibrate</a>
-    <a href="#" class="btn large" onclick="show_pic();">Get a Picture</a>
-    <a href="#" class="btn large" onclick="get_contacts();">Get Phone's Contacts</a>
-    <a href="#" class="btn large" onclick="check_network();">Check Network</a>
-    <div id="viewport" class="viewport" style="display: none;">       
-      <img style="width:60px;height:60px" id="test_img" src="" alt="" />
-    </div> 
-  </body>
+    <head>
+        <meta name="viewport" content="width=320; user-scalable=no" />
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+            <title>PhoneGap</title>
+            <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
+                <script type="text/javascript" charset="utf-8" src="phonegap-1.4.1.js"></script>
+                <script type="text/javascript" charset="utf-8" src="sense_platform.js"></script>
+                </head>
+    <body onload="document.addEventListener('deviceready', function(){
+        window.plugins.sense.init();
+        }, false);" id="stage" class="theme">
+        <h1>Welcome to Sense's plugin!</h1>
+        <h2>this file is located at assets/www/index.html</h2> 
+        <a class="btn small" onclick="window.plugins.sense.changeLogin(
+            'foo', 'bar',
+            function(r){alert('changeLogin(\'foo\',\'bar\'): ' + r);},
+            function(e){alert('changeLogin(\'foo\',\'bar\') error: ' + e);});">Login as 'foo' / 'bar'</a>
+        <a class="btn small" onclick="window.plugins.sense.logout(            
+            function(r){alert('logout(): ' + r);},
+            function(e){alert('logout() error: ' + e);});">Log out</a>
+            
+        <a class="btn large" onclick="window.plugins.sense.register(
+            'username', 'password', 'first name', 'surname', 'email', 'phone',
+            function(r){alert('register(): ' + r)},
+            function(e){alert('register() error: ' + e)});">Register user 'username'</a>
+        
+        <a class="btn small" onclick="window.plugins.sense.toggleMain(
+            true,
+            function(r){alert('toggleMain(true): ' + r)},
+            function(e){alert('toggleMain(true) error: ' + e)});">Start sensing</a>
+        <a class="btn small" onclick="window.plugins.sense.toggleMain(
+            false,
+            function(r){alert('toggleMain(false): ' + r)},
+            function(e){alert('toggleMain(false) error: ' + e)});">Stop sensing</a>   
+        
+        <a class="btn small" onclick="window.plugins.sense.togglePhoneState(
+            true,
+            function(r){alert('togglePhoneState(true): ' + r)},
+            function(e){alert('togglePhoneState(true) error: ' + e)});">Start phone state sensors</a>        
+        <a class="btn small" onclick="window.plugins.sense.togglePhoneState(
+            false,
+            function(r){alert('togglePhoneState(false): ' + r)},
+            function(e){alert('togglePhoneState(false) error: ' + e)});">Stop phone state sensors</a>
+        
+        <a class="btn small" onclick="window.plugins.sense.togglePosition(
+            true,
+            function(r){alert('togglePosition(true): ' + r)},
+            function(e){alert('togglePosition(true) error: ' + e)});">Start position sensors</a> 
+        <a class="btn small" onclick="window.plugins.sense.togglePosition(
+            false,
+            function(r){alert('togglePosition(false): ' + r)},
+            function(e){alert('togglePosition(false) error: ' + e)});">Stop position sensors</a>  
+        
+        <a class="btn small" onclick="window.plugins.sense.toggleAmbience(
+            true,
+            function(r){alert('toggleAmbience(true): ' + r)},
+            function(e){alert('toggleAmbience(true) error: ' + e)});">Start ambience sensors</a> 
+        <a class="btn small" onclick="window.plugins.sense.toggleAmbience(
+            false,
+            function(r){alert('toggleAmbience(false): ' + r)},
+            function(e){alert('toggleAmbience(false) error: ' + e)});">Stop ambience sensors</a>  
+        
+        <a class="btn small" onclick="window.plugins.sense.toggleMotion(
+            true,
+            function(r){alert('toggleMotion(true): ' + r)},
+            function(e){alert('toggleMotion(true) error: ' + e)});">Start motion sensors</a>
+        <a class="btn small" onclick="window.plugins.sense.toggleMotion(
+            false,
+            function(r){alert('toggleMotion(false): ' + r)},
+            function(e){alert('toggleMotion(false) error: ' + e)});">Stop motion sensors</a>
+        
+        <a class="btn small" onclick="window.plugins.sense.toggleNeighDev(
+            true,
+            function(r){alert('toggleNeighDev(true): ' + r)},
+            function(e){alert('toggleNeighDev(true) error: ' + e)});">Start scanning devices</a>
+        <a class="btn small" onclick="window.plugins.sense.toggleNeighDev(
+            false,
+            function(r){alert('toggleNeighDev(false): ' + r)},
+            function(e){alert('toggleNeighDev(false) error: ' + e)});">Stop scanning devices</a>
+        
+        <a class="btn small" onclick="window.plugins.sense.toggleExternal(
+            true,
+            function(r){alert('toggleExternal(true): ' + r)},
+            function(e){alert('toggleExternal(true) error: ' + e)});">Start external sensors</a>
+        <a class="btn small" onclick="window.plugins.sense.toggleExternal(
+            false,
+            function(r){alert('toggleExternal(false): ' + r)},
+            function(e){alert('toggleExternal(false) error: ' + e)});">Stop external sensors</a>
+            
+         <a class="btn large" onclick="window.plugins.sense.addDataPoint('pgsensor', 
+            'PhoneGap sensor', 'PhoneGap', 'string', 'foo', new Date().getTime(), 
+            function(r){
+            alert('Data point stored');
+            },
+            function(e){console.log('addDataPoint error: ' + e)});">Add data point for 'pgsensor'</a>  
+            
+         <a class="btn large" onclick="window.plugins.sense.getData('pgsensor',
+            function(r){
+            var output = '';
+            for (var i=0; i<r.length; i++) {
+                var dataPoint = r[i];
+                output += '\n' + i + ': ' + dataPoint['value']+';';
+            }
+            alert('\'pgsensor\' data: ' + output);
+            },
+            function(e){console.log('getData error: ' + e)});">Get 'pgsensor' data</a>  
+            
+        <a class="btn large" onclick="window.plugins.sense.getStatus(
+            function(r){
+            console.log('getStatus(): ' + r);
+            var isRunning = (r && SensePlatform.STATUSCODE_RUNNING > 0);
+            var isLoggedIn = (r && SensePlatform.STATUSCODE_CONNECTED > 0);
+            var isSensingMotion = (r && SensePlatform.STATUSCODE_MOTION > 0);
+            var isSensingAmbience = (r && SensePlatform.STATUSCODE_AMBIENCE > 0);
+            if (isRunning && isLoggedIn) {
+            alert('Sense Platform is active');
+            } else if (!isLoggedIn) {
+            alert('Sense Platform is not logged in');
+            } else {
+            alert('Sense Platform is not running');
+            }
+            // etc
+            },
+            function(e){console.log('getStatus() error: ' + e)});">Get status</a>
+        <a class="btn large" onclick="window.plugins.sense.getSessionId(
+            function(r){alert('getSessionId(): ' + r);},
+            function(e){alert('getSessionId() error: ' + e);">Get session ID</a>     
+        <div id="viewport" class="viewport" style="display: none;">       
+            <img style="width:60px;height:60px" id="test_img" src="" alt="" />
+        </div> 
+    </body>
 </html>

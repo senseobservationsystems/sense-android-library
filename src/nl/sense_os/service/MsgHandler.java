@@ -23,15 +23,16 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -42,6 +43,7 @@ import android.database.MatrixCursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -75,9 +77,13 @@ public class MsgHandler extends Service {
         public AbstractDataTransmitHandler(Context context, Looper looper) {
             super(looper);
             this.context = context;
-            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                    Context.MODE_PRIVATE);
-            boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+            SharedPreferences mainPrefs;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_MULTI_PROCESS);
+            } else {
+                mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            }
+            boolean devMode = mainPrefs.getBoolean(Main.Advanced.DEV_MODE, false);
             url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/")
                     : SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
         }
@@ -404,11 +410,15 @@ public class MsgHandler extends Service {
             }
 
             // check if there is more data left
-            SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                    Context.MODE_PRIVATE);
+            SharedPreferences mainPrefs;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_MULTI_PROCESS);
+            } else {
+                mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            }
             int maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT;
 
-            if (pref.getBoolean(SensePrefs.Main.Motion.EPIMODE, false))
+            if (mainPrefs.getBoolean(Main.Motion.EPIMODE, false))
                 maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
 
             // there is probably more data, try to send more
@@ -860,6 +870,7 @@ public class MsgHandler extends Service {
         }
     }
 
+    @TargetApi(11)
     private void handleNewMsgIntent(Intent intent) {
         // Log.d(TAG, "handleNewMsgIntent");
         try {
@@ -872,7 +883,7 @@ public class MsgHandler extends Service {
             String description = intent.getStringExtra(DataPoint.SENSOR_DESCRIPTION);
             String dataType = intent.getStringExtra(DataPoint.DATA_TYPE);
             String deviceUuid = intent.getStringExtra(DataPoint.DEVICE_UUID);
-            long timestamp = intent.getLongExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+            long timestamp = intent.getLongExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             String timeInSecs = formatter.format(timestamp / 1000.0d);
 
             // defaults
@@ -903,12 +914,18 @@ public class MsgHandler extends Service {
                     timestamp, sensorValue);
 
             // check if we can send the data point immediately
-            SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            SharedPreferences mainPrefs;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_MULTI_PROCESS);
+            } else {
+                mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+            }
             int rate = Integer.parseInt(mainPrefs.getString(Main.SYNC_RATE, "0"));
             boolean isMaxThreads = nrOfSendMessageThreads >= (MAX_NR_OF_SEND_MSG_THREADS - 5);
             boolean isRealTimeMode = rate == -2;
             if (isOnline() && isRealTimeMode && !isMaxThreads) {
                 /* send immediately */
+                Log.d(TAG, "Real time mode: send immediately");
 
                 // create sensor data JSON object with only 1 data point
                 JSONObject sensorData = new JSONObject();
@@ -930,9 +947,13 @@ public class MsgHandler extends Service {
     private void handleSendIntent(Intent intent) {
         if (isOnline()) {
             // get the cookie
-            final SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
-                    Context.MODE_PRIVATE);
-            String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
+            SharedPreferences authPrefs;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_MULTI_PROCESS);
+            } else {
+                authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+            }
+            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
             // prepare the data to give to the transmitters
             Bundle msgData = new Bundle();
@@ -995,10 +1016,20 @@ public class MsgHandler extends Service {
      * @return <code>true</code> if the phone has network connectivity.
      */
     private boolean isOnline() {
-        SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+        SharedPreferences mainPrefs;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_MULTI_PROCESS);
+        } else {
+            mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+        }
         boolean isCommonSenseEnabled = mainPrefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true);
 
-        SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+        SharedPreferences authPrefs;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_MULTI_PROCESS);
+        } else {
+            authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+        }
         boolean isLoggedIn = authPrefs.getString(Auth.LOGIN_COOKIE, null) != null;
 
         final ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -1078,8 +1109,13 @@ public class MsgHandler extends Service {
             if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
 
                 // get cookie for transmission
-                SharedPreferences prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-                String cookie = prefs.getString(Auth.LOGIN_COOKIE, null);
+                SharedPreferences authPrefs;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_MULTI_PROCESS);
+                } else {
+                    authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+                }
+                String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
                 if (cookie.length() > 0) {
                     ++nrOfSendMessageThreads;

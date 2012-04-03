@@ -115,6 +115,11 @@ public class SensorData {
          * Noise level sensor. Part of the Ambience sensors.
          */
         public static final String NOISE = "noise_sensor";
+        
+        /**
+         * Audio spectrum sensor. Part of the Ambience sensors.
+         */
+        public static final String AUDIO_SPECTRUM = "audio_spectrum";
 
         /**
          * Microphone output. Part of the Ambience sensors (real-time mode only).
@@ -125,6 +130,11 @@ public class SensorData {
          * Light sensor. Part of the Ambience sensors.
          */
         public static final String LIGHT = "light";
+
+        /**
+         * Camera Light sensor. Part of the Ambience sensors.
+         */
+        public static final String CAMERA_LIGHT = "camera_light";
 
         /**
          * Bluetooth discovery sensor. Part of the Neighboring Devices sensors.
@@ -295,17 +305,17 @@ public class SensorData {
         /**
          * Monitor status since DTCs cleared. Part of the OBD-II sensors.
          */
-        public static final String MONITOR_STATUS = "Monitor status";
+        public static final String MONITOR_STATUS = "monitor status";
 
         /**
          * Fuel system status. Part of the OBD-II sensors.
          */
-        public static final String FUEL_SYSTEM_STATUS = "Fuel system status";
+        public static final String FUEL_SYSTEM_STATUS = "fuel system status";
 
         /**
          * Calculated engine load. Part of the OBD-II sensors.
          */
-        public static final String ENGINE_LOAD = "engine load";
+        public static final String ENGINE_LOAD = "calculated engine load value";
 
         /**
          * Engine coolant. Part of the OBD-II sensors.
@@ -375,12 +385,22 @@ public class SensorData {
         /**
          * Auxiliary input status. Part of the OBD-II sensors.
          */
-        public static final String AUXILIARY_INPUT = "Auxiliary input status";
+        public static final String AUXILIARY_INPUT = "auxiliary input status";
 
         /**
          * Run time since engine start. Part of the OBD-II sensors.
          */
-        public static final String RUN_TIME = "Run time";
+        public static final String RUN_TIME = "run time";
+
+        /**
+         * Ambient temperature sensor. From API >= 14
+         */
+        public static final String AMBIENT_TEMPERATURE = "ambient_temperature";
+        
+        /**
+         * Feedback sensor
+         */
+        public static final String LOCATION_FEEDBACK = "location feedback";
 
         private SensorNames() {
             // class should not be instantiated

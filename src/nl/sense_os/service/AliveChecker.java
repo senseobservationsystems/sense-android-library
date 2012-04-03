@@ -3,16 +3,16 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Status;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
-
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Status;
 
 public class AliveChecker extends BroadcastReceiver {
 
@@ -22,23 +22,29 @@ public class AliveChecker extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v(TAG, "Received broadcast...");
+        // Log.v(TAG, "Received broadcast");
 
         /* check if the Sense service should be alive */
-        final SharedPreferences statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
-                Context.MODE_PRIVATE);
-        final boolean alive = statusPrefs.getBoolean(Status.MAIN, false);
+        SharedPreferences statusPrefs;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                    Context.MODE_MULTI_PROCESS);
+        } else {
+            statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                    Context.MODE_PRIVATE);
+        }
+        boolean alive = statusPrefs.getBoolean(Status.MAIN, false);
 
         /* if it should be alive, check if it really is still alive */
         if (true == alive) {
-            // Log.v(TAG, "Sense should be alive, poke...");
+            Log.v(TAG, "Sense should be alive: poke it");
             final Intent serviceIntent = new Intent(
                     context.getString(R.string.action_sense_service));
             if (null == context.startService(serviceIntent)) {
                 Log.w(TAG, "Could not start Sense service!");
             }
         } else {
-            // Log.v(TAG, "Sense service should NOT be alive. Doing nothing...");
+            // Log.v(TAG, "Sense service should NOT be alive: doing nothing");
         }
     }
 

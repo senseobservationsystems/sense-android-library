@@ -12,6 +12,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.states.EpiStateMonitor;
 
 import org.json.JSONArray;
@@ -33,6 +34,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.FloatMath;
 import android.util.Log;
 
 public class MotionSensor implements SensorEventListener {
@@ -231,8 +233,8 @@ public class MotionSensor implements SensorEventListener {
             float timeStep = (System.currentTimeMillis() - prevEnergySampleTime) / 1000f;
             prevEnergySampleTime = System.currentTimeMillis();
             if (timeStep > 0 && timeStep < 1) {
-                float accLength = (float) Math.sqrt(Math.pow(linAcc[0], 2) + Math.pow(linAcc[1], 2)
-                        + Math.pow(linAcc[2], 2));
+                float accLength = FloatMath.sqrt((float) (Math.pow(linAcc[0], 2)
+                        + Math.pow(linAcc[1], 2) + Math.pow(linAcc[2], 2)));
 
                 float speedChange = accLength * timeStep;
                 // Log.v(TAG, "Speed change: " + speedChange);
@@ -278,10 +280,10 @@ public class MotionSensor implements SensorEventListener {
     }
 
     private void doFallSample(SensorEvent event) {
-        double aX = event.values[1];
-        double aY = event.values[0];
-        double aZ = event.values[2];
-        float accVecSum = (float) Math.sqrt(aX * aX + aY * aY + aZ * aZ);
+        float aX = event.values[1];
+        float aY = event.values[0];
+        float aZ = event.values[2];
+        float accVecSum = FloatMath.sqrt(aX * aX + aY * aY + aZ * aZ);
 
         if (fallDetector.fallDetected(accVecSum)) {
             sendFallMessage(true); // send msg
@@ -492,7 +494,7 @@ public class MotionSensor implements SensorEventListener {
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
             i.putExtra(DataPoint.VALUE, value);
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-            i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             context.startService(i);
 
         }
@@ -506,7 +508,7 @@ public class MotionSensor implements SensorEventListener {
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, fallDetector.demo ? "demo fall" : "human fall");
         i.putExtra(DataPoint.VALUE, fall);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.BOOL);
-        i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         context.startService(i);
     }
 
@@ -516,7 +518,7 @@ public class MotionSensor implements SensorEventListener {
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
         i.putExtra(DataPoint.VALUE, json.toString());
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         context.startService(i);
     }
 
@@ -668,6 +670,7 @@ public class MotionSensor implements SensorEventListener {
             context.stopService(new Intent(context, EpiStateMonitor.class));
         }
 
+        enableScreenOffListener(false);
         stopWakeUpAlarms();
     }
 

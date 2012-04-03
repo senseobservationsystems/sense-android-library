@@ -12,12 +12,12 @@ public class NetworkMonitor extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        Log.v(TAG, "CONNECTIVITY_CHANGE");
+        // Log.v(TAG, "CONNECTIVITY_CHANGE");
 
         ServiceStateHelper state = ServiceStateHelper.getInstance(context);
 
         if (!state.isStarted()) {
-            Log.v(TAG, "Connectivity changed, but service is not activated...");
+            // Log.v(TAG, "Connectivity changed, but service is not activated");
             return;
         }
 
@@ -28,17 +28,17 @@ public class NetworkMonitor extends BroadcastReceiver {
 
             // check that we are not logged in yet before logging in
             if (false == state.isLoggedIn()) {
-                Log.v(TAG, "Regained connectivity! Try to log in...");
+                Log.i(TAG, "Regained connectivity! Try to log in");
                 context.startService(new Intent(context.getString(R.string.action_sense_service)));
 
             } else {
                 // still connected, stay logged in
-                Log.v(TAG, "Still connected. Remaining logged in...");
+                // Log.v(TAG, "Still connected. Remain logged in");
             }
 
         } else {
             // login not possible without connection
-            Log.v(TAG, "Lost connectivity! Updating login status...");
+            Log.i(TAG, "Lost connectivity! Update login status");
             state.setLoggedIn(false);
         }
     }

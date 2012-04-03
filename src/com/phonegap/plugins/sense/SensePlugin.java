@@ -12,6 +12,7 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
 
+import org.apache.cordova.api.PluginResult.Status;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,18 +29,22 @@ import android.util.Log;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
 
 public class SensePlugin extends Plugin {
 
+    /**
+     * Standard action labels that correspond to the actions that are used in the JavaScript part of
+     * the plugin.
+     */
     private static class Actions {
+        static final String ADD_DATA_POINT = "add_data_point";
         static final String CHANGE_LOGIN = "change_login";
-        static final String LOGOUT = "logout";
         static final String GET_DATA = "get_data";
         static final String GET_STATUS = "get_status";
         static final String GET_SESSION = "get_session";
         static final String GET_PREF = "get_pref";
         static final String INIT = "init";
+        static final String LOGOUT = "logout";
         static final String REGISTER = "register";
         static final String SET_PREF = "set_pref";
         static final String TOGGLE_MAIN = "toggle_main";
@@ -62,39 +67,6 @@ public class SensePlugin extends Plugin {
             Log.v(TAG, "Connection to Sense Platform service established...");
             service = ISenseService.Stub.asInterface(binder);
             isServiceBound = true;
-
-            // only for ivitality
-            String packageName = ctx.getPackageName();
-            if (packageName.equals("nl.sense_os.ivitality")) {
-                Log.w(TAG, "Set iVitality sensor settings");
-                try {
-                    service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
-                    service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
-
-                    service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
-                    service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
-                    service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
-                    service.toggleAmbience(true);
-
-                    service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
-                    service.toggleMotion(true);
-
-                    service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.DATA_CONNECTION, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.IP_ADDRESS, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.SERVICE_STATE, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.SIGNAL_STRENGTH, false);
-                    service.setPrefBool(SensePrefs.Main.PhoneState.UNREAD_MSG, false);
-                    service.togglePhoneState(true);
-
-                    service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
-                } catch (RemoteException e) {
-                    Log.e(TAG, "Failed to init default sense setttings");
-                }
-            }
         }
 
         @Override
@@ -107,20 +79,180 @@ public class SensePlugin extends Plugin {
         }
     }
 
+    private class SenseServiceCallback extends ISenseServiceCallback.Stub {
+
+        @Override
+        public void statusReport(final int status) throws RemoteException {
+            ctx.runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    // Log.d(TAG, "Received Sense Platform service status: " + status);
+                    SensePlugin.this.success(new PluginResult(Status.OK, status),
+                            getStatusCallbackId);
+                }
+            });
+        }
+
+        @Override
+        public void onChangeLoginResult(int result) throws RemoteException {
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Change login OK");
+                success(new PluginResult(Status.OK, result), changeLoginCallbackId);
+                onLoginSuccess();
+                break;
+            case -1:
+                Log.v(TAG, "Login failed! Connectivity problems?");
+                error(new PluginResult(Status.IO_EXCEPTION,
+                        "Error logging in, probably connectivity problems."), changeLoginCallbackId);
+                break;
+            case -2:
+                Log.v(TAG, "Login failed! Invalid username or password.");
+                error(new PluginResult(Status.ERROR, "Invalid username or password."),
+                        changeLoginCallbackId);
+                break;
+            default:
+                Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
+                error(new PluginResult(Status.ERROR, "Unexpected result: " + result),
+                        changeLoginCallbackId);
+            }
+        }
+
+        @Override
+        public void onRegisterResult(int result) throws RemoteException {
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Registration OK");
+                success(new PluginResult(Status.OK, result), registerCallbackId);
+                break;
+            case -1:
+                Log.v(TAG, "Registration failed! Connectivity problems?");
+                error(new PluginResult(Status.IO_EXCEPTION, result), registerCallbackId);
+                break;
+            case -2:
+                Log.v(TAG, "Registration failed! Username already taken.");
+                error(new PluginResult(Status.ERROR, result), registerCallbackId);
+                break;
+            default:
+                Log.w(TAG, "Unexpected registration result! Unexpected registration result: "
+                        + result);
+                error(new PluginResult(Status.ERROR, result), registerCallbackId);
+                break;
+            }
+        }
+    }
+
     private static final String TAG = "PhoneGap Sense";
+
     private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
+
     private final ServiceConnection conn = new SenseServiceConn();
     private boolean isServiceBound;
     private ISenseService service;
+    private ISenseServiceCallback callback = new SenseServiceCallback();
+    private String getStatusCallbackId;
+    private String changeLoginCallbackId;
+
+    private PhoneGapSensorRegistrator sensorRegistrator;
+
+    private String registerCallbackId;
+
+    private PluginResult addDataPoint(JSONArray data, String callbackId) throws JSONException {
+
+        // get the parameters
+        final String name = data.getString(0);
+        final String displayName = data.getString(1);
+        final String description = data.getString(2);
+        final String dataType = data.getString(3);
+        final String value = data.getString(4);
+        final long timestamp = data.getLong(5);
+        Log.d(TAG, "Add data point... name: '" + name + "', display name: '" + displayName
+                + "', description: '" + description + "', data type: '" + dataType + "', value: '"
+                + value + "', timestamp: '" + timestamp + "'");
+
+        // verify sensor ID
+        if (null == sensorRegistrator) {
+            sensorRegistrator = new PhoneGapSensorRegistrator(ctx.getContext());
+        }
+        new Thread() {
+
+            @Override
+            public void run() {
+                sensorRegistrator.checkSensor(name, displayName, dataType, description, value,
+                        null, null);
+            }
+        }.start();
+
+        // send data point
+        String action = ctx.getContext().getString(
+                nl.sense_os.service.R.string.action_sense_new_data);
+        Intent intent = new Intent(action);
+        intent.putExtra(DataPoint.SENSOR_NAME, name);
+        intent.putExtra(DataPoint.DISPLAY_NAME, displayName);
+        intent.putExtra(DataPoint.SENSOR_DESCRIPTION, description);
+        intent.putExtra(DataPoint.DATA_TYPE, dataType);
+        intent.putExtra(DataPoint.VALUE, value);
+        intent.putExtra(DataPoint.TIMESTAMP, timestamp);
+        ComponentName serviceName = ctx.getContext().startService(intent);
+
+        if (null != serviceName) {
+            return new PluginResult(Status.OK);
+        } else {
+            Log.w(TAG, "Could not start MsgHandler service!");
+            return new PluginResult(Status.ERROR, "could not add data to Sense service");
+        }
+    }
+
+    private void onLoginSuccess() {
+        // special for ivitality
+        String packageName = ctx.getPackageName();
+        if (packageName.equals("nl.sense_os.ivitality")) {
+            Log.w(TAG, "Set special iVitality sensor settings");
+            try {
+                service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+                service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
+
+                service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
+                service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
+                service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
+                service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
+                service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
+                service.toggleAmbience(true);
+
+                service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
+                service.toggleMotion(true);
+
+                service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
+                service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
+                service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
+                service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.DATA_CONNECTION, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.IP_ADDRESS, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.SERVICE_STATE, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.SIGNAL_STRENGTH, false);
+                service.setPrefBool(SensePrefs.Main.PhoneState.UNREAD_MSG, false);
+                service.togglePhoneState(true);
+
+                service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to init special sense setttings for ivitality");
+            }
+        }
+    }
 
     /**
      * Binds to the Sense Service, creating it if necessary.
      */
     private void bindToSenseService() {
         if (!isServiceBound) {
-            Log.v(TAG, "Try to connect to Sense Platform service");
-            final Intent service = new Intent(ctx.getString(R.string.action_sense_service));
-            isServiceBound = ctx.bindService(service, conn, Context.BIND_AUTO_CREATE);
+            Log.v(TAG, "Try to connect with Sense Platform service");
+            final Intent service = new Intent(ctx.getContext().getString(
+                    R.string.action_sense_service));
+            isServiceBound = ctx.getContext().bindService(service, conn, Context.BIND_AUTO_CREATE);
+            if (!isServiceBound) {
+                Log.w(TAG, "Failed to connect with the Sense Platform service!");
+            }
         } else {
             // already bound
         }
@@ -133,45 +265,21 @@ public class SensePlugin extends Plugin {
         if (null != service) {
 
             // get the parameters
-            final String username = data.getString(0);
+            final String username = data.getString(0).toLowerCase();
             final String password = data.getString(1);
 
-            // Log.d(TAG, "username=" + username + ", password=" + password);
+            // Log.d(TAG, "New username: '" + username + "'");
+            // Log.d(TAG, "New password: '" + password + "'");
 
-            // try the login on a separate Thread
-            new Thread() {
-                public void run() {
-                    int result = -1;
-                    try {
-                        result = service.changeLogin(username, password);
-                    } catch (RemoteException e) {
-                        // handle result below
-                    }
+            try {
+                changeLoginCallbackId = callbackId;
+                service.changeLogin(username, password, callback);
+            } catch (RemoteException e) {
+                return new PluginResult(Status.ERROR, "Error in communcation with Sense service "
+                        + e);
+            }
 
-                    // check the result
-                    switch (result) {
-                    case 0:
-                        Log.v(TAG, "Logged in as '" + username + "'");
-                        success(new PluginResult(Status.OK, result), callbackId);
-                        break;
-                    case -1:
-                        Log.v(TAG, "Login failed! Connectivity problems?");
-                        error(new PluginResult(Status.IO_EXCEPTION,
-                                "Error logging in, probably connectivity problems."), callbackId);
-                        break;
-                    case -2:
-                        Log.v(TAG, "Login failed! Invalid username or password.");
-                        error(new PluginResult(Status.ERROR, "Invalid username or password."),
-                                callbackId);
-                        break;
-                    default:
-                        Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
-                        error(new PluginResult(Status.ERROR, "Unexpected result: " + result),
-                                callbackId);
-                    }
-                };
-            }.start();
-
+            // keep the callback ID so we can use it when the service returns
             PluginResult r = new PluginResult(Status.NO_RESULT);
             r.setKeepCallback(true);
             return r;
@@ -199,6 +307,8 @@ public class SensePlugin extends Plugin {
         try {
             if (Actions.INIT.equals(action)) {
                 return init(data, callbackId);
+            } else if (Actions.ADD_DATA_POINT.equals(action)) {
+                return addDataPoint(data, callbackId);
             } else if (Actions.CHANGE_LOGIN.equals(action)) {
                 return changeLogin(data, callbackId);
             } else if (Actions.GET_DATA.equals(action)) {
@@ -246,11 +356,6 @@ public class SensePlugin extends Plugin {
         }
     }
 
-    private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
-        service.logout();
-        return new PluginResult(Status.OK);
-    }
-
     private PluginResult getPreference(JSONArray data, String callbackId) throws JSONException,
             RemoteException {
 
@@ -289,21 +394,8 @@ public class SensePlugin extends Plugin {
 
     private PluginResult getStatus(JSONArray data, final String callbackId) throws RemoteException {
         if (null != service) {
-            service.getStatus(new ISenseServiceCallback.Stub() {
-
-                @Override
-                public void statusReport(final int status) throws RemoteException {
-                    ctx.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            // Log.d(TAG, "Received Sense Platform service status: " + status);
-                            SensePlugin.this.success(new PluginResult(Status.OK, status),
-                                    callbackId);
-                        }
-                    });
-                }
-            });
+            getStatusCallbackId = callbackId;
+            service.getStatus(callback);
         } else {
             Log.e(TAG, "No connection to the Sense Platform service.");
             return new PluginResult(Status.ERROR, "No connection to the Sense Platform service.");
@@ -321,7 +413,8 @@ public class SensePlugin extends Plugin {
         String sensorName = data.getString(0);
         JSONArray returnvalue = new JSONArray();
         try {
-            Uri url = Uri.parse("content://" + ctx.getString(R.string.local_storage_authority)
+            Uri url = Uri.parse("content://"
+                    + ctx.getContext().getString(R.string.local_storage_authority)
                     + DataPoint.CONTENT_URI_PATH);
             String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
             String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
@@ -389,9 +482,9 @@ public class SensePlugin extends Plugin {
         if (Actions.INIT.equals(action)) {
             return true;
         } else if (Actions.CHANGE_LOGIN.equals(action)) {
-            return true;
+            return false;
         } else if (Actions.REGISTER.equals(action)) {
-            return true;
+            return false;
         } else if (Actions.GET_STATUS.equals(action)) {
             return true;
         } else if (Actions.GET_PREF.equals(action)) {
@@ -412,6 +505,11 @@ public class SensePlugin extends Plugin {
         } else {
             return super.isSynch(action);
         }
+    }
+
+    private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
+        service.logout();
+        return new PluginResult(Status.OK);
     }
 
     /**
@@ -441,10 +539,10 @@ public class SensePlugin extends Plugin {
         }
 
         // do the registration
-        int result = -1;
         if (null != service) {
             try {
-                result = service.register(username, password, name, surname, email, phone);
+                registerCallbackId = callbackId;
+                service.register(username, password, name, surname, email, phone, callback);
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException while trying to register", e);
                 return new PluginResult(Status.ERROR, e.getMessage());
@@ -454,27 +552,10 @@ public class SensePlugin extends Plugin {
             return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
         }
 
-        // check the result
-        Status status = null;
-        switch (result) {
-        case 0:
-            Log.v(TAG, "Registered '" + username + "'");
-            status = Status.OK;
-            break;
-        case -1:
-            Log.v(TAG, "Registration failed! Connectivity problems?");
-            status = Status.IO_EXCEPTION;
-            break;
-        case -2:
-            Log.v(TAG, "Registration failed! Username already taken.");
-            status = Status.ERROR;
-            break;
-        default:
-            Log.w(TAG, "Unexpected registration result! Unexpected registration result: " + result);
-            status = Status.ERROR;
-            break;
-        }
-        return new PluginResult(status, result);
+        // keep the callback ID so we can use it when the service returns
+        PluginResult r = new PluginResult(Status.NO_RESULT);
+        r.setKeepCallback(true);
+        return r;
     }
 
     private PluginResult setPreference(JSONArray data, String callbackId) throws JSONException,
@@ -500,10 +581,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleAmbience(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle ambience sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
 
         // do the call
         if (null != service) {
@@ -518,10 +599,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleExternal(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle external sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " external sensors");
 
         // do the call
         if (null != service) {
@@ -536,10 +617,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleMain(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle main status");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " main status");
 
         // do the call
         if (null != service) {
@@ -554,10 +635,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleMotion(JSONArray data, String callbackId) throws RemoteException,
             JSONException {
-        Log.v(TAG, "Toggle motion sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " motion sensors");
 
         // do the call
         if (null != service) {
@@ -572,10 +653,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult toggleNeighboringDevices(JSONArray data, String callbackId)
             throws JSONException, RemoteException {
-        Log.v(TAG, "Toggle neighboring devices sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " neighboring devices sensors");
 
         // do the call
         if (null != service) {
@@ -590,10 +671,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult togglePhoneState(JSONArray data, String callbackId) throws JSONException,
             RemoteException {
-        Log.v(TAG, "Toggle phone state sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
 
         // do the call
         if (null != service) {
@@ -608,10 +689,10 @@ public class SensePlugin extends Plugin {
 
     private PluginResult togglePosition(JSONArray data, String callbackId) throws JSONException,
             RemoteException {
-        Log.v(TAG, "Toggle position sensors");
 
         // get the argument
         boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " position sensors");
 
         // do the call
         if (null != service) {
@@ -630,7 +711,7 @@ public class SensePlugin extends Plugin {
     private void unbindFromSenseService() {
         if (true == isServiceBound && null != conn) {
             Log.v(TAG, "Unbind from Sense Platform service");
-            ctx.unbindService(conn);
+            ctx.getContext().unbindService(conn);
         } else {
             // already unbound
         }

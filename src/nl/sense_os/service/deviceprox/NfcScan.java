@@ -10,9 +10,11 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -42,6 +44,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+@TargetApi(10)
 public class NfcScan extends Activity {
 
     private class ParseTask extends AsyncTask<Tag, Void, Boolean> {
@@ -147,7 +150,7 @@ public class NfcScan extends Activity {
             break;
         default:
             Log.w(TAG, "Unexpected dialog ID: " + id);
-            dialog = super.onCreateDialog(id);
+            dialog = onCreateDialog(id, null);
         }
         return dialog;
     }
@@ -312,7 +315,7 @@ public class NfcScan extends Activity {
         dataPoint.putExtra(DataPoint.SENSOR_NAME, SensorNames.NFC_SCAN);
         dataPoint.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.NFC_SCAN);
         dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        dataPoint.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+        dataPoint.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         dataPoint.putExtra(DataPoint.VALUE, value);
         startService(dataPoint);
     }

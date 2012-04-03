@@ -12,6 +12,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.NotificationCompat;
 
 public class ServiceStateHelper {
 
@@ -55,6 +56,8 @@ public class ServiceStateHelper {
 
     public Notification getStateNotification() {
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
         // icon and content text depend on the current state
         int icon = -1;
         int contentText = -1;
@@ -75,28 +78,36 @@ public class ServiceStateHelper {
                 contentText = R.string.stat_notify_content_off_loggedout;
             }
         }
+        builder.setSmallIcon(icon);
 
         // username will be substituted into the content text
         final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
                 Context.MODE_PRIVATE);
         String username = authPrefs.getString(Auth.LOGIN_USERNAME,
                 context.getString(android.R.string.unknownName));
+        builder.setContentText(context.getString(contentText, username));
+        builder.setContentTitle(context.getString(R.string.stat_notify_title));
 
         // action to take when the notification is tapped
         final Intent notifIntent = new Intent(context.getString(R.string.stat_notify_action));
-        notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         final PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notifIntent, 0);
+        builder.setContentIntent(contentIntent);
 
         // time of the notification
-        final long when = System.currentTimeMillis();
+        builder.setWhen(System.currentTimeMillis());
+        builder.setOngoing(true);
 
         // create the notification
-        Notification note = new Notification(icon, null, when);
-        note.flags = Notification.FLAG_NO_CLEAR;
-        note.setLatestEventInfo(context, context.getString(R.string.stat_notify_title),
-                context.getString(contentText, username), contentIntent);
+        // Notification note = new Notification(icon, null, System.currentTimeMillis());
+        // note.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        // note.setLatestEventInfo(context, context.getString(R.string.stat_notify_title),
+        // context.getString(contentText, username), contentIntent);
 
-        return note;
+        // Log.e(TAG, "-----> Notify: " + (isStarted() ? "started" : "NOT started") + "; "
+        // + (isLoggedIn() ? "logged in" : "NOT logged in"));
+
+        return builder.getNotification();
     }
 
     /**

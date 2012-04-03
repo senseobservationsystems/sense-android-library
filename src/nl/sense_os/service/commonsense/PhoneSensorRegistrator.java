@@ -10,13 +10,14 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.nfc.NfcManager;
 import android.os.Build;
-import android.util.Log;
 
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
@@ -27,15 +28,16 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         super(context);
     }
 
-    private static final String TAG = "Sensor Registration";
+    // private static final String TAG = "Sensor Registration";
 
     /**
-     * Checks the IDs for light, noise, pressure sensors.
+     * Checks the IDs for light, camera light, noise, pressure sensors.
      * 
      * @param context
      *            Context for communication with CommonSense.
      * @return true if all sensor IDs are found or created
      */
+    @TargetApi(9)
     private boolean checkAmbienceSensors() {
 
         // preallocate objects
@@ -57,7 +59,25 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             value = new JSONObject(dataFields).toString();
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {
-            Log.w(TAG, "No light sensor present!");
+            // Log.v(TAG, "No light sensor present!");
+        }
+
+        // match camera light sensor (only for Android < 4.0)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            // multiple camera support starting from Android 2.3
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+                for (int camera_id = 0; camera_id < Camera.getNumberOfCameras(); ++camera_id) {
+                    name = SensorNames.CAMERA_LIGHT;
+                    displayName = "Camera Light";
+                    description = "camera " + camera_id + " average luminance";
+                    dataType = SenseDataTypes.JSON;
+                    dataFields.clear();
+                    dataFields.put("lux", 0);
+                    value = new JSONObject(dataFields).toString();
+                    success &= checkSensor(name, displayName, dataType, description, value, null,
+                            null);
+                }
+            }
         }
 
         // match noise sensor
@@ -68,6 +88,18 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         value = "0.0";
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
+        // match noise spectrum
+        name = SensorNames.AUDIO_SPECTRUM;
+        displayName = "audio spectrum";
+        description = "audio spectrum (dB)";
+        dataType = SenseDataTypes.JSON;
+        dataFields.clear();
+        for (int i = 1; i < 23; i++) {
+            dataFields.put(i + " kHz", 0);
+        }
+        value = new JSONObject(dataFields).toString();
+        success &= checkSensor(name, displayName, dataType, description, value, null, null);
+
         // match pressure sensor
         sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
         if (null != sensor) {
@@ -76,11 +108,27 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             description = sensor.getName();
             dataType = SenseDataTypes.JSON;
             dataFields.clear();
-            dataFields.put("newton", 0);
+            dataFields.put("millibar", 0);
             value = new JSONObject(dataFields).toString();
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {
-            Log.w(TAG, "No pressure sensor present!");
+            // Log.v(TAG, "No pressure sensor present!");
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            sensor = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            if (null != sensor) {
+                name = SensorNames.AMBIENT_TEMPERATURE;
+                displayName = "ambient temperature";
+                description = sensor.getName();
+                dataType = SenseDataTypes.JSON;
+                dataFields.clear();
+                dataFields.put("celsius", 0);
+                value = new JSONObject(dataFields).toString();
+                success &= checkSensor(name, displayName, dataType, description, value, null, null);
+            } else {
+                // Log.v(TAG, "No ambient temperature sensor present!");
+            }
         }
 
         return success;
@@ -91,6 +139,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
      * 
      * @return true if all sensor IDs are found or created
      */
+    @TargetApi(10)
     private boolean checkDeviceScanSensors() {
 
         // preallocate objects
@@ -125,7 +174,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         // match NFC scan
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcManager nm = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
             if (null != nm.getDefaultAdapter()) {
                 name = SensorNames.NFC_SCAN;
@@ -243,7 +292,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             }
 
         } else {
-            Log.w(TAG, "No accelerometer present!");
+            // Log.v(TAG, "No accelerometer present!");
         }
 
         // match linear acceleration sensor
@@ -263,7 +312,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
                 success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
             } else {
-                Log.w(TAG, "No linear acceleration sensor present!");
+                // Log.v(TAG, "No linear acceleration sensor present!");
             }
         }
 
@@ -282,7 +331,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         } else {
-            Log.w(TAG, "No orientation sensor present!");
+            // Log.v(TAG, "No orientation sensor present!");
         }
 
         // match gyroscope
@@ -300,7 +349,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
         } else {
-            Log.w(TAG, "No gyroscope present!");
+            // Log.v(TAG, "No gyroscope present!");
         }
 
         return success;
@@ -354,7 +403,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
             value = new JSONObject(dataFields).toString();
             success &= checkSensor(name, displayName, dataType, description, value, null, null);
         } else {
-            Log.w(TAG, "No proximity sensor present!");
+            // Log.v(TAG, "No proximity sensor present!");
         }
 
         // match call state
@@ -400,7 +449,7 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         value = "string";
         success &= checkSensor(name, displayName, dataType, description, value, null, null);
 
-        // match servie state
+        // match service state
         name = SensorNames.SERVICE_STATE;
         displayName = SensorNames.SERVICE_STATE;
         description = SensorNames.SERVICE_STATE;
@@ -426,13 +475,35 @@ public class PhoneSensorRegistrator extends SensorRegistrator {
         return success;
     }
 
+    /**
+     * Checks the ID for the feedback sensor
+     * 
+     * @return true if the sensor ID is found or created
+     */
+    private boolean checkLocationFeedbackSensor() {
+
+        // match location sensor
+        String name = SensorNames.LOCATION_FEEDBACK;
+        String displayName = SensorNames.LOCATION_FEEDBACK;
+        String description = SensorNames.LOCATION_FEEDBACK;
+        String dataType = SenseDataTypes.JSON;
+        HashMap<String, Object> dataFields = new HashMap<String, Object>();
+        dataFields.put("location", "string");
+        dataFields.put("comment", "string");
+        dataFields.put("duration", 1.0);
+        String value = new JSONObject(dataFields).toString();
+        return checkSensor(name, displayName, dataType, description, value, null, null);
+    }
+
     @Override
-    public boolean verifySensorIds(String deviceType, String deviceUuid) {
+    public synchronized boolean verifySensorIds(String deviceType, String deviceUuid) {
         boolean success = checkAmbienceSensors();
         success &= checkDeviceScanSensors();
         success &= checkLocationSensors();
         success &= checkMotionSensors();
         success &= checkPhoneStateSensors();
+        // FIXME: ugly hack, we shouldn't created this sensor by default
+        success &= checkLocationFeedbackSensor();
         return success;
     }
 }

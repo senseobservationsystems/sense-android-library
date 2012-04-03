@@ -3,32 +3,38 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.Calendar;
+
+import nl.sense_os.service.MsgHandler;
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
+
+import org.json.JSONObject;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-
-import nl.sense_os.service.MsgHandler;
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-
-import java.io.File;
-import java.math.BigDecimal;
 
 public class NoiseSensor extends PhoneStateListener {
 
@@ -48,7 +54,7 @@ public class NoiseSensor extends PhoneStateListener {
             }
 
             // start sample job
-            if (isEnabled && listenInterval != -1) {
+            if (isEnabled /* && listenInterval != -1 */) {
                 noiseSampleJob = new NoiseSampleJob();
                 noiseSampleHandler.post(noiseSampleJob);
             }
@@ -62,22 +68,27 @@ public class NoiseSensor extends PhoneStateListener {
      */
     private class NoiseSampleJob implements Runnable {
 
-        private static final int DEFAULT_SAMPLE_RATE = 8000;
+        private static final int DEFAULT_SAMPLE_RATE = 44100;
         /*
          * samples per second * 2 seconds, 2 bytes
          */
-        private static final int BUFFER_SIZE = DEFAULT_SAMPLE_RATE * 2 * 2;
         private static final int RECORDING_TIME_NOISE = 2000;
+        private static final int BYTES_PER_SAMPLE = 2;
+        private static final int BUFFER_SIZE = (int) ((float) DEFAULT_SAMPLE_RATE
+                * (float) BYTES_PER_SAMPLE * ((float) RECORDING_TIME_NOISE / 1000f));
         private AudioRecord audioRecord;
+        private int FFT_BANDWITH_RESOLUTION = 100;
+        private int FFT_MAX_HZ = 10000;
+        private double FFT_WINDOW_LENGTH = 0.05; // the actual window might be shorter to fit a
+                                                 // power of 2
 
         /**
-         * @param buffer
-         *            The sound bytes to calculate the power for.
-         * @param readBytes
-         *            The number of usable bytes in the buffer.
+         * @param samples
+         *            The sound data float values to calculate the power for.
+         * 
          * @return the noise power of the current buffer. In case of an error, -1 is returned.
          */
-        private double calculateDb(byte[] buffer, int readBytes) {
+        private double calculateDb(float[] samples) {
 
             double dB = 0;
             try {
@@ -86,27 +97,94 @@ public class NoiseSensor extends PhoneStateListener {
                     return -1;
                 }
 
-                if (readBytes <= 0) {
-                    Log.e(TAG, "Error reading AudioRecord buffer: " + readBytes);
+                if (samples.length <= 0) {
+                    Log.e(TAG, "Error reading AudioRecord buffer: " + samples.length);
                     return -1;
                 }
                 double ldb = 0;
-                for (int x = 0; x < readBytes - 1; x = x + 2) {
-                    // it looks like little endian
-                    double val = buffer[x + 1] << 8 | buffer[x];
-                    ldb += val * val;
-                    // dB += Math.abs(buffer[x]);
+                for (int x = 0; x < samples.length; ++x) {
+                    ldb += ((double) samples[x] * (double) samples[x]);
                 }
 
-                ldb /= (double) readBytes / 2;
-                dB = 20.0 * Math.log10(Math.sqrt(ldb));
+                ldb /= (double) samples.length;
+                dB = 10.0 * Math.log10(ldb);
 
             } catch (Exception e) {
                 Log.e(TAG, "Exception calculating noise Db!", e);
                 return -1;
             }
 
+            // Log.v(TAG, "noise in db " + dB);
             return dB;
+        }
+
+        // java versions before 6 don't have Arrays.copyOfRange, so make our own
+        private float[] copyOfRange(float[] array, int start, int end) {
+            if (end < start || start < 0)
+                throw new IndexOutOfBoundsException(); // isn't there a RangeException??
+            if (array.length < end - start)
+                throw new IndexOutOfBoundsException();
+            float[] copy = new float[end - start];
+            for (int i = start, j = 0; i < end; i++, j++)
+                copy[j] = array[i];
+
+            return copy;
+        }
+
+        private double[] calculateSpectrum(float[] samples) {
+            // nr of bands for the fft
+            int nrBands = (int) Math.ceil(1.0 * DEFAULT_SAMPLE_RATE / 2 / FFT_BANDWITH_RESOLUTION);
+            // nr bins that we're actually interested in (discard high frequencies)
+            int nrBins = (int) Math.ceil(1.0 * FFT_MAX_HZ / FFT_BANDWITH_RESOLUTION);
+
+            // create bins
+            double[] bins = new double[nrBins];
+            for (int i = 0; i < bins.length; i++) {
+                bins[i] = 0;
+            }
+
+            // /window the samples, and sum the fft over all windows
+            int start = 0;
+            // number of samples per window should be a power of 2
+            int nrSamplesPerWindow = (int) Math.pow(2,
+                    (int) (Math.log(FFT_WINDOW_LENGTH * DEFAULT_SAMPLE_RATE) / Math.log(2)));
+            int iterations = 0;
+            while (start + nrSamplesPerWindow < samples.length) {
+                FFT fft = new FFT(nrSamplesPerWindow, DEFAULT_SAMPLE_RATE);
+                fft.linAverages(nrBands);
+                fft.forward(copyOfRange(samples, start, start + nrSamplesPerWindow));
+                // add to bins
+                for (int i = 0; i < bins.length; i++) {
+                    bins[i] += fft.getAvg(i);
+                }
+                iterations++;
+                start += nrSamplesPerWindow / 2; // 50% overlapping windows
+            }
+            if (iterations > 0) {
+                for (int i = 0; i < bins.length; i++) {
+                    bins[i] /= iterations; // TODO: normalise?
+                    bins[i] = 10.0 * Math.log10(bins[i]);
+                }
+            }
+
+            return bins;
+        }
+
+        private float[] audioToFloat(byte[] buffer, int readBytes) {
+            float[] samples = new float[readBytes / 2];
+            int cnt = 0;
+            for (int x = 0; x < readBytes - 1; x = x + 2) {
+                double sample = 0;
+                for (int b = 0; b < BYTES_PER_SAMPLE; b++) {
+                    int v = (int) buffer[x + b];
+                    if (b < BYTES_PER_SAMPLE - 1 || BYTES_PER_SAMPLE == 1) {
+                        v &= 0xFF;
+                    }
+                    sample += v << (b * 8);
+                }
+                samples[cnt++] = (float) sample;
+            }
+            return samples;
         }
 
         /**
@@ -117,7 +195,8 @@ public class NoiseSensor extends PhoneStateListener {
 
             if (null != audioRecord) {
                 Log.w(TAG, "AudioRecord object is already present! Releasing it...");
-                // release the audioRecord object and stop any recordings that are running
+                // release the audioRecord object and stop any recordings that
+                // are running
                 stopSampling();
             }
 
@@ -125,21 +204,13 @@ public class NoiseSensor extends PhoneStateListener {
             try {
                 int audioSource = -1, channelConfig = -1;
                 if (isCalling) {
-                    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.ECLAIR) {
-                        audioSource = MediaRecorder.AudioSource.VOICE_UPLINK;
-                        channelConfig = AudioFormat.CHANNEL_CONFIGURATION_DEFAULT;
-                    } else {
-                        audioSource = MediaRecorder.AudioSource.VOICE_UPLINK;
-                        channelConfig = AudioFormat.CHANNEL_IN_DEFAULT;
-                    }
+                    audioSource = MediaRecorder.AudioSource.VOICE_UPLINK;
+                    channelConfig = AudioFormat.CHANNEL_IN_DEFAULT;
+
                 } else {
-                    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.ECLAIR) {
-                        audioSource = MediaRecorder.AudioSource.MIC;
-                        channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
-                    } else {
-                        audioSource = MediaRecorder.AudioSource.MIC;
-                        channelConfig = AudioFormat.CHANNEL_IN_MONO;
-                    }
+                    audioSource = MediaRecorder.AudioSource.MIC;
+                    channelConfig = AudioFormat.CHANNEL_IN_MONO;
+
                 }
                 audioRecord = new AudioRecord(audioSource, DEFAULT_SAMPLE_RATE, channelConfig,
                         AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
@@ -170,12 +241,13 @@ public class NoiseSensor extends PhoneStateListener {
                 boolean init = initAudioRecord();
 
                 if (init) {
-
+                    long startTimestamp = SNTP.getInstance().getTime();
                     try {
                         Log.i(TAG, "Start recording for sound level measurement...");
                         audioRecord.startRecording();
 
-                        // schedule task to stop recording and calculate the noise
+                        // schedule task to stop recording and calculate the
+                        // noise
                         long now = System.currentTimeMillis();
                         byte[] totalBuffer = new byte[BUFFER_SIZE];
                         int readCount = 0;
@@ -197,13 +269,19 @@ public class NoiseSensor extends PhoneStateListener {
                             }
                         }
 
-                        double dB = calculateDb(totalBuffer, readCount);
+                        float[] samples = audioToFloat(totalBuffer, readCount);
+                        double dB = -1;
+                        double[] spectrum = null;
+                        if (samples != null) {
+                            SharedPreferences mainPrefs = context.getSharedPreferences(
+                                    SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+                            if (mainPrefs.getBoolean(Ambience.MIC, true))
+                                dB = calculateDb(samples);
+                            if (mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true))
+                                spectrum = calculateSpectrum(samples);
+                        }
 
-                        if (dB < 0 || Double.valueOf(dB).isNaN()) {
-                            // there was an error calculating the noise power
-                            Log.w(TAG, "Impossible noise value: " + dB + ". No new data point.");
-
-                        } else {
+                        if (dB != -1 && !Double.valueOf(dB).isNaN()) {
                             // Log.v(TAG, "Sampled noise level: " + dB);
 
                             // pass message to the MsgHandler
@@ -213,7 +291,33 @@ public class NoiseSensor extends PhoneStateListener {
                             sensorData.putExtra(DataPoint.VALUE,
                                     BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
                             sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-                            sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                            sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
+                            context.startService(sensorData);
+                        }
+
+                        if (spectrum != null) {
+                            JSONObject jsonSpectrum = new JSONObject();
+
+                            for (int i = 0; i < spectrum.length; i++) {
+                                String bandString = ((i + 1) * 100) + "Hz";
+                                if (spectrum[i] == Double.POSITIVE_INFINITY)
+                                    jsonSpectrum.put(bandString, 140); // max db
+                                else if (spectrum[i] != Double.NaN
+                                        && spectrum[i] != Double.NEGATIVE_INFINITY)
+                                    jsonSpectrum.put(bandString, spectrum[i]); // nothing on the
+                                                                               // hand
+                                else
+                                    jsonSpectrum.put(bandString, 0); // nan or to low value
+                            }
+
+                            Intent sensorData = new Intent(
+                                    context.getString(R.string.action_sense_new_data));
+                            sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.AUDIO_SPECTRUM);
+                            sensorData
+                                    .putExtra(DataPoint.SENSOR_DESCRIPTION, "audio spectrum (dB)");
+                            sensorData.putExtra(DataPoint.VALUE, jsonSpectrum.toString());
+                            sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+                            sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
                             context.startService(sensorData);
                         }
 
@@ -221,6 +325,28 @@ public class NoiseSensor extends PhoneStateListener {
                         Log.e(TAG, "Exception starting noise recording!", e);
                     } finally {
                         stopRecording();
+                        // if real time, post, since alarm won't repeat
+                        if (listenInterval == -1) {
+                            /*
+                             * Some code to align on the second, but it doesn't seem to work :-(
+                             * Calendar now = Calendar.getInstance(); // calculate offset of the
+                             * local clock int offset = (int) (System.currentTimeMillis() - SNTP
+                             * .getInstance().getTime()); // align the start time on a second
+                             * Calendar startTime = (Calendar) now.clone();
+                             * startTime.set(Calendar.SECOND, 0);
+                             * startTime.set(Calendar.MILLISECOND, 0); // correct for the difference
+                             * in local time and ntp // time startTime.roll(Calendar.MILLISECOND,
+                             * offset);
+                             * 
+                             * // advance to the next second until the start time // is at least 100
+                             * ms in the future while (startTime.getTimeInMillis() -
+                             * now.getTimeInMillis() <= 100) { startTime.roll(Calendar.SECOND, 1); }
+                             * noiseSampleJob = new NoiseSampleJob();
+                             * noiseSampleHandler.postAtTime(noiseSampleJob,
+                             * startTime.getTimeInMillis());
+                             */
+                            noiseSampleHandler.post(noiseSampleJob);
+                        }
                     }
 
                 } else {
@@ -228,7 +354,8 @@ public class NoiseSensor extends PhoneStateListener {
                 }
 
             } else {
-                // Log.v(TAG, "Did not start recording: noise sensor is disabled...");
+                // Log.v(TAG,
+                // "Did not start recording: noise sensor is disabled...");
             }
         }
 
@@ -262,6 +389,7 @@ public class NoiseSensor extends PhoneStateListener {
      * Runnable that starts one sound stream recording. Afterwards, the recording is sent to the
      * {@link MsgHandler}. Also schedules the next sample job.
      */
+    @SuppressWarnings("unused")
     private class SoundStreamJob implements Runnable {
 
         private static final int MAX_FILES = 60;
@@ -315,7 +443,8 @@ public class NoiseSensor extends PhoneStateListener {
                                 // recording is done, upload file
                                 recorder.stop();
                                 recorder.reset();
-                                // wait until finished otherwise it will be overwritten
+                                // wait until finished otherwise it will be
+                                // overwritten
                                 SoundStreamJob tmp = soundStreamJob;
 
                                 // pass message to the MsgHandler
@@ -324,14 +453,15 @@ public class NoiseSensor extends PhoneStateListener {
                                 i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MIC);
                                 i.putExtra(DataPoint.VALUE, fileName);
                                 i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
-                                i.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+                                i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
                                 context.startService(i);
 
-                                if (isEnabled && listenInterval == -1 && tmp.equals(soundStreamJob)) {
-                                    fileCounter = ++fileCounter % MAX_FILES;
-                                    soundStreamJob = new SoundStreamJob(fileCounter);
-                                    soundStreamHandler.post(soundStreamJob);
-                                }
+                                /*
+                                 * if (isEnabled && listenInterval == -1 &&
+                                 * tmp.equals(soundStreamJob)) { fileCounter = ++fileCounter %
+                                 * MAX_FILES; soundStreamJob = new SoundStreamJob(fileCounter);
+                                 * soundStreamHandler.post(soundStreamJob); }
+                                 */
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -362,7 +492,8 @@ public class NoiseSensor extends PhoneStateListener {
                     // probably already stopped
                 }
 
-                // if we reset, we can reuse the object by going back to setAudioSource() step
+                // if we reset, we can reuse the object by going back to
+                // setAudioSource() step
                 recorder.reset();
 
                 // if we release instead of reset, the object cannot be reused
@@ -414,7 +545,8 @@ public class NoiseSensor extends PhoneStateListener {
         listenInterval = interval;
         isEnabled = true;
 
-        // registering the phone state listener will trigger a call to startListening()
+        // registering the phone state listener will trigger a call to
+        // startListening()
         TelephonyManager telMgr = (TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telMgr.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
@@ -489,24 +621,42 @@ public class NoiseSensor extends PhoneStateListener {
         try {
 
             // different job if the listen interval is "real-time"
-            if (listenInterval == -1) {
+            /*
+             * if (listenInterval == -1) {
+             * 
+             * // start recording if (soundStreamJob != null) {
+             * soundStreamHandler.removeCallbacks(soundStreamJob); } soundStreamJob = new
+             * SoundStreamJob(0); soundStreamHandler.post(soundStreamJob); } else
+             */{
 
-                // start recording
-                if (soundStreamJob != null) {
-                    soundStreamHandler.removeCallbacks(soundStreamJob);
+                Calendar now = Calendar.getInstance();
+                // calculate offset of the local clock
+                int offset = (int) (System.currentTimeMillis() - SNTP.getInstance().getTime());
+                // align the start time on the minute of ntp time
+                Calendar startTime = (Calendar) now.clone();
+                startTime.set(Calendar.SECOND, 0);
+                startTime.set(Calendar.MILLISECOND, 0);
+                // correct for the difference in local time and ntp time
+                startTime.roll(Calendar.MILLISECOND, offset);
+
+                // int align = listenInterval - (startTime.get(Calendar.SECOND)
+                // * 1000 % listenInterval);
+                // startTime.roll(Calendar.MILLISECOND, align);
+                // advance to the next minute until the start time is at least
+                // 100 ms in the future
+                while (startTime.getTimeInMillis() - now.getTimeInMillis() <= 100) {
+                    startTime.roll(Calendar.MINUTE, 1);
                 }
-                soundStreamJob = new SoundStreamJob(0);
-                soundStreamHandler.post(soundStreamJob);
-            } else {
 
                 context.registerReceiver(alarmReceiver, new IntentFilter(ACTION_NOISE));
-
                 Intent alarm = new Intent(ACTION_NOISE);
                 PendingIntent alarmOperation = PendingIntent.getBroadcast(context, REQID, alarm, 0);
                 AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 mgr.cancel(alarmOperation);
-                mgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+                mgr.setRepeating(AlarmManager.RTC_WAKEUP, startTime.getTimeInMillis(),
                         listenInterval, alarmOperation);
+                Log.v(TAG, "Start at second " + startTime.get(Calendar.SECOND) + ", offset is "
+                        + offset);
             }
 
         } catch (Exception e) {
