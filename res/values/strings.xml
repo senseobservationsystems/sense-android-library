@@ -6,7 +6,6 @@
     
      <!-- OVERRIDE INTENT ACTIONS FOR BUNDLED SENSE PLATFORM (ALSO CHANGE IN MANIFEST!!) -->
     <string name="action_sense_app">nl.sense_os.pgtest.SenseApp</string>
-    <string name="action_sense_settings">nl.sense_os.pgtest.SenseSettings</string>
     <string name="action_sense_service">nl.sense_os.pgtest.SenseService</string>
     <string name="action_sense_new_data">nl.sense_os.pgtest.MsgHandler.NEW_DATA</string>
     <string name="action_sense_send_data">nl.sense_os.pgtest.MsgHandler.SEND_DATA</string>
@@ -15,18 +14,6 @@
     <string name="action_sense_alive_check_alarm">nl.sense_os.pgtest.AliveCheck</string>
     <string name="action_sense_data_transmit_alarm">nl.sense_os.pgtest.DataTransmit</string> 
     <string name="action_widget_update">nl.sense_os.pgtest.AppWidgetUpdate</string>
-    <string name="action_widget_start_phone_state">nl.sense_os.pgtest.StartPhoneState</string>
-    <string name="action_widget_start_location">nl.sense_os.pgtest.StartLocation</string>
-    <string name="action_widget_start_motion">nl.sense_os.pgtest.StartMotion</string>
-    <string name="action_widget_start_ambience">nl.sense_os.pgtest.StartAmbience</string>
-    <string name="action_widget_start_devices">nl.sense_os.pgtest.StartDevices</string>
-    <string name="action_widget_start_external">nl.sense_os.pgtest.StartExternal</string>
-    <string name="action_widget_stop_phone_state">nl.sense_os.pgtest.StopPhoneState</string>
-    <string name="action_widget_stop_location">nl.sense_os.pgtest.StopLocation</string>
-    <string name="action_widget_stop_motion">nl.sense_os.pgtest.StopMotion</string>
-    <string name="action_widget_stop_ambience">nl.sense_os.pgtest.StopAmbience</string>
-    <string name="action_widget_stop_devices">nl.sense_os.pgtest.StopDevices</string>
-    <string name="action_widget_stop_external">nl.sense_os.pgtest.StopExternal</string>
     
     <string name="stat_notify_action">nl.sense_os.pgtest.NOTIFICATION</string>
     <string name="stat_notify_title">PhoneGap Test</string>
