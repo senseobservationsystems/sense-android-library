@@ -20,6 +20,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -63,25 +64,28 @@ public class NfcScan extends FragmentActivity {
             builder.setIcon(android.R.drawable.ic_dialog_alert);
             builder.setTitle(R.string.nfc_dialog_title);
             builder.setMessage(getString(R.string.nfc_dialog_msg, tagId));
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     submit();
                 }
             });
-            builder.setNegativeButton(android.R.string.cancel, null);
-
-            Dialog dialog = builder.create();
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            builder.setNegativeButton(android.R.string.cancel, new OnClickListener() {
 
                 @Override
-                public void onDismiss(DialogInterface dialog) {
-                    Log.v(TAG, "Dialog dismissed...");
-                    finish();
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
                 }
             });
-            return dialog;
+
+            return builder.create();
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            Log.v(TAG, "Dialog dismissed...");
+            finish();
         }
     }
 
