@@ -98,11 +98,43 @@ SensePlatform.prototype.logout = function(successCallback, failureCallback) {
  * 
  * @return JSONArray containing data
  */
-SensePlatform.prototype.getData = function(name, successCallback, failureCallback) {
+SensePlatform.prototype.getRemoteData = function(name, successCallback, failureCallback) {
+    if (!window.plugins.sense.isInitialized) {
+        window.plugins.sense.init();
+    }
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_commonsense_data', [ name ]);
+};
+
+
+/**
+ * @param name
+ *            String containing sensor name to lookup
+ * @param successCallback
+ *            The callback which will be called when sensor data was retrieved
+ * @param failureCallback
+ *            The callback which will be called when execution fails
+ * 
+ * @return JSONArray containing data
+ */
+SensePlatform.prototype.getLocalData = function(name, successCallback, failureCallback) {
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
     return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_data', [ name ]);
+};
+/**
+ * @param name
+ *            String containing sensor name to lookup
+ * @param successCallback
+ *            The callback which will be called when sensor data was retrieved
+ * @param failureCallback
+ *            The callback which will be called when execution fails
+ * 
+ * @return JSONArray containing data
+ * @deprecated use getLocalData instead
+ */
+SensePlatform.prototype.getData = function(name, successCallback, failureCallback) {    
+    return window.plugins.sense.getLocalData(name, successCallback, failureCallback);
 };
 
 /**

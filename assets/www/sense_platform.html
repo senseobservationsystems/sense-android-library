@@ -90,23 +90,34 @@
             function(r){alert('toggleExternal(false): ' + r)},
             function(e){alert('toggleExternal(false) error: ' + e)});">Stop external sensors</a>
             
-         <a class="btn large" onclick="window.plugins.sense.addDataPoint('pgsensor', 
+        <a class="btn large" onclick="window.plugins.sense.addDataPoint('pgsensor', 
             'PhoneGap sensor', 'PhoneGap', 'string', 'foo', new Date().getTime(), 
             function(r){
             alert('Data point stored');
             },
             function(e){alert('addDataPoint error: ' + e)});">Add data point for 'pgsensor'</a>  
             
-         <a class="btn large" onclick="window.plugins.sense.getData('pgsensor',
+        <a class="btn large" onclick="window.plugins.sense.getLocalData('pgsensor',
             function(r){
             var output = '';
             for (var i=0; i<r.length; i++) {
                 var dataPoint = r[i];
-                output += '\n' + i + ': ' + dataPoint['value']+';';
+                output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['timestamp'] + ';';
             }
             alert('\'pgsensor\' data: ' + output);
             },
-            function(e){alert('getData error: ' + e)});">Get 'pgsensor' data</a>  
+            function(e){alert('getData error: ' + e)});">Get local 'pgsensor' data</a>
+            
+        <a class="btn large" onclick="window.plugins.sense.getRemoteData('pgsensor',
+            function(r){
+            var output = '';
+            for (var i=0; i<r.length; i++) {
+                var dataPoint = r[i];
+                output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['timestamp'] + ';';
+            }
+            alert('\'pgsensor\' data: ' + output);
+            },
+            function(e){alert('getData error: ' + e)});">Get 'pgsensor' data from CommonSense</a>  
             
         <a class="btn large" onclick="window.plugins.sense.flushBuffer(
             function(r){alert('Data sent to CommonSense');},
@@ -130,8 +141,12 @@
             },
             function(e){console.log('getStatus() error: ' + e)});">Get status</a>
         <a class="btn large" onclick="window.plugins.sense.getSessionId(
-            function(r){alert('getSessionId(): ' + r);},
-            function(e){alert('getSessionId() error: ' + e);">Get session ID</a>     
+            function(r){
+                alert('getSessionId(): ' + r);
+            },
+            function(e){
+                alert('getSessionId() error: ' + e);
+            });">Get session ID</a>     
         <div id="viewport" class="viewport" style="display: none;">       
             <img style="width:60px;height:60px" id="test_img" src="" alt="" />
         </div> 

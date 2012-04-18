@@ -114,8 +114,7 @@
         </activity>
 
         <receiver
-            android:name="nl.sense_os.service.BootRx"
-            android:process="nl.sense_os.service.monitoring" >
+            android:name="nl.sense_os.service.BootRx" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -123,8 +122,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="nl.sense_os.service.AliveChecker"
-            android:process="nl.sense_os.service.monitoring" >
+            android:name="nl.sense_os.service.AliveChecker" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.AliveCheck" />
 
@@ -139,8 +137,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="nl.sense_os.service.DataTransmitter"
-            android:process="nl.sense_os.service.datatransmitter" >
+            android:name="nl.sense_os.service.DataTransmitter" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.DataTransmit" />
 
