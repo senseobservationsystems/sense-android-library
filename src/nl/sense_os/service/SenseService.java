@@ -442,6 +442,7 @@ public class SenseService extends Service {
      *         errors.
      */
     private int changeLogin(String username, String password) {
+	Log.v(TAG, "Change login");
 
 	logout();
 
@@ -454,42 +455,32 @@ public class SenseService extends Service {
 	return login();
     }
 
-    private void logout() {
-	Log.v(TAG, "Log out");
-
-	// stop active sensing components
-	stopSensorModules();
-
-	// clear cached settings of the previous user (e.g. device id)
-	Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
-	authEditor.clear();
-	authEditor.commit();
-
-	// log out before changing to a new user
-	onLogOut();
-    }
-
     /**
      * Checks if the installed Sense Platform application has an update available, alerting the user
      * via a Toast message.
      */
     private void checkVersion() {
 	try {
-	    PackageInfo packageInfo = getPackageManager().getPackageInfo("nl.sense_os.app", 0);
-	    String versionName = URLEncoder.encode(packageInfo.versionName, "UTF-8");
-	    Log.i(TAG, "Running Sense App version '" + versionName + "'");
+	    String packageName = getPackageName();
+	    if ("nl.sense_os.app".equals(packageName)) {
+		PackageInfo packageInfo = getPackageManager().getPackageInfo(packageName, 0);
+		String versionName = URLEncoder.encode(packageInfo.versionName, "UTF-8");
+		Log.i(TAG, "Running Sense App version '" + versionName + "'");
 
-	    if (versionName.equals("unstable")) {
-		return;
-	    }
+		if (versionName.contains("unstable") || versionName.contains("testing")) {
+		    return;
+		}
 
-	    String url = SenseUrls.VERSION + "?version=" + versionName;
-	    Map<String, String> response = SenseApi.request(this, url, null, null);
-	    JSONObject content = new JSONObject(response.get("content"));
+		String url = SenseUrls.VERSION + "?version=" + versionName;
+		Map<String, String> response = SenseApi.request(this, url, null, null);
+		JSONObject content = new JSONObject(response.get("content"));
 
-	    if (content.getString("message").length() > 0) {
-		Log.i(TAG, "Newer Sense App version available: " + content.toString());
-		showToast(content.getString("message"));
+		if (content.getString("message").length() > 0) {
+		    Log.i(TAG, "Newer Sense App version available: " + content.toString());
+		    showToast(content.getString("message"));
+		}
+	    } else {
+		// this is a third party app
 	    }
 
 	} catch (Exception e) {
@@ -506,7 +497,7 @@ public class SenseService extends Service {
      *         errors.
      */
     private synchronized int login() {
-	Log.v(TAG, "Log in");
+	Log.v(TAG, "Try to log in");
 
 	// check that we are actually allowed to log in
 	SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -532,7 +523,6 @@ public class SenseService extends Service {
 	    }
 	} else {
 	    Log.w(TAG, "Cannot login: username or password unavailable");
-	    Log.d(TAG, "Username: " + username + ", password: " + pass);
 	}
 
 	// handle the result
@@ -556,9 +546,24 @@ public class SenseService extends Service {
 	return result;
     }
 
+    private void logout() {
+	Log.v(TAG, "Log out");
+
+	// stop active sensing components
+	stopSensorModules();
+
+	// clear cached settings of the previous user (e.g. device id)
+	Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+	authEditor.clear();
+	authEditor.commit();
+
+	// log out before changing to a new user
+	onLogOut();
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
-	// Log.v(TAG, "onBind");
+	Log.v(TAG, "Some component is binding to Sense Platform service");
 	return binder;
     }
 
@@ -568,22 +573,20 @@ public class SenseService extends Service {
      */
     @Override
     public void onCreate() {
-	Log.i(TAG, "Sense Platform is being created");
-	super.onCreate();
+	Log.v(TAG, "Sense Platform service is being created");
 	state = ServiceStateHelper.getInstance(this);
 
 	boolean lastMainStatus = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE)
 		.getBoolean(Status.MAIN, false);
 	if (lastMainStatus) {
-	    Log.d(TAG, "Last status was running: automatically start sensing again");
+	    // last status was running: automatically start sensing again
 	    toggleMain(lastMainStatus);
 	}
-
     }
 
     @Override
     public void onDestroy() {
-	Log.i(TAG, "Sense Platform is being destroyed");
+	Log.v(TAG, "Sense Platform service is being destroyed");
 
 	// stop active sensing components
 	stopSensorModules();
@@ -604,7 +607,8 @@ public class SenseService extends Service {
      * collected sensor data.
      */
     private void onLogIn() {
-	Log.i(TAG, "Logged in!");
+	Log.i(TAG, "Logged in");
+
 	// update ntp time
 	SNTP.getInstance().requestTime(SNTP.HOST_WORLDWIDE, 2000);
 
@@ -628,7 +632,7 @@ public class SenseService extends Service {
      * stops the periodic alarms for data transmission.
      */
     private void onLogOut() {
-	Log.i(TAG, "Logged out!");
+	Log.i(TAG, "Logged out");
 
 	// update login status
 	state.setLoggedIn(false);
@@ -641,7 +645,7 @@ public class SenseService extends Service {
     }
 
     private void onSampleRateChange() {
-	Log.i(TAG, "Sample rate changed");
+	Log.v(TAG, "Sample rate changed");
 	if (state.isStarted()) {
 	    stopSensorModules();
 	    startSensorModules();
@@ -715,7 +719,7 @@ public class SenseService extends Service {
     }
 
     private void onSyncRateChange() {
-	Log.i(TAG, "Sync rate changed");
+	Log.v(TAG, "Sync rate changed");
 	if (state.isStarted()) {
 	    DataTransmitter.scheduleTransmissions(this);
 	}
@@ -741,6 +745,7 @@ public class SenseService extends Service {
      */
     private synchronized int register(String username, String password, String name,
 	    String surname, String email, String mobile) {
+	Log.v(TAG, "Try to register new user");
 
 	// log out before registering a new user
 	logout();
@@ -772,7 +777,6 @@ public class SenseService extends Service {
 	    }
 	} else {
 	    Log.w(TAG, "Cannot register: username or password unavailable");
-	    Log.d(TAG, "Username: " + username + ", password hash: " + hashPass);
 	}
 
 	// handle result
@@ -853,35 +857,11 @@ public class SenseService extends Service {
 	sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
     }
 
-    private synchronized void verifySensorIds() {
-
-	if (null != sensorVerifyTask) {
-	    sensorVerifyTask.cancel();
-	}
-
-	if (sensorVerifier.verifySensorIds(null, null)) {
-	    Log.v(TAG, "Sensor IDs verified");
-	} else {
-	    Log.w(TAG, "Failed to verify the sensor IDs! Retry in " + (sensorVerifyTimeout / 1000)
-		    + " seconds");
-	    sensorVerifyTask = new TimerTask() {
-
-		@Override
-		public void run() {
-		    verifySensorIds();
-		}
-	    };
-	    sensorVerifyTimer.schedule(sensorVerifyTask, sensorVerifyTimeout);
-	    if (sensorVerifyTimeout < AlarmManager.INTERVAL_FIFTEEN_MINUTES) {
-		sensorVerifyTimeout *= 2;
-	    }
-	}
-    }
-
     /**
      * Stops any running sensor modules.
      */
     private void stopSensorModules() {
+	Log.v(TAG, "Stop sensor modules");
 
 	toggleDeviceProx(false);
 	toggleMotion(false);
@@ -899,7 +879,7 @@ public class SenseService extends Service {
     private synchronized void toggleAmbience(boolean active) {
 
 	if (active != state.isAmbienceActive()) {
-	    Log.i(TAG, "toggleAmbience " + active);
+	    Log.i(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
 	    state.setAmbienceActive(active);
 
 	    if (true == active) {
@@ -1048,15 +1028,13 @@ public class SenseService extends Service {
 		    ambienceThread = null;
 		}
 	    }
-	} else {
-	    Log.v(TAG, "Ignore toggleAmbience " + active);
 	}
     }
 
     private synchronized void toggleDeviceProx(boolean active) {
 
 	if (active != state.isDevProxActive()) {
-	    Log.i(TAG, "toggleDeviceProx " + active);
+	    Log.i(TAG, (active ? "Enable" : "Disable") + " neighbouring device scan sensors");
 	    state.setDevProxActive(active);
 
 	    if (true == active) {
@@ -1128,14 +1106,13 @@ public class SenseService extends Service {
 		    deviceProxThread = null;
 		}
 	    }
-	} else {
-	    Log.v(TAG, "Ignore toggleDeviceProx " + active);
 	}
     }
 
     private synchronized void toggleExternalSensors(boolean active) {
 
 	if (active != state.isExternalActive()) {
+	    Log.i(TAG, (active ? "Enable" : "Disable") + " external sensors");
 	    state.setExternalActive(active);
 
 	    if (true == active) {
@@ -1202,7 +1179,6 @@ public class SenseService extends Service {
 
 		    @Override
 		    public void run() {
-			Log.d(TAG, "Attempting to start External Sensors");
 			if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
 			    es_bioHarness = new ZephyrBioHarness(SenseService.this);
 			    es_bioHarness.startBioHarness(finalInterval);
@@ -1212,12 +1188,9 @@ public class SenseService extends Service {
 			    es_HxM.startHxM(finalInterval);
 			}
 			if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
-			    Log.d(TAG, "Attempting to start OBD2");
 			    es_obd2sensor = new NewOBD2DeviceConnector(SenseService.this,
 				    finalInterval);
 			    es_obd2sensor.run();
-			} else {
-			    Log.d(TAG, "NOT attempting to start OBD2");
 			}
 		    }
 		});
@@ -1256,7 +1229,7 @@ public class SenseService extends Service {
     private synchronized void toggleLocation(boolean active) {
 
 	if (active != state.isLocationActive()) {
-	    Log.i(TAG, "toggleLocation " + active);
+	    Log.i(TAG, (active ? "Enable" : "Disable") + " position sensor");
 	    state.setLocationActive(active);
 
 	    if (true == active) {
@@ -1338,13 +1311,11 @@ public class SenseService extends Service {
 		    locationThread = null;
 		}
 	    }
-	} else {
-	    Log.v(TAG, "Ignore toggleLocation " + active);
 	}
     }
 
     private synchronized void toggleMain(boolean active) {
-	Log.v(TAG, "Toggle main: " + active);
+	Log.i(TAG, (active ? "Enable" : "Disable") + " main sensing status");
 
 	if (true == active) {
 	    // properly start the service to start sensing
@@ -1366,7 +1337,7 @@ public class SenseService extends Service {
     private synchronized void toggleMotion(boolean active) {
 
 	if (active != state.isMotionActive()) {
-	    Log.i(TAG, "toggleMotion " + active);
+	    Log.i(TAG, (active ? "Enable" : "Disable") + " motion sensors");
 	    state.setMotionActive(active);
 
 	    if (true == active) {
@@ -1442,15 +1413,13 @@ public class SenseService extends Service {
 		    motionThread = null;
 		}
 	    }
-	} else {
-	    Log.v(TAG, "Ignore toggleMotion " + active);
 	}
     }
 
     private synchronized void togglePhoneState(boolean active) {
 
 	if (active != state.isPhoneStateActive()) {
-	    Log.i(TAG, "togglePhoneState " + active);
+	    Log.i(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
 	    ServiceStateHelper.getInstance(this).setPhoneStateActive(active);
 
 	    if (true == active) {
@@ -1568,8 +1537,32 @@ public class SenseService extends Service {
 		    phoneStateThread = null;
 		}
 	    }
+	}
+    }
+
+    private synchronized void verifySensorIds() {
+	Log.v(TAG, "Try to verify sensor IDs");
+
+	if (null != sensorVerifyTask) {
+	    sensorVerifyTask.cancel();
+	}
+
+	if (sensorVerifier.verifySensorIds(null, null)) {
+	    Log.v(TAG, "Sensor IDs verified");
 	} else {
-	    Log.v(TAG, "Ignore togglePhoneState " + active);
+	    Log.w(TAG, "Failed to verify the sensor IDs! Retry in " + (sensorVerifyTimeout / 1000)
+		    + " seconds");
+	    sensorVerifyTask = new TimerTask() {
+
+		@Override
+		public void run() {
+		    verifySensorIds();
+		}
+	    };
+	    sensorVerifyTimer.schedule(sensorVerifyTask, sensorVerifyTimeout);
+	    if (sensorVerifyTimeout < AlarmManager.INTERVAL_FIFTEEN_MINUTES) {
+		sensorVerifyTimeout *= 2;
+	    }
 	}
     }
 }

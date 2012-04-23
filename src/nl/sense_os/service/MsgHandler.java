@@ -347,11 +347,11 @@ public class MsgHandler extends Service {
 		Cursor unsent = storage.query(contentUri, null, where, null, null);
 
 		if ((null != unsent) && unsent.moveToFirst()) {
-		    // Log.v(TAG, "Found " + unsent.getCount() +
-		    // " unsent data points in persistant storage");
+		    Log.v(TAG, "Found " + unsent.getCount()
+			    + " unsent data points in persistant storage");
 		    return unsent;
 		} else {
-		    // Log.v(TAG, "No unsent data points in the persistant storage");
+		    Log.v(TAG, "No unsent data points in the persistant storage");
 		    return new MatrixCursor(new String[] {});
 		}
 	    } catch (IllegalArgumentException e) {
@@ -454,11 +454,11 @@ public class MsgHandler extends Service {
 		String where = DataPoint.TRANSMIT_STATE + "=0";
 		Cursor unsent = storage.query(contentUri, null, where, null, null);
 		if ((null != unsent) && unsent.moveToFirst()) {
-		    // Log.v(TAG, "Found " + unsent.getCount() +
-		    // " unsent data points in local storage");
+		    Log.v(TAG, "Found " + unsent.getCount()
+			    + " unsent data points in local storage");
 		    return unsent;
 		} else {
-		    // Log.v(TAG, "No unsent recent data points");
+		    Log.v(TAG, "No unsent recent data points");
 		    return new MatrixCursor(new String[] {});
 		}
 	    } catch (IllegalArgumentException e) {
@@ -883,7 +883,7 @@ public class MsgHandler extends Service {
 	    displayName = displayName != null ? displayName : sensorName;
 
 	    // Log.d(TAG, "name: '" + sensorName + "', display: '" + displayName +
-	    // "', description: '" + deviceType + "', data type: '" + dataType + "'");
+	    // "', description: '" + description + "', data type: '" + dataType + "'");
 
 	    // convert sensor value to String
 	    String sensorValue = "";
@@ -917,7 +917,6 @@ public class MsgHandler extends Service {
 	    boolean isRealTimeMode = rate == -2;
 	    if (isOnline() && isRealTimeMode && !isMaxThreads) {
 		/* send immediately */
-		Log.d(TAG, "Real time mode: send immediately");
 
 		// create sensor data JSON object with only 1 data point
 		JSONObject sensorData = new JSONObject();
@@ -937,6 +936,7 @@ public class MsgHandler extends Service {
     }
 
     private void handleSendIntent(Intent intent) {
+	// Log.d(TAG, "handleSendIntent");
 	if (isOnline()) {
 	    // get the cookie
 	    SharedPreferences authPrefs;
@@ -1037,7 +1037,7 @@ public class MsgHandler extends Service {
 
     @Override
     public void onCreate() {
-	// Log.v(TAG, "onCreate");
+	Log.v(TAG, "onCreate");
 	super.onCreate();
 
 	storage = LocalStorage.getInstance(this);
@@ -1054,7 +1054,7 @@ public class MsgHandler extends Service {
 
     @Override
     public void onDestroy() {
-	// Log.v(TAG, "onDestroy");
+	Log.v(TAG, "onDestroy");
 	emptyBufferToDb();
 
 	// stop buffered data transmission threads

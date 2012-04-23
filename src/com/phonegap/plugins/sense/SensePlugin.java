@@ -254,7 +254,6 @@ public class SensePlugin extends Plugin {
      */
     @Override
     public PluginResult execute(String action, final JSONArray data, final String callbackId) {
-	Log.d(TAG, "Execute action: '" + action + "'");
 	try {
 	    if (Actions.INIT.equals(action)) {
 		return init(data, callbackId);
