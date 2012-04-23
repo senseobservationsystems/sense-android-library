@@ -348,6 +348,18 @@ SensePlatform.STATUSCODE_PHONESTATE = 0x40;
 SensePlatform.STATUSCODE_QUIZ = 0x80;
 SensePlatform.STATUSCODE_RUNNING = 0x100;
 
+/* sync rate settings */
+SensePlatform.SYNC_ECO = "1";
+SensePlatform.SYNC_NORMAL = "0";
+SensePlatform.SYNC_OFTEN = "-1";
+SensePlatform.SYNC_REALTIME = "-2";
+
+/* sample rate settings */
+SensePlatform.SAMPLE_RARELY = "1";
+SensePlatform.SAMPLE_NORMAL = "0";
+SensePlatform.SAMPLE_OFTEN = "-1";
+SensePlatform.SAMPLE_REALTIME = "-2";
+
 /* keys for main prefs */
 SensePlatform.PREF_LOGIN_USERNAME = "login_mail";
 SensePlatform.PREF_SAMPLE_RATE = "commonsense_rate";
