@@ -530,46 +530,6 @@ public class SensePlugin extends Plugin {
 	    } catch (RemoteException e) {
 		Log.e(TAG, "Failed to init special sense setttings for ivitality");
 	    }
-	} else if (packageName.equals("nl.ask.paige.moodie")) {
-	    Log.i(TAG, "Set special Moodie sensor settings");
-	    try {
-		service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
-		service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
-
-		service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
-		service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
-		service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
-		service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
-		service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
-		service.toggleAmbience(true);
-
-		service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
-		service.toggleMotion(true);
-
-		service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
-		service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
-		service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
-		service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, true);
-		service.setPrefBool(SensePrefs.Main.PhoneState.DATA_CONNECTION, false);
-		service.setPrefBool(SensePrefs.Main.PhoneState.IP_ADDRESS, false);
-		service.setPrefBool(SensePrefs.Main.PhoneState.SERVICE_STATE, false);
-		service.setPrefBool(SensePrefs.Main.PhoneState.SIGNAL_STRENGTH, false);
-		service.setPrefBool(SensePrefs.Main.PhoneState.UNREAD_MSG, false);
-		service.togglePhoneState(true);
-
-		service.setPrefBool(SensePrefs.Main.Location.GPS, true);
-		service.setPrefBool(SensePrefs.Main.Location.NETWORK, true);
-		service.setPrefBool(SensePrefs.Main.Location.AUTO_GPS, true);
-		service.toggleLocation(true);
-
-		service.setPrefBool(SensePrefs.Main.DevProx.BLUETOOTH, true);
-		service.setPrefBool(SensePrefs.Main.DevProx.WIFI, false);
-		service.toggleDeviceProx(true);
-
-		service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
-	    } catch (RemoteException e) {
-		Log.e(TAG, "Failed to init special sense setttings for ivitality");
-	    }
 	}
     }
 
