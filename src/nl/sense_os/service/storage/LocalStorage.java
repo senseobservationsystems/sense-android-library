@@ -345,6 +345,7 @@ public class LocalStorage {
 	List<String> sensorNames = ParserUtils.getSelectedSensors(new HashSet<String>(), where,
 		selectionArgs);
 	long[] timeRangeSelect = ParserUtils.getSelectedTimeRange(where, selectionArgs);
+	String deviceUuid = ParserUtils.getSelectedDeviceUuid(where, selectionArgs);
 
 	if (sensorNames.size() != 1) {
 	    throw new IllegalArgumentException("Incorrect number of sensors in query: "
@@ -352,14 +353,18 @@ public class LocalStorage {
 	}
 
 	// check if the requested sensor is in the list
-	String id = SenseApi.getSensorId(context, sensorNames.get(0), null, null, null);
+	String id = SenseApi.getSensorId(context, sensorNames.get(0), null, null, deviceUuid);
+
+	if (null == id) {
+	    throw new IllegalArgumentException("Cannot find sensor ID");
+	}
 
 	// get the data for the sensor
-	String remoteUri = SenseUrls.SENSOR_DATA.replace("<id>", id) + "?start_date="
+	String url = SenseUrls.SENSOR_DATA.replace("<id>", id) + "?start_date="
 		+ timeRangeSelect[0] / 1000d + "&end_date=" + timeRangeSelect[1] / 1000d;
 	String cookie = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE)
 		.getString(Auth.LOGIN_COOKIE, null);
-	Map<String, String> response = SenseApi.request(context, remoteUri, null, cookie);
+	Map<String, String> response = SenseApi.request(context, url, null, cookie);
 
 	// parse response
 	JSONArray data;

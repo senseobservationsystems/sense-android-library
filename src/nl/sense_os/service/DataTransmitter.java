@@ -50,6 +50,7 @@ public class DataTransmitter extends BroadcastReceiver {
      *            Context to access AlarmManager and sync rate preferences
      */
     public static void scheduleTransmissions(Context context) {
+	Log.v(TAG, "Schedule transmissions");
 
 	Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));
 	PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent, 0);
@@ -96,6 +97,7 @@ public class DataTransmitter extends BroadcastReceiver {
 	    return;
 	}
 	am.cancel(operation);
+	Log.d(TAG, "Sync interval: " + Math.round(interval / 1000) + " sec");
 	am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
 		operation);
     }

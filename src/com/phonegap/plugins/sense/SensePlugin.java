@@ -6,6 +6,7 @@ package com.phonegap.plugins.sense;
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.R;
+import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
@@ -169,6 +170,8 @@ public class SensePlugin extends Plugin {
 	final String dataType = data.getString(3);
 	final String value = data.getString(4);
 	final long timestamp = data.getLong(5);
+	Log.v(TAG, "addDataPoint('" + name + "', '" + displayName + "', '" + description + "', '"
+		+ dataType + "', '" + value + "', " + timestamp + ")");
 
 	// verify sensor ID
 	if (null == sensorRegistrator) {
@@ -226,6 +229,7 @@ public class SensePlugin extends Plugin {
 	// get the parameters
 	final String username = data.getString(0).toLowerCase();
 	final String password = data.getString(1);
+	Log.v(TAG, "changeLogin('" + username + "', '" + password + "')");
 
 	if (null != service) {
 	    changeLoginCallbackId = callbackId;
@@ -311,6 +315,9 @@ public class SensePlugin extends Plugin {
     }
 
     private PluginResult flushBuffer(JSONArray data, String callbackId) {
+
+	Log.v(TAG, "flushBuffer()");
+
 	Intent flush = new Intent(ctx.getContext().getString(R.string.action_sense_send_data));
 	ComponentName started = ctx.getContext().startService(flush);
 	if (null != started) {
@@ -323,12 +330,13 @@ public class SensePlugin extends Plugin {
     private PluginResult getLocalValues(JSONArray data, String callbackId) throws JSONException {
 
 	final String sensorName = data.getString(0);
+	Log.v(TAG, "getLocalValues('" + sensorName + "')");
 
 	try {
 	    Uri uri = Uri.parse("content://"
 		    + ctx.getContext().getString(R.string.local_storage_authority)
 		    + DataPoint.CONTENT_URI_PATH);
-	    JSONArray result = getValues(sensorName, uri);
+	    JSONArray result = getValues(sensorName, null, uri);
 
 	    Log.v(TAG, "Found " + result.length() + " '" + sensorName
 		    + "' data points in the local storage");
@@ -345,6 +353,7 @@ public class SensePlugin extends Plugin {
 	    RemoteException {
 
 	String key = data.getString(0);
+	Log.v(TAG, "getPreference('" + key + "')");
 
 	if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
 		|| key.equals(Auth.LOGIN_USERNAME)) {
@@ -359,12 +368,16 @@ public class SensePlugin extends Plugin {
     private PluginResult getRemoteValues(JSONArray data, String callbackId) throws JSONException {
 
 	final String sensorName = data.getString(0);
+	final boolean onlyThisDevice = data.getBoolean(1);
+	Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyThisDevice + ")");
 
 	try {
 	    Uri uri = Uri.parse("content://"
 		    + ctx.getContext().getString(R.string.local_storage_authority)
 		    + DataPoint.CONTENT_REMOTE_URI_PATH);
-	    JSONArray result = getValues(sensorName, uri);
+	    String deviceUuid = onlyThisDevice ? SenseApi.getDefaultDeviceUuid(ctx.getContext())
+		    : null;
+	    JSONArray result = getValues(sensorName, deviceUuid, uri);
 
 	    Log.v(TAG, "Found " + result.length() + " '" + sensorName
 		    + "' data points in the CommonSense");
@@ -378,6 +391,9 @@ public class SensePlugin extends Plugin {
     }
 
     private PluginResult getSession(JSONArray data, String callbackId) throws RemoteException {
+
+	Log.v(TAG, "getSessionId()");
+
 	if (null != service) {
 
 	    // try the login
@@ -399,6 +415,9 @@ public class SensePlugin extends Plugin {
     }
 
     private PluginResult getStatus(JSONArray data, final String callbackId) throws RemoteException {
+
+	Log.v(TAG, "getStatus()");
+
 	if (null != service) {
 	    getStatusCallbackId = callbackId;
 	    service.getStatus(callback);
@@ -413,11 +432,15 @@ public class SensePlugin extends Plugin {
     }
 
     /**
-     * Test function to print all location values saved in the sense app
+     * Gets array of values from the LocalStorage
      * 
+     * @param sensorName
+     * @param deviceUuid
+     * @param uri
+     * @return JSONArray with values for the sensor with the selected name and device
      * @throws JSONException
      */
-    private JSONArray getValues(String sensorName, Uri uri) throws JSONException {
+    private JSONArray getValues(String sensorName, String deviceUuid, Uri uri) throws JSONException {
 
 	Cursor cursor = null;
 
@@ -426,6 +449,9 @@ public class SensePlugin extends Plugin {
 
 	    String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
 	    String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
+	    if (null != deviceUuid) {
+		selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
+	    }
 	    String[] selectionArgs = null;
 	    String sortOrder = null;
 	    cursor = LocalStorage.getInstance(ctx.getContext()).query(uri, projection, selection,
@@ -481,6 +507,7 @@ public class SensePlugin extends Plugin {
     }
 
     private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
+	Log.v(TAG, "logout()");
 	service.logout();
 	return new PluginResult(Status.OK);
     }
@@ -543,6 +570,8 @@ public class SensePlugin extends Plugin {
 	String surname = data.getString(3);
 	String email = data.getString(4);
 	String phone = data.getString(5);
+	Log.v(TAG, "register('" + username + "', '" + password + "', '" + name + "', '" + surname
+		+ "', '" + email + "', '" + phone + "')");
 
 	// do the registration
 	if (null != service) {
@@ -569,12 +598,12 @@ public class SensePlugin extends Plugin {
 	if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
 		|| key.equals(Auth.LOGIN_USERNAME)) {
 	    String value = data.getString(1);
-	    Log.v(TAG, "Set preference '" + key + "': '" + value + "'");
+	    Log.v(TAG, "setPreference('" + key + "', '" + value + "')");
 	    service.setPrefString(key, value);
 	    return new PluginResult(Status.OK);
 	} else {
 	    boolean value = data.getBoolean(1);
-	    Log.v(TAG, "Set preference '" + key + "': " + value);
+	    Log.v(TAG, "setPreference('" + key + "', " + value + ")");
 	    service.setPrefBool(key, value);
 	    return new PluginResult(Status.OK);
 	}

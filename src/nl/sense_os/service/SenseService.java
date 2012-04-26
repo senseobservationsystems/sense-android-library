@@ -134,7 +134,7 @@ public class SenseService extends Service {
 	public long getPrefLong(String key, long defValue) throws RemoteException {
 	    // Log.v(TAG, "Get preference: " + key);
 	    SharedPreferences prefs;
-	    if (key.equals(Auth.SENSOR_LIST_TIME)) {
+	    if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
 		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 	    } else {
 		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -152,7 +152,7 @@ public class SenseService extends Service {
 	    // Log.v(TAG, "Get preference: " + key);
 	    SharedPreferences prefs;
 	    if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
-		    || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST)
+		    || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
 		    || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
 		    || key.equals(Auth.PHONE_TYPE)) {
 		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
@@ -226,24 +226,27 @@ public class SenseService extends Service {
 	    }
 
 	    // store value
-	    boolean stored = prefs.edit().putBoolean(key, value).commit();
-	    if (stored == false) {
-		Log.w(TAG, "Preference '" + key + "' not stored!");
-	    } else if (key.equals(Advanced.DEV_MODE) && state.isLoggedIn()) {
-		logout();
-	    } else if (key.equals(Advanced.USE_COMMONSENSE)) {
-		// login on a separate thread
-		new Thread() {
-		    public void run() {
-			if (value) {
-			    Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
-			    login();
-			} else {
-			    Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
-			    logout();
+	    boolean oldValue = prefs.getBoolean(key, !value);
+	    if (value != oldValue) {
+		boolean stored = prefs.edit().putBoolean(key, value).commit();
+		if (stored == false) {
+		    Log.w(TAG, "Preference '" + key + "' not stored!");
+		} else if (key.equals(Advanced.DEV_MODE) && state.isLoggedIn()) {
+		    logout();
+		} else if (key.equals(Advanced.USE_COMMONSENSE)) {
+		    // login on a separate thread
+		    new Thread() {
+			public void run() {
+			    if (value) {
+				Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
+				login();
+			    } else {
+				Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
+				logout();
+			    }
 			}
-		    }
-		}.start();
+		    }.start();
+		}
 	    }
 	}
 
@@ -275,7 +278,7 @@ public class SenseService extends Service {
 	public void setPrefLong(String key, long value) throws RemoteException {
 	    // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
 	    SharedPreferences prefs;
-	    if (key.equals(Auth.SENSOR_LIST_TIME)) {
+	    if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
 		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 	    } else {
 		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -293,7 +296,7 @@ public class SenseService extends Service {
 	    Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
 	    SharedPreferences prefs;
 	    if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
-		    || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST)
+		    || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
 		    || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
 		    || key.equals(Auth.PHONE_TYPE)) {
 		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
@@ -497,7 +500,12 @@ public class SenseService extends Service {
      *         errors.
      */
     private synchronized int login() {
-	Log.v(TAG, "Try to log in");
+
+	if (state.isLoggedIn()) {
+	    // we are already logged in
+	    Log.v(TAG, "Skip login: already logged in");
+	    return 0;
+	}
 
 	// check that we are actually allowed to log in
 	SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -506,6 +514,8 @@ public class SenseService extends Service {
 	    Log.w(TAG, "Not logging in. Use of CommonSense is disabled.");
 	    return -1;
 	}
+
+	Log.v(TAG, "Try to log in");
 
 	// get login parameters from the preferences
 	SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
@@ -575,13 +585,6 @@ public class SenseService extends Service {
     public void onCreate() {
 	Log.v(TAG, "Sense Platform service is being created");
 	state = ServiceStateHelper.getInstance(this);
-
-	boolean lastMainStatus = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE)
-		.getBoolean(Status.MAIN, false);
-	if (lastMainStatus) {
-	    // last status was running: automatically start sensing again
-	    toggleMain(lastMainStatus);
-	}
     }
 
     @Override
@@ -614,8 +617,6 @@ public class SenseService extends Service {
 
 	// update login status
 	state.setLoggedIn(true);
-
-	startSensorModules();
 
 	// start database leeglepelaar
 	DataTransmitter.scheduleTransmissions(this);
@@ -1547,7 +1548,10 @@ public class SenseService extends Service {
 	    sensorVerifyTask.cancel();
 	}
 
-	if (sensorVerifier.verifySensorIds(null, null)) {
+	String deviceType = SenseApi.getDefaultDeviceType(this);
+	String deviceUuid = SenseApi.getDefaultDeviceUuid(this);
+
+	if (sensorVerifier.verifySensorIds(deviceType, deviceUuid)) {
 	    Log.v(TAG, "Sensor IDs verified");
 	} else {
 	    Log.w(TAG, "Failed to verify the sensor IDs! Retry in " + (sensorVerifyTimeout / 1000)

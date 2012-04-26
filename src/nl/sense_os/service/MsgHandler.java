@@ -241,6 +241,11 @@ public class MsgHandler extends Service {
 				.getColumnIndexOrThrow(DataPoint.TIMESTAMP));
 			deviceUuid = cursor.getString(cursor
 				.getColumnIndexOrThrow(DataPoint.DEVICE_UUID));
+
+			// set default sensor ID if it is missing
+			deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+				.getDefaultDeviceUuid(MsgHandler.this);
+
 		    } catch (IllegalArgumentException e) {
 			// something is wrong with this data point, skip it
 			Log.w(TAG,
@@ -533,7 +538,8 @@ public class MsgHandler extends Service {
 	    this.cookie = cookie;
 	    this.data = data;
 	    this.name = name;
-	    this.deviceUuid = deviceUuid;
+	    this.deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+		    .getDefaultDeviceUuid(MsgHandler.this);
 	    this.dataType = dataType;
 	    this.description = description != null ? description : name;
 	    this.context = context;
@@ -661,7 +667,9 @@ public class MsgHandler extends Service {
 	    this.sensorName = name;
 	    this.dataType = dataType;
 	    this.deviceType = description;
-	    this.deviceUuid = deviceUuid;
+	    this.deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+		    .getDefaultDeviceUuid(MsgHandler.this);
+	    ;
 	    this.context = context;
 	}
 
@@ -881,6 +889,8 @@ public class MsgHandler extends Service {
 	    // defaults
 	    description = description != null ? description : sensorName;
 	    displayName = displayName != null ? displayName : sensorName;
+	    deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+		    .getDefaultDeviceUuid(MsgHandler.this);
 
 	    // Log.d(TAG, "name: '" + sensorName + "', display: '" + displayName +
 	    // "', description: '" + description + "', data type: '" + dataType + "'");

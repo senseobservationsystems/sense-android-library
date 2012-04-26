@@ -14,8 +14,10 @@ public class SenseUrls {
     public static final String SENSORS = BASE + "devices/<id>/sensors" + FORMAT;
     public static final String DEV_SENSORS = DEV_BASE + "devices/<id>/sensors" + FORMAT;
 
-    public static final String ALL_SENSORS = BASE + "sensors" + FORMAT;
-    public static final String DEV_ALL_SENSORS = DEV_BASE + "sensors" + FORMAT;
+    public static final String ALL_SENSORS = BASE + "sensors" + FORMAT
+	    + "?per_page=1000&details=full";
+    public static final String DEV_ALL_SENSORS = DEV_BASE + "sensors" + FORMAT
+	    + "?per_page=1000&details=full";
 
     public static final String SENSOR_DATA = BASE + "sensors/<id>/data" + FORMAT;
     public static final String DEV_SENSOR_DATA = DEV_BASE + "sensors/<id>/data" + FORMAT;
@@ -36,6 +38,6 @@ public class SenseUrls {
     public static final String DEV_REG = DEV_BASE + "users" + FORMAT;
 
     private SenseUrls() {
-        // private constructor to prevent instantiation
+	// private constructor to prevent instantiation
     }
 }

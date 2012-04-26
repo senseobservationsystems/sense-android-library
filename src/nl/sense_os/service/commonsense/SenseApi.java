@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,11 +63,77 @@ public class SenseApi {
     private static final long CACHE_REFRESH = 1000l * 60 * 60; // 1 hour
 
     /**
+     * Gets a list of all registered sensors for a user at the CommonSense API. Uses caching for
+     * increased performance.
+     * 
+     * @param context
+     *            Application context, used for getting preferences.
+     * @return The list of sensors
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     */
+    public static JSONArray getAllSensors(Context context) throws IOException, JSONException {
+
+	final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+		Context.MODE_PRIVATE);
+
+	// try to get list of sensors from the cache
+	try {
+	    String cachedSensors = authPrefs.getString(Auth.SENSOR_LIST_COMPLETE, null);
+	    long cacheTime = authPrefs.getLong(Auth.SENSOR_LIST_COMPLETE_TIME, 0);
+	    boolean isOutdated = System.currentTimeMillis() - cacheTime > CACHE_REFRESH;
+
+	    // return cached list of it is still valid
+	    if (false == isOutdated && null != cachedSensors) {
+		return new JSONArray(cachedSensors);
+	    }
+
+	} catch (Exception e) {
+	    // unlikely to ever happen. Just get the list from CommonSense instead
+	    Log.e(TAG, "Failed to get list of sensors from cache!", e);
+	}
+
+	// if we make it here, the list was not in the cache
+	Log.v(TAG, "List of sensor IDs is missing or outdated, refreshing...");
+
+	// request fresh list of sensors for this device from CommonSense
+	String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+	SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+		Context.MODE_PRIVATE);
+	boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+	if (devMode) {
+	    Log.i(TAG, "Using development server to get registered sensors");
+	}
+	String url = devMode ? SenseUrls.DEV_ALL_SENSORS : SenseUrls.ALL_SENSORS;
+	Map<String, String> response = SenseApi.request(context, url, null, cookie);
+
+	String responseCode = response.get("http response code");
+	if (!"200".equals(responseCode)) {
+	    Log.w(TAG, "Failed to get list of sensors! Response code: " + responseCode);
+	    throw new IOException("Incorrect response from CommonSense: " + responseCode);
+	}
+
+	// parse response and store the list
+	JSONObject content = new JSONObject(response.get("content"));
+	JSONArray sensorList = content.getJSONArray("sensors");
+
+	// store the new sensor list
+	Editor authEditor = authPrefs.edit();
+	authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensorList.toString());
+	authEditor.putLong(Auth.SENSOR_LIST_COMPLETE_TIME, System.currentTimeMillis());
+	authEditor.commit();
+
+	return sensorList;
+    }
+
+    /**
      * @param context
      *            Context for accessing phone details
      * @return The default device type, i.e. the phone's model String
      */
-    private static String getDefaultDeviceType(Context context) {
+    public static String getDefaultDeviceType(Context context) {
 	final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
 		Context.MODE_PRIVATE);
 	return authPrefs.getString(Auth.DEVICE_TYPE, Build.MODEL);
@@ -77,194 +144,41 @@ public class SenseApi {
      *            Context for accessing phone details
      * @return The default device UUID, i.e. the phone's IMEI String
      */
-    private static String getDefaultDeviceUuid(Context context) {
+    public static String getDefaultDeviceUuid(Context context) {
 	return ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE))
 		.getDeviceId();
     }
 
-    /**
-     * Gets the device ID for use with CommonSense. The device ID is cached in the preferences if it
-     * was fetched earlier.
-     * 
-     * @param context
-     *            Context for getting preferences
-     * @param uuid
-     *            (Optional) Device UUID. Set null to use the default device UUID for this phone
-     * @return The device ID, or -1 if the device is not registered yet
-     * @throws IOException
-     *             If the connection to CommonSense failed.
-     * @throws JSONException
-     *             On unexpected response from CommonSense.
-     */
-    public static int getDeviceId(Context context, String uuid) throws IOException, JSONException {
+    private static List<JSONObject> getMatchingSensors(Context context, String name,
+	    String description, String dataType) throws IOException, JSONException {
 
-	SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
-		Context.MODE_PRIVATE);
+	// get list of all registered sensors for this device
+	JSONArray sensors = getAllSensors(context);
 
-	// append name and UUID to the preference keys
-	String keyDeviceId = uuid == null ? Auth.DEVICE_ID : Auth.DEVICE_ID + uuid;
-	String keyIdTime = uuid == null ? Auth.DEVICE_ID_TIME : Auth.DEVICE_ID_TIME + uuid;
-	String keySensorList = uuid == null ? Auth.SENSOR_LIST : Auth.SENSOR_LIST + uuid;
+	// check sensors with similar names and descriptions in the list
+	List<JSONObject> result = new ArrayList<JSONObject>();
+	for (int i = 0; i < sensors.length(); i++) {
+	    JSONObject sensor = (JSONObject) sensors.get(i);
 
-	// try to get the device ID from the cache
-	try {
-	    int cachedId = authPrefs.getInt(keyDeviceId, -1);
-	    long cacheTime = authPrefs.getLong(keyIdTime, 0);
-	    boolean isOutdated = System.currentTimeMillis() - cacheTime > CACHE_REFRESH;
+	    if (sensor.getString("name").equalsIgnoreCase(name)
+		    && ((null == description) || sensor.getString("device_type").equalsIgnoreCase(
+			    description))
+		    && ((null == dataType) || sensor.getString("data_type").equalsIgnoreCase(
+			    dataType))) {
+		result.add(sensor);
 
-	    // return cached ID of it is still valid
-	    if (cachedId != -1 && false == isOutdated) {
-		return cachedId;
-	    }
-
-	} catch (Exception e) {
-	    // should not happen
-	    Log.e(TAG, "Failed to get device ID from cache! Exception while checking cache: ", e);
-	}
-
-	// if we make it here, the device ID was not in the cache
-	// Log.v(TAG, "Device ID is missing or outdated, refreshing...");
-
-	// get phone IMEI, this is used as the device UUID at CommonSense
-	if (uuid == null) {
-	    uuid = getDefaultDeviceUuid(context);
-	}
-
-	// get list of devices that are already registered at CommonSense for this user
-	SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-		Context.MODE_PRIVATE);
-	boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-	if (devMode)
-	    Log.i(TAG, "Using developmentserver to get device ID");
-	String url = devMode ? SenseUrls.DEV_DEVICES : SenseUrls.DEVICES;
-	String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-	Map<String, String> response = SenseApi.request(context, url, null, cookie);
-
-	String responseCode = response.get("http response code");
-	if (!"200".equals(responseCode)) {
-	    Log.w(TAG, "Failed to get list of devices! Response code: " + responseCode);
-	    throw new IOException("Incorrect response from CommonSense: " + responseCode);
-	}
-
-	// check if this device is in the list
-	JSONObject content = new JSONObject(response.get("content"));
-	JSONArray deviceList = content.getJSONArray("devices");
-
-	String entryUuid = "";
-	for (int x = 0; x < deviceList.length(); x++) {
-
-	    JSONObject device = deviceList.getJSONObject(x);
-	    entryUuid = device.getString("uuid");
-
-	    // pad the UUID with leading zeros, CommonSense API removes them
-	    while (entryUuid.length() < uuid.length()) {
-		entryUuid = "0" + entryUuid;
-	    }
-
-	    // Found the right device if UUID matches IMEI
-	    if (entryUuid.equalsIgnoreCase(uuid)) {
-
-		// cache device ID in preferences
-		int deviceId = Integer.parseInt(device.getString("id"));
-		final Editor editor = authPrefs.edit();
-		editor.putString(Auth.DEVICE_TYPE, device.getString("type"));
-		editor.putInt(keyDeviceId, deviceId);
-		editor.putLong(keyIdTime, System.currentTimeMillis());
-		editor.remove(keySensorList);
-		editor.commit();
-		return deviceId;
+	    } else if (name.equals(SensorNames.ACCELEROMETER) || name.equals(SensorNames.ORIENT)
+		    || name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
+		    || name.equals(SensorNames.MAGNET_FIELD)) {
+		// special case to take care of changed motion sensor descriptions since Gingerbread
+		if (name.equals(sensor.getString("name"))) {
+		    // Log.d(TAG, "Using inexact match for '" + name + "' sensor ID...");
+		    result.add(sensor);
+		}
 	    }
 	}
 
-	// if we make it here, the device was not registered yet: return -1
-	Log.w(TAG, "This device is not registered at CommonSense yet");
-	return -1;
-    }
-
-    /**
-     * Gets a list of all registered sensors for a device at the CommonSense API. Uses caching for
-     * increased performance.
-     * 
-     * @param context
-     *            Application context, used for getting preferences.
-     * @param deviceUuid
-     *            (Optional) UUID of the device that the sensors should be connected to. Set null to
-     *            use the default device.
-     * @return The list of sensors (can be empty)
-     * @throws IOException
-     *             In case of communication failure to CommonSense
-     * @throws JSONException
-     *             In case of unparseable response from CommonSense
-     */
-    public static JSONArray getRegisteredSensors(Context context, String deviceUuid)
-	    throws IOException, JSONException {
-
-	final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
-		Context.MODE_PRIVATE);
-
-	// try to get list of sensors from the cache
-	String keySensorList = null, keyTime = null;
-	try {
-	    keySensorList = deviceUuid == null ? Auth.SENSOR_LIST : Auth.SENSOR_LIST + deviceUuid;
-	    keyTime = deviceUuid == null ? Auth.SENSOR_LIST_TIME : Auth.SENSOR_LIST_TIME
-		    + deviceUuid;
-	    String cachedSensors = authPrefs.getString(keySensorList, null);
-	    long cacheTime = authPrefs.getLong(keyTime, 0);
-	    boolean isOutdated = System.currentTimeMillis() - cacheTime > CACHE_REFRESH;
-
-	    // return cached list of it is still valid
-	    if (false == isOutdated && null != cachedSensors) {
-		return new JSONArray(cachedSensors);
-	    }
-
-	} catch (Exception e) {
-	    // should not happen, we are only using stuff that was previously cached
-	    Log.e(TAG, "Failed to get list of sensors from cache!", e);
-	}
-
-	// if we make it here, the list was not in the cache
-	Log.v(TAG, "List of sensor IDs is missing or outdated, refreshing...");
-
-	// get device ID to use in communication with CommonSense
-	int deviceId = getDeviceId(context, deviceUuid);
-
-	// get the list of sensors for this device
-	JSONArray sensorList = null;
-	if (deviceId == -1) {
-	    // device is not yet registered, so the sensor list is empty
-	    Log.w(TAG, "The list of sensors is empty: device is not registered yet.");
-	    sensorList = new JSONArray("[]");
-
-	} else {
-	    // request fresh list of sensors for this device from CommonSense
-	    String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-	    SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-		    Context.MODE_PRIVATE);
-	    boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-	    if (devMode)
-		Log.i(TAG, "Using developmentserver to get registered sensors");
-	    String url = devMode ? SenseUrls.DEV_SENSORS : SenseUrls.SENSORS;
-	    url = url.replaceFirst("<id>", "" + deviceId);
-	    Map<String, String> response = SenseApi.request(context, url, null, cookie);
-
-	    String responseCode = response.get("http response code");
-	    if (!"200".equals(responseCode)) {
-		Log.w(TAG, "Failed to get list of sensors! Response code: " + responseCode);
-		throw new IOException("Incorrect response from CommonSense: " + responseCode);
-	    }
-
-	    // parse response and store the list
-	    JSONObject content = new JSONObject(response.get("content"));
-	    sensorList = content.getJSONArray("sensors");
-	}
-
-	// store the new sensor list
-	Editor authEditor = authPrefs.edit();
-	authEditor.putString(keySensorList, sensorList.toString());
-	authEditor.putLong(keyTime, System.currentTimeMillis());
-	authEditor.commit();
-
-	return sensorList;
+	return result;
     }
 
     /**
@@ -280,8 +194,7 @@ public class SenseApi {
      * @param dataType
      *            Sensor data type, to match with registered sensors.
      * @param deviceUuid
-     *            (Optional) UUID of the device that holds the sensor. Set null to use the default
-     *            device.
+     *            (Optional) UUID of the device that should hold the sensor.
      * @return String with the sensor's ID, or null if the sensor does not exist at CommonSense
      *         (yet).
      * @throws IOException
@@ -292,37 +205,28 @@ public class SenseApi {
     public static String getSensorId(Context context, String name, String description,
 	    String dataType, String deviceUuid) throws IOException, JSONException {
 
-	// get list of all registered sensors for this device
-	JSONArray sensors = getRegisteredSensors(context, deviceUuid);
+	// Log.d(TAG, "Get sensor ID. name: '" + name + "', deviceUuid: '" + deviceUuid + "'");
 
-	// check sensors with similar names and descriptions in the list
-	for (int i = 0; i < sensors.length(); i++) {
-	    JSONObject sensor = (JSONObject) sensors.get(i);
+	// get list of sensors with matching description
+	List<JSONObject> sensors = getMatchingSensors(context, name, description, dataType);
 
-	    if (sensor.getString("name").equalsIgnoreCase(name)
-		    && ((null == description) || sensor.getString("device_type").equalsIgnoreCase(
-			    description))
-		    && ((null == dataType) || sensor.getString("data_type").equalsIgnoreCase(
-			    dataType))) {
-		return sensor.getString("id");
-
-	    } else if (name.equals(SensorNames.ACCELEROMETER) || name.equals(SensorNames.ORIENT)
-		    || name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
-		    || name.equals(SensorNames.MAGNET_FIELD)) {
-		// special case to take care of changed motion sensor descriptions since Gingerbread
-		if (name.equals(sensor.getString("name"))) {
-		    Log.w(TAG, "Using inexact match for '" + name + "' sensor ID...");
-		    return sensor.getString("id");
+	// check the devices that the sensors are connected to
+	String id = null;
+	for (JSONObject sensor : sensors) {
+	    if (null != deviceUuid) {
+		// check if the device UUID matches
+		JSONObject device = sensor.optJSONObject("device");
+		if (null != device && deviceUuid.equals(device.optString("uuid"))) {
+		    id = sensor.getString("id");
+		    break;
 		}
+	    } else {
+		// we do not care about the device, just accept the first match we find
+		id = sensor.getString("id");
+		break;
 	    }
 	}
-
-	// Log.d(TAG, "Could not find ID for " + name + " (" + description + " " + dataType
-	// + ") @device: " + deviceUuid);
-	// Log.d(TAG, "Device sensors: " + sensors);
-
-	// if we make it here, the sensor does not exist (yet)
-	return null;
+	return id;
     }
 
     /**
@@ -582,17 +486,8 @@ public class SenseApi {
 	// retrieve the newly created sensor ID
 	String content = response.get("content");
 	JSONObject responseJson = new JSONObject(content);
-	JSONObject JSONSensor = responseJson.getJSONObject("sensor");
-	final String id = (String) JSONSensor.get("id");
-
-	// store the new sensor in the preferences
-	JSONArray sensors = getRegisteredSensors(context, deviceUuid);
-	sensors.put(JSONSensor);
-	Editor authEditor = authPrefs.edit();
-	String keySensorList = deviceUuid == null ? Auth.SENSOR_LIST : Auth.SENSOR_LIST
-		+ deviceUuid;
-	authEditor.putString(keySensorList, sensors.toString());
-	authEditor.commit();
+	JSONObject jsonSensor = responseJson.getJSONObject("sensor");
+	final String id = jsonSensor.getString("id");
 
 	// get device properties from preferences, so it matches the properties in CommonSense
 	if (null == deviceUuid) {
@@ -618,7 +513,15 @@ public class SenseApi {
 	    throw new IOException("Incorrect response from CommonSense: " + code);
 	}
 
-	// Log.v(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
+	// store the new sensor in the preferences
+	jsonSensor.put("device", device);
+	JSONArray sensors = getAllSensors(context);
+	sensors.put(jsonSensor);
+	Editor authEditor = authPrefs.edit();
+	authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
+	authEditor.commit();
+
+	Log.d(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
 
 	// return the new sensor ID
 	return id;
