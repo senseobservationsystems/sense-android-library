@@ -75,19 +75,22 @@
 
   /* Stage Buttons */
   #stage.theme a.btn{
-  	border: 1px solid #555;
-  	-webkit-border-radius: 5px;
-  	border-radius: 5px;
-  	text-align:center;
-  	display:block;
-  	float:left;
-  	background:#444;
-  	width:150px;
-  	color:#9ab;
-  	font-size:1.1em;
-  	text-decoration:none;
-  	padding:1.2em 0;
-  	margin:3px 0px 3px 5px;
+    border: 1px solid #555;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    text-align:center;
+    display:block;
+    float:left;
+    background:#444;
+    width:150px;
+    color:#9ab;
+    font-size:1.1em;
+    text-decoration:none;
+    padding:1.2em 0;
+    margin:3px 0px 3px 5px;
+  }
+  #stage.theme a.btn.small{
+    width: 71px;
   }
   #stage.theme a.btn.large{
   	width:308px;

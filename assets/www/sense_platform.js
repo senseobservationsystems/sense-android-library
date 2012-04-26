@@ -91,6 +91,8 @@ SensePlatform.prototype.logout = function(successCallback, failureCallback) {
 /**
  * @param name
  *            String containing sensor name to lookup
+ * @param onlyThisDevice
+ *            Boolean to specify only to look for sensors that are connected to this specific phone
  * @param successCallback
  *            The callback which will be called when sensor data was retrieved
  * @param failureCallback
@@ -98,11 +100,11 @@ SensePlatform.prototype.logout = function(successCallback, failureCallback) {
  * 
  * @return JSONArray containing data
  */
-SensePlatform.prototype.getRemoteData = function(name, successCallback, failureCallback) {
+SensePlatform.prototype.getRemoteData = function(name, onlyThisDevice, successCallback, failureCallback) {
     if (!window.plugins.sense.isInitialized) {
         window.plugins.sense.init();
     }
-    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_commonsense_data', [ name ]);
+    return PhoneGap.exec(successCallback, failureCallback, 'SensePlatform', 'get_commonsense_data', [ name , onlyThisDevice ]);
 };
 
 
