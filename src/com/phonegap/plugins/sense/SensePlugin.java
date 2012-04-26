@@ -457,7 +457,7 @@ public class SensePlugin extends Plugin {
 	    cursor = LocalStorage.getInstance(ctx.getContext()).query(uri, projection, selection,
 		    selectionArgs, sortOrder);
 
-	    if (cursor.moveToFirst()) {
+	    if (null != cursor && cursor.moveToFirst()) {
 		while (!cursor.isAfterLast()) {
 		    JSONObject val = new JSONObject();
 		    val.put("timestamp",
