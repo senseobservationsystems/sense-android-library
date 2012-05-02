@@ -152,12 +152,14 @@ public class LoudnessSensor {
         Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
                 Context.MODE_PRIVATE).edit();
         sensorSpecifics.putFloat(SensorSpecifics.Loudness.TOTAL_SILENCE, (float)totalSilence);
+        sensorSpecifics.commit();
 	}
 	private void setHighestEver(double highest) {
 		loudest = highest;
         Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
                 Context.MODE_PRIVATE).edit();
         sensorSpecifics.putFloat(SensorSpecifics.Loudness.LOUDEST, (float)loudest);
+        sensorSpecifics.commit();
 	}
 
 	private void sendSensorValue(double value, long ms) {
