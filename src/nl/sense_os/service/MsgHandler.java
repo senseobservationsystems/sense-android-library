@@ -39,7 +39,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -196,6 +195,7 @@ public class MsgHandler extends Service {
 		Log.w(TAG, "Failed to send buffered data points: " + statusCode
 			+ ", Response content: '" + response.get("content") + "'\n"
 			+ "Data will be retried later");
+		Log.d(TAG, "transmission: '" + transmission + "'");
 
 	    } else {
 		// Data sent successfully
@@ -351,17 +351,16 @@ public class MsgHandler extends Service {
 		String where = DataPoint.TRANSMIT_STATE + "=0";
 		Cursor unsent = storage.query(contentUri, null, where, null, null);
 
-		if ((null != unsent) && unsent.moveToFirst()) {
+		if (null != unsent) {
 		    Log.v(TAG, "Found " + unsent.getCount()
 			    + " unsent data points in persistant storage");
-		    return unsent;
 		} else {
-		    Log.v(TAG, "No unsent data points in the persistant storage");
-		    return new MatrixCursor(new String[] {});
+		    Log.w(TAG, "Failed to get data points from the persistant storage");
 		}
+		return unsent;
 	    } catch (IllegalArgumentException e) {
 		Log.e(TAG, "Error querying Local Storage!", e);
-		return new MatrixCursor(new String[] {});
+		return null;
 	    }
 	}
 
@@ -458,17 +457,16 @@ public class MsgHandler extends Service {
 	    try {
 		String where = DataPoint.TRANSMIT_STATE + "=0";
 		Cursor unsent = storage.query(contentUri, null, where, null, null);
-		if ((null != unsent) && unsent.moveToFirst()) {
+		if (null != unsent) {
 		    Log.v(TAG, "Found " + unsent.getCount()
 			    + " unsent data points in local storage");
-		    return unsent;
 		} else {
-		    Log.v(TAG, "No unsent recent data points");
-		    return new MatrixCursor(new String[] {});
+		    Log.w(TAG, "Failed to get unsent recent data points from local storage");
 		}
+		return unsent;
 	    } catch (IllegalArgumentException e) {
 		Log.e(TAG, "Error querying Local Storage!", e);
-		return new MatrixCursor(new String[] {});
+		return null;
 	    }
 	}
 
