@@ -82,7 +82,7 @@
     display:block;
     float:left;
     background:#444;
-    width:150px;
+    width: 153px;
     color:#9ab;
     font-size:1.1em;
     text-decoration:none;
@@ -90,10 +90,10 @@
     margin:3px 0px 3px 5px;
   }
   #stage.theme a.btn.small{
-    width: 71px;
+    width: 73px;
   }
   #stage.theme a.btn.large{
-  	width:308px;
-  	padding:1.2em 0;
+  	width: 313px;
+  	padding: 1.2em 0;
   }
 
