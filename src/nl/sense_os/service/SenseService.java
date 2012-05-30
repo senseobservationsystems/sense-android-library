@@ -1061,19 +1061,19 @@ public class SenseService extends Service {
 		int interval = 1;
 		switch (rate) {
 		case -2:
-		    interval = 1 * 1000;
+		    interval = 60 * 1000;
 		    break;
 		case -1:
 		    // often
-		    interval = 60 * 1000;
+		    interval = 5 * 60 * 1000;
 		    break;
 		case 0:
 		    // normal
-		    interval = 5 * 60 * 1000;
+		    interval = 20 * 60 * 1000;
 		    break;
 		case 1:
 		    // rarely (15 mins)
-		    interval = 15 * 60 * 1000;
+		    interval = 60 * 60 * 1000;
 		    break;
 		default:
 		    Log.e(TAG, "Unexpected device proximity rate preference.");
