@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -946,13 +947,12 @@ public class MsgHandler extends Service {
     private void handleSendIntent(Intent intent) {
 	// Log.d(TAG, "handleSendIntent");
 	if (isOnline()) {
+
+	    // verify the sensor IDs
+	    startService(new Intent(this, DefaultSensorRegistrationService.class));
+
 	    // get the cookie
-	    SharedPreferences authPrefs;
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-		authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_MULTI_PROCESS);
-	    } else {
-		authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-	    }
+	    SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 	    String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
 	    // prepare the data to give to the transmitters

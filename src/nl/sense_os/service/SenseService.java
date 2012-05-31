@@ -5,15 +5,13 @@ package nl.sense_os.service;
 
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
 import nl.sense_os.service.ambience.TemperatureSensor;
-import nl.sense_os.service.commonsense.PhoneSensorRegistrator;
+import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
@@ -38,7 +36,6 @@ import nl.sense_os.service.provider.SNTP;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
@@ -52,337 +49,10 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
 public class SenseService extends Service {
-
-    /**
-     * Implementation of the service's AIDL interface.
-     */
-    private class SenseServiceStub extends ISenseService.Stub {
-
-	private static final String TAG = "SenseServiceStub";
-
-	@Override
-	public void changeLogin(final String username, final String password,
-		final ISenseServiceCallback callback) throws RemoteException {
-	    // Log.v(TAG, "Change login");
-
-	    // perform login on separate thread and respond via callback
-	    new Thread() {
-
-		@Override
-		public void run() {
-		    int result = SenseService.this.changeLogin(username, password);
-		    try {
-			callback.onChangeLoginResult(result);
-		    } catch (RemoteException e) {
-			Log.e(TAG, "Failed to call back to bound activity after login change: " + e);
-		    }
-		}
-	    }.start();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean getPrefBool(String key, boolean defValue) throws RemoteException {
-	    // Log.v(TAG, "Get preference: " + key);
-	    SharedPreferences prefs;
-	    if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
-		    || key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
-		    || key.equals(Status.MAIN) || key.equals(Status.MOTION)
-		    || key.equals(Status.PHONESTATE) || key.equals(Status.POPQUIZ)
-		    || key.equals(Status.AUTOSTART)) {
-		prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    } else {
-		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    }
-
-	    // return the preference value
-	    try {
-		return prefs.getBoolean(key, defValue);
-	    } catch (ClassCastException e) {
-		return defValue;
-	    }
-	}
-
-	@Override
-	public float getPrefFloat(String key, float defValue) throws RemoteException {
-	    // Log.v(TAG, "Get preference: " + key);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    try {
-		return prefs.getFloat(key, defValue);
-	    } catch (ClassCastException e) {
-		return defValue;
-	    }
-	}
-
-	@Override
-	public int getPrefInt(String key, int defValue) throws RemoteException {
-	    // Log.v(TAG, "Get preference: " + key);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    try {
-		return prefs.getInt(key, defValue);
-	    } catch (ClassCastException e) {
-		return defValue;
-	    }
-	}
-
-	@Override
-	public long getPrefLong(String key, long defValue) throws RemoteException {
-	    // Log.v(TAG, "Get preference: " + key);
-	    SharedPreferences prefs;
-	    if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
-		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-	    } else {
-		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    }
-
-	    try {
-		return prefs.getLong(key, defValue);
-	    } catch (ClassCastException e) {
-		return defValue;
-	    }
-	}
-
-	@Override
-	public String getPrefString(String key, String defValue) throws RemoteException {
-	    // Log.v(TAG, "Get preference: " + key);
-	    SharedPreferences prefs;
-	    if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
-		    || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
-		    || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
-		    || key.equals(Auth.PHONE_TYPE)) {
-		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-	    } else {
-		// all other preferences
-		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    }
-
-	    // return the preference value
-	    try {
-		return prefs.getString(key, defValue);
-	    } catch (ClassCastException e) {
-		return defValue;
-	    }
-	}
-
-	@Override
-	public String getSessionId(String appSecret) throws RemoteException {
-	    try {
-		return SenseApi.getSessionId(SenseService.this, appSecret);
-	    } catch (IllegalAccessException e) {
-		throw new RemoteException();
-	    }
-	}
-
-	@Override
-	public void getStatus(ISenseServiceCallback callback) throws RemoteException {
-	    callback.statusReport(state.getStatusCode());
-	}
-
-	public void logout() {
-	    SenseService.this.logout();
-	}
-
-	@Override
-	public void register(final String username, final String password, final String name,
-		final String surname, final String email, final String mobile,
-		final ISenseServiceCallback callback) throws RemoteException {
-	    // Log.v(TAG, "Register: '" + username + "'");
-
-	    // perform registration on separate thread and respond via callback
-	    new Thread() {
-
-		@Override
-		public void run() {
-		    int result = SenseService.this.register(username, password, name, surname,
-			    email, mobile);
-		    try {
-			callback.onRegisterResult(result);
-		    } catch (RemoteException e) {
-			Log.e(TAG, "Failed to call back to bound activity after registration: " + e);
-		    }
-		}
-	    }.start();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void setPrefBool(String key, final boolean value) throws RemoteException {
-	    // Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
-
-	    SharedPreferences prefs;
-	    if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
-		    || key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
-		    || key.equals(Status.MAIN) || key.equals(Status.MOTION)
-		    || key.equals(Status.PHONESTATE) || key.equals(Status.POPQUIZ)
-		    || key.equals(Status.AUTOSTART)) {
-		prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    } else {
-		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    }
-
-	    // store value
-	    boolean oldValue = prefs.getBoolean(key, !value);
-	    if (value != oldValue) {
-		boolean stored = prefs.edit().putBoolean(key, value).commit();
-		if (stored == false) {
-		    Log.w(TAG, "Preference '" + key + "' not stored!");
-		} else if (key.equals(Advanced.DEV_MODE) && state.isLoggedIn()) {
-		    logout();
-		} else if (key.equals(Advanced.USE_COMMONSENSE)) {
-		    // login on a separate thread
-		    new Thread() {
-			public void run() {
-			    if (value) {
-				Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
-				login();
-			    } else {
-				Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
-				logout();
-			    }
-			}
-		    }.start();
-		}
-	    }
-	}
-
-	@Override
-	public void setPrefFloat(String key, float value) throws RemoteException {
-	    // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-
-	    // store value
-	    boolean stored = prefs.edit().putFloat(key, value).commit();
-	    if (stored == false) {
-		Log.w(TAG, "Preference " + key + " not stored!");
-	    }
-	}
-
-	@Override
-	public void setPrefInt(String key, int value) throws RemoteException {
-	    // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-
-	    // store value
-	    boolean stored = prefs.edit().putFloat(key, value).commit();
-	    if (stored == false) {
-		Log.w(TAG, "Preference " + key + " not stored!");
-	    }
-	}
-
-	@Override
-	public void setPrefLong(String key, long value) throws RemoteException {
-	    // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-	    SharedPreferences prefs;
-	    if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
-		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-	    } else {
-		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    }
-
-	    // store value
-	    boolean stored = prefs.edit().putLong(key, value).commit();
-	    if (stored == false) {
-		Log.w(TAG, "Preference " + key + " not stored!");
-	    }
-	}
-
-	@Override
-	public void setPrefString(String key, String value) throws RemoteException {
-	    Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-	    SharedPreferences prefs;
-	    if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
-		    || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
-		    || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
-		    || key.equals(Auth.PHONE_TYPE)) {
-		prefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-	    } else {
-		// all other preferences
-		prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-	    }
-
-	    // store value
-	    String oldValue = prefs.getString(key, null);
-	    if (!value.equals(oldValue)) {
-		boolean stored = prefs.edit().putString(key, value).commit();
-		if (stored == false) {
-		    Log.w(TAG, "Preference " + key + " not stored!");
-		}
-
-		// special check for sync and sample rate changes
-		if (key.equals(SensePrefs.Main.SAMPLE_RATE)) {
-		    onSampleRateChange();
-		} else if (key.equals(SensePrefs.Main.SYNC_RATE)) {
-		    onSyncRateChange();
-		}
-	    }
-	}
-
-	@Override
-	public void toggleAmbience(boolean active) {
-	    // Log.v(TAG, "Toggle ambience: " + active);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    prefs.edit().putBoolean(Status.AMBIENCE, active).commit();
-	    SenseService.this.toggleAmbience(active);
-	}
-
-	@Override
-	public void toggleDeviceProx(boolean active) {
-	    // Log.v(TAG, "Toggle neighboring devices: " + active);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    prefs.edit().putBoolean(Status.DEV_PROX, active).commit();
-	    SenseService.this.toggleDeviceProx(active);
-	}
-
-	@Override
-	public void toggleExternalSensors(boolean active) {
-	    // Log.v(TAG, "Toggle external sensors: " + active);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    prefs.edit().putBoolean(Status.EXTERNAL, active).commit();
-	    SenseService.this.toggleExternalSensors(active);
-	}
-
-	@Override
-	public void toggleLocation(boolean active) {
-	    // Log.v(TAG, "Toggle location: " + active);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    prefs.edit().putBoolean(Status.LOCATION, active).commit();
-	    SenseService.this.toggleLocation(active);
-	}
-
-	@Override
-	public void toggleMain(boolean active) {
-	    // Log.v(TAG, "Toggle main: " + active);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    prefs.edit().putBoolean(Status.MAIN, active).commit();
-	    SenseService.this.toggleMain(active);
-	}
-
-	@Override
-	public void toggleMotion(boolean active) {
-	    // Log.v(TAG, "Toggle motion: " + active);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    prefs.edit().putBoolean(Status.MOTION, active).commit();
-	    SenseService.this.toggleMotion(active);
-	}
-
-	@Override
-	public void togglePhoneState(boolean active) {
-	    // Log.v(TAG, "Toggle phone state: " + active);
-	    SharedPreferences prefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
-	    prefs.edit().putBoolean(Status.PHONESTATE, active).commit();
-	    SenseService.this.togglePhoneState(active);
-	}
-
-	@Override
-	public void togglePopQuiz(boolean active) {
-	    Log.w(TAG, "Toggle questionnaire ignored: this functionality is no longer supported!");
-	}
-    }
 
     private static final String TAG = "Sense Service";
 
@@ -396,7 +66,7 @@ public class SenseService extends Service {
      */
     public final static String ACTION_SERVICE_BROADCAST = "nl.sense_os.service.Broadcast";
 
-    private final ISenseService.Stub binder = new SenseServiceStub();
+    private ISenseService.Stub binder;
 
     private ServiceStateHelper state;
 
@@ -421,14 +91,6 @@ public class SenseService extends Service {
      */
     private final Handler toastHandler = new Handler(Looper.getMainLooper());
 
-    /*
-     * fields that handle verification of the sensor IDs for communication with CommonSense
-     */
-    private final PhoneSensorRegistrator sensorVerifier = new PhoneSensorRegistrator(this);
-    private final Timer sensorVerifyTimer = new Timer();
-    private TimerTask sensorVerifyTask;
-    private long sensorVerifyTimeout = 15000;
-
     // separate threads for the sensing modules
     private HandlerThread ambienceThread, motionThread, deviceProxThread, extSensorsThread,
 	    locationThread, phoneStateThread;
@@ -444,7 +106,7 @@ public class SenseService extends Service {
      * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
      *         errors.
      */
-    private int changeLogin(String username, String password) {
+    int changeLogin(String username, String password) {
 	Log.v(TAG, "Change login");
 
 	logout();
@@ -499,7 +161,7 @@ public class SenseService extends Service {
      * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
      *         errors.
      */
-    private synchronized int login() {
+    synchronized int login() {
 
 	if (state.isLoggedIn()) {
 	    // we are already logged in
@@ -556,7 +218,7 @@ public class SenseService extends Service {
 	return result;
     }
 
-    private void logout() {
+    void logout() {
 	Log.v(TAG, "Log out");
 
 	// stop active sensing components
@@ -584,6 +246,7 @@ public class SenseService extends Service {
     @Override
     public void onCreate() {
 	Log.v(TAG, "Sense Platform service is being created");
+	binder = new SenseServiceStub(this);
 	state = ServiceStateHelper.getInstance(this);
     }
 
@@ -599,8 +262,6 @@ public class SenseService extends Service {
 
 	// stop the main service
 	stopForeground(true);
-
-	sensorVerifyTimer.cancel();
 
 	super.onDestroy();
     }
@@ -645,7 +306,7 @@ public class SenseService extends Service {
 	stopService(new Intent(getString(R.string.action_sense_send_data)));
     }
 
-    private void onSampleRateChange() {
+    void onSampleRateChange() {
 	Log.v(TAG, "Sample rate changed");
 	if (state.isStarted()) {
 	    stopSensorModules();
@@ -719,7 +380,7 @@ public class SenseService extends Service {
 	return START_STICKY;
     }
 
-    private void onSyncRateChange() {
+    void onSyncRateChange() {
 	Log.v(TAG, "Sync rate changed");
 	if (state.isStarted()) {
 	    DataTransmitter.scheduleTransmissions(this);
@@ -737,15 +398,18 @@ public class SenseService extends Service {
      * @param username
      * @param password
      *            Unhashed password
+     * @param email
+     * @param address
+     * @param zipCode
+     * @param country
      * @param name
      * @param surname
-     * @param email
      * @param mobile
      * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
      *         any other unexpected responses.
      */
-    private synchronized int register(String username, String password, String name,
-	    String surname, String email, String mobile) {
+    synchronized int register(String username, String password, String email, String address,
+	    String zipCode, String country, String name, String surname, String mobile) {
 	Log.v(TAG, "Try to register new user");
 
 	// log out before registering a new user
@@ -830,16 +494,8 @@ public class SenseService extends Service {
 	// make sure the IDs of all sensors are known
 	SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
 	boolean useCommonSense = mainPrefs.getBoolean(Advanced.USE_COMMONSENSE, true);
-	sensorVerifyTimeout = 15000;
 	if (useCommonSense) {
-	    // run in separate thread to avoid NetworkOnMainThread exception
-	    new Thread() {
-
-		@Override
-		public void run() {
-		    verifySensorIds();
-		}
-	    }.start();
+	    verifySensorIds();
 	}
 
 	SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
@@ -877,7 +533,7 @@ public class SenseService extends Service {
 	sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
     }
 
-    private synchronized void toggleAmbience(boolean active) {
+    synchronized void toggleAmbience(boolean active) {
 
 	if (active != state.isAmbienceActive()) {
 	    Log.i(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
@@ -1032,7 +688,7 @@ public class SenseService extends Service {
 	}
     }
 
-    private synchronized void toggleDeviceProx(boolean active) {
+    synchronized void toggleDeviceProx(boolean active) {
 
 	if (active != state.isDevProxActive()) {
 	    Log.i(TAG, (active ? "Enable" : "Disable") + " neighbouring device scan sensors");
@@ -1110,7 +766,7 @@ public class SenseService extends Service {
 	}
     }
 
-    private synchronized void toggleExternalSensors(boolean active) {
+    synchronized void toggleExternalSensors(boolean active) {
 
 	if (active != state.isExternalActive()) {
 	    Log.i(TAG, (active ? "Enable" : "Disable") + " external sensors");
@@ -1227,7 +883,7 @@ public class SenseService extends Service {
 	}
     }
 
-    private synchronized void toggleLocation(boolean active) {
+    synchronized void toggleLocation(boolean active) {
 
 	if (active != state.isLocationActive()) {
 	    Log.i(TAG, (active ? "Enable" : "Disable") + " position sensor");
@@ -1315,7 +971,7 @@ public class SenseService extends Service {
 	}
     }
 
-    private synchronized void toggleMain(boolean active) {
+    synchronized void toggleMain(boolean active) {
 	Log.i(TAG, (active ? "Enable" : "Disable") + " main sensing status");
 
 	if (true == active) {
@@ -1335,7 +991,7 @@ public class SenseService extends Service {
 	}
     }
 
-    private synchronized void toggleMotion(boolean active) {
+    synchronized void toggleMotion(boolean active) {
 
 	if (active != state.isMotionActive()) {
 	    Log.i(TAG, (active ? "Enable" : "Disable") + " motion sensors");
@@ -1417,7 +1073,7 @@ public class SenseService extends Service {
 	}
     }
 
-    private synchronized void togglePhoneState(boolean active) {
+    synchronized void togglePhoneState(boolean active) {
 
 	if (active != state.isPhoneStateActive()) {
 	    Log.i(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
@@ -1543,30 +1199,6 @@ public class SenseService extends Service {
 
     private synchronized void verifySensorIds() {
 	Log.v(TAG, "Try to verify sensor IDs");
-
-	if (null != sensorVerifyTask) {
-	    sensorVerifyTask.cancel();
-	}
-
-	String deviceType = SenseApi.getDefaultDeviceType(this);
-	String deviceUuid = SenseApi.getDefaultDeviceUuid(this);
-
-	if (sensorVerifier.verifySensorIds(deviceType, deviceUuid)) {
-	    Log.v(TAG, "Sensor IDs verified");
-	} else {
-	    Log.w(TAG, "Failed to verify the sensor IDs! Retry in " + (sensorVerifyTimeout / 1000)
-		    + " seconds");
-	    sensorVerifyTask = new TimerTask() {
-
-		@Override
-		public void run() {
-		    verifySensorIds();
-		}
-	    };
-	    sensorVerifyTimer.schedule(sensorVerifyTask, sensorVerifyTimeout);
-	    if (sensorVerifyTimeout < AlarmManager.INTERVAL_FIFTEEN_MINUTES) {
-		sensorVerifyTimeout *= 2;
-	    }
-	}
+	startService(new Intent(this, DefaultSensorRegistrationService.class));
     }
 }

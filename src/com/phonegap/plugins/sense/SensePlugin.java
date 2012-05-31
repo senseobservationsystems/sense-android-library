@@ -566,17 +566,21 @@ public class SensePlugin extends Plugin {
 	// get the parameters
 	String username = data.getString(0);
 	String password = data.getString(1);
-	String name = data.getString(2);
-	String surname = data.getString(3);
-	String email = data.getString(4);
-	String phone = data.getString(5);
+	String email = data.getString(2);
+	String address = data.getString(3);
+	String zipCode = data.getString(4);
+	String country = data.getString(5);
+	String name = data.getString(6);
+	String surname = data.getString(7);
+	String phone = data.getString(8);
 	Log.v(TAG, "register('" + username + "', '" + password + "', '" + name + "', '" + surname
 		+ "', '" + email + "', '" + phone + "')");
 
 	// do the registration
 	if (null != service) {
 	    registerCallbackId = callbackId;
-	    service.register(username, password, name, surname, email, phone, callback);
+	    service.register(username, password, email, address, zipCode, country, name, surname,
+		    phone, callback);
 	} else {
 	    Log.e(TAG, "Failed to bind to service in time!");
 	    return new PluginResult(Status.ERROR, "Failed to bind to service in time!");

@@ -22,9 +22,9 @@ import android.os.Build;
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
  */
-public class PhoneSensorRegistrator extends SensorRegistrator {
+public class DefaultSensorRegistrator extends SensorRegistrator {
 
-    public PhoneSensorRegistrator(Context context) {
+    public DefaultSensorRegistrator(Context context) {
 	super(context);
     }
 

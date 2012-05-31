@@ -26,22 +26,28 @@ interface ISenseService
      * Registers a new user at CommonSense and logs in immediately.
      *
      * @param username 
-     *         Username for the new user.
+     *         Username for the new user
      * @param password 
-     *         Unhashed password String for the new user.
-     * @param name 
-     *         First name (optional, null if not required).
-     * @param surname 
-     *         Surname (optional, null if not required).
+     *         Unhashed password String for the new user
      * @param email 
-     *         Email address (optional, null if not required).
+     *         Email address
+     * @param country 
+     *         Country
+     * @param address 
+     *         Street address (optional, null if not required)
+     * @param zipCode 
+     *         ZIP code (optional, null if not required)
+     * @param name 
+     *         First name (optional, null if not required)
+     * @param surname 
+     *         Surname (optional, null if not required)
      * @param mobile 
-     *         Phone number, preferably in E164 format (optional, null if not required).
+     *         Phone number, preferably in E164 format (optional, null if not required)
      * @param callback 
-     *            interface to receive callback when login is completed
+     *         Interface to receive callback when login is completed
      */
-    void register(String username, String password, String name, String surname, String email, 
-            String mobile, ISenseServiceCallback callback);
+    void register(String username, String password, String email, String address, String zipCode, 
+    		String country, String name, String surname, String mobile, ISenseServiceCallback callback);
     
     /**
      * @param appSecret
