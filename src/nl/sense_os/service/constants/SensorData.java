@@ -413,6 +413,8 @@ public class SensorData {
 
 		public static final String LOUDNESS = "loudness";
 
+		public static final String ATTACHED_TO_MYRIANODE = "attachedToMyriaNode";
+
         private SensorNames() {
             // class should not be instantiated
         }
