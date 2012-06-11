@@ -96,6 +96,7 @@
                 <action android:name="nl.sense_os.pgtest.MsgHandler.SEND_DATA" />
             </intent-filter>
         </service>
+        <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
         <service android:name="nl.sense_os.service.appwidget.DummyAppWidgetService"
             android:exported="false" >
             <intent-filter>
