@@ -16,6 +16,8 @@ import nl.sense_os.service.provider.SNTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -29,80 +31,57 @@ import android.util.Log;
 public class BluetoothDeviceProximity {
 
     /**
-     * Receiver for scheduled alarms to start a scan
+     * Receiver for Bluetooth state broadcasts
      */
-    private class ScheduledAlarmReceiver extends BroadcastReceiver {
+    private class BluetoothReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 	    if (!scanEnabled || null == scanThread) {
+		Log.w(TAG, "Bluetooth broadcast received while sensor is disabled");
 		return;
 	    }
 
 	    String action = intent.getAction();
 
 	    if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-		final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-			BluetoothAdapter.STATE_OFF);
-		if (state == BluetoothAdapter.STATE_ON) {
-		    scanThread.stop();
-		    scanHandler.post(scanThread = new ScanThread());
-		    return;
-		}
-	    }
-
-	    // When discovery finds a device
-	    if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-		BluetoothDevice remoteDevice = intent
-			.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-		Short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, (short) 0);
-		HashMap<BluetoothDevice, Short> mapValue = new HashMap<BluetoothDevice, Short>();
-		mapValue.put(remoteDevice, rssi);
-		scanThread.deviceArray.add(mapValue);
-	    }
-
-	    if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-		try {
-		    for (Map<BluetoothDevice, Short> value : scanThread.deviceArray) {
-			BluetoothDevice btd = value.entrySet().iterator().next().getKey();
-
-			JSONObject deviceJson = new JSONObject();
-			deviceJson.put("address", btd.getAddress());
-			deviceJson.put("name", btd.getName());
-			deviceJson.put("rssi", value.entrySet().iterator().next().getValue());
-
-			// pass message to the MsgHandler
-			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_DISCOVERY);
-			i.putExtra(DataPoint.VALUE, deviceJson.toString());
-			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-			BluetoothDeviceProximity.this.context.startService(i);
-		    }
-
-		    // add count of bluetooth devices as a separate sensor value
-		    int nrBluetoothNeighbours = scanThread.deviceArray.size();
-
-		    Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-		    i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_NEIGHBOURS_COUNT);
-		    i.putExtra(DataPoint.VALUE, nrBluetoothNeighbours);
-		    i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.INT);
-		    i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-		    BluetoothDeviceProximity.this.context.startService(i);
-		    Log.v(TAG, "Found " + nrBluetoothNeighbours + " bluetooth neighbours");
-
-		} catch (JSONException e) {
-		    Log.e(TAG, "JSONException preparing bluetooth scan data");
-		} finally {
-		    scanThread.stop();
-		    scanHandler.postDelayed(scanThread = new ScanThread(), scanInterval);
-		}
+		onBluetoothStateChanged(intent);
+	    } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+		onDeviceFound(intent);
+	    } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+		onScanFinished();
 	    }
 	}
-    };
+    }
 
     /**
-     * Scan thread
+     * Receiver for alarms to start scan
+     */
+    private class ScanAlarmReceiver extends BroadcastReceiver {
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+	    if (!scanEnabled) {
+		Log.w(TAG, "Bluetooth scan alarm received while sensor is disabled");
+		return;
+	    } else {
+		// stop any old threads
+		try {
+		    if (null != scanThread) {
+			scanThread.stop();
+			scanHandler.removeCallbacks(scanThread);
+		    }
+		} catch (Exception e) {
+		    Log.e(TAG, "Exception clearing old bluetooth scan threads. " + e);
+		}
+		// start new scan
+		scanHandler.post(scanThread = new ScanThread());
+	    }
+	}
+    }
+
+    /**
+     * Bluetooth discovery thread
      */
     private class ScanThread implements Runnable {
 
@@ -122,6 +101,7 @@ public class BluetoothDeviceProximity {
 
 	@Override
 	public void run() {
+	    Log.d(TAG, "Run Bluetooth discovery thread");
 	    if (scanEnabled) {
 		if (btAdapter.isEnabled()) {
 		    // start discovery
@@ -170,7 +150,9 @@ public class BluetoothDeviceProximity {
     }
 
     private static final String TAG = "Bluetooth DeviceProximity";
-    private ScheduledAlarmReceiver btReceiver;
+    private static final int REQ_CODE = 333;
+    private final BluetoothReceiver btReceiver = new BluetoothReceiver();
+    private final ScanAlarmReceiver alarmReceiver = new ScanAlarmReceiver();
     private BluetoothAdapter btAdapter;
     private final Context context;
     private boolean scanEnabled = false;
@@ -186,6 +168,60 @@ public class BluetoothDeviceProximity {
 	return scanInterval;
     }
 
+    private void onDeviceFound(Intent intent) {
+	BluetoothDevice remoteDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+	Short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, (short) 0);
+	HashMap<BluetoothDevice, Short> mapValue = new HashMap<BluetoothDevice, Short>();
+	mapValue.put(remoteDevice, rssi);
+	scanThread.deviceArray.add(mapValue);
+    }
+
+    private void onScanFinished() {
+	try {
+	    for (Map<BluetoothDevice, Short> value : scanThread.deviceArray) {
+		BluetoothDevice btd = value.entrySet().iterator().next().getKey();
+
+		JSONObject deviceJson = new JSONObject();
+		deviceJson.put("address", btd.getAddress());
+		deviceJson.put("name", btd.getName());
+		deviceJson.put("rssi", value.entrySet().iterator().next().getValue());
+
+		// pass message to the MsgHandler
+		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+		i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_DISCOVERY);
+		i.putExtra(DataPoint.VALUE, deviceJson.toString());
+		i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+		i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+		BluetoothDeviceProximity.this.context.startService(i);
+	    }
+
+	    // add count of bluetooth devices as a separate sensor value
+	    int nrBluetoothNeighbours = scanThread.deviceArray.size();
+
+	    Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+	    i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_NEIGHBOURS_COUNT);
+	    i.putExtra(DataPoint.VALUE, nrBluetoothNeighbours);
+	    i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.INT);
+	    i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+	    BluetoothDeviceProximity.this.context.startService(i);
+	    Log.v(TAG, "Found " + nrBluetoothNeighbours + " bluetooth neighbours");
+
+	} catch (JSONException e) {
+	    Log.e(TAG, "JSONException preparing bluetooth scan data");
+	} finally {
+	    scanThread.stop();
+	    scanHandler.postDelayed(scanThread = new ScanThread(), scanInterval);
+	}
+    }
+
+    private void onBluetoothStateChanged(Intent intent) {
+	int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF);
+	if (state == BluetoothAdapter.STATE_ON) {
+	    scanThread.stop();
+	    scanHandler.post(scanThread = new ScanThread());
+	}
+    }
+
     public void setScanInterval(int scanInterval) {
 	this.scanInterval = scanInterval;
     }
@@ -194,18 +230,22 @@ public class BluetoothDeviceProximity {
 	scanInterval = interval;
 	scanEnabled = true;
 
-	Thread t = new Thread() {
+	// register receiver for scan alarms
+	String action = "nl.sense_os.app.bluetooth.SCAN";
+	context.registerReceiver(alarmReceiver, new IntentFilter(action));
 
-	    @Override
-	    public void run() {
-		scanHandler.post(scanThread = new ScanThread());
-	    }
-	};
-	scanHandler.post(t);
+	Intent intent = new Intent(action);
+	PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent, 0);
+	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	am.cancel(operation);
+	am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), scanInterval,
+		operation);
     }
 
     public void stopEnvironmentScanning() {
 	scanEnabled = false;
+
+	// stop the thread if it is running
 	try {
 	    if (scanThread != null) {
 		scanThread.stop();
@@ -214,5 +254,15 @@ public class BluetoothDeviceProximity {
 	} catch (Exception e) {
 	    Log.e(TAG, "Exception in stopping Bluetooth scan thread:", e);
 	}
+
+	// cancel the alarms
+	String action = "nl.sense_os.app.bluetooth.SCAN";
+	Intent intent = new Intent(action);
+	PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent, 0);
+	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	am.cancel(operation);
+
+	// unregister the receiver
+	context.unregisterReceiver(alarmReceiver);
     }
 }

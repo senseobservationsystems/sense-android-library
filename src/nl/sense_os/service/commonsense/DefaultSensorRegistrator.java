@@ -554,17 +554,17 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
     }
 
     private boolean checkUGLYEXTRASENSOR(String deviceType, String deviceUuid) {
-    	String name, displayName, description, dataType;
+	String name, displayName, description, dataType;
 
-    	// match battery sensor
-    	name = SensorNames.ATTACHED_TO_MYRIANODE;
-    	displayName = SensorNames.ATTACHED_TO_MYRIANODE;
-    	description = "Sense Logger";
-    	dataType = SenseDataTypes.STRING;
+	// match battery sensor
+	name = SensorNames.ATTACHED_TO_MYRIANODE;
+	displayName = SensorNames.ATTACHED_TO_MYRIANODE;
+	description = "Sense Logger";
+	dataType = SenseDataTypes.STRING;
 
-    	Log.v("phoneSensorRegistrator", "Checking for sensor: " + name + "/" + description);
-    	return checkSensor(name, displayName, dataType, description, "string", deviceType,
-    		deviceUuid);
+	Log.v("phoneSensorRegistrator", "Checking for sensor: " + name + "/" + description);
+	return checkSensor(name, displayName, dataType, description, "string", deviceType,
+		deviceUuid);
     }
 
     @Override
@@ -574,7 +574,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 	success &= checkLocationSensors(deviceType, deviceUuid);
 	success &= checkMotionSensors(deviceType, deviceUuid);
 	success &= checkPhoneStateSensors(deviceType, deviceUuid);
-	success &= checkUGLYEXTRASENSOR(deviceType, deviceUuid);
+	// FIXME why is the ugly extra sensor included in the default set?
+	// success &= checkUGLYEXTRASENSOR(deviceType, deviceUuid);
 	return success;
     }
 }
