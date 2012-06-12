@@ -14,6 +14,42 @@ public class ParserUtils {
     @SuppressWarnings("unused")
     private static final String TAG = "ParserUtils";
 
+    private static String fixCompareSigns(String s) {
+	String result = s.replaceAll(" = ", "=");
+	result = result.replaceAll("= ", "=");
+	result = result.replaceAll(" =", "=");
+	result = result.replaceAll(" > ", ">");
+	result = result.replaceAll("> ", ">");
+	result = result.replaceAll(" >", ">");
+	result = result.replaceAll(" < ", "<");
+	result = result.replaceAll("< ", "<");
+	result = result.replaceAll(" <", "<");
+	result = result.replaceAll(" != ", "!=");
+	result = result.replaceAll("!= ", "!=");
+	result = result.replaceAll(" !=", "!=");
+	return result;
+    }
+
+    public static String getSelectedDeviceUuid(String selection, String[] selectionArgs) {
+	String deviceUuid = null;
+	if (selection != null && selection.contains(DataPoint.DEVICE_UUID)) {
+
+	    // preprocess the selection string a bit
+	    selection = fixCompareSigns(selection);
+
+	    int eqKeyStart = selection.indexOf(DataPoint.DEVICE_UUID + "='");
+
+	    if (-1 != eqKeyStart) {
+		// selection contains "device_uuid='"
+		int uuidStart = eqKeyStart + (DataPoint.DEVICE_UUID + "='").length();
+		int uuidEnd = selection.indexOf("'", uuidStart);
+		uuidEnd = uuidEnd == -1 ? selection.length() - 1 : uuidEnd;
+		deviceUuid = selection.substring(uuidStart, uuidEnd);
+	    }
+	}
+	return deviceUuid;
+    }
+
     /**
      * Tries to parse the selection String to see which data has to be returned for the query. Looks
      * for occurrences of "sensor_name" in the selection String.
@@ -121,18 +157,7 @@ public class ParserUtils {
 	if (selection != null && selection.contains(DataPoint.TIMESTAMP)) {
 
 	    // preprocess the selection string a bit
-	    selection = selection.replaceAll(" = ", "=");
-	    selection = selection.replaceAll("= ", "=");
-	    selection = selection.replaceAll(" =", "=");
-	    selection = selection.replaceAll(" > ", ">");
-	    selection = selection.replaceAll("> ", ">");
-	    selection = selection.replaceAll(" >", ">");
-	    selection = selection.replaceAll(" < ", "<");
-	    selection = selection.replaceAll("< ", "<");
-	    selection = selection.replaceAll(" <", "<");
-	    selection = selection.replaceAll(" != ", "!=");
-	    selection = selection.replaceAll("!= ", "!=");
-	    selection = selection.replaceAll(" !=", "!=");
+	    selection = fixCompareSigns(selection);
 
 	    int eqKeyStart = selection.indexOf(DataPoint.TIMESTAMP + "=");
 	    int neqKeyStart = selection.indexOf(DataPoint.TIMESTAMP + "!=");

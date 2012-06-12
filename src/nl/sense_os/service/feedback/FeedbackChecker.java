@@ -24,39 +24,39 @@ public class FeedbackChecker extends IntentService {
     private static final String TAG = "FeedbackChecker";
 
     public FeedbackChecker() {
-        super("Sense FeedbackChecker");
+	super("Sense FeedbackChecker");
     }
 
     private void checkFeedback(String sensorName, String actionAfterCheck) {
 
-        try {
-            String url = getFeedbackUrl(sensorName);
+	try {
+	    String url = getFeedbackUrl(sensorName);
 
-            if (null != url) {
-                // only get the last value
-                url += "?last=1";
+	    if (null != url) {
+		// only get the last value
+		url += "?last=1";
 
-                // get cookie for authentication
-                final SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
-                        MODE_PRIVATE);
-                String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		// get cookie for authentication
+		final SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS,
+			MODE_PRIVATE);
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-                // get last feedback sensor value
-                if (cookie != null) {
-                    Map<String, String> response = SenseApi.request(this, url, null, cookie);
+		// get last feedback sensor value
+		if (cookie != null) {
+		    Map<String, String> response = SenseApi.request(this, url, null, cookie);
 
-                    JSONObject content = new JSONObject(response.get("content"));
-                    // parseFeedback(content);
+		    JSONObject content = new JSONObject(response.get("content"));
+		    // parseFeedback(content);
 
-                    sendFeedback(content, actionAfterCheck);
+		    sendFeedback(content, actionAfterCheck);
 
-                }
-            } else {
-                Log.w(TAG, "Could not check feedback sensor: sensor ID is not know yet");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Exception checking feedback sensor", e);
-        }
+		}
+	    } else {
+		Log.w(TAG, "Could not check feedback sensor: sensor ID is not know yet");
+	    }
+	} catch (Exception e) {
+	    Log.e(TAG, "Exception checking feedback sensor", e);
+	}
     }
 
     /**
@@ -66,12 +66,13 @@ public class FeedbackChecker extends IntentService {
      */
     private String getFeedbackUrl(String sensor_name) throws IOException, JSONException {
 
-        // get URL of feedback sensor data
-        String sensorName = sensor_name;
-        String dataType = "json";
-        String description = sensor_name;
+	// get URL of feedback sensor data
+	String sensorName = sensor_name;
+	String dataType = "json";
+	String description = sensor_name;
+	String deviceUuid = SenseApi.getDefaultDeviceUuid(this);
 
-        return SenseApi.getSensorUrl(this, sensorName, description, dataType, null);
+	return SenseApi.getSensorUrl(this, sensorName, description, dataType, deviceUuid);
     }
 
     /**
@@ -109,14 +110,14 @@ public class FeedbackChecker extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        String action = intent.getAction();
-        if (action.equals(ACTION_CHECK_FEEDBACK)) {
-            String sensorName = intent.getStringExtra("sensor_name");
-            String actionAfterCheck = intent.getStringExtra("broadcast_after");
-            checkFeedback(sensorName, actionAfterCheck);
-        } else {
-            Log.w(TAG, "Unexpected intent action: \'" + action + "\'");
-        }
+	String action = intent.getAction();
+	if (action.equals(ACTION_CHECK_FEEDBACK)) {
+	    String sensorName = intent.getStringExtra("sensor_name");
+	    String actionAfterCheck = intent.getStringExtra("broadcast_after");
+	    checkFeedback(sensorName, actionAfterCheck);
+	} else {
+	    Log.w(TAG, "Unexpected intent action: \'" + action + "\'");
+	}
     }
 
     /**
@@ -216,9 +217,9 @@ public class FeedbackChecker extends IntentService {
      * 
      */
     private void sendFeedback(JSONObject json, String actionAfterCheck) {
-        Intent sendIntent = new Intent(actionAfterCheck);
-        String jsonString = json.toString();
-        sendIntent.putExtra("json", jsonString);
-        sendBroadcast(sendIntent);
+	Intent sendIntent = new Intent(actionAfterCheck);
+	String jsonString = json.toString();
+	sendIntent.putExtra("json", jsonString);
+	sendBroadcast(sendIntent);
     }
 }

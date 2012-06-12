@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -39,7 +40,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -196,6 +196,7 @@ public class MsgHandler extends Service {
 		Log.w(TAG, "Failed to send buffered data points: " + statusCode
 			+ ", Response content: '" + response.get("content") + "'\n"
 			+ "Data will be retried later");
+		Log.d(TAG, "transmission: '" + transmission + "'");
 
 	    } else {
 		// Data sent successfully
@@ -241,6 +242,11 @@ public class MsgHandler extends Service {
 				.getColumnIndexOrThrow(DataPoint.TIMESTAMP));
 			deviceUuid = cursor.getString(cursor
 				.getColumnIndexOrThrow(DataPoint.DEVICE_UUID));
+
+			// set default sensor ID if it is missing
+			deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+				.getDefaultDeviceUuid(MsgHandler.this);
+
 		    } catch (IllegalArgumentException e) {
 			// something is wrong with this data point, skip it
 			Log.w(TAG,
@@ -346,17 +352,16 @@ public class MsgHandler extends Service {
 		String where = DataPoint.TRANSMIT_STATE + "=0";
 		Cursor unsent = storage.query(contentUri, null, where, null, null);
 
-		if ((null != unsent) && unsent.moveToFirst()) {
-		    // Log.v(TAG, "Found " + unsent.getCount() +
-		    // " unsent data points in persistant storage");
-		    return unsent;
+		if (null != unsent) {
+		    Log.v(TAG, "Found " + unsent.getCount()
+			    + " unsent data points in persistant storage");
 		} else {
-		    // Log.v(TAG, "No unsent data points in the persistant storage");
-		    return new MatrixCursor(new String[] {});
+		    Log.w(TAG, "Failed to get data points from the persistant storage");
 		}
+		return unsent;
 	    } catch (IllegalArgumentException e) {
 		Log.e(TAG, "Error querying Local Storage!", e);
-		return new MatrixCursor(new String[] {});
+		return null;
 	    }
 	}
 
@@ -453,17 +458,16 @@ public class MsgHandler extends Service {
 	    try {
 		String where = DataPoint.TRANSMIT_STATE + "=0";
 		Cursor unsent = storage.query(contentUri, null, where, null, null);
-		if ((null != unsent) && unsent.moveToFirst()) {
-		    // Log.v(TAG, "Found " + unsent.getCount() +
-		    // " unsent data points in local storage");
-		    return unsent;
+		if (null != unsent) {
+		    Log.v(TAG, "Found " + unsent.getCount()
+			    + " unsent data points in local storage");
 		} else {
-		    // Log.v(TAG, "No unsent recent data points");
-		    return new MatrixCursor(new String[] {});
+		    Log.w(TAG, "Failed to get unsent recent data points from local storage");
 		}
+		return unsent;
 	    } catch (IllegalArgumentException e) {
 		Log.e(TAG, "Error querying Local Storage!", e);
-		return new MatrixCursor(new String[] {});
+		return null;
 	    }
 	}
 
@@ -533,7 +537,8 @@ public class MsgHandler extends Service {
 	    this.cookie = cookie;
 	    this.data = data;
 	    this.name = name;
-	    this.deviceUuid = deviceUuid;
+	    this.deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+		    .getDefaultDeviceUuid(MsgHandler.this);
 	    this.dataType = dataType;
 	    this.description = description != null ? description : name;
 	    this.context = context;
@@ -661,7 +666,9 @@ public class MsgHandler extends Service {
 	    this.sensorName = name;
 	    this.dataType = dataType;
 	    this.deviceType = description;
-	    this.deviceUuid = deviceUuid;
+	    this.deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+		    .getDefaultDeviceUuid(MsgHandler.this);
+	    ;
 	    this.context = context;
 	}
 
@@ -881,9 +888,11 @@ public class MsgHandler extends Service {
 	    // defaults
 	    description = description != null ? description : sensorName;
 	    displayName = displayName != null ? displayName : sensorName;
+	    deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
+		    .getDefaultDeviceUuid(MsgHandler.this);
 
 	    // Log.d(TAG, "name: '" + sensorName + "', display: '" + displayName +
-	    // "', description: '" + deviceType + "', data type: '" + dataType + "'");
+	    // "', description: '" + description + "', data type: '" + dataType + "'");
 
 	    // convert sensor value to String
 	    String sensorValue = "";
@@ -917,7 +926,6 @@ public class MsgHandler extends Service {
 	    boolean isRealTimeMode = rate == -2;
 	    if (isOnline() && isRealTimeMode && !isMaxThreads) {
 		/* send immediately */
-		Log.d(TAG, "Real time mode: send immediately");
 
 		// create sensor data JSON object with only 1 data point
 		JSONObject sensorData = new JSONObject();
@@ -937,14 +945,14 @@ public class MsgHandler extends Service {
     }
 
     private void handleSendIntent(Intent intent) {
+	// Log.d(TAG, "handleSendIntent");
 	if (isOnline()) {
+
+	    // verify the sensor IDs
+	    startService(new Intent(this, DefaultSensorRegistrationService.class));
+
 	    // get the cookie
-	    SharedPreferences authPrefs;
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-		authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_MULTI_PROCESS);
-	    } else {
-		authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-	    }
+	    SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 	    String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
 	    // prepare the data to give to the transmitters
@@ -1037,7 +1045,7 @@ public class MsgHandler extends Service {
 
     @Override
     public void onCreate() {
-	// Log.v(TAG, "onCreate");
+	Log.v(TAG, "onCreate");
 	super.onCreate();
 
 	storage = LocalStorage.getInstance(this);
@@ -1054,7 +1062,7 @@ public class MsgHandler extends Service {
 
     @Override
     public void onDestroy() {
-	// Log.v(TAG, "onDestroy");
+	Log.v(TAG, "onDestroy");
 	emptyBufferToDb();
 
 	// stop buffered data transmission threads

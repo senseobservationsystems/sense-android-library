@@ -51,81 +51,81 @@ public class NfcScan extends FragmentActivity {
 
     private class NfcDialog extends DialogFragment {
 
-        @TargetApi(11)
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // create builder
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                // specifically set dark theme for Android 3.0+
-                builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
-            }
+	@TargetApi(11)
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+	    // create builder
+	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		// specifically set dark theme for Android 3.0+
+		builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+	    }
 
-            builder.setIcon(android.R.drawable.ic_dialog_alert);
-            builder.setTitle(R.string.nfc_dialog_title);
-            builder.setMessage(getString(R.string.nfc_dialog_msg, tagId));
-            builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
+	    builder.setIcon(android.R.drawable.ic_dialog_alert);
+	    builder.setTitle(R.string.nfc_dialog_title);
+	    builder.setMessage(getString(R.string.nfc_dialog_msg, tagId));
+	    builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    submit();
-                }
-            });
-            builder.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+		    submit();
+		}
+	    });
+	    builder.setNegativeButton(android.R.string.cancel, new OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+		    dialog.cancel();
+		}
+	    });
 
-            return builder.create();
-        }
+	    return builder.create();
+	}
 
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            Log.v(TAG, "Dialog dismissed...");
-            finish();
-        }
+	@Override
+	public void onDismiss(DialogInterface dialog) {
+	    Log.v(TAG, "Dialog dismissed...");
+	    finish();
+	}
     }
 
     private class ParseTask extends AsyncTask<Tag, Void, Boolean> {
-        private String error = null;
+	private String error = null;
 
-        @Override
-        protected Boolean doInBackground(Tag... params) {
-            Tag tag = params[0];
+	@Override
+	protected Boolean doInBackground(Tag... params) {
+	    Tag tag = params[0];
 
-            try {
-                parseTag(tag);
-            } catch (IllegalArgumentException e) {
-                error = "Failed to parse tag: " + e;
-                return false;
-            } catch (ClassNotFoundException e) {
-                error = "Failed to parse tag: " + e;
-                return false;
-            } catch (NoSuchMethodException e) {
-                error = "Failed to parse tag: " + e;
-                return false;
-            } catch (IllegalAccessException e) {
-                error = "Failed to parse tag: " + e;
-                return false;
-            } catch (InvocationTargetException e) {
-                error = "Failed to parse tag: " + e;
-                return false;
-            }
+	    try {
+		parseTag(tag);
+	    } catch (IllegalArgumentException e) {
+		error = "Failed to parse tag: " + e;
+		return false;
+	    } catch (ClassNotFoundException e) {
+		error = "Failed to parse tag: " + e;
+		return false;
+	    } catch (NoSuchMethodException e) {
+		error = "Failed to parse tag: " + e;
+		return false;
+	    } catch (IllegalAccessException e) {
+		error = "Failed to parse tag: " + e;
+		return false;
+	    } catch (InvocationTargetException e) {
+		error = "Failed to parse tag: " + e;
+		return false;
+	    }
 
-            return true;
-        }
+	    return true;
+	}
 
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                onParseSuccess();
-            } else {
-                onParseFailure(error);
-            }
-        }
+	@Override
+	protected void onPostExecute(Boolean result) {
+	    if (result) {
+		onParseSuccess();
+	    } else {
+		onParseFailure(error);
+	    }
+	}
     }
 
     private static final String TAG = "Sense NFC";
@@ -138,157 +138,160 @@ public class NfcScan extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	super.onCreate(savedInstanceState);
 
-        /* parse the tag */
-        Tag tag = getIntent().<Tag> getParcelableExtra(NfcAdapter.EXTRA_TAG);
-        new ParseTask().execute(tag);
+	/* parse the tag */
+	Tag tag = getIntent().<Tag> getParcelableExtra(NfcAdapter.EXTRA_TAG);
+	new ParseTask().execute(tag);
     }
 
     @Override
     protected void onDestroy() {
-        cancelNotification();
-        super.onDestroy();
+	cancelNotification();
+	super.onDestroy();
     }
 
     private void onParseFailure(String error) {
-        Log.e(TAG, error);
-        Toast.makeText(this, "Failed to parse tag!", Toast.LENGTH_LONG).show();
-        finish();
+	Log.e(TAG, error);
+	Toast.makeText(this, "Failed to parse tag!", Toast.LENGTH_LONG).show();
+	finish();
     }
 
     private void onParseSuccess() {
-        showNotification();
-        showNfcDialog();
+	showNotification();
+	showNfcDialog();
     }
 
     private void showNfcDialog() {
-        NfcDialog dialog = new NfcDialog();
-        dialog.show(getSupportFragmentManager(), "nfc");
+	NfcDialog dialog = new NfcDialog();
+	dialog.show(getSupportFragmentManager(), "nfc");
     }
 
     private void cancelNotification() {
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.cancel(NOTIF_ID);
+	NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	nm.cancel(NOTIF_ID);
     }
 
     private void showNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setDefaults(Notification.DEFAULT_SOUND);
-        builder.setWhen(System.currentTimeMillis());
-        builder.setOngoing(true);
-        builder.setContentTitle(getString(R.string.stat_notify_title));
-        builder.setContentText(getString(android.R.string.dialog_alert_title));
-        builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(), 0));
+	NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+	builder.setDefaults(Notification.DEFAULT_SOUND);
+	builder.setWhen(System.currentTimeMillis());
+	builder.setOngoing(true);
+	builder.setContentTitle(getString(R.string.stat_notify_title));
+	builder.setContentText(getString(android.R.string.dialog_alert_title));
+	builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(), 0));
 
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(NOTIF_ID, builder.getNotification());
+	NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	nm.notify(NOTIF_ID, builder.getNotification());
     }
 
     private void parseTag(Tag tag) throws ClassNotFoundException, NoSuchMethodException,
-            IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        Log.d(TAG, "Parse tag: " + tag);
+	    IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
-        // get the tag ID
-        tagId = "";
-        for (byte idByte : tag.getId()) {
-            tagId += (idByte & 0x0FF) + ":";
-        }
-        if (tagId.length() > 0) {
-            tagId = tagId.substring(0, tagId.length() - 1);
-        }
-        Log.d(TAG, "Tag ID: " + tagId);
+	// get the tag ID
+	tagId = "";
+	for (byte idByte : tag.getId()) {
+	    tagId += (idByte & 0x0FF) + ":";
+	}
+	if (tagId.length() > 0) {
+	    tagId = tagId.substring(0, tagId.length() - 1);
+	}
 
-        // get the tag technology
-        String[] techList = tag.getTechList();
-        TagTechnology tech = null;
-        for (String techClass : techList) {
-            Log.d(TAG, "tech class name: " + techClass);
-            Class<?> nfcTechClass = Class.forName(techClass);
-            Method getMethod = nfcTechClass.getMethod("get", Tag.class);
-            tech = (TagTechnology) getMethod.invoke(null, tag);
-            if (tech instanceof NfcA || tech instanceof NfcB) {
-                // continue to see if there are more technology classes
-            } else {
-                break;
-            }
-        }
-        Log.d(TAG, "Tag technology class: " + tech);
+	// get the tag technology
+	String[] techList = tag.getTechList();
+	TagTechnology tech = null;
+	for (String techClass : techList) {
+	    Class<?> nfcTechClass = Class.forName(techClass);
+	    Method getMethod = nfcTechClass.getMethod("get", Tag.class);
+	    tech = (TagTechnology) getMethod.invoke(null, tag);
+	    if (tech instanceof NfcA || tech instanceof NfcB) {
+		// continue to see if there are more technology classes
+	    } else {
+		break;
+	    }
+	}
 
-        // get tag content (if available)
-        if (tech instanceof NfcA) {
-            tagTech = "NFC-A";
-        } else if (tech instanceof NfcB) {
-            tagTech = "NFC-B";
-        } else if (tech instanceof NfcF) {
-            tagTech = "NFC-F";
-        } else if (tech instanceof NfcV) {
-            tagTech = "NFC-V";
-        } else if (tech instanceof IsoDep) {
-            tagTech = "ISO-DEP";
-        } else if (tech instanceof Ndef) {
-            tagTech = "NDEF";
-            Ndef ndef = (Ndef) tech;
-            try {
-                ndef.connect();
-                NdefMessage msg = ndef.getNdefMessage();
-                byte[] msgBytes = msg.toByteArray();
-                Log.d(TAG, "NDEF message: " + new String(msgBytes) + "(" + msgBytes + ")");
-            } catch (TagLostException e) {
-                Log.e(TAG, "Failed to read from tag: " + e);
-            } catch (FormatException e) {
-                Log.e(TAG, "Failed to read from tag: " + e);
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to read from tag: " + e);
-            } finally {
-                try {
-                    ndef.close();
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
-        } else if (tech instanceof NdefFormatable) {
-            tagTech = "NDEF";
-        } else if (tech instanceof MifareClassic) {
-            tagTech = "MIFARE Classic";
-            // MifareClassic mifare = (MifareClassic) tech;
-            // try {
-            // mifare.connect();
-            // for (int i = 0; i < mifare.getBlockCount(); i++) {
-            // int sector = mifare.blockToSector(i);
-            // Log.d(TAG, "authenticate sector " + sector + " with KEY_DEFAULT...");
-            // boolean auth = mifare.authenticateSectorWithKeyA(sector,
-            // MifareClassic.KEY_DEFAULT);
-            // if (!auth) {
-            // Log.d(TAG, "authenticate sector " + sector + " with MAD KEY...");
-            // auth = mifare.authenticateSectorWithKeyA(sector,
-            // MifareClassic.KEY_MIFARE_APPLICATION_DIRECTORY);
-            // }
-            // if (!auth) {
-            // Log.d(TAG, "authenticate sector " + sector + " with NFC FORUM KEY...");
-            // auth = mifare.authenticateSectorWithKeyA(sector,
-            // MifareClassic.KEY_NFC_FORUM);
-            // }
-            // if (auth) {
-            // Log.d(TAG, "Authenticated sector: " + sector);
-            // byte[] block = mifare.readBlock(i);
-            // Log.d(TAG, "read block " + i + ". " + block);
-            // }
-            // }
-            // } catch (IOException e) {
-            // Log.e(TAG, "Failed to read from tag: " + e);
-            // } finally {
-            // try {
-            // mifare.close();
-            // } catch (IOException e) {
-            // // ignore
-            // }
-            // }
-        } else if (tech instanceof MifareUltralight) {
-            tagTech = "MIFARE Ultralight";
-        } else {
-            Log.w(TAG, "Unexpected NFC tag technology: " + tech);
-        }
+	// get tag content (if available)
+	if (tech instanceof NfcA) {
+	    tagTech = "NFC-A";
+	} else if (tech instanceof NfcB) {
+	    tagTech = "NFC-B";
+	} else if (tech instanceof NfcF) {
+	    tagTech = "NFC-F";
+	} else if (tech instanceof NfcV) {
+	    tagTech = "NFC-V";
+	} else if (tech instanceof IsoDep) {
+	    tagTech = "ISO-DEP";
+	} else if (tech instanceof Ndef) {
+	    tagTech = "NDEF";
+	    Ndef ndef = (Ndef) tech;
+	    try {
+		ndef.connect();
+		NdefMessage msg = ndef.getNdefMessage();
+		byte[] msgBytes = msg.toByteArray();
+		tagMsg = "";
+		for (byte b : msgBytes) {
+		    String hex = "" + Integer.toHexString(b);
+		    if (hex.length() == 1) {
+			tagMsg += "0";
+		    }
+		    tagMsg += hex;
+		}
+	    } catch (TagLostException e) {
+		Log.e(TAG, "Failed to read from tag: " + e);
+	    } catch (FormatException e) {
+		Log.e(TAG, "Failed to read from tag: " + e);
+	    } catch (IOException e) {
+		Log.e(TAG, "Failed to read from tag: " + e);
+	    } finally {
+		try {
+		    ndef.close();
+		} catch (Exception e) {
+		    // ignore
+		}
+	    }
+	} else if (tech instanceof NdefFormatable) {
+	    tagTech = "NDEF";
+	} else if (tech instanceof MifareClassic) {
+	    tagTech = "MIFARE Classic";
+	    // MifareClassic mifare = (MifareClassic) tech;
+	    // try {
+	    // mifare.connect();
+	    // for (int i = 0; i < mifare.getBlockCount(); i++) {
+	    // int sector = mifare.blockToSector(i);
+	    // Log.d(TAG, "authenticate sector " + sector + " with KEY_DEFAULT...");
+	    // boolean auth = mifare.authenticateSectorWithKeyA(sector,
+	    // MifareClassic.KEY_DEFAULT);
+	    // if (!auth) {
+	    // Log.d(TAG, "authenticate sector " + sector + " with MAD KEY...");
+	    // auth = mifare.authenticateSectorWithKeyA(sector,
+	    // MifareClassic.KEY_MIFARE_APPLICATION_DIRECTORY);
+	    // }
+	    // if (!auth) {
+	    // Log.d(TAG, "authenticate sector " + sector + " with NFC FORUM KEY...");
+	    // auth = mifare.authenticateSectorWithKeyA(sector,
+	    // MifareClassic.KEY_NFC_FORUM);
+	    // }
+	    // if (auth) {
+	    // Log.d(TAG, "Authenticated sector: " + sector);
+	    // byte[] block = mifare.readBlock(i);
+	    // Log.d(TAG, "read block " + i + ". " + block);
+	    // }
+	    // }
+	    // } catch (IOException e) {
+	    // Log.e(TAG, "Failed to read from tag: " + e);
+	    // } finally {
+	    // try {
+	    // mifare.close();
+	    // } catch (IOException e) {
+	    // // ignore
+	    // }
+	    // }
+	} else if (tech instanceof MifareUltralight) {
+	    tagTech = "MIFARE Ultralight";
+	} else {
+	    Log.w(TAG, "Unexpected NFC tag technology: " + tech);
+	}
     }
 
     /**
@@ -296,22 +299,22 @@ public class NfcScan extends FragmentActivity {
      */
     private void submit() {
 
-        // create data point value
-        HashMap<String, Object> jsonFields = new HashMap<String, Object>();
-        jsonFields.put("id", tagId);
-        jsonFields.put("technology", tagTech);
-        if (null != tagMsg) {
-            jsonFields.put("message", tagMsg);
-        }
-        String value = new JSONObject(jsonFields).toString();
+	// create data point value
+	HashMap<String, Object> jsonFields = new HashMap<String, Object>();
+	jsonFields.put("id", tagId);
+	jsonFields.put("technology", tagTech);
+	if (null != tagMsg) {
+	    jsonFields.put("message", tagMsg);
+	}
+	String value = new JSONObject(jsonFields).toString();
 
-        // submit value
-        Intent dataPoint = new Intent(getString(R.string.action_sense_new_data));
-        dataPoint.putExtra(DataPoint.SENSOR_NAME, SensorNames.NFC_SCAN);
-        dataPoint.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.NFC_SCAN);
-        dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        dataPoint.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        dataPoint.putExtra(DataPoint.VALUE, value);
-        startService(dataPoint);
+	// submit value
+	Intent dataPoint = new Intent(getString(R.string.action_sense_new_data));
+	dataPoint.putExtra(DataPoint.SENSOR_NAME, SensorNames.NFC_SCAN);
+	dataPoint.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.NFC_SCAN);
+	dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+	dataPoint.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+	dataPoint.putExtra(DataPoint.VALUE, value);
+	startService(dataPoint);
     }
 }

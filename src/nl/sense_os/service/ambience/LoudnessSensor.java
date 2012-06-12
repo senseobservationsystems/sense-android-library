@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -32,6 +33,7 @@ public class LoudnessSensor {
 	private static final float DEFAULT_LOUDEST = Float.MIN_VALUE;
 	private final long AVERAGING_PERIOD;
 	private static final long DEFAULT_AVERAGING_PERIOD = 10 * 60 * 1000;
+	private static final double MIN_LOUDNESS_DYNAMIC = 10;
 
 	private Context context;
 
@@ -48,6 +50,7 @@ public class LoudnessSensor {
                 Context.MODE_PRIVATE);
         totalSilence = sensorSpecifics.getFloat(SensorSpecifics.Loudness.TOTAL_SILENCE, DEFAULT_TOTAL_SILENCE);
         loudest = sensorSpecifics.getFloat(SensorSpecifics.Loudness.LOUDEST, DEFAULT_LOUDEST);
+        Log.v("Sense Loudness","Loudest " + loudest + ", total silence " + totalSilence);
         
 	}
 
@@ -55,8 +58,11 @@ public class LoudnessSensor {
 		addNoiseInDb(ms, dB);
 		// double value = relativeLoudnessOf(dB);
 		// Log.v(TAG, "new noise value " + dB + ", loudness: " + value);
-		if (filled)
-			sendSensorValue(loudness(), ms);
+		if (filled) {
+			double l = loudness();
+			if (loudest - totalSilence > MIN_LOUDNESS_DYNAMIC)
+				sendSensorValue(l, ms);
+		}
 	}
 
 	/*
@@ -137,14 +143,17 @@ public class LoudnessSensor {
 			}
 		}
 
-		double mean = 20 * Math.log(meanSum / values) / Math.log(2);
+		double mean = 20 * Math.log(meanSum / values) / Math.log(10);
 
 		if (mean < totalSilence)
 			setLowestEver(mean);
 		if (mean > loudest)
 			setHighestEver(mean);
 		// make relative
-		return (mean - totalSilence) / (loudest - totalSilence) * 10;
+		if (loudest - totalSilence > 0)
+			return (mean - totalSilence) / (loudest - totalSilence) * 10;
+		else
+			return 5;
 	}
 
 	private void setLowestEver(double lowest) {
@@ -152,12 +161,14 @@ public class LoudnessSensor {
         Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
                 Context.MODE_PRIVATE).edit();
         sensorSpecifics.putFloat(SensorSpecifics.Loudness.TOTAL_SILENCE, (float)totalSilence);
+        sensorSpecifics.commit();
 	}
 	private void setHighestEver(double highest) {
 		loudest = highest;
         Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
                 Context.MODE_PRIVATE).edit();
         sensorSpecifics.putFloat(SensorSpecifics.Loudness.LOUDEST, (float)loudest);
+        sensorSpecifics.commit();
 	}
 
 	private void sendSensorValue(double value, long ms) {
