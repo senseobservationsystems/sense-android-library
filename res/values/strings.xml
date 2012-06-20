@@ -21,10 +21,13 @@
     <string name="action_sense_feedback_check_alarm">nl.sense_os.platform.FeedbackAlarm</string>
     <string name="action_sense_alive_check_alarm">nl.sense_os.platform.AliveCheck</string>
     <string name="action_sense_data_transmit_alarm">nl.sense_os.platform.DataTransmit</string>
+    <string name="c2dm_email">ahmy@sense-os.nl</string>
+
     
     <!-- actions for the app widget -->
     <string name="action_widget_update">nl.sense_os.platform.AppWidgetUpdate</string>  
 
     <!-- LocalStorage authority, overwrite when bundling Sense into another app -->
     <string name="local_storage_authority">nl.sense_os.platform.provider.LocalStorage</string>
+    
 </resources>

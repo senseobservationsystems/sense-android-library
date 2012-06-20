@@ -8,6 +8,11 @@ public class SensePrefs {
      * Keys for the authentication-related preferences of the Sense Platform
      */
     public static class Auth {
+    /**
+     * Key for Cloud to Device Messaging
+     * 
+     */
+    public static final String C2DM_REGISTRATION_ID = "c2dm_registration_id";
 	/**
 	 * Key for login preference for session cookie.
 	 * 

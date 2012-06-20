@@ -37,7 +37,9 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -151,6 +153,21 @@ public class SenseService extends Service {
 	} catch (Exception e) {
 	    Log.w(TAG, "Failed to get Sense App version: " + e);
 	}
+    }
+    
+    /**
+     * Register the device to use google C2DM 
+     */
+    private void registerC2DM() {
+    Log.v(TAG, "Begin to register to C2DM");
+	Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+	registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
+	registrationIntent.putExtra("sender", getResources().getText(R.string.c2dm_email));
+	ComponentName service = startService(registrationIntent);
+	if (service == null)
+		Log.w(TAG, "C2DM Registration service failed to start!");
+	else
+		Log.v(TAG, "C2DM Registration service successfully started");
     }
 
     /**
@@ -271,7 +288,7 @@ public class SenseService extends Service {
      * collected sensor data.
      */
     private void onLogIn() {
-	Log.i(TAG, "Logged in");
+	Log.i(TAG, "Logged in.");
 
 	// update ntp time
 	SNTP.getInstance().requestTime(SNTP.HOST_WORLDWIDE, 2000);
@@ -287,6 +304,7 @@ public class SenseService extends Service {
 	prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
 
 	checkVersion();
+	registerC2DM();
     }
 
     /**

@@ -361,6 +361,7 @@ public class SenseApi {
 	    Log.i(TAG, "Using developmentserver to log in");
 
 	final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
+	Log.v(TAG, "loggin to url:" + url);
 	final JSONObject user = new JSONObject();
 	user.put("username", username);
 	user.put("password", password);
@@ -742,5 +743,36 @@ public class SenseApi {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
+    }
+    
+    /**
+     * Push C2DM Registration ID for current device
+     * @throws IOException 
+     * @throws JSONException 
+     */
+    public static void registerC2DMId(Context context,String registrationId) throws IOException, JSONException {
+    final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+    		Context.MODE_PRIVATE);
+    final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+    		Context.MODE_PRIVATE);
+    
+    String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+    boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+    String url = devMode ? SenseUrls.DEV_REGISTER_C2DM_ID : SenseUrls.REGISTER_C2DM_ID;
+    
+    //url = url.replaceFirst("<id>", getDefaultDeviceUuid(context));
+    url = url.replaceFirst("<id>", "4531");
+    
+    final JSONObject data = new JSONObject();
+	data.put("registration_id", registrationId);
+    
+    Map<String, String> response = SenseApi.request(context, url, data, cookie);
+    String responseCode = response.get("http response code");
+	if (!"200".equals(responseCode)) {
+	    Log.w(TAG, "Failed to register c2dm id! Response code: " + responseCode);
+	    throw new IOException("Incorrect response from CommonSense: " + responseCode);
+	}
+	
+	Log.v(TAG, "Successfully registerd C2DM id to common sense");
     }
 }
