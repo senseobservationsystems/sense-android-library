@@ -3,6 +3,7 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -33,13 +34,14 @@ import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.android.c2dm.C2DMessaging;
 
 import android.app.Activity;
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -51,6 +53,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -159,15 +162,23 @@ public class SenseService extends Service {
      * Register the device to use google C2DM 
      */
     private void registerC2DM() {
-    Log.v(TAG, "Begin to register to C2DM");
-	Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
-	registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
-	registrationIntent.putExtra("sender", getResources().getText(R.string.c2dm_email));
-	ComponentName service = startService(registrationIntent);
-	if (service == null)
-		Log.w(TAG, "C2DM Registration service failed to start!");
-	else
-		Log.v(TAG, "C2DM Registration service successfully started");
+    Log.v(TAG, "Begin to register c2dm");
+    String registrationId = C2DMessaging.getRegistrationId(this /**context**/);
+    if (TextUtils.isEmpty(registrationId)) {
+    	Log.v(TAG, "Device is not registered to c2dm, registering");
+        C2DMessaging.register(this, getString(R.string.c2dm_email));
+    } else {
+    	try {
+    		Log.v(TAG, "Already got the registration Id registration :" + registrationId);
+			SenseApi.registerC2DMId(this, registrationId);
+		} catch (IOException e) {
+			Log.d(TAG, "error while registering c2dm registration_id");
+			e.printStackTrace();
+		} catch (JSONException e) {
+			Log.d(TAG, "error while parsing json on c2dm registration_id");
+			e.printStackTrace();
+		}    	
+    }
     }
 
     /**
@@ -285,7 +296,7 @@ public class SenseService extends Service {
 
     /**
      * Performs tasks after successful login: update status bar notification; start transmitting
-     * collected sensor data.
+     * collected sensor data and register the c2dm_id.
      */
     private void onLogIn() {
 	Log.i(TAG, "Logged in.");
