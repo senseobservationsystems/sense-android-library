@@ -21,8 +21,7 @@
     <string name="action_sense_feedback_check_alarm">nl.sense_os.platform.FeedbackAlarm</string>
     <string name="action_sense_alive_check_alarm">nl.sense_os.platform.AliveCheck</string>
     <string name="action_sense_data_transmit_alarm">nl.sense_os.platform.DataTransmit</string>
-    <string name="c2dm_email">ahmy@sense-os.nl</string>
-
+    <string name="action_sense_gcm_intent_service">nl.sense_os.service.push.GCMReceiver</string>    
     
     <!-- actions for the app widget -->
     <string name="action_widget_update">nl.sense_os.platform.AppWidgetUpdate</string>  

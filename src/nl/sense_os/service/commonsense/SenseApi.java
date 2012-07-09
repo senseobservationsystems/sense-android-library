@@ -33,7 +33,7 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.push.C2DMReceiver;
+import nl.sense_os.service.push.GCMReceiver;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.json.JSONArray;
@@ -792,7 +792,7 @@ public class SenseApi {
     }
     
 	/**
-	 * Push C2DM Registration ID for current device
+	 * Push GCM Registration ID for current device
 	 * 
 	 * @param context
 	 *            Application context, used to read preferences.
@@ -802,7 +802,7 @@ public class SenseApi {
 	 * @throws JSONException
 	 * @throws IllegalStateException
 	 */
-    public static void registerC2DMId(Context context,String registrationId) throws IOException, JSONException {
+    public static void registerGCMId(Context context,String registrationId) throws IOException, JSONException {
     final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
     		Context.MODE_PRIVATE);
     final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -810,13 +810,13 @@ public class SenseApi {
     
     String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
     boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-    String url = devMode ? SenseUrls.DEV_REGISTER_C2DM_ID : SenseUrls.REGISTER_C2DM_ID;
+    String url = devMode ? SenseUrls.DEV_REGISTER_GCM_ID : SenseUrls.REGISTER_GCM_ID;
     
     // Get the device ID
     String device_id = getDeviceId(context); 
     
     if (device_id == null) {
-    	Log.v(TAG, "Register C2DM id failed, can not get the device id for this device");
+    	Log.v(TAG, "Register GCM id failed, can not get the device id for this device");
     	return;
     }
     	
@@ -829,18 +829,18 @@ public class SenseApi {
     Map<String, String> response = SenseApi.request(context, url, data, cookie);
     String responseCode = response.get("http response code");
 	if (!"200".equals(responseCode)) {
-	    Log.w(TAG, "Failed to register c2dm id! Response code: " + responseCode);
+	    Log.w(TAG, "Failed to register gcm id! Response code: " + responseCode);
 	    throw new IOException("Incorrect response from CommonSense: " + responseCode);
 	}
 	
 	// check registration result
 	JSONObject res = new JSONObject(response.get("content"));
-	if (!registrationId.equals(res.getJSONObject("device").getString(C2DMReceiver.KEY_C2DM_ID))) {
-		Log.w(TAG, "C2DM registration_id does not match with the common sense");
-		throw new IllegalStateException("C2DM registration_id not match with response");
+	if (!registrationId.equals(res.getJSONObject("device").getString(GCMReceiver.KEY_GCM_ID))) {
+		Log.w(TAG, "GCM registration_id does not match with the common sense");
+		throw new IllegalStateException("GCM registration_id not match with response");
 	}
 	
-	Log.v(TAG, "Successfully registerd C2DM id to common sense");
+	Log.v(TAG, "Successfully registerd GCM id to common sense");
     }
     
     /**
@@ -867,7 +867,7 @@ public class SenseApi {
     Map<String, String> response = SenseApi.request(context, url, null, cookie);
     String responseCode = response.get("http response code");
 	if (!"200".equals(responseCode)) {
-	    Log.w(TAG, "Failed to register c2dm id! Response code: " + responseCode);
+	    Log.w(TAG, "Failed to register gcm id! Response code: " + responseCode);
 	    throw new IOException("Incorrect response from CommonSense: " + responseCode);
 	}
 	

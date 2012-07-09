@@ -19,6 +19,7 @@ public class DefaultSensorRegistrationService extends IntentService {
 	String deviceUuid = SenseApi.getDefaultDeviceUuid(this);
 	if (verifier.verifySensorIds(deviceType, deviceUuid)) {
 	    Log.v(TAG, "Sensor IDs verified");
+	    //TODO: put sensor ID registration
 	} else {
 	    // hopefully the IDs will be checked again
 	}

@@ -2,13 +2,7 @@ package nl.sense_os.service.constants;
 
 import android.content.Context;
 
-public class SensePrefs {
-
-    /**
-     * Key for Cloud to Device Messaging
-     * 
-     */
-    public static final String C2DM_REGISTRATION_ID = "c2dm_registration_id";
+public class SensePrefs {       
 	/**
 	 * Keys for the authentication-related preferences of the Sense Platform
 	 */

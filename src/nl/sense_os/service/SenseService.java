@@ -3,6 +3,8 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
+import static nl.sense_os.service.push.GCMReceiver.SENDER_ID;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -51,11 +53,10 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.c2dm.C2DMessaging;
+import com.google.android.gcm.GCMRegistrar;
 
 public class SenseService extends Service {
 
@@ -159,27 +160,30 @@ public class SenseService extends Service {
 	}
 
 	/**
-	 * Register the device to use google C2DM
+	 * Register the device to use google GCM
 	 */
-	private void registerC2DM() {
-		Log.v(TAG, "Begin to register c2dm");
-		String registrationId = C2DMessaging.getRegistrationId(this /** context **/
-		);
-		if (TextUtils.isEmpty(registrationId)) {
-			Log.v(TAG, "Device is not registered to c2dm, registering");
-			C2DMessaging.register(this, getString(R.string.c2dm_email));
+	private void registerGCM() {
+		Log.v(TAG, "Begin to register gcm");
+		GCMRegistrar.checkDevice(this);
+		GCMRegistrar.checkManifest(this);
+		final String registrationId = GCMRegistrar.getRegistrationId(this);
+		
+		if (registrationId.equals("")) {
+			Log.v(TAG, "Device is not registered to gcm, registering");
+			GCMRegistrar.register(this, SENDER_ID);
+			
 		} else {
 			try {
 				Log.v(TAG, "Already got the registration Id registration :" + registrationId);
-				SenseApi.registerC2DMId(this, registrationId);
+				SenseApi.registerGCMId(this, registrationId);
 			} catch (IOException e) {
-				Log.d(TAG, "error while registering c2dm registration_id");
+				Log.d(TAG, "error while registering gcm registration_id");
 				e.printStackTrace();
 			} catch (JSONException e) {
-				Log.d(TAG, "error while parsing json on c2dm registration_id");
+				Log.d(TAG, "error while parsing json on gcm registration_id");
 				e.printStackTrace();
 			} catch (Exception e) {
-				Log.d(TAG, "error while trying to send c2dm registration_id");
+				Log.d(TAG, "error while trying to send gcm registration_id");
 			}
 		}
 	}
@@ -299,7 +303,7 @@ public class SenseService extends Service {
 
 	/**
 	 * Performs tasks after successful login: update status bar notification; start transmitting
-	 * collected sensor data and register the c2dm_id.
+	 * collected sensor data and register the gcm_id.
 	 */
 	private void onLogIn() {
 		Log.i(TAG, "Logged in.");
@@ -317,7 +321,7 @@ public class SenseService extends Service {
 		prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
 
 		checkVersion();
-		registerC2DM();
+		registerGCM();
 	}
 
 	/**
