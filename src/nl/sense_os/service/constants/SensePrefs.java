@@ -85,6 +85,12 @@ public class SensePrefs {
 		 * @see SensePrefs#AUTH_PREFS
 		 */
 		public static final String PHONE_TYPE = "phone_type";
+		/**
+		 * Key for storing if gcm registration_id 
+		 * 
+		 * @see SensePrefs#AUTH_PREFS
+		 */
+		public static final String GCM_REGISTRATION_ID = "gcm_registration_id";		
 	}
 
 	/**

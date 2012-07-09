@@ -81,13 +81,12 @@ public class GCMReceiver extends GCMBaseIntentService {
 
 	@Override
 	public void onRegistered(Context context, String registrationId) {
-	Log.v(TAG, "RegisterGCMIntentService called with registration: "
+	Log.v(TAG, "RegisterGCMIntentService called with registration: " 
 			+ registrationId);
-
-	try {
+	
+	try {		
 		Log.v(TAG, "Registering gcm id to commonSense server");
-		SenseApi.registerGCMId(this, registrationId);
-		Log.v(TAG, "Successfully registerd gcm id to common sense");
+		SenseApi.registerGCMId(this, registrationId);				
 	} catch (IOException e) {
 		Log.e(TAG, "Sending registration id failed");
 		e.printStackTrace();

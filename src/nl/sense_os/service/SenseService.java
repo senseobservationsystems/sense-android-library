@@ -3,9 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import static nl.sense_os.service.push.GCMReceiver.SENDER_ID;
-
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -36,7 +33,6 @@ import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -56,7 +52,6 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gcm.GCMRegistrar;
 
 public class SenseService extends Service {
 
@@ -157,36 +152,7 @@ public class SenseService extends Service {
 		} catch (Exception e) {
 			Log.w(TAG, "Failed to get Sense App version: " + e);
 		}
-	}
-
-	/**
-	 * Register the device to use google GCM
-	 */
-	private void registerGCM() {
-		Log.v(TAG, "Begin to register gcm");
-		GCMRegistrar.checkDevice(this);
-		GCMRegistrar.checkManifest(this);
-		final String registrationId = GCMRegistrar.getRegistrationId(this);
-		
-		if (registrationId.equals("")) {
-			Log.v(TAG, "Device is not registered to gcm, registering");
-			GCMRegistrar.register(this, SENDER_ID);
-			
-		} else {
-			try {
-				Log.v(TAG, "Already got the registration Id registration :" + registrationId);
-				SenseApi.registerGCMId(this, registrationId);
-			} catch (IOException e) {
-				Log.d(TAG, "error while registering gcm registration_id");
-				e.printStackTrace();
-			} catch (JSONException e) {
-				Log.d(TAG, "error while parsing json on gcm registration_id");
-				e.printStackTrace();
-			} catch (Exception e) {
-				Log.d(TAG, "error while trying to send gcm registration_id");
-			}
-		}
-	}
+	}	
 
 	/**
 	 * Tries to login using the username and password from the private preferences and updates the
@@ -320,8 +286,7 @@ public class SenseService extends Service {
 		SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
 		prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
 
-		checkVersion();
-		registerGCM();
+		checkVersion();		
 	}
 
 	/**

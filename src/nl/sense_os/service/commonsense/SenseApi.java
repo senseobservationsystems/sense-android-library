@@ -808,6 +808,15 @@ public class SenseApi {
     final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
     		Context.MODE_PRIVATE);
     
+    
+    //Check if already synced with common sense
+    String pref_registration_id = authPrefs.getString(Auth.GCM_REGISTRATION_ID, "");
+    
+    if (registrationId.equals(pref_registration_id)) {			
+    	Log.v(TAG, "GCM registration id is already sync with commonSense");
+    	return;
+    }
+    
     String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
     boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
     String url = devMode ? SenseUrls.DEV_REGISTER_GCM_ID : SenseUrls.REGISTER_GCM_ID;
@@ -840,7 +849,11 @@ public class SenseApi {
 		throw new IllegalStateException("GCM registration_id not match with response");
 	}
 	
-	Log.v(TAG, "Successfully registerd GCM id to common sense");
+	Editor authEditor = authPrefs.edit();
+	authEditor.putString(Auth.GCM_REGISTRATION_ID, registrationId);			
+	authEditor.commit();
+	Log.v(TAG, "Successfully registerd GCM id to common sense");	
+	
     }
     
     /**
