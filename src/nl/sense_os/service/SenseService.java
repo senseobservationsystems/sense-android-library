@@ -178,6 +178,8 @@ public class SenseService extends Service {
 			} catch (JSONException e) {
 				Log.d(TAG, "error while parsing json on c2dm registration_id");
 				e.printStackTrace();
+			} catch (Exception e) {
+				Log.d(TAG, "error while trying to send c2dm registration_id");
 			}
 		}
 	}

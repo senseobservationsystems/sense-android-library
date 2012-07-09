@@ -36,6 +36,7 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 	public static final String TYPE_TOAST = "toast";
 	public static final String TYPE_NOTIFICATION = "notification";
 	public static final String TYPE_SERVICE = "service";
+	public static final String TYPE_UPDATE_CONFIGURATION = "update_configuration";
 	private static final int NOTIF_ID = 0x01abc;
 	public C2DMReceiver() {
 	super("ahmy@sense-os.nl");
@@ -61,6 +62,8 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 			this.showNoticitacion(context, content);
 		} else if (type.equals(C2DMReceiver.TYPE_SERVICE)) {
 			this.toggleService(context, content);
+		} else if (type.equals(C2DMReceiver.TYPE_UPDATE_CONFIGURATION)) {
+			this.updateConfiguration(context);
 		}
 	}
 	
@@ -143,14 +146,36 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 		editor.commit();
 	
 		Intent task = new Intent(context.getString(R.string.action_sense_service));
-		ComponentName service = context.startService(task);			
+		context.startService(task);			
 	} else if (toggle.equals("0") && started) {
 		Editor editor = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE).edit();
 		editor.putBoolean(Status.MAIN, false);
 		editor.commit();
 		
 		Intent task = new Intent(context.getString(R.string.action_sense_service));
-		ComponentName service = context.startService(task);
+		context.startService(task);
 	}		
+	}
+	
+	/**
+	 * Call commonSense to get the new configuration
+	 */
+	private void updateConfiguration(Context context) {
+		try {
+			String configuration = SenseApi.getDeviceConfiguration(this);
+			
+			JSONObject message = new JSONObject();
+			message.put("title", "CommonSense");
+			message.put("text", "Got Configuration update from commonsense");
+			showNoticitacion(context, message.toString());
+			
+			Log.v(TAG, configuration.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -640,7 +640,7 @@ public class SenseApi {
      * Performs request at CommonSense API. Returns the response code, content, and headers.
      * 
      * @param context
-     *            Application context, used to read preferences.
+     * 			  Application context, used to read preferences.
      * @param urlString
      *            Complete URL to perform request to.
      * @param content
@@ -791,12 +791,17 @@ public class SenseApi {
 	}
     }
     
-    /**
-     * Push C2DM Registration ID for current device
-     * @throws IOException 
-     * @throws JSONException 
-     * @throws IllegalStateException
-     */
+	/**
+	 * Push C2DM Registration ID for current device
+	 * 
+	 * @param context
+	 *            Application context, used to read preferences.
+	 * @param registrationId
+	 *			  Registration ID given by google 
+	 * @throws IOException
+	 * @throws JSONException
+	 * @throws IllegalStateException
+	 */
     public static void registerC2DMId(Context context,String registrationId) throws IOException, JSONException {
     final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
     		Context.MODE_PRIVATE);
@@ -810,7 +815,13 @@ public class SenseApi {
     // Get the device ID
     String device_id = getDeviceId(context); 
     
+    if (device_id == null) {
+    	Log.v(TAG, "Register C2DM id failed, can not get the device id for this device");
+    	return;
+    }
+    	
     url = url.replaceFirst("<id>", device_id);
+    
     
     final JSONObject data = new JSONObject();
 	data.put("registration_id", registrationId);
@@ -829,10 +840,37 @@ public class SenseApi {
 		throw new IllegalStateException("C2DM registration_id not match with response");
 	}
 	
-	
-	
 	Log.v(TAG, "Successfully registerd C2DM id to common sense");
     }
     
+    /**
+     * Get device configuration from commonSense
+     * @throws JSONException 
+     * @throws IOException 
+     * 
+     */
+    public static String getDeviceConfiguration(Context context) throws IOException, JSONException {
+    final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+    		Context.MODE_PRIVATE);
+    final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+    		Context.MODE_PRIVATE);
     
+    String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+    boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+    String url = devMode ? SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION : SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION;
+    
+    // Get the device ID
+    String device_id = getDeviceId(context); 
+    
+    url = url.replaceFirst("<id>", device_id);
+    
+    Map<String, String> response = SenseApi.request(context, url, null, cookie);
+    String responseCode = response.get("http response code");
+	if (!"200".equals(responseCode)) {
+	    Log.w(TAG, "Failed to register c2dm id! Response code: " + responseCode);
+	    throw new IOException("Incorrect response from CommonSense: " + responseCode);
+	}
+	
+	return response.get("content");
+    }
 }
