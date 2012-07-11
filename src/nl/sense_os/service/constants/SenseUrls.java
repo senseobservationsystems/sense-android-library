@@ -4,7 +4,6 @@ public class SenseUrls {
 
     public static final String BASE = "https://api.sense-os.nl/";
     public static final String DEV_BASE = "http://api.dev.sense-os.nl/";
-    //public static final String DEV_BASE = "http://192.168.1.207:8088/";
     public static final String VERSION = "http://data.sense-os.nl/senseapp/version.php";
 
     public static final String FORMAT = ".json";
@@ -20,9 +19,11 @@ public class SenseUrls {
     public static final String DEV_ALL_SENSORS = DEV_BASE + "sensors" + FORMAT
 	    + "?per_page=1000&details=full";
     
-    public static final String REGISTER_C2DM_ID = BASE + "devices/<id>/c2dm/register" + FORMAT;
-    public static final String DEV_REGISTER_C2DM_ID = DEV_BASE + "devices/<id>/c2dm/register" + FORMAT;
+    public static final String REGISTER_GCM_ID = BASE + "devices/<id>/push/register" + FORMAT;
+    public static final String DEV_REGISTER_GCM_ID = DEV_BASE + "devices/<id>/push/register" + FORMAT;
 
+    public static final String DEVICE_UPDATE_CONFIGURATION = BASE + "devices/<id>/configuration" + FORMAT;
+    public static final String DEV_DEVICE_UPDATE_CONFIGURATION = DEV_BASE + "devices/<id>/configuration" + FORMAT;
     
     public static final String SENSOR_DATA = BASE + "sensors/<id>/data" + FORMAT;
     public static final String DEV_SENSOR_DATA = DEV_BASE + "sensors/<id>/data" + FORMAT;
