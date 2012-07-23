@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -143,11 +144,21 @@ public class SenseApi {
 	/**
 	 * @param context
 	 *            Context for accessing phone details
-	 * @return The default device UUID, i.e. the phone's IMEI String
+	 * @return The default device UUID, e.g. the phone's IMEI String
 	 */
+	@TargetApi(9)
 	public static String getDefaultDeviceUuid(Context context) {
-		return ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE))
+		String uuid = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE))
 				.getDeviceId();
+		if (null == uuid) {
+			// device has no IMEI, try using the Android serial code
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+				uuid = Build.SERIAL;
+			} else {
+				Log.w(TAG, "Cannot get reliable device UUID!");
+			}
+		}
+		return uuid;
 	}
 
 	private static List<JSONObject> getMatchingSensors(Context context, String name,
