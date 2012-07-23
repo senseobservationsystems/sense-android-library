@@ -1,6 +1,7 @@
 package nl.sense_os.service.deviceprox;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -49,11 +50,22 @@ import android.widget.Toast;
 @TargetApi(10)
 public class NfcScan extends FragmentActivity {
 
-	public class NfcDialog extends DialogFragment {
+	public static class NfcDialog extends DialogFragment {
+
+		private WeakReference<NfcScan> listenerRef;
+
+		public static NfcDialog create(NfcScan listener) {
+			NfcDialog dialog = new NfcDialog();
+			dialog.listenerRef = new WeakReference<NfcScan>(listener);
+			return dialog;
+		}
 
 		@TargetApi(11)
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+			String tagId = getArguments().getString("tagId");
+
 			// create builder
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -68,7 +80,7 @@ public class NfcScan extends FragmentActivity {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					submit();
+					listenerRef.get().submit();
 				}
 			});
 			builder.setNegativeButton(android.R.string.cancel, new OnClickListener() {
@@ -85,7 +97,7 @@ public class NfcScan extends FragmentActivity {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
 			Log.v(TAG, "Dialog dismissed...");
-			finish();
+			listenerRef.get().finish();
 		}
 	}
 
@@ -163,7 +175,10 @@ public class NfcScan extends FragmentActivity {
 	}
 
 	private void showNfcDialog() {
-		NfcDialog dialog = new NfcDialog();
+		NfcDialog dialog = NfcDialog.create(this);
+		Bundle arguments = new Bundle();
+		arguments.putString("tagId", tagId);
+		dialog.setArguments(arguments);
 		dialog.show(getSupportFragmentManager(), "nfc");
 	}
 
