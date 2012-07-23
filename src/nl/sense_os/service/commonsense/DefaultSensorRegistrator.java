@@ -18,6 +18,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.nfc.NfcManager;
 import android.os.Build;
+import android.telephony.TelephonyManager;
 
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
@@ -476,17 +477,48 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 			// Log.v(TAG, "No proximity sensor present!");
 		}
 
-		// match call state
-		name = SensorNames.CALL_STATE;
-		displayName = SensorNames.CALL_STATE;
-		description = SensorNames.CALL_STATE;
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		dataFields.put("state", "string");
-		dataFields.put("incomingNumber", "string");
-		value = new JSONObject(dataFields).toString();
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		TelephonyManager tm = (TelephonyManager) context
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		if (null != tm.getDeviceId()) {
+			// match call state
+			name = SensorNames.CALL_STATE;
+			displayName = SensorNames.CALL_STATE;
+			description = SensorNames.CALL_STATE;
+			dataType = SenseDataTypes.JSON;
+			dataFields.clear();
+			dataFields.put("state", "string");
+			dataFields.put("incomingNumber", "string");
+			value = new JSONObject(dataFields).toString();
+			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+					deviceUuid);
+
+			// match service state
+			name = SensorNames.SERVICE_STATE;
+			displayName = SensorNames.SERVICE_STATE;
+			description = SensorNames.SERVICE_STATE;
+			dataType = SenseDataTypes.JSON;
+			dataFields.clear();
+			dataFields.put("state", "string");
+			dataFields.put("phone number", "string");
+			dataFields.put("manualSet", true);
+			value = new JSONObject(dataFields).toString();
+			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+					deviceUuid);
+
+			// match signal strength
+			name = SensorNames.SIGNAL_STRENGTH;
+			displayName = SensorNames.SIGNAL_STRENGTH;
+			description = SensorNames.SIGNAL_STRENGTH;
+			dataType = SenseDataTypes.JSON;
+			dataFields.clear();
+			dataFields.put("GSM signal strength", 1);
+			dataFields.put("GSM bit error rate", 1);
+			value = new JSONObject(dataFields).toString();
+			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+					deviceUuid);
+		} else {
+			// Log.v(TAG, "No telephony present");
+		}
 
 		// match connection type
 		name = SensorNames.CONN_TYPE;
@@ -521,31 +553,6 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		description = SensorNames.DATA_CONN;
 		dataType = SenseDataTypes.STRING;
 		value = "string";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
-
-		// match service state
-		name = SensorNames.SERVICE_STATE;
-		displayName = SensorNames.SERVICE_STATE;
-		description = SensorNames.SERVICE_STATE;
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		dataFields.put("state", "string");
-		dataFields.put("phone number", "string");
-		dataFields.put("manualSet", true);
-		value = new JSONObject(dataFields).toString();
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
-
-		// match signal strength
-		name = SensorNames.SIGNAL_STRENGTH;
-		displayName = SensorNames.SIGNAL_STRENGTH;
-		description = SensorNames.SIGNAL_STRENGTH;
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		dataFields.put("GSM signal strength", 1);
-		dataFields.put("GSM bit error rate", 1);
-		value = new JSONObject(dataFields).toString();
 		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
 				deviceUuid);
 
