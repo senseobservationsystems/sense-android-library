@@ -53,6 +53,9 @@ public class DefaultSensorRegistrationService extends IntentService {
 		} catch (IllegalStateException e) {
 			Log.w(TAG, "This application does not have the GCM permission");
 			return;
+		} catch (UnsupportedOperationException e) {
+			Log.w(TAG, "This device does not have GCM support");
+			return;
 		}
 
 		if (registrationId.equals("")) {

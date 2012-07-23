@@ -3,34 +3,26 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.commonsense.senddata.DataTransmitHandler;
+import nl.sense_os.service.commonsense.senddata.FileTransmitHandler;
+import nl.sense_os.service.commonsense.senddata.PersistedBufferTransmitHandler;
+import nl.sense_os.service.commonsense.senddata.RecentBufferTransmitHandler;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.TargetApi;
@@ -39,793 +31,27 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 public class MsgHandler extends Service {
 
-	/**
-	 * Handler for tasks that send buffered sensor data to CommonSense. Nota that this handler is
-	 * re-usable: every time the handler receives a message, it gets the latest data in a Cursor and
-	 * sends it to CommonSense.<br>
-	 * <br>
-	 * Subclasses have to implement {@link #getUnsentData()} and
-	 * {@link #onTransmitSuccess(JSONObject)} to make them work with their intended data source.
-	 */
-	private static abstract class AbstractDataTransmitHandler extends Handler {
-
-		final Context context;
-		String cookie;
-		Cursor cursor;
-		private String url;
-		private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
-		private final NumberFormat dateFormatter = new DecimalFormat("##########.###", symbols);
-
-		public AbstractDataTransmitHandler(Context context, Looper looper) {
-			super(looper);
-			this.context = context;
-			SharedPreferences mainPrefs;
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_MULTI_PROCESS);
-			} else {
-				mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-			}
-			boolean devMode = mainPrefs.getBoolean(Main.Advanced.DEV_MODE, false);
-			url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/")
-					: SenseUrls.SENSOR_DATA.replace("/<id>/", "/");
-		}
-
-		/**
-		 * Cleans up after transmission is over. Closes the Cursor with the data and releases the
-		 * wake lock. Should always be called after transmission, even if the attempt failed.
-		 */
-		private void cleanup(WakeLock wakeLock) {
-			if (null != cursor) {
-				cursor.close();
-				cursor = null;
-			}
-			if (null != wakeLock) {
-				wakeLock.release();
-				wakeLock = null;
-			}
-		}
-
-		/**
-		 * @return Cursor with the data points that have to be sent to CommonSense.
-		 */
-		protected abstract Cursor getUnsentData();
-
-		@Override
-		public void handleMessage(Message msg) {
-
-			WakeLock wakeLock = null;
-			try {
-				// make sure the device stays awake while transmitting
-				PowerManager powerMgr = (PowerManager) context
-						.getSystemService(Context.POWER_SERVICE);
-				wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-				wakeLock.acquire();
-
-				cookie = (String) msg.obj;
-				cursor = getUnsentData();
-				if ((null != cursor) && cursor.moveToFirst()) {
-					transmit();
-				} else {
-					// nothing to transmit
-				}
-			} catch (Exception e) {
-				if (null != e.getMessage()) {
-					Log.e(TAG, "Exception sending buffered data: '" + e.getMessage()
-							+ "'. Data will be resent later.");
-				} else {
-					Log.e(TAG, "Exception sending cursor data. Data will be resent later.", e);
-				}
-
-			} finally {
-				cleanup(wakeLock);
-			}
-		}
-
-		/**
-		 * @param bytes
-		 *            Byte count;
-		 * @param si
-		 *            true to use SI system, where 1000 B = 1 kB
-		 * @return A String with human-readable byte count, including suffix.
-		 */
-		public String humanReadableByteCount(long bytes, boolean si) {
-			int unit = si ? 1000 : 1024;
-			if (bytes < unit) {
-				return bytes + " B";
-			}
-			int exp = (int) (Math.log(bytes) / Math.log(unit));
-			String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-			return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-		}
-
-		/**
-		 * Performs cleanup tasks after transmission was successfully completed. Should update the
-		 * data point records to show that they have been sent to CommonSense.
-		 * 
-		 * @param transmission
-		 *            The JSON Object that was sent to CommonSense. Contains all the data points
-		 *            that were transmitted.
-		 * @throws JSONException
-		 */
-		protected abstract void onTransmitSuccess(JSONObject transmission) throws JSONException;
-
-		/**
-		 * POSTs the sensor data points to the main sensor data URL at CommonSense.
-		 * 
-		 * @param transmission
-		 *            JSON Object with data points for transmission
-		 * @throws JSONException
-		 * @throws MalformedURLException
-		 */
-		private void postData(JSONObject transmission) throws JSONException, MalformedURLException {
-
-			Map<String, String> response = null;
-			try {
-				response = SenseApi.request(context, url, transmission, cookie);
-			} catch (IOException e) {
-				// handle failure later
-			}
-
-			if (response == null) {
-				// Error when sending
-				Log.w(TAG, "Failed to send buffered data points.\nData will be retried later.");
-
-			} else if (response.get("http response code").compareToIgnoreCase("201") != 0) {
-				// incorrect status code
-				String statusCode = response.get("http response code");
-
-				// if un-authorized: relogin
-				if (statusCode.compareToIgnoreCase("403") == 0) {
-					final Intent serviceIntent = new Intent(
-							context.getString(R.string.action_sense_service));
-					serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
-					context.startService(serviceIntent);
-				}
-
-				// Show the HTTP response Code
-				Log.w(TAG, "Failed to send buffered data points: " + statusCode
-						+ ", Response content: '" + response.get("content") + "'\n"
-						+ "Data will be retried later");
-				Log.d(TAG, "transmission: '" + transmission + "'");
-
-			} else {
-				// Data sent successfully
-				onTransmitSuccess(transmission);
-			}
-		}
-
-		/**
-		 * Transmits the data points from {@link #cursor} to CommonSense. Any "file" type data
-		 * points will be sent separately via
-		 * {@link MsgHandler#sendSensorData(String, String, String, JSONObject)}.
-		 * 
-		 * @throws JSONException
-		 * @throws IOException
-		 */
-		private void transmit() throws JSONException, IOException {
-
-			// continue until all points in the cursor have been sent
-			HashMap<String, JSONObject> sensorDataMap = null;
-			while (!cursor.isAfterLast()) {
-
-				// organize the data into a hash map sorted by sensor
-				sensorDataMap = new HashMap<String, JSONObject>();
-				String name, description, dataType, value, deviceUuid;
-				long timestamp;
-				int points = 0;
-				while ((points < MAX_POST_DATA) && !cursor.isAfterLast()) {
-
-					// get the data point details
-					try {
-						name = cursor
-								.getString(cursor.getColumnIndexOrThrow(DataPoint.SENSOR_NAME));
-						description = cursor.getString(cursor
-								.getColumnIndexOrThrow(DataPoint.SENSOR_DESCRIPTION));
-						dataType = cursor.getString(cursor
-								.getColumnIndexOrThrow(DataPoint.DATA_TYPE));
-						value = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.VALUE));
-						timestamp = cursor.getLong(cursor
-								.getColumnIndexOrThrow(DataPoint.TIMESTAMP));
-						deviceUuid = cursor.getString(cursor
-								.getColumnIndexOrThrow(DataPoint.DEVICE_UUID));
-
-						// set default sensor ID if it is missing
-						deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
-								.getDefaultDeviceUuid(context);
-
-					} catch (IllegalArgumentException e) {
-						// something is wrong with this data point, skip it
-						Log.w(TAG,
-								"Exception getting data point details from cursor: '"
-										+ e.getMessage() + "'. Skip data point...");
-						cursor.moveToNext();
-						continue;
-					}
-
-					// "normal" data is added to the map until we reach the max amount of points
-					if (!dataType.equals(SenseDataTypes.FILE)) {
-
-						// construct JSON representation of the value
-						JSONObject jsonDataPoint = new JSONObject();
-						jsonDataPoint.put("date", dateFormatter.format(timestamp / 1000d));
-						jsonDataPoint.put("value", value);
-
-						// put the new value Object in the appropriate sensor's data
-						String key = name + description;
-						JSONObject sensorEntry = sensorDataMap.get(key);
-						JSONArray data = null;
-						if (sensorEntry == null) {
-							sensorEntry = new JSONObject();
-							String id = SenseApi.getSensorId(context, name, description, dataType,
-									deviceUuid);
-							if (null == id) {
-								// skip sensor data that does not have a sensor ID yet
-								Log.w(TAG, "cannot find sensor ID for " + name + " (" + description
-										+ ")");
-								cursor.moveToNext();
-								continue;
-							}
-							sensorEntry.put("sensor_id", id);
-							sensorEntry.put("sensor_name", name);
-							data = new JSONArray();
-						} else {
-							data = sensorEntry.getJSONArray("data");
-						}
-						data.put(jsonDataPoint);
-						sensorEntry.put("data", data);
-						sensorDataMap.put(key, sensorEntry);
-
-						// count the added point to the total number of sensor data
-						points++;
-
-					} else {
-						// if the data type is a "file", we need special handling
-						// Log.d(TAG, "Transmit file separately from the other data points: '" +
-						// value + "'");
-
-						// create sensor data JSON object with only 1 data point
-						JSONObject sensorData = new JSONObject();
-						JSONArray dataArray = new JSONArray();
-						JSONObject data = new JSONObject();
-						data.put("value", value);
-						data.put("date", dateFormatter.format(timestamp / 1000d));
-						dataArray.put(data);
-						sensorData.put("data", dataArray);
-
-						sendSensorData(context, name, description, dataType, deviceUuid, sensorData);
-					}
-
-					cursor.moveToNext();
-				}
-
-				if (sensorDataMap.size() < 1) {
-					// no data to transmit
-					continue;
-				}
-
-				// prepare the main JSON object for transmission
-				JSONArray sensors = new JSONArray();
-				for (Entry<String, JSONObject> entry : sensorDataMap.entrySet()) {
-					sensors.put(entry.getValue());
-				}
-				JSONObject transmission = new JSONObject();
-				transmission.put("sensors", sensors);
-
-				// perform the actual POST request
-				postData(transmission);
-			}
-		}
-	}
-
-	private static class FileTransmitHandler extends Handler {
-
-		private final Context context;
-
-		public FileTransmitHandler(Context context, Looper looper) {
-			super(looper);
-			this.context = context;
-		}
-
-		private void cleanup(WakeLock wakeLock) {
-			--nrOfSendMessageThreads;
-			if (null != wakeLock) {
-				wakeLock.release();
-				wakeLock = null;
-			}
-		}
-
-		@Override
-		public void handleMessage(Message message) {
-
-			// get arguments from message
-			Bundle args = message.getData();
-			String name = args.getString("name");
-			String description = args.getString("description");
-			String dataType = args.getString("dataType");
-			String deviceUuid = args.getString("deviceUuid");
-			String cookie = args.getString("cookie");
-			JSONObject json = (JSONObject) message.obj;
-
-			WakeLock wakeLock = null;
-			try {
-				// make sure the device stays awake while transmitting
-				PowerManager powerMgr = (PowerManager) context
-						.getSystemService(Context.POWER_SERVICE);
-				wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-				wakeLock.acquire();
-
-				// get sensor URL from CommonSense
-				description = description != null ? description : name;
-				String urlStr = SenseApi.getSensorUrl(context, name, description, dataType,
-						deviceUuid);
-
-				if (urlStr == null) {
-					Log.w(TAG, "No sensor ID for '" + name + "' (yet). Data is lost.");
-					return;
-				}
-
-				// submit each file separately
-				JSONArray data = json.getJSONArray("data");
-				for (int i = 0; i < data.length(); i++) {
-					JSONObject object = (JSONObject) data.get(i);
-					String fileName = (String) object.get("value");
-
-					HttpURLConnection conn = null;
-					DataOutputStream dos = null;
-
-					String lineEnd = "\r\n";
-					String twoHyphens = "--";
-					String boundary = "----FormBoundary6bYQOdhfGEj4oCSv";
-
-					int bytesRead, bytesAvailable, bufferSize;
-					byte[] buffer;
-					int maxBufferSize = 1 * 1024 * 1024;
-
-					// ------------------ CLIENT REQUEST
-
-					FileInputStream fileInputStream = new FileInputStream(new File(fileName));
-
-					// open a URL connection to the Servlet
-					URL url = new URL(urlStr);
-
-					// Open a HTTP connection to the URL
-					conn = (HttpURLConnection) url.openConnection();
-
-					// Allow Inputs
-					conn.setDoInput(true);
-
-					// Allow Outputs
-					conn.setDoOutput(true);
-
-					// Don't use a cached copy.
-					conn.setUseCaches(false);
-
-					// Use a post method.
-					conn.setRequestMethod("POST");
-					conn.setRequestProperty("Cookie", cookie);
-					conn.setRequestProperty("Connection", "Keep-Alive");
-
-					conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="
-							+ boundary);
-
-					dos = new DataOutputStream(conn.getOutputStream());
-
-					dos.writeBytes(twoHyphens + boundary + lineEnd);
-					dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\""
-							+ fileName + "\"" + lineEnd);
-					dos.writeBytes(lineEnd);
-					// create a buffer of maximum size
-					bytesAvailable = fileInputStream.available();
-					bufferSize = Math.min(bytesAvailable, maxBufferSize);
-					buffer = new byte[bufferSize];
-
-					// read file and write it into form...
-					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-					while (bytesRead > 0) {
-						dos.write(buffer, 0, bufferSize);
-						bytesAvailable = fileInputStream.available();
-						bufferSize = Math.min(bytesAvailable, maxBufferSize);
-						bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-					}
-
-					// send multipart form data necesssary after file data...
-					dos.writeBytes(lineEnd);
-					dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-					// close streams
-					fileInputStream.close();
-					dos.flush();
-					dos.close();
-
-					if (conn.getResponseCode() != 201) {
-						Log.e(TAG,
-								"Failed to send '" + name
-										+ "' value file. Data lost. Response code:"
-										+ conn.getResponseCode());
-					} else {
-						Log.i(TAG, "Sent '" + name + "' sensor value file OK!");
-						String date = (String) object.get("date");
-						onTransmitSuccess(name, date);
-					}
-				}
-			} catch (Exception e) {
-				Log.e(TAG, "Sending '" + name + "' sensor file failed. Data lost.", e);
-			} finally {
-				cleanup(wakeLock);
-			}
-		}
-
-		private void onTransmitSuccess(String sensorName, String timeInSecs) {
-
-			// new content values with updated transmit state
-			ContentValues values = new ContentValues();
-			values.put(DataPoint.TRANSMIT_STATE, 1);
-
-			long timestamp = Math.round(Double.parseDouble(timeInSecs) * 1000);
-			String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
-					+ DataPoint.TIMESTAMP + "=" + timestamp;
-
-			try {
-				Uri contentUri = Uri.parse("content://"
-						+ context.getString(R.string.local_storage_authority)
-						+ DataPoint.CONTENT_URI_PATH);
-				int updated = storage.update(contentUri, values, where, null);
-				int deleted = 0;
-				if (0 == updated) {
-					contentUri = Uri.parse("content://"
-							+ context.getString(R.string.local_storage_authority)
-							+ DataPoint.CONTENT_PERSISTED_URI_PATH);
-					deleted = storage.delete(contentUri, where, null);
-				}
-				if ((deleted == 1) || (updated == 1)) {
-					// ok
-				} else {
-					Log.w(TAG,
-							"Failed to update the local storage after a file was successfully sent to CommonSense!");
-				}
-			} catch (IllegalArgumentException e) {
-				Log.e(TAG, "Error updating points in Local Storage!", e);
-			}
-
-		}
-	}
-
-	/**
-	 * Handler for transmit tasks of persisted data (i.e. data that was stored in the SQLite
-	 * database). Removes the data from the database after the transmission is completed
-	 * successfully.
-	 */
-	private static class PersistedDataTransmitHandler extends AbstractDataTransmitHandler {
-
-		private final Uri contentUri;
-
-		public PersistedDataTransmitHandler(Context context, Looper looper) {
-			super(context, looper);
-			contentUri = Uri.parse("content://"
-					+ context.getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_PERSISTED_URI_PATH);
-		}
-
-		@Override
-		protected Cursor getUnsentData() {
-			try {
-				String where = DataPoint.TRANSMIT_STATE + "=0";
-				Cursor unsent = storage.query(contentUri, null, where, null, null);
-
-				if (null != unsent) {
-					Log.v(TAG, "Found " + unsent.getCount()
-							+ " unsent data points in persistant storage");
-				} else {
-					Log.w(TAG, "Failed to get data points from the persistant storage");
-				}
-				return unsent;
-			} catch (IllegalArgumentException e) {
-				Log.e(TAG, "Error querying Local Storage!", e);
-				return null;
-			}
-		}
-
-		@Override
-		protected void onTransmitSuccess(JSONObject transmission) throws JSONException {
-
-			// log our great success
-			int bytes = transmission.toString().getBytes().length;
-			Log.i(TAG, "Sent old sensor data from persistant storage! Raw data size: "
-					+ humanReadableByteCount(bytes, false));
-
-			int totalDatapoints = 0;
-			JSONArray sensorDatas = transmission.getJSONArray("sensors");
-			for (int i = 0; i < sensorDatas.length(); i++) {
-
-				JSONObject sensorData = sensorDatas.getJSONObject(i);
-
-				// get the name of the sensor, to use in the ContentResolver query
-				String sensorName = sensorData.getString("sensor_name");
-
-				// select points for this sensor, between the first and the last time stamp
-				JSONArray dataPoints = sensorData.getJSONArray("data");
-				totalDatapoints += dataPoints.length();
-				String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
-				String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
-						"date");
-				long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
-				long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
-				String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
-						+ DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
-						+ max;
-
-				// delete the data from the storage
-				try {
-					int deleted = storage.delete(contentUri, where, null);
-					if (deleted == dataPoints.length()) {
-						// Log.v(TAG, "Deleted all " + deleted + " '" + sensorName +
-						// "' points from the persistant storage");
-					} else {
-						Log.w(TAG, "Wrong number of '" + sensorName
-								+ "' data points deleted after transmission! " + deleted + " vs. "
-								+ dataPoints.length());
-					}
-				} catch (IllegalArgumentException e) {
-					Log.e(TAG, "Error deleting points from Local Storage!", e);
-				}
-			}
-
-			// check if there is more data left
-			SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-					MODE_PRIVATE);
-
-			int maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT;
-
-			if (mainPrefs.getBoolean(Main.Motion.EPIMODE, false))
-				maxDataPoints = LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE;
-
-			// there is probably more data, try to send more
-			if (totalDatapoints == maxDataPoints) {
-				// Log.d(TAG,
-				// "There is more data! Sending another batch from the persistant storage.");
-
-				Message msg = Message.obtain(persistedDataHandler, 0, cookie);
-				persistedDataHandler.sendMessage(msg);
-			}
-		}
-	}
-
-	/**
-	 * Handler for transmit tasks of recently added data (i.e. data that is stored in system RAM
-	 * memory). Updates {@link DataPoint#TRANSMIT_STATE} of the data points after the transmission
-	 * is completed successfully.
-	 */
-	private static class RecentDataTransmitHandler extends AbstractDataTransmitHandler {
-
-		private final Uri contentUri;
-
-		public RecentDataTransmitHandler(Context context, Looper looper) {
-			super(context, looper);
-			contentUri = Uri.parse("content://"
-					+ context.getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_URI_PATH);
-		}
-
-		@Override
-		protected Cursor getUnsentData() {
-			try {
-				String where = DataPoint.TRANSMIT_STATE + "=0";
-				Cursor unsent = storage.query(contentUri, null, where, null, null);
-				if (null != unsent) {
-					Log.v(TAG, "Found " + unsent.getCount()
-							+ " unsent data points in local storage");
-				} else {
-					Log.w(TAG, "Failed to get unsent recent data points from local storage");
-				}
-				return unsent;
-			} catch (IllegalArgumentException e) {
-				Log.e(TAG, "Error querying Local Storage!", e);
-				return null;
-			}
-		}
-
-		@Override
-		protected void onTransmitSuccess(JSONObject transmission) throws JSONException {
-
-			// log our great success
-			int bytes = transmission.toString().getBytes().length;
-			Log.i(TAG, "Sent recent sensor data from the local storage! Raw data size: "
-					+ humanReadableByteCount(bytes, false));
-
-			// new content values with updated transmit state
-			ContentValues values = new ContentValues();
-			values.put(DataPoint.TRANSMIT_STATE, 1);
-
-			JSONArray sensorDatas = transmission.getJSONArray("sensors");
-			for (int i = 0; i < sensorDatas.length(); i++) {
-
-				JSONObject sensorData = sensorDatas.getJSONObject(i);
-
-				// get the name of the sensor, to use in the ContentResolver query
-				String sensorName = sensorData.getString("sensor_name");
-
-				// select points for this sensor, between the first and the last time stamp
-				JSONArray dataPoints = sensorData.getJSONArray("data");
-				String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
-				String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
-						"date");
-				long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
-				long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
-				String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
-						+ DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
-						+ max;
-
-				// update points in local storage
-				try {
-					int updated = storage.update(contentUri, values, where, null);
-					if (updated == dataPoints.length()) {
-						// Log.v(TAG, "Updated all " + updated + " '" + sensorName
-						// + "' data points in the local storage");
-					} else {
-						Log.w(TAG, "Wrong number of '" + sensorName
-								+ "' data points updated after transmission! " + updated + " vs. "
-								+ dataPoints.length());
-					}
-				} catch (IllegalArgumentException e) {
-					Log.e(TAG, "Error updating points in Local Storage!", e);
-				}
-			}
-		}
-	}
-
-	private static class SingleSensorTransmitHandler extends Handler {
-
-		private final Context context;
-
-		public SingleSensorTransmitHandler(Context context, Looper looper) {
-			super(looper);
-			this.context = context;
-		}
-
-		private void cleanup(WakeLock wakeLock) {
-			--nrOfSendMessageThreads;
-			if (null != wakeLock) {
-				wakeLock.release();
-				wakeLock = null;
-			}
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-
-			// get arguments from message
-			Bundle args = msg.getData();
-			String name = args.getString("name");
-			String description = args.getString("description");
-			String dataType = args.getString("dataType");
-			String deviceUuid = args.getString("deviceUuid");
-			String cookie = args.getString("cookie");
-			JSONObject json = (JSONObject) msg.obj;
-
-			WakeLock wakeLock = null;
-			try {
-				// make sure the device stays awake while transmitting
-				PowerManager powerMgr = (PowerManager) context
-						.getSystemService(Context.POWER_SERVICE);
-				wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-				wakeLock.acquire();
-
-				// get sensor URL at CommonSense
-				String url = SenseApi
-						.getSensorUrl(context, name, description, dataType, deviceUuid);
-
-				if (url == null) {
-					Log.w(TAG, "No sensor ID for '" + name + "' (yet): data will be retried.");
-					return;
-				}
-
-				Map<String, String> response = SenseApi.request(context, url, json, cookie);
-
-				// Error when sending
-				if ((response == null) || !response.get("http response code").equals("201")) {
-
-					// if un-authorized: relogin
-					if ((response != null) && response.get("http response code").equals("403")) {
-						final Intent serviceIntent = new Intent(
-								context.getString(R.string.action_sense_service));
-						serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
-						context.startService(serviceIntent);
-					}
-
-					// Show the HTTP response Code
-					if (response != null) {
-						Log.w(TAG,
-								"Failed to send '" + name + "' data. Response code:"
-										+ response.get("http response code")
-										+ ", Response content: '" + response.get("content")
-										+ "'\nData will be retried");
-					} else {
-						Log.w(TAG, "Failed to send '" + name + "' data.\nData will be retried.");
-					}
-				}
-
-				// Data sent successfully
-				else {
-					int bytes = json.toString().getBytes().length;
-					Log.i(TAG, "Sent '" + name + "' data! Raw data size: " + bytes + " bytes");
-
-					onTransmitSuccess(name, json);
-				}
-
-			} catch (Exception e) {
-				if (null != e.getMessage()) {
-					Log.e(TAG,
-							"Exception sending '" + name + "' data, data will be retried: "
-									+ e.getMessage());
-				} else {
-					Log.e(TAG, "Exception sending '" + name + "' data, data will be retried.", e);
-				}
-
-			} finally {
-				cleanup(wakeLock);
-			}
-		}
-
-		private void onTransmitSuccess(String name, JSONObject json) throws JSONException {
-			// new content values with updated transmit state
-			ContentValues values = new ContentValues();
-			values.put(DataPoint.TRANSMIT_STATE, 1);
-
-			// select points for this sensor, between the fist and the last time stamp
-			JSONArray dataPoints = json.getJSONArray("data");
-			String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
-			String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
-					"date");
-			long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
-			long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
-			String where = DataPoint.SENSOR_NAME + "='" + name + "'" + " AND "
-					+ DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
-					+ max;
-
-			try {
-				Uri contentUri = Uri.parse("content://"
-						+ context.getString(R.string.local_storage_authority)
-						+ DataPoint.CONTENT_URI_PATH);
-				int updated = storage.update(contentUri, values, where, null);
-				if (updated == dataPoints.length()) {
-					// Log.v(TAG, "Updated all " + updated + " rows in the local storage");
-				} else {
-					Log.w(TAG, "Wrong number of local storage points updated! " + updated + " vs. "
-							+ dataPoints.length());
-				}
-			} catch (IllegalArgumentException e) {
-				Log.e(TAG, "Error updating points in Local Storage!", e);
-			}
-		}
-	}
-
 	private static final String TAG = "Sense MsgHandler";
 	private static final int MAX_NR_OF_SEND_MSG_THREADS = 50;
-	private static final int MAX_POST_DATA = 100;
+
 	private static int nrOfSendMessageThreads = 0;
 
 	private static FileTransmitHandler fileHandler;
-	private static SingleSensorTransmitHandler singleSensorTransmitHandler;
-	private static RecentDataTransmitHandler recentDataHandler;
-	private static PersistedDataTransmitHandler persistedDataHandler;
+	private static DataTransmitHandler dataTransmitHandler;
+	private static RecentBufferTransmitHandler recentDataHandler;
+	private static PersistedBufferTransmitHandler persistedDataHandler;
 	private static LocalStorage storage;
 
 	/**
@@ -844,7 +70,7 @@ public class MsgHandler extends Service {
 	 * @param sensorData
 	 *            JSON Object with the sensor data.
 	 */
-	private static void sendSensorData(Context context, String name, String description,
+	public static void sendSensorData(Context context, String name, String description,
 			String dataType, String deviceUuid, JSONObject sensorData) {
 
 		try {
@@ -873,7 +99,7 @@ public class MsgHandler extends Service {
 					if (dataType.equals(SenseDataTypes.FILE)) {
 						fileHandler.sendMessage(msg);
 					} else {
-						singleSensorTransmitHandler.sendMessage(msg);
+						dataTransmitHandler.sendMessage(msg);
 					}
 				} else {
 					Log.w(TAG, "Cannot send data point! no cookie");
@@ -899,20 +125,6 @@ public class MsgHandler extends Service {
 			storage.update(contentUri, new ContentValues(), where, null);
 		} catch (IllegalArgumentException e) {
 			Log.e(TAG, "Error updating Local Storage!", e);
-		}
-	}
-
-	/**
-	 * Handles an incoming Intent that started the service by checking if it wants to store a new
-	 * message or if it wants to send data to CommonSense.
-	 */
-	private void handleIntent(Intent intent, int flags, int startId) {
-		if (getString(R.string.action_sense_new_data).equals(intent.getAction())) {
-			handleNewMsgIntent(intent);
-		} else if (getString(R.string.action_sense_send_data).equals(intent.getAction())) {
-			handleSendIntent(intent);
-		} else {
-			Log.e(TAG, "Unexpected intent action: " + intent.getAction());
 		}
 	}
 
@@ -1002,15 +214,11 @@ public class MsgHandler extends Service {
 			SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-			{
-				Message msg = Message.obtain(persistedDataHandler, 0, cookie);
-				persistedDataHandler.sendMessage(msg);
-			}
+			Message persistedDataMsg = Message.obtain(persistedDataHandler, 0, cookie);
+			persistedDataHandler.sendMessage(persistedDataMsg);
 
-			{
-				Message msg = Message.obtain(recentDataHandler, 0, cookie);
-				recentDataHandler.sendMessage(msg);
-			}
+			Message recentDataMsg = Message.obtain(recentDataHandler, 0, cookie);
+			recentDataHandler.sendMessage(recentDataMsg);
 		}
 	}
 
@@ -1095,23 +303,31 @@ public class MsgHandler extends Service {
 
 		storage = LocalStorage.getInstance(this);
 
-		HandlerThread recentDataThread = new HandlerThread("TransmitRecentDataThread");
-		recentDataThread.start();
-		recentDataHandler = new RecentDataTransmitHandler(this, recentDataThread.getLooper());
+		{
+			HandlerThread handlerThread = new HandlerThread("TransmitRecentDataThread");
+			handlerThread.start();
+			recentDataHandler = new RecentBufferTransmitHandler(this, storage,
+					handlerThread.getLooper());
+		}
 
-		HandlerThread persistedDataThread = new HandlerThread("TransmitPersistedDataThread");
-		persistedDataThread.start();
-		persistedDataHandler = new PersistedDataTransmitHandler(this,
-				persistedDataThread.getLooper());
+		{
+			HandlerThread handlerThread = new HandlerThread("TransmitPersistedDataThread");
+			handlerThread.start();
+			persistedDataHandler = new PersistedBufferTransmitHandler(this, storage,
+					handlerThread.getLooper());
+		}
 
-		HandlerThread fileHandlerThread = new HandlerThread("TransmitFileThread");
-		fileHandlerThread.start();
-		fileHandler = new FileTransmitHandler(this, fileHandlerThread.getLooper());
+		{
+			HandlerThread handlerThread = new HandlerThread("TransmitFileThread");
+			handlerThread.start();
+			fileHandler = new FileTransmitHandler(this, storage, handlerThread.getLooper());
+		}
 
-		HandlerThread dataPointHandlerThread = new HandlerThread("TransmitDataPointThread");
-		dataPointHandlerThread.start();
-		singleSensorTransmitHandler = new SingleSensorTransmitHandler(this,
-				dataPointHandlerThread.getLooper());
+		{
+			HandlerThread handlerThread = new HandlerThread("TransmitDataPointThread");
+			handlerThread.start();
+			dataTransmitHandler = new DataTransmitHandler(this, storage, handlerThread.getLooper());
+		}
 	}
 
 	@Override
@@ -1123,22 +339,25 @@ public class MsgHandler extends Service {
 		persistedDataHandler.getLooper().quit();
 		recentDataHandler.getLooper().quit();
 		fileHandler.getLooper().quit();
-		singleSensorTransmitHandler.getLooper().quit();
+		dataTransmitHandler.getLooper().quit();
 
 		super.onDestroy();
 	}
 
 	/**
-	 * Deprecated method for starting the service, used in 1.6 and older.
+	 * Handles an incoming Intent that started the service by checking if it wants to store a new
+	 * message or if it wants to send data to CommonSense.
 	 */
 	@Override
-	public void onStart(Intent intent, int startid) {
-		handleIntent(intent, 0, startid);
-	}
-
-	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		handleIntent(intent, flags, startId);
+
+		if (getString(R.string.action_sense_new_data).equals(intent.getAction())) {
+			handleNewMsgIntent(intent);
+		} else if (getString(R.string.action_sense_send_data).equals(intent.getAction())) {
+			handleSendIntent(intent);
+		} else {
+			Log.e(TAG, "Unexpected intent action: " + intent.getAction());
+		}
 
 		// this service is not sticky, it will get an intent to restart it if necessary
 		return START_NOT_STICKY;
