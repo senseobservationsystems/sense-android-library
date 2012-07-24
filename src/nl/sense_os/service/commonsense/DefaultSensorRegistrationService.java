@@ -59,20 +59,18 @@ public class DefaultSensorRegistrationService extends IntentService {
 		}
 
 		if (registrationId.equals("")) {
-			Log.v(TAG, "Device is not registered to gcm, registering");
+			Log.v(TAG, "Device is not registered to Google Cloud Messaging, registering");
 			GCMRegistrar.register(this, SENDER_ID);
 
 		} else {
 			try {
 				SenseApi.registerGCMId(this, registrationId);
 			} catch (IOException e) {
-				Log.d(TAG, "error while registering gcm registration_id");
-				e.printStackTrace();
+				Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
 			} catch (JSONException e) {
-				Log.d(TAG, "error while parsing json on gcm registration_id");
-				e.printStackTrace();
+				Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
 			} catch (Exception e) {
-				Log.d(TAG, "error while trying to send gcm registration_id");
+				Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
 			}
 		}
 	}

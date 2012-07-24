@@ -1,15 +1,9 @@
 package nl.sense_os.service.commonsense;
 
-import java.util.HashMap;
-
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -45,22 +39,13 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// preallocate objects
 		SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		Sensor sensor;
-		String name, displayName, description, dataType, value;
-		HashMap<String, Object> dataFields = new HashMap<String, Object>();
 		boolean success = true;
 
 		// match light sensor
 		sensor = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
 		if (null != sensor) {
-			name = SensorNames.LIGHT;
-			displayName = SensorNames.LIGHT;
-			description = sensor.getName();
-			dataType = SenseDataTypes.JSON;
-			dataFields.clear();
-			dataFields.put("lux", 0);
-			value = new JSONObject(dataFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-					deviceUuid);
+			success &= checkSensor(SensorNames.LIGHT, SensorNames.LIGHT, SenseDataTypes.JSON,
+					sensor.getName(), "{\"lux\":0}", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No light sensor present!");
 		}
@@ -70,53 +55,31 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 			// multiple camera support starting from Android 2.3
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
 				for (int camera_id = 0; camera_id < Camera.getNumberOfCameras(); ++camera_id) {
-					name = SensorNames.CAMERA_LIGHT;
-					displayName = "Camera Light";
-					description = "camera " + camera_id + " average luminance";
-					dataType = SenseDataTypes.JSON;
-					dataFields.clear();
-					dataFields.put("lux", 0);
-					value = new JSONObject(dataFields).toString();
-					success &= checkSensor(name, displayName, dataType, description, value,
-							deviceType, deviceUuid);
+					success &= checkSensor(SensorNames.CAMERA_LIGHT, "Camera Light",
+							SenseDataTypes.JSON, "camera " + camera_id + " average luminance",
+							"{\"lux\":0}", deviceType, deviceUuid);
 				}
 			}
 		}
 
 		// match noise sensor
-		name = SensorNames.NOISE;
-		displayName = "noise";
-		description = SensorNames.NOISE;
-		dataType = SenseDataTypes.FLOAT;
-		value = "0.0";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
+				"0.0", deviceType, deviceUuid);
 
 		// match noise spectrum
-		name = SensorNames.AUDIO_SPECTRUM;
-		displayName = "audio spectrum";
-		description = "audio spectrum (dB)";
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		for (int i = 1; i < 23; i++) {
-			dataFields.put(i + " kHz", 0);
-		}
-		value = new JSONObject(dataFields).toString();
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(
+				SensorNames.AUDIO_SPECTRUM,
+				"audio spectrum",
+				SenseDataTypes.JSON,
+				"audio spectrum (dB)",
+				"{\"1 kHz\":0,\"2 kHz\":0,\"3 kHz\":0,\"4 kHz\":0,\"5 kHz\":0,\"6 kHz\":0,\"7 kHz\":0,\"8 kHz\":0,\"9 kHz\":0,\"10 kHz\":0,\"11 kHz\":0,\"12 kHz\":0,\"13 kHz\":0,\"14 kHz\":0,\"15 kHz\":0,\"16 kHz\":0,\"17 kHz\":0,\"18 kHz\":0,\"19 kHz\":0,\"20 kHz\":0,\"21 kHz\":0,\"22 kHz\":0}",
+				deviceType, deviceUuid);
 
 		// match pressure sensor
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		if (null != sensor) {
-			name = SensorNames.PRESSURE;
-			displayName = "";
-			description = sensor.getName();
-			dataType = SenseDataTypes.JSON;
-			dataFields.clear();
-			dataFields.put("millibar", 0);
-			value = new JSONObject(dataFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-					deviceUuid);
+			success &= checkSensor(SensorNames.PRESSURE, "", SenseDataTypes.JSON, sensor.getName(),
+					"{\"millibar\":0}", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No pressure sensor present!");
 		}
@@ -124,14 +87,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			sensor = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 			if (null != sensor) {
-				name = SensorNames.AMBIENT_TEMPERATURE;
-				displayName = "ambient temperature";
-				description = sensor.getName();
-				dataType = SenseDataTypes.JSON;
-				dataFields.clear();
-				dataFields.put("celsius", 0);
-				value = new JSONObject(dataFields).toString();
-				success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+				success &= checkSensor(SensorNames.AMBIENT_TEMPERATURE, "ambient temperature",
+						SenseDataTypes.JSON, sensor.getName(), "{\"celsius\":0}", deviceType,
 						deviceUuid);
 			} else {
 				// Log.v(TAG, "No ambient temperature sensor present!");
@@ -139,13 +96,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		}
 
 		// match loudness sensor
-		name = SensorNames.LOUDNESS;
-		displayName = name;
-		description = SensorNames.LOUDNESS;
-		dataType = SenseDataTypes.FLOAT;
-		value = "0.0";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.LOUDNESS, SensorNames.LOUDNESS, SenseDataTypes.FLOAT,
+				SensorNames.LOUDNESS, "0.0", deviceType, deviceUuid);
 
 		return success;
 	}
@@ -162,62 +114,35 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 	private boolean checkDeviceScanSensors(String deviceType, String deviceUuid) {
 
 		// preallocate objects
-		String name, displayName, description, dataType, value;
-		HashMap<String, Object> dataFields = new HashMap<String, Object>();
 		boolean success = true;
 
 		// match Bluetooth scan
-		name = SensorNames.BLUETOOTH_DISCOVERY;
-		displayName = "bluetooth scan";
-		description = SensorNames.BLUETOOTH_DISCOVERY;
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		dataFields.put("name", "string");
-		dataFields.put("address", "string");
-		dataFields.put("rssi", 0);
-		value = new JSONObject(dataFields).toString();
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.BLUETOOTH_DISCOVERY, "bluetooth scan",
+				SenseDataTypes.JSON, SensorNames.BLUETOOTH_DISCOVERY,
+				"{\"name\":\"string\",\"address\":\"string\",\"rssi\":0}", deviceType, deviceUuid);
 
 		// match Bluetooth neighbours count
-		name = SensorNames.BLUETOOTH_NEIGHBOURS_COUNT;
-		displayName = "bluetooth neighbours count";
-		description = SensorNames.BLUETOOTH_NEIGHBOURS_COUNT;
-		dataType = SenseDataTypes.INT;
-		value = "0";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,
+				"bluetooth neighbours count", SenseDataTypes.INT,
+				SensorNames.BLUETOOTH_NEIGHBOURS_COUNT, "0", deviceType, deviceUuid);
 
 		// match Wi-Fi scan
-		name = SensorNames.WIFI_SCAN;
-		displayName = "wi-fi scan";
-		description = SensorNames.WIFI_SCAN;
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		dataFields.put("ssid", "string");
-		dataFields.put("bssid", "string");
-		dataFields.put("frequency", 0);
-		dataFields.put("rssi", 0);
-		dataFields.put("capabilities", "string");
-		value = new JSONObject(dataFields).toString();
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(
+				SensorNames.WIFI_SCAN,
+				"wi-fi scan",
+				SenseDataTypes.JSON,
+				SensorNames.WIFI_SCAN,
+				"{\"ssid\":\"string\",\"bssid\":\"string\",\"frequency\":0,\"rssi\":0,\"capabilities\":\"string\"}",
+				deviceType, deviceUuid);
 
 		// match NFC scan
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
 			NfcManager nm = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
 			if (null != nm.getDefaultAdapter()) {
-				name = SensorNames.NFC_SCAN;
-				displayName = "nfc scan";
-				description = SensorNames.NFC_SCAN;
-				dataType = SenseDataTypes.JSON;
-				dataFields.clear();
-				dataFields.put("id", "string");
-				dataFields.put("technology", "string");
-				dataFields.put("message", "string");
-				value = new JSONObject(dataFields).toString();
-				success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-						deviceUuid);
+				success &= checkSensor(SensorNames.NFC_SCAN, "nfc scan", SenseDataTypes.JSON,
+						SensorNames.NFC_SCAN,
+						"{\"id\":\"string\",\"technology\":\"string\",\"message\":\"string\"}",
+						deviceType, deviceUuid);
 			}
 		}
 
@@ -235,36 +160,17 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 	private boolean checkLocationSensors(String deviceType, String deviceUuid) {
 		boolean succes = true;
 		// match location sensor
-		String name = SensorNames.LOCATION;
-		String displayName = SensorNames.LOCATION;
-		String description = SensorNames.LOCATION;
-		String dataType = SenseDataTypes.JSON;
-		HashMap<String, Object> dataFields = new HashMap<String, Object>();
-		dataFields.put("longitude", 1.0);
-		dataFields.put("latitude", 1.0);
-		dataFields.put("altitude", 1.0);
-		dataFields.put("accuracy", 1.0);
-		dataFields.put("speed", 1.0);
-		dataFields.put("bearing", 1.0f);
-		dataFields.put("provider", "string");
-		String value = new JSONObject(dataFields).toString();
-		succes &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		succes &= checkSensor(
+				SensorNames.LOCATION,
+				SensorNames.LOCATION,
+				SenseDataTypes.JSON,
+				SensorNames.LOCATION,
+				"{\"longitude\":1.0,\"laitude\":1.0,\"altitude\":1.0,\"accuracy\":1.0,\"speed\":1.0,\"bearing\":1.0,\"provider\":\"provider\"}",
+				deviceType, deviceUuid);
 
-		name = SensorNames.TRAVELED_DISTANCE_1H;
-		displayName = SensorNames.TRAVELED_DISTANCE_1H;
-		description = SensorNames.TRAVELED_DISTANCE_1H;
-		dataType = SenseDataTypes.FLOAT;
-		value = "0.0";
-		succes &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
-
-		name = SensorNames.TRAVELED_DISTANCE_24H;
-		displayName = SensorNames.TRAVELED_DISTANCE_24H;
-		description = SensorNames.TRAVELED_DISTANCE_24H;
-		dataType = SenseDataTypes.FLOAT;
-		value = "0.0";
-		succes &= checkSensor(name, displayName, dataType, description, value, deviceType,
+		// traveled distance sensor
+		succes &= checkSensor(SensorNames.TRAVELED_DISTANCE_1H, SensorNames.TRAVELED_DISTANCE_1H,
+				SenseDataTypes.FLOAT, SensorNames.TRAVELED_DISTANCE_1H, "0.0", deviceType,
 				deviceUuid);
 
 		return succes;
@@ -284,73 +190,42 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// preallocate objects
 		SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		Sensor sensor;
-		String name, displayName, description, dataType, value;
-		HashMap<String, Object> jsonFields = new HashMap<String, Object>();
 		boolean success = true;
 
 		sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		if (null != sensor) {
 
 			// match accelerometer
-			name = SensorNames.ACCELEROMETER;
-			displayName = "acceleration";
-			description = sensor.getName();
-			dataType = SenseDataTypes.JSON;
-			jsonFields.clear();
-			jsonFields.put("x-axis", 1.0);
-			jsonFields.put("y-axis", 1.0);
-			jsonFields.put("z-axis", 1.0);
-			value = new JSONObject(jsonFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+			success &= checkSensor(SensorNames.ACCELEROMETER, "acceleration", SenseDataTypes.JSON,
+					sensor.getName(), "{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType,
 					deviceUuid);
 
 			// match accelerometer (epi)
 			SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 					Context.MODE_PRIVATE);
 			if (mainPrefs.getBoolean(Main.Motion.EPIMODE, false)) {
-				name = SensorNames.ACCELEROMETER_EPI;
-				displayName = "acceleration (epi-mode)";
-				description = sensor.getName();
-				dataType = SenseDataTypes.JSON;
-				jsonFields.clear();
-				jsonFields.put("interval", 0);
-				jsonFields.put("data", new JSONArray());
-				value = new JSONObject(jsonFields).toString();
-				success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-						deviceUuid);
+				success &= checkSensor(SensorNames.ACCELEROMETER_EPI, "acceleration (epi-mode)",
+						SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
+						deviceType, deviceUuid);
 			}
 
 			// match motion energy
 			if (mainPrefs.getBoolean(Main.Motion.MOTION_ENERGY, false)) {
-				name = SensorNames.MOTION_ENERGY;
-				displayName = SensorNames.MOTION_ENERGY;
-				description = SensorNames.MOTION_ENERGY;
-				dataType = SenseDataTypes.FLOAT;
-				value = "1.0";
-				success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+				success &= checkSensor(SensorNames.MOTION_ENERGY, SensorNames.MOTION_ENERGY,
+						SenseDataTypes.FLOAT, SensorNames.MOTION_ENERGY, "1.0", deviceType,
 						deviceUuid);
 			}
 
 			// match fall detector
 			if (mainPrefs.getBoolean(Main.Motion.FALL_DETECT, false)) {
-				name = SensorNames.FALL_DETECTOR;
-				displayName = "fall";
-				description = "human fall";
-				dataType = SenseDataTypes.BOOL;
-				value = "true";
-				success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-						deviceUuid);
+				success &= checkSensor(SensorNames.FALL_DETECTOR, "fall", SenseDataTypes.BOOL,
+						"human fall", "true", deviceType, deviceUuid);
 			}
 
 			// match fall detector
 			if (mainPrefs.getBoolean(Main.Motion.FALL_DETECT_DEMO, false)) {
-				name = SensorNames.FALL_DETECTOR;
-				displayName = "fall (demo)";
-				description = "demo fall";
-				dataType = SenseDataTypes.BOOL;
-				value = "true";
-				success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-						deviceUuid);
+				success &= checkSensor(SensorNames.FALL_DETECTOR, "fall (demo)",
+						SenseDataTypes.BOOL, "demo fall", "true", deviceType, deviceUuid);
 			}
 
 		} else {
@@ -362,17 +237,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
 			sensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 			if (null != sensor) {
-				name = SensorNames.LIN_ACCELERATION;
-				displayName = SensorNames.LIN_ACCELERATION;
-				description = sensor.getName();
-				dataType = SenseDataTypes.JSON;
-				jsonFields.clear();
-				jsonFields.put("x-axis", 1.0);
-				jsonFields.put("y-axis", 1.0);
-				jsonFields.put("z-axis", 1.0);
-				value = new JSONObject(jsonFields).toString();
-				success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-						deviceUuid);
+				success &= checkSensor(SensorNames.LIN_ACCELERATION, SensorNames.LIN_ACCELERATION,
+						SenseDataTypes.JSON, sensor.getName(),
+						"{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType, deviceUuid);
 
 			} else {
 				// Log.v(TAG, "No linear acceleration sensor present!");
@@ -382,16 +249,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match orientation
 		sensor = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 		if (null != sensor) {
-			name = SensorNames.ORIENT;
-			displayName = SensorNames.ORIENT;
-			description = sensor.getName();
-			dataType = SenseDataTypes.JSON;
-			jsonFields.clear();
-			jsonFields.put("azimuth", 1.0);
-			jsonFields.put("pitch", 1.0);
-			jsonFields.put("roll", 1.0);
-			value = new JSONObject(jsonFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+			success &= checkSensor(SensorNames.ORIENT, SensorNames.ORIENT, SenseDataTypes.JSON,
+					sensor.getName(), "{\"azimuth\":1.0,\"pitch\":1.0,\"roll\":1.0}", deviceType,
 					deviceUuid);
 
 		} else {
@@ -401,16 +260,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match gyroscope
 		sensor = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		if (null != sensor) {
-			name = SensorNames.GYRO;
-			displayName = "rotation rate";
-			description = sensor.getName();
-			dataType = SenseDataTypes.JSON;
-			jsonFields.clear();
-			jsonFields.put("azimuth rate", 1.0);
-			jsonFields.put("pitch rate", 1.0);
-			jsonFields.put("roll rate", 1.0);
-			value = new JSONObject(jsonFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+			success &= checkSensor(SensorNames.GYRO, "rotation rate", SenseDataTypes.JSON,
+					sensor.getName(),
+					"{\"azimuth rate\":1.0,\"pitch rate\":1.0,\"roll rate\":1.0}", deviceType,
 					deviceUuid);
 
 		} else {
@@ -434,44 +286,23 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// preallocate objects
 		SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		Sensor sensor;
-		String name, displayName, description, dataType, value;
-		HashMap<String, Object> dataFields = new HashMap<String, Object>();
 		boolean success = true;
 
 		// match battery sensor
-		name = SensorNames.BATTERY_SENSOR;
-		displayName = "battery state";
-		description = SensorNames.BATTERY_SENSOR;
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		dataFields.put("status", "string");
-		dataFields.put("level", "string");
-		value = new JSONObject(dataFields).toString();
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.BATTERY_SENSOR, "battery state", SenseDataTypes.JSON,
+				SensorNames.BATTERY_SENSOR, "{\"status\":\"string\",\"level\":\"string\"}",
+				deviceType, deviceUuid);
 
 		// match screen activity
-		name = SensorNames.SCREEN_ACTIVITY;
-		displayName = SensorNames.SCREEN_ACTIVITY;
-		description = SensorNames.SCREEN_ACTIVITY;
-		dataType = SenseDataTypes.JSON;
-		dataFields.clear();
-		dataFields.put("screen", "string");
-		value = new JSONObject(dataFields).toString();
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.SCREEN_ACTIVITY, SensorNames.SCREEN_ACTIVITY,
+				SenseDataTypes.JSON, SensorNames.SCREEN_ACTIVITY, "{\"screen\":\"string\"}",
+				deviceType, deviceUuid);
 
 		// match proximity
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 		if (null != sensor) {
-			name = SensorNames.PROXIMITY;
-			displayName = SensorNames.PROXIMITY;
-			description = sensor.getName();
-			dataType = SenseDataTypes.JSON;
-			dataFields.clear();
-			dataFields.put("distance", 1.0);
-			value = new JSONObject(dataFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+			success &= checkSensor(SensorNames.PROXIMITY, SensorNames.PROXIMITY,
+					SenseDataTypes.JSON, sensor.getName(), "{\"distance\":1.0}", deviceType,
 					deviceUuid);
 		} else {
 			// Log.v(TAG, "No proximity sensor present!");
@@ -481,106 +312,61 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		if (null != tm.getDeviceId()) {
 			// match call state
-			name = SensorNames.CALL_STATE;
-			displayName = SensorNames.CALL_STATE;
-			description = SensorNames.CALL_STATE;
-			dataType = SenseDataTypes.JSON;
-			dataFields.clear();
-			dataFields.put("state", "string");
-			dataFields.put("incomingNumber", "string");
-			value = new JSONObject(dataFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-					deviceUuid);
+			success &= checkSensor(SensorNames.CALL_STATE, SensorNames.CALL_STATE,
+					SenseDataTypes.JSON, SensorNames.CALL_STATE,
+					"{\"state\":\"string\",\"incomingNumber\":\"string\"}", deviceType, deviceUuid);
 
 			// match service state
-			name = SensorNames.SERVICE_STATE;
-			displayName = SensorNames.SERVICE_STATE;
-			description = SensorNames.SERVICE_STATE;
-			dataType = SenseDataTypes.JSON;
-			dataFields.clear();
-			dataFields.put("state", "string");
-			dataFields.put("phone number", "string");
-			dataFields.put("manualSet", true);
-			value = new JSONObject(dataFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-					deviceUuid);
+			success &= checkSensor(SensorNames.SERVICE_STATE, SensorNames.SERVICE_STATE,
+					SenseDataTypes.JSON, SensorNames.SERVICE_STATE,
+					"{\"state\":\"string\",\"phone number\":\"string\",\"manualSet\":true}",
+					deviceType, deviceUuid);
 
 			// match signal strength
-			name = SensorNames.SIGNAL_STRENGTH;
-			displayName = SensorNames.SIGNAL_STRENGTH;
-			description = SensorNames.SIGNAL_STRENGTH;
-			dataType = SenseDataTypes.JSON;
-			dataFields.clear();
-			dataFields.put("GSM signal strength", 1);
-			dataFields.put("GSM bit error rate", 1);
-			value = new JSONObject(dataFields).toString();
-			success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-					deviceUuid);
+			success &= checkSensor(SensorNames.SIGNAL_STRENGTH, SensorNames.SIGNAL_STRENGTH,
+					SenseDataTypes.JSON, SensorNames.SIGNAL_STRENGTH,
+					"{\"GSM signal strength\":1,\"GSM bit error rate\":1}", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No telephony present");
 		}
 
 		// match connection type
-		name = SensorNames.CONN_TYPE;
-		displayName = "network type";
-		description = SensorNames.CONN_TYPE;
-		dataType = SenseDataTypes.STRING;
-		value = "string";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.CONN_TYPE, "network type", SenseDataTypes.STRING,
+				SensorNames.CONN_TYPE, "string", deviceType, deviceUuid);
 
 		// match ip address
-		name = SensorNames.IP_ADDRESS;
-		displayName = SensorNames.IP_ADDRESS;
-		description = SensorNames.IP_ADDRESS;
-		dataType = SenseDataTypes.STRING;
-		value = "string";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.IP_ADDRESS, SensorNames.IP_ADDRESS,
+				SenseDataTypes.STRING, SensorNames.IP_ADDRESS, "string", deviceType, deviceUuid);
 
 		// match messages waiting sensor
-		name = SensorNames.UNREAD_MSG;
-		displayName = "message waiting";
-		description = SensorNames.UNREAD_MSG;
-		dataType = SenseDataTypes.BOOL;
-		value = "true";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.UNREAD_MSG, "message waiting", SenseDataTypes.BOOL,
+				SensorNames.UNREAD_MSG, "true", deviceType, deviceUuid);
 
 		// match data connection
-		name = SensorNames.DATA_CONN;
-		displayName = SensorNames.DATA_CONN;
-		description = SensorNames.DATA_CONN;
-		dataType = SenseDataTypes.STRING;
-		value = "string";
-		success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-				deviceUuid);
+		success &= checkSensor(SensorNames.DATA_CONN, SensorNames.DATA_CONN, SenseDataTypes.STRING,
+				SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
 
 		return success;
 	}
 
 	private boolean checkDebugSensors(String deviceType, String deviceUuid) {
-		String name, displayName, description, dataType;
 
 		boolean success = true;
 
+		// match myrianode sensor
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
 		if (mainPrefs.getBoolean(Main.Advanced.LOCATION_FEEDBACK, false)) {
-			// match myrianode sensor
-			name = SensorNames.ATTACHED_TO_MYRIANODE;
-			displayName = SensorNames.ATTACHED_TO_MYRIANODE;
-			description = "Sense Logger";
-			dataType = SenseDataTypes.STRING;
-			success &= checkSensor(name, displayName, dataType, description, "string", deviceType,
-					deviceUuid);
+			success &= checkSensor(SensorNames.ATTACHED_TO_MYRIANODE,
+					SensorNames.ATTACHED_TO_MYRIANODE, SenseDataTypes.STRING, "Sense Logger",
+					"string", deviceType, deviceUuid);
 		}
 
 		return success;
 	}
 
 	@Override
-	public synchronized boolean verifySensorIds(String deviceType, String deviceUuid) {
+	public boolean verifySensorIds(String deviceType, String deviceUuid) {
 		boolean success = checkAmbienceSensors(deviceType, deviceUuid);
 		success &= checkDeviceScanSensors(deviceType, deviceUuid);
 		success &= checkLocationSensors(deviceType, deviceUuid);
