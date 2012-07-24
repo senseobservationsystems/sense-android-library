@@ -25,7 +25,6 @@ import nl.sense_os.service.storage.LocalStorage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -44,9 +43,6 @@ import android.util.Log;
 public class MsgHandler extends Service {
 
 	private static final String TAG = "Sense MsgHandler";
-	private static final int MAX_NR_OF_SEND_MSG_THREADS = 50;
-
-	private static int nrOfSendMessageThreads = 0;
 
 	private static FileTransmitHandler fileHandler;
 	private static DataTransmitHandler dataTransmitHandler;
@@ -74,38 +70,32 @@ public class MsgHandler extends Service {
 			String dataType, String deviceUuid, JSONObject sensorData) {
 
 		try {
-			if (nrOfSendMessageThreads < MAX_NR_OF_SEND_MSG_THREADS) {
+			// get cookie for transmission
+			SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+					MODE_PRIVATE);
+			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-				// get cookie for transmission
-				SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
-						MODE_PRIVATE);
-				String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+			if (cookie.length() > 0) {
 
-				if (cookie.length() > 0) {
-					++nrOfSendMessageThreads;
+				// prepare message to let handler run task
+				Bundle args = new Bundle();
+				args.putString("name", name);
+				args.putString("description", description);
+				args.putString("dataType", dataType);
+				args.putString("deviceUuid", deviceUuid);
+				args.putString("cookie", cookie);
+				Message msg = Message.obtain();
+				msg.setData(args);
+				msg.obj = sensorData;
 
-					// prepare message to let handler run task
-					Bundle args = new Bundle();
-					args.putString("name", name);
-					args.putString("description", description);
-					args.putString("dataType", dataType);
-					args.putString("deviceUuid", deviceUuid);
-					args.putString("cookie", cookie);
-					Message msg = Message.obtain();
-					msg.setData(args);
-					msg.obj = sensorData;
-
-					// check for sending a file
-					if (dataType.equals(SenseDataTypes.FILE)) {
-						fileHandler.sendMessage(msg);
-					} else {
-						dataTransmitHandler.sendMessage(msg);
-					}
+				// check for sending a file
+				if (dataType.equals(SenseDataTypes.FILE)) {
+					fileHandler.sendMessage(msg);
 				} else {
-					Log.w(TAG, "Cannot send data point! no cookie");
+					dataTransmitHandler.sendMessage(msg);
 				}
 			} else {
-				Log.w(TAG, "Maximum number of sensor data transmission threads reached!");
+				Log.w(TAG, "Cannot send data point! no cookie");
 			}
 
 		} catch (Exception e) {
@@ -128,7 +118,6 @@ public class MsgHandler extends Service {
 		}
 	}
 
-	@TargetApi(11)
 	private void handleNewMsgIntent(Intent intent) {
 		// Log.d(TAG, "handleNewMsgIntent");
 		try {
@@ -147,11 +136,7 @@ public class MsgHandler extends Service {
 			// defaults
 			description = description != null ? description : sensorName;
 			displayName = displayName != null ? displayName : sensorName;
-			deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
-					.getDefaultDeviceUuid(MsgHandler.this);
-
-			// Log.d(TAG, "name: '" + sensorName + "', display: '" + displayName +
-			// "', description: '" + description + "', data type: '" + dataType + "'");
+			deviceUuid = deviceUuid != null ? deviceUuid : SenseApi.getDefaultDeviceUuid(this);
 
 			// convert sensor value to String
 			String sensorValue = "";
@@ -173,18 +158,13 @@ public class MsgHandler extends Service {
 			insertToLocalStorage(sensorName, displayName, description, dataType, deviceUuid,
 					timestamp, sensorValue);
 
-			// check if we can send the data point immediately
-			SharedPreferences mainPrefs;
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_MULTI_PROCESS);
-			} else {
-				mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-			}
+			/*
+			 * check if we can send the data point immediately
+			 */
+			SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
 			int rate = Integer.parseInt(mainPrefs.getString(Main.SYNC_RATE, "0"));
-			boolean isMaxThreads = nrOfSendMessageThreads >= (MAX_NR_OF_SEND_MSG_THREADS - 5);
 			boolean isRealTimeMode = rate == -2;
-			if (isOnline() && isRealTimeMode && !isMaxThreads) {
-				/* send immediately */
+			if (isOnline() && isRealTimeMode) {
 
 				// create sensor data JSON object with only 1 data point
 				JSONObject sensorData = new JSONObject();
@@ -214,11 +194,21 @@ public class MsgHandler extends Service {
 			SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-			Message persistedDataMsg = Message.obtain(persistedDataHandler, 0, cookie);
-			persistedDataHandler.sendMessage(persistedDataMsg);
+			{
+				Message msg = Message.obtain();
+				Bundle args = new Bundle();
+				args.putString("cookie", cookie);
+				msg.setData(args);
+				persistedDataHandler.sendMessage(msg);
+			}
 
-			Message recentDataMsg = Message.obtain(recentDataHandler, 0, cookie);
-			recentDataHandler.sendMessage(recentDataMsg);
+			{
+				Message msg = Message.obtain();
+				Bundle args = new Bundle();
+				args.putString("cookie", cookie);
+				msg.setData(args);
+				recentDataHandler.sendMessage(msg);
+			}
 		}
 	}
 

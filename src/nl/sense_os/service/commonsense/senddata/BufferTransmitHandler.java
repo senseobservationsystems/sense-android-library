@@ -92,7 +92,7 @@ public abstract class BufferTransmitHandler extends Handler {
 	@Override
 	public void handleMessage(Message msg) {
 
-		String cookie = (String) msg.obj;
+		String cookie = msg.getData().getString("cookie");
 
 		// check if our references are still valid
 		if (null == ctxRef.get() || null == storageRef.get()) {
