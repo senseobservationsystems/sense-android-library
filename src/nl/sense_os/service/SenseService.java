@@ -47,11 +47,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
-
 
 public class SenseService extends Service {
 
@@ -90,11 +87,12 @@ public class SenseService extends Service {
 	/**
 	 * Handler on main application thread to display toasts to the user.
 	 */
-	private final Handler toastHandler = new Handler(Looper.getMainLooper());
+	private static Handler toastHandler = new Handler(Looper.getMainLooper());
+	private static Handler initHandler;
 
 	// separate threads for the sensing modules
-	private HandlerThread ambienceThread, motionThread, deviceProxThread, extSensorsThread,
-			locationThread, phoneStateThread;
+	private static Handler ambienceHandler, devProxHandler, extSensorHandler, locationHandler,
+			motionHandler, phoneStateHandler;
 
 	/**
 	 * Changes login of the Sense service. Removes "private" data of the previous user from the
@@ -152,7 +150,7 @@ public class SenseService extends Service {
 		} catch (Exception e) {
 			Log.w(TAG, "Failed to get Sense App version: " + e);
 		}
-	}	
+	}
 
 	/**
 	 * Tries to login using the username and password from the private preferences and updates the
@@ -286,7 +284,7 @@ public class SenseService extends Service {
 		SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
 		prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
 
-		checkVersion();		
+		checkVersion();
 	}
 
 	/**
@@ -332,13 +330,15 @@ public class SenseService extends Service {
 	public int onStartCommand(final Intent intent, int flags, int startId) {
 		Log.i(TAG, "Sense Platform service is being started");
 
-		HandlerThread startThread = new HandlerThread("Start thread",
-				Process.THREAD_PRIORITY_FOREGROUND);
-		startThread.start();
-		new Handler(startThread.getLooper()) {
+		if (null == initHandler) {
+			HandlerThread startThread = new HandlerThread("Start thread");
+			startThread.start();
+			initHandler = new Handler(startThread.getLooper());
+		}
+		initHandler.post(new Runnable() {
 
 			@Override
-			public void handleMessage(Message msg) {
+			public void run() {
 
 				boolean mainStatus = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE)
 						.getBoolean(Status.MAIN, true);
@@ -372,10 +372,8 @@ public class SenseService extends Service {
 					// restart the individual modules
 					startSensorModules();
 				}
-
-				getLooper().quit();
-			};
-		}.sendEmptyMessage(0);
+			}
+		});
 
 		return START_STICKY;
 	}
@@ -576,12 +574,6 @@ public class SenseService extends Service {
 					temperatureSensor = null;
 				}
 
-				if ((ambienceThread != null) && ambienceThread.isAlive()) {
-					Log.w(TAG, "Ambience thread is already present! Quitting the thread");
-					ambienceThread.getLooper().quit();
-					ambienceThread = null;
-				}
-
 				// get sample rate from preferences
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
 						MODE_PRIVATE);
@@ -611,10 +603,12 @@ public class SenseService extends Service {
 				}
 				final int finalInterval = interval;
 
-				ambienceThread = new HandlerThread("Ambience thread",
-						Process.THREAD_PRIORITY_DEFAULT);
-				ambienceThread.start();
-				new Handler(ambienceThread.getLooper()).post(new Runnable() {
+				if (null == ambienceHandler) {
+					HandlerThread handlerThread = new HandlerThread("Ambience thread");
+					handlerThread.start();
+					ambienceHandler = new Handler(handlerThread.getLooper());
+				}
+				ambienceHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -679,9 +673,9 @@ public class SenseService extends Service {
 					temperatureSensor = null;
 				}
 
-				if ((ambienceThread != null) && ambienceThread.isAlive()) {
-					ambienceThread.getLooper().quit();
-					ambienceThread = null;
+				if (ambienceHandler != null) {
+					ambienceHandler.getLooper().quit();
+					ambienceHandler = null;
 				}
 			}
 		}
@@ -700,12 +694,6 @@ public class SenseService extends Service {
 					Log.w(TAG, "Device proximity sensor is already present!");
 					deviceProximity.stopEnvironmentScanning();
 					deviceProximity = null;
-				}
-
-				if ((deviceProxThread != null) && deviceProxThread.isAlive()) {
-					Log.w(TAG, "Device proximity thread is already present! Quitting the thread");
-					deviceProxThread.getLooper().quit();
-					deviceProxThread = null;
 				}
 
 				// get sample rate
@@ -735,10 +723,12 @@ public class SenseService extends Service {
 				}
 				final int finalInterval = interval;
 
-				deviceProxThread = new HandlerThread("Device proximity thread",
-						Process.THREAD_PRIORITY_DEFAULT);
-				deviceProxThread.start();
-				new Handler(deviceProxThread.getLooper()).post(new Runnable() {
+				if (null == devProxHandler) {
+					HandlerThread handlerThread = new HandlerThread("Device proximity thread");
+					handlerThread.start();
+					devProxHandler = new Handler(handlerThread.getLooper());
+				}
+				devProxHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -757,9 +747,9 @@ public class SenseService extends Service {
 					deviceProximity = null;
 				}
 
-				if ((deviceProxThread != null) && deviceProxThread.isAlive()) {
-					deviceProxThread.getLooper().quit();
-					deviceProxThread = null;
+				if (null != devProxHandler) {
+					devProxHandler.getLooper().quit();
+					devProxHandler = null;
 				}
 			}
 		}
@@ -794,12 +784,6 @@ public class SenseService extends Service {
 					es_obd2sensor = null;
 				}
 
-				if ((extSensorsThread != null) && extSensorsThread.isAlive()) {
-					Log.w(TAG, "Ext. sensors thread is already present! Quitting the thread");
-					extSensorsThread.getLooper().quit();
-					extSensorsThread = null;
-				}
-
 				// get sample rate
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
 						MODE_PRIVATE);
@@ -828,10 +812,12 @@ public class SenseService extends Service {
 				}
 				final int finalInterval = interval;
 
-				extSensorsThread = new HandlerThread("Ext. sensors thread",
-						Process.THREAD_PRIORITY_DEFAULT);
-				extSensorsThread.start();
-				new Handler(extSensorsThread.getLooper()).post(new Runnable() {
+				if (null == extSensorHandler) {
+					HandlerThread handlerThread = new HandlerThread("External sensors thread");
+					handlerThread.start();
+					extSensorHandler = new Handler(handlerThread.getLooper());
+				}
+				extSensorHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -874,9 +860,9 @@ public class SenseService extends Service {
 					es_obd2sensor = null;
 				}
 
-				if ((extSensorsThread != null) && extSensorsThread.isAlive()) {
-					extSensorsThread.getLooper().quit();
-					extSensorsThread = null;
+				if (null != extSensorHandler) {
+					extSensorHandler.getLooper().quit();
+					extSensorHandler = null;
 				}
 			}
 		}
@@ -895,12 +881,6 @@ public class SenseService extends Service {
 					Log.w(TAG, "location sensor is already present!");
 					locListener.disable();
 					locListener = null;
-				}
-
-				if ((locationThread != null) && locationThread.isAlive()) {
-					Log.w(TAG, "Location thread is already present! Quitting the thread");
-					locationThread.getLooper().quit();
-					locationThread = null;
 				}
 
 				// get sample rate
@@ -941,10 +921,12 @@ public class SenseService extends Service {
 				final long time = minTime;
 				final float distance = minDistance;
 
-				locationThread = new HandlerThread("Location thread",
-						Process.THREAD_PRIORITY_DEFAULT);
-				locationThread.start();
-				new Handler(locationThread.getLooper()).post(new Runnable() {
+				if (null == locationHandler) {
+					HandlerThread handlerThread = new HandlerThread("Location thread");
+					handlerThread.start();
+					locationHandler = new Handler(handlerThread.getLooper());
+				}
+				locationHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -961,9 +943,9 @@ public class SenseService extends Service {
 					locListener = null;
 				}
 
-				if ((locationThread != null) && locationThread.isAlive()) {
-					locationThread.getLooper().quit();
-					locationThread = null;
+				if (locationHandler != null) {
+					locationHandler.getLooper().quit();
+					locationHandler = null;
 				}
 			}
 		}
@@ -1004,12 +986,6 @@ public class SenseService extends Service {
 					motionSensor = null;
 				}
 
-				if ((motionThread != null) && motionThread.isAlive()) {
-					Log.w(TAG, "Motion thread is already present! Quitting the thread");
-					motionThread.getLooper().quit();
-					motionThread = null;
-				}
-
 				// get sample rate
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
 						MODE_PRIVATE);
@@ -1041,10 +1017,12 @@ public class SenseService extends Service {
 
 				final int finalInterval = interval;
 
-				// instantiate the sensors on the main process thread
-				motionThread = new HandlerThread("Motion thread", Process.THREAD_PRIORITY_DEFAULT);
-				motionThread.start();
-				new Handler(motionThread.getLooper()).post(new Runnable() {
+				if (null == motionHandler) {
+					HandlerThread motionThread = new HandlerThread("Motion thread");
+					motionThread.start();
+					motionHandler = new Handler(motionThread.getLooper());
+				}
+				motionHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -1062,9 +1040,9 @@ public class SenseService extends Service {
 				}
 
 				// quit thread
-				if (null != motionThread) {
-					motionThread.getLooper().quit();
-					motionThread = null;
+				if (null != motionHandler) {
+					motionHandler.getLooper().quit();
+					motionHandler = null;
 				}
 			}
 		}
@@ -1106,12 +1084,6 @@ public class SenseService extends Service {
 					phoneActivitySensor = null;
 				}
 
-				// chekc presence of other phone state thread
-				if ((phoneStateThread != null) && phoneStateThread.isAlive()) {
-					phoneStateThread.getLooper().quit();
-					phoneStateThread = null;
-				}
-
 				// get sample rate
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
 						MODE_PRIVATE);
@@ -1137,11 +1109,13 @@ public class SenseService extends Service {
 				}
 				final int finalInterval = interval;
 
-				// start sensing on a separate thread
-				phoneStateThread = new HandlerThread("Phone state thread",
-						Process.THREAD_PRIORITY_DEFAULT);
-				phoneStateThread.start();
-				new Handler(phoneStateThread.getLooper()).post(new Runnable() {
+				if (null == phoneStateHandler) {
+					// start sensing on a separate thread
+					HandlerThread handlerThread = new HandlerThread("Phone state thread");
+					handlerThread.start();
+					phoneStateHandler = new Handler(handlerThread.getLooper());
+				}
+				phoneStateHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -1186,9 +1160,9 @@ public class SenseService extends Service {
 					phoneActivitySensor.stopPhoneActivitySensing();
 					phoneActivitySensor = null;
 				}
-				if ((phoneStateThread != null) && phoneStateThread.isAlive()) {
-					phoneStateThread.getLooper().quit();
-					phoneStateThread = null;
+				if (null != phoneStateHandler) {
+					phoneStateHandler.getLooper().quit();
+					phoneStateHandler = null;
 				}
 			}
 		}
