@@ -49,6 +49,14 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- Permission to receive Google Cloud Messages -->
+    <uses-permission android:name="nl.sense_os.pgtest.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission
+        android:name="nl.sense_os.pgtest.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="15" />
@@ -56,8 +64,7 @@
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
-        <activity
-            android:name="ExampleApp" >
+        <activity android:name="ExampleApp" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -70,7 +77,8 @@
         </activity>
         <activity
             android:name="SenseExamples"
-            android:configChanges="orientation|screenSize|keyboardHidden" >
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.NOTIFICATION" />
 
@@ -97,17 +105,20 @@
             </intent-filter>
         </service>
         <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
-        <service android:name="nl.sense_os.service.appwidget.DummyAppWidgetService"
+        <service
+            android:name="nl.sense_os.service.appwidget.DummyAppWidgetService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.AppWidgetUpdate" />
             </intent-filter>
         </service>
         <service android:name="nl.sense_os.service.states.EpiStateMonitor" />
+        <service android:name="nl.sense_os.service.push.GCMReceiver" />
 
         <activity
             android:name="nl.sense_os.service.deviceprox.NfcScan"
             android:configChanges="orientation"
+            android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
@@ -119,7 +130,8 @@
         </activity>
 
         <receiver
-            android:name="nl.sense_os.service.BootRx" >
+            android:name="nl.sense_os.service.BootRx"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -127,26 +139,36 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="nl.sense_os.service.AliveChecker" >
+            android:name="nl.sense_os.service.AliveChecker"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.AliveCheck" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="nl.sense_os.service.NetworkMonitor" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="nl.sense_os.service.DataTransmitter" >
+            android:name="nl.sense_os.service.NetworkMonitor"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="nl.sense_os.service.DataTransmitter"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="nl.sense_os.pgtest.DataTransmit" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="nl.sense_os.service.push.GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
 
-                <category android:name="android.intent.category.DEFAULT" />
+            <!-- Receive the message -->
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="nl.sense_os.pgtest" />
             </intent-filter>
         </receiver>
     </application>
