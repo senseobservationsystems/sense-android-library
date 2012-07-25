@@ -31,6 +31,7 @@ public class DefaultSensorRegistrationService extends IntentService {
 		long lastVerified = mainPrefs.getLong(SensePrefs.Main.LAST_VERIFIED_SENSORS, 0);
 		if (System.currentTimeMillis() - lastVerified < 1000l * 60 * 60) { // 1 hour
 			// registered sensors were already recently checked
+			Log.v(TAG, "Sensor IDs were recently verified already");
 			return;
 		}
 
