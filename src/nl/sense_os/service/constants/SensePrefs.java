@@ -2,7 +2,7 @@ package nl.sense_os.service.constants;
 
 import android.content.Context;
 
-public class SensePrefs {       
+public class SensePrefs {
 	/**
 	 * Keys for the authentication-related preferences of the Sense Platform
 	 */
@@ -86,11 +86,11 @@ public class SensePrefs {
 		 */
 		public static final String PHONE_TYPE = "phone_type";
 		/**
-		 * Key for storing if gcm registration_id 
+		 * Key for storing if gcm registration_id
 		 * 
 		 * @see SensePrefs#AUTH_PREFS
 		 */
-		public static final String GCM_REGISTRATION_ID = "gcm_registration_id";		
+		public static final String GCM_REGISTRATION_ID = "gcm_registration_id";
 	}
 
 	/**
@@ -466,6 +466,13 @@ public class SensePrefs {
 		 * @see SensePrefs#MAIN_PREFS
 		 */
 		public static final String LAST_LOGGED_IN = "never_logged_in";
+		/**
+		 * Key for preference that stores a timestamp for last time the sensors registration was
+		 * verified
+		 * 
+		 * @see SensePrefs#MAIN_PREFS
+		 */
+		public static final String LAST_VERIFIED_SENSORS = "verified_sensors";
 	}
 
 	/**

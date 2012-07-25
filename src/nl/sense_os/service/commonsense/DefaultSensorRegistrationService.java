@@ -4,10 +4,13 @@ import static nl.sense_os.service.push.GCMReceiver.SENDER_ID;
 
 import java.io.IOException;
 
+import nl.sense_os.service.constants.SensePrefs;
+
 import org.json.JSONException;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.gcm.GCMRegistrar;
@@ -23,11 +26,22 @@ public class DefaultSensorRegistrationService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+
+		SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+		long lastVerified = mainPrefs.getLong(SensePrefs.Main.LAST_VERIFIED_SENSORS, 0);
+		if (System.currentTimeMillis() - lastVerified < 1000l * 60 * 60) { // 1 hour
+			// registered sensors were already recently checked
+			return;
+		}
+
 		String deviceType = SenseApi.getDefaultDeviceType(this);
 		String deviceUuid = SenseApi.getDefaultDeviceUuid(this);
 		registerGCM();
 		if (verifier.verifySensorIds(deviceType, deviceUuid)) {
 			Log.v(TAG, "Sensor IDs verified");
+			mainPrefs.edit()
+					.putLong(SensePrefs.Main.LAST_VERIFIED_SENSORS, System.currentTimeMillis())
+					.commit();
 		} else {
 			// hopefully the IDs will be checked again
 		}

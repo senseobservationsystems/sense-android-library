@@ -181,14 +181,13 @@ public class SensePlugin extends Plugin {
 		if (null == sensorRegistrator) {
 			sensorRegistrator = new PhoneGapSensorRegistrator(ctx.getContext());
 		}
-		new Thread() {
-
-			@Override
-			public void run() {
-				sensorRegistrator.checkSensor(name, displayName, dataType, description, value,
-						null, null);
-			}
-		}.start();
+		// new Thread() {
+		//
+		// @Override
+		// public void run() {
+		sensorRegistrator.checkSensor(name, displayName, dataType, description, value, null, null);
+		// }
+		// }.start();
 
 		// send data point
 		String action = ctx.getContext().getString(
