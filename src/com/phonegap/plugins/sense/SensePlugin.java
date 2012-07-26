@@ -115,7 +115,7 @@ public class SensePlugin extends Plugin {
 
 		@Override
 		public void statusReport(final int status) throws RemoteException {
-			ctx.runOnUiThread(new Runnable() {
+			cordova.getActivity().runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {
@@ -179,7 +179,7 @@ public class SensePlugin extends Plugin {
 
 		// verify sensor ID
 		if (null == sensorRegistrator) {
-			sensorRegistrator = new PhoneGapSensorRegistrator(ctx.getContext());
+			sensorRegistrator = new PhoneGapSensorRegistrator(cordova.getActivity());
 		}
 		// new Thread() {
 		//
@@ -190,7 +190,7 @@ public class SensePlugin extends Plugin {
 		// }.start();
 
 		// send data point
-		String action = ctx.getContext().getString(
+		String action = cordova.getActivity().getString(
 				nl.sense_os.service.R.string.action_sense_new_data);
 		Intent intent = new Intent(action);
 		intent.putExtra(DataPoint.SENSOR_NAME, name);
@@ -199,7 +199,7 @@ public class SensePlugin extends Plugin {
 		intent.putExtra(DataPoint.DATA_TYPE, dataType);
 		intent.putExtra(DataPoint.VALUE, value);
 		intent.putExtra(DataPoint.TIMESTAMP, timestamp);
-		ComponentName serviceName = ctx.getContext().startService(intent);
+		ComponentName serviceName = cordova.getActivity().startService(intent);
 
 		if (null != serviceName) {
 			return new PluginResult(Status.OK);
@@ -215,9 +215,10 @@ public class SensePlugin extends Plugin {
 	private void bindToSenseService() {
 		if (!isServiceBound) {
 			Log.v(TAG, "Try to connect with Sense Platform service");
-			final Intent service = new Intent(ctx.getContext().getString(
+			final Intent service = new Intent(cordova.getActivity().getString(
 					R.string.action_sense_service));
-			isServiceBound = ctx.getContext().bindService(service, conn, Context.BIND_AUTO_CREATE);
+			isServiceBound = cordova.getActivity().bindService(service, conn,
+					Context.BIND_AUTO_CREATE);
 			if (!isServiceBound) {
 				Log.w(TAG, "Failed to connect with the Sense Platform service!");
 			}
@@ -334,7 +335,7 @@ public class SensePlugin extends Plugin {
 
 		new Thread() {
 			public void run() {
-				FeedbackManager fm = new FeedbackManager(ctx.getContext());
+				FeedbackManager fm = new FeedbackManager(cordova.getActivity());
 				try {
 					boolean result = fm.giveFeedback(name, start, end, label);
 					if (true == result) {
@@ -360,8 +361,8 @@ public class SensePlugin extends Plugin {
 
 		Log.v(TAG, "flushBuffer()");
 
-		Intent flush = new Intent(ctx.getContext().getString(R.string.action_sense_send_data));
-		ComponentName started = ctx.getContext().startService(flush);
+		Intent flush = new Intent(cordova.getActivity().getString(R.string.action_sense_send_data));
+		ComponentName started = cordova.getActivity().startService(flush);
 		if (null != started) {
 			return new PluginResult(Status.OK);
 		} else {
@@ -376,7 +377,7 @@ public class SensePlugin extends Plugin {
 
 		try {
 			Uri uri = Uri.parse("content://"
-					+ ctx.getContext().getString(R.string.local_storage_authority)
+					+ cordova.getActivity().getString(R.string.local_storage_authority)
 					+ DataPoint.CONTENT_URI_PATH);
 			JSONArray result = getValues(sensorName, null, uri);
 
@@ -415,10 +416,10 @@ public class SensePlugin extends Plugin {
 
 		try {
 			Uri uri = Uri.parse("content://"
-					+ ctx.getContext().getString(R.string.local_storage_authority)
+					+ cordova.getActivity().getString(R.string.local_storage_authority)
 					+ DataPoint.CONTENT_REMOTE_URI_PATH);
-			String deviceUuid = onlyThisDevice ? SenseApi.getDefaultDeviceUuid(ctx.getContext())
-					: null;
+			String deviceUuid = onlyThisDevice ? SenseApi.getDefaultDeviceUuid(cordova
+					.getActivity()) : null;
 			JSONArray result = getValues(sensorName, deviceUuid, uri);
 
 			Log.v(TAG, "Found " + result.length() + " '" + sensorName
@@ -496,8 +497,8 @@ public class SensePlugin extends Plugin {
 			}
 			String[] selectionArgs = null;
 			String sortOrder = null;
-			cursor = LocalStorage.getInstance(ctx.getContext()).query(uri, projection, selection,
-					selectionArgs, sortOrder);
+			cursor = LocalStorage.getInstance(cordova.getActivity()).query(uri, projection,
+					selection, selectionArgs, sortOrder);
 
 			if (null != cursor && cursor.moveToFirst()) {
 				while (!cursor.isAfterLast()) {
@@ -565,7 +566,7 @@ public class SensePlugin extends Plugin {
 
 	private void onLoginSuccess() {
 		// special for ivitality
-		String packageName = ctx.getPackageName();
+		String packageName = cordova.getActivity().getPackageName();
 		if (packageName.equals("nl.sense_os.ivitality")) {
 			Log.w(TAG, "Set special iVitality sensor settings");
 			try {
@@ -787,7 +788,7 @@ public class SensePlugin extends Plugin {
 	private void unbindFromSenseService() {
 		if (true == isServiceBound && null != conn) {
 			Log.v(TAG, "Unbind from Sense Platform service");
-			ctx.getContext().unbindService(conn);
+			cordova.getActivity().unbindService(conn);
 		} else {
 			// already unbound
 		}
