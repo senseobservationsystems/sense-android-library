@@ -14,7 +14,7 @@ SensePlatform.prototype.init = function() {
 		window.plugins.sense.isInitialized = false;
 		console.log('Failed to initialize Sense PhoneGap plugin: ' + error);
 	};
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'init', []);
+	return cordova.exec(success, failure, 'SensePlatform', 'init', []);
 };
 
 /**
@@ -45,7 +45,7 @@ SensePlatform.prototype.addDataPoint = function(name, displayName, description, 
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'add_data_point', [ name, displayName,
+	return cordova.exec(success, failure, 'SensePlatform', 'add_data_point', [ name, displayName,
 			description, dataType, value, timestamp ]);
 };
 
@@ -61,7 +61,7 @@ SensePlatform.prototype.changeLogin = function(username, password, success, fail
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'change_login', [ username, password ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'change_login', [ username, password ]);
 };
 
 /**
@@ -69,7 +69,7 @@ SensePlatform.prototype.changeLogin = function(username, password, success, fail
  * from the phone, this is done by a separate process.
  */
 SensePlatform.prototype.flushBuffer = function(success, failure) {
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'flush_buffer', []);
+	return cordova.exec(success, failure, 'SensePlatform', 'flush_buffer', []);
 };
 
 /**
@@ -88,7 +88,7 @@ SensePlatform.prototype.getRemoteData = function(name, onlyThisDevice, success, 
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'get_commonsense_data', [ name,
+	return cordova.exec(success, failure, 'SensePlatform', 'get_commonsense_data', [ name,
 			onlyThisDevice ]);
 };
 
@@ -106,7 +106,7 @@ SensePlatform.prototype.getLocalData = function(name, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'get_data', [ name ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'get_data', [ name ]);
 };
 
 /**
@@ -139,7 +139,7 @@ SensePlatform.prototype.getPref = function(key, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'get_pref', [ key ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'get_pref', [ key ]);
 };
 
 /**
@@ -152,7 +152,7 @@ SensePlatform.prototype.getStatus = function(success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'get_status', []);
+	return cordova.exec(success, failure, 'SensePlatform', 'get_status', []);
 };
 
 /**
@@ -165,7 +165,7 @@ SensePlatform.prototype.getSessionId = function(success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'get_session', []);
+	return cordova.exec(success, failure, 'SensePlatform', 'get_session', []);
 };
 
 /**
@@ -180,7 +180,7 @@ SensePlatform.prototype.logout = function(success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'logout', []);
+	return cordova.exec(success, failure, 'SensePlatform', 'logout', []);
 };
 
 /**
@@ -200,7 +200,7 @@ SensePlatform.prototype.logout = function(success, failure) {
  *            Callback which will be called when execution fails
  */
 SensePlatform.prototype.giveFeedback = function(name, start, end, label, success, failure) {
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'give_feedback', [ name, start, end,
+	return cordova.exec(success, failure, 'SensePlatform', 'give_feedback', [ name, start, end,
 			label ]);
 };
 
@@ -221,7 +221,7 @@ SensePlatform.prototype.register = function(username, password, firstName, surna
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'register', [ username, password,
+	return cordova.exec(success, failure, 'SensePlatform', 'register', [ username, password,
 			firstName, surname, email, phone ]);
 };
 
@@ -242,7 +242,7 @@ SensePlatform.prototype.setPref = function(key, value, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'set_pref', [ key, value ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'set_pref', [ key, value ]);
 };
 
 /**
@@ -257,7 +257,7 @@ SensePlatform.prototype.toggleMain = function(active, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'toggle_main', [ active ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'toggle_main', [ active ]);
 };
 
 /**
@@ -272,7 +272,7 @@ SensePlatform.prototype.toggleAmbience = function(active, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'toggle_ambience', [ active ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'toggle_ambience', [ active ]);
 };
 
 /**
@@ -287,7 +287,7 @@ SensePlatform.prototype.toggleExternal = function(active, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'toggle_external', [ active ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'toggle_external', [ active ]);
 };
 
 /**
@@ -302,7 +302,7 @@ SensePlatform.prototype.togglePosition = function(active, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'toggle_position', [ active ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'toggle_position', [ active ]);
 };
 
 /**
@@ -317,7 +317,7 @@ SensePlatform.prototype.toggleMotion = function(active, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'toggle_motion', [ active ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'toggle_motion', [ active ]);
 };
 
 /**
@@ -333,7 +333,7 @@ SensePlatform.prototype.toggleNeighDev = function(active, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'toggle_neighdev', [ active ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'toggle_neighdev', [ active ]);
 };
 
 /**
@@ -349,7 +349,7 @@ SensePlatform.prototype.togglePhoneState = function(active, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return PhoneGap.exec(success, failure, 'SensePlatform', 'toggle_phonestate', [ active ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'toggle_phonestate', [ active ]);
 };
 
 /* status codes */
@@ -430,9 +430,9 @@ SensePlatform.PREF_DEV_MODE = "devmode";
 SensePlatform.PREF_USE_COMMONSENSE = "use_commonsense";
 SensePlatform.PREF_COMPRESS = "compression";
 
-PhoneGap.addConstructor(function() {
+cordova.addConstructor(function() {
 	try {
-		PhoneGap.addPlugin("sense", new SensePlatform());
+		cordova.addPlugin("sense", new SensePlatform());
 	} catch (e) {
 		// do it again to fix a bug in iOS:
 		if (!window.plugins)

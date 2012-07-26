@@ -73,7 +73,7 @@
         </activity>
         <activity
             android:name="PhoneGapExamples"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|screenSize|keyboardHidden" >
         </activity>
         <activity
             android:name="SenseExamples"
