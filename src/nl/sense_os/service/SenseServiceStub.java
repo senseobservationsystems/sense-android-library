@@ -195,6 +195,10 @@ public class SenseServiceStub extends ISenseService.Stub {
 	    } else if (key.equals(Advanced.DEV_MODE)
 		    && ServiceStateHelper.getInstance(service).isLoggedIn()) {
 		logout();
+		//reset GCM id
+		SharedPreferences authPrefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS,
+				Context.MODE_PRIVATE);
+		authPrefs.edit().putString(Auth.GCM_REGISTRATION_ID, "").commit();
 	    } else if (key.equals(Advanced.USE_COMMONSENSE)) {
 		// login on a separate thread
 		new Thread() {

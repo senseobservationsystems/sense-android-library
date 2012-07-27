@@ -79,8 +79,6 @@ public class NoiseSensor extends PhoneStateListener {
 		private AudioRecord audioRecord;
 		private int FFT_BANDWITH_RESOLUTION = 10;
 		private int FFT_MAX_HZ = 1000;
-		private double FFT_WINDOW_LENGTH = 0.05; // the actual window might be
-													// shorter to fit a
 
 		// power of 2
 
