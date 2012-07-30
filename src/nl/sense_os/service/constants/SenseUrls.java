@@ -27,6 +27,9 @@ public class SenseUrls {
 			+ FORMAT;
 	public static final String DEV_DEVICE_UPDATE_CONFIGURATION = DEV_BASE
 			+ "devices/<id>/configuration" + FORMAT;
+	
+	public static final String CONFIGURATION = BASE + "configurations/<id>" + FORMAT;
+	public static final String DEV_CONFIGURATION = DEV_BASE + "configurations/<id>" + FORMAT;
 
 	public static final String SENSOR_DATA = BASE + "sensors/<id>/data" + FORMAT;
 	public static final String DEV_SENSOR_DATA = DEV_BASE + "sensors/<id>/data" + FORMAT;
