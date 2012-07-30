@@ -968,7 +968,7 @@ public class SenseApi {
 		Map<String, String> response = SenseApi.request(context, url, null, cookie);
 		String responseCode = response.get("http response code");
 		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to register gcm id! Response code: " + responseCode);
+			Log.w(TAG, "Failed to get device configuration! Response code: " + responseCode);
 			throw new IOException("Incorrect response from CommonSense: " + responseCode);
 		}
 
@@ -998,7 +998,7 @@ public class SenseApi {
 		Map<String, String> response = SenseApi.request(context, url, null, cookie);
 		String responseCode = response.get("http response code");
 		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to register gcm id! Response code: " + responseCode);
+			Log.w(TAG, "Failed to get Requirement! Response code: " + responseCode);
 			throw new IOException("Incorrect response from CommonSense: " + responseCode);
 		}
 

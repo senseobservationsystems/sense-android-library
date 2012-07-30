@@ -38,7 +38,11 @@ public class ConfigurationService extends IntentService {
 	
     try {
 		String reqStr = intent.getStringExtra("requirements");
-		JSONObject requirements = new JSONObject(reqStr).getJSONObject("requirements");				
+		JSONObject requirements = new JSONObject(reqStr).getJSONObject("requirements");
+		
+		if (requirements.length() == 0)
+			return;
+		
 		samplingRate = null;
 		syncRate = null;
 		
@@ -143,9 +147,9 @@ public class ConfigurationService extends IntentService {
 			
 			if (syncRate < 60) // realtime (< 1 min)
 				preference_rate = -2;
-			else if (syncRate >= 60 && syncRate <= 300) // often (1-5 min)
+			else if (syncRate >= 60 && syncRate < 300) // often (1)
 				preference_rate = -1;
-			else if (syncRate > 300 && syncRate < 900) // normal (5-30 min)
+			else if (syncRate >= 300 && syncRate < 900) // normal (5-29 min)
 				preference_rate = 0;
 			else if (syncRate >= 900) // Eco-mode (30 min)
 				preference_rate = 1;

@@ -192,15 +192,9 @@ public class GCMReceiver extends GCMBaseIntentService {
 	 */
 	private void updateConfiguration(Context context) {
 	try {
-		String configuration = SenseApi.getDeviceConfiguration(this);
-
-		JSONObject message = new JSONObject();
-		message.put("title", "CommonSense");
-		message.put("content", "Got Configuration update from commonsense");
-		showNoticitacion(context, message.toString());
-
-		//TODO: send Broadcast message of this new configuration
-		Log.v(TAG, configuration.toString());
+		String requirements = SenseApi.getDeviceConfiguration(this);
+		
+		boardcastRequirement(context, requirements);
 	} catch (IOException e) {
 		e.printStackTrace();
 	} catch (JSONException e) {
