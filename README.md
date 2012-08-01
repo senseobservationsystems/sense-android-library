@@ -1,4 +1,4 @@
-Sense PhoneGap Plugins Readme
+Sense PhoneGap Demo
 
 1. Introduction
 2. Installation
@@ -13,7 +13,7 @@ The Sense PhoneGap plugins are designed to help web apps
 communicate with the native Sense Platform. You can find 
 the repository for this project at:
 
-https://dev.almende.com/svn/sense-phonegap
+https://github.com/senseobservationsystems/sense-android-phonegap.git
 
 ===========================================================
  Installation
@@ -21,7 +21,7 @@ https://dev.almende.com/svn/sense-phonegap
 
 Using this plugin requires Android PhoneGap. See: 
 
-http://github.com/phonegap/phonegap-android. 
+http://github.com/phonegap/phonegap-android.git
 
 1. Make sure your project uses the Sense App Library 
 project. This project enables the Sense plugin to use IPC 
@@ -30,7 +30,7 @@ installed.
  
 The Library project code is available at:
  
-https://dev.almende.com/svn/sense-platform
+https://github.com/senseobservationsystems/sense-android-library.git
 
 Create a separate Android Application for the Sense App 
 Library, and use it as an Android Library Project. Careful: 
@@ -71,19 +71,3 @@ Copy the assets, src, and res folders to your Android
 project and follow the normal installation instructions. 
 Launch ExampleApp to check out the example code. Make sure 
 you take a look at the device's LogCat to see all activity.
-
-===========================================================
- Release notes
-===========================================================
-
-20110905
-- Initial release
-- Sense plugin features init, getStatus, changeLogin, 
-  register, toggleMain functions, and toggle functions for 
-  all individual sensing modules.
-- The init function checks if the Sense Platform is 
-  installed and prompts the user to install it if it cannot
-  be found.
-- iVitality plugin features dummy activities for 
-  blood pressure and reaction time measurements, and non-
-  functional question popups.
