@@ -9,6 +9,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Status;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,7 +38,10 @@ public class GCMReceiver extends GCMBaseIntentService {
 	public static final String TYPE_NOTIFICATION = "notification";
 	public static final String TYPE_SERVICE = "service";
 	public static final String TYPE_UPDATE_CONFIGURATION = "update_configuration";
+	public static final String TYPE_USE_CONFIGURATION = "use_configuration";
 	private static final int NOTIF_ID = 0x01abc;
+	
+	public final static String ACTION_GOT_CONFIGURATION = "nl.sense_os.service.push.got_requirement";
 	
 	
 	public GCMReceiver() {
@@ -60,14 +64,16 @@ public class GCMReceiver extends GCMBaseIntentService {
 		String content = extras.getString("content");
 
 		// switch using
-		if (type.equals(GCMReceiver.TYPE_TOAST)) {
+		if (type.equals(TYPE_TOAST)) {
 			Toast.makeText(this, content, Toast.LENGTH_LONG).show();
-		} else if (type.equals(GCMReceiver.TYPE_NOTIFICATION)) {
+		} else if (type.equals(TYPE_NOTIFICATION)) {
 			this.showNoticitacion(context, content);
-		} else if (type.equals(GCMReceiver.TYPE_SERVICE)) {
+		} else if (type.equals(TYPE_SERVICE)) {
 			this.toggleService(context, content);
-		} else if (type.equals(GCMReceiver.TYPE_UPDATE_CONFIGURATION)) {
+		} else if (type.equals(TYPE_UPDATE_CONFIGURATION)) {
 			this.updateConfiguration(context);
+		} else if (type.equals(TYPE_USE_CONFIGURATION)) {
+			this.useConfiguration(context, content);
 		}
 	}
 
@@ -75,7 +81,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
 	@Override
 	public void onError(Context context, String errorId) {
-	// TODO Auto-generated method stub
+	// TODO Handle if out of sync, and other type errors ?
 
 	}
 
@@ -186,18 +192,48 @@ public class GCMReceiver extends GCMBaseIntentService {
 	 */
 	private void updateConfiguration(Context context) {
 	try {
-		String configuration = SenseApi.getDeviceConfiguration(this);
-
-		JSONObject message = new JSONObject();
-		message.put("title", "CommonSense");
-		message.put("content", "Got Configuration update from commonsense");
-		showNoticitacion(context, message.toString());
-
-		Log.v(TAG, configuration.toString());
+		String requirements = SenseApi.getDeviceConfiguration(this);
+		
+		boardcastRequirement(context, requirements);
 	} catch (IOException e) {
 		e.printStackTrace();
 	} catch (JSONException e) {
 		e.printStackTrace();
 	}
+	}
+	
+	/**
+	 * Call commonSense to get the specific configuration
+	 */
+	private void useConfiguration(Context context, String configurationId) {
+	try {		
+		String configuration = SenseApi.getDeviceConfiguration(this, configurationId);
+
+		JSONObject configObj = new JSONObject(configuration);
+		JSONArray requirementsArr = configObj.getJSONArray("requirements");
+		
+		JSONObject requirements = new JSONObject();
+		if (requirementsArr.length() > 0) {
+			JSONObject value = new JSONObject(requirementsArr.getJSONObject(0).getString("value"));
+			requirements.put("requirements", value);
+		}
+
+		String requrimentStr = requirements.toString();
+		Log.v(TAG, requrimentStr);
+		boardcastRequirement(context, requrimentStr);
+	} catch (IOException e) {
+		e.printStackTrace();
+	} catch (JSONException e) {
+		e.printStackTrace();
+	}
+	}
+	
+	/**
+	 * Boardcast new Requirement
+	 */
+	private void boardcastRequirement(Context context, String req) {
+	Intent i = new Intent(ACTION_GOT_CONFIGURATION);
+	i.putExtra("requirements", req);
+	sendBroadcast(i);
 	}
 }

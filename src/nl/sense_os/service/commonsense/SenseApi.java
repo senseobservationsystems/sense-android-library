@@ -968,7 +968,37 @@ public class SenseApi {
 		Map<String, String> response = SenseApi.request(context, url, null, cookie);
 		String responseCode = response.get("http response code");
 		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to register gcm id! Response code: " + responseCode);
+			Log.w(TAG, "Failed to get device configuration! Response code: " + responseCode);
+			throw new IOException("Incorrect response from CommonSense: " + responseCode);
+		}
+
+		return response.get("content");
+	}
+	
+	/**
+	 * Get specific configuration from commonSense
+	 * 
+	 * @throws JSONException
+	 * @throws IOException
+	 * 
+	 */
+	public static String getDeviceConfiguration(Context context, String configuration_id) throws IOException, JSONException {
+		final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+				Context.MODE_PRIVATE);
+		final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+				Context.MODE_PRIVATE);
+
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+		String url = devMode ? SenseUrls.DEV_CONFIGURATION
+				: SenseUrls.DEV_CONFIGURATION;
+
+		url = url.replaceFirst("<id>", configuration_id);
+
+		Map<String, String> response = SenseApi.request(context, url, null, cookie);
+		String responseCode = response.get("http response code");
+		if (!"200".equals(responseCode)) {
+			Log.w(TAG, "Failed to get Requirement! Response code: " + responseCode);
 			throw new IOException("Incorrect response from CommonSense: " + responseCode);
 		}
 
