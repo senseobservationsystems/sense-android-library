@@ -1,0 +1,1 @@
+18/04/2012: The PhoneGap example html/js has moved to a separate project: https://dev.almende.com/projects/show/sense-phonegap.
