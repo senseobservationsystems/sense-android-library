@@ -237,7 +237,17 @@ public class SensePlugin extends Plugin {
 
 		if (null != service) {
 			changeLoginCallbackId = callbackId;
-			service.changeLogin(username, password, callback);
+			new Thread() {
+				public void run() {
+					try {
+						service.changeLogin(username, password, callback);
+					} catch (RemoteException e) {
+						Log.e(TAG, "Failed to call changeLogin()! " + e);
+						error(new PluginResult(Status.ERROR, e.getMessage()), changeLoginCallbackId);
+					}
+				};
+			}.run();
+
 		} else {
 			Log.e(TAG, "Failed to bind to service in time!");
 			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
@@ -607,23 +617,33 @@ public class SensePlugin extends Plugin {
 			RemoteException {
 
 		// get the parameters
-		String username = data.getString(0);
-		String password = data.getString(1);
-		String email = data.getString(2);
-		String address = data.getString(3);
-		String zipCode = data.getString(4);
-		String country = data.getString(5);
-		String name = data.getString(6);
-		String surname = data.getString(7);
-		String phone = data.getString(8);
+		final String username = data.getString(0);
+		final String password = data.getString(1);
+		final String email = data.getString(2);
+		final String address = data.getString(3);
+		final String zipCode = data.getString(4);
+		final String country = data.getString(5);
+		final String name = data.getString(6);
+		final String surname = data.getString(7);
+		final String phone = data.getString(8);
 		Log.v(TAG, "register('" + username + "', '" + password + "', '" + name + "', '" + surname
 				+ "', '" + email + "', '" + phone + "')");
 
 		// do the registration
 		if (null != service) {
 			registerCallbackId = callbackId;
-			service.register(username, password, email, address, zipCode, country, name, surname,
-					phone, callback);
+			new Thread() {
+				public void run() {
+					try {
+						service.register(username, password, email, address, zipCode, country,
+								name, surname, phone, callback);
+					} catch (RemoteException e) {
+						Log.e(TAG, "Failed to call register()! " + e);
+						error(new PluginResult(Status.ERROR, e.getMessage()), registerCallbackId);
+					}
+				};
+			}.run();
+
 		} else {
 			Log.e(TAG, "Failed to bind to service in time!");
 			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
