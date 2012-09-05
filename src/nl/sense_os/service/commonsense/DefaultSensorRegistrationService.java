@@ -29,11 +29,14 @@ public class DefaultSensorRegistrationService extends IntentService {
 
 		SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
 		long lastVerified = mainPrefs.getLong(SensePrefs.Main.LAST_VERIFIED_SENSORS, 0);
+		/* Pim: Removed this check for now since this means that whenever a new sensor is enabled
+		 *  in the app it can take an hour before the sensor is created in CommonSense.
 		if (System.currentTimeMillis() - lastVerified < 1000l * 60 * 60) { // 1 hour
 			// registered sensors were already recently checked
 			Log.v(TAG, "Sensor IDs were recently verified already");
 			return;
 		}
+		*/
 
 		String deviceType = SenseApi.getDefaultDeviceType(this);
 		String deviceUuid = SenseApi.getDefaultDeviceUuid(this);

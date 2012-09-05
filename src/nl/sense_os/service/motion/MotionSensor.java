@@ -258,7 +258,6 @@ public class MotionSensor implements SensorEventListener {
 
 	if (System.currentTimeMillis() > lastLocalSampleTimes[sensor.getType()] + localBufferTime) {
 	    // send the stuff
-	    // Log.v(TAG, "Transmit accelerodata: " + dataBuffer[sensor.getType()].length());
 	    // pass message to the MsgHandler
 	    Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 	    i.putExtra(DataPoint.SENSOR_NAME, SensorNames.ACCELEROMETER_EPI);
@@ -276,6 +275,7 @@ public class MotionSensor implements SensorEventListener {
 	    if (firstTimeSend == 0) {
 		firstTimeSend = System.currentTimeMillis();
 	    }
+	    
 	}
     }
 
@@ -545,7 +545,7 @@ public class MotionSensor implements SensorEventListener {
 
 	// check if the fall detector is enabled
 	isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
-	if (fallDetector.demo = mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
+	if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
 	    isFallDetectMode = true;
 
 	    Log.v(TAG, "Start epi state sensor");
