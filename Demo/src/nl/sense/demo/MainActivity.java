@@ -206,9 +206,10 @@ public class MainActivity extends Activity {
 			//NOTE, this setting affects power consumption considerately!
 			service.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
 			
-			//and turn everything on
+			//and turn it on
 			service.toggleMain(true);
 			service.toggleAmbience(true);
+			service.toggleLocation(true);
 		} catch (Exception e) {
 			Log.v(TAG, "Exception " + e + " while setting up sense library.");
 			e.printStackTrace();
