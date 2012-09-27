@@ -1,4 +1,0 @@
-var classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor_1_1_new_camera_light_value =
-[
-    [ "lightValueCallback", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor_1_1_new_camera_light_value.html#abd9a7775f641c17d3d43ffc4260bfead", null ]
-];
