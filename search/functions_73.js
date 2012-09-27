@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['scaleband',['scaleBand',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#ac3f9934ea0c1d949dac0833ff8729036',1,'nl::sense_os::service::ambience::FFT.scaleBand()'],['../classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a19bdfd17b430c32095d71ff3a5b74da9',1,'nl::sense_os::service::ambience::FourierTransform.scaleBand()']]],
+  ['scalefreq',['scaleFreq',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a60665dd7bdc799a574034109189acfd6',1,'nl::sense_os::service::ambience::FourierTransform']]],
+  ['schedulechecks',['scheduleChecks',['../classnl_1_1sense__os_1_1service_1_1AliveChecker.html#a4d0cc47a6268d6fe26543e6476ac4553',1,'nl::sense_os::service::AliveChecker']]],
+  ['scheduletransmissions',['scheduleTransmissions',['../classnl_1_1sense__os_1_1service_1_1DataTransmitter.html#ab82fa1566091cf0a10fbc3d93609febd',1,'nl::sense_os::service::DataTransmitter']]],
+  ['sendsensordata',['sendSensorData',['../classnl_1_1sense__os_1_1service_1_1MsgHandler.html#af1324ae83c47bb56c0b6d82c5fcd9f4d',1,'nl::sense_os::service::MsgHandler']]],
+  ['setband',['setBand',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#ad8ebcb3c42cb532c8b90c75266d6d285',1,'nl::sense_os::service::ambience::FFT.setBand()'],['../classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a21065614f15df04749dfa65f167cd617',1,'nl::sense_os::service::ambience::FourierTransform.setBand()']]],
+  ['setdistance',['setDistance',['../classnl_1_1sense__os_1_1service_1_1location_1_1LocationSensor.html#a62e141927cfb2a80c554ada379ec06f1',1,'nl::sense_os::service::location::LocationSensor']]],
+  ['setfreq',['setFreq',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a99a0558aab2a23ab846155547513400d',1,'nl::sense_os::service::ambience::FourierTransform']]],
+  ['settime',['setTime',['../classnl_1_1sense__os_1_1service_1_1location_1_1LocationSensor.html#a13744b2cac7fe610108f6280d39ad1dd',1,'nl::sense_os::service::location::LocationSensor']]],
+  ['setupdateinterval',['setUpdateInterval',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle.html#a854cc598118a8e2c2ad07f9e640980bb',1,'nl::sense_os::service::external_sensors::OBD2Dongle']]],
+  ['specsize',['specSize',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#af765ade76d46eaaca6bfebc904b81b3a',1,'nl::sense_os::service::ambience::FourierTransform']]],
+  ['start',['start',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle.html#a4338e0326ff4d11e5ef10df3428fc672',1,'nl::sense_os::service::external_sensors::OBD2Dongle']]],
+  ['startadapter',['startAdapter',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ExternalSensor.html#a4ecf84413103a3711ff8443c663db20b',1,'nl::sense_os::service::external_sensors::ExternalSensor']]],
+  ['startsensing',['startSensing',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1SensePhoneState.html#aae8f169943a0cc1bf4306a8f47a26ee5',1,'nl::sense_os::service::phonestate::SensePhoneState']]],
+  ['stop',['stop',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle.html#a0c5428deab65297d33221a6d4977635f',1,'nl::sense_os::service::external_sensors::OBD2Dongle']]],
+  ['stopchecks',['stopChecks',['../classnl_1_1sense__os_1_1service_1_1AliveChecker.html#a4ced9b5a5d6aa22f2b45ee48360b9de1',1,'nl::sense_os::service::AliveChecker']]],
+  ['stopmotionsensing',['stopMotionSensing',['../classnl_1_1sense__os_1_1service_1_1motion_1_1MotionSensor.html#a9b0c8c514db32a28ee0c1b4d543416dc',1,'nl::sense_os::service::motion::MotionSensor']]],
+  ['stopsensing',['stopSensing',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1SensePhoneState.html#a62d29d9b0d36b23162b4883ec8659cbf',1,'nl::sense_os::service::phonestate::SensePhoneState']]],
+  ['stoptransmissions',['stopTransmissions',['../classnl_1_1sense__os_1_1service_1_1DataTransmitter.html#a1d8e7bd35293b455055241cf99c63bf5',1,'nl::sense_os::service::DataTransmitter']]]
+];
