@@ -3,6 +3,7 @@ package nl.sense_os.service.commonsense;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -203,7 +204,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 			// match accelerometer (epi)
 			SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 					Context.MODE_PRIVATE);
-			if (mainPrefs.getBoolean(Main.Motion.EPIMODE, false)) {
+
+			if (mainPrefs.getBoolean(Motion.EPIMODE, false)) {
 				success &= checkSensor(SensorNames.ACCELEROMETER_EPI, "acceleration (epi-mode)",
 						SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
 						deviceType, deviceUuid);
