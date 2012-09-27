@@ -49,26 +49,26 @@ public class MotionSensor implements SensorEventListener {
 	public void onReceive(Context context, Intent intent) {
 	    // Check action just to be on the safe side.
 	    if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-		return;
+			return;
 	    }
 
 	    SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 		    Context.MODE_PRIVATE);
 	    boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
 	    if (useFix) {
-		// wait half a second and re-register
-		Runnable restartSensing = new Runnable() {
+			// wait half a second and re-register
+			Runnable restartSensing = new Runnable() {
 
-		    @Override
-		    public void run() {
-			// Unregisters the motion listener and registers it again.
-			// Log.v(TAG, "Screen went off, re-registering the Motion sensor");
-			stopMotionSensing();
-			startMotionSensing(sampleDelay);
-		    };
-		};
+				@Override
+				public void run() {
+				// Unregisters the motion listener and registers it again.
+				// Log.v(TAG, "Screen went off, re-registering the Motion sensor");
+				stopMotionSensing();
+				startMotionSensing(sampleDelay);
+				};
+			};
 
-		new Handler().postDelayed(restartSensing, 500);
+			new Handler().postDelayed(restartSensing, 500);
 	    }
 	}
     }
