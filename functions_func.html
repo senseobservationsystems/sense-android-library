@@ -3,13 +3,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>My Project: Class Members - Functions</title>
+<title>Sense Android Library: Class Members - Functions</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-
-<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
@@ -27,10 +32,10 @@
   
   
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
-   
+   <div id="projectname">Sense Android Library
+   &#160;<span id="projectnumber">2.5.1</span>
    </div>
-   
+   <div id="projectbrief">Android library project for the Sense Platform</div>
   </td>
   
   
@@ -48,8 +53,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -85,402 +91,51 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="#index_a"><span>a</span></a></li>
-      <li><a href="#index_c"><span>c</span></a></li>
-      <li><a href="#index_d"><span>d</span></a></li>
-      <li><a href="#index_e"><span>e</span></a></li>
-      <li><a href="#index_f"><span>f</span></a></li>
-      <li><a href="#index_g"><span>g</span></a></li>
-      <li><a href="#index_h"><span>h</span></a></li>
-      <li><a href="#index_i"><span>i</span></a></li>
-      <li><a href="#index_l"><span>l</span></a></li>
-      <li><a href="#index_n"><span>n</span></a></li>
-      <li><a href="#index_o"><span>o</span></a></li>
-      <li><a href="#index_p"><span>p</span></a></li>
-      <li><a href="#index_r"><span>r</span></a></li>
-      <li><a href="#index_s"><span>s</span></a></li>
-      <li><a href="#index_t"><span>t</span></a></li>
-      <li><a href="#index_u"><span>u</span></a></li>
-      <li><a href="#index_v"><span>v</span></a></li>
-      <li><a href="#index_w"><span>w</span></a></li>
+      <li class="current"><a href="functions_func.html#index_0x5b"><span>[</span></a></li>
+      <li><a href="functions_func_0x61.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_func_0x62.html#index_b"><span>b</span></a></li>
+      <li><a href="functions_func_0x63.html#index_c"><span>c</span></a></li>
+      <li><a href="functions_func_0x64.html#index_d"><span>d</span></a></li>
+      <li><a href="functions_func_0x65.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_func_0x66.html#index_f"><span>f</span></a></li>
+      <li><a href="functions_func_0x67.html#index_g"><span>g</span></a></li>
+      <li><a href="functions_func_0x68.html#index_h"><span>h</span></a></li>
+      <li><a href="functions_func_0x69.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_func_0x6c.html#index_l"><span>l</span></a></li>
+      <li><a href="functions_func_0x6d.html#index_m"><span>m</span></a></li>
+      <li><a href="functions_func_0x6e.html#index_n"><span>n</span></a></li>
+      <li><a href="functions_func_0x6f.html#index_o"><span>o</span></a></li>
+      <li><a href="functions_func_0x70.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_func_0x71.html#index_q"><span>q</span></a></li>
+      <li><a href="functions_func_0x72.html#index_r"><span>r</span></a></li>
+      <li><a href="functions_func_0x73.html#index_s"><span>s</span></a></li>
+      <li><a href="functions_func_0x74.html#index_t"><span>t</span></a></li>
+      <li><a href="functions_func_0x75.html#index_u"><span>u</span></a></li>
+      <li><a href="functions_func_0x76.html#index_v"><span>v</span></a></li>
+      <li><a href="functions_func_0x77.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_func_0x7a.html#index_z"><span>z</span></a></li>
     </ul>
   </div>
 </div>
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+  initNavTree('functions_func.html','');
+</script>
+<div id="doc-content">
 <div class="contents">
 &#160;
 
-<h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
-<li>avgSize()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ae00e5788a99cd01bf3f24c1a02630d68">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
-<li>calcAvg()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ada7cf4c850c769563faf5adc01ca032f">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>changeLogin()
-: <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1ISenseService.html#a0d3e1463707f7eda5788e06acfff28fc">nl.sense_os.service.ISenseService</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1SenseService.html#acd9e3500fc9231162050a0a26d4c5b53">nl.sense_os.service.SenseService</a>
-</li>
-<li>checkSensor()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SensorRegistrator.html#a00d171677338a5476ba57818a37e7a0f">nl.sense_os.service.commonsense.SensorRegistrator</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
-<li>disable()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1NoiseSensor.html#a76eda4e118ffc221bcf1169cbb89d393">nl.sense_os.service.ambience.NoiseSensor</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1LocationSensor.html#afc2c1eb071639dcfccb376ac86703a3d">nl.sense_os.service.location.LocationSensor</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
-<li>enable()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1NoiseSensor.html#aae99e45dfdfcd212a30be320f77f9abd">nl.sense_os.service.ambience.NoiseSensor</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1LocationSensor.html#a92aa91fd2be19daa215f3f76c94e4d69">nl.sense_os.service.location.LocationSensor</a>
-</li>
-<li>execute()
-: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1SensePlugin.html#a449f8e27c45476d67def5d3dc5da7f89">com.phonegap.plugins.sense.SensePlugin</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
-<li>FFT()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#a19c6ad0d870f2c36e9f1daf6447f5b05">nl.sense_os.service.ambience.FFT</a>
-</li>
-<li>forward()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#a917c1e519d43e3485dfa87702b65f794">nl.sense_os.service.ambience.FFT</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a04bb65e9abbdd046cba31397c8557f91">nl.sense_os.service.ambience.FourierTransform</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#a6d09439948406388f339ed453d24662a">nl.sense_os.service.ambience.FFT</a>
-</li>
-<li>FourierTransform()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ab73a1c1d44ac6f0bc8a403c9965854ad">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>freqToIndex()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a13a20ed8725f8c206aa11d426f376c7b">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
-<li>getAllSensors()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#abc40f8277bf44ffbb9ce01f57b9d7cb6">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getAverageCenterFrequency()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a6af463c65d3576479dfbc5d6eb5babbb">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getAvg()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ad6369000c41319c24755b7ff2d9656d4">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getBand()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#aa6398b75969efc5abdd0ca00165281c3">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getBandWidth()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ae2ac8bec3c8de5c355f6e205f9b42e1f">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getCommand()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle_1_1UpdateThread_1_1OBD2Command.html#ac44590775a21332f8cd1925f9a21779c">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command</a>
-</li>
-<li>getConnectedSensors()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a1ee5e75f0b733ad88d6ee74bd6915fd0">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getData()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle_1_1UpdateThread_1_1OBD2Command.html#a8cf9ab72ee880994c76005c84b2b2686">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Sensor_1_1OBD2Command.html#aefa0098d4e5d9591e9173343f30d8dcf">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2Command</a>
-</li>
-<li>getDefaultDeviceType()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#ab77e9c0932d8bb9e6adfa0ff062432cc">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getDefaultDeviceUuid()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#ad8a2f61d71a8968a87ed8d83f912189e">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getDeviceConfiguration()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#acced12b38d29b28ad0ef1861da4862fe">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getDeviceId()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a07f8c77483578df0b5f858ebd832e181">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getFreq()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a2a7c711687585ca81cf08fb7ff602328">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getImaginaryPart()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#aa09f71fa7a7c59e64b3c8b30c765f650">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getInstance()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ServiceStateHelper.html#a759e7b0d58ea1559327f952c58ec6dea">nl.sense_os.service.ServiceStateHelper</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1LocalStorage.html#a149bd3498cf1a48e0f1dbe51069bcdb8">nl.sense_os.service.storage.LocalStorage</a>
-</li>
-<li>getNtpTime()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1SNTP.html#a601338ad58f00e568385d4c2ac3b3877">nl.sense_os.service.provider.SNTP</a>
-</li>
-<li>getNtpTimeReference()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1SNTP.html#add9c401767dc784afa3028f181a080eb">nl.sense_os.service.provider.SNTP</a>
-</li>
-<li>getRealPart()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a467c6a47a7a54ea4831adbeb70062ee2">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getRoundTripTime()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1SNTP.html#a1eff0a438c2455e90cc5633a1e77478d">nl.sense_os.service.provider.SNTP</a>
-</li>
-<li>getSelectedSensors()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1ParserUtils.html#a9ed2e970fb720167a121643263a5d821">nl.sense_os.service.storage.ParserUtils</a>
-</li>
-<li>getSelectedTimeRange()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1ParserUtils.html#acae4a883bfc8855b4df9960890b978a7">nl.sense_os.service.storage.ParserUtils</a>
-</li>
-<li>getSensorId()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a0d8371b60b18e37d4711ee9355470163">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getSensorUrl()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a9846374502fb7d78eca522710df0e435">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getSessionId()
-: <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1ISenseService.html#a3c84beee0be057bd127902aa8a6c4ae2">nl.sense_os.service.ISenseService</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#acc5e60e2cb7e9f768a0869eededd9be8">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>getSpectrum()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a9b32297f70ad5eec2c7a45b0fec7ad65">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>getStatusCode()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ServiceStateHelper.html#a6e23a4356af63802a9531dd8d336f104">nl.sense_os.service.ServiceStateHelper</a>
-</li>
-<li>getTime()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1SNTP.html#a206c767701d6cd6a0204b45c5ab25a36">nl.sense_os.service.provider.SNTP</a>
-</li>
-<li>getUnsentData()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1BufferTransmitHandler.html#a91d599f5d1de13e02b9e435deb526524">nl.sense_os.service.commonsense.senddata.BufferTransmitHandler</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1RecentBufferTransmitHandler.html#a99c2ed1bf195ccf0dc533dd5df7c0683">nl.sense_os.service.commonsense.senddata.RecentBufferTransmitHandler</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1PersistedBufferTransmitHandler.html#a2338c2c6d047ff95e9e0ec28ef675852">nl.sense_os.service.commonsense.senddata.PersistedBufferTransmitHandler</a>
-</li>
-<li>getUpdateInterval()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle.html#ad280d7b06f0f979f718787980c1709d7">nl.sense_os.service.external_sensors.OBD2Dongle</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
-<li>hashPassword()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a991d3c60b54a82c168ff1e64afa9fdf6">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>humanReadableByteCount()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1Util.html#afe040db1b147d711b5c6705205100ccc">nl.sense_os.service.constants.Util</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
-<li>indexToFreq()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a09ec12ec14f46d2af233913e81c92012">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>initializeSensor()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ExternalSensor.html#a64a17ba80ec62f4c9f67c76d9940b382">nl.sense_os.service.external_sensors.ExternalSensor</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Sensor.html#a11544ad831f46cefc20d71a4ed07d080">nl.sense_os.service.external_sensors.OBD2Sensor</a>
-</li>
-<li>inverse()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#abd2b74037992757b6102ad655fd3232e">nl.sense_os.service.ambience.FFT</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ab4adc8b548939340c9b6df28172e3ad1">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>isDevice()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Sensor.html#add0e519e269790c1aac02cfbf53b7a92">nl.sense_os.service.external_sensors.OBD2Sensor</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ExternalSensor.html#afc14cb3bf472e8e74d35bccd13dc6b85">nl.sense_os.service.external_sensors.ExternalSensor</a>
-</li>
-<li>isSynch()
-: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1SensePlugin.html#aa00215e4f6a1ff6290523717fbb02aeb">com.phonegap.plugins.sense.SensePlugin</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
-<li>linAverages()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ae997f8bd32254fc075a2762d6d4b8378">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>logAverages()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ac68abc2a4d255bf87eace6188ad87bb0">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>login()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1SenseService.html#a6709f34b9aa96c56d5d9222d4eca26d6">nl.sense_os.service.SenseService</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a8bf4d950737de539eedcc0b1df8dddf0">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>logout()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1SenseServiceStub.html#a4271347ea50a9ddc8b004ef329a282f5">nl.sense_os.service.SenseServiceStub</a>
-, <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1ISenseService.html#a35d376ab92266c9811785b38e1520ac4">nl.sense_os.service.ISenseService</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
-<li>noAverages()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#ae3b62304fbf591a9b074255197e7648d">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
-<li>OBD2Command()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle_1_1UpdateThread_1_1OBD2Command.html#a92dc4d180e24457723da504506bf4b5a">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Sensor_1_1OBD2Command.html#a7c5943d4c6d72bf5ffb21b5acb58ac49">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2Command</a>
-</li>
-<li>onCallStateChanged()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1NoiseSensor.html#af0b36d9e4cb74041a0c6312d56d7a289">nl.sense_os.service.ambience.NoiseSensor</a>
-</li>
-<li>onChangeLoginResult()
-: <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1ISenseServiceCallback.html#a1bc2c717f1228f35aed2065000c528be">nl.sense_os.service.ISenseServiceCallback</a>
-</li>
-<li>onCreate()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1SenseService.html#a47d7a546f776797f42ec646ddec74ab4">nl.sense_os.service.SenseService</a>
-</li>
-<li>onDestroy()
-: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1SensePlugin.html#abe8a95dff687e896fc52dda677f776a8">com.phonegap.plugins.sense.SensePlugin</a>
-</li>
-<li>onRegisterResult()
-: <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1ISenseServiceCallback.html#a62e02529bce5a8520976054520f6a194">nl.sense_os.service.ISenseServiceCallback</a>
-</li>
-<li>onStartCommand()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1SenseService.html#ae2015b9a705dca37e6afd843a36aca5c">nl.sense_os.service.SenseService</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1MsgHandler.html#a6e0f9988f1e3b1dc78c88d971fac911d">nl.sense_os.service.MsgHandler</a>
-</li>
-<li>onTransmitSuccess()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1PersistedBufferTransmitHandler.html#a400a2c26d25df3e6966d08026b906a86">nl.sense_os.service.commonsense.senddata.PersistedBufferTransmitHandler</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1RecentBufferTransmitHandler.html#ac3d7d8557afd82fc3e3ebdd53affc276">nl.sense_os.service.commonsense.senddata.RecentBufferTransmitHandler</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1BufferTransmitHandler.html#aa14c9211b6398e39976af64a9fd710ab">nl.sense_os.service.commonsense.senddata.BufferTransmitHandler</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
-<li>pollSensor()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ExternalSensor.html#ab886c0f287701da248ab51a8a588c2ff">nl.sense_os.service.external_sensors.ExternalSensor</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Sensor.html#a46976c4b6581275ccf1efa560ae3deda">nl.sense_os.service.external_sensors.OBD2Sensor</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
-<li>register()
-: <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1ISenseService.html#a8678fd25d99995ffe557cefeec432c6f">nl.sense_os.service.ISenseService</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1SenseService.html#ac9a75b3fa61dff8f722d3484231e280d">nl.sense_os.service.SenseService</a>
-</li>
-<li>registerGCMId()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#aa92399c54e49200cc4c3f97d37ab06a4">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>registerSensor()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a20b0a22f185087b9465f1f5a3a46c95c">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>registerUser()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#ab8225ad4fb15e86b9efb54ba6e9d9855">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>request()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SenseApi.html#a30be580b328daec5351dacfce9f9d2cf">nl.sense_os.service.commonsense.SenseApi</a>
-</li>
-<li>requestTime()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1SNTP.html#a3d23ddefb99e05c315749e66e4567bb2">nl.sense_os.service.provider.SNTP</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
-<li>scaleBand()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#ac3f9934ea0c1d949dac0833ff8729036">nl.sense_os.service.ambience.FFT</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a19bdfd17b430c32095d71ff3a5b74da9">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>scaleFreq()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a60665dd7bdc799a574034109189acfd6">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>scheduleChecks()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1AliveChecker.html#a4d0cc47a6268d6fe26543e6476ac4553">nl.sense_os.service.AliveChecker</a>
-</li>
-<li>scheduleTransmissions()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1DataTransmitter.html#ab82fa1566091cf0a10fbc3d93609febd">nl.sense_os.service.DataTransmitter</a>
-</li>
-<li>sendSensorData()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1MsgHandler.html#af1324ae83c47bb56c0b6d82c5fcd9f4d">nl.sense_os.service.MsgHandler</a>
-</li>
-<li>setBand()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a21065614f15df04749dfa65f167cd617">nl.sense_os.service.ambience.FourierTransform</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FFT.html#ad8ebcb3c42cb532c8b90c75266d6d285">nl.sense_os.service.ambience.FFT</a>
-</li>
-<li>setDistance()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1LocationSensor.html#a62e141927cfb2a80c554ada379ec06f1">nl.sense_os.service.location.LocationSensor</a>
-</li>
-<li>setFreq()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a99a0558aab2a23ab846155547513400d">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>setTime()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1LocationSensor.html#a13744b2cac7fe610108f6280d39ad1dd">nl.sense_os.service.location.LocationSensor</a>
-</li>
-<li>setUpdateInterval()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle.html#a854cc598118a8e2c2ad07f9e640980bb">nl.sense_os.service.external_sensors.OBD2Dongle</a>
-</li>
-<li>specSize()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#af765ade76d46eaaca6bfebc904b81b3a">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>start()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle.html#a4338e0326ff4d11e5ef10df3428fc672">nl.sense_os.service.external_sensors.OBD2Dongle</a>
-</li>
-<li>startAdapter()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ExternalSensor.html#a4ecf84413103a3711ff8443c663db20b">nl.sense_os.service.external_sensors.ExternalSensor</a>
-</li>
-<li>startSensing()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1SensePhoneState.html#aae8f169943a0cc1bf4306a8f47a26ee5">nl.sense_os.service.phonestate.SensePhoneState</a>
-</li>
-<li>stop()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle.html#a0c5428deab65297d33221a6d4977635f">nl.sense_os.service.external_sensors.OBD2Dongle</a>
-</li>
-<li>stopChecks()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1AliveChecker.html#a4ced9b5a5d6aa22f2b45ee48360b9de1">nl.sense_os.service.AliveChecker</a>
-</li>
-<li>stopMotionSensing()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1MotionSensor.html#a9b0c8c514db32a28ee0c1b4d543416dc">nl.sense_os.service.motion.MotionSensor</a>
-</li>
-<li>stopSensing()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1SensePhoneState.html#a62d29d9b0d36b23162b4883ec8659cbf">nl.sense_os.service.phonestate.SensePhoneState</a>
-</li>
-<li>stopTransmissions()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1DataTransmitter.html#a1d8e7bd35293b455055241cf99c63bf5">nl.sense_os.service.DataTransmitter</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
-<li>timeSize()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform</a>
-</li>
-<li>tryConnectSocket()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ExternalSensor.html#a984d27d5562e886490d1879b67104d55">nl.sense_os.service.external_sensors.ExternalSensor</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
-<li>updateState()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1states_1_1EpiStateMonitor.html#a788da6a77ef20f9d1c52420cad1b7f96">nl.sense_os.service.states.EpiStateMonitor</a>
-</li>
-<li>UpdateThread()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2Dongle_1_1UpdateThread.html#a515dd0952ecfc72aec94ffbf1f5ed075">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
-<li>verifySensorIds()
-: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1PhoneGapSensorRegistrator.html#a26e10bf92097a2abc2aea36b5c7e4ef3">com.phonegap.plugins.sense.PhoneGapSensorRegistrator</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ZephyrHxmRegistrator.html#aba5ba6b7f90aa146d3c7b78402f8500f">nl.sense_os.service.external_sensors.ZephyrHxmRegistrator</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1ZephyrBioHarnessRegistrator.html#a2e2fc8da8ca1bffb797848d9e07da84d">nl.sense_os.service.external_sensors.ZephyrBioHarnessRegistrator</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1OBD2SensorRegistrator.html#aa7cf91591c1210ce631e28e5eafc9514">nl.sense_os.service.external_sensors.OBD2SensorRegistrator</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1SensorRegistrator.html#a39eb6d66ebca1012e9aea1ee1eb70c63">nl.sense_os.service.commonsense.SensorRegistrator</a>
-, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1DefaultSensorRegistrator.html#ac86b91b333d5a5a931f351b86d76145e">nl.sense_os.service.commonsense.DefaultSensorRegistrator</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_w"></a>- w -</h3><ul>
-<li>window()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1FourierTransform.html#a5579a6d4866ef0fcaeb7437b6db60eb4">nl.sense_os.service.ambience.FourierTransform</a>
+<h3><a class="anchor" id="index_0x5b"></a>- [ -</h3><ul>
+<li>[static initializer]()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a89d931e01084ecf548bfae0e34b4ee86">nl.sense_os.service.provider.LocalStorageSql</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -489,7 +144,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -498,13 +153,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+</div>
+  <div id="nav-path" class="navpath">
+    <ul>
 
+    <li class="footer">Generated on Thu Sep 27 2012 12:37:58 for Sense Android Library by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
+   </ul>
+ </div>
 
-<hr class="footer"/><address class="footer"><small>
-Generated on Thu Sep 27 2012 12:22:21 for My Project by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.7.6.1
-</small></address>
 
 </body>
 </html>

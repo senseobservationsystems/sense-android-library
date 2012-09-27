@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_coolant =
+[
+    [ "OBD2CommandEngineCoolant", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_coolant.html#a01aa81f7fcf3d3be359c6bbc593b901d", null ],
+    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_coolant.html#a19553454815a8ee134c12863d89f7b26", null ]
+];

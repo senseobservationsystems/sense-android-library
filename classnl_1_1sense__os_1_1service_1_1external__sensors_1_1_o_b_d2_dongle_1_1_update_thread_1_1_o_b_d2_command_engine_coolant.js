@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_coolant =
+[
+    [ "OBD2CommandEngineCoolant", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_coolant.html#ace32bff33253365274a1c7a30955ccfc", null ],
+    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_coolant.html#ab31c4df69d0882570b92cadd36e2ebaf", null ]
+];
