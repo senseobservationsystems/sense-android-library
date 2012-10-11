@@ -22,6 +22,7 @@ import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.Location;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 
 public class MainActivity extends Activity {
@@ -194,6 +195,10 @@ public class MainActivity extends Activity {
 			service.setPrefBool(Ambience.MIC, true);
 			//NOTE: spectrum might be too heavy for the phone or consume too much energy
 			service.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
+			
+			service.setPrefBool(Location.GPS, true);
+			service.setPrefBool(Location.NETWORK, true);
+			service.setPrefBool(Location.AUTO_GPS, true);
 			
 			//set how often to sample
 			service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
