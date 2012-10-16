@@ -14,6 +14,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONException;
@@ -25,8 +26,17 @@ public class BatterySensor {
     private long lastSampleTime;
     private Context context;
 
-    public BatterySensor(Context context) {
+    protected BatterySensor(Context context) {
         this.context = context;
+    }
+    
+    private static BatterySensor instance = null;
+    
+    public static BatterySensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new BatterySensor(context);
+	    }
+	    return instance;
     }
 
     private BroadcastReceiver batteryChangeReceiver = new BroadcastReceiver() {

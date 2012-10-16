@@ -37,6 +37,15 @@ import android.util.Log;
 public class SensePhoneState extends PhoneStateListener {
 
 	private static final String TAG = "Sense PhoneStateListener";
+	
+	private static SensePhoneState instance = null;
+    
+    public static SensePhoneState getInstance(Context context) {
+	    //if(instance == null) {
+	       instance = new SensePhoneState(context);
+	    //}
+	    return instance;
+    }
 
 	private class OutgoingCallReceiver extends BroadcastReceiver {
 
@@ -72,7 +81,7 @@ public class SensePhoneState extends PhoneStateListener {
 	private String lastIp;
 	private int previousConnectionType = -2; // used to detect changes in connection type
 
-	public SensePhoneState(Context context) {
+	protected SensePhoneState(Context context) {
 		super();
 		this.context = context;
 		telMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -195,13 +204,13 @@ public class SensePhoneState extends PhoneStateListener {
 		} else {
 			Log.w(TAG, "Phone state sensor is started but is not registered for any events");
 		}
+		
 	}
 
 	/**
 	 * Stops listening and stops transmission of the phone state.
 	 */
 	public void stopSensing() {
-
 		telMgr.listen(this, PhoneStateListener.LISTEN_NONE);
 
 		if (null != transmitTimer) {

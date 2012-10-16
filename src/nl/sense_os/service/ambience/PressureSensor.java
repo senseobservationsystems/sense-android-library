@@ -10,6 +10,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import android.content.Context;
 import android.content.Intent;
@@ -33,13 +34,22 @@ public class PressureSensor implements SensorEventListener {
     private Runnable PressureThread = null;
     private boolean PressureSensingActive = false;
 
-    public PressureSensor(Context context) {
+    protected PressureSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
         if (null != smgr.getDefaultSensor(Sensor.TYPE_PRESSURE)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_PRESSURE));
         }
+    }
+    
+    private static PressureSensor instance = null;
+    
+    public static PressureSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new PressureSensor(context);
+	    }
+	    return instance;
     }
 
     @Override
@@ -98,6 +108,7 @@ public class PressureSensor implements SensorEventListener {
     }
 
     public void startPressureSensing(long _sampleDelay) {
+    	PressureHandler = new Handler();
         PressureSensingActive = true;
         setSampleDelay(_sampleDelay);
         for (Sensor sensor : sensors) {

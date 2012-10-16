@@ -4,6 +4,8 @@
 package nl.sense_os.service.ambience;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
@@ -15,29 +17,65 @@ import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.ctrl.Controller;
+import nl.sense_os.service.SenseService;
+//import nl.sense_os.service.energy_controller.Controller;
+//import nl.sense_os.service.standard_controller.Controller;
 
 import org.json.JSONObject;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.location.GpsStatus.Listener;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.TextView;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.os.IBinder;
+import android.util.Log;
+
+import java.util.List;
 
 public class NoiseSensor extends PhoneStateListener {
 
+	private static NoiseSensor instance = null;
+	
+    protected NoiseSensor(Context context) {
+		this.context = context;
+		controller = Controller.getController(context);
+		loudnessSensor = LoudnessSensor.getInstance(context);
+	}
+    
+    public static NoiseSensor getInstance(Context context) {
+    	//if(instance == null) {
+    		Log.w(TAG, "DEBUG NULL!!!!");
+	        instance = new NoiseSensor(context);
+	    //}
+	    return instance;
+    }
+    
+    
 	/**
 	 * Receiver for periodic alarm broadcast that wakes up the device and starts
 	 * a noise measurement.
@@ -46,7 +84,6 @@ public class NoiseSensor extends PhoneStateListener {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-
 			// clear old sample jobs
 			if (noiseSampleJob != null) {
 				noiseSampleJob.stopRecording();
@@ -56,10 +93,13 @@ public class NoiseSensor extends PhoneStateListener {
 			// start sample job
 			if (isEnabled /* && listenInterval != -1 */) {
 				noiseSampleJob = new NoiseSampleJob();
+				Log.w(TAG, "DEBUG NOISE 2");
+				//noiseSampleHandler = new Handler();
 				noiseSampleHandler.post(noiseSampleJob);
 			}
 		}
 	}
+	
 
 	/**
 	 * Runnable that performs one noise sample. Starts the recording, reads the
@@ -206,6 +246,7 @@ public class NoiseSensor extends PhoneStateListener {
 			}
 			return samples;
 		}
+		
 
 		/**
 		 * @return <code>true</code> if {@link #audioRecord} was initialized
@@ -304,8 +345,10 @@ public class NoiseSensor extends PhoneStateListener {
 									.getSharedPreferences(
 											SensePrefs.MAIN_PREFS,
 											Context.MODE_PRIVATE);
-							if (mainPrefs.getBoolean(Ambience.MIC, true))
+							if (mainPrefs.getBoolean(Ambience.MIC, true)){
 								dB = calculateDb(samples);
+								controller.checkNoiseSensor(dB);
+							} 
 							if (mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM,
 									true))
 								spectrum = calculateSpectrum(samples);
@@ -396,6 +439,7 @@ public class NoiseSensor extends PhoneStateListener {
 							 * noiseSampleHandler.postAtTime(noiseSampleJob,
 							 * startTime.getTimeInMillis());
 							 */
+							Log.w(TAG, "DEBUG NOISE 1");
 							noiseSampleHandler.post(noiseSampleJob);
 						}
 					}
@@ -571,18 +615,16 @@ public class NoiseSensor extends PhoneStateListener {
 	private boolean isCalling = false;
 	private int listenInterval; // Update interval in msec
 	private Context context;
-	private final Handler soundStreamHandler = new Handler(
+	private Handler soundStreamHandler = new Handler(
 			Looper.getMainLooper());
 	private SoundStreamJob soundStreamJob = null;
-	private final Handler noiseSampleHandler = new Handler();
+	private Handler noiseSampleHandler = new Handler();
 	private NoiseSampleJob noiseSampleJob = null;
-	private final AlarmReceiver alarmReceiver = new AlarmReceiver();
+	private AlarmReceiver alarmReceiver = new AlarmReceiver();
 	private LoudnessSensor loudnessSensor;
+	private Controller controller;
+	//private static Service serv;
 
-	public NoiseSensor(Context context) {
-		this.context = context;
-		loudnessSensor = new LoudnessSensor(context);
-	}
 
 	/**
 	 * Disables the noise sensor, stopping the sound recording and unregistering
@@ -593,10 +635,12 @@ public class NoiseSensor extends PhoneStateListener {
 
 		isEnabled = false;
 		stopSampling();
-
+		Log.w(TAG, "DEBUG NOISE 3");
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
+		//PhoneStateListener phoneStateListener= new PhoneStateListener();
 		telMgr.listen(this, PhoneStateListener.LISTEN_NONE);
+		//SenseService.stopForeground(true);
 	}
 
 	/**
@@ -605,15 +649,33 @@ public class NoiseSensor extends PhoneStateListener {
 	 */
 	public void enable(int interval) {
 		Log.v(TAG, "Enable noise sensor");
-
+		disable();
 		listenInterval = interval;
 		isEnabled = true;
+		
+		//Notification note=new Notification();
+		
+		//note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
+
+		//SenseService.startForeground(1337, note);
 
 		// registering the phone state listener will trigger a call to
 		// startListening()
+		Log.w(TAG, "DEBUG NOISE 4");/*
+		soundStreamHandler = new Handler(
+				Looper.getMainLooper());
+		noiseSampleJob = new NoiseSampleJob();
+		context.registerReceiver(alarmReceiver, new IntentFilter(
+				ACTION_NOISE));*/
+		Log.w(TAG, "DEBUG NOISE 7");
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
+		//PhoneStateListener phoneStateListener= new PhoneStateListener();
 		telMgr.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
+		
+		
+		Log.w(TAG, "DEBUG NOISE 8");
+		Log.w(TAG, "DEBUG NOISE 9");
 	}
 
 	/**
@@ -622,8 +684,8 @@ public class NoiseSensor extends PhoneStateListener {
 	 */
 	@Override
 	public void onCallStateChanged(int state, String incomingNumber) {
-		// Log.d(TAG, "Call state changed");
-
+		//Log.d(TAG, "Call state changed");
+		Log.w(TAG, "DEBUG NOISE 10");
 		try {
 			if (state == TelephonyManager.CALL_STATE_OFFHOOK
 					|| state == TelephonyManager.CALL_STATE_RINGING) {
@@ -631,14 +693,16 @@ public class NoiseSensor extends PhoneStateListener {
 			} else {
 				isCalling = false;
 			}
-
+			Log.w(TAG, "DEBUG NOISE 11");
 			stopSampling();
+			Log.w(TAG, "DEBUG NOISE 12");
 
 			// recording while calling is disabled
 			if (isEnabled && state == TelephonyManager.CALL_STATE_IDLE
 					&& !isCalling) {
 				startSampling();
 			}
+			Log.w(TAG, "DEBUG NOISE 13");
 		} catch (Exception e) {
 			Log.e(TAG, "Exception in onCallStateChanged!", e);
 		}
@@ -649,7 +713,8 @@ public class NoiseSensor extends PhoneStateListener {
 	 */
 	private void stopSampling() {
 		Log.v(TAG, "Stop sound sensor sampling");
-
+		Log.w(TAG, "DEBUG NOISE 5");
+		
 		try {
 
 			// stop the alarms
@@ -663,7 +728,7 @@ public class NoiseSensor extends PhoneStateListener {
 				// ignore
 			}
 
-			// stop the sound recordings
+			// stop the sound recordings/*
 			if (soundStreamJob != null) {
 				soundStreamJob.stopRecording();
 				soundStreamHandler.removeCallbacks(soundStreamJob);
@@ -685,6 +750,7 @@ public class NoiseSensor extends PhoneStateListener {
 	 */
 	private void startSampling() {
 		Log.v(TAG, "Start sound sensor sampling");
+		Log.w(TAG, "DEBUG NOISE 6");
 
 		try {
 
@@ -697,7 +763,6 @@ public class NoiseSensor extends PhoneStateListener {
 			 * soundStreamJob = new SoundStreamJob(0);
 			 * soundStreamHandler.post(soundStreamJob); } else
 			 */{
-
 				Calendar now = Calendar.getInstance();
 				// calculate offset of the local clock
 				int offset = (int) (System.currentTimeMillis() - SNTP

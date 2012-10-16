@@ -22,6 +22,15 @@ public class PhoneActivitySensor {
 
     private static final String TAG = "Sense Screen Activity";
     private final Context context;
+        
+    private static PhoneActivitySensor instance = null;
+    
+    public static PhoneActivitySensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new PhoneActivitySensor(context);
+	    }
+	    return instance;
+    }
 
     private BroadcastReceiver screenActivityReceiver = new BroadcastReceiver() {
 
@@ -57,7 +66,7 @@ public class PhoneActivitySensor {
         }
     };
 
-    public PhoneActivitySensor(Context context) {
+    protected PhoneActivitySensor(Context context) {
         this.context = context;
     }
 

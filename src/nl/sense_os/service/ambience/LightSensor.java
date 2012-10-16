@@ -10,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import nl.sense_os.service.R;
@@ -17,6 +18,9 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.ctrl.Controller;
+//import nl.sense_os.service.energy_controller.EnergyController;
+//import nl.sense_os.service.standard_controller.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +37,28 @@ public class LightSensor implements SensorEventListener {
     private Handler LightHandler = new Handler();
     private Runnable LightThread = null;
     private boolean LightSensingActive = false;
-
-    public LightSensor(Context context) {
-        this.context = context;
-        smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+    private Controller controller;
+    
+    private static LightSensor instance = null;
+	
+    protected LightSensor(Context context) {
+    	this.context = context;
+    	smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        controller = Controller.getController(context);
         sensors = new ArrayList<Sensor>();
         if (null != smgr.getDefaultSensor(Sensor.TYPE_LIGHT)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_LIGHT));
         }
+
+	}
+    
+    public static LightSensor getInstance(Context context) {
+	    if(instance == null) {
+	    	Log.w(TAG, "NEW LIGHT");
+	        instance = new LightSensor(context);
+	    }
+
+	    return instance;
     }
 
     @Override
@@ -65,13 +83,14 @@ public class LightSensor implements SensorEventListener {
             int x = 0;
             for (float value : event.values) {
                 if (x == 0) {
-                    if (sensor.getType() == Sensor.TYPE_LIGHT)
+                    if (sensor.getType() == Sensor.TYPE_LIGHT) {
                         jsonString += "\"lux\":" + value;
+                        controller.checkLightSensor(value);
+                    }
                 }
                 x++;
             }
             jsonString += "}";
-
             // pass message to the MsgHandler
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
             i.putExtra(DataPoint.SENSOR_NAME, sensorName);
@@ -84,8 +103,8 @@ public class LightSensor implements SensorEventListener {
         if (sampleDelay > 500 && LightSensingActive) {
             // unregister the listener and start again in sampleDelay seconds
             stopLightSensing();
-            LightHandler.postDelayed(LightThread = new Runnable() {
-
+            LightHandler.postDelayed(LightThread = new Runnable() {//////////////////////////////
+            
                 @Override
                 public void run() {
                     startLightSensing(sampleDelay);
@@ -99,6 +118,7 @@ public class LightSensor implements SensorEventListener {
     }
 
     public void startLightSensing(long _sampleDelay) {
+    	LightHandler = new Handler();
         LightSensingActive = true;
         setSampleDelay(_sampleDelay);
         for (Sensor sensor : sensors) {
@@ -110,14 +130,16 @@ public class LightSensor implements SensorEventListener {
     }
 
     public void stopLightSensing() {
+    	Log.w(TAG, "DEBUG LIGHT");
         try {
             LightSensingActive = false;
             smgr.unregisterListener(this);
 
-            if (LightThread != null)
+            if (LightThread != null) {
                 LightHandler.removeCallbacks(LightThread);
+            }
             LightThread = null;
-
+        
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
