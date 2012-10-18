@@ -36,6 +36,13 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+/**
+ * Main sound sensor class. Uses Android MediaRecorder class to capture small bits of audio and
+ * convert it into sensor data. The AudioRecord is sampled periodically by setting an alarm
+ * broadcast that starts a NoiseSampleJob or SoundStreamJob.
+ * 
+ * @see LoudnessSensor
+ */
 public class NoiseSensor extends PhoneStateListener {
 
 	/**
