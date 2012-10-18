@@ -50,6 +50,20 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Main Sense service class.<br/>
+ * <br/>
+ * Activities can bind to this service and call functions to:
+ * <ul>
+ * <li>log in;</li>
+ * <li>register;</li>
+ * <li>start sensing;</li>
+ * <li>start/stop individual sensor modules;</li>
+ * <li>set and get properties;</li>
+ * </ul>
+ * When the {@link #toggleMain(boolean)} method is called to start the sensing, the service starts
+ * itself and registers itself as a foreground service so it does not get easily killed by Android.
+ */
 public class SenseService extends Service {
 
 	private static final String TAG = "Sense Service";
@@ -235,20 +249,29 @@ public class SenseService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.v(TAG, "Some component is binding to Sense Platform service");
+		if (null == binder) {
+			binder = new SenseServiceStub(this);
+		}
 		return binder;
 	}
 
 	/**
 	 * Does nothing except poop out a log message. The service is really started in onStart,
 	 * otherwise it would also start when an activity binds to it.
+	 * 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void onCreate() {
 		Log.v(TAG, "Sense Platform service is being created");
-		binder = new SenseServiceStub(this);
 		state = ServiceStateHelper.getInstance(this);
 	}
 
+	/**
+	 * Stops sensing, logs out, removes foreground status.
+	 * 
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onDestroy() {
 		Log.v(TAG, "Sense Platform service is being destroyed");
