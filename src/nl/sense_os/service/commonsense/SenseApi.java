@@ -48,6 +48,9 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+/**
+ * Main interface for communicating with the CommonSense API.
+ */
 public class SenseApi {
 
 	/**

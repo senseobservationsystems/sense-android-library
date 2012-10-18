@@ -15,6 +15,14 @@ import android.util.Log;
 
 import com.google.android.gcm.GCMRegistrar;
 
+/**
+ * Service that checks if all the sensors on this phone are registered at CommonSense.<br/>
+ * <br/>
+ * TODO: Also registers the app for GCM notifications, but this should probably be moved somewhere
+ * else to keep the code transparent.
+ * 
+ * @see DefaultSensorRegistrator
+ */
 public class DefaultSensorRegistrationService extends IntentService {
 
 	private static final String TAG = "DefaultSensorRegistrationService";
