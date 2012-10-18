@@ -542,6 +542,7 @@ public class MotionSensor implements SensorEventListener {
     @SuppressWarnings("deprecation")
     public void startMotionSensing(long sampleDelay) {
 
+    motionHandler = new Handler();
 	final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 		Context.MODE_PRIVATE);
 	isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);

@@ -41,9 +41,9 @@ public class SensePhoneState extends PhoneStateListener {
 	private static SensePhoneState instance = null;
     
     public static SensePhoneState getInstance(Context context) {
-	    //if(instance == null) {
+	    if(instance == null) {
 	       instance = new SensePhoneState(context);
-	    //}
+	    }
 	    return instance;
     }
 
@@ -69,9 +69,9 @@ public class SensePhoneState extends PhoneStateListener {
 		}
 	}
 
-	private final Context context;
+	private /*final*/ Context context;
 	private BroadcastReceiver outgoingCallReceiver;
-	private final TelephonyManager telMgr;
+	private /*final*/ TelephonyManager telMgr;
 	private Timer transmitTimer = new Timer();
 	private boolean lastMsgIndicatorState;
 	private boolean msgIndicatorUpdated = false;
@@ -158,6 +158,7 @@ public class SensePhoneState extends PhoneStateListener {
 	 * Starts sensing and schedules periodic transmission of the phone state.
 	 */
 	public void startSensing(final int interval) {
+		Log.v(TAG, "startSensing From " + this);
 
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
@@ -168,7 +169,7 @@ public class SensePhoneState extends PhoneStateListener {
 			events |= PhoneStateListener.LISTEN_CALL_STATE;
 
 			// listen to outgoing calls
-			outgoingCallReceiver = new OutgoingCallReceiver();
+		outgoingCallReceiver = new OutgoingCallReceiver();
 			context.registerReceiver(outgoingCallReceiver, new IntentFilter(
 					Intent.ACTION_NEW_OUTGOING_CALL));
 		}
@@ -187,7 +188,10 @@ public class SensePhoneState extends PhoneStateListener {
 
 		if (0 != events) {
 			// start listening to the phone state
+			/* THIS TRIGGERS AN EXCEPTION WHEN STOPPING AND STARTING THE SENSOR */
 			telMgr.listen(this, events);
+			//telMgr.listen(this, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+
 
 			if (null != transmitTimer) {
 				transmitTimer.cancel();
@@ -211,6 +215,7 @@ public class SensePhoneState extends PhoneStateListener {
 	 * Stops listening and stops transmission of the phone state.
 	 */
 	public void stopSensing() {
+		Log.v(TAG, "stopSensing From " + this);
 		telMgr.listen(this, PhoneStateListener.LISTEN_NONE);
 
 		if (null != transmitTimer) {

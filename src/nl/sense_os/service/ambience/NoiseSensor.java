@@ -68,10 +68,9 @@ public class NoiseSensor extends PhoneStateListener {
 	}
     
     public static NoiseSensor getInstance(Context context) {
-    	//if(instance == null) {
-    		Log.w(TAG, "DEBUG NULL!!!!");
+    	if(instance == null) {
 	        instance = new NoiseSensor(context);
-	    //}
+	    }
 	    return instance;
     }
     

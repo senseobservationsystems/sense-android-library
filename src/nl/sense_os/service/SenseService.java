@@ -684,10 +684,10 @@ public class SenseService extends Service {
 					temperatureSensor = null;
 				}
 
-				if (ambienceHandler != null) {
+				/*if (ambienceHandler != null) {
 					ambienceHandler.getLooper().quit();
 					ambienceHandler = null;
-				}
+				}*/
 			}
 		}
 	}
@@ -1171,10 +1171,10 @@ public class SenseService extends Service {
 					phoneActivitySensor.stopPhoneActivitySensing();
 					phoneActivitySensor = null;
 				}
-				if (null != phoneStateHandler) {
-					phoneStateHandler.getLooper().quit();
-					phoneStateHandler = null;
-				}
+//				if (null != phoneStateHandler) {
+//					phoneStateHandler.getLooper().quit();
+//					phoneStateHandler = null;
+//				}
 			}
 		}
 	}
