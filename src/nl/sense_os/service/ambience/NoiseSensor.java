@@ -92,7 +92,6 @@ public class NoiseSensor extends PhoneStateListener {
 			// start sample job
 			if (isEnabled /* && listenInterval != -1 */) {
 				noiseSampleJob = new NoiseSampleJob();
-				Log.w(TAG, "DEBUG NOISE 2");
 				//noiseSampleHandler = new Handler();
 				noiseSampleHandler.post(noiseSampleJob);
 			}
@@ -438,7 +437,6 @@ public class NoiseSensor extends PhoneStateListener {
 							 * noiseSampleHandler.postAtTime(noiseSampleJob,
 							 * startTime.getTimeInMillis());
 							 */
-							Log.w(TAG, "DEBUG NOISE 1");
 							noiseSampleHandler.post(noiseSampleJob);
 						}
 					}
@@ -634,7 +632,6 @@ public class NoiseSensor extends PhoneStateListener {
 
 		isEnabled = false;
 		stopSampling();
-		Log.w(TAG, "DEBUG NOISE 3");
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		//PhoneStateListener phoneStateListener= new PhoneStateListener();
@@ -660,21 +657,12 @@ public class NoiseSensor extends PhoneStateListener {
 
 		// registering the phone state listener will trigger a call to
 		// startListening()
-		Log.w(TAG, "DEBUG NOISE 4");/*
-		soundStreamHandler = new Handler(
-				Looper.getMainLooper());
-		noiseSampleJob = new NoiseSampleJob();
-		context.registerReceiver(alarmReceiver, new IntentFilter(
-				ACTION_NOISE));*/
-		Log.w(TAG, "DEBUG NOISE 7");
+
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		//PhoneStateListener phoneStateListener= new PhoneStateListener();
 		telMgr.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
-		
-		
-		Log.w(TAG, "DEBUG NOISE 8");
-		Log.w(TAG, "DEBUG NOISE 9");
+
 	}
 
 	/**
@@ -684,7 +672,6 @@ public class NoiseSensor extends PhoneStateListener {
 	@Override
 	public void onCallStateChanged(int state, String incomingNumber) {
 		//Log.d(TAG, "Call state changed");
-		Log.w(TAG, "DEBUG NOISE 10");
 		try {
 			if (state == TelephonyManager.CALL_STATE_OFFHOOK
 					|| state == TelephonyManager.CALL_STATE_RINGING) {
@@ -692,16 +679,15 @@ public class NoiseSensor extends PhoneStateListener {
 			} else {
 				isCalling = false;
 			}
-			Log.w(TAG, "DEBUG NOISE 11");
+
 			stopSampling();
-			Log.w(TAG, "DEBUG NOISE 12");
 
 			// recording while calling is disabled
 			if (isEnabled && state == TelephonyManager.CALL_STATE_IDLE
 					&& !isCalling) {
 				startSampling();
 			}
-			Log.w(TAG, "DEBUG NOISE 13");
+
 		} catch (Exception e) {
 			Log.e(TAG, "Exception in onCallStateChanged!", e);
 		}
@@ -712,7 +698,6 @@ public class NoiseSensor extends PhoneStateListener {
 	 */
 	private void stopSampling() {
 		Log.v(TAG, "Stop sound sensor sampling");
-		Log.w(TAG, "DEBUG NOISE 5");
 		
 		try {
 
@@ -749,7 +734,6 @@ public class NoiseSensor extends PhoneStateListener {
 	 */
 	private void startSampling() {
 		Log.v(TAG, "Start sound sensor sampling");
-		Log.w(TAG, "DEBUG NOISE 6");
 
 		try {
 

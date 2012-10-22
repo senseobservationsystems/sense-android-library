@@ -15,8 +15,8 @@ public class Controller
 	public static synchronized Controller getController(Context context)
 	{
 		if (ref == null) {
-			//ref = new CtrlDefault(context);
-			ref = new CtrlExtended(context);
+			ref = new CtrlDefault(context);
+			//ref = new CtrlExtended(context);
 			locListener = locListener.getInstance(context);			
 		}
 		return ref;

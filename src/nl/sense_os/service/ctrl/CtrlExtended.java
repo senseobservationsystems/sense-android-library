@@ -31,12 +31,12 @@ public class CtrlExtended extends Controller{
 	
 	private Context context;
 	private static final String TAG = "Sense Controller";
-	//private LocationSingleton locListener; 
+
 	
 	public CtrlExtended(Context context) {
 		super();
 		this.context = context;
-		//locListener = locListener.getLocationSensor(context);
+
 	}
 	
 	public String getLastMode() {
@@ -69,7 +69,7 @@ public class CtrlExtended extends Controller{
 			
 			//We want to make sure that we have a location before going to idle mode
 			Cursor data = null;
-			long timerange = 1000 * 60 * 2; // 2 minutes 
+			long timerange = 2 * time; // 2 minutes 
 			Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
 					+ DataPoint.CONTENT_URI_PATH);
 			String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
@@ -107,7 +107,7 @@ public class CtrlExtended extends Controller{
 			}
 			//Data-Transmitter to idle?
 			if ("idle".equals(getLastMode())) {
-				scheduleTransmissions(); 
+				//scheduleTransmissions(); 
 			}
 			
 		}
@@ -116,7 +116,7 @@ public class CtrlExtended extends Controller{
 			Log.w(TAG, "NETWORK MODE!");
 			if ("idle".equals(getLastMode())) {
 				lastlocationmode = "network";
-				scheduleTransmissions(); 
+				//scheduleTransmissions(); 
 			}
 			lastlocationmode = "network";
 			if (!isListeningNw) {
@@ -132,7 +132,7 @@ public class CtrlExtended extends Controller{
 			Log.w(TAG, "GPS MODE!");
 			if ("idle".equals(getLastMode())) {
 				lastlocationmode = "gps";
-				scheduleTransmissions(); 
+				//scheduleTransmissions(); 
 			}
 			lastlocationmode = "gps";
 			if (!isListeningGps) {
@@ -147,7 +147,7 @@ public class CtrlExtended extends Controller{
 			Log.w(TAG, "NO PROVIDER AVAILABLE MODE!");
 			if ("idle".equals(getLastMode())) {
 				lastlocationmode = "noavailable";
-				scheduleTransmissions(); 
+				//scheduleTransmissions(); 
 			}
 			lastlocationmode = "noavailable";
 			if (isListeningNw) {
@@ -359,7 +359,7 @@ public class CtrlExtended extends Controller{
 	
 		} catch (JSONException e) {
 			Log.e(TAG, "Exception parsing location data: ", e);
-			moved = true;
+			//moved = true;
 		} finally {
 			if (null != data) {
 				data.close();
@@ -438,7 +438,7 @@ public class CtrlExtended extends Controller{
 			lastlightmode = "changed";
 			Log.w(TAG, "light CHANGED MODE");
 			lastchangedtime = SNTP.getInstance().getTime();
-			scheduleTransmissions();
+			//scheduleTransmissions();
 		}
         else {
 			if ("changed".equals(lastlightmode)) {
@@ -448,7 +448,7 @@ public class CtrlExtended extends Controller{
 					Log.w(TAG, "light IDLE MODE" + timetowait/60000);
 					//Data-Transmitter to idle?
 					if ("idle".equals(getLastMode())) {
-						scheduleTransmissions(); 
+						//scheduleTransmissions(); 
 					}
 				}
 				else {
@@ -462,7 +462,7 @@ public class CtrlExtended extends Controller{
 				Log.w(TAG, "light IDLE MODE");
 				//Data-Transmitter to idle?
 				if ("idle".equals(getLastMode())) {
-					scheduleTransmissions(); 
+					//scheduleTransmissions(); 
 				}
 			}
 		}
@@ -486,7 +486,7 @@ public class CtrlExtended extends Controller{
 			lastnoisemode = "loud";
 			Log.w(TAG, "noise LOUD MODE");
 			lastloudtime = SNTP.getInstance().getTime();
-			scheduleTransmissions();
+			//scheduleTransmissions();
 		}
 		else {
 			if ("loud".equals(lastnoisemode)) {
@@ -496,7 +496,7 @@ public class CtrlExtended extends Controller{
 					Log.w(TAG, "noise IDLE MODE" + timetowait/60000);
 					//Data-Transmitter to idle?
 					if ("idle".equals(getLastMode())) {
-						scheduleTransmissions(); 
+						//scheduleTransmissions(); 
 					}
 				}
 				else {
@@ -510,7 +510,7 @@ public class CtrlExtended extends Controller{
 				Log.w(TAG, "noise IDLE MODE");
 				//Data-Transmitter to idle?
 				if ("idle".equals(getLastMode())) {
-					scheduleTransmissions(); 
+					//scheduleTransmissions(); 
 				}
 			}
 		}

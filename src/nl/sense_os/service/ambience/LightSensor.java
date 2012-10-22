@@ -130,7 +130,7 @@ public class LightSensor implements SensorEventListener {
     }
 
     public void stopLightSensing() {
-    	Log.w(TAG, "DEBUG LIGHT");
+
         try {
             LightSensingActive = false;
             smgr.unregisterListener(this);

@@ -31,12 +31,12 @@ public class CtrlDefault extends Controller{
 	
 	private Context context;
 	private static final String TAG = "Sense Controller";
-	//private LocationSingleton locListener; 
+
 	
 	public CtrlDefault(Context context) {
 		super();
 		this.context = context;
-		//locListener = locListener.getLocationSensor(context);
+
 	}
 	
 	
