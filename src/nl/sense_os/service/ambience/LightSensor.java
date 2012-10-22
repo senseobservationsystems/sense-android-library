@@ -54,7 +54,6 @@ public class LightSensor implements SensorEventListener {
     
     public static LightSensor getInstance(Context context) {
 	    if(instance == null) {
-	    	Log.w(TAG, "NEW LIGHT");
 	        instance = new LightSensor(context);
 	    }
 

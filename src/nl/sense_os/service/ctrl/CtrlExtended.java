@@ -61,11 +61,9 @@ public class CtrlExtended extends Controller{
 				Context.MODE_PRIVATE);
 		boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
 	
-		//Log.w(TAG, "check sensor settings Kim version!"); 
 	
 		if (lastlocationmode.equals("nomode")) {
 			
-			Log.w(TAG, "NO MODE!");
 			
 			//We want to make sure that we have a location before going to idle mode
 			Cursor data = null;
@@ -97,7 +95,6 @@ public class CtrlExtended extends Controller{
 		}
 		else if ((!isAccelerating()) && (!isPositionChanged())) {
 			
-			Log.w(TAG, "IDLE MODE cONTROLEEIIROOOO!");
 			lastlocationmode = "idle";
 			if (isListeningNw) {
 				locListener.setNetworkListening(false);
@@ -113,7 +110,6 @@ public class CtrlExtended extends Controller{
 		}
 		else if (isNwProductive(isListeningNw, time, lastNwFix, listenNwStart) || NwisSwitchedOffTooLong(isListeningNw, listenNwStop)) {
 			
-			Log.w(TAG, "NETWORK MODE!");
 			if ("idle".equals(getLastMode())) {
 				lastlocationmode = "network";
 				//scheduleTransmissions(); 
@@ -129,7 +125,6 @@ public class CtrlExtended extends Controller{
 		} 
 		else if (isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart) || isSwitchedOffTooLong(isListeningGps, listenGpsStop)) {
 				
-			Log.w(TAG, "GPS MODE!");
 			if ("idle".equals(getLastMode())) {
 				lastlocationmode = "gps";
 				//scheduleTransmissions(); 
@@ -144,7 +139,7 @@ public class CtrlExtended extends Controller{
 			
 		} 
 		else {
-			Log.w(TAG, "NO PROVIDER AVAILABLE MODE!");
+
 			if ("idle".equals(getLastMode())) {
 				lastlocationmode = "noavailable";
 				//scheduleTransmissions(); 
@@ -209,11 +204,9 @@ public class CtrlExtended extends Controller{
 				data.moveToNext();
 			}
 			double avgMotion = totalMotion / (data.getCount() - 1);
-			Log.w(TAG, "avgmotion: " + avgMotion);
 	
 			if (avgMotion > 2.9) {	
 				// device is moving
-				//Log.w(TAG, "MOVED!");
 				moving = true;
 			} else {
 				// device is not moving
@@ -436,7 +429,6 @@ public class CtrlExtended extends Controller{
 		
         if (((value - previous_lux)>10) || ((value - previous_lux)<-10)) {
 			lastlightmode = "changed";
-			Log.w(TAG, "light CHANGED MODE");
 			lastchangedtime = SNTP.getInstance().getTime();
 			//scheduleTransmissions();
 		}
@@ -445,7 +437,6 @@ public class CtrlExtended extends Controller{
 				double timetowait = SNTP.getInstance().getTime() - lastchangedtime;
 				if (timetowait > 5*60*1000) {
 					lastlightmode = "idle";
-					Log.w(TAG, "light IDLE MODE" + timetowait/60000);
 					//Data-Transmitter to idle?
 					if ("idle".equals(getLastMode())) {
 						//scheduleTransmissions(); 
@@ -453,13 +444,11 @@ public class CtrlExtended extends Controller{
 				}
 				else {
 					lastlightmode = "changed";
-					Log.w(TAG, "light CHANGED MODE");
 				}
 					
 			}
 			else {
 				lastlightmode = "idle";
-				Log.w(TAG, "light IDLE MODE");
 				//Data-Transmitter to idle?
 				if ("idle".equals(getLastMode())) {
 					//scheduleTransmissions(); 
@@ -484,7 +473,6 @@ public class CtrlExtended extends Controller{
 	
 		if (((dB - previous_dB)>10) || ((dB - previous_dB)<-10) || (dB > 63) ) {
 			lastnoisemode = "loud";
-			Log.w(TAG, "noise LOUD MODE");
 			lastloudtime = SNTP.getInstance().getTime();
 			//scheduleTransmissions();
 		}
@@ -493,7 +481,6 @@ public class CtrlExtended extends Controller{
 				double timetowait = SNTP.getInstance().getTime() - lastloudtime;
 				if (timetowait > 5*60*1000) {
 					lastnoisemode = "idle";
-					Log.w(TAG, "noise IDLE MODE" + timetowait/60000);
 					//Data-Transmitter to idle?
 					if ("idle".equals(getLastMode())) {
 						//scheduleTransmissions(); 
@@ -501,13 +488,11 @@ public class CtrlExtended extends Controller{
 				}
 				else {
 					lastnoisemode = "loud";
-					Log.w(TAG, "noise LOUD MODE");
 				}
 					
 			}
 			else {
 				lastnoisemode = "idle";
-				Log.w(TAG, "noise IDLE MODE");
 				//Data-Transmitter to idle?
 				if ("idle".equals(getLastMode())) {
 					//scheduleTransmissions(); 
@@ -550,7 +535,6 @@ public class CtrlExtended extends Controller{
 		// pick interval
 		long interval;
 		//if ("normal".equals(getLastMode())) {	
-			Log.w(TAG, "GENERAL NORMAL MODE");
 			switch (syncRate) {
 			case 1: // eco-mode
 				interval = Intervals.ECO;
@@ -587,7 +571,6 @@ public class CtrlExtended extends Controller{
 			}
 		/*}
 		else {
-			Log.w(TAG, "GENERAL IDLE MODE");
 			interval = Intervals.ECO * 3;
 		}*/
 		am.cancel(operation);
