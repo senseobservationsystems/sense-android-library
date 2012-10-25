@@ -50,6 +50,8 @@ import android.util.Log;
  * <li>combinations of a sensor_name and a timestamp selection</li>
  * </ul>
  * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
  * @see ParserUtils
  * @see DataPoint
  */

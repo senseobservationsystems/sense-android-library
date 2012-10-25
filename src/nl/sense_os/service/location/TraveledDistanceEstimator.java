@@ -20,7 +20,6 @@ import android.location.Location;
  * 
  * @author pim
  */
-
 public class TraveledDistanceEstimator {
     /**
      * private class to store locations, each variable in the class is modifiable as opposed to the

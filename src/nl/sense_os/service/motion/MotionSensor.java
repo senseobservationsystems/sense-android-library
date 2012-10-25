@@ -37,6 +37,20 @@ import android.os.PowerManager.WakeLock;
 import android.util.FloatMath;
 import android.util.Log;
 
+/**
+ * Represents the main motion sensor. Listens for events from the Android SensorManager and parses
+ * the results.<br/>
+ * <br/>
+ * The resulting data is divided over several separate sensors in CommonSense: *
+ * <ul>
+ * <li>accelerometer</li>
+ * <li>gyroscope</li>
+ * <li>motion energy</li>
+ * <li>linear acceleration</li>
+ * </ul>
+ * Besides these basic sensors, the sensor can also gather data for high-speed epilepsy detection
+ * and fall detection.
+ */
 public class MotionSensor implements SensorEventListener {
 
     /**
