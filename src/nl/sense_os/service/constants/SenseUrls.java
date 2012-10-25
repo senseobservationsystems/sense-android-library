@@ -1,5 +1,12 @@
 package nl.sense_os.service.constants;
 
+import nl.sense_os.service.commonsense.SenseApi;
+
+/**
+ * Contains URL resources for communication with the CommonSense API
+ * 
+ * @see SenseApi
+ */
 public class SenseUrls {
 
 	public static final String BASE = "https://api.sense-os.nl/";

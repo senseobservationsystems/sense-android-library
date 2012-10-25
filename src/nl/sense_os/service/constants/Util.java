@@ -1,5 +1,8 @@
 package nl.sense_os.service.constants;
 
+/**
+ * General utility class
+ */
 public class Util {
 
 	private Util() {

@@ -1,8 +1,16 @@
 package nl.sense_os.service.constants;
 
+import nl.sense_os.service.MsgHandler;
+import nl.sense_os.service.storage.LocalStorage;
 import android.content.ContentResolver;
 import android.provider.BaseColumns;
 
+/**
+ * Utiliy class that contains resources for representing sensor data points.
+ * 
+ * @see LocalStorage
+ * @see MsgHandler
+ */
 public class SensorData {
 
     /**
@@ -418,5 +426,9 @@ public class SensorData {
         private SensorNames() {
             // class should not be instantiated
         }
+    }
+
+    private SensorData() {
+        // do not instantiate
     }
 }
