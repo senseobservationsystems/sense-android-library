@@ -28,6 +28,8 @@ import android.util.Log;
 
 /**
  * Handler for transmission of a file as sensor data to CommonSense.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class FileTransmitHandler extends Handler {
 

@@ -19,6 +19,8 @@ import android.util.Log;
 /**
  * Helper class for {@link NoiseSensor}. Scales the measured sound level measurement according to
  * the highest and lowest sound levels that have been recorded.
+ * 
+ * @author Pim Nijdam <pim@sense-os.nl>
  */
 public class LoudnessSensor {
 	private class TimestampValueTuple {

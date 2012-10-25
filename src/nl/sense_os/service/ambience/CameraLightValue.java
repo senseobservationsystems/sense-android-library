@@ -11,7 +11,9 @@ import android.util.Log;
 
 /**
  * Class that is responsible for taking camera preview images and converting them into light values.
- * Only works in Android 2.3 (?)
+ * Only works in Android 2.3 (?).
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
 public class CameraLightValue {
 

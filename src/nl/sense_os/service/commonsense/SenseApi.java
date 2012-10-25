@@ -50,6 +50,8 @@ import android.util.Log;
 
 /**
  * Main interface for communicating with the CommonSense API.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SenseApi {
 

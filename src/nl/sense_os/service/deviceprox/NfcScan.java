@@ -50,6 +50,8 @@ import android.widget.Toast;
 /**
  * Activity for handling NFC scan events. Should be registered to handle intents with the NFC
  * intents in the AndroidManifest.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 @TargetApi(10)
 public class NfcScan extends FragmentActivity {

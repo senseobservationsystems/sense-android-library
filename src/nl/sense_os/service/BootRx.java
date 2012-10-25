@@ -16,6 +16,8 @@ import android.util.Log;
 /**
  * This class is responsible for automatically starting the Sense service when the phone boots up.
  * It receives the {@link Intent#ACTION_BOOT_COMPLETED} broadcast from the Android system.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class BootRx extends BroadcastReceiver {
 

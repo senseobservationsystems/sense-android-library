@@ -60,6 +60,8 @@ import android.util.Log;
  * sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
  * startService(sensorData);
  * </pre>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class MsgHandler extends Service {
 

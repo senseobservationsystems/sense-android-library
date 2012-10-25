@@ -25,6 +25,8 @@ import android.util.Log;
  * The transmission frequency is based on the {@link Main#SYNC_RATE} preference. When the sync rate
  * is set to the real-time setting, we look at the and {@link Main#SAMPLE_RATE} to determine
  * periodic "just in case" transmissions.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class DataTransmitter extends BroadcastReceiver {
 

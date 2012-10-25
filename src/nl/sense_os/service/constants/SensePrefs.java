@@ -25,6 +25,8 @@ import android.content.Context;
  * SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
  * String cookie = mainPrefs.getBoolean(Auth.LOGIN_COOKIE, null);
  * </pre>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SensePrefs {
 	/**

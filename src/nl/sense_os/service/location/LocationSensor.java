@@ -40,6 +40,9 @@ import android.util.Log;
  * <li>position</li>
  * <li>traveled distance 1h</li>
  * </ul>
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class LocationSensor {
 

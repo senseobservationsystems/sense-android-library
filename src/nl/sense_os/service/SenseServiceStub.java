@@ -12,6 +12,8 @@ import android.util.Log;
 
 /**
  * Implementation of the service's AIDL interface. Very closely linked with {@link SenseService}.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SenseServiceStub extends ISenseService.Stub {
 

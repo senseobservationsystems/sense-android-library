@@ -5,6 +5,8 @@ import nl.sense_os.service.commonsense.SenseApi;
 /**
  * Contains URL resources for communication with the CommonSense API
  * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
  * @see SenseApi
  */
 public class SenseUrls {

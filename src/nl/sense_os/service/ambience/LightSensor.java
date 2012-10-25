@@ -23,6 +23,8 @@ import android.util.Log;
 /**
  * Represents the standard light sensor. Registers itself for updates from the Android
  * {@link SensorManager}.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
 public class LightSensor implements SensorEventListener {
 

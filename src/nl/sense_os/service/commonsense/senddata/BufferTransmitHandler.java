@@ -44,6 +44,8 @@ import android.util.Log;
  * <br>
  * Subclasses have to implement {@link #getUnsentData()} and {@link #onTransmitSuccess(JSONObject)}
  * to make them work with their intended data source.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public abstract class BufferTransmitHandler extends Handler {
 

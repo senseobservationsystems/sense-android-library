@@ -27,6 +27,8 @@ import android.util.Log;
 /**
  * Represents the WiFi scan sensor. Performs periodic scans of the WiFi network on a separate
  * thread.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
 public class WIFIDeviceProximity {
 

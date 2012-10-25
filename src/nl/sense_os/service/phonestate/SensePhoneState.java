@@ -46,6 +46,9 @@ import android.util.Log;
  * <li>service state</li>
  * <li>unread msg</li>
  * </ul>
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SensePhoneState extends PhoneStateListener {
 

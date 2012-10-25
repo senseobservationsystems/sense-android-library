@@ -23,6 +23,8 @@ import android.util.Log;
 /**
  * Represents the proximity sensor. Listens for proximity sensor data from the Android
  * SensorManager.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
 public class ProximitySensor implements SensorEventListener {
 

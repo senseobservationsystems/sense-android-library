@@ -18,7 +18,7 @@ import android.location.Location;
  * cluster points that are within each others accuracy, the cluster point is estimated as the
  * weighted average of the points, with weights inversely proportional to the accuracies
  * 
- * @author pim
+ * @author Pim Nijdam <pim@sense-os.nl>
  */
 public class TraveledDistanceEstimator {
     /**

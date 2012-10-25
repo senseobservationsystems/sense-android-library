@@ -26,6 +26,8 @@ import android.util.Log;
 /**
  * Represents the temperature sensor. Registers itself for updates from the Android
  * {@link SensorManager}.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class TemperatureSensor implements SensorEventListener {
 

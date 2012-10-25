@@ -21,6 +21,8 @@ import android.util.Log;
 /**
  * Represents the screen activity sensor. Listens for ACTION_SCREEN_ON and ACTION_SCREEN_OFF
  * broadcasts from Android.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
 public class PhoneActivitySensor {
 

@@ -41,6 +41,9 @@ import android.util.Log;
  * convert it into sensor data. The AudioRecord is sampled periodically by setting an alarm
  * broadcast that starts a NoiseSampleJob or SoundStreamJob.
  * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
  * @see LoudnessSensor
  */
 public class NoiseSensor extends PhoneStateListener {

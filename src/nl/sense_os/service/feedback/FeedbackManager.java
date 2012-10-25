@@ -25,7 +25,7 @@ import android.util.Log;
  * Class for giving feedback on state sensors in CommonSense. Used to 'teach' state sensors the
  * correct label for certain inputs.
  * 
- * @author steven
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class FeedbackManager {
 

@@ -22,6 +22,8 @@ import android.util.Log;
 /**
  * Represents the battery sensor. Registers itself for ACTION_BATTERY_CHANGED Broadcasts from
  * Android.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
 public class BatterySensor {
     private static final String TAG = "Sense Battery sensor";

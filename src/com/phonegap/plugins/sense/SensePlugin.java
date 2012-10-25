@@ -34,6 +34,12 @@ import android.util.Log;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 
+/**
+ * PhoneGap plugin implementation for the Sense Platform. Provides PhoneGap applications with an
+ * interface to the native Sense service from JavaScript.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class SensePlugin extends Plugin {
 
 	/**

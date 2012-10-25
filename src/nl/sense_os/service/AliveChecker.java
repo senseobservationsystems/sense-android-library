@@ -18,6 +18,8 @@ import android.util.Log;
  * This class is responsible for checking if the {@link SenseService} is still alive when it should
  * be. It works by setting periodic alarm broadcasts that are received by this class. The Sense
  * service calls {@link #scheduleChecks(Context)} when it starts sensing.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class AliveChecker extends BroadcastReceiver {
 

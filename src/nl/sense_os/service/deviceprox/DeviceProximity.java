@@ -11,6 +11,9 @@ import android.content.SharedPreferences;
 /**
  * Represents the main device proximity module. Acts as middleman for the
  * {@link BluetoothDeviceProximity} and {@link WIFIDeviceProximity} classes.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class DeviceProximity {
 

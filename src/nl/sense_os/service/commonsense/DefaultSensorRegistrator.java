@@ -18,6 +18,8 @@ import android.telephony.TelephonyManager;
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
  * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
  * @see DefaultSensorRegistrationService
  */
 public class DefaultSensorRegistrator extends SensorRegistrator {

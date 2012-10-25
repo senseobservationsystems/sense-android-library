@@ -10,6 +10,8 @@ import android.util.Log;
  * This class is responsible for monitoring the connectivity status of the phone, and restarts the
  * Sense service when connectivity is regained after it was lost. It receives the
  * {@link ConnectivityManager#CONNECTIVITY_ACTION} broadcast from the Android system.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class NetworkMonitor extends BroadcastReceiver {
 

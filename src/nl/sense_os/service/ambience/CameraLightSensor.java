@@ -24,6 +24,8 @@ import android.util.Log;
  * This class represents the camera light sensor module. It manages its own HandlerThread to sample
  * the camera periodically with a given sample interval.
  * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * 
  * @see CameraLightValue
  */
 public class CameraLightSensor {

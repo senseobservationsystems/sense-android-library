@@ -50,6 +50,9 @@ import android.util.Log;
  * </ul>
  * Besides these basic sensors, the sensor can also gather data for high-speed epilepsy detection
  * and fall detection.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class MotionSensor implements SensorEventListener {
 

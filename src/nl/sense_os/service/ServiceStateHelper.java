@@ -18,6 +18,8 @@ import android.support.v4.app.NotificationCompat;
  * This class is responsible for keeping track of the Sense service state and updating the status
  * bar notification when the service is started or changes login status. We use the singleton
  * pattern to make sure the entire application can see the same state object.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class ServiceStateHelper {
 

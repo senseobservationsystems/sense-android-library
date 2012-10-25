@@ -8,6 +8,8 @@ import android.provider.BaseColumns;
 /**
  * Utiliy class that contains resources for representing sensor data points.
  * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
  * @see LocalStorage
  * @see MsgHandler
  */

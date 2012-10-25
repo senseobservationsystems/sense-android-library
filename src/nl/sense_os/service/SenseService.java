@@ -63,6 +63,8 @@ import android.widget.Toast;
  * </ul>
  * When the {@link #toggleMain(boolean)} method is called to start the sensing, the service starts
  * itself and registers itself as a foreground service so it does not get easily killed by Android.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SenseService extends Service {
 

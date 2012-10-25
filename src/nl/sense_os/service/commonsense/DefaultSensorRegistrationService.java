@@ -21,6 +21,8 @@ import com.google.android.gcm.GCMRegistrar;
  * TODO: Also registers the app for GCM notifications, but this should probably be moved somewhere
  * else to keep the code transparent.
  * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
  * @see DefaultSensorRegistrator
  */
 public class DefaultSensorRegistrationService extends IntentService {
