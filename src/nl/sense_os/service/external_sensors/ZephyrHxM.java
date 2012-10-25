@@ -542,7 +542,7 @@ public class ZephyrHxM {
 
 	NotificationManager mgr = (NotificationManager) context
 		.getSystemService(Context.NOTIFICATION_SERVICE);
-	mgr.notify(2, builder.getNotification());
+        mgr.notify(2, builder.build());
     }
 
     public void setUpdateInterval(int updateInterval) {

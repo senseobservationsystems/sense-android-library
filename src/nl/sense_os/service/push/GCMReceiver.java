@@ -149,7 +149,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 						PendingIntent.getService(this, 0, new Intent(), 0));
 
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		nm.notify(NOTIF_ID, builder.getNotification());
+            nm.notify(NOTIF_ID, builder.build());
 	} catch (JSONException e) {
 		Log.d(TAG, "Error parsing notification json");
 		e.printStackTrace();
