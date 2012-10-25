@@ -28,6 +28,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+/**
+ * Represents the Bluetooth scan sensor. Sets up periodic scans of the network on a separate thread.
+ */
 public class BluetoothDeviceProximity {
 
     /**

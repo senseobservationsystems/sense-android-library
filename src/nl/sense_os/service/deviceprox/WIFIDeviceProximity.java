@@ -3,15 +3,7 @@
  *************************************************************************************************/
 package nl.sense_os.service.deviceprox;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
+import java.util.List;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -22,8 +14,20 @@ import nl.sense_os.service.provider.SNTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
+/**
+ * Represents the WiFi scan sensor. Performs periodic scans of the WiFi network on a separate
+ * thread.
+ */
 public class WIFIDeviceProximity {
 
     /*

@@ -47,6 +47,10 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Activity for handling NFC scan events. Should be registered to handle intents with the NFC
+ * intents in the AndroidManifest.
+ */
 @TargetApi(10)
 public class NfcScan extends FragmentActivity {
 
@@ -197,7 +201,7 @@ public class NfcScan extends FragmentActivity {
 		builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(), 0));
 
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		nm.notify(NOTIF_ID, builder.getNotification());
+        nm.notify(NOTIF_ID, builder.build());
 	}
 
 	private void parseTag(Tag tag) throws ClassNotFoundException, NoSuchMethodException,
