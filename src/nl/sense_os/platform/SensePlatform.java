@@ -25,12 +25,14 @@ import android.util.Log;
 
 /**
  * A proxy class that acts as a high-level interface to the sense Android
- * library.
+ * library. By instantiating this class you bind (and start if needed) the sense
+ * service. You can then use the high level methods of this class, and/or get the
+ * service object to work directly with the sense service.
  */
 public class SensePlatform {
 	protected static final String TAG = "SensePlatform";
 	protected Context context_;
-	
+
 	/*** Code to bind to the sense service ***/
 	protected ServiceConnectionEventHandler delegate;
 	protected boolean isServiceBound = false;
@@ -47,24 +49,28 @@ public class SensePlatform {
 	 */
 	private class SenseCallback extends ISenseServiceCallback.Stub {
 		@Override
-		public void onChangeLoginResult(int result) throws RemoteException {}
+		public void onChangeLoginResult(int result) throws RemoteException {
+		}
 
 		@Override
-		public void onRegisterResult(int result) throws RemoteException {}
+		public void onRegisterResult(int result) throws RemoteException {
+		}
 
 		@Override
-		public void statusReport(final int status) {}
+		public void statusReport(final int status) {
+		}
 	}
-	
+
 	protected SenseCallback callback = new SenseCallback();
-	
+
 	/**
-	 * Service connection to handle connection with the Sense service. Manages the
-	 * <code>service</code> field when the service is connected or disconnected.
+	 * Service connection to handle connection with the Sense service. Manages
+	 * the <code>service</code> field when the service is connected or
+	 * disconnected.
 	 */
 	private class SenseServiceConn implements ServiceConnection {
 		public final ServiceConnectionEventHandler handler;
-		
+
 		public SenseServiceConn(ServiceConnectionEventHandler handler) {
 			this.handler = handler;
 		}
@@ -75,23 +81,25 @@ public class SensePlatform {
 
 			service = ISenseService.Stub.asInterface(binder);
 			isServiceBound = true;
-			
-			if (handler != null)
-				handler.onServiceConnected(className, service);
+
+			if (handler != null) handler.onServiceConnected(className, service);
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName className) {
 			Log.v(TAG, "Sense Platform service disconnected...");
 
-			/* this is not called when the service is stopped, only when it is suddenly killed! */
+			/*
+			 * this is not called when the service is stopped, only when it is
+			 * suddenly killed!
+			 */
 			service = null;
 			isServiceBound = false;
-			if (handler != null)
-				handler.onServiceDisconnected(className);
+			if (handler != null) handler.onServiceDisconnected(className);
 		}
 	}
-	private final ServiceConnection serviceConn;// = new SenseServiceConn();
+
+	private final ServiceConnection serviceConn;
 
 	/**
 	 * Binds to the Sense Service, creating it if necessary.
@@ -110,7 +118,7 @@ public class SensePlatform {
 		}
 		return isServiceBound;
 	}
-	
+
 	/*** Sense Platform high-level API ***/
 
 	public SensePlatform(Context context, ServiceConnectionEventHandler handler) {
@@ -119,20 +127,31 @@ public class SensePlatform {
 		bindToSenseService();
 	}
 
-	/// Flush data to Common Sense
-	public void flushData() {
+	/**
+	 * Flush data to Common Sense
+	 * 
+	 * @throws RemoteException
+	 */
+	public void flushData() throws RemoteException {
+		checkSenseService();
 		Intent flush = new Intent(context_.getString(R.string.action_sense_send_data));
 		context_.startService(flush);
 	}
 
-	/// Flush data to Common Sense, return after the flush is completed
-	public void flushDataAndBlock() {
+	/**
+	 * Flush data to Common Sense, return after the flush is completed
+	 * 
+	 * @throws RemoteException
+	 */
+	public void flushDataAndBlock() throws RemoteException {
+		checkSenseService();
 		flushData();
 		// TODO: block till flush finishes or returns an error
 	}
 
-	/// Set the credentials to log in on Common Sense
+	// / Set the credentials to log in on Common Sense
 	public boolean login(String user, String password) throws RemoteException {
+		checkSenseService();
 		service.changeLogin(user, SenseApi.hashPassword(password), callback);
 		return true;
 	}
@@ -141,18 +160,26 @@ public class SensePlatform {
 	 * Register a user in Common Sense
 	 * 
 	 * @return Whether the registration succeeded
+	 * @throws RemoteException
 	 */
-	/*
-	public boolean registerUser() {
+	public boolean registerUser(String username, String password, String email, String address, String zipCode, String country,
+			String firstName, String surname, String mobileNumber) throws RemoteException {
+		checkSenseService();
+		service.register(username, password, email, address, zipCode, country, firstName, surname, mobileNumber, callback);
+		// TODO: provide the result of the callback
 		return false;
 	}
-	*/
 
 	/**
 	 * Add a data point for a sensor, if the sensor doesn't exist it will be
 	 * created
+	 * 
+	 * @throws RemoteException
 	 */
-	public void addDataPoint(String sensorName, String displayName, String description, String dataType, String value, long timestamp) {
+	public void addDataPoint(String sensorName, String displayName, String description, String dataType, String value, long timestamp)
+			throws RemoteException {
+		checkSenseService();
+
 		// register the sensor
 		sensorRegistrator.checkSensor(sensorName, displayName, dataType, description, value, null, null);
 
@@ -182,19 +209,21 @@ public class SensePlatform {
 	 *            Number of points to retrieve, this function always returns the
 	 *            latest values for the sensor.
 	 * @return an JSONArray of data points
+	 * @throws RemoteException
 	 */
-	public JSONArray getData(String sensorName, boolean onlyFromDevice, int nrLastPoints) {
+	public JSONArray getData(String sensorName, boolean onlyFromDevice, int nrLastPoints) throws RemoteException {
+		checkSenseService();
+
 		Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyFromDevice + ")");
-		
+
 		JSONArray result = new JSONArray();
-		
+
 		try {
-			//select remote url
-			Uri uri = Uri.parse("content://"
-					+ context_.getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_REMOTE_URI_PATH);
-			
-			//get the data
+			// select remote url
+			Uri uri = Uri.parse("content://" + context_.getString(R.string.local_storage_authority) + DataPoint.CONTENT_REMOTE_URI_PATH);
+
+			// get the data
+			// TODO: use nrLastPoints
 			result = getValues(sensorName, onlyFromDevice, uri);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -213,26 +242,34 @@ public class SensePlatform {
 	 *            The end date for the feedback.
 	 * @param label
 	 *            The label of the Feedback, e.g. 'Sit'
+	 * @throws RemoteException
 	 */
-	public void giveFeedback(String state, Date from, Date to, String label) {
-		//TODO: implement
+	public void giveFeedback(String state, Date from, Date to, String label) throws RemoteException {
+		checkSenseService();
+		// TODO: implement
 	}
-	
+
 	/**
 	 * Returns the sense service
+	 * 
 	 * @return The sense service
 	 */
 	public ISenseService service() {
 		return service;
 	}
-	
+
 	/**
 	 * Gets array of values from the LocalStorage
 	 * 
-	 * @param sensorName Name of the sensor to get values from.
-	 * @param onlyFromDevice If true this function only looks for sensors attached to this device. 
-	 * @param uri The uri to get data from, can be either local or remote.
-	 * @return JSONArray with values for the sensor with the selected name and device
+	 * @param sensorName
+	 *            Name of the sensor to get values from.
+	 * @param onlyFromDevice
+	 *            If true this function only looks for sensors attached to this
+	 *            device.
+	 * @param uri
+	 *            The uri to get data from, can be either local or remote.
+	 * @return JSONArray with values for the sensor with the selected name and
+	 *         device
 	 * @throws JSONException
 	 */
 	private JSONArray getValues(String sensorName, boolean onlyFromDevice, Uri uri) throws JSONException {
@@ -267,5 +304,18 @@ public class SensePlatform {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Check that the sense service is bound. This method is used for public
+	 * methods to provide a single check for the sense service.
+	 * 
+	 * @throws RemoteException
+	 *             When service not bound
+	 */
+	private void checkSenseService() throws RemoteException {
+		if (service == null) {
+			throw new RemoteException("Sense service not bound");
+		}
 	}
 }
