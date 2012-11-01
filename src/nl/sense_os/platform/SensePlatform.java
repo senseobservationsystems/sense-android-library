@@ -319,12 +319,3 @@ public class SensePlatform {
 		}
 	}
 }
-
-//TODO: for some reason we cannot make this a RemoteException, then the jvm will complain when constructing it.
-class SenseRemoteException extends Exception {
-	private static final long serialVersionUID = 1L;
-
-	public SenseRemoteException(String msg) {
-		super(msg);
-	}
-}
