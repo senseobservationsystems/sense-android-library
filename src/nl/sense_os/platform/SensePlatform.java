@@ -132,7 +132,7 @@ public class SensePlatform {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void flushData() throws RemoteException {
+	public void flushData() throws SenseRemoteException {
 		checkSenseService();
 		Intent flush = new Intent(context_.getString(R.string.action_sense_send_data));
 		context_.startService(flush);
@@ -143,14 +143,14 @@ public class SensePlatform {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void flushDataAndBlock() throws RemoteException {
+	public void flushDataAndBlock() throws SenseRemoteException {
 		checkSenseService();
 		flushData();
 		// TODO: block till flush finishes or returns an error
 	}
 
 	// / Set the credentials to log in on Common Sense
-	public boolean login(String user, String password) throws RemoteException {
+	public boolean login(String user, String password) throws SenseRemoteException, RemoteException {
 		checkSenseService();
 		service.changeLogin(user, SenseApi.hashPassword(password), callback);
 		return true;
@@ -163,7 +163,7 @@ public class SensePlatform {
 	 * @throws RemoteException
 	 */
 	public boolean registerUser(String username, String password, String email, String address, String zipCode, String country,
-			String firstName, String surname, String mobileNumber) throws RemoteException {
+			String firstName, String surname, String mobileNumber) throws SenseRemoteException, RemoteException {
 		checkSenseService();
 		service.register(username, password, email, address, zipCode, country, firstName, surname, mobileNumber, callback);
 		// TODO: provide the result of the callback
@@ -177,7 +177,7 @@ public class SensePlatform {
 	 * @throws RemoteException
 	 */
 	public void addDataPoint(String sensorName, String displayName, String description, String dataType, String value, long timestamp)
-			throws RemoteException {
+			throws SenseRemoteException {
 		checkSenseService();
 
 		// register the sensor
@@ -211,7 +211,7 @@ public class SensePlatform {
 	 * @return an JSONArray of data points
 	 * @throws RemoteException
 	 */
-	public JSONArray getData(String sensorName, boolean onlyFromDevice, int nrLastPoints) throws RemoteException {
+	public JSONArray getData(String sensorName, boolean onlyFromDevice, int nrLastPoints) throws SenseRemoteException {
 		checkSenseService();
 
 		Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyFromDevice + ")");
@@ -244,7 +244,7 @@ public class SensePlatform {
 	 *            The label of the Feedback, e.g. 'Sit'
 	 * @throws RemoteException
 	 */
-	public void giveFeedback(String state, Date from, Date to, String label) throws RemoteException {
+	public void giveFeedback(String state, Date from, Date to, String label) throws SenseRemoteException {
 		checkSenseService();
 		// TODO: implement
 	}
@@ -313,9 +313,18 @@ public class SensePlatform {
 	 * @throws RemoteException
 	 *             When service not bound
 	 */
-	private void checkSenseService() throws RemoteException {
+	private void checkSenseService() throws SenseRemoteException {
 		if (service == null) {
-			throw new RemoteException("Sense service not bound");
+			throw new SenseRemoteException("Sense service not bound");
 		}
+	}
+}
+
+//TODO: for some reason we cannot make this a RemoteException, then the jvm will complain when constructing it.
+class SenseRemoteException extends Exception {
+	private static final long serialVersionUID = 1L;
+
+	public SenseRemoteException(String msg) {
+		super(msg);
 	}
 }
