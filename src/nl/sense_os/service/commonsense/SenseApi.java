@@ -758,7 +758,7 @@ public class SenseApi {
 		if ("201".equalsIgnoreCase(responseCode)) {
 			result = true;
 		} else {
-			Log.e(TAG, "Error registering new user! Response code: " + responseCode);
+			Log.e(TAG, "Error sharing sensor! Response code: " + responseCode);
 			result = false;
 		}
 
