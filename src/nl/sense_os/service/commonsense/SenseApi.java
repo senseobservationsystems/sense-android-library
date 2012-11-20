@@ -719,6 +719,51 @@ public class SenseApi {
 
 		return result;
 	}
+	
+	/**
+	 * Share a sensor with a user or group
+	 * 
+	 * @param context
+	 *            Context for getting preferences
+	 * @param sensorId
+	 *            Id of the sensor to share
+	 * @param userId
+	 *            Id of the user or group to share the sensor with
+	 * @return true if shared successfully, false otherwise
+	 * @throws JSONException
+	 *             In case of unparseable response from CommonSense
+	 * @throws IOException
+	 *             In case of communication failure to CommonSense
+	 */
+	public static Boolean shareSensor(Context context, String sensorId, String userId) throws JSONException, IOException {
+
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		}
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		String url = devMode ? SenseUrls.DEV_SHARE_SENSOR : SenseUrls.SHARE_SENSOR;
+		url = url.replaceFirst("<id>", sensorId);
+
+		// create JSON object to POST
+		final JSONObject data = new JSONObject();
+		final JSONObject user = new JSONObject();
+		user.put("id", userId);
+		data.put("user", user);
+
+		// perform actual request
+		Map<String, String> response = SenseApi.request(context, url, data, null);
+
+		String responseCode = response.get("http response code");
+		Boolean result = false;
+		if ("201".equalsIgnoreCase(responseCode)) {
+			result = true;
+		} else {
+			Log.e(TAG, "Error sharing sensor! Response code: " + responseCode);
+			result = false;
+		}
+
+		return result;
+	}
 
 	/**
 	 * Performs request at CommonSense API. Returns the response code, content, and headers.

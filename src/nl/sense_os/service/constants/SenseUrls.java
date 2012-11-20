@@ -51,6 +51,9 @@ public class SenseUrls {
 
 	public static final String ADD_SENSOR_TO_DEVICE = BASE + "sensors/<id>/device" + FORMAT;
 	public static final String DEV_ADD_SENSOR_TO_DEVICE = DEV_BASE + "sensors/<id>/device" + FORMAT;
+	
+	public static final String SHARE_SENSOR = BASE + "sensors/<id>/users" + FORMAT;
+	public static final String DEV_SHARE_SENSOR = DEV_BASE + "sensors/<id>/users" + FORMAT;
 
 	public static final String LOGIN = BASE + "login" + FORMAT;
 	public static final String DEV_LOGIN = DEV_BASE + "login" + FORMAT;
