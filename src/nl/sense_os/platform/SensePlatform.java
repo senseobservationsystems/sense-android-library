@@ -45,25 +45,6 @@ public class SensePlatform {
 	};
 
 	/**
-	 * Service stub for callbacks from the Sense service.
-	 */
-	private class SenseCallback extends ISenseServiceCallback.Stub {
-		@Override
-		public void onChangeLoginResult(int result) throws RemoteException {
-		}
-
-		@Override
-		public void onRegisterResult(int result) throws RemoteException {
-		}
-
-		@Override
-		public void statusReport(final int status) {
-		}
-	}
-
-	protected SenseCallback callback = new SenseCallback();
-
-	/**
 	 * Service connection to handle connection with the Sense service. Manages
 	 * the <code>service</code> field when the service is connected or
 	 * disconnected.
@@ -150,10 +131,9 @@ public class SensePlatform {
 	}
 
 	// / Set the credentials to log in on Common Sense
-	public boolean login(String user, String password) throws SenseRemoteException, RemoteException {
+	public void login(String user, String password, ISenseServiceCallback.Stub callback) throws SenseRemoteException, RemoteException {
 		checkSenseService();
 		service.changeLogin(user, SenseApi.hashPassword(password), callback);
-		return true;
 	}
 
 	/**
@@ -162,12 +142,10 @@ public class SensePlatform {
 	 * @return Whether the registration succeeded
 	 * @throws RemoteException
 	 */
-	public boolean registerUser(String username, String password, String email, String address, String zipCode, String country,
-			String firstName, String surname, String mobileNumber) throws SenseRemoteException, RemoteException {
+	public void registerUser(String username, String password, String email, String address, String zipCode, String country,
+			String firstName, String surname, String mobileNumber, ISenseServiceCallback.Stub callback) throws SenseRemoteException, RemoteException {
 		checkSenseService();
 		service.register(username, password, email, address, zipCode, country, firstName, surname, mobileNumber, callback);
-		// TODO: provide the result of the callback
-		return false;
 	}
 
 	/**
@@ -256,6 +234,15 @@ public class SensePlatform {
 	 */
 	public ISenseService service() {
 		return service;
+	}
+	
+	/**
+	 * Return the intent for new sensor data. This can be used to subscribe to new data.
+	 * 
+	 * @return The intent action for new sensor data
+	 */
+	public String newDataAction() {
+		return context_.getString(R.string.action_sense_new_data);
 	}
 
 	/**
