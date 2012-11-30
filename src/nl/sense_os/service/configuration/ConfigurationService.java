@@ -101,6 +101,8 @@ public class ConfigurationService extends IntentService {
 			handleLoudnessReq(requirements.getJSONObject("loudness"));
 		if (requirements.has("pressure"))
 			handlePressureReq(requirements.getJSONObject("pressure"));
+		if (requirements.has("magnetic field"))
+			handleMagneticFieldReq(requirements.getJSONObject("magnetic field"));
 		
 		//Motion Sensing
 		if (requirements.has("orientation"))
@@ -686,6 +688,27 @@ public class ConfigurationService extends IntentService {
 			updateSyncRate(req.getInt("sync_rate"));
 		
 		mainPrefs.edit().putBoolean(Ambience.PRESSURE, true).commit();		
+		statusPrefs.edit().putBoolean(Status.AMBIENCE, true).commit();
+	} catch (JSONException e) {
+		e.printStackTrace();
+	}
+	}
+	
+	/**
+	 * Handle magnetic field sensor requirement.
+	 * - update sampling_rate if necessary
+	 * - enable pressure sensing
+	 * - turn on Ambience sensing
+	 * @param req magnetic_field requirement
+	 */
+	private void handleMagneticFieldReq(JSONObject req) {	
+	try {
+		if (req.has("sampling_rate"))
+			updateSamplingRate(req.getInt("sampling_rate"));
+		if (req.has("sync_rate"))
+			updateSyncRate(req.getInt("sync_rate"));
+		
+		mainPrefs.edit().putBoolean(Ambience.MAGNETIC_FIELD, true).commit();		
 		statusPrefs.edit().putBoolean(Status.AMBIENCE, true).commit();
 	} catch (JSONException e) {
 		e.printStackTrace();
