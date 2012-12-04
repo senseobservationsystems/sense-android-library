@@ -4,11 +4,14 @@
 package com.phonegap.plugins.sense;
 
 import java.io.IOException;
+import java.util.Locale;
 
+import nl.sense_os.platform.TrivialSensorRegistrator;
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.R;
 import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
@@ -167,7 +170,7 @@ public class SensePlugin extends Plugin {
 	private String getStatusCallbackId;
 	private String changeLoginCallbackId;
 
-	private PhoneGapSensorRegistrator sensorRegistrator;
+    private SensorRegistrator sensorRegistrator;
 
 	private String registerCallbackId;
 
@@ -185,7 +188,7 @@ public class SensePlugin extends Plugin {
 
 		// verify sensor ID
 		if (null == sensorRegistrator) {
-			sensorRegistrator = new PhoneGapSensorRegistrator(cordova.getActivity());
+            sensorRegistrator = new TrivialSensorRegistrator(cordova.getActivity());
 		}
 		// new Thread() {
 		//
@@ -237,7 +240,7 @@ public class SensePlugin extends Plugin {
 			throws JSONException, RemoteException {
 
 		// get the parameters
-		final String username = data.getString(0).toLowerCase();
+        final String username = data.getString(0).toLowerCase(Locale.ENGLISH);
 		final String password = data.getString(1);
 		Log.v(TAG, "changeLogin('" + username + "', '" + password + "')");
 

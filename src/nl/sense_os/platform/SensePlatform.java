@@ -31,18 +31,23 @@ import android.util.Log;
  * service object to work directly with the sense service.
  */
 public class SensePlatform {
-	protected static final String TAG = "SensePlatform";
-	protected Context context_;
 
-	/*** Code to bind to the sense service ***/
-	protected boolean isServiceBound = false;
-	protected ISenseService service;
-	private SensorRegistrator sensorRegistrator = new SensorRegistrator(context_) {
-		@Override
-		public boolean verifySensorIds(String deviceType, String deviceUuid) {
-			return false;
-		}
-	};
+    private static final String TAG = "SensePlatform";
+
+    /**
+     * Context of the enclosing application.
+     */
+    private final Context context;
+
+    /**
+     * Keeps track of the service binding state.
+     */
+    private boolean isServiceBound = false;
+
+    /**
+     * Interface for the SenseService. Gets instantiated by {@link #serviceConn}.
+     */
+    private ISenseService service;
 
 	/**
 	 * Service connection to handle connection with the Sense service. Manages
@@ -50,7 +55,7 @@ public class SensePlatform {
 	 * disconnected.
 	 */
 	private class SenseServiceConn implements ServiceConnection {
-        public final ServiceConnection serviceConnection;
+        private final ServiceConnection serviceConnection;
 
         public SenseServiceConn(ServiceConnection serviceConnection) {
             this.serviceConnection = serviceConnection;
@@ -87,6 +92,9 @@ public class SensePlatform {
 		}
 	}
 
+    /**
+     * Callback for events for the binding with the Sense service
+     */
 	private final ServiceConnection serviceConn;
 
 	/**
@@ -97,8 +105,8 @@ public class SensePlatform {
 		if (!isServiceBound) {
 			Log.v(TAG, "Try to bind to Sense Platform service");
 
-			final Intent serviceIntent = new Intent(context_.getString(R.string.action_sense_service));
-			boolean bindResult = context_.bindService(serviceIntent, serviceConn, Context.BIND_AUTO_CREATE);
+			final Intent serviceIntent = new Intent(context.getString(R.string.action_sense_service));
+			boolean bindResult = context.bindService(serviceIntent, serviceConn, Context.BIND_AUTO_CREATE);
 
 			Log.v(TAG, "Result: " + bindResult);
 		} else {
@@ -107,16 +115,16 @@ public class SensePlatform {
 		return isServiceBound;
 	}
 
-	/*** Sense Platform high-level API ***/
-
     /**
-     * 
      * @param context
+     *            Context that the Sense service will bind to.
      * @param serviceConnection
+     *            Optional. ServiceConnection that handles callbacks about the binding with the
+     *            service.
      */
     public SensePlatform(Context context, ServiceConnection serviceConnection) {
-        serviceConn = new SenseServiceConn(serviceConnection);
-		this.context_ = context;
+        this.serviceConn = new SenseServiceConn(serviceConnection);
+		this.context = context;
 		bindToSenseService();
 	}
 
@@ -127,8 +135,8 @@ public class SensePlatform {
 	 */
     public void flushData() throws IllegalStateException {
 		checkSenseService();
-		Intent flush = new Intent(context_.getString(R.string.action_sense_send_data));
-		context_.startService(flush);
+		Intent flush = new Intent(context.getString(R.string.action_sense_send_data));
+		context.startService(flush);
 	}
 
 	/**
@@ -155,8 +163,8 @@ public class SensePlatform {
 	 * @return Whether the registration succeeded
 	 * @throws RemoteException
 	 */
-	public void registerUser(String username, String password, String email, String address, String zipCode, String country,
- String firstName, String surname, String mobileNumber,
+    public void registerUser(String username, String password, String email, String address,
+            String zipCode, String country, String firstName, String surname, String mobileNumber,
             ISenseServiceCallback.Stub callback) throws IllegalStateException, RemoteException {
 		checkSenseService();
 		service.register(username, password, email, address, zipCode, country, firstName, surname, mobileNumber, callback);
@@ -168,15 +176,16 @@ public class SensePlatform {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void addDataPoint(String sensorName, String displayName, String description, String dataType, String value, long timestamp)
- throws IllegalStateException {
+    public void addDataPoint(String sensorName, String displayName, String description,
+            String dataType, String value, long timestamp) throws IllegalStateException {
 		checkSenseService();
 
 		// register the sensor
-		sensorRegistrator.checkSensor(sensorName, displayName, dataType, description, value, null, null);
+        SensorRegistrator registrator = new TrivialSensorRegistrator(context);
+        registrator.checkSensor(sensorName, displayName, dataType, description, value, null, null);
 
 		// send data point
-		String action = context_.getString(nl.sense_os.service.R.string.action_sense_new_data);
+		String action = context.getString(nl.sense_os.service.R.string.action_sense_new_data);
 		Intent intent = new Intent(action);
 		intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
 		intent.putExtra(DataPoint.DISPLAY_NAME, displayName);
@@ -184,7 +193,7 @@ public class SensePlatform {
 		intent.putExtra(DataPoint.DATA_TYPE, dataType);
 		intent.putExtra(DataPoint.VALUE, value);
 		intent.putExtra(DataPoint.TIMESTAMP, timestamp);
-		context_.startService(intent);
+		context.startService(intent);
 	}
 
 	/**
@@ -213,7 +222,7 @@ public class SensePlatform {
 
 		try {
 			// select remote url
-			Uri uri = Uri.parse("content://" + context_.getString(R.string.local_storage_authority) + DataPoint.CONTENT_REMOTE_URI_PATH);
+			Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority) + DataPoint.CONTENT_REMOTE_URI_PATH);
 
 			// get the data
 			// TODO: use nrLastPoints
@@ -258,7 +267,7 @@ public class SensePlatform {
 	 * @return The intent action for new sensor data
 	 */
 	public String newDataAction() {
-		return context_.getString(R.string.action_sense_new_data);
+		return context.getString(R.string.action_sense_new_data);
 	}
 
 	/**
@@ -279,7 +288,7 @@ public class SensePlatform {
 		Cursor cursor = null;
 		JSONArray result = new JSONArray();
 
-		String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(context_) : null;
+		String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(context) : null;
 
 		String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
 		String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
@@ -289,7 +298,7 @@ public class SensePlatform {
 		String[] selectionArgs = null;
 		String sortOrder = null;
 		try {
-			cursor = LocalStorage.getInstance(context_).query(uri, projection, selection, selectionArgs, sortOrder);
+			cursor = LocalStorage.getInstance(context).query(uri, projection, selection, selectionArgs, sortOrder);
 
 			if (null != cursor && cursor.moveToFirst()) {
 				while (!cursor.isAfterLast()) {
