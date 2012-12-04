@@ -13,6 +13,8 @@ import nl.sense.demo.R;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.platform.ServiceConnectionEventHandler;
 import nl.sense_os.service.ISenseService;
+import nl.sense_os.service.ISenseServiceCallback;
+import android.os.RemoteException;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
@@ -21,6 +23,40 @@ import nl.sense_os.service.constants.SensePrefs.Main.Location;
 public class MainActivity extends Activity implements ServiceConnectionEventHandler {
 	private static final String TAG = "Sense Demo"; 
 	private SensePlatform sensePlatform;
+	
+	/**
+	 * Service stub for callbacks from the Sense service.
+	 */
+	private class SenseCallback extends ISenseServiceCallback.Stub {
+		@Override
+		public void onChangeLoginResult(int result) throws RemoteException {
+			switch (result) {
+			case 0:
+				Log.v(TAG, "Change login OK");
+				loggedIn();
+				break;
+			case -1:
+				Log.v(TAG, "Login failed! Connectivity problems?");
+				break;
+			case -2:
+				Log.v(TAG, "Login failed! Invalid username or password.");
+				break;
+			default:
+				Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
+			}
+		}
+
+		@Override
+		public void onRegisterResult(int result) throws RemoteException {
+		}
+
+		@Override
+		public void statusReport(final int status) {
+		}
+	}
+
+	private SenseCallback callback = new SenseCallback();
+	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +85,7 @@ public class MainActivity extends Activity implements ServiceConnectionEventHand
 
 	private void setupSense() {
 		try {
-			sensePlatform.login("foo", "bar");
+			sensePlatform.login("foo", "bar", callback);
 			//turn off specific sensors
 			sensePlatform.service().setPrefBool(Ambience.LIGHT, false);
 			sensePlatform.service().setPrefBool(Ambience.CAMERA_LIGHT, false);
@@ -74,12 +110,20 @@ public class MainActivity extends Activity implements ServiceConnectionEventHand
 			//NOTE, this setting affects power consumption considerately!
 			sensePlatform.service().setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
 			
-			//and turn it on
+		} catch (Exception e) {
+			Log.v(TAG, "Exception " + e + " while setting up sense library.");
+			e.printStackTrace();
+		}
+	}
+	
+	void loggedIn() {
+		try {
+			// turn it on
 			sensePlatform.service().toggleMain(true);
 			sensePlatform.service().toggleAmbience(true);
 			sensePlatform.service().toggleLocation(true);
 		} catch (Exception e) {
-			Log.v(TAG, "Exception " + e + " while setting up sense library.");
+			Log.v(TAG, "Exception " + e + " while starting sense library.");
 			e.printStackTrace();
 		}
 	}
