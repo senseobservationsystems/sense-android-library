@@ -125,7 +125,7 @@ public class SensePlatform {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void flushData() throws SenseRemoteException {
+    public void flushData() throws IllegalStateException {
 		checkSenseService();
 		Intent flush = new Intent(context_.getString(R.string.action_sense_send_data));
 		context_.startService(flush);
@@ -136,14 +136,15 @@ public class SensePlatform {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void flushDataAndBlock() throws SenseRemoteException {
+    public void flushDataAndBlock() throws IllegalStateException {
 		checkSenseService();
 		flushData();
 		// TODO: block till flush finishes or returns an error
 	}
 
 	// / Set the credentials to log in on Common Sense
-	public void login(String user, String password, ISenseServiceCallback.Stub callback) throws SenseRemoteException, RemoteException {
+    public void login(String user, String password, ISenseServiceCallback.Stub callback)
+            throws IllegalStateException, RemoteException {
 		checkSenseService();
 		service.changeLogin(user, SenseApi.hashPassword(password), callback);
 	}
@@ -155,7 +156,8 @@ public class SensePlatform {
 	 * @throws RemoteException
 	 */
 	public void registerUser(String username, String password, String email, String address, String zipCode, String country,
-			String firstName, String surname, String mobileNumber, ISenseServiceCallback.Stub callback) throws SenseRemoteException, RemoteException {
+ String firstName, String surname, String mobileNumber,
+            ISenseServiceCallback.Stub callback) throws IllegalStateException, RemoteException {
 		checkSenseService();
 		service.register(username, password, email, address, zipCode, country, firstName, surname, mobileNumber, callback);
 	}
@@ -167,7 +169,7 @@ public class SensePlatform {
 	 * @throws RemoteException
 	 */
 	public void addDataPoint(String sensorName, String displayName, String description, String dataType, String value, long timestamp)
-			throws SenseRemoteException {
+ throws IllegalStateException {
 		checkSenseService();
 
 		// register the sensor
@@ -201,7 +203,8 @@ public class SensePlatform {
 	 * @return an JSONArray of data points
 	 * @throws RemoteException
 	 */
-	public JSONArray getData(String sensorName, boolean onlyFromDevice, int nrLastPoints) throws SenseRemoteException {
+    public JSONArray getData(String sensorName, boolean onlyFromDevice, int nrLastPoints)
+            throws IllegalStateException {
 		checkSenseService();
 
 		Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyFromDevice + ")");
@@ -234,7 +237,8 @@ public class SensePlatform {
 	 *            The label of the Feedback, e.g. 'Sit'
 	 * @throws RemoteException
 	 */
-	public void giveFeedback(String state, Date from, Date to, String label) throws SenseRemoteException {
+    public void giveFeedback(String state, Date from, Date to, String label)
+            throws IllegalStateException {
 		checkSenseService();
 		// TODO: implement
 	}
@@ -312,9 +316,9 @@ public class SensePlatform {
 	 * @throws RemoteException
 	 *             When service not bound
 	 */
-    private void checkSenseService() throws SenseRemoteException {
+    private void checkSenseService() throws IllegalStateException {
 		if (service == null) {
-            throw new SenseRemoteException("Sense service not bound");
+            throw new IllegalStateException("Sense service not bound");
 		}
 	}
 }
