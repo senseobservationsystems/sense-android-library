@@ -1,5 +1,6 @@
 package nl.sense_os.platform;
 
+import java.io.IOException;
 import java.util.Date;
 
 import nl.sense_os.service.ISenseService;
@@ -8,6 +9,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.feedback.FeedbackManager;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
@@ -210,41 +212,37 @@ public class SensePlatform {
 	}
 
     /**
-     * Retrieve a number of values of a sensor from CommonSense. returns nrLastPoints of the latest
-     * values.
+     * Retrieve a number of values of a sensor from CommonSense.
      * 
      * @param sensorName
      *            The name of the sensor to get data from
      * @param onlyFromDevice
      *            Whether or not to only look through sensors that are part of this device. Searches
      *            all sensors, including those of this device, if set to NO
-     * @param nrLastPoints
+     * @param limit
      *            Number of points to retrieve, this function always returns the latest values for
      *            the sensor.
-     * @return an JSONArray of data points
+     * @return JSONArray of data points
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
      */
-    public JSONArray getData(String sensorName, boolean onlyFromDevice, int nrLastPoints)
-            throws IllegalStateException {
-		checkSenseService();
+    public JSONArray getData(String sensorName, boolean onlyFromDevice, int limit)
+            throws IllegalStateException, JSONException {
+        checkSenseService();
 
-		Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyFromDevice + ")");
+        JSONArray result = new JSONArray();
 
-		JSONArray result = new JSONArray();
+        // select remote path in local storage
+        String localStorage = context.getString(R.string.local_storage_authority);
+        Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_REMOTE_URI_PATH);
 
-		try {
-			// select remote url
-			Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority) + DataPoint.CONTENT_REMOTE_URI_PATH);
+        // get the data
+        result = getValues(sensorName, onlyFromDevice, limit, uri);
 
-			// get the data
-			// TODO: use nrLastPoints
-			result = getValues(sensorName, onlyFromDevice, uri);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+        return result;
+    }
 
     /**
      * Give feedback on a state sensor.
@@ -257,14 +255,27 @@ public class SensePlatform {
      *            The end date for the feedback.
      * @param label
      *            The label of the Feedback, e.g. 'Sit'
+     * @return true if the feedback was received at CommonSense
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     * @throws IOException
+     *             If the communication with CommonSense failed
      */
-    public void giveFeedback(String state, Date from, Date to, String label)
-            throws IllegalStateException {
-		checkSenseService();
-		// TODO: implement
-	}
+    public boolean giveFeedback(String state, Date from, Date to, String label)
+            throws IllegalStateException, IOException, JSONException {
+        checkSenseService();
+
+        // make sure the latest data is sent to CommonSense
+        flushData();
+
+        // use feedback manager
+        FeedbackManager fm = new FeedbackManager(context);
+        boolean result = fm.giveFeedback(state, from.getTime(), to.getTime(), label);
+
+        return result;
+    }
 
     /**
      * @return The Sense service instance
@@ -282,21 +293,22 @@ public class SensePlatform {
 		return context.getString(R.string.action_sense_new_data);
 	}
 
-	/**
-	 * Gets array of values from the LocalStorage
-	 * 
-	 * @param sensorName
-	 *            Name of the sensor to get values from.
-	 * @param onlyFromDevice
-	 *            If true this function only looks for sensors attached to this
-	 *            device.
-	 * @param uri
-	 *            The uri to get data from, can be either local or remote.
-	 * @return JSONArray with values for the sensor with the selected name and
-	 *         device
-	 * @throws JSONException
-	 */
-	private JSONArray getValues(String sensorName, boolean onlyFromDevice, Uri uri) throws JSONException {
+    /**
+     * Gets array of values from the LocalStorage
+     * 
+     * @param sensorName
+     *            Name of the sensor to get values from.
+     * @param onlyFromDevice
+     *            If true this function only looks for sensors attached to this device.
+     * @param limit
+     *            Maximum amount of data points
+     * @param uri
+     *            The uri to get data from, can be either local or remote.
+     * @return JSONArray with values for the sensor with the selected name and device
+     * @throws JSONException
+     */
+    private JSONArray getValues(String sensorName, boolean onlyFromDevice, int limit, Uri uri)
+            throws JSONException {
 		Cursor cursor = null;
 		JSONArray result = new JSONArray();
 
