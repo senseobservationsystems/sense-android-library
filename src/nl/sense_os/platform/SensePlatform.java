@@ -2,17 +2,18 @@ package nl.sense_os.platform;
 
 import java.util.Date;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import nl.sense_os.service.R;
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.R;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,6 @@ public class SensePlatform {
 	protected Context context_;
 
 	/*** Code to bind to the sense service ***/
-	protected ServiceConnectionEventHandler delegate;
 	protected boolean isServiceBound = false;
 	protected ISenseService service;
 	private SensorRegistrator sensorRegistrator = new SensorRegistrator(context_) {
@@ -50,10 +50,10 @@ public class SensePlatform {
 	 * disconnected.
 	 */
 	private class SenseServiceConn implements ServiceConnection {
-		public final ServiceConnectionEventHandler handler;
+        public final ServiceConnection serviceConnection;
 
-		public SenseServiceConn(ServiceConnectionEventHandler handler) {
-			this.handler = handler;
+        public SenseServiceConn(ServiceConnection serviceConnection) {
+            this.serviceConnection = serviceConnection;
 		}
 
 		@Override
@@ -63,7 +63,10 @@ public class SensePlatform {
 			service = ISenseService.Stub.asInterface(binder);
 			isServiceBound = true;
 
-			if (handler != null) handler.onServiceConnected(className, service);
+            // notify the external service connection
+            if (serviceConnection != null) {
+                serviceConnection.onServiceConnected(className, binder);
+            }
 		}
 
 		@Override
@@ -76,7 +79,11 @@ public class SensePlatform {
 			 */
 			service = null;
 			isServiceBound = false;
-			if (handler != null) handler.onServiceDisconnected(className);
+
+            // notify the external service connection
+            if (serviceConnection != null) {
+                serviceConnection.onServiceDisconnected(className);
+            }
 		}
 	}
 
@@ -102,8 +109,13 @@ public class SensePlatform {
 
 	/*** Sense Platform high-level API ***/
 
-	public SensePlatform(Context context, ServiceConnectionEventHandler handler) {
-		serviceConn = new SenseServiceConn(handler);
+    /**
+     * 
+     * @param context
+     * @param serviceConnection
+     */
+    public SensePlatform(Context context, ServiceConnection serviceConnection) {
+        serviceConn = new SenseServiceConn(serviceConnection);
 		this.context_ = context;
 		bindToSenseService();
 	}
@@ -300,9 +312,9 @@ public class SensePlatform {
 	 * @throws RemoteException
 	 *             When service not bound
 	 */
-	private void checkSenseService() throws SenseRemoteException {
+    private void checkSenseService() throws SenseRemoteException {
 		if (service == null) {
-			throw new SenseRemoteException("Sense service not bound");
+            throw new SenseRemoteException("Sense service not bound");
 		}
 	}
 }
