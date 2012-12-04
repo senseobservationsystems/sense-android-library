@@ -33,28 +33,10 @@ import android.util.Log;
  */
 public class SensePlatform {
 
-    private static final String TAG = "SensePlatform";
-
     /**
-     * Context of the enclosing application.
+     * Service connection to handle connection with the Sense service. Manages the
+     * <code>service</code> field when the service is connected or disconnected.
      */
-    private final Context context;
-
-    /**
-     * Keeps track of the service binding state.
-     */
-    private boolean isServiceBound = false;
-
-    /**
-     * Interface for the SenseService. Gets instantiated by {@link #serviceConn}.
-     */
-    private ISenseService service;
-
-	/**
-	 * Service connection to handle connection with the Sense service. Manages
-	 * the <code>service</code> field when the service is connected or
-	 * disconnected.
-	 */
 	private class SenseServiceConn implements ServiceConnection {
         private final ServiceConnection serviceConnection;
 
@@ -92,97 +74,46 @@ public class SensePlatform {
 		}
 	}
 
+    private static final String TAG = "SensePlatform";
+
+    /**
+     * Context of the enclosing application.
+     */
+    private final Context context;
+
+    /**
+     * Keeps track of the service binding state.
+     */
+    private boolean isServiceBound = false;
+
+	/**
+     * Interface for the SenseService. Gets instantiated by {@link #serviceConn}.
+     */
+    private ISenseService service;
+
     /**
      * Callback for events for the binding with the Sense service
      */
 	private final ServiceConnection serviceConn;
 
     /**
-     * Binds to the Sense service, creating it if necessary.
+     * @param context
+     *            Context that the Sense service will bind to
      */
-    public void bindToSenseService() {
-		// start the service if it was not running already
-		if (!isServiceBound) {
-			Log.v(TAG, "Try to bind to Sense Platform service");
-
-			final Intent serviceIntent = new Intent(context.getString(R.string.action_sense_service));
-			boolean bindResult = context.bindService(serviceIntent, serviceConn, Context.BIND_AUTO_CREATE);
-
-			Log.v(TAG, "Result: " + bindResult);
-		} else {
-			// already bound
-		}
-	}
+    public SensePlatform(Context context) {
+        this(context, null);
+    }
 
     /**
      * @param context
      *            Context that the Sense service will bind to.
      * @param serviceConnection
-     *            Optional. ServiceConnection that handles callbacks about the binding with the
-     *            service.
+     *            ServiceConnection to receive callbacks about the binding with the service.
      */
     public SensePlatform(Context context, ServiceConnection serviceConnection) {
         this.serviceConn = new SenseServiceConn(serviceConnection);
 		this.context = context;
 		bindToSenseService();
-	}
-
-    /**
-     * Flush data to Common Sense
-     * 
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     */
-    public void flushData() throws IllegalStateException {
-		checkSenseService();
-		Intent flush = new Intent(context.getString(R.string.action_sense_send_data));
-		context.startService(flush);
-	}
-
-    /**
-     * Flush data to Common Sense, return after the flush is completed
-     * 
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     */
-    public void flushDataAndBlock() throws IllegalStateException {
-		checkSenseService();
-		flushData();
-		// TODO: block till flush finishes or returns an error
-	}
-
-    /**
-     * Tries to log in at CommonSense using the supplied username and password. After login, the
-     * service remembers the username and password.
-     * 
-     * @param username
-     *            username for login
-     * @param pass
-     *            unhashed password for login
-     * @param callback
-     *            interface to receive callback when login is completed
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     * @throws RemoteException
-     */
-    public void login(String user, String password, ISenseServiceCallback.Stub callback)
-            throws IllegalStateException, RemoteException {
-		checkSenseService();
-		service.changeLogin(user, SenseApi.hashPassword(password), callback);
-	}
-
-    /**
-     * Register a user in Common Sense
-     * 
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     * @throws RemoteException
-     */
-    public void registerUser(String username, String password, String email, String address,
-            String zipCode, String country, String firstName, String surname, String mobileNumber,
-            ISenseServiceCallback.Stub callback) throws IllegalStateException, RemoteException {
-		checkSenseService();
-		service.register(username, password, email, address, zipCode, country, firstName, surname, mobileNumber, callback);
 	}
 
     /**
@@ -212,6 +143,79 @@ public class SensePlatform {
 	}
 
     /**
+     * Binds to the Sense service, creating it if necessary.
+     */
+    private void bindToSenseService() {
+		// start the service if it was not running already
+		if (!isServiceBound) {
+			Log.v(TAG, "Try to bind to Sense Platform service");
+
+			final Intent serviceIntent = new Intent(context.getString(R.string.action_sense_service));
+			boolean bindResult = context.bindService(serviceIntent, serviceConn, Context.BIND_AUTO_CREATE);
+
+			Log.v(TAG, "Result: " + bindResult);
+		} else {
+			// already bound
+		}
+	}
+
+    /**
+     * Check that the sense service is bound. This method is used for public methods to provide a
+     * single check for the sense service.
+     * 
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     */
+    private void checkSenseService() throws IllegalStateException {
+		if (service == null) {
+            throw new IllegalStateException("Sense service not bound");
+		}
+	}
+
+    /**
+     * Flush data to Common Sense
+     * 
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     */
+    public void flushData() throws IllegalStateException {
+		checkSenseService();
+		Intent flush = new Intent(context.getString(R.string.action_sense_send_data));
+		context.startService(flush);
+	}
+
+    /**
+     * Flush data to Common Sense, return after the flush is completed
+     * 
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     */
+    public void flushDataAndBlock() throws IllegalStateException {
+		checkSenseService();
+		flushData();
+		// TODO: block till flush finishes or returns an error
+	}
+
+    /**
+     * Retrieve a number of values of a sensor from CommonSense.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getData(String sensorName, boolean onlyFromDevice)
+            throws IllegalStateException, JSONException {
+        return getData(sensorName, onlyFromDevice, 100);
+    }
+
+    /**
      * Retrieve a number of values of a sensor from CommonSense.
      * 
      * @param sensorName
@@ -220,8 +224,7 @@ public class SensePlatform {
      *            Whether or not to only look through sensors that are part of this device. Searches
      *            all sensors, including those of this device, if set to NO
      * @param limit
-     *            Number of points to retrieve, this function always returns the latest values for
-     *            the sensor.
+     *            Maximum amount of data points.
      * @return JSONArray of data points
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
@@ -245,52 +248,17 @@ public class SensePlatform {
     }
 
     /**
-     * Give feedback on a state sensor.
-     * 
-     * @param state
-     *            The state to give feedback on.
-     * @param from
-     *            The start date for the feedback.
-     * @param to
-     *            The end date for the feedback.
-     * @param label
-     *            The label of the Feedback, e.g. 'Sit'
-     * @return true if the feedback was received at CommonSense
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     * @throws JSONException
-     *             If the response from CommonSense could not be parsed
-     * @throws IOException
-     *             If the communication with CommonSense failed
+     * @return The intent action for new sensor data. This can be used to subscribe to new data.
      */
-    public boolean giveFeedback(String state, Date from, Date to, String label)
-            throws IllegalStateException, IOException, JSONException {
-        checkSenseService();
-
-        // make sure the latest data is sent to CommonSense
-        flushData();
-
-        // use feedback manager
-        FeedbackManager fm = new FeedbackManager(context);
-        boolean result = fm.giveFeedback(state, from.getTime(), to.getTime(), label);
-
-        return result;
-    }
+	public String getNewDataAction() {
+		return context.getString(R.string.action_sense_new_data);
+	}
 
     /**
      * @return The Sense service instance
      */
-	public ISenseService service() {
+	public ISenseService getService() {
 		return service;
-	}
-	
-	/**
-	 * Return the intent for new sensor data. This can be used to subscribe to new data.
-	 * 
-	 * @return The intent action for new sensor data
-	 */
-	public String newDataAction() {
-		return context.getString(R.string.action_sense_new_data);
 	}
 
     /**
@@ -301,13 +269,13 @@ public class SensePlatform {
      * @param onlyFromDevice
      *            If true this function only looks for sensors attached to this device.
      * @param limit
-     *            Maximum amount of data points
+     *            Maximum amount of data points. Optional, use null to set the default limit (100).
      * @param uri
      *            The uri to get data from, can be either local or remote.
      * @return JSONArray with values for the sensor with the selected name and device
      * @throws JSONException
      */
-    private JSONArray getValues(String sensorName, boolean onlyFromDevice, int limit, Uri uri)
+    private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri)
             throws JSONException {
 		Cursor cursor = null;
 		JSONArray result = new JSONArray();
@@ -343,15 +311,87 @@ public class SensePlatform {
 	}
 
     /**
-     * Check that the sense service is bound. This method is used for public methods to provide a
-     * single check for the sense service.
+     * Give feedback on a state sensor.
      * 
+     * @param state
+     *            The state to give feedback on.
+     * @param from
+     *            The start date for the feedback.
+     * @param to
+     *            The end date for the feedback.
+     * @param label
+     *            The label of the Feedback, e.g. 'Sit'
+     * @return true if the feedback was received at CommonSense
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     * @throws IOException
+     *             If the communication with CommonSense failed
      */
-    private void checkSenseService() throws IllegalStateException {
-		if (service == null) {
-            throw new IllegalStateException("Sense service not bound");
-		}
+    public boolean giveFeedback(String state, Date from, Date to, String label)
+            throws IllegalStateException, IOException, JSONException {
+        checkSenseService();
+
+        // make sure the latest data is sent to CommonSense
+        flushData();
+
+        // use feedback manager
+        FeedbackManager fm = new FeedbackManager(context);
+        boolean result = fm.giveFeedback(state, from.getTime(), to.getTime(), label);
+
+        return result;
+    }
+
+    /**
+     * Tries to log in at CommonSense using the supplied username and password. After login, the
+     * service remembers the username and password.
+     * 
+     * @param username
+     *            username for login
+     * @param pass
+     *            unhashed password for login
+     * @param callback
+     *            interface to receive callback when login is completed
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws RemoteException
+     */
+    public void login(String user, String password, ISenseServiceCallback.Stub callback)
+            throws IllegalStateException, RemoteException {
+		checkSenseService();
+		service.changeLogin(user, SenseApi.hashPassword(password), callback);
 	}
+
+    /**
+     * Registers a new user at CommonSense and logs in immediately.
+     * 
+     * @param username
+     *            Username for the new user
+     * @param password
+     *            Unhashed password String for the new user
+     * @param email
+     *            Email address
+     * @param address
+     *            Street address (optional, null if not required)
+     * @param zipCode
+     *            ZIP code (optional, null if not required)
+     * @param country
+     *            Country
+     * @param firstName
+     *            First name (optional, null if not required)
+     * @param surname
+     *            Surname (optional, null if not required)
+     * @param mobileNumber
+     *            Phone number, preferably in E164 format (optional, null if not required)
+     * @param callback
+     *            Interface to receive callback when login is completed
+     */
+    public void registerUser(String username, String password, String email, String address,
+            String zipCode, String country, String firstName, String surname, String mobileNumber,
+            ISenseServiceCallback.Stub callback) throws IllegalStateException, RemoteException {
+        checkSenseService();
+        service.register(username, password, email, address, zipCode, country, firstName, surname,
+                mobileNumber, callback);
+    }
 }
