@@ -119,10 +119,11 @@ public class SensePlatform {
     /**
      * Add a data point for a sensor, if the sensor doesn't exist it will be created
      * 
+     * @return true if the data point was sent to the Sense service
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
      */
-    public void addDataPoint(String sensorName, String displayName, String description,
+    public boolean addDataPoint(String sensorName, String displayName, String description,
             String dataType, String value, long timestamp) throws IllegalStateException {
 		checkSenseService();
 
@@ -139,7 +140,14 @@ public class SensePlatform {
 		intent.putExtra(DataPoint.DATA_TYPE, dataType);
 		intent.putExtra(DataPoint.VALUE, value);
 		intent.putExtra(DataPoint.TIMESTAMP, timestamp);
-		context.startService(intent);
+        ComponentName serviceName = context.startService(intent);
+
+        if (null != serviceName) {
+            return true;
+        } else {
+            Log.w(TAG, "Could not start MsgHandler service!");
+            return false;
+        }
 	}
 
     /**
@@ -173,15 +181,24 @@ public class SensePlatform {
 	}
 
     /**
-     * Flush data to Common Sense
+     * Closes the service connection to the Sense service and cleans up the binding.
+     */
+    public void close() {
+        unbindFromSenseService();
+    }
+
+    /**
+     * Flush data to CommonSense
      * 
+     * @return true if the flush task was successfully started
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
      */
-    public void flushData() throws IllegalStateException {
+    public boolean flushData() throws IllegalStateException {
 		checkSenseService();
 		Intent flush = new Intent(context.getString(R.string.action_sense_send_data));
-		context.startService(flush);
+        ComponentName started = context.startService(flush);
+        return null != started;
 	}
 
     /**
@@ -258,6 +275,7 @@ public class SensePlatform {
      * @return The Sense service instance
      */
 	public ISenseService getService() {
+        checkSenseService();
 		return service;
 	}
 
@@ -357,11 +375,19 @@ public class SensePlatform {
      *             If the Sense service is not bound yet
      * @throws RemoteException
      */
-    public void login(String user, String password, ISenseServiceCallback.Stub callback)
+    public void login(String user, String password, ISenseServiceCallback callback)
             throws IllegalStateException, RemoteException {
 		checkSenseService();
 		service.changeLogin(user, SenseApi.hashPassword(password), callback);
 	}
+
+    /**
+     * Logs out a user, destroying his or her records.
+     */
+    public void logout() throws IllegalStateException, RemoteException {
+        checkSenseService();
+        service.logout();
+    }
 
     /**
      * Registers a new user at CommonSense and logs in immediately.
@@ -389,9 +415,23 @@ public class SensePlatform {
      */
     public void registerUser(String username, String password, String email, String address,
             String zipCode, String country, String firstName, String surname, String mobileNumber,
-            ISenseServiceCallback.Stub callback) throws IllegalStateException, RemoteException {
+            ISenseServiceCallback callback) throws IllegalStateException, RemoteException {
         checkSenseService();
         service.register(username, password, email, address, zipCode, country, firstName, surname,
                 mobileNumber, callback);
+    }
+
+    /**
+     * Unbinds from the Sense service, resets {@link #service} and {@link #isServiceBound}.
+     */
+    private void unbindFromSenseService() {
+        if (true == isServiceBound && null != serviceConn) {
+            Log.v(TAG, "Unbind from Sense Platform service");
+            context.unbindService(serviceConn);
+        } else {
+            // already unbound
+        }
+        service = null;
+        isServiceBound = false;
     }
 }

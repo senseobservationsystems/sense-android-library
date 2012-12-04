@@ -298,7 +298,7 @@ public class SenseApi {
 
 		List<String> result = new ArrayList<String>();
 		for (int i = 0; i < sensorList.length(); i++) {
-			JSONObject sensor = sensorList.getJSONObject(0);
+			JSONObject sensor = sensorList.getJSONObject(i);
 			result.add(sensor.getString("id"));
 		}
 		return result;
