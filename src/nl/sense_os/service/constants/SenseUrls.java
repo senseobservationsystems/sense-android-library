@@ -51,6 +51,12 @@ public class SenseUrls {
 
 	public static final String ADD_SENSOR_TO_DEVICE = BASE + "sensors/<id>/device" + FORMAT;
 	public static final String DEV_ADD_SENSOR_TO_DEVICE = DEV_BASE + "sensors/<id>/device" + FORMAT;
+
+	public static final String GET_CURRENT_USER = BASE + "users/current" + FORMAT;
+	public static final String DEV_GET_CURRENT_USER = DEV_BASE + "users/current" + FORMAT;
+	
+	public static final String JOIN_GROUP = BASE + "groups/<id>/users" + FORMAT;
+	public static final String DEV_JOIN_GROUP = DEV_BASE + "groups/<id>/users" + FORMAT;
 	
 	public static final String SHARE_SENSOR = BASE + "sensors/<id>/users" + FORMAT;
 	public static final String DEV_SHARE_SENSOR = DEV_BASE + "sensors/<id>/users" + FORMAT;
