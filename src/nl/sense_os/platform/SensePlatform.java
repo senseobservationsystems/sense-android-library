@@ -366,11 +366,11 @@ public class SensePlatform {
      * service remembers the username and password.
      * 
      * @param username
-     *            username for login
+     *            Username for login
      * @param pass
-     *            unhashed password for login
+     *            Hashed password for login
      * @param callback
-     *            interface to receive callback when login is completed
+     *            Interface to receive callback when login is completed
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
      * @throws RemoteException
@@ -378,7 +378,7 @@ public class SensePlatform {
     public void login(String user, String password, ISenseServiceCallback callback)
             throws IllegalStateException, RemoteException {
 		checkSenseService();
-		service.changeLogin(user, SenseApi.hashPassword(password), callback);
+        service.changeLogin(user, password, callback);
 	}
 
     /**
@@ -395,7 +395,7 @@ public class SensePlatform {
      * @param username
      *            Username for the new user
      * @param password
-     *            Unhashed password String for the new user
+     *            Hashed password String for the new user
      * @param email
      *            Email address
      * @param address
