@@ -11,6 +11,7 @@ import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
 import nl.sense_os.service.ambience.TemperatureSensor;
+import nl.sense_os.service.ambience.MagneticFieldSensor;
 import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
@@ -83,6 +84,7 @@ public class SenseService extends Service {
 	private ZephyrBioHarness es_bioHarness;
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
+	private MagneticFieldSensor magneticFieldSensor;
 
 	/**
 	 * Handler on main application thread to display toasts to the user.
@@ -573,6 +575,15 @@ public class SenseService extends Service {
 					temperatureSensor.stopSensing();
 					temperatureSensor = null;
 				}
+				
+				// check magnetic field sensor presence
+				if (magneticFieldSensor != null) {
+					Log.w(TAG, "magnetic field  sensor is already present!");
+					magneticFieldSensor.stopMagneticFieldSensing();
+					magneticFieldSensor = null;
+				}
+				
+				
 
 				// get sample rate from preferences
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -632,6 +643,11 @@ public class SenseService extends Service {
 						} else {
 							// Log.v(TAG, "Camera is not supported in this version of Android");
 						}
+						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
+							magneticFieldSensor = new MagneticFieldSensor(SenseService.this);
+							magneticFieldSensor.startMagneticFieldSensing(finalInterval);
+						}
+						
 						if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
 							pressureSensor = new PressureSensor(SenseService.this);
 							pressureSensor.startPressureSensing(finalInterval);
@@ -671,6 +687,10 @@ public class SenseService extends Service {
 				if (null != temperatureSensor) {
 					temperatureSensor.stopSensing();
 					temperatureSensor = null;
+				}
+				if (null != magneticFieldSensor) {
+					magneticFieldSensor.stopMagneticFieldSensing();
+					magneticFieldSensor = null;
 				}
 
 				if (ambienceHandler != null) {
