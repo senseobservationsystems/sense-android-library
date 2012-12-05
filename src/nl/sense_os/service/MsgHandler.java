@@ -204,6 +204,9 @@ public class MsgHandler extends Service {
 		} catch (Exception e) {
 			Log.e(TAG, "Failed to handle new data point!", e);
 		}
+		
+		//broadcast this new data intent as well, so anybody can listen to data!
+		this.sendBroadcast(intent);
 	}
 
 	private void handleSendIntent(Intent intent) {

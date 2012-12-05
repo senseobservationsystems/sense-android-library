@@ -413,24 +413,24 @@ public class SenseService extends Service {
 		startService(new Intent(getString(R.string.action_widget_update)));
 	}
 
-	/**
-	 * Tries to register a new user using the username and password from the private preferences and
-	 * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
-	 * are bound to the service.
-	 * 
-	 * @param username
-	 * @param password
-	 *            Unhashed password
-	 * @param email
-	 * @param address
-	 * @param zipCode
-	 * @param country
-	 * @param name
-	 * @param surname
-	 * @param mobile
-	 * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-	 *         any other unexpected responses.
-	 */
+	    /**
+     * Tries to register a new user using the username and password from the private preferences and
+     * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
+     * are bound to the service.
+     * 
+     * @param username
+     * @param password
+     *            Hashed password
+     * @param email
+     * @param address
+     * @param zipCode
+     * @param country
+     * @param name
+     * @param surname
+     * @param mobile
+     * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
+     *         any other unexpected responses.
+     */
 	synchronized int register(String username, String password, String email, String address,
 			String zipCode, String country, String name, String surname, String mobile) {
 		Log.v(TAG, "Try to register new user");
@@ -441,12 +441,10 @@ public class SenseService extends Service {
 		// stop active sensing components
 		stopSensorModules();
 
-		String hashPass = SenseApi.hashPassword(password);
-
 		// save username and password in preferences
 		Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
 		authEditor.putString(Auth.LOGIN_USERNAME, username);
-		authEditor.putString(Auth.LOGIN_PASS, hashPass);
+        authEditor.putString(Auth.LOGIN_PASS, password);
 		authEditor.commit();
 
 		// try to register
@@ -456,7 +454,7 @@ public class SenseService extends Service {
 			// ", password hash: " + hashPass);
 
 			try {
-				registered = SenseApi.registerUser(this, username, hashPass, name, surname, email,
+                registered = SenseApi.registerUser(this, username, password, name, surname, email,
 						mobile);
 			} catch (Exception e) {
 				Log.w(TAG, "Exception during registration: '" + e.getMessage()
