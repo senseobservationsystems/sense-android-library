@@ -31,6 +31,139 @@ public class ConfigurationService extends IntentService {
 	}	
 		
 	@Override
+	/**
+	 * When the service is started, it will look into the requirement and 
+	 * set the preference accordingly
+	 * Example of the requirement:
+	 *    {
+	 *      "position":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000,
+	 *        "automatic_gps": true
+	 *      },
+	 *      "traveled distance 1h":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "Location":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "service state":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "battery sensor":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "data connection":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "connection type":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "call state":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "unread msg":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "signal strength":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "proximity":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "screen activity":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "ip address":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "bluetooth_discovery":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "bluetooth neighbours count":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "wifi scan":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "audio_spectrum":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "light":{
+	 *        "sampling_rate":60000,
+	 *        "sync_rate":60000
+	 *      },
+	 *      "camera_light":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "noise_sensor":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "loudness":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "pressure":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "orientation":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "linear acceleration":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "accelerometer":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "motion_energy":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "attachToMyrianode":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "Availability":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "Reachability":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "Activity":{
+	 *        "sampling_rate":1800000,
+	 *        "sync_rate":1800000
+	 *      },
+	 *      "ambient_temperature":{
+	 *        "sampling_rate":30000,
+	 *        "sync_rate":60000
+	 *      }
+	 *    }
+	 * @param intent Intent with requirements property in JSON Object format
+	 */
 	protected void onHandleIntent(Intent intent) {
 	
 	statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, Context.MODE_PRIVATE);

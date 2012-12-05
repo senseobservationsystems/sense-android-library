@@ -1,3 +1,6 @@
+/**************************************************************************************************
+ * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ *************************************************************************************************/
 package nl.sense_os.service.push;
 
 import java.io.IOException;
@@ -29,6 +32,12 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * This class handle the when there is new message received with GCM.
+ * It handle the registration of the gcm_id (identifier sent by google
+ * for the device), and sync that id to commonSense. This class also
+ * handle command sent by commonSense.
+ */
 public class GCMReceiver extends GCMBaseIntentService {
 
 	private final String TAG = "push";
@@ -49,6 +58,22 @@ public class GCMReceiver extends GCMBaseIntentService {
 	
 	}
 
+	/**
+	 * This is the entry point of the class. This method will be called when
+	 * there is a new message received from GCM. It will first verify that
+	 * the message is for the intended user, parse the type of the message
+	 * and run the command accordingly
+	 * @param context
+	 * @intent The intent contain the the following data
+	 *   - username: the logged in username
+	 *   - type: the of the message. possible value ("toast", "notification", "service", "update_configuration", "use_configuration")
+	 *   - content: the content of the message according to the type
+	 *     - toast: the message of the toast
+	 *     - notification: {"title": "title of notification", "content": "content of notification"}
+	 *     - service: "1" for start and "0" for stop
+	 *     - update_configuration: null
+	 *     - use_configuration: "configuration_id" from commonSense
+	 */
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 	Bundle extras = intent.getExtras();
@@ -79,12 +104,24 @@ public class GCMReceiver extends GCMBaseIntentService {
 
 	}
 
+	/**
+	 * Called when an error occur with GCM
+	 *
+	 * @param context
+	 * @param errorId
+	 *            for error id look at
+	 *            http://developer.android.com/google/gcm/gcm.html
+	 */
 	@Override
 	public void onError(Context context, String errorId) {
 	// TODO Handle if out of sync, and other type errors ?
 
 	}
 
+	/**
+	 * Called when the application receive the GCM id from Google.
+	 * This function will sync the registration ID to the CommonSense
+	 */
 	@Override
 	public void onRegistered(Context context, String registrationId) {
 	Log.v(TAG, "RegisterGCMIntentService called with registration: " 
@@ -106,6 +143,9 @@ public class GCMReceiver extends GCMBaseIntentService {
 	}
 	}
 
+	/**
+	 * Called when the app receive unregister message from Google.
+	 */
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
 	Log.i(TAG, "Device unregistered");
@@ -189,6 +229,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
 	/**
 	 * Call commonSense to get the new configuration
+	 * @param context
 	 */
 	private void updateConfiguration(Context context) {
 	try {
@@ -201,9 +242,13 @@ public class GCMReceiver extends GCMBaseIntentService {
 		e.printStackTrace();
 	}
 	}
-	
+
 	/**
 	 * Call commonSense to get the specific configuration
+	 *
+	 * @param context
+	 * @param configurationId
+	 *            Configuration id from CommonSense
 	 */
 	private void useConfiguration(Context context, String configurationId) {
 	try {		
@@ -227,9 +272,13 @@ public class GCMReceiver extends GCMBaseIntentService {
 		e.printStackTrace();
 	}
 	}
-	
+
 	/**
 	 * Boardcast new Requirement
+	 *
+	 * @param context
+	 * @param req
+	 *            @see ConfigurationService#onHandleIntent
 	 */
 	private void boardcastRequirement(Context context, String req) {
 	Intent i = new Intent(ACTION_GOT_CONFIGURATION);
