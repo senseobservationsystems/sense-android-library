@@ -720,17 +720,17 @@ public class SenseApi {
 		return result;
 	}
 
-	/**
-	 * Get user details
-	 * 
-	 * @param context
-	 *            Context for getting preferences
-	 * @return JSONOBject with user if successful, false otherwise
-	 * @throws JSONException
-	 *             In case of unparseable response from CommonSense
-	 * @throws IOException
-	 *             In case of communication failure to CommonSense
-	 */
+    /**
+     * Gets user details from CommonSense
+     * 
+     * @param context
+     *            Context for getting preferences
+     * @return JSONObject with user if successful, null otherwise
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     */
 	public static JSONObject getUser(Context context) throws IOException, JSONException {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
@@ -752,25 +752,27 @@ public class SenseApi {
 		if ("200".equalsIgnoreCase(responseCode)) {
 			result = new JSONObject(response.get("content")).getJSONObject("user");
 		} else {
-			Log.e(TAG, "Error getting user! Response code: " + responseCode);
+            Log.w(TAG, "Failed to get user! Response code: " + responseCode);
+            throw new IOException("Incorrect response from CommonSense: " + responseCode);
 		}
 		return result;
 	}
 
-	/**
-	 * Join a group
-	 * 
-	 * @param context
-	 *            Context for getting preferences
-	 * @param groupId
-	 *            Id of the group to join
-	 * @return true if joined successfully, false otherwise
-	 * @throws JSONException
-	 *             In case of unparseable response from CommonSense
-	 * @throws IOException
-	 *             In case of communication failure to CommonSense
-	 */
-	public static Boolean joinGroup(Context context, String groupId) throws JSONException, IOException {
+	    /**
+     * Joins a group
+     * 
+     * @param context
+     *            Context for getting preferences
+     * @param groupId
+     *            Id of the group to join
+     * @return true if joined successfully, false otherwise
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     */
+    public static boolean joinGroup(Context context, String groupId) throws JSONException,
+            IOException {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
@@ -801,34 +803,35 @@ public class SenseApi {
 		Map<String, String> response = SenseApi.request(context, url, data, cookie);
 
 		String responseCode = response.get("http response code");
-		Boolean result = false;
+        boolean result = false;
 		if ("201".equalsIgnoreCase(responseCode)) {
 			result = true;
 		} else {
-			Log.e(TAG, "Error joining group! Response code: " + responseCode + "Response: " + response);
+            Log.w(TAG, "Failed to join group! Response code: " + responseCode + "Response: "
+                    + response);
 			result = false;
 		}
 
 		return result;
 	}	
 
-
-	/**
-	 * Share a sensor with a user or group
-	 * 
-	 * @param context
-	 *            Context for getting preferences
-	 * @param sensorId
-	 *            Id of the sensor to share
-	 * @param userId
-	 *            Id of the user or group to share the sensor with
-	 * @return true if shared successfully, false otherwise
-	 * @throws JSONException
-	 *             In case of unparseable response from CommonSense
-	 * @throws IOException
-	 *             In case of communication failure to CommonSense
-	 */
-	public static Boolean shareSensor(Context context, String sensorId, String userId) throws JSONException, IOException {
+    /**
+     * Shares a sensor with a user or group
+     * 
+     * @param context
+     *            Context for getting preferences
+     * @param sensorId
+     *            Id of the sensor to share
+     * @param userId
+     *            Id of the user or group to share the sensor with
+     * @return true if shared successfully, false otherwise
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     */
+    public static boolean shareSensor(Context context, String sensorId, String userId)
+            throws JSONException, IOException {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
@@ -851,11 +854,11 @@ public class SenseApi {
 		Map<String, String> response = SenseApi.request(context, url, data, cookie);
 
 		String responseCode = response.get("http response code");
-		Boolean result = false;
+        boolean result = false;
 		if ("201".equalsIgnoreCase(responseCode)) {
 			result = true;
 		} else {
-			Log.e(TAG, "Error sharing sensor! Response code: " + responseCode);
+            Log.w(TAG, "Failed to share sensor! Response code: " + responseCode);
 			result = false;
 		}
 
