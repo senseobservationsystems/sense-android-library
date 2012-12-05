@@ -491,7 +491,7 @@ public class SenseApi {
 		}
 	}
 
-	/**
+    /**
      * Gets user details from CommonSense
      * 
      * @param context
@@ -557,7 +557,7 @@ public class SenseApi {
 		}
 	}
 
-    /**
+	/**
     * Joins a group
     * 
     * @param context
@@ -614,89 +614,89 @@ public class SenseApi {
     return result;
 }
 
-	    /**
-         * Tries to log in at CommonSense using the supplied username and password. After login, the
-         * cookie containing the session ID is stored in the preferences.
-         * 
-         * @param context
-         *            Context for getting preferences
-         * @param username
-         *            Username for authentication
-         * @param password
-         *            Hashed password for authentication
-         * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
-         *         errors.
-         * @throws JSONException
-         *             In case of unparseable response from CommonSense
-         * @throws IOException
-         *             In case of communication failure to CommonSense
-         */
-        public static int login(Context context, String username, String password)
-        		throws JSONException, IOException {
+	/**
+	 * Tries to log in at CommonSense using the supplied username and password. After login, the
+	 * cookie containing the session ID is stored in the preferences.
+	 * 
+	 * @param context
+	 *            Context for getting preferences
+	 * @param username
+	 *            Username for authentication
+	 * @param password
+	 *            Hashed password for authentication
+	 * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
+	 *         errors.
+	 * @throws JSONException
+	 *             In case of unparseable response from CommonSense
+	 * @throws IOException
+	 *             In case of communication failure to CommonSense
+	 */
+	public static int login(Context context, String username, String password)
+			throws JSONException, IOException {
 
-        	// preferences
-        	if (null == authPrefs) {
-        		authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-        	}
-        	if (null == mainPrefs) {
-        		mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-        	}
+		// preferences
+		if (null == authPrefs) {
+			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+		}
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		}
 
-        	boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-        	if (devMode) {
-        		Log.i(TAG, "Using development server to log in");
-        	}
-        	final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
-        	final JSONObject user = new JSONObject();
-        	user.put("username", username);
-        	user.put("password", password);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		if (devMode) {
+			Log.i(TAG, "Using development server to log in");
+		}
+		final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
+		final JSONObject user = new JSONObject();
+		user.put("username", username);
+		user.put("password", password);
 
-        	// perform actual request
-        	Map<String, String> response = request(context, url, user, null);
+		// perform actual request
+		Map<String, String> response = request(context, url, user, null);
 
-        	// if response code is not 200 (OK), the login was incorrect
-        	String responseCode = response.get("http response code");
-        	int result = -1;
-        	if ("403".equalsIgnoreCase(responseCode)) {
-        		Log.w(TAG, "CommonSense login refused! Response: forbidden!");
-        		result = -2;
-        	} else if (!"200".equalsIgnoreCase(responseCode)) {
-        		Log.w(TAG, "CommonSense login failed! Response: " + responseCode);
-        		result = -1;
-        	} else {
-        		// received 200 response
-        		result = 0;
-        	}
+		// if response code is not 200 (OK), the login was incorrect
+		String responseCode = response.get("http response code");
+		int result = -1;
+		if ("403".equalsIgnoreCase(responseCode)) {
+			Log.w(TAG, "CommonSense login refused! Response: forbidden!");
+			result = -2;
+		} else if (!"200".equalsIgnoreCase(responseCode)) {
+			Log.w(TAG, "CommonSense login failed! Response: " + responseCode);
+			result = -1;
+		} else {
+			// received 200 response
+			result = 0;
+		}
 
-        	// get the cookie from the response
-        	String cookie = response.get("set-cookie");
-        	if (result == 0 && response.get("set-cookie") == null) {
-        		// something went horribly wrong
-        		Log.w(TAG, "CommonSense login failed: no cookie received?!");
-        		result = -1;
-        	}
+		// get the cookie from the response
+		String cookie = response.get("set-cookie");
+		if (result == 0 && response.get("set-cookie") == null) {
+			// something went horribly wrong
+			Log.w(TAG, "CommonSense login failed: no cookie received?!");
+			result = -1;
+		}
 
-        	// handle result
-        	Editor authEditor = authPrefs.edit();
-        	switch (result) {
-        	case 0: // logged in
-        		authEditor.putString(Auth.LOGIN_COOKIE, cookie);
-        		authEditor.commit();
-        		break;
-        	case -1: // error
-        		break;
-        	case -2: // unauthorized
-        		authEditor.remove(Auth.LOGIN_COOKIE);
-        		authEditor.commit();
-        		break;
-        	default:
-        		Log.e(TAG, "Unexpected login result: " + result);
-        	}
+		// handle result
+		Editor authEditor = authPrefs.edit();
+		switch (result) {
+		case 0: // logged in
+			authEditor.putString(Auth.LOGIN_COOKIE, cookie);
+			authEditor.commit();
+			break;
+		case -1: // error
+			break;
+		case -2: // unauthorized
+			authEditor.remove(Auth.LOGIN_COOKIE);
+			authEditor.commit();
+			break;
+		default:
+			Log.e(TAG, "Unexpected login result: " + result);
+		}
 
-        	return result;
-        }	
+		return result;
+	}
 
-    /**
+	/**
 	 * Push GCM Registration ID for current device
 	 * 
 	 * @param context
