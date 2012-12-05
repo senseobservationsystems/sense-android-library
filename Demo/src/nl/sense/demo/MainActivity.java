@@ -3,15 +3,16 @@ package nl.sense.demo;
 import org.json.JSONArray;
 
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.util.Log;
 import android.view.Menu;
 import nl.sense.demo.R;
 
 //import bunch of sense library stuff
 import nl.sense_os.platform.SensePlatform;
-import nl.sense_os.platform.ServiceConnectionEventHandler;
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import android.os.RemoteException;
@@ -20,7 +21,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.Location;
 
-public class MainActivity extends Activity implements ServiceConnectionEventHandler {
+public class MainActivity extends Activity implements ServiceConnection {
 	private static final String TAG = "Sense Demo"; 
 	private SensePlatform sensePlatform;
 	
@@ -85,22 +86,24 @@ public class MainActivity extends Activity implements ServiceConnectionEventHand
 
 	private void setupSense() {
 		try {
-			sensePlatform.login("foo", "bar", callback);
+			sensePlatform.login("foo", SenseApi.hashPassword("bar"), callback);
+			//sensePlatform.login("foo", "bar", callback);
 			//turn off specific sensors
-			sensePlatform.service().setPrefBool(Ambience.LIGHT, false);
-			sensePlatform.service().setPrefBool(Ambience.CAMERA_LIGHT, false);
-			sensePlatform.service().setPrefBool(Ambience.PRESSURE, false);
+			ISenseService service = sensePlatform.getService();
+			service.setPrefBool(Ambience.LIGHT, false);
+			service.setPrefBool(Ambience.CAMERA_LIGHT, false);
+			service.setPrefBool(Ambience.PRESSURE, false);
 			//turn on specific sensors
-			sensePlatform.service().setPrefBool(Ambience.MIC, true);
+			service.setPrefBool(Ambience.MIC, true);
 			//NOTE: spectrum might be too heavy for the phone or consume too much energy
-			sensePlatform.service().setPrefBool(Ambience.AUDIO_SPECTRUM, true);
+			service.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
 			
-			sensePlatform.service().setPrefBool(Location.GPS, true);
-			sensePlatform.service().setPrefBool(Location.NETWORK, true);
-			sensePlatform.service().setPrefBool(Location.AUTO_GPS, true);
+			service.setPrefBool(Location.GPS, true);
+			service.setPrefBool(Location.NETWORK, true);
+			service.setPrefBool(Location.AUTO_GPS, true);
 			
 			//set how often to sample
-			sensePlatform.service().setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+			service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
 
 			//set how often to upload
 			// 0 == eco mode
@@ -108,7 +111,7 @@ public class MainActivity extends Activity implements ServiceConnectionEventHand
 			//-1 == often (1 min)
 			//-2 == realtime
 			//NOTE, this setting affects power consumption considerately!
-			sensePlatform.service().setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
+			service.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
 			
 		} catch (Exception e) {
 			Log.v(TAG, "Exception " + e + " while setting up sense library.");
@@ -119,9 +122,13 @@ public class MainActivity extends Activity implements ServiceConnectionEventHand
 	void loggedIn() {
 		try {
 			// turn it on
-			sensePlatform.service().toggleMain(true);
-			sensePlatform.service().toggleAmbience(true);
-			sensePlatform.service().toggleLocation(true);
+			ISenseService service = sensePlatform.getService();
+			service.toggleMain(true);
+			service.toggleAmbience(true);
+			service.toggleLocation(true);
+			
+			sendData();
+			getData();
 		} catch (Exception e) {
 			Log.v(TAG, "Exception " + e + " while starting sense library.");
 			e.printStackTrace();
@@ -162,14 +169,11 @@ public class MainActivity extends Activity implements ServiceConnectionEventHand
 	}
 
 	@Override
-	public void onServiceConnected(ComponentName className, ISenseService service) {
-		setupSense();
-		sendData();
-		//TODO: it seems this request is performed too early?
-		getData();
+	public void onServiceDisconnected(ComponentName className) {
 	}
 
 	@Override
-	public void onServiceDisconnected(ComponentName className) {
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		setupSense();
 	}
 }
