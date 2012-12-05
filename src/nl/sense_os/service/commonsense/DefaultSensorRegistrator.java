@@ -80,7 +80,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		if (null != sensor) {
 			success &= checkSensor(SensorNames.PRESSURE, "", SenseDataTypes.JSON, sensor.getName(),
-					"{\"x\":0}", deviceType, deviceUuid);
+					"{\"Pascal\":0}", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No pressure sensor present!");
 		}
