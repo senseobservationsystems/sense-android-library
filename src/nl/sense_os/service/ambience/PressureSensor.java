@@ -60,16 +60,18 @@ public class PressureSensor implements SensorEventListener {
                 sensorName = SensorNames.PRESSURE;
             }
 
-            String jsonString = "{";
-            int x = 0;
-            for (float value : event.values) {
-                if (x == 0) {
-                    if (sensor.getType() == Sensor.TYPE_PRESSURE)
-                        jsonString += "\"millibar\":" + value;
-                }
-                x++;
-            }
-            jsonString += "}";
+            String jsonString = null;
+            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
+                jsonString = "{";
+                // value is millibar, convert to Pascal
+                float millibar = event.values[0];
+                float pascal = value * 100;
+                jsonString += "\"Pascal\":" + pascal;
+                jsonString += "}";
+            } else {
+                // not the right sensor
+                return;
+            }            
 
             // send msg to MsgHandler
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));

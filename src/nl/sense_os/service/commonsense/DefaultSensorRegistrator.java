@@ -80,9 +80,18 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		if (null != sensor) {
 			success &= checkSensor(SensorNames.PRESSURE, "", SenseDataTypes.JSON, sensor.getName(),
-					"{\"millibar\":0}", deviceType, deviceUuid);
+					"{\"Pascal\":0}", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No pressure sensor present!");
+		}
+		
+		// match Magnetic Field sensor
+		sensor = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		if (null != sensor) {
+			success &= checkSensor(SensorNames.MAGNETIC_FIELD, "", SenseDataTypes.JSON, sensor.getName(),
+					"{\"x\":0, \"y\":0, \"z\":0}", deviceType, deviceUuid);
+		} else {
+			// Log.v(TAG, "No magnetic field sensor present!");
 		}
 
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
