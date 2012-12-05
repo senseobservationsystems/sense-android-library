@@ -9,25 +9,33 @@ import java.util.Set;
 
 import nl.sense_os.service.constants.SensorData.DataPoint;
 
+/**
+ * Hacky solution for parsing SQL-like queries on the LocalStorage. Normal ContentProviders will not
+ * need this class because they can handle these queries themselves, but our {@link LocalStorage}
+ * class does not.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * @see LocalStorage
+ */
 public class ParserUtils {
 
     @SuppressWarnings("unused")
     private static final String TAG = "ParserUtils";
 
     private static String fixCompareSigns(String s) {
-	String result = s.replaceAll(" = ", "=");
-	result = result.replaceAll("= ", "=");
-	result = result.replaceAll(" =", "=");
-	result = result.replaceAll(" > ", ">");
-	result = result.replaceAll("> ", ">");
-	result = result.replaceAll(" >", ">");
-	result = result.replaceAll(" < ", "<");
-	result = result.replaceAll("< ", "<");
-	result = result.replaceAll(" <", "<");
-	result = result.replaceAll(" != ", "!=");
-	result = result.replaceAll("!= ", "!=");
-	result = result.replaceAll(" !=", "!=");
-	return result;
+		String result = s.replaceAll(" = ", "=");
+		result = result.replaceAll("= ", "=");
+		result = result.replaceAll(" =", "=");
+		result = result.replaceAll(" > ", ">");
+		result = result.replaceAll("> ", ">");
+		result = result.replaceAll(" >", ">");
+		result = result.replaceAll(" < ", "<");
+		result = result.replaceAll("< ", "<");
+		result = result.replaceAll(" <", "<");
+		result = result.replaceAll(" != ", "!=");
+		result = result.replaceAll("!= ", "!=");
+		result = result.replaceAll(" !=", "!=");
+		return result;
     }
 
     public static String getSelectedDeviceUuid(String selection, String[] selectionArgs) {
@@ -40,11 +48,11 @@ public class ParserUtils {
 	    int eqKeyStart = selection.indexOf(DataPoint.DEVICE_UUID + "='");
 
 	    if (-1 != eqKeyStart) {
-		// selection contains "device_uuid='"
-		int uuidStart = eqKeyStart + (DataPoint.DEVICE_UUID + "='").length();
-		int uuidEnd = selection.indexOf("'", uuidStart);
-		uuidEnd = uuidEnd == -1 ? selection.length() - 1 : uuidEnd;
-		deviceUuid = selection.substring(uuidStart, uuidEnd);
+			// selection contains "device_uuid='"
+			int uuidStart = eqKeyStart + (DataPoint.DEVICE_UUID + "='").length();
+			int uuidEnd = selection.indexOf("'", uuidStart);
+			uuidEnd = uuidEnd == -1 ? selection.length() - 1 : uuidEnd;
+			deviceUuid = selection.substring(uuidStart, uuidEnd);
 	    }
 	}
 	return deviceUuid;

@@ -1,5 +1,11 @@
 package nl.sense_os.service.constants;
 
+/**
+ * Set of predefined names for the data types that CommonSense supports. Useful for creating new
+ * sensor data value Intents.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class SenseDataTypes {
 
     public static final String BOOL = "bool";

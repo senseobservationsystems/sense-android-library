@@ -57,6 +57,16 @@ import android.util.Log;
 
 import java.util.List;
 
+/**
+ * Main sound sensor class. Uses Android MediaRecorder class to capture small bits of audio and
+ * convert it into sensor data. The AudioRecord is sampled periodically by setting an alarm
+ * broadcast that starts a NoiseSampleJob or SoundStreamJob.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
+ * @see LoudnessSensor
+ */
 public class NoiseSensor extends PhoneStateListener {
 
 	private static NoiseSensor instance = null;

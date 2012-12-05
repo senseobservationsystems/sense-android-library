@@ -16,6 +16,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+/**
+ * This class is responsible for initiating the transmission of buffered data. It works by setting
+ * periodic alarm broadcasts that are received by this class. The Sense service calls
+ * {@link #scheduleTransmissions(Context)} when it starts sensing. <br/>
+ * <br/>
+ * When the transmission alarm is received, an Intent is sent to the {@link MsgHandler} to empty its
+ * buffer.<br/>
+ * <br/>
+ * The transmission frequency is based on the {@link Main#SYNC_RATE} preference. When the sync rate
+ * is set to the real-time setting, we look at the and {@link Main#SAMPLE_RATE} to determine
+ * periodic "just in case" transmissions.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class DataTransmitter extends BroadcastReceiver {
 
 	private static final String TAG = "Sense DataTransmitter";

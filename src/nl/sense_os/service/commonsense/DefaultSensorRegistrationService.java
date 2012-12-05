@@ -15,6 +15,16 @@ import android.util.Log;
 
 import com.google.android.gcm.GCMRegistrar;
 
+/**
+ * Service that checks if all the sensors on this phone are registered at CommonSense.<br/>
+ * <br/>
+ * TODO: Also registers the app for GCM notifications, but this should probably be moved somewhere
+ * else to keep the code transparent.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
+ * @see DefaultSensorRegistrator
+ */
 public class DefaultSensorRegistrationService extends IntentService {
 
 	private static final String TAG = "DefaultSensorRegistrationService";
@@ -29,15 +39,17 @@ public class DefaultSensorRegistrationService extends IntentService {
 
 		SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
 		long lastVerified = mainPrefs.getLong(SensePrefs.Main.LAST_VERIFIED_SENSORS, 0);
-		if (System.currentTimeMillis() - lastVerified < 1000l * 60 * 60) { // 1 hour
+		if (System.currentTimeMillis() - lastVerified < 1000l * 60) { // 1 minute
 			// registered sensors were already recently checked
-			Log.v(TAG, "Sensor IDs were recently verified already");
+			Log.v(TAG, "Sensor IDs were just verified already");
 			return;
 		}
 
 		String deviceType = SenseApi.getDefaultDeviceType(this);
 		String deviceUuid = SenseApi.getDefaultDeviceUuid(this);
+
 		registerGCM();
+
 		if (verifier.verifySensorIds(deviceType, deviceUuid)) {
 			Log.v(TAG, "Sensor IDs verified");
 			mainPrefs.edit()
@@ -55,37 +67,44 @@ public class DefaultSensorRegistrationService extends IntentService {
 	}
 
 	/**
-	 * Register the device to use google GCM
+	 * Register the device to use Google GCM
 	 */
+	@SuppressWarnings("unused")
 	private void registerGCM() {
 
-		// get the registration ID
-		String registrationId = null;
-		try {
-			GCMRegistrar.checkDevice(this);
-			GCMRegistrar.checkManifest(this);
-			registrationId = GCMRegistrar.getRegistrationId(this);
-		} catch (IllegalStateException e) {
-			Log.w(TAG, "This application does not have the GCM permission");
-			return;
-		} catch (UnsupportedOperationException e) {
-			Log.w(TAG, "This device does not have GCM support");
-			return;
-		}
-
-		if (registrationId.equals("")) {
-			Log.v(TAG, "Device is not registered to Google Cloud Messaging, registering");
-			GCMRegistrar.register(this, SENDER_ID);
+		if (true) {
+			// FIXME we have disabled the GCM: it conflicts with other GCM registrations in the app
+			Log.w(TAG, "CommonSense GCM registration is disabled!");
 
 		} else {
+			// get the registration ID
+			String registrationId = null;
 			try {
-				SenseApi.registerGCMId(this, registrationId);
-			} catch (IOException e) {
-				Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
-			} catch (JSONException e) {
-				Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
-			} catch (Exception e) {
-				Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
+				GCMRegistrar.checkDevice(this);
+				GCMRegistrar.checkManifest(this);
+				registrationId = GCMRegistrar.getRegistrationId(this);
+			} catch (IllegalStateException e) {
+				Log.w(TAG, "This application does not have the GCM permission");
+				return;
+			} catch (UnsupportedOperationException e) {
+				Log.w(TAG, "This device does not have GCM support");
+				return;
+			}
+
+			if (registrationId.equals("")) {
+				Log.v(TAG, "Device is not registered to Google Cloud Messaging, registering");
+				GCMRegistrar.register(this, SENDER_ID);
+
+			} else {
+				try {
+					SenseApi.registerGCMId(this, registrationId);
+				} catch (IOException e) {
+					Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
+				} catch (JSONException e) {
+					Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
+				} catch (Exception e) {
+					Log.w(TAG, "Failed to register Google Cloud Messaging! " + e);
+				}
 			}
 		}
 	}

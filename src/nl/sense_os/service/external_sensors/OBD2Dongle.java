@@ -3,15 +3,12 @@
  *************************************************************************************************/
 package nl.sense_os.service.external_sensors;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Handler;
-import android.util.Log;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.UUID;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -22,16 +19,20 @@ import nl.sense_os.service.provider.SNTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.Set;
-import java.util.UUID;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
+import android.util.Log;
 
 /**
- * @author roelofvandenberg
+ * Class that manages connection with an OBD2 dongle via BLuetooth.
  * 
+ * @author Roelof van den Berg <roelof@sense-os.nl>
  */
 public class OBD2Dongle {
     // static device specifics

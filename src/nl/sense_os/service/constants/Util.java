@@ -1,5 +1,10 @@
 package nl.sense_os.service.constants;
 
+/**
+ * General utility class.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class Util {
 
 	private Util() {

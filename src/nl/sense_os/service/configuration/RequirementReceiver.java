@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 
-
+/**
+ * @author Ahmy Yulrizka <ahmy@sense-os.nl>
+ */
 public class RequirementReceiver extends BroadcastReceiver {	
 	@Override
 	public void onReceive(Context context, Intent intent) {						

@@ -32,6 +32,12 @@ import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+/**
+ * Represents the Zephyr HxM sensor. When started, the phone tries to connect to the device via
+ * Bluetooth and requests sensor data.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ */
 public class ZephyrHxM {
 
     /*
@@ -536,7 +542,7 @@ public class ZephyrHxM {
 
 	NotificationManager mgr = (NotificationManager) context
 		.getSystemService(Context.NOTIFICATION_SERVICE);
-	mgr.notify(2, builder.getNotification());
+        mgr.notify(2, builder.build());
     }
 
     public void setUpdateInterval(int updateInterval) {

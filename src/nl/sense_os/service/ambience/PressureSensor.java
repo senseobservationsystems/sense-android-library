@@ -21,6 +21,12 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
 
+/**
+ * Represents the air pressure sensor. Registers itself for updates from the Android
+ * {@link SensorManager}.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class PressureSensor implements SensorEventListener {
 
     private static final String TAG = "Sense Pressure Sensor";
@@ -52,11 +58,13 @@ public class PressureSensor implements SensorEventListener {
 	    return instance;
     }
 
+    public long getSampleDelay() {
+        return sampleDelay;
+    }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Log.d(TAG, "Accuracy changed...");
-        // Log.d(TAG, "Sensor: " + sensor.getName() + "(" + sensor.getType() + "), accuracy: " +
-        // accuracy);
+        // do nothing
     }
 
     @Override
@@ -132,9 +140,5 @@ public class PressureSensor implements SensorEventListener {
             Log.e(TAG, e.getMessage());
         }
 
-    }
-
-    public long getSampleDelay() {
-        return sampleDelay;
     }
 }

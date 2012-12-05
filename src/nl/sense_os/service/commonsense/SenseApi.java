@@ -48,6 +48,11 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+/**
+ * Main interface for communicating with the CommonSense API.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class SenseApi {
 
 	/**
@@ -190,7 +195,8 @@ public class SenseApi {
 
 			} else if (name.equals(SensorNames.ACCELEROMETER) || name.equals(SensorNames.ORIENT)
 					|| name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
-					|| name.equals(SensorNames.MAGNET_FIELD)) {
+					|| name.equals(SensorNames.MAGNET_FIELD)
+					|| name.equals(SensorNames.ACCELEROMETER_EPI)) {
 				// special case to take care of changed motion sensor descriptions since Gingerbread
 				if (name.equals(sensor.getString("name"))) {
 					// Log.d(TAG, "Using inexact match for '" + name + "' sensor ID...");
@@ -608,10 +614,9 @@ public class SenseApi {
 		}
 
 		// retrieve the newly created sensor ID
-		String content = response.get("content");
-		JSONObject responseJson = new JSONObject(content);
-		JSONObject jsonSensor = responseJson.getJSONObject("sensor");
-		final String id = jsonSensor.getString("id");
+		String locationHeader = response.get("location");
+		String[] split = locationHeader.split("/");
+		String id = split[split.length - 1];
 
 		// get device properties from preferences, so it matches the properties in CommonSense
 		if (null == deviceUuid) {
@@ -638,9 +643,10 @@ public class SenseApi {
 		}
 
 		// store the new sensor in the preferences
-		jsonSensor.put("device", device);
+		sensor.put("id", id);
+		sensor.put("device", device);
 		JSONArray sensors = getAllSensors(context);
-		sensors.put(jsonSensor);
+		sensors.put(sensor);
 		Editor authEditor = authPrefs.edit();
 		authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
 		authEditor.commit();
@@ -974,7 +980,7 @@ public class SenseApi {
 
 		return response.get("content");
 	}
-	
+
 	/**
 	 * Get specific configuration from commonSense
 	 * 
@@ -982,7 +988,8 @@ public class SenseApi {
 	 * @throws IOException
 	 * 
 	 */
-	public static String getDeviceConfiguration(Context context, String configuration_id) throws IOException, JSONException {
+	public static String getDeviceConfiguration(Context context, String configuration_id)
+			throws IOException, JSONException {
 		final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
 				Context.MODE_PRIVATE);
 		final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -990,8 +997,7 @@ public class SenseApi {
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_CONFIGURATION
-				: SenseUrls.DEV_CONFIGURATION;
+		String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.DEV_CONFIGURATION;
 
 		url = url.replaceFirst("<id>", configuration_id);
 

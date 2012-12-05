@@ -40,6 +40,23 @@ import android.os.PowerManager.WakeLock;
 import android.util.FloatMath;
 import android.util.Log;
 
+/**
+ * Represents the main motion sensor. Listens for events from the Android SensorManager and parses
+ * the results.<br/>
+ * <br/>
+ * The resulting data is divided over several separate sensors in CommonSense: *
+ * <ul>
+ * <li>accelerometer</li>
+ * <li>gyroscope</li>
+ * <li>motion energy</li>
+ * <li>linear acceleration</li>
+ * </ul>
+ * Besides these basic sensors, the sensor can also gather data for high-speed epilepsy detection
+ * and fall detection.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class MotionSensor implements SensorEventListener {
 
 	private static MotionSensor instance = null;
@@ -64,26 +81,26 @@ public class MotionSensor implements SensorEventListener {
 	public void onReceive(Context context, Intent intent) {
 	    // Check action just to be on the safe side.
 	    if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-		return;
+			return;
 	    }
 
 	    SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 		    Context.MODE_PRIVATE);
 	    boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
 	    if (useFix) {
-		// wait half a second and re-register
-		Runnable restartSensing = new Runnable() {
+			// wait half a second and re-register
+			Runnable restartSensing = new Runnable() {
 
-		    @Override
-		    public void run() {
-			// Unregisters the motion listener and registers it again.
-			// Log.v(TAG, "Screen went off, re-registering the Motion sensor");
-			stopMotionSensing();
-			startMotionSensing(sampleDelay);
-		    };
-		};
+				@Override
+				public void run() {
+				// Unregisters the motion listener and registers it again.
+				// Log.v(TAG, "Screen went off, re-registering the Motion sensor");
+				stopMotionSensing();
+				startMotionSensing(sampleDelay);
+				};
+			};
 
-		new Handler().postDelayed(restartSensing, 500);
+			new Handler().postDelayed(restartSensing, 500);
 	    }
 	}
     }
@@ -270,7 +287,6 @@ public class MotionSensor implements SensorEventListener {
 
 	if (System.currentTimeMillis() > lastLocalSampleTimes[sensor.getType()] + localBufferTime) {
 	    // send the stuff
-	    // Log.v(TAG, "Transmit accelerodata: " + dataBuffer[sensor.getType()].length());
 	    // pass message to the MsgHandler
 	    Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 	    i.putExtra(DataPoint.SENSOR_NAME, SensorNames.ACCELEROMETER_EPI);
@@ -288,6 +304,7 @@ public class MotionSensor implements SensorEventListener {
 	    if (firstTimeSend == 0) {
 		firstTimeSend = System.currentTimeMillis();
 	    }
+	    
 	}
     }
 
@@ -558,7 +575,7 @@ public class MotionSensor implements SensorEventListener {
 
 	// check if the fall detector is enabled
 	isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
-	if (fallDetector.demo = mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
+	if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
 	    isFallDetectMode = true;
 
 	    Log.v(TAG, "Start epi state sensor");

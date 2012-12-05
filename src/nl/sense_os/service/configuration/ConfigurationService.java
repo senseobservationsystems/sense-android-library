@@ -5,10 +5,10 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
 import nl.sense_os.service.constants.SensePrefs.Main.Location;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
-import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
 import nl.sense_os.service.constants.SensePrefs.Status;
 
 import org.json.JSONException;
@@ -19,6 +19,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+/**
+ * @author Ahmy Yulrizka <ahmy@sense-os.nl>
+ */
 public class ConfigurationService extends IntentService {
 	
 	private Integer samplingRate = null;

@@ -36,6 +36,8 @@ import android.util.Log;
  *     long now = client.getNtpTime() + SystemClock.elapsedRealtime() - client.getNtpTimeReference();
  * }
  * </pre>
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
 public class SNTP {
     private static final String TAG = "SNTP";

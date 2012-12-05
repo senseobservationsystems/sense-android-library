@@ -7,7 +7,10 @@ package nl.sense_os.service.external_sensors;
 // The only method is checksum which takes a byte array terminated
 // by a null byte and returns the checksum of the array.
 
-class CRC8 {
+/**
+ * @author Ted Schmidt <ted@sense-os.nl>
+ */
+public class CRC8 {
     public static byte checksum(byte[] data) {
         short _register = 0;
         short bitMask = 0;

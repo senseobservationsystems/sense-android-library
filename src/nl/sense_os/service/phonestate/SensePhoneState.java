@@ -34,6 +34,22 @@ import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+/**
+ * Represents the sense phone state sensor. Listens for a number of different events about the state
+ * of the phone, and sends them periodically to CommonSense.
+ * 
+ * <ul>
+ * <li>call state</li>
+ * <li>data connection</li>
+ * <li>ip address</li>
+ * <li>signal strength</li>
+ * <li>service state</li>
+ * <li>unread msg</li>
+ * </ul>
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class SensePhoneState extends PhoneStateListener {
 
 	private static final String TAG = "Sense PhoneStateListener";

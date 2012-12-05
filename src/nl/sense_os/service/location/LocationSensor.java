@@ -38,6 +38,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Represents the location sensor. Implements the basic Android LocationListener to receive location
+ * updates from the OS.<br/>
+ * <br/>
+ * Generates data for the following sensors:
+ * <ul>
+ * <li>position</li>
+ * <li>traveled distance 1h</li>
+ * </ul>
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class LocationSensor {
 	
 	private static LocationSensor instance = null;

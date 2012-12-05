@@ -1,5 +1,14 @@
 package nl.sense_os.service.constants;
 
+import nl.sense_os.service.commonsense.SenseApi;
+
+/**
+ * Contains URL resources for communication with the CommonSense API
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
+ * @see SenseApi
+ */
 public class SenseUrls {
 
 	public static final String BASE = "https://api.sense-os.nl/";
@@ -27,7 +36,7 @@ public class SenseUrls {
 			+ FORMAT;
 	public static final String DEV_DEVICE_UPDATE_CONFIGURATION = DEV_BASE
 			+ "devices/<id>/configuration" + FORMAT;
-	
+
 	public static final String CONFIGURATION = BASE + "configurations/<id>" + FORMAT;
 	public static final String DEV_CONFIGURATION = DEV_BASE + "configurations/<id>" + FORMAT;
 

@@ -3,6 +3,9 @@ package nl.sense_os.service.push;
 import nl.sense_os.service.R;
 import android.content.Context;
 
+/**
+ * @author Ahmy Yulrizka <ahmy@sense-os.nl>
+ */
 public class GCMBroadcastReceiver extends
 		com.google.android.gcm.GCMBroadcastReceiver {
 
