@@ -141,6 +141,53 @@ public class SenseApi {
 	}
 
 	/**
+	 * Gets the sensors that are connected to another sensor. Typically used
+	 * 
+	 * @param context
+	 * @param sensorId
+	 * @return List of IDs for connected sensors
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public static List<String> getConnectedSensors(Context context, String sensorId)
+			throws IOException, JSONException {
+
+		if (null == authPrefs) {
+			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+		}
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		}
+
+		// request fresh list of sensors for this device from CommonSense
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		if (devMode) {
+			Log.i(TAG, "Using development server to get connected sensors");
+		}
+		String url = devMode ? SenseUrls.DEV_CONNECTED_SENSORS : SenseUrls.CONNECTED_SENSORS;
+		url = url.replace("<id>", sensorId);
+		Map<String, String> response = SenseApi.request(context, url, null, cookie);
+
+		String responseCode = response.get("http response code");
+		if (!"200".equals(responseCode)) {
+			Log.w(TAG, "Failed to get list of connected sensors! Response code: " + responseCode);
+			throw new IOException("Incorrect response from CommonSense: " + responseCode);
+		}
+
+		// parse response and store the list
+		JSONObject content = new JSONObject(response.get("content"));
+		JSONArray sensorList = content.getJSONArray("sensors");
+
+		List<String> result = new ArrayList<String>();
+		for (int i = 0; i < sensorList.length(); i++) {
+			JSONObject sensor = sensorList.getJSONObject(0);
+			result.add(sensor.getString("id"));
+		}
+		return result;
+	}
+
+	/**
 	 * @param context
 	 *            Context for accessing phone details
 	 * @return The default device type, i.e. the phone's model String
@@ -172,6 +219,119 @@ public class SenseApi {
 			}
 		}
 		return uuid;
+	}
+
+	/**
+	 * Get device configuration from commonSense
+	 * 
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	public static String getDeviceConfiguration(Context context) throws IOException, JSONException {
+		if (null == authPrefs) {
+			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+		}
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		}
+
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		String url = devMode ? SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION
+				: SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION;
+
+		// Get the device ID
+		String device_id = getDeviceId(context);
+
+		url = url.replaceFirst("<id>", device_id);
+
+		Map<String, String> response = SenseApi.request(context, url, null, cookie);
+		String responseCode = response.get("http response code");
+		if (!"200".equals(responseCode)) {
+			Log.w(TAG, "Failed to get device configuration! Response code: " + responseCode);
+			throw new IOException("Incorrect response from CommonSense: " + responseCode);
+		}
+
+		return response.get("content");
+	}
+
+	/**
+	 * Get specific configuration from commonSense
+	 * 
+	 * @throws JSONException
+	 * @throws IOException
+	 * 
+	 */
+	public static String getDeviceConfiguration(Context context, String configuration_id)
+			throws IOException, JSONException {
+		final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
+				Context.MODE_PRIVATE);
+		final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+				Context.MODE_PRIVATE);
+
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
+		String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.DEV_CONFIGURATION;
+
+		url = url.replaceFirst("<id>", configuration_id);
+
+		Map<String, String> response = SenseApi.request(context, url, null, cookie);
+		String responseCode = response.get("http response code");
+		if (!"200".equals(responseCode)) {
+			Log.w(TAG, "Failed to get Requirement! Response code: " + responseCode);
+			throw new IOException("Incorrect response from CommonSense: " + responseCode);
+		}
+
+		return response.get("content");
+	}
+
+	/**
+	 * Get this device_id registered in common sense
+	 * 
+	 * @param context
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public static String getDeviceId(Context context) throws IOException, JSONException {
+		String device_id = null;
+
+		if (null == authPrefs) {
+			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+		}
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		}
+
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		String url = devMode ? SenseUrls.DEV_DEVICES : SenseUrls.DEVICES;
+
+		Map<String, String> response = SenseApi.request(context, url, null, cookie);
+		String responseCode = response.get("http response code");
+		if (!"200".equals(responseCode)) {
+			Log.w(TAG, "Failed to get devices data: " + responseCode);
+			throw new IOException("Incorrect response from CommonSense: " + responseCode);
+		}
+
+		// check registration result
+		JSONObject res = new JSONObject(response.get("content"));
+		JSONArray arr = res.getJSONArray("devices");
+
+		String deviceType = getDefaultDeviceType(context);
+		String deviceUUID = getDefaultDeviceUuid(context);
+
+		for (int i = 0; i < arr.length(); i++) {
+			JSONObject row = arr.getJSONObject(i);
+			String cid = row.getString("id");
+			String ctype = row.getString("type");
+			String cuuid = row.getString("uuid");
+			if (deviceType.equals(ctype) && deviceUUID.equals(cuuid)) {
+				device_id = cid;
+				break;
+			}
+		}
+
+		return device_id;
 	}
 
 	private static List<JSONObject> getMatchingSensors(Context context, String name,
@@ -258,102 +418,6 @@ public class SenseApi {
 	}
 
 	/**
-	 * Gets the sensors that are connected to another sensor. Typically used
-	 * 
-	 * @param context
-	 * @param sensorId
-	 * @return List of IDs for connected sensors
-	 * @throws IOException
-	 * @throws JSONException
-	 */
-	public static List<String> getConnectedSensors(Context context, String sensorId)
-			throws IOException, JSONException {
-
-		if (null == authPrefs) {
-			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-
-		// request fresh list of sensors for this device from CommonSense
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		if (devMode) {
-			Log.i(TAG, "Using development server to get connected sensors");
-		}
-		String url = devMode ? SenseUrls.DEV_CONNECTED_SENSORS : SenseUrls.CONNECTED_SENSORS;
-		url = url.replace("<id>", sensorId);
-		Map<String, String> response = SenseApi.request(context, url, null, cookie);
-
-		String responseCode = response.get("http response code");
-		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to get list of connected sensors! Response code: " + responseCode);
-			throw new IOException("Incorrect response from CommonSense: " + responseCode);
-		}
-
-		// parse response and store the list
-		JSONObject content = new JSONObject(response.get("content"));
-		JSONArray sensorList = content.getJSONArray("sensors");
-
-		List<String> result = new ArrayList<String>();
-		for (int i = 0; i < sensorList.length(); i++) {
-			JSONObject sensor = sensorList.getJSONObject(0);
-			result.add(sensor.getString("id"));
-		}
-		return result;
-	}
-
-	/**
-	 * Get this device_id registered in common sense
-	 * 
-	 * @param context
-	 * @throws IOException
-	 * @throws JSONException
-	 */
-	public static String getDeviceId(Context context) throws IOException, JSONException {
-		String device_id = null;
-
-		if (null == authPrefs) {
-			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_DEVICES : SenseUrls.DEVICES;
-
-		Map<String, String> response = SenseApi.request(context, url, null, cookie);
-		String responseCode = response.get("http response code");
-		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to get devices data: " + responseCode);
-			throw new IOException("Incorrect response from CommonSense: " + responseCode);
-		}
-
-		// check registration result
-		JSONObject res = new JSONObject(response.get("content"));
-		JSONArray arr = res.getJSONArray("devices");
-
-		String deviceType = getDefaultDeviceType(context);
-		String deviceUUID = getDefaultDeviceUuid(context);
-
-		for (int i = 0; i < arr.length(); i++) {
-			JSONObject row = arr.getJSONObject(i);
-			String cid = row.getString("id");
-			String ctype = row.getString("type");
-			String cuuid = row.getString("uuid");
-			if (deviceType.equals(ctype) && deviceUUID.equals(cuuid)) {
-				device_id = cid;
-				break;
-			}
-		}
-
-		return device_id;
-	}
-
-	/**
 	 * Gets the URL at CommonSense to which the data must be sent.
 	 * 
 	 * @param context
@@ -428,6 +492,44 @@ public class SenseApi {
 	}
 
 	/**
+     * Gets user details from CommonSense
+     * 
+     * @param context
+     *            Context for getting preferences
+     * @return JSONObject with user if successful, null otherwise
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     */
+	public static JSONObject getUser(Context context) throws IOException, JSONException {
+		if (null == authPrefs) {
+			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+		}
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		}
+
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		
+		String url = devMode ? SenseUrls.DEV_GET_CURRENT_USER : SenseUrls.GET_CURRENT_USER;
+
+		// perform actual request
+		Map<String, String> response = SenseApi.request(context, url, null, cookie);
+
+		String responseCode = response.get("http response code");
+		JSONObject result = null;
+		if ("200".equalsIgnoreCase(responseCode)) {
+			result = new JSONObject(response.get("content")).getJSONObject("user");
+		} else {
+            Log.w(TAG, "Failed to get user! Response code: " + responseCode);
+            throw new IOException("Incorrect response from CommonSense: " + responseCode);
+		}
+		return result;
+	}
+
+	/**
 	 * @param hashMe
 	 *            "clear" password String to be hashed before sending it to CommonSense
 	 * @return Hashed String
@@ -455,27 +557,159 @@ public class SenseApi {
 		}
 	}
 
-	/**
-	 * Tries to log in at CommonSense using the supplied username and password. After login, the
-	 * cookie containing the session ID is stored in the preferences.
+    /**
+    * Joins a group
+    * 
+    * @param context
+    *            Context for getting preferences
+    * @param groupId
+    *            Id of the group to join
+    * @return true if joined successfully, false otherwise
+    * @throws JSONException
+    *             In case of unparseable response from CommonSense
+    * @throws IOException
+    *             In case of communication failure to CommonSense
+    */
+   public static boolean joinGroup(Context context, String groupId) throws JSONException,
+        IOException {
+    if (null == authPrefs) {
+    	authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+    }
+    if (null == mainPrefs) {
+    	mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+    }
+
+    String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+    boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+    
+    //get userId
+    String userId = getUser(context).getString("id");
+    
+    String url = devMode ? SenseUrls.DEV_JOIN_GROUP : SenseUrls.JOIN_GROUP;
+    url = url.replaceFirst("<id>", groupId);
+
+    // create JSON object to POST
+    final JSONObject data = new JSONObject();
+    final JSONArray users = new JSONArray();
+    final JSONObject item = new JSONObject();
+    final JSONObject user = new JSONObject();
+    user.put("id", userId);
+    item.put("user", user);
+    users.put(item);
+    data.put("users", users);
+
+    // perform actual request
+    Map<String, String> response = SenseApi.request(context, url, data, cookie);
+
+    String responseCode = response.get("http response code");
+    boolean result = false;
+    if ("201".equalsIgnoreCase(responseCode)) {
+    	result = true;
+    } else {
+        Log.w(TAG, "Failed to join group! Response code: " + responseCode + "Response: "
+                + response);
+    	result = false;
+    }
+
+    return result;
+}
+
+	    /**
+         * Tries to log in at CommonSense using the supplied username and password. After login, the
+         * cookie containing the session ID is stored in the preferences.
+         * 
+         * @param context
+         *            Context for getting preferences
+         * @param username
+         *            Username for authentication
+         * @param password
+         *            Hashed password for authentication
+         * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
+         *         errors.
+         * @throws JSONException
+         *             In case of unparseable response from CommonSense
+         * @throws IOException
+         *             In case of communication failure to CommonSense
+         */
+        public static int login(Context context, String username, String password)
+        		throws JSONException, IOException {
+
+        	// preferences
+        	if (null == authPrefs) {
+        		authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        	}
+        	if (null == mainPrefs) {
+        		mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        	}
+
+        	boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        	if (devMode) {
+        		Log.i(TAG, "Using development server to log in");
+        	}
+        	final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
+        	final JSONObject user = new JSONObject();
+        	user.put("username", username);
+        	user.put("password", password);
+
+        	// perform actual request
+        	Map<String, String> response = request(context, url, user, null);
+
+        	// if response code is not 200 (OK), the login was incorrect
+        	String responseCode = response.get("http response code");
+        	int result = -1;
+        	if ("403".equalsIgnoreCase(responseCode)) {
+        		Log.w(TAG, "CommonSense login refused! Response: forbidden!");
+        		result = -2;
+        	} else if (!"200".equalsIgnoreCase(responseCode)) {
+        		Log.w(TAG, "CommonSense login failed! Response: " + responseCode);
+        		result = -1;
+        	} else {
+        		// received 200 response
+        		result = 0;
+        	}
+
+        	// get the cookie from the response
+        	String cookie = response.get("set-cookie");
+        	if (result == 0 && response.get("set-cookie") == null) {
+        		// something went horribly wrong
+        		Log.w(TAG, "CommonSense login failed: no cookie received?!");
+        		result = -1;
+        	}
+
+        	// handle result
+        	Editor authEditor = authPrefs.edit();
+        	switch (result) {
+        	case 0: // logged in
+        		authEditor.putString(Auth.LOGIN_COOKIE, cookie);
+        		authEditor.commit();
+        		break;
+        	case -1: // error
+        		break;
+        	case -2: // unauthorized
+        		authEditor.remove(Auth.LOGIN_COOKIE);
+        		authEditor.commit();
+        		break;
+        	default:
+        		Log.e(TAG, "Unexpected login result: " + result);
+        	}
+
+        	return result;
+        }	
+
+    /**
+	 * Push GCM Registration ID for current device
 	 * 
 	 * @param context
-	 *            Context for getting preferences
-	 * @param username
-	 *            Username for authentication
-	 * @param password
-	 *            Hashed password for authentication
-	 * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
-	 *         errors.
-	 * @throws JSONException
-	 *             In case of unparseable response from CommonSense
+	 *            Application context, used to read preferences.
+	 * @param registrationId
+	 *            Registration ID given by google
 	 * @throws IOException
-	 *             In case of communication failure to CommonSense
+	 * @throws JSONException
+	 * @throws IllegalStateException
 	 */
-	public static int login(Context context, String username, String password)
-			throws JSONException, IOException {
+	public static void registerGCMId(Context context, String registrationId) throws IOException,
+			JSONException {
 
-		// preferences
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
@@ -483,58 +717,46 @@ public class SenseApi {
 			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
+		// Check if already synced with common sense
+		String pref_registration_id = authPrefs.getString(Auth.GCM_REGISTRATION_ID, "");
+
+		if (registrationId.equals(pref_registration_id)) {
+			// GCM registration id is already sync with commonSense
+			return;
+		}
+
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		if (devMode) {
-			Log.i(TAG, "Using development server to log in");
+		String url = devMode ? SenseUrls.DEV_REGISTER_GCM_ID : SenseUrls.REGISTER_GCM_ID;
+
+		// Get the device ID
+		String device_id = getDeviceId(context);
+
+		if (device_id == null) {
+			// register GCM ID failed, can not get the device ID for this device
+			return;
 		}
-		final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
-		final JSONObject user = new JSONObject();
-		user.put("username", username);
-		user.put("password", password);
 
-		// perform actual request
-		Map<String, String> response = request(context, url, user, null);
+		url = url.replaceFirst("<id>", device_id);
 
-		// if response code is not 200 (OK), the login was incorrect
+		final JSONObject data = new JSONObject();
+		data.put("registration_id", registrationId);
+
+		Map<String, String> response = SenseApi.request(context, url, data, cookie);
 		String responseCode = response.get("http response code");
-		int result = -1;
-		if ("403".equalsIgnoreCase(responseCode)) {
-			Log.w(TAG, "CommonSense login refused! Response: forbidden!");
-			result = -2;
-		} else if (!"200".equalsIgnoreCase(responseCode)) {
-			Log.w(TAG, "CommonSense login failed! Response: " + responseCode);
-			result = -1;
-		} else {
-			// received 200 response
-			result = 0;
+		if (!"200".equals(responseCode)) {
+			throw new IOException("Incorrect response from CommonSense: " + responseCode);
 		}
 
-		// get the cookie from the response
-		String cookie = response.get("set-cookie");
-		if (result == 0 && response.get("set-cookie") == null) {
-			// something went horribly wrong
-			Log.w(TAG, "CommonSense login failed: no cookie received?!");
-			result = -1;
+		// check registration result
+		JSONObject res = new JSONObject(response.get("content"));
+		if (!registrationId.equals(res.getJSONObject("device").getString(GCMReceiver.KEY_GCM_ID))) {
+			throw new IllegalStateException("GCM registration_id not match with response");
 		}
 
-		// handle result
 		Editor authEditor = authPrefs.edit();
-		switch (result) {
-		case 0: // logged in
-			authEditor.putString(Auth.LOGIN_COOKIE, cookie);
-			authEditor.commit();
-			break;
-		case -1: // error
-			break;
-		case -2: // unauthorized
-			authEditor.remove(Auth.LOGIN_COOKIE);
-			authEditor.commit();
-			break;
-		default:
-			Log.e(TAG, "Unexpected login result: " + result);
-		}
-
-		return result;
+		authEditor.putString(Auth.GCM_REGISTRATION_ID, registrationId);
+		authEditor.commit();
 	}
 
 	/**
@@ -720,151 +942,6 @@ public class SenseApi {
 		return result;
 	}
 
-    /**
-     * Gets user details from CommonSense
-     * 
-     * @param context
-     *            Context for getting preferences
-     * @return JSONObject with user if successful, null otherwise
-     * @throws JSONException
-     *             In case of unparseable response from CommonSense
-     * @throws IOException
-     *             In case of communication failure to CommonSense
-     */
-	public static JSONObject getUser(Context context) throws IOException, JSONException {
-		if (null == authPrefs) {
-			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		
-		String url = devMode ? SenseUrls.DEV_GET_CURRENT_USER : SenseUrls.GET_CURRENT_USER;
-
-		// perform actual request
-		Map<String, String> response = SenseApi.request(context, url, null, cookie);
-
-		String responseCode = response.get("http response code");
-		JSONObject result = null;
-		if ("200".equalsIgnoreCase(responseCode)) {
-			result = new JSONObject(response.get("content")).getJSONObject("user");
-		} else {
-            Log.w(TAG, "Failed to get user! Response code: " + responseCode);
-            throw new IOException("Incorrect response from CommonSense: " + responseCode);
-		}
-		return result;
-	}
-
-	    /**
-     * Joins a group
-     * 
-     * @param context
-     *            Context for getting preferences
-     * @param groupId
-     *            Id of the group to join
-     * @return true if joined successfully, false otherwise
-     * @throws JSONException
-     *             In case of unparseable response from CommonSense
-     * @throws IOException
-     *             In case of communication failure to CommonSense
-     */
-    public static boolean joinGroup(Context context, String groupId) throws JSONException,
-            IOException {
-		if (null == authPrefs) {
-			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		
-		//get userId
-		String userId = getUser(context).getString("id");
-		
-		String url = devMode ? SenseUrls.DEV_JOIN_GROUP : SenseUrls.JOIN_GROUP;
-		url = url.replaceFirst("<id>", groupId);
-
-		// create JSON object to POST
-		final JSONObject data = new JSONObject();
-		final JSONArray users = new JSONArray();
-		final JSONObject item = new JSONObject();
-		final JSONObject user = new JSONObject();
-		user.put("id", userId);
-		item.put("user", user);
-		users.put(item);
-		data.put("users", users);
-
-		// perform actual request
-		Map<String, String> response = SenseApi.request(context, url, data, cookie);
-
-		String responseCode = response.get("http response code");
-        boolean result = false;
-		if ("201".equalsIgnoreCase(responseCode)) {
-			result = true;
-		} else {
-            Log.w(TAG, "Failed to join group! Response code: " + responseCode + "Response: "
-                    + response);
-			result = false;
-		}
-
-		return result;
-	}	
-
-    /**
-     * Shares a sensor with a user or group
-     * 
-     * @param context
-     *            Context for getting preferences
-     * @param sensorId
-     *            Id of the sensor to share
-     * @param userId
-     *            Id of the user or group to share the sensor with
-     * @return true if shared successfully, false otherwise
-     * @throws JSONException
-     *             In case of unparseable response from CommonSense
-     * @throws IOException
-     *             In case of communication failure to CommonSense
-     */
-    public static boolean shareSensor(Context context, String sensorId, String userId)
-            throws JSONException, IOException {
-		if (null == authPrefs) {
-			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_SHARE_SENSOR : SenseUrls.SHARE_SENSOR;
-		url = url.replaceFirst("<id>", sensorId);
-
-		// create JSON object to POST
-		final JSONObject data = new JSONObject();
-		final JSONObject user = new JSONObject();
-		user.put("id", userId);
-		data.put("user", user);
-
-		// perform actual request
-		Map<String, String> response = SenseApi.request(context, url, data, cookie);
-
-		String responseCode = response.get("http response code");
-        boolean result = false;
-		if ("201".equalsIgnoreCase(responseCode)) {
-			result = true;
-		} else {
-            Log.w(TAG, "Failed to share sensor! Response code: " + responseCode);
-			result = false;
-		}
-
-		return result;
-	}
-
 	/**
 	 * Performs request at CommonSense API. Returns the response code, content, and headers.
 	 * 
@@ -997,6 +1074,56 @@ public class SenseApi {
 	}
 
 	/**
+     * Shares a sensor with a user or group
+     * 
+     * @param context
+     *            Context for getting preferences
+     * @param sensorId
+     *            Id of the sensor to share
+     * @param userId
+     *            Id of the user or group to share the sensor with
+     * @return true if shared successfully, false otherwise
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     */
+    public static boolean shareSensor(Context context, String sensorId, String userId)
+            throws JSONException, IOException {
+		if (null == authPrefs) {
+			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+		}
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		}
+
+		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		String url = devMode ? SenseUrls.DEV_SHARE_SENSOR : SenseUrls.SHARE_SENSOR;
+		url = url.replaceFirst("<id>", sensorId);
+
+		// create JSON object to POST
+		final JSONObject data = new JSONObject();
+		final JSONObject user = new JSONObject();
+		user.put("id", userId);
+		data.put("user", user);
+
+		// perform actual request
+		Map<String, String> response = SenseApi.request(context, url, data, cookie);
+
+		String responseCode = response.get("http response code");
+        boolean result = false;
+		if ("201".equalsIgnoreCase(responseCode)) {
+			result = true;
+		} else {
+            Log.w(TAG, "Failed to share sensor! Response code: " + responseCode);
+			result = false;
+		}
+
+		return result;
+	}
+
+	/**
 	 * Trust every server - do not check for any certificate
 	 */
 	// TODO Solve issue with security certificate for HTTPS.
@@ -1027,132 +1154,5 @@ public class SenseApi {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Push GCM Registration ID for current device
-	 * 
-	 * @param context
-	 *            Application context, used to read preferences.
-	 * @param registrationId
-	 *            Registration ID given by google
-	 * @throws IOException
-	 * @throws JSONException
-	 * @throws IllegalStateException
-	 */
-	public static void registerGCMId(Context context, String registrationId) throws IOException,
-			JSONException {
-
-		if (null == authPrefs) {
-			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-
-		// Check if already synced with common sense
-		String pref_registration_id = authPrefs.getString(Auth.GCM_REGISTRATION_ID, "");
-
-		if (registrationId.equals(pref_registration_id)) {
-			// GCM registration id is already sync with commonSense
-			return;
-		}
-
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_REGISTER_GCM_ID : SenseUrls.REGISTER_GCM_ID;
-
-		// Get the device ID
-		String device_id = getDeviceId(context);
-
-		if (device_id == null) {
-			// register GCM ID failed, can not get the device ID for this device
-			return;
-		}
-
-		url = url.replaceFirst("<id>", device_id);
-
-		final JSONObject data = new JSONObject();
-		data.put("registration_id", registrationId);
-
-		Map<String, String> response = SenseApi.request(context, url, data, cookie);
-		String responseCode = response.get("http response code");
-		if (!"200".equals(responseCode)) {
-			throw new IOException("Incorrect response from CommonSense: " + responseCode);
-		}
-
-		// check registration result
-		JSONObject res = new JSONObject(response.get("content"));
-		if (!registrationId.equals(res.getJSONObject("device").getString(GCMReceiver.KEY_GCM_ID))) {
-			throw new IllegalStateException("GCM registration_id not match with response");
-		}
-
-		Editor authEditor = authPrefs.edit();
-		authEditor.putString(Auth.GCM_REGISTRATION_ID, registrationId);
-		authEditor.commit();
-	}
-
-	/**
-	 * Get device configuration from commonSense
-	 * 
-	 * @throws JSONException
-	 * @throws IOException
-	 */
-	public static String getDeviceConfiguration(Context context) throws IOException, JSONException {
-		if (null == authPrefs) {
-			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION
-				: SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION;
-
-		// Get the device ID
-		String device_id = getDeviceId(context);
-
-		url = url.replaceFirst("<id>", device_id);
-
-		Map<String, String> response = SenseApi.request(context, url, null, cookie);
-		String responseCode = response.get("http response code");
-		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to get device configuration! Response code: " + responseCode);
-			throw new IOException("Incorrect response from CommonSense: " + responseCode);
-		}
-
-		return response.get("content");
-	}
-
-	/**
-	 * Get specific configuration from commonSense
-	 * 
-	 * @throws JSONException
-	 * @throws IOException
-	 * 
-	 */
-	public static String getDeviceConfiguration(Context context, String configuration_id)
-			throws IOException, JSONException {
-		final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
-				Context.MODE_PRIVATE);
-		final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
-
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.DEV_CONFIGURATION;
-
-		url = url.replaceFirst("<id>", configuration_id);
-
-		Map<String, String> response = SenseApi.request(context, url, null, cookie);
-		String responseCode = response.get("http response code");
-		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to get Requirement! Response code: " + responseCode);
-			throw new IOException("Incorrect response from CommonSense: " + responseCode);
-		}
-
-		return response.get("content");
 	}
 }
