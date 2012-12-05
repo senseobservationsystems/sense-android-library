@@ -34,7 +34,7 @@ public class ProximitySensor implements SensorEventListener {
     private Runnable ProximityThread = null;
     private boolean ProximitySensingActive = false;
 
-    public ProximitySensor(Context context) {
+    protected ProximitySensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
@@ -43,6 +43,15 @@ public class ProximitySensor implements SensorEventListener {
         }
     }
 
+    private static ProximitySensor instance = null;
+    
+    public static ProximitySensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new ProximitySensor(context);
+	    }
+	    return instance;
+    }
+    
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Log.d(TAG, "Accuracy changed...");
@@ -99,6 +108,7 @@ public class ProximitySensor implements SensorEventListener {
     }
 
     public void startProximitySensing(long _sampleDelay) {
+    	ProximityHandler = new Handler();
         ProximitySensingActive = true;
         setSampleDelay(_sampleDelay);
         for (Sensor sensor : sensors) {

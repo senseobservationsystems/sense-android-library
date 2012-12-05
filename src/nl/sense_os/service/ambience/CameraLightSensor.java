@@ -10,6 +10,7 @@ import nl.sense_os.service.ambience.CameraLightValue.CameraLightValueCallback;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONObject;
@@ -31,9 +32,18 @@ public class CameraLightSensor {
     private boolean sensorEnabled;
     private String TAG = "Camera Light Sensor";
 
-    public CameraLightSensor(Context context) {
+    protected CameraLightSensor(Context context) {
         this.context = context;
         cameraLightValue = new CameraLightValue();
+    }
+    
+	private static CameraLightSensor instance = null;
+    
+    public static CameraLightSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new CameraLightSensor(context);
+	    }
+	    return instance;
     }
 
     public void stopLightSensing() {

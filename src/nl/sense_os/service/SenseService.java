@@ -23,6 +23,8 @@ import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.deviceprox.DeviceProximity;
+import nl.sense_os.service.ctrl.Controller;
+
 import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
@@ -39,6 +41,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -68,15 +71,17 @@ public class SenseService extends Service {
 	private ISenseService.Stub binder;
 
 	private ServiceStateHelper state;
-
+    
+	//private DataTransmitter dataTransmitter;
 	private BatterySensor batterySensor;
 	private DeviceProximity deviceProximity;
-	private LightSensor lightSensor;
+	private LightSensor lightSensor;  
 	private CameraLightSensor cameraLightSensor;
 	private TemperatureSensor temperatureSensor;
-	private LocationSensor locListener;
+	private LocationSensor locListener; 
+	private Controller controller;
 	private MotionSensor motionSensor;
-	private NoiseSensor noiseSensor;
+	private NoiseSensor noiseSensor;  
 	private PhoneActivitySensor phoneActivitySensor;
 	private PressureSensor pressureSensor;
 	private ProximitySensor proximitySensor;
@@ -95,6 +100,7 @@ public class SenseService extends Service {
 	// separate threads for the sensing modules
 	private static Handler ambienceHandler, devProxHandler, extSensorHandler, locationHandler,
 			motionHandler, phoneStateHandler;
+	//public static Handler LightHandler  = new Handler(); 
 
 	/**
 	 * Changes login of the Sense service. Removes "private" data of the previous user from the
@@ -266,7 +272,8 @@ public class SenseService extends Service {
 
 		super.onDestroy();
 	}
-
+	
+	
 	/**
 	 * Performs tasks after successful login: update status bar notification; start transmitting
 	 * collected sensor data and register the gcm_id.
@@ -278,9 +285,6 @@ public class SenseService extends Service {
 
 		// update login status
 		state.setLoggedIn(true);
-
-		// start database leeglepelaar
-		DataTransmitter.scheduleTransmissions(this);
 
 		// store this login
 		SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -383,7 +387,8 @@ public class SenseService extends Service {
 	void onSyncRateChange() {
 		Log.v(TAG, "Sync rate changed");
 		if (state.isStarted()) {
-			DataTransmitter.scheduleTransmissions(this);
+			controller = Controller.getController(this);
+			controller.scheduleTransmissions();
 		}
 
 		// update any widgets
@@ -500,6 +505,9 @@ public class SenseService extends Service {
 
 		SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
 		if (statusPrefs.getBoolean(Status.MAIN, false)) {
+			// start database leeglepelaar
+			controller = Controller.getController(this);
+			controller.scheduleTransmissions();
 			togglePhoneState(statusPrefs.getBoolean(Status.PHONESTATE, false));
 			toggleLocation(statusPrefs.getBoolean(Status.LOCATION, false));
 			toggleAmbience(statusPrefs.getBoolean(Status.AMBIENCE, false));
@@ -626,18 +634,21 @@ public class SenseService extends Service {
 
 						if (mainPrefs.getBoolean(Ambience.MIC, true)
 								|| mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
-							noiseSensor = new NoiseSensor(SenseService.this);
+							/*Notification note=new Notification();
+							note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
+							startForeground(1337, note);*/
+							noiseSensor = NoiseSensor.getInstance(SenseService.this);
 							noiseSensor.enable(finalInterval);
 						}
 						if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
-							lightSensor = new LightSensor(SenseService.this);
+							lightSensor = LightSensor.getInstance(SenseService.this);
 							lightSensor.startLightSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD
 								&& Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 							if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
-								cameraLightSensor = new CameraLightSensor(SenseService.this);
+								cameraLightSensor = CameraLightSensor.getInstance(SenseService.this);
 								cameraLightSensor.startLightSensing(finalInterval);
 							}
 						} else {
@@ -649,13 +660,13 @@ public class SenseService extends Service {
 						}
 						
 						if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
-							pressureSensor = new PressureSensor(SenseService.this);
+							pressureSensor = PressureSensor.getInstance(SenseService.this);
 							pressureSensor.startPressureSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 							if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
-								temperatureSensor = new TemperatureSensor(SenseService.this);
+								temperatureSensor = TemperatureSensor.getInstance(SenseService.this);
 								temperatureSensor.startSensing(finalInterval);
 							}
 						} else {
@@ -693,10 +704,10 @@ public class SenseService extends Service {
 					magneticFieldSensor = null;
 				}
 
-				if (ambienceHandler != null) {
+				/*if (ambienceHandler != null) {
 					ambienceHandler.getLooper().quit();
 					ambienceHandler = null;
-				}
+				}*/
 			}
 		}
 	}
@@ -950,7 +961,7 @@ public class SenseService extends Service {
 
 					@Override
 					public void run() {
-						locListener = new LocationSensor(SenseService.this);
+						locListener = LocationSensor.getInstance(SenseService.this);
 						locListener.enable(time, distance);
 					}
 				});
@@ -1046,7 +1057,7 @@ public class SenseService extends Service {
 
 					@Override
 					public void run() {
-						motionSensor = new MotionSensor(SenseService.this);
+						motionSensor = MotionSensor.getInstance(SenseService.this);
 						motionSensor.startMotionSensing(finalInterval);
 					}
 				});
@@ -1141,18 +1152,18 @@ public class SenseService extends Service {
 					public void run() {
 						try {
 							if (mainPrefs.getBoolean(PhoneState.BATTERY, true)) {
-								batterySensor = new BatterySensor(SenseService.this);
+								batterySensor = BatterySensor.getInstance(SenseService.this);
 								batterySensor.startBatterySensing(finalInterval);
 							}
 							if (mainPrefs.getBoolean(PhoneState.SCREEN_ACTIVITY, true)) {
-								phoneActivitySensor = new PhoneActivitySensor(SenseService.this);
+								phoneActivitySensor = PhoneActivitySensor.getInstance(SenseService.this);
 								phoneActivitySensor.startPhoneActivitySensing(finalInterval);
 							}
 							if (mainPrefs.getBoolean(PhoneState.PROXIMITY, true)) {
-								proximitySensor = new ProximitySensor(SenseService.this);
+								proximitySensor = ProximitySensor.getInstance(SenseService.this);
 								proximitySensor.startProximitySensing(finalInterval);
 							}
-							phoneStateListener = new SensePhoneState(SenseService.this);
+							phoneStateListener = SensePhoneState.getInstance(SenseService.this);
 							phoneStateListener.startSensing(finalInterval);
 						} catch (Exception e) {
 							Log.e(TAG, "Phone state thread failed to start!");
@@ -1180,10 +1191,10 @@ public class SenseService extends Service {
 					phoneActivitySensor.stopPhoneActivitySensing();
 					phoneActivitySensor = null;
 				}
-				if (null != phoneStateHandler) {
-					phoneStateHandler.getLooper().quit();
-					phoneStateHandler = null;
-				}
+//				if (null != phoneStateHandler) {
+//					phoneStateHandler.getLooper().quit();
+//					phoneStateHandler = null;
+//				}
 			}
 		}
 	}
@@ -1192,4 +1203,5 @@ public class SenseService extends Service {
 		Log.v(TAG, "Try to verify sensor IDs");
 		startService(new Intent(this, DefaultSensorRegistrationService.class));
 	}
+	
 }
