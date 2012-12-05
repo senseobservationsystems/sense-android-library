@@ -17,6 +17,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
@@ -68,7 +69,7 @@ public class SenseApi {
 
 	private static final String TAG = "SenseApi";
 	private static final long CACHE_REFRESH = 1000l * 60 * 60; // 1 hour
-	private static SharedPreferences mainPrefs;
+    private static SharedPreferences mainPrefs;
 	private static SharedPreferences authPrefs;
 	private static TelephonyManager telManager;
 
@@ -111,10 +112,10 @@ public class SenseApi {
 
 		// request fresh list of sensors for this device from CommonSense
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		if (devMode) {
 			Log.i(TAG, "Using development server to get registered sensors");
 		}
@@ -272,13 +273,13 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		// request fresh list of sensors for this device from CommonSense
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		if (devMode) {
 			Log.i(TAG, "Using development server to get connected sensors");
 		}
@@ -317,12 +318,12 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_DEVICES : SenseUrls.DEVICES;
 
 		Map<String, String> response = SenseApi.request(context, url, null, cookie);
@@ -383,10 +384,10 @@ public class SenseApi {
 			return null;
 		}
 
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
 		// found the right sensor
 		if (dataType.equals(SenseDataTypes.FILE)) {
@@ -408,18 +409,18 @@ public class SenseApi {
 	 *             if the app ID is not valid
 	 */
 	public static String getSessionId(Context context, String appId) throws IllegalAccessException {
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		if (null == authPrefs) {
+			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
 		if (AppSecrets.ASK.equals(appId)) {
 			// Log.v(TAG, "An ASK app accessed the CommonSense session ID");
-			return mainPrefs.getString(Auth.LOGIN_COOKIE, null);
+			return authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		} else if (AppSecrets.RDAM_CS.equals(appId)) {
 			// Log.v(TAG, "A Rotterdam CS app accessed the CommonSense session ID");
-			return mainPrefs.getString(Auth.LOGIN_COOKIE, null);
+			return authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		} else if (AppSecrets.SENSE.equals(appId)) {
 			// Log.v(TAG, "A Sense app accessed the CommonSense session ID");
-			return mainPrefs.getString(Auth.LOGIN_COOKIE, null);
+			return authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		} else {
 			Log.e(TAG, "App is not allowed access to the CommonSense session!");
 			throw new IllegalAccessException(
@@ -479,11 +480,11 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		if (devMode) {
 			Log.i(TAG, "Using development server to log in");
 		}
@@ -574,12 +575,12 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
 		// prepare request to create new sensor
 		String url = devMode ? SenseUrls.DEV_CREATE_SENSOR : SenseUrls.CREATE_SENSOR;
@@ -676,10 +677,10 @@ public class SenseApi {
 	public static int registerUser(Context context, String username, String password, String name,
 			String surname, String email, String mobile) throws JSONException, IOException {
 
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
 		final String url = devMode ? SenseUrls.DEV_REG : SenseUrls.REG;
 
@@ -737,10 +738,10 @@ public class SenseApi {
 	 */
 	public static Boolean shareSensor(Context context, String sensorId, String userId) throws JSONException, IOException {
 
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_SHARE_SENSOR : SenseUrls.SHARE_SENSOR;
 		url = url.replaceFirst("<id>", sensorId);
 
@@ -791,15 +792,15 @@ public class SenseApi {
 			// + " cookie:" + cookie);
 
 			// get compression preference
-			if (null == mainPrefs) {
-				mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+            if (null == mainPrefs) {
+                mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 						Context.MODE_PRIVATE);
 			}
-			final boolean compress = mainPrefs.getBoolean(Advanced.COMPRESS, true);
+            final boolean compress = mainPrefs.getBoolean(Advanced.COMPRESS, true);
 
 			// open new URL connection channel.
 			URL url = new URL(urlString);
-			if ("https".equals(url.getProtocol().toLowerCase())) {
+            if ("https".equals(url.getProtocol().toLowerCase(Locale.ENGLISH))) {
 				trustAllHosts();
 				HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
 				https.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
@@ -877,7 +878,7 @@ public class SenseApi {
 				key = entry.getKey();
 				value = entry.getValue();
 				if (null != key && null != value) {
-					key = key.toLowerCase();
+                    key = key.toLowerCase(Locale.ENGLISH);
 					valueString = value.toString();
 					valueString = valueString.substring(1, valueString.length() - 1);
 					// Log.d(TAG, "Header field '" + key + "': '" + valueString + "'");
@@ -946,8 +947,8 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		// Check if already synced with common sense
@@ -959,7 +960,7 @@ public class SenseApi {
 		}
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_REGISTER_GCM_ID : SenseUrls.REGISTER_GCM_ID;
 
 		// Get the device ID
@@ -1002,12 +1003,12 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == mainPrefs) {
+            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION
 				: SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION;
 
