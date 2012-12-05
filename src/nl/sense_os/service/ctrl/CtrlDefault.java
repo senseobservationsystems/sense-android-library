@@ -1,23 +1,20 @@
 package nl.sense_os.service.ctrl;
 
+import nl.sense_os.service.DataTransmitter;
 import nl.sense_os.service.R;
-import nl.sense_os.service.SenseService;
-//import nl.sense_os.service.DataTransmitter.Intervals;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
-import nl.sense_os.service.location.LocationSensor;
-import nl.sense_os.service.DataTransmitter; 
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -268,7 +265,7 @@ public class CtrlDefault extends Controller{
 		if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
 			// GPS has been turned off for a long time, or was never even started
 			tooLong = true;
-		} else if (!(locListener.locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
+        } else if (!(LocationSensor.locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
 			// the network provider is disabled: GPS is the only option
 			tooLong = true;
 		} else {

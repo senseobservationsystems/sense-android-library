@@ -3,17 +3,13 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
-import android.content.ComponentName;
-//import nl.sense_os.service.energy_controller.Controller;
-//import nl.sense_os.service.standard_controller.Controller;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 /**

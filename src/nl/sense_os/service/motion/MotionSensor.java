@@ -7,14 +7,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import nl.sense_os.service.R;
-import nl.sense_os.service.ambience.LoudnessSensor;
-import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.states.EpiStateMonitor;
 

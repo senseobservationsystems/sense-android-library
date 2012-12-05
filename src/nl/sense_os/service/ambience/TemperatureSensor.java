@@ -3,7 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

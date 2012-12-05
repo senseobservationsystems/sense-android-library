@@ -4,8 +4,6 @@
 package nl.sense_os.service.ambience;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
@@ -16,46 +14,28 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.ctrl.Controller;
-import nl.sense_os.service.SenseService;
-//import nl.sense_os.service.energy_controller.Controller;
-//import nl.sense_os.service.standard_controller.Controller;
+import nl.sense_os.service.provider.SNTP;
 
 import org.json.JSONObject;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.location.GpsStatus.Listener;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.TextView;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.os.IBinder;
-import android.util.Log;
-
-import java.util.List;
 
 /**
  * Main sound sensor class. Uses Android MediaRecorder class to capture small bits of audio and
