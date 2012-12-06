@@ -35,9 +35,9 @@ public class PressureSensor implements SensorEventListener {
     private Context context;
     private List<Sensor> sensors;
     private SensorManager smgr;
-    private Handler PressureHandler = new Handler();
-    private Runnable PressureThread = null;
-    private boolean PressureSensingActive = false;
+    private Handler pressureHandler = new Handler();
+    private Runnable pressureThread = null;
+    private boolean pressureSensingActive = false;
 
     public PressureSensor(Context context) {
         this.context = context;
@@ -48,6 +48,9 @@ public class PressureSensor implements SensorEventListener {
         }
     }
 
+    /**
+     * @return The delay between samples in milliseconds
+     */
     public long getSampleDelay() {
         return sampleDelay;
     }
@@ -79,7 +82,7 @@ public class PressureSensor implements SensorEventListener {
             } else {
                 // not the right sensor
                 return;
-            }            
+            }
 
             // send msg to MsgHandler
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
@@ -90,10 +93,10 @@ public class PressureSensor implements SensorEventListener {
             i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             context.startService(i);
         }
-        if (sampleDelay > 500 && PressureSensingActive) {
+        if (sampleDelay > 500 && pressureSensingActive) {
             // unregister the listener and start again in sampleDelay seconds
             stopPressureSensing();
-            PressureHandler.postDelayed(PressureThread = new Runnable() {
+            pressureHandler.postDelayed(pressureThread = new Runnable() {
 
                 @Override
                 public void run() {
@@ -103,12 +106,26 @@ public class PressureSensor implements SensorEventListener {
         }
     }
 
-    public void setSampleDelay(long _sampleDelay) {
-        sampleDelay = _sampleDelay;
+    /**
+     * Sets the delay between samples. The sensor registers itself for periodic sampling bursts, and
+     * unregisters after it received a sample.
+     * 
+     * @param sampleDelay
+     *            Sample delay in milliseconds
+     */
+    public void setSampleDelay(long sampleDelay) {
+        this.sampleDelay = sampleDelay;
     }
 
+    /**
+     * Starts sensing by registering for updates at the Android SensorManager. The sensor registers
+     * for updates at the rate specified by the sampleDelay parameter.
+     * 
+     * @param sampleDelay
+     *            Delay between samples in milliseconds
+     */
     public void startPressureSensing(long _sampleDelay) {
-        PressureSensingActive = true;
+        pressureSensingActive = true;
         setSampleDelay(_sampleDelay);
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_PRESSURE) {
@@ -118,18 +135,20 @@ public class PressureSensor implements SensorEventListener {
         }
     }
 
+    /**
+     * Stops the periodic sampling.
+     */
     public void stopPressureSensing() {
         try {
-            PressureSensingActive = false;
+            pressureSensingActive = false;
             smgr.unregisterListener(this);
 
-            if (PressureThread != null)
-                PressureHandler.removeCallbacks(PressureThread);
-            PressureThread = null;
+            if (pressureThread != null)
+                pressureHandler.removeCallbacks(pressureThread);
+            pressureThread = null;
 
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
-
     }
 }
