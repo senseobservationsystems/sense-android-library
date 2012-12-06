@@ -1,29 +1,25 @@
 package nl.sense.demo;
 
-import org.json.JSONArray;
-
-import android.os.Bundle;
-import android.os.IBinder;
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.ServiceConnection;
-import android.util.Log;
-import android.view.Menu;
-import nl.sense.demo.R;
-
-//import bunch of sense library stuff
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
-import android.os.RemoteException;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.Location;
 
+import org.json.JSONArray;
+
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
+import android.view.Menu;
+
 public class MainActivity extends Activity implements ServiceConnection {
-	private static final String TAG = "Sense Demo"; 
-	private SensePlatform sensePlatform;
 	
 	/**
 	 * Service stub for callbacks from the Sense service.
@@ -56,6 +52,9 @@ public class MainActivity extends Activity implements ServiceConnection {
 		}
 	}
 
+    private static final String TAG = "Sense Demo";
+
+    private SensePlatform sensePlatform;
 	private SenseCallback callback = new SenseCallback();
 	
 
@@ -71,6 +70,15 @@ public class MainActivity extends Activity implements ServiceConnection {
         return true;
     }
     
+    @Override
+    protected void onDestroy() {
+        // close binding with the Sense service
+        // (the service will remain running on its own if it was started!)
+        sensePlatform.close();
+
+        super.onDestroy();
+    }
+
 	@Override
 	protected void onStart() {
 		Log.v(TAG, "onStart");
@@ -86,8 +94,9 @@ public class MainActivity extends Activity implements ServiceConnection {
 
 	private void setupSense() {
 		try {
+            // login
 			sensePlatform.login("foo", SenseApi.hashPassword("bar"), callback);
-			//sensePlatform.login("foo", "bar", callback);
+
 			//turn off specific sensors
 			ISenseService service = sensePlatform.getService();
 			service.setPrefBool(Ambience.LIGHT, false);
@@ -119,7 +128,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 		}
 	}
 	
-	void loggedIn() {
+    private void loggedIn() {
 		try {
 			// turn it on
 			ISenseService service = sensePlatform.getService();
@@ -130,14 +139,14 @@ public class MainActivity extends Activity implements ServiceConnection {
 			sendData();
 			getData();
 		} catch (Exception e) {
-			Log.v(TAG, "Exception " + e + " while starting sense library.");
-			e.printStackTrace();
+            Log.v(TAG, "Exception " + e + " while starting sense library.", e);
 		}
 	}
 	
-	/** An example of how to upload data for a custom sensor.
-	 */
-	void sendData() {
+    /**
+     * An example of how to upload data for a custom sensor.
+     */
+    private void sendData() {
 		//Description of the sensor
 		String name = "position_annotation";
 		String displayName = "Annotation";
@@ -149,22 +158,20 @@ public class MainActivity extends Activity implements ServiceConnection {
 		try {
 			sensePlatform.addDataPoint(name, displayName, description, dataType, value, timestamp);
 		} catch (Exception e) {
-			Log.e(TAG, "Failed to add data point.");
-			e.printStackTrace();
+            Log.e(TAG, "Failed to add data point.", e);
 		}
 	}
 
-	/** An example how to get data from a sensor
-	 * 
-	 */
-	void getData() {
+    /**
+     * An example how to get data from a sensor
+     */
+    private void getData() {
 		try {
 			JSONArray data = sensePlatform.getData("position", true, 10);
 			Log.v(TAG, "Received:" + data);
 			
 		} catch (Exception e) {
-			Log.e(TAG, "Failed to get data.");
-			e.printStackTrace();
+            Log.e(TAG, "Failed to get data.", e);
 		}
 	}
 
