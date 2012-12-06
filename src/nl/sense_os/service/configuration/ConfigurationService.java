@@ -1079,5 +1079,4 @@ public class ConfigurationService extends IntentService {
             this.syncRate = newRate;
         }
     }
-
 }

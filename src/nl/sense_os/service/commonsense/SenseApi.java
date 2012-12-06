@@ -196,7 +196,7 @@ public class SenseApi {
 
 			} else if (name.equals(SensorNames.ACCELEROMETER) || name.equals(SensorNames.ORIENT)
 					|| name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
-					|| name.equals(SensorNames.MAGNET_FIELD)
+					|| name.equals(SensorNames.MAGNETIC_FIELD)
 					|| name.equals(SensorNames.ACCELEROMETER_EPI)) {
 				// special case to take care of changed motion sensor descriptions since Gingerbread
 				if (name.equals(sensor.getString("name"))) {
@@ -273,13 +273,13 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		// request fresh list of sensors for this device from CommonSense
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		if (devMode) {
 			Log.i(TAG, "Using development server to get connected sensors");
 		}
@@ -318,12 +318,12 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_DEVICES : SenseUrls.DEVICES;
 
 		Map<String, String> response = SenseApi.request(context, url, null, cookie);
@@ -1047,8 +1047,8 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		// Check if already synced with common sense
@@ -1060,7 +1060,7 @@ public class SenseApi {
 		}
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_REGISTER_GCM_ID : SenseUrls.REGISTER_GCM_ID;
 
 		// Get the device ID
@@ -1103,12 +1103,12 @@ public class SenseApi {
 		if (null == authPrefs) {
 			authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
 		}
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		if (null == mainPrefs) {
+			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		}
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION
 				: SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION;
 

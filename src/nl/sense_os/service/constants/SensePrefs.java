@@ -199,6 +199,12 @@ public class SensePrefs {
 			 * @see SensePrefs#MAIN_PREFS
 			 */
 			public static final String TEMPERATURE = "ambience_temperature";
+			/**
+			 * Key for preference that toggles use of the magnetic field sensor in ambience sensing.
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String MAGNETIC_FIELD = "ambience_magnetic_field";
 		}
 
 		public static class DevProx {

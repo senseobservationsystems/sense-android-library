@@ -178,9 +178,9 @@ public class SensorData {
         public static final String GYRO = "gyroscope";
 
         /**
-         * Magnetic field sensor name. Part of the Motion sensors.
+         * Magnetic field sensor name. Part of the Ambience sensors.
          */
-        public static final String MAGNET_FIELD = "magnetic_field";
+        public static final String MAGNETIC_FIELD = "magnetic field";
 
         /**
          * Orientation sensor name. Part of the Motion sensors.

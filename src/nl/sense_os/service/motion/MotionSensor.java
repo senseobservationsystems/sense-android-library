@@ -438,7 +438,7 @@ public class MotionSensor implements SensorEventListener {
 	    sensorName = SensorNames.ORIENT;
 	    break;
 	case Sensor.TYPE_MAGNETIC_FIELD:
-	    sensorName = SensorNames.MAGNET_FIELD;
+	    sensorName = SensorNames.MAGNETIC_FIELD;
 	    break;
 	case Sensor.TYPE_GYROSCOPE:
 	    sensorName = SensorNames.GYRO;
