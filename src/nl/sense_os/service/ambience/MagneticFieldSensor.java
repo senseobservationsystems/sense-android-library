@@ -53,6 +53,13 @@ public class MagneticFieldSensor implements SensorEventListener {
         }
     }
 
+    /**
+     * @return The delay between samples in milliseconds
+     */
+    public long getSampleDelay() {
+        return sampleDelay;
+    }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // not used
@@ -153,12 +160,5 @@ public class MagneticFieldSensor implements SensorEventListener {
             Log.e(TAG, "Failed to stop sampling! " + e.getMessage());
         }
 
-    }
-
-    /**
-     * @return The delay between samples in milliseconds
-     */
-    public long getSampleDelay() {
-        return sampleDelay;
     }
 }
