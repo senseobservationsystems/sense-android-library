@@ -70,15 +70,15 @@
             android:name="nl.sense_os.service.SenseService"
             android:exported="false" >
             <intent-filter>
-                <action android:name="nl.sense_os.platform.SenseService" />
+                <action android:name="nl.sense_os.demo.SenseService" />
             </intent-filter>
         </service>
         <service
             android:name="nl.sense_os.service.MsgHandler"
             android:exported="false" >
             <intent-filter>
-                <action android:name="nl.sense_os.platform.MsgHandler.NEW_DATA" />
-                <action android:name="nl.sense_os.platform.MsgHandler.SEND_DATA" />
+                <action android:name="nl.sense_os.demo.MsgHandler.NEW_DATA" />
+                <action android:name="nl.sense_os.demo.MsgHandler.SEND_DATA" />
             </intent-filter>
         </service>
         <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
@@ -112,7 +112,7 @@
             android:name="nl.sense_os.service.AliveChecker"
             android:exported="false" >
             <intent-filter>
-                <action android:name="nl.sense_os.platform.AliveCheck" />
+                <action android:name="nl.sense_os.demo.AliveCheck" />
             </intent-filter>
         </receiver>
         <receiver
@@ -126,7 +126,7 @@
             android:name="nl.sense_os.service.DataTransmitter"
             android:exported="false" >
             <intent-filter>
-                <action android:name="nl.sense_os.platform.DataTransmit" />
+                <action android:name="nl.sense_os.demo.DataTransmit" />
             </intent-filter>
         </receiver>
         <receiver
@@ -138,19 +138,19 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="nl.sense_os.app" />
+                <category android:name="nl.sense_os.demo" />
             </intent-filter>
         </receiver>
         <receiver android:name="nl.sense_os.service.configuration.RequirementReceiver" 
             android:exported="false" >
             <intent-filter>
-                <action android:name="nl.sense_os.service.push.got_requirement" />
+                <action android:name="nl.sense_os.demo.push.got_requirement" />
             </intent-filter>
         </receiver>
 
         <provider
             android:name="nl.sense_os.service.provider.SensorDataProvider"
-            android:authorities="nl.sense_os.platform.provider.LocalStorage"
+            android:authorities="nl.sense_os.demo.provider.LocalStorage"
             android:exported="true" />
     </application>
 
