@@ -24,6 +24,9 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.util.Log;
 
+/**
+* Implements the default behavior of the Location Sensor and DataTransmitter
+*/
 public class CtrlDefault extends Controller{
 	
 	private Context context;
@@ -148,7 +151,9 @@ public class CtrlDefault extends Controller{
 		return moving;
 	}
 	
-	
+	/**
+	* @return true if GPS has recently produced new data points.
+	*/
 	private boolean isGpsProductive(boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart) {
 	
 		boolean productive = isListeningGps;
@@ -175,7 +180,6 @@ public class CtrlDefault extends Controller{
 		return productive;
 	}
 	
-			
 	
 	private boolean isPositionChanged() {
 		// Log.v(TAG, "Check if position changed recently");
@@ -288,12 +292,6 @@ public class CtrlDefault extends Controller{
 	}
 	
 	
-	/**
-	 * Starts periodic transmission of the buffered sensor data.
-	 * 
-	 * @param context
-	 *            Context to access AlarmManager and sync rate preferences
-	 */
 	public void scheduleTransmissions() {
 
 		Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));

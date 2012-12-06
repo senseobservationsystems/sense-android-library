@@ -24,6 +24,11 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.util.Log;
 
+/**
+* This class implements a controller that aims to reduce energy consumption by monitoring the state (mode) of
+* different sensors and, depending on these states, switching between different location providers or cutting down
+* the transmission rate. 
+*/
 public class CtrlExtended extends Controller{
 	
 	private Context context;
@@ -36,6 +41,11 @@ public class CtrlExtended extends Controller{
 
 	}
 	
+	/**
+	* Returns the general mode
+	* 
+	* @return idle if all of the three sensors are in idle mode 
+	*/
 	public String getLastMode() {
 		if (lastlocationmode.equals("idle") && lastlightmode.equals("idle") && lastnoisemode.equals("idle"))
 			return "idle";
@@ -51,6 +61,10 @@ public class CtrlExtended extends Controller{
 	
 	private static String lastlocationmode = "nomode";	
 	
+	/**
+	* If the phone is in a standby position, both gps and network providers are turned off, otherwise we listen 
+	* to the Network provider and switch to Gps provider only if the first one is not productive. 
+	*/
 	public void checkSensorSettings(boolean isGpsAllowed, boolean isListeningNw, boolean isListeningGps, long time, Location lastGpsFix, 
 											long listenGpsStart, Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
 	
@@ -149,7 +163,9 @@ public class CtrlExtended extends Controller{
 	
 	}
 	
-	
+	/**
+	* Uses the accelerometer instead of the linear acceleration
+	*/
 	private boolean isAccelerating() {
 		// Log.v(TAG, "Check if device was accelerating recently");
 	
@@ -199,7 +215,7 @@ public class CtrlExtended extends Controller{
 			}
 			double avgMotion = totalMotion / (data.getCount() - 1);
 	
-			if (avgMotion > 2.9) {	
+			if (avgMotion > 1.3) {	
 				// device is moving
 				moving = true;
 			} else {
@@ -511,10 +527,7 @@ public class CtrlExtended extends Controller{
 	
 	
 	/**
-	 * Starts periodic transmission of the buffered sensor data.
-	 * 
-	 * @param context
-	 *            Context to access AlarmManager and sync rate preferences
+	 * If the last general mode is idle, the transmission rate is rescheduled to every half hour.
 	 */
 	public void scheduleTransmissions() {
 
