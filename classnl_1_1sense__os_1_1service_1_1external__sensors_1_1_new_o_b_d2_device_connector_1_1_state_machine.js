@@ -1,5 +1,6 @@
 var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine =
 [
+    [ "BTReceiver", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver" ],
     [ "doCheckBluetooth", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#adb94d8193f1a344eec97c805bdfaf8e5", null ],
     [ "doConnectSocket", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#aa3e9a4f1a10ac166b9b85354f405d377", null ],
     [ "doInitializeUsingHayes", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a355e831c0494e480cd11f4231d44e4b9", null ],
@@ -9,7 +10,6 @@ var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_c
     [ "stop", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a051bbdaec435add4972827d68ed66a5e", null ],
     [ "adapter", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a7c16e5f7450136d1a04fad444c0db99e", null ],
     [ "btReceiver", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a23a39c6bc71b679f7e4f7aad33d92631", null ],
-    [ "hayescommands", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a0e562ea89a417d1f09f4f7e87998d7b1", null ],
     [ "input", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a0baf46b660eadd24af60c30d08160c09", null ],
     [ "output", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ae3af9b24a52ddd5109fa52ebb50250ec", null ],
     [ "runstart", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a5b8f840a9515ef90f04145433175d3af", null ],

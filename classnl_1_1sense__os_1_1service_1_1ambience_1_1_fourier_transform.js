@@ -1,6 +1,5 @@
 var classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform =
 [
-    [ "FourierTransform", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab73a1c1d44ac6f0bc8a403c9965854ad", null ],
     [ "allocateArrays", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0c932cfe48f32093c1a2714e325cf84b", null ],
     [ "avgSize", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae00e5788a99cd01bf3f24c1a02630d68", null ],
     [ "calcAvg", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ada7cf4c850c769563faf5adc01ca032f", null ],

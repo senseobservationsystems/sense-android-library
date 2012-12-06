@@ -1,6 +1,5 @@
 var classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql =
 [
-    [ "[static initializer]", "classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a89d931e01084ecf548bfae0e34b4ee86", null ],
     [ "delete", "classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a0649900856650c445970a909181d367b", null ],
     [ "getType", "classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#af83d619e43a2a522cfa32564a2919c2a", null ],
     [ "insert", "classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a950baea9cebda645b49671a3e3bdf62d", null ],

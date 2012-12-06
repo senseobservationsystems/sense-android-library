@@ -14,6 +14,8 @@ var classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls =
     [ "DEV_CREATE_SENSOR", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#aa0041564ad23910bd13c9b1458695185", null ],
     [ "DEV_DEVICE_UPDATE_CONFIGURATION", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a87eff9f6ba36f2dcafc4dd97ce57848b", null ],
     [ "DEV_DEVICES", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a13c3da21cea31afa72642e9a25cdbdfc", null ],
+    [ "DEV_GET_CURRENT_USER", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a9020dbb654b7e80100f3879b1b765b13", null ],
+    [ "DEV_JOIN_GROUP", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a9c46c57acd4120253299e5e8efd2b2de", null ],
     [ "DEV_LOGIN", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af7e7cd3447de61e8eedd67225af0e8d8", null ],
     [ "DEV_MANUAL_LEARN", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a6adda3e2a2f2508f3fc20a67ddd88e79", null ],
     [ "DEV_REG", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a117aff9f92bb0661478975b76cb41836", null ],
@@ -21,9 +23,12 @@ var classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls =
     [ "DEV_SENSOR_DATA", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af4935c8f0813d2a63159b037d51b3314", null ],
     [ "DEV_SENSOR_FILE", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae99af264b5e23806b3ed0d5f60359fe9", null ],
     [ "DEV_SENSORS", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4ca2b938f1771d5c14fa934049d99b79", null ],
+    [ "DEV_SHARE_SENSOR", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a2704dc96cca2be7d18ce63c9f7c1f917", null ],
     [ "DEVICE_UPDATE_CONFIGURATION", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a655242fd8fc1fb6c554e507c84967f51", null ],
     [ "DEVICES", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a1775565b95ecce94455128470a338fb3", null ],
     [ "FORMAT", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#abd08fa10e452edcfdae6538d495c7f0b", null ],
+    [ "GET_CURRENT_USER", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a012ced0242bdd6f6cae3e67a939c5b48", null ],
+    [ "JOIN_GROUP", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a95dd044868cb46b8956c6d8f6630e7ee", null ],
     [ "LOGIN", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a9155d514962590e1d3c70a966da78cf4", null ],
     [ "MANUAL_LEARN", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af84600ff5e958d388d327ab392b30e93", null ],
     [ "REG", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a21a1a94c7e2cfa11ec7bfd13d59663df", null ],
@@ -31,5 +36,6 @@ var classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls =
     [ "SENSOR_DATA", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a5b0e2076fb1562815245fefa6f17df1f", null ],
     [ "SENSOR_FILE", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac0ea2220df81a9bc689a5a0d8bf0305e", null ],
     [ "SENSORS", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#aa1e029ee97c2dda90d4301c150c9c9e7", null ],
+    [ "SHARE_SENSOR", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#abc5af3b924c9ec6a7babf2cbf260b897", null ],
     [ "VERSION", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a78f3415675f212297c0d82853116853d", null ]
 ];

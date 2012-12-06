@@ -23,14 +23,5 @@ var classnl_1_1sense__os_1_1service_1_1_service_state_helper =
     [ "setPhoneStateActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a8ac3910051be3af066410bb12d2f4004", null ],
     [ "setQuizActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a3c5f5effb30099461b8c7c218cfafbd8", null ],
     [ "setStarted", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a26b6dd933b5a301cf8a593e466004622", null ],
-    [ "ambienceActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a588f66df66f70dcb47d4719c7d9ef9a3", null ],
-    [ "devProxActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6fb7cfe38b9a82cdcc792a50c50f35e1", null ],
-    [ "externalActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#aafb30624d38673ab7587293b9e304a83", null ],
-    [ "foreground", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a39345f0f1049ede294d684d842fa0c96", null ],
-    [ "locationActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a381819483b337c6fa33c246913dee1db", null ],
-    [ "loggedIn", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a21671e0ecf91f15b0fb28e50833cd6f4", null ],
-    [ "motionActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a91a93e2b36371c54528eabacbcb60561", null ],
-    [ "NOTIF_ID", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#adaa399f5611edb10441e05a5d196db0c", null ],
-    [ "phoneStateActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a99875c751a1a32dd44f0448d1a1c1ca9", null ],
-    [ "quizActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a4e642a3f0672083dd7dfe6ea4254b64d", null ]
+    [ "NOTIF_ID", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#adaa399f5611edb10441e05a5d196db0c", null ]
 ];

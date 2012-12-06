@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['ready',['READY',['../enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html#a8b4420ab067af927fa16eca9bd55ddf3',1,'nl::sense_os::service::external_sensors::NewOBD2DeviceConnector::State']]],
   ['real',['real',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77',1,'nl::sense_os::service::ambience::FourierTransform']]],
   ['reg',['REG',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a21a1a94c7e2cfa11ec7bfd13d59663df',1,'nl::sense_os::service::constants::SenseUrls']]],
   ['register_5fgcm_5fid',['REGISTER_GCM_ID',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a3ecf83bf8d92c957da2ce3f8cd4626e4',1,'nl::sense_os::service::constants::SenseUrls']]],

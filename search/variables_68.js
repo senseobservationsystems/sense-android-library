@@ -1,7 +1,6 @@
 var searchData=
 [
   ['hamming',['HAMMING',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a54441d948eb7b531594728913f6e5b7e',1,'nl::sense_os::service::ambience::FourierTransform']]],
-  ['hayescommands',['hayescommands',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a0e562ea89a417d1f09f4f7e87998d7b1',1,'nl::sense_os::service::external_sensors::NewOBD2DeviceConnector::StateMachine']]],
   ['host_5fasia',['HOST_ASIA',['../classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a78b6c4efb2209d0702632f3ff220c401',1,'nl::sense_os::service::provider::SNTP']]],
   ['host_5feurope',['HOST_EUROPE',['../classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#aeb925d3d783442a0d8c2b282c984fd1d',1,'nl::sense_os::service::provider::SNTP']]],
   ['host_5fnorth_5famerica',['HOST_NORTH_AMERICA',['../classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a80a89bb00c1100145ccd1ff25954ec8b',1,'nl::sense_os::service::provider::SNTP']]],

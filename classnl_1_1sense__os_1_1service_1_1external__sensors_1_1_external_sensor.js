@@ -1,5 +1,6 @@
 var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor =
 [
+    [ "UpdateThread", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_1_1_update_thread.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_1_1_update_thread" ],
     [ "ExternalSensor", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aaec73b1ebd579408d2dd6406b466f0f8", null ],
     [ "connectSensor", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#af607f4ec28263b2a965ae2537c10e0bd", null ],
     [ "getUpdateInterval", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a727822e19741243c44653f9ab0214a27", null ],

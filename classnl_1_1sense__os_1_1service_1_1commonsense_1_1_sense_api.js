@@ -10,10 +10,13 @@ var classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api =
     [ "getSensorId", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a0d8371b60b18e37d4711ee9355470163", null ],
     [ "getSensorUrl", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a9846374502fb7d78eca522710df0e435", null ],
     [ "getSessionId", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#acc5e60e2cb7e9f768a0869eededd9be8", null ],
+    [ "getUser", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a65d810f9cd682d8d67ab99a3cc9134e8", null ],
     [ "hashPassword", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a991d3c60b54a82c168ff1e64afa9fdf6", null ],
+    [ "joinGroup", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#ae7e12708305db2c0de14d12b0e9ca47c", null ],
     [ "login", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a8bf4d950737de539eedcc0b1df8dddf0", null ],
     [ "registerGCMId", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#aa92399c54e49200cc4c3f97d37ab06a4", null ],
     [ "registerSensor", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a20b0a22f185087b9465f1f5a3a46c95c", null ],
     [ "registerUser", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#ab8225ad4fb15e86b9efb54ba6e9d9855", null ],
-    [ "request", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a30be580b328daec5351dacfce9f9d2cf", null ]
+    [ "request", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a30be580b328daec5351dacfce9f9d2cf", null ],
+    [ "shareSensor", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#ad402dc7f2471cae7b07c813d0d82f73c", null ]
 ];

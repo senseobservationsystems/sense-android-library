@@ -12,6 +12,7 @@ var searchData=
   ['motion',['motion',['../namespacenl_1_1sense__os_1_1service_1_1motion.html',1,'nl::sense_os::service']]],
   ['nl',['nl',['../namespacenl.html',1,'']]],
   ['phonestate',['phonestate',['../namespacenl_1_1sense__os_1_1service_1_1phonestate.html',1,'nl::sense_os::service']]],
+  ['platform',['platform',['../namespacenl_1_1sense__os_1_1platform.html',1,'nl::sense_os']]],
   ['provider',['provider',['../namespacenl_1_1sense__os_1_1service_1_1provider.html',1,'nl::sense_os::service']]],
   ['push',['push',['../namespacenl_1_1sense__os_1_1service_1_1push.html',1,'nl::sense_os::service']]],
   ['senddata',['senddata',['../namespacenl_1_1sense__os_1_1service_1_1commonsense_1_1senddata.html',1,'nl::sense_os::service::commonsense']]],

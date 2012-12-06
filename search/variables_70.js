@@ -1,10 +1,7 @@
 var searchData=
 [
   ['phonestate',['PHONESTATE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html#a2c707ca6a2a802f46d07fe12eea8f27e',1,'nl::sense_os::service::constants::SenseStatusCodes']]],
-  ['phonestateactive',['phoneStateActive',['../classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a99875c751a1a32dd44f0448d1a1c1ca9',1,'nl::sense_os::service::ServiceStateHelper']]],
-  ['phonestatehandler',['phoneStateHandler',['../classnl_1_1sense__os_1_1service_1_1_sense_service.html#ab8cdc441092f7b5733ee739d11f40896',1,'nl::sense_os::service::SenseService']]],
   ['pid',['PID',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#ad4857983cf43efb59f8e6b39ef63fa01',1,'nl::sense_os::service::external_sensors::OBD2Dongle::UpdateThread::OBD2Command']]],
-  ['pidavailable',['pidAvailable',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a88f019a4b7280976e134418adb8fe9fd',1,'nl::sense_os::service::external_sensors::OBD2Dongle']]],
   ['pref_5falive',['PREF_ALIVE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a419f248cce7c350cabb8337168a9d96a',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5fambience_5flight',['PREF_AMBIENCE_LIGHT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#ae27f3116b3ea9c06473358bbdb25304b',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5fambience_5fmic',['PREF_AMBIENCE_MIC',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#aa397aab69bd0d0f067118382987e389e',1,'nl::sense_os::service::constants::Constants']]],
