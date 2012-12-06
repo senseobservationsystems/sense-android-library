@@ -141,6 +141,16 @@
         <!-- SERVICE THAT UPDATES THE SENSOR CONFIGURATION WHEN REQUIREMENTS CHANGE -->
         <!-- CAN BE REMOVED IF NOT USED -->
         <service android:name="nl.sense_os.service.configuration.ConfigurationService" />
+        <!-- DUMMY SERVICE TO HANDLE CHANGES IN THE SENSE STATE (DOES NOTHING BY DEFAULT) -->
+        <!-- REPLACE THIS SERVICE IF YOU WANT TO IMPLEMENT YOUR OWN APP WIDGET -->
+        <service
+            android:name="nl.sense_os.service.appwidget.DummyAppWidgetService"
+            android:exported="false" >
+            <intent-filter>
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.demo.UPDATE_APP_WIDGET" />
+            </intent-filter>
+        </service>
 
         <!-- BROADCAST RECEIVER THAT WAKES UP THE APP AGAIN WHEN THE PHONE REBOOTS -->
         <receiver
@@ -209,7 +219,7 @@
         <!-- CAN BE REMOVED IF NOT USED -->
         <provider
             android:name="nl.sense_os.service.provider.SensorDataProvider"
-            android:authorities="nl.sense_os.demo.provider.LocalStorage"
+            android:authorities="nl.sense_os.demo.LocalStorage"
             android:exported="true" />
     </application>
 
