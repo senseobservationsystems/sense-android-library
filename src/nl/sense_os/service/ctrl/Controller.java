@@ -9,13 +9,8 @@ import android.location.Location;
 * of specific sensors. The two different extensions, Default and Extended, implement the default and the energy-saving
 * behavior respectively. 
 */
-public class Controller
+public abstract class Controller
 {
-	
-	protected Controller()
-	{
-
-	}
 
 	/**
 	* Returns a controller instance
@@ -48,11 +43,6 @@ public class Controller
 	public static LocationSensor locListener; 
     
 	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Location Sensor Controlling Functions										     *
-	 *																													 *
-	 *********************************************************************************************************************/
 	
 	/**
 	* Checks to see if the sensor is still doing a useful job or whether it is better if we disable
@@ -86,11 +76,6 @@ public class Controller
 	}
 	
 	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Light Sensor Controlling Functions										         *
-	 *																													 *
-	 *********************************************************************************************************************/
 	
 	/**
 	* Retains the mode of Light sensor, and defines it as changed or idle, if the last light measurement had a 
@@ -99,14 +84,8 @@ public class Controller
 	* @param value
 	* 	Last light measurement, in lux.
 	*/
-	public void checkLightSensor(float value) {
-	}
+    public abstract void checkLightSensor(float value);
 	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Noise Sensor Controlling Functions										         *
-	 *																													 *
-	 *********************************************************************************************************************/
 	
 	/**
 	* Retains the mode of Noise sensor, and defines it as loud or idle, if the last noise measurement had a 
@@ -115,19 +94,13 @@ public class Controller
 	* @param dB
 	* 	Last noise measurement, in db.
 	*/
-	public void checkNoiseSensor(double dB) {
-	}
+    public abstract void checkNoiseSensor(double dB);
 
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Data Transmitter Controlling Functions										     *
-	 *																													 *
-	 *********************************************************************************************************************/
 	
+
 	/**
 	 * Starts periodic transmission of the buffered sensor data.
 	 */
-	public void scheduleTransmissions(){
-	}
+    public abstract void scheduleTransmissions();
 	
 }

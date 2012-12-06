@@ -38,13 +38,7 @@ public class CtrlDefault extends Controller{
 		this.context = context;
 
 	}
-	
-	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Location Sensor Controlling Functions										     *
-	 *																													 *
-	 *********************************************************************************************************************/
+
 		
 	public void checkSensorSettings(boolean isGpsAllowed, boolean isListeningNw, boolean isListeningGps, long time, Location lastGpsFix, 
 											long listenGpsStart, Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
@@ -278,12 +272,6 @@ public class CtrlDefault extends Controller{
 
 		return tooLong;
 	}
-	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Data Transmitter Controlling Functions										     *
-	 *																													 *
-	 *********************************************************************************************************************/
 
 	private class Intervals {
 		static final long ECO = AlarmManager.INTERVAL_HALF_HOUR;
@@ -342,5 +330,15 @@ public class CtrlDefault extends Controller{
 		am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
 					operation);
 	}
+
+    @Override
+    public void checkLightSensor(float value) {
+        // not implemented in this controller
+    }
+
+    @Override
+    public void checkNoiseSensor(double dB) {
+        // not implemented in this controller
+    }
 }
 

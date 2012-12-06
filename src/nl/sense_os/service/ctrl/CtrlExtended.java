@@ -38,7 +38,6 @@ public class CtrlExtended extends Controller{
 	public CtrlExtended(Context context) {
 		super();
 		this.context = context;
-
 	}
 	
 	/**
@@ -52,12 +51,6 @@ public class CtrlExtended extends Controller{
 		else 
 			return "normal";
 	}
-	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Location Sensor Controlling Functions										     *
-	 *																													 *
-	 *********************************************************************************************************************/
 	
 	private static String lastlocationmode = "nomode";	
 	
@@ -423,13 +416,7 @@ public class CtrlExtended extends Controller{
 	
 		return tooLong;
 	}
-	
-	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Light Sensor Controlling Functions										         *
-	 *																													 *
-	 *********************************************************************************************************************/
+
 	
 	private static float previous_lux = 0;	
 	private static long lastchangedtime;	
@@ -468,12 +455,7 @@ public class CtrlExtended extends Controller{
         previous_lux = value;
         
 	}
-	
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Noise Sensor Controlling Functions										         *
-	 *																													 *
-	 *********************************************************************************************************************/
+
 	
 	private static double previous_dB = 0;
 	private static long lastloudtime;
@@ -512,12 +494,6 @@ public class CtrlExtended extends Controller{
 		previous_dB = dB;
 	
 	}
-
-	/*********************************************************************************************************************/
-	/*																													 *
-	 * 								    Data Transmitter Controlling Functions										     *
-	 *																													 *
-	 *********************************************************************************************************************/
 
 	private class Intervals {
 		static final long ECO = AlarmManager.INTERVAL_HALF_HOUR;
