@@ -5,4 +5,22 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
 
+        <!-- OVERRIDE INTENT ACTIONS FOR BUNDLED SENSE PLATFORM (ALSO CHANGE IN MANIFEST!!) -->
+    <string name="action_sense_app">nl.sense_os.demo.SenseApp</string>
+    <string name="action_sense_service">nl.sense_os.demo.SenseService</string>
+    <string name="action_sense_new_data">nl.sense_os.demo.MsgHandler.NEW_DATA</string>
+    <string name="action_sense_send_data">nl.sense_os.demo.MsgHandler.SEND_DATA</string>
+    <string name="action_sense_feedback_check">nl.sense_os.demo.FeedbackCheck</string>
+    <string name="action_sense_feedback_check_alarm">nl.sense_os.demo.FeedbackAlarm</string>
+    <string name="action_sense_alive_check_alarm">nl.sense_os.demo.AliveCheck</string>
+    <string name="action_sense_data_transmit_alarm">nl.sense_os.demo.DataTransmit</string>
+    <string name="action_widget_update">nl.sense_os.demo.AppWidgetUpdate</string>
+
+    <!-- NOTIFICATION RESOURCES -->
+    <string name="stat_notify_action">nl.sense_os.demo.NOTIFICATION</string>
+    <string name="stat_notify_title">Sense Demo</string>
+    <string name="stat_notify_content_off_loggedin">Meting gestopt, ingelogd als \'%s\'</string>
+    <string name="stat_notify_content_off_loggedout">Meting gestopt, geen verbinding met server</string>
+    <string name="stat_notify_content_on_loggedin">"Meting actief, ingelogd als \'%s\'"</string>
+    <string name="stat_notify_content_on_loggedout">Meting actief, geen verbinding met server</string>
 </resources>
