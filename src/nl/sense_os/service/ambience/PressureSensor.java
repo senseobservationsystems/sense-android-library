@@ -39,13 +39,22 @@ public class PressureSensor implements SensorEventListener {
     private Runnable pressureThread = null;
     private boolean pressureSensingActive = false;
 
-    public PressureSensor(Context context) {
+    protected PressureSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
         if (null != smgr.getDefaultSensor(Sensor.TYPE_PRESSURE)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_PRESSURE));
         }
+    }
+    
+    private static PressureSensor instance = null;
+    
+    public static PressureSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new PressureSensor(context);
+	    }
+	    return instance;
     }
 
     /**
@@ -150,5 +159,6 @@ public class PressureSensor implements SensorEventListener {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
+
     }
 }

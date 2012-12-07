@@ -43,11 +43,20 @@ public class TemperatureSensor implements SensorEventListener {
     private Runnable startSampleTask = null;
     private boolean sensorActive = false;
 
-    public TemperatureSensor(Context context) {
+    protected TemperatureSensor(Context context) {
         this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
-
+   
+    private static TemperatureSensor instance = null;
+    
+    public static TemperatureSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new TemperatureSensor(context);
+	    }
+	    return instance;
+    }
+    
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // nothing to do
@@ -94,6 +103,7 @@ public class TemperatureSensor implements SensorEventListener {
     }
 
     public void startSensing(long sampleDelay) {
+    	handler = new Handler();
         sensorActive = true;
         setSampleDelay(sampleDelay);
 

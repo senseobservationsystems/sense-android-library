@@ -92,10 +92,19 @@ public class CameraLightSensor {
 
 	private String TAG = "Camera Light Sensor";
 
-	public CameraLightSensor(Context context) {
-		this.context = context;
-		cameraLightValue = new CameraLightValue();
-	}
+	private CameraLightSensor(Context context) {
+        this.context = context;
+        cameraLightValue = new CameraLightValue();
+    }
+    
+	private static CameraLightSensor instance = null;
+    
+    public static CameraLightSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new CameraLightSensor(context);
+	    }
+	    return instance;
+    }
 
 	private void nextUpdate(int camera_id) {
 		// check if there are more camera's else wait

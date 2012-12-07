@@ -465,7 +465,6 @@ public class SenseApi {
 		}
 		return result;
 	}
-
 	/**
 	 * @param hashMe
 	 *            "clear" password String to be hashed before sending it to CommonSense
@@ -1126,7 +1125,6 @@ public class SenseApi {
 
 		return response.get("content");
 	}
-
 	/**
 	 * Get specific configuration from commonSense
 	 * 

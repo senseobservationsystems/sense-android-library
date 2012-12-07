@@ -47,7 +47,7 @@ public class LoudnessSensor {
 	private double loudest;
 	private boolean filled = false;
 
-	public LoudnessSensor(Context context) {
+	protected LoudnessSensor(Context context) {
 		this.context = context;
 		AVERAGING_PERIOD = DEFAULT_AVERAGING_PERIOD;
 		//restore silence
@@ -58,6 +58,15 @@ public class LoudnessSensor {
         Log.v("Sense Loudness","Loudest " + loudest + ", total silence " + totalSilence);
         
 	}
+    
+	private static LoudnessSensor instance = null;
+    
+    public static LoudnessSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new LoudnessSensor(context);
+	    }
+	    return instance;
+    }
 
 	public void onNewNoise(long ms, double dB) {
 		addNoiseInDb(ms, dB);

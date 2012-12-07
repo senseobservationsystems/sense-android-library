@@ -10,6 +10,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
+
 public class LightSensor implements SensorEventListener {
 
     private static final String TAG = "Sense Light Sensor";
@@ -39,14 +41,28 @@ public class LightSensor implements SensorEventListener {
     private Runnable LightThread = null;
     private boolean LightSensingActive = false;
 
-    public LightSensor(Context context) {
+    private Controller controller;
+    
+    private static LightSensor instance = null;
+	
+    private LightSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        controller = Controller.getController(context);
         sensors = new ArrayList<Sensor>();
         if (null != smgr.getDefaultSensor(Sensor.TYPE_LIGHT)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_LIGHT));
         }
     }
+
+    public static LightSensor getInstance(Context context) {
+        if (instance == null) {
+            instance = new LightSensor(context);
+        }
+
+        return instance;
+    }
+
 
     public long getSampleDelay() {
         return sampleDelay;
@@ -72,8 +88,10 @@ public class LightSensor implements SensorEventListener {
             int x = 0;
             for (float value : event.values) {
                 if (x == 0) {
-                    if (sensor.getType() == Sensor.TYPE_LIGHT)
+                    if (sensor.getType() == Sensor.TYPE_LIGHT) {
                         jsonString += "\"lux\":" + value;
+                        controller.checkLightSensor(value);
+                    }
                 }
                 x++;
             }
@@ -121,8 +139,9 @@ public class LightSensor implements SensorEventListener {
             LightSensingActive = false;
             smgr.unregisterListener(this);
 
-            if (LightThread != null)
+            if (LightThread != null) {
                 LightHandler.removeCallbacks(LightThread);
+            }
             LightThread = null;
 
         } catch (Exception e) {

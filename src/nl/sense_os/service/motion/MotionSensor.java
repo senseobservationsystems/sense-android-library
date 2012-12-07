@@ -56,6 +56,18 @@ import android.util.Log;
  */
 public class MotionSensor implements SensorEventListener {
 
+	private static MotionSensor instance = null;
+	
+    protected MotionSensor(Context context) {
+		this.context = context;
+	}
+    
+    public static MotionSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new MotionSensor(context);
+	    }
+	    return instance;
+    }
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
      * the screen turns off.
@@ -132,9 +144,6 @@ public class MotionSensor implements SensorEventListener {
     private long lastRegistered = -1;
     private static final long DELAY_AFTER_REGISTRATION = 500;
 
-    public MotionSensor(Context context) {
-	this.context = context;
-    }
 
     /**
      * Calculates the linear acceleration of a raw accelerometer sample. Tries to determine the
@@ -547,6 +556,7 @@ public class MotionSensor implements SensorEventListener {
     @SuppressWarnings("deprecation")
     public void startMotionSensing(long sampleDelay) {
 
+    motionHandler = new Handler();
 	final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 		Context.MODE_PRIVATE);
 	isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);

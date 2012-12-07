@@ -31,8 +31,17 @@ public class BatterySensor {
     private long lastSampleTime;
     private Context context;
 
-    public BatterySensor(Context context) {
+    protected BatterySensor(Context context) {
         this.context = context;
+    }
+    
+    private static BatterySensor instance = null;
+    
+    public static BatterySensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new BatterySensor(context);
+	    }
+	    return instance;
     }
 
     private BroadcastReceiver batteryChangeReceiver = new BroadcastReceiver() {

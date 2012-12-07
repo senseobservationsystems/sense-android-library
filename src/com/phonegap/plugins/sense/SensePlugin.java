@@ -129,6 +129,7 @@ public class SensePlugin extends Plugin {
 		}
 	}
 
+
 	private static final String TAG = "PhoneGap Sense";
 
 	private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
@@ -263,6 +264,7 @@ public class SensePlugin extends Plugin {
 			return new PluginResult(Status.ERROR, e.getMessage());
 		}
 	}
+
 
 	private PluginResult flushBuffer(JSONArray data, String callbackId) {
 
@@ -455,7 +457,6 @@ public class SensePlugin extends Plugin {
 		r.setKeepCallback(true);
 		return r;
 	}
-
 	private PluginResult init(JSONArray data, String callbackId) {
         sensePlatform = new SensePlatform(cordova.getActivity());
 		return new PluginResult(Status.OK);
