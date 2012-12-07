@@ -1,5 +1,7 @@
-# Demo
+# Sense Android Demo
 
-This project simply contains a demo for the [sense android library] [1]. After setting up the [library] [1], you can import this project.
+Example project for using the [Sense Android library](https://github.com/senseobservationsystems/sense-android-library) in an Android application. 
 
-[1]: https://github.com/senseobservationsystems/sense-android-library
+## Installation
+
+See the tutorial in the [CommonSense Developer Portal](http://developer.sense-os.nl/Libraries/Android/) for help with installation.
