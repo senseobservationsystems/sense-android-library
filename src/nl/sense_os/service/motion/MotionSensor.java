@@ -212,8 +212,8 @@ public class MotionSensor implements SensorEventListener {
 		}
 		axis++;
 	    }
-	} catch (JSONException e) {
-	    Log.e(TAG, "JSONException creating motion JSON value", e);
+	} catch (Exception e) {
+	    Log.e(TAG, "Exception creating motion JSON value", e);
 	    return null;
 	}
 
