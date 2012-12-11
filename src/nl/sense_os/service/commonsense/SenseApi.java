@@ -110,35 +110,55 @@ public class SenseApi {
 		// if we make it here, the list was not in the cache
 		Log.v(TAG, "List of sensor IDs is missing or outdated, refreshing...");
 
-		// request fresh list of sensors for this device from CommonSense
-		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-		if (null == mainPrefs) {
-			mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
-		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-		if (devMode) {
-			Log.i(TAG, "Using development server to get registered sensors");
-		}
-		String url = devMode ? SenseUrls.DEV_ALL_SENSORS : SenseUrls.ALL_SENSORS;
-		Map<String, String> response = SenseApi.request(context, url, null, cookie);
+        boolean done = false;
+        JSONArray result = new JSONArray();
+        int page = 0;
+        while (!done) {
+            // request fresh list of sensors for this device from CommonSense
+            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+            if (null == mainPrefs) {
+                mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                        Context.MODE_PRIVATE);
+            }
+            boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+            if (devMode) {
+                Log.i(TAG, "Using development server to get registered sensors");
+            }
+            String url = devMode ? SenseUrls.DEV_ALL_SENSORS : SenseUrls.ALL_SENSORS;
+            url += "&page=" + page;
+            Map<String, String> response = SenseApi.request(context, url, null, cookie);
 
-		String responseCode = response.get("http response code");
-		if (!"200".equals(responseCode)) {
-			Log.w(TAG, "Failed to get list of sensors! Response code: " + responseCode);
-			throw new IOException("Incorrect response from CommonSense: " + responseCode);
-		}
+            String responseCode = response.get("http response code");
+            if (!"200".equals(responseCode)) {
+                Log.w(TAG, "Failed to get list of sensors! Response code: " + responseCode);
+                throw new IOException("Incorrect response from CommonSense: " + responseCode);
+            }
 
-		// parse response and store the list
-		JSONObject content = new JSONObject(response.get("content"));
-		JSONArray sensorList = content.getJSONArray("sensors");
+            // parse response and store the list
+            JSONObject content = new JSONObject(response.get("content"));
+            JSONArray sensorList = content.getJSONArray("sensors");
+            
+            // put the sensor list in the result array
+            for (int i = 0; i < sensorList.length(); i++) {
+                result.put(sensorList.getJSONObject(i));
+            }
+
+            if (sensorList.length() < 1000) {
+                // all sensors received
+                done = true;
+            } else {
+                // get the next page
+                page++;
+            }
+        }
 
 		// store the new sensor list
 		Editor authEditor = authPrefs.edit();
-		authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensorList.toString());
+        authEditor.putString(Auth.SENSOR_LIST_COMPLETE, result.toString());
 		authEditor.putLong(Auth.SENSOR_LIST_COMPLETE_TIME, System.currentTimeMillis());
 		authEditor.commit();
 
-		return sensorList;
+		return result;
 	}
 
 	/**
