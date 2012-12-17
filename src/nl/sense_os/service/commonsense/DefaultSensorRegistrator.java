@@ -70,6 +70,10 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match noise sensor
 		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
 				"0.0", deviceType, deviceUuid);
+		
+		//match auto calibrated noise sensor
+		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, "auto-calibrated",
+				"0.0", deviceType, deviceUuid);
 
 		// match noise spectrum
 		success &= checkSensor(
