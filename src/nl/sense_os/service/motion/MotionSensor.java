@@ -18,6 +18,7 @@ import nl.sense_os.service.states.EpiStateMonitor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -636,6 +637,7 @@ public class MotionSensor implements SensorEventListener {
      * Sets a periodic alarm that makes sure the the device is awake for a short while for every
      * sample.
      */
+    @SuppressLint("Wakelock")
     private void startWakeUpAlarms() {
 
 	// register receiver for wake up alarm
