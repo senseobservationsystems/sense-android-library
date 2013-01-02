@@ -143,7 +143,7 @@ public class SenseApi {
                 result.put(sensorList.getJSONObject(i));
             }
 
-            if (sensorList.length() < 1000) {
+            if (sensorList.length() < SenseUrls.PAGE_SIZE) {
                 // all sensors received
                 done = true;
             } else {
