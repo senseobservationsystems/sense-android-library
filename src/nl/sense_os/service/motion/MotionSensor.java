@@ -16,7 +16,6 @@ import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.states.EpiStateMonitor;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlarmManager;
