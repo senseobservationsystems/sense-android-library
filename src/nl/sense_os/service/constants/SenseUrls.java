@@ -16,6 +16,10 @@ public class SenseUrls {
 	public static final String VERSION = "http://data.sense-os.nl/senseapp/version.php";
 
 	public static final String FORMAT = ".json";
+    /**
+     * Default page size for getting lists at CommonSense
+     */
+    public static final int PAGE_SIZE = 1000;
 
 	public static final String DEVICES = BASE + "devices" + FORMAT;
 	public static final String DEV_DEVICES = DEV_BASE + "devices" + FORMAT;
@@ -23,10 +27,10 @@ public class SenseUrls {
 	public static final String SENSORS = BASE + "devices/<id>/sensors" + FORMAT;
 	public static final String DEV_SENSORS = DEV_BASE + "devices/<id>/sensors" + FORMAT;
 
-	public static final String ALL_SENSORS = BASE + "sensors" + FORMAT
-			+ "?per_page=1000&details=full";
-	public static final String DEV_ALL_SENSORS = DEV_BASE + "sensors" + FORMAT
-			+ "?per_page=1000&details=full";
+    public static final String ALL_SENSORS = BASE + "sensors" + FORMAT + "?per_page=" + PAGE_SIZE
+            + "&details=full";
+    public static final String DEV_ALL_SENSORS = DEV_BASE + "sensors" + FORMAT + "?per_page="
+            + PAGE_SIZE + "&details=full";
 
 	public static final String REGISTER_GCM_ID = BASE + "devices/<id>/push/register" + FORMAT;
 	public static final String DEV_REGISTER_GCM_ID = DEV_BASE + "devices/<id>/push/register"
@@ -64,10 +68,10 @@ public class SenseUrls {
 	public static final String LOGIN = BASE + "login" + FORMAT;
 	public static final String DEV_LOGIN = DEV_BASE + "login" + FORMAT;
 
-	public static final String CONNECTED_SENSORS = BASE + "sensors/<id>/sensors" + FORMAT
-			+ "?per_page=1000&details=full";
-	public static final String DEV_CONNECTED_SENSORS = DEV_BASE + "sensors/<id>/sensors" + FORMAT
-			+ "?per_page=1000&details=full";
+    public static final String CONNECTED_SENSORS = BASE + "sensors/<id>/sensors" + FORMAT
+            + "?per_page=" + PAGE_SIZE + "&details=full";
+    public static final String DEV_CONNECTED_SENSORS = DEV_BASE + "sensors/<id>/sensors" + FORMAT
+            + "?per_page=" + PAGE_SIZE + "&details=full";
 
 	public static final String MANUAL_LEARN = BASE + "sensors/%1/services/%2/manualLearn" + FORMAT;
 	public static final String DEV_MANUAL_LEARN = DEV_BASE + "sensors/%1/services/%2/manualLearn"
