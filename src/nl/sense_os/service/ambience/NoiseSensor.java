@@ -745,7 +745,7 @@ public class NoiseSensor extends PhoneStateListener {
 				startTime.set(Calendar.SECOND, 0);
 				startTime.set(Calendar.MILLISECOND, 0);
 				// correct for the difference in local time and ntp time
-				startTime.roll(Calendar.MILLISECOND, offset);
+                startTime.add(Calendar.MILLISECOND, offset);
 
 				// int align = listenInterval - (startTime.get(Calendar.SECOND)
 				// * 1000 % listenInterval);
@@ -753,7 +753,8 @@ public class NoiseSensor extends PhoneStateListener {
 				// advance to the next minute until the start time is at least
 				// 100 ms in the future
 				while (startTime.getTimeInMillis() - now.getTimeInMillis() <= 100) {
-					startTime.roll(Calendar.MINUTE, 1);
+                    // use add() to make sure the hour field increments when you cross 60 minutes
+                    startTime.add(Calendar.MINUTE, 1);
 				}
 
 				context.registerReceiver(alarmReceiver, new IntentFilter(
