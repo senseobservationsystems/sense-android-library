@@ -24,8 +24,8 @@ public class AutoCalibratedNoiseSensor {
 	private static final String TAG = "AutoCalibratedNoiseSensor";
 	private static final float DEFAULT_TOTAL_SILENCE = Float.MAX_VALUE;
 	private static final float DEFAULT_LOUDEST = Float.MIN_VALUE;
-	private static final double MIN_LOUDNESS_DYNAMIC = 10;
-	private static final double REF_SILENCE = 25; //assume 20 db(SPL) will be the lowest recording
+	private static final double MIN_LOUDNESS_DYNAMIC = 30;
+	private static final double REF_SILENCE = 25; //assume REF_SILENCE db(SPL) will be the lowest recording
 
 	private Context context;
 
