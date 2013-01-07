@@ -475,7 +475,6 @@ public class NoiseSensor extends PhoneStateListener {
 	 * recording is sent to the {@link MsgHandler}. Also schedules the next
 	 * sample job.
 	 */
-	@SuppressWarnings("unused")
 	private class SoundStreamJob implements Runnable {
 
 		private static final int MAX_FILES = 60;
@@ -530,8 +529,7 @@ public class NoiseSensor extends PhoneStateListener {
 								// recording is done, upload file
 								recorder.stop();
 								recorder.reset();
-								// wait until finished otherwise it will be
-								// overwritten
+                                // wait until finished otherwise it will be overwritten
 								SoundStreamJob tmp = soundStreamJob;
 
 								// pass message to the MsgHandler
@@ -546,13 +544,11 @@ public class NoiseSensor extends PhoneStateListener {
 										.getInstance().getTime());
 								context.startService(i);
 
-								/*
-								 * if (isEnabled && listenInterval == -1 &&
-								 * tmp.equals(soundStreamJob)) { fileCounter =
-								 * ++fileCounter % MAX_FILES; soundStreamJob =
-								 * new SoundStreamJob(fileCounter);
-								 * soundStreamHandler.post(soundStreamJob); }
-								 */
+                                if (isEnabled && listenInterval == -1 && tmp.equals(soundStreamJob)) {
+                                    fileCounter = ++fileCounter % MAX_FILES;
+                                    soundStreamJob = new SoundStreamJob(fileCounter);
+                                    soundStreamHandler.post(soundStreamJob);
+                                }
 
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -584,13 +580,8 @@ public class NoiseSensor extends PhoneStateListener {
 					// probably already stopped
 				}
 
-				// if we reset, we can reuse the object by going back to
-				// setAudioSource() step
+                // if we reset, we can reuse the object by going back to setAudioSource() step
 				recorder.reset();
-
-				// if we release instead of reset, the object cannot be reused
-				// recorder.release();
-				// recorder = null;
 			}
 		}
 	}
@@ -624,9 +615,7 @@ public class NoiseSensor extends PhoneStateListener {
 		stopSampling();
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
-		//PhoneStateListener phoneStateListener= new PhoneStateListener();
 		telMgr.listen(this, PhoneStateListener.LISTEN_NONE);
-		//SenseService.stopForeground(true);
 	}
 
 	/**
@@ -638,19 +627,10 @@ public class NoiseSensor extends PhoneStateListener {
 		disable();
 		listenInterval = interval;
 		isEnabled = true;
-		
-		//Notification note=new Notification();
-		
-		//note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
 
-		//SenseService.startForeground(1337, note);
-
-		// registering the phone state listener will trigger a call to
-		// startListening()
-
+        // registering the phone state listener will trigger a call to startListening()
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
-		//PhoneStateListener phoneStateListener= new PhoneStateListener();
 		telMgr.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
 
 	}
@@ -728,18 +708,18 @@ public class NoiseSensor extends PhoneStateListener {
 		try {
 
 			// different job if the listen interval is "real-time"
-			/*
-			 * if (listenInterval == -1) {
-			 * 
-			 * // start recording if (soundStreamJob != null) {
-			 * soundStreamHandler.removeCallbacks(soundStreamJob); }
-			 * soundStreamJob = new SoundStreamJob(0);
-			 * soundStreamHandler.post(soundStreamJob); } else
-			 */{
+            if (listenInterval == -1) {
+                // start recording
+                if (soundStreamJob != null) {
+                    soundStreamHandler.removeCallbacks(soundStreamJob);
+                }
+                soundStreamJob = new SoundStreamJob(0);
+                soundStreamHandler.post(soundStreamJob);
+
+            } else {
 				Calendar now = Calendar.getInstance();
 				// calculate offset of the local clock
-				int offset = (int) (System.currentTimeMillis() - SNTP
-						.getInstance().getTime());
+                int offset = (int) (System.currentTimeMillis() - SNTP.getInstance().getTime());
 				// align the start time on the minute of ntp time
 				Calendar startTime = (Calendar) now.clone();
 				startTime.set(Calendar.SECOND, 0);
@@ -747,29 +727,21 @@ public class NoiseSensor extends PhoneStateListener {
 				// correct for the difference in local time and ntp time
                 startTime.add(Calendar.MILLISECOND, offset);
 
-				// int align = listenInterval - (startTime.get(Calendar.SECOND)
-				// * 1000 % listenInterval);
-				// startTime.roll(Calendar.MILLISECOND, align);
-				// advance to the next minute until the start time is at least
-				// 100 ms in the future
+                // advance to the next minute until the start time is at least 100 ms in the future
 				while (startTime.getTimeInMillis() - now.getTimeInMillis() <= 100) {
                     // use add() to make sure the hour field increments when you cross 60 minutes
                     startTime.add(Calendar.MINUTE, 1);
 				}
 
-				context.registerReceiver(alarmReceiver, new IntentFilter(
-						ACTION_NOISE));
+                context.registerReceiver(alarmReceiver, new IntentFilter(ACTION_NOISE));
 				Intent alarm = new Intent(ACTION_NOISE);
-				PendingIntent alarmOperation = PendingIntent.getBroadcast(
-						context, REQID, alarm, 0);
-				AlarmManager mgr = (AlarmManager) context
-						.getSystemService(Context.ALARM_SERVICE);
+                PendingIntent alarmOperation = PendingIntent.getBroadcast(context, REQID, alarm, 0);
+                AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 				mgr.cancel(alarmOperation);
 				mgr.setRepeating(AlarmManager.RTC_WAKEUP,
 						startTime.getTimeInMillis(), listenInterval,
 						alarmOperation);
-				// Log.d(TAG, "Start at second " +
-				// startTime.get(Calendar.SECOND) + ", offset is " +
+                // Log.d(TAG, "Start at second " + startTime.get(Calendar.SECOND) + ", offset is " +
 				// offset);
 			}
 
