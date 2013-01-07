@@ -49,22 +49,6 @@ import android.util.Log;
  */
 public class NoiseSensor extends PhoneStateListener {
 
-	private static NoiseSensor instance = null;
-	
-    protected NoiseSensor(Context context) {
-		this.context = context;
-		controller = Controller.getController(context);
-		loudnessSensor = LoudnessSensor.getInstance(context);
-	}
-    
-    public static NoiseSensor getInstance(Context context) {
-    	if(instance == null) {
-	        instance = new NoiseSensor(context);
-	    }
-	    return instance;
-    }
-    
-    
 	/**
 	 * Receiver for periodic alarm broadcast that wakes up the device and starts
 	 * a noise measurement.
@@ -88,8 +72,7 @@ public class NoiseSensor extends PhoneStateListener {
 		}
 	}
 	
-
-	/**
+    /**
 	 * Runnable that performs one noise sample. Starts the recording, reads the
 	 * buffer contents, calculates the noise power and sends the measurement to
 	 * the {@link MsgHandler}. Also schedules the next sample job.
@@ -109,6 +92,23 @@ public class NoiseSensor extends PhoneStateListener {
 		private int FFT_MAX_HZ = 1000;
 
 		// power of 2
+
+		private float[] audioToFloat(byte[] buffer, int readBytes) {
+			float[] samples = new float[readBytes / 2];
+			int cnt = 0;
+			for (int x = 0; x < readBytes - 1; x = x + 2) {
+				double sample = 0;
+				for (int b = 0; b < BYTES_PER_SAMPLE; b++) {
+					int v = (int) buffer[x + b];
+					if (b < BYTES_PER_SAMPLE - 1 || BYTES_PER_SAMPLE == 1) {
+						v &= 0xFF;
+					}
+					sample += v << (b * 8);
+				}
+				samples[cnt++] = (float) sample;
+			}
+			return samples;
+		}
 
 		/**
 		 * @param samples
@@ -147,20 +147,6 @@ public class NoiseSensor extends PhoneStateListener {
 
 			// Log.d(TAG, "noise in db " + dB);
 			return dB;
-		}
-
-		// java versions before 6 don't have Arrays.copyOfRange, so make our own
-		private float[] copyOfRange(float[] array, int start, int end) {
-			if (end < start || start < 0)
-				throw new IndexOutOfBoundsException(); // isn't there a
-														// RangeException??
-			if (array.length < end - start)
-				throw new IndexOutOfBoundsException();
-			float[] copy = new float[end - start];
-			for (int i = start, j = 0; i < end; i++, j++)
-				copy[j] = array[i];
-
-			return copy;
 		}
 
 		private double[] calculateSpectrum(float[] samples) {
@@ -218,21 +204,18 @@ public class NoiseSensor extends PhoneStateListener {
 			return bins;
 		}
 
-		private float[] audioToFloat(byte[] buffer, int readBytes) {
-			float[] samples = new float[readBytes / 2];
-			int cnt = 0;
-			for (int x = 0; x < readBytes - 1; x = x + 2) {
-				double sample = 0;
-				for (int b = 0; b < BYTES_PER_SAMPLE; b++) {
-					int v = (int) buffer[x + b];
-					if (b < BYTES_PER_SAMPLE - 1 || BYTES_PER_SAMPLE == 1) {
-						v &= 0xFF;
-					}
-					sample += v << (b * 8);
-				}
-				samples[cnt++] = (float) sample;
-			}
-			return samples;
+		// java versions before 6 don't have Arrays.copyOfRange, so make our own
+		private float[] copyOfRange(float[] array, int start, int end) {
+			if (end < start || start < 0)
+				throw new IndexOutOfBoundsException(); // isn't there a
+														// RangeException??
+			if (array.length < end - start)
+				throw new IndexOutOfBoundsException();
+			float[] copy = new float[end - start];
+			for (int i = start, j = 0; i < end; i++, j++)
+				copy[j] = array[i];
+
+			return copy;
 		}
 		
 
@@ -469,8 +452,8 @@ public class NoiseSensor extends PhoneStateListener {
 			}
 		}
 	}
-
-	/**
+    
+    /**
 	 * Runnable that starts one sound stream recording. Afterwards, the
 	 * recording is sent to the {@link MsgHandler}. Also schedules the next
 	 * sample job.
@@ -586,23 +569,49 @@ public class NoiseSensor extends PhoneStateListener {
 		}
 	}
 
+	private static NoiseSensor instance = null;
+
 	private static final String TAG = "Sense NoiseSensor";
+
 	private static final int REQID = 0xF00;
+
 	private static final String ACTION_NOISE = "nl.sense_os.service.NoiseSample";
+
+    /**
+     * Factory method to get the singleton instance.
+     * 
+     * @param context
+     * @return instance
+     */
+	public static NoiseSensor getInstance(Context context) {
+    	if(instance == null) {
+	        instance = new NoiseSensor(context);
+	    }
+	    return instance;
+    }
+
 	private boolean isEnabled = false;
 	private boolean isCalling = false;
 	private int listenInterval; // Update interval in msec
 	private Context context;
-	private Handler soundStreamHandler = new Handler(
-			Looper.getMainLooper());
+    private Handler soundStreamHandler = new Handler(Looper.getMainLooper());
 	private SoundStreamJob soundStreamJob = null;
 	private Handler noiseSampleHandler = new Handler();
 	private NoiseSampleJob noiseSampleJob = null;
 	private AlarmReceiver alarmReceiver = new AlarmReceiver();
 	private LoudnessSensor loudnessSensor;
 	private Controller controller;
-	//private static Service serv;
 
+    /**
+     * Private constructor
+     * 
+     * @param context
+     */
+    private NoiseSensor(Context context) {
+		this.context = context;
+		controller = Controller.getController(context);
+		loudnessSensor = LoudnessSensor.getInstance(context);
+	}
 
 	/**
 	 * Disables the noise sensor, stopping the sound recording and unregistering
@@ -664,42 +673,6 @@ public class NoiseSensor extends PhoneStateListener {
 	}
 
 	/**
-	 * Stops any active sensing jobs, and stops and cleans up the AudioRecord.
-	 */
-	private void stopSampling() {
-		Log.v(TAG, "Stop sound sensor sampling");
-		
-		try {
-
-			// stop the alarms
-			AlarmManager alarms = (AlarmManager) context
-					.getSystemService(Context.ALARM_SERVICE);
-			alarms.cancel(PendingIntent.getBroadcast(context, REQID,
-					new Intent(ACTION_NOISE), 0));
-			try {
-				context.unregisterReceiver(alarmReceiver);
-			} catch (IllegalArgumentException e) {
-				// ignore
-			}
-
-			// stop the sound recordings/*
-			if (soundStreamJob != null) {
-				soundStreamJob.stopRecording();
-				soundStreamHandler.removeCallbacks(soundStreamJob);
-				soundStreamJob = null;
-			}
-			if (noiseSampleJob != null) {
-				noiseSampleJob.stopRecording();
-				noiseSampleHandler.removeCallbacks(noiseSampleJob);
-				noiseSampleJob = null;
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, "Exception in pauseListening!", e);
-		}
-	}
-
-	/**
 	 * Starts the sound sensing jobs.
 	 */
 	private void startSampling() {
@@ -747,6 +720,42 @@ public class NoiseSensor extends PhoneStateListener {
 
 		} catch (Exception e) {
 			Log.e(TAG, "Exception in startSensing:" + e.getMessage());
+		}
+	}
+
+	/**
+	 * Stops any active sensing jobs, and stops and cleans up the AudioRecord.
+	 */
+	private void stopSampling() {
+		Log.v(TAG, "Stop sound sensor sampling");
+		
+		try {
+
+			// stop the alarms
+			AlarmManager alarms = (AlarmManager) context
+					.getSystemService(Context.ALARM_SERVICE);
+			alarms.cancel(PendingIntent.getBroadcast(context, REQID,
+					new Intent(ACTION_NOISE), 0));
+			try {
+				context.unregisterReceiver(alarmReceiver);
+			} catch (IllegalArgumentException e) {
+				// ignore
+			}
+
+			// stop the sound recordings/*
+			if (soundStreamJob != null) {
+				soundStreamJob.stopRecording();
+				soundStreamHandler.removeCallbacks(soundStreamJob);
+				soundStreamJob = null;
+			}
+			if (noiseSampleJob != null) {
+				noiseSampleJob.stopRecording();
+				noiseSampleHandler.removeCallbacks(noiseSampleJob);
+				noiseSampleJob = null;
+			}
+
+		} catch (Exception e) {
+			Log.e(TAG, "Exception in pauseListening!", e);
 		}
 	}
 }
