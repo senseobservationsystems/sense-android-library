@@ -588,11 +588,11 @@ public class SensePrefs {
 			/**
 			 * Key for learned value of total silence..
 			 */
-			public static final String TOTAL_SILENCE = "total_silence";
+            public static final String TOTAL_SILENCE = "AutoCalibratedNoise.total_silence";
 			/**
 			 * Key for learned value of highest loudness.
 			 */
-			public static final String LOUDEST = "loudest";
+            public static final String LOUDEST = "AutoCalibratedNoise.loudest";
 		}
 	}
 
