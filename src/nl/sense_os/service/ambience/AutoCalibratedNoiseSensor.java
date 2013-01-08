@@ -5,6 +5,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.SensorSpecifics;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.content.Context;
 import android.content.Intent;
@@ -14,9 +15,11 @@ import android.util.Log;
 
 /**
  * Helper class for {@link NoiseSensor}. Estimates the sound pressure level relative to
- * the standard reference value (http://en.wikipedia.org/wiki/Sound_pressure_level#Sound_pressure_level). This value should be absolute and can therefore be compared between devices and users.
+ * the standard reference value (http://en.wikipedia.org/wiki/Sound_pressure_level#Sound_pressure_level).
+ * This value should be absolute and can therefore be compared between devices and users.
  * 
- * It works by using the lowest value ever recorded as a reference value for silence.
+ * It works by using the lowest value ever recorded as a reference value for silence. There seems to be quite some variance in 
+ * the dynamic range of microphones, therefore only silence is used to calibrate, not the loudest value.
  *  
  * @author Pim Nijdam <pim@sense-os.nl>
  */
@@ -39,7 +42,7 @@ public class AutoCalibratedNoiseSensor {
                 Context.MODE_PRIVATE);
         totalSilence = sensorSpecifics.getFloat(SensorSpecifics.AutoCalibratedNoise.TOTAL_SILENCE, DEFAULT_TOTAL_SILENCE);
         loudest = sensorSpecifics.getFloat(SensorSpecifics.AutoCalibratedNoise.LOUDEST, DEFAULT_LOUDEST);
-        Log.v("Sense AutocalibratedNoiseSensor","Loudest " + loudest + ", total silence " + totalSilence);
+        Log.v(TAG,"Loudest " + loudest + ", total silence " + totalSilence);
         
 	}
     
@@ -92,7 +95,7 @@ public class AutoCalibratedNoiseSensor {
 		sensorData.putExtra(DataPoint.SENSOR_NAME,
 				SensorNames.NOISE);
 		sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION,
-				"auto-calibrated");
+				SensorDescriptions.AUTO_CALIBRATED);
 		sensorData.putExtra(DataPoint.VALUE, (float)value);
 		sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 		sensorData.putExtra(DataPoint.TIMESTAMP, ms);
