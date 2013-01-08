@@ -429,6 +429,18 @@ public class SensorData {
             // class should not be instantiated
         }
     }
+    
+    /**
+     * Standard descriptions for sensors.
+     * 
+     * @see DataPoint#SENSOR_DESCRIPTION
+     */
+    public static class SensorDescriptions {
+        /**
+         * Auto-calibrated noise level sensor. Part of the Ambience sensors.
+         */
+        public static final String AUTO_CALIBRATED = "auto-calibrated";
+    }
 
     private SensorData() {
         // do not instantiate
