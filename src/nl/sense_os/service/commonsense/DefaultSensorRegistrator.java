@@ -4,6 +4,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -69,6 +70,10 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
 		// match noise sensor
 		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
+				"0.0", deviceType, deviceUuid);
+		
+		//match auto calibrated noise sensor
+		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorDescriptions.AUTO_CALIBRATED,
 				"0.0", deviceType, deviceUuid);
 
 		// match noise spectrum

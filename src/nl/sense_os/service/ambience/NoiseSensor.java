@@ -379,6 +379,7 @@ public class NoiseSensor extends PhoneStateListener {
 
 						if (dB != -1 && !Double.valueOf(dB).isNaN()) {
 							loudnessSensor.onNewNoise(startTimestamp, dB);
+							autoCalibratedNoiseSensor.onNewNoise(startTimestamp, dB);
 						}
 
 					} catch (Exception e) {
@@ -600,6 +601,7 @@ public class NoiseSensor extends PhoneStateListener {
 	private NoiseSampleJob noiseSampleJob = null;
 	private AlarmReceiver alarmReceiver = new AlarmReceiver();
 	private LoudnessSensor loudnessSensor;
+	private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
 	private Controller controller;
 
     /**
@@ -611,6 +613,7 @@ public class NoiseSensor extends PhoneStateListener {
 		this.context = context;
 		controller = Controller.getController(context);
 		loudnessSensor = LoudnessSensor.getInstance(context);
+		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
 	}
 
 	/**
