@@ -890,7 +890,9 @@ public class SenseApi {
 			// send content (if available)
 			if (null != content) {
 				urlConnection.setDoOutput(true);
-				urlConnection.setRequestProperty("Content-Type", "application/json");
+				// When no charset is given in the Content-Type header "ISO-8859-1" should be assumed (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7.1).
+				// Because we're uploading UTF-8 the charset should be set to UTF-8.
+				urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 
 				// send content
 				DataOutputStream printout;
@@ -908,7 +910,8 @@ public class SenseApi {
 							+ content.toString().length());
 					printout = new DataOutputStream(urlConnection.getOutputStream());
 				}
-				printout.writeBytes(content.toString());
+				// Write the string in UTF-8 encoding
+				printout.write(content.toString().getBytes("UTF-8"));
 				printout.flush();
 				printout.close();
 			}
