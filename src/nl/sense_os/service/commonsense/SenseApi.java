@@ -905,9 +905,13 @@ public class SenseApi {
 					printout = new DataOutputStream(zipStream);
 				} else {
 					// set content size
-					urlConnection.setFixedLengthStreamingMode(content.toString().length());
+					
+					// The content length should be in bytes. We cannot use string length here
+					// because that counts the number of chars while not accounting for multibyte chars
+					int contentLength = content.toString().getBytes("UTF-8").length;
+					urlConnection.setFixedLengthStreamingMode(contentLength);
 					urlConnection.setRequestProperty("Content-Length", ""
-							+ content.toString().length());
+							+ contentLength);
 					printout = new DataOutputStream(urlConnection.getOutputStream());
 				}
 				// Write the string in UTF-8 encoding
