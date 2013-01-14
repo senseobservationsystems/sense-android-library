@@ -106,19 +106,19 @@ public class MotionSensor implements SensorEventListener {
 
     private final BroadcastReceiver screenOffListener = new ScreenOffListener();
 
-    private final FallDetector fallDetector = new FallDetector();
+    public final FallDetector fallDetector = new FallDetector();
     private final Context context;
-    private boolean isFallDetectMode;
-    private boolean isEnergyMode;
-    private boolean isEpiMode;
-    private boolean isUnregisterWhenIdle;
-    private boolean firstStart = true;
-    private ArrayList<Sensor> sensors;
+    public boolean isFallDetectMode;
+    public boolean isEnergyMode;
+    public boolean isEpiMode;
+    public boolean isUnregisterWhenIdle;
+    public boolean firstStart = true;
+    public ArrayList<Sensor> sensors;
     private final long[] lastSampleTimes = new long[50];
-    private Handler motionHandler = new Handler();
-    private boolean motionSensingActive = false;
+    public Handler motionHandler = new Handler();
+    public boolean motionSensingActive = false;
     private Runnable motionThread = null;
-    private long sampleDelay = 0; // in milliseconds
+    public long sampleDelay = 0; // in milliseconds
     private long[] lastLocalSampleTimes = new long[50];
     private long localBufferTime = 15 * 1000;
     private long firstTimeSend = 0;
@@ -130,7 +130,7 @@ public class MotionSensor implements SensorEventListener {
     private long prevEnergySampleTime;
     private double avgSpeedChange;
     private int avgSpeedCount;
-    private boolean hasLinAccSensor;
+    public boolean hasLinAccSensor;
     private float[] gravity = { 0, 0, SensorManager.GRAVITY_EARTH };
 
     // members for waking up the device for sampling
@@ -483,7 +483,7 @@ public class MotionSensor implements SensorEventListener {
     /**
      * Registers for updates from the device's motion sensors.
      */
-    private synchronized void registerSensors() {
+    public synchronized void registerSensors() {
 
 	if (!isRegistered) {
 	    // Log.v(TAG, "Register the motion sensor for updates");
@@ -529,7 +529,7 @@ public class MotionSensor implements SensorEventListener {
 	avgSpeedCount = 0;
     }
 
-    private void sendFallMessage(boolean fall) {
+    public void sendFallMessage(boolean fall) {
 	Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 	i.putExtra(DataPoint.SENSOR_NAME, SensorNames.FALL_DETECTOR);
 	i.putExtra(DataPoint.SENSOR_DESCRIPTION, fallDetector.demo ? "demo fall" : "human fall");
@@ -556,69 +556,69 @@ public class MotionSensor implements SensorEventListener {
     @SuppressWarnings("deprecation")
     public void startMotionSensing(long sampleDelay) {
 
-    motionHandler = new Handler();
-	final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-		Context.MODE_PRIVATE);
-	isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
-	isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
-	isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
-
-	if (isEpiMode) {
-	    sampleDelay = 0;
-
-	    Log.v(TAG, "Start epi state sensor");
-	    context.startService(new Intent(context, EpiStateMonitor.class));
-	}
-
-	// check if the fall detector is enabled
-	isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
-	if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
-	    isFallDetectMode = true;
-
-	    Log.v(TAG, "Start epi state sensor");
-	    context.startService(new Intent(context, EpiStateMonitor.class));
-	}
-
-	if (firstStart && isFallDetectMode) {
-	    sendFallMessage(false);
-	    firstStart = false;
-	}
-
-	SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-	sensors = new ArrayList<Sensor>();
-
-	// add accelerometer
-	if (null != mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) {
-	    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-	}
-
-	if (!isEpiMode) {
-	    // add orientation sensor
-	    if (null != mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION)) {
-		sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION));
-	    }
-	    // add gyroscope
-	    if (null != mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE)) {
-		sensors.add(mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
-	    }
-	    // add linear acceleration
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-		// only devices with gingerbread+ have linear acceleration sensors
-		if (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
-		    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-		    hasLinAccSensor = true;
+	    motionHandler = new Handler();
+		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+			Context.MODE_PRIVATE);
+		isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
+		isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
+		isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
+	
+		if (isEpiMode) {
+		    sampleDelay = 0;
+	
+		    Log.v(TAG, "Start epi state sensor");
+		    context.startService(new Intent(context, EpiStateMonitor.class));
 		}
-	    }
-	}
-
-	motionSensingActive = true;
-	setSampleDelay(sampleDelay);
-	registerSensors();
-	startWakeUpAlarms();
-	enableScreenOffListener(true);
+	
+		// check if the fall detector is enabled
+		isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
+		if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
+		    isFallDetectMode = true;
+	
+		    Log.v(TAG, "Start epi state sensor");
+		    context.startService(new Intent(context, EpiStateMonitor.class));
+		}
+	
+		if (firstStart && isFallDetectMode) {
+		    sendFallMessage(false);
+		    firstStart = false;
+		}
+	
+		SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+		sensors = new ArrayList<Sensor>();
+	
+		// add accelerometer
+		if (null != mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) {
+		    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+		}
+	
+		if (!isEpiMode) {
+		    // add orientation sensor
+		    if (null != mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION)) {
+			sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION));
+		    }
+		    // add gyroscope
+		    if (null != mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE)) {
+			sensors.add(mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+		    }
+		    // add linear acceleration
+		    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+			// only devices with gingerbread+ have linear acceleration sensors
+			if (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
+			    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+			    hasLinAccSensor = true;
+			}
+		    }
+		}
+	
+		motionSensingActive = true;
+		setSampleDelay(sampleDelay);
+		registerSensors();
+		startWakeUpAlarms();
+		enableScreenOffListener(true);
     }
 
-    private void enableScreenOffListener(boolean enable) {
+    public void enableScreenOffListener(boolean enable) {
 	if (enable) {
 	    // Register the receiver for SCREEN OFF events
 	    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
@@ -637,7 +637,7 @@ public class MotionSensor implements SensorEventListener {
      * Sets a periodic alarm that makes sure the the device is awake for a short while for every
      * sample.
      */
-    private void startWakeUpAlarms() {
+    public void startWakeUpAlarms() {
 
 	// register receiver for wake up alarm
 	wakeReceiver = new BroadcastReceiver() {

@@ -1,6 +1,7 @@
 package nl.sense_os.service.ctrl;
 
 import nl.sense_os.service.location.LocationSensor;
+import nl.sense_os.service.motion.MotionSensor;
 import android.content.Context;
 import android.location.Location;
 
@@ -22,8 +23,9 @@ public abstract class Controller
 	public static synchronized Controller getController(Context context)
 	{
 		if (ref == null) {
-			ref = new CtrlDefault(context);
+			ref = new CtrlExtended(context);
             locListener = LocationSensor.getInstance(context);
+            motion = MotionSensor.getInstance(context);
 		}
 		return ref;
 	}
@@ -41,6 +43,8 @@ public abstract class Controller
 	private static Controller ref;
 	
 	public static LocationSensor locListener; 
+
+	public static MotionSensor motion; 
     
 	
 	

@@ -131,11 +131,11 @@ public class LocationSensor {
 	}
 
 	private static final String TAG = "Sense LocationSensor";
-	private static final String ALARM_ACTION = "nl.sense_os.service.LocationAlarm";
-	private static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
-	private static final int ALARM_ID = 56;
+	public static final String ALARM_ACTION = "nl.sense_os.service.LocationAlarm";
+	public static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
+	public static final int ALARM_ID = 56;
 	public static final long MIN_SAMPLE_DELAY = 5000; // 5 sec
-	private static final int DISTANCE_ALARM_ID = 70;
+	public static final int DISTANCE_ALARM_ID = 70;
 
 	private Controller controller;
 	private Context context;
@@ -144,14 +144,14 @@ public class LocationSensor {
 	private final MyLocationListener nwListener;
 	private final MyLocationListener pasListener;
 
-	private long time;
-	private float distance;
+	public long time;
+	public float distance;
 	//private Controller controller;
 
 	/**
 	 * Receiver for periodic alarms to check on the sensor status.
 	 */
-	private final BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
+	public BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
 
 		
 		@Override
@@ -178,7 +178,7 @@ public class LocationSensor {
 	/**
 	 * Receiver for periodic alarms to calculate distance values.
 	 */
-	private final BroadcastReceiver distanceAlarmReceiver = new BroadcastReceiver() {
+	public final BroadcastReceiver distanceAlarmReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -400,7 +400,7 @@ public class LocationSensor {
 		}
 	}
 
-	private void stopAlarms() {
+	public void stopAlarms() {
 		// unregister the receiver
 		try {
 			context.unregisterReceiver(alarmReceiver);
