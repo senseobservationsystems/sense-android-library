@@ -214,7 +214,7 @@ public class CtrlExtended extends Controller{
 		
 		}
 		else {
-			if (isPositionChanged(100) || NwisSwitchedOffTooLong(isListeningNw, listenNwStop) || isSwitchedOffTooLong(isListeningNw, listenNwStop) || (gpsIndexFlag == 2) || (networkIndexFlag == 2)) {
+			if (isPositionChanged(200) || NwisSwitchedOffTooLong(isListeningNw, listenNwStop) || isSwitchedOffTooLong(isListeningNw, listenNwStop) || (gpsIndexFlag == 2) || (networkIndexFlag == 2)) {
 				/*if (locListener.time != 30 * 1000) {
 					locSampleRate(30 * 1000);
 				}*/
