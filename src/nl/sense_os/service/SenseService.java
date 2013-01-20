@@ -8,10 +8,10 @@ import java.util.Map;
 
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
+import nl.sense_os.service.ambience.MagneticFieldSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
 import nl.sense_os.service.ambience.TemperatureSensor;
-import nl.sense_os.service.ambience.MagneticFieldSensor;
 import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
@@ -676,7 +676,8 @@ public class SenseService extends Service {
 							// Log.v(TAG, "Camera is not supported in this version of Android");
 						}
 						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
-							magneticFieldSensor = new MagneticFieldSensor(SenseService.this);
+                            magneticFieldSensor = MagneticFieldSensor
+                                    .getInstance(SenseService.this);
 							magneticFieldSensor.startMagneticFieldSensing(finalInterval);
 						}
 						

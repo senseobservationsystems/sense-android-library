@@ -35,6 +35,21 @@ public class MagneticFieldSensor implements SensorEventListener {
 
     private static final String TAG = "Sense Magnetic Field Sensor";
     private static final String SENSOR_DISPLAY_NAME = "magnetic field";
+    private static MagneticFieldSensor instance;
+
+    /**
+     * Factory method to get the singleton instance.
+     * 
+     * @param context
+     * @return instance
+     */
+    public static MagneticFieldSensor getInstance(Context context) {
+        if (null == instance) {
+            instance = new MagneticFieldSensor(context);
+        }
+        return instance;
+    }
+
     private long sampleDelay = 0; // in milliseconds
     private long[] lastSampleTimes = new long[50];
     private Context context;
@@ -44,7 +59,7 @@ public class MagneticFieldSensor implements SensorEventListener {
     private Runnable magneticFieldThread = null;
     private boolean magneticFieldSensingActive = false;
 
-    public MagneticFieldSensor(Context context) {
+    private MagneticFieldSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
@@ -134,11 +149,11 @@ public class MagneticFieldSensor implements SensorEventListener {
      *            Delay between samples in milliseconds
      */
     public void startMagneticFieldSensing(long sampleDelay) {
+        // Log.v(TAG, "Registering magnetic field sensor");
         magneticFieldSensingActive = true;
         setSampleDelay(sampleDelay);
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                // Log.d(TAG, "registering for sensor " + sensor.getName());
                 smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }
@@ -148,6 +163,7 @@ public class MagneticFieldSensor implements SensorEventListener {
      * Stops the periodic sampling.
      */
     public void stopMagneticFieldSensing() {
+        // Log.v(TAG, "Unregistering magnetic field sensor");
         try {
             magneticFieldSensingActive = false;
             smgr.unregisterListener(this);
