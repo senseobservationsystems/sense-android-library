@@ -116,17 +116,18 @@ public class MagneticFieldSensor implements SensorEventListener {
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
             i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             context.startService(i);
-        }
-        if (sampleDelay > 500 && magneticFieldSensingActive) {
-            // unregister the listener and start again in sampleDelay seconds
-            stopMagneticFieldSensing();
-            magneticFieldHandler.postDelayed(magneticFieldThread = new Runnable() {
 
-                @Override
-                public void run() {
-                    startMagneticFieldSensing(sampleDelay);
-                }
-            }, sampleDelay);
+            // unregister the listener and start again in sampleDelay seconds
+            if (sampleDelay > 500 && magneticFieldSensingActive) {
+                stopMagneticFieldSensing();
+                magneticFieldHandler.postDelayed(magneticFieldThread = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        startMagneticFieldSensing(sampleDelay);
+                    }
+                }, sampleDelay);
+            }
         }
     }
 
