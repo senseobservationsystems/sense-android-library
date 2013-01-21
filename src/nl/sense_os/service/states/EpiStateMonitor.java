@@ -17,6 +17,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+/**
+ * State monitor that periodically checks the data form the epi sensor and triggers and action when
+ * there was a large amount of activity. Used for demo purposes only.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class EpiStateMonitor extends AbstractStateMonitor {
 
     private static final long TIME_RANGE = 5000;

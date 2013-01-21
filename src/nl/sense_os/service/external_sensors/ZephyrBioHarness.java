@@ -30,6 +30,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+/**
+ * Represents the Zephyr BioHarness sensor. When started, the phone tries to connect to the device
+ * via Bluetooth and requests sensor data.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ */
 public class ZephyrBioHarness {
 
     /*

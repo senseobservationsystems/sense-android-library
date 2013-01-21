@@ -9,8 +9,8 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,17 +22,47 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Represents the location sensor. Implements the basic Android LocationListener to receive location
+ * updates from the OS.<br/>
+ * <br/>
+ * Generates data for the following sensors:
+ * <ul>
+ * <li>position</li>
+ * <li>traveled distance 1h</li>
+ * </ul>
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class LocationSensor {
-
+	
+	private static LocationSensor instance = null;
+	
+    protected LocationSensor(Context context) {
+		this.context = context;
+		locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        controller = Controller.getController(context);
+		gpsListener = new MyLocationListener();
+		nwListener = new MyLocationListener();
+		pasListener = new MyLocationListener();
+		distanceEstimator = new TraveledDistanceEstimator();
+	}
+    
+    public static LocationSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new LocationSensor(context);
+	    }
+	    return instance;
+    }
+	
 	private class MyLocationListener implements LocationListener {
 
 		@Override
@@ -44,7 +74,8 @@ public class LocationSensor {
 					return;
 				}
 			}
-
+			
+			//controller = Controller.getController(context);
 			JSONObject json = new JSONObject();
 			try {
 				json.put("latitude", fix.getLatitude());
@@ -59,7 +90,13 @@ public class LocationSensor {
 
 				if (fix.getProvider().equals(LocationManager.GPS_PROVIDER)) {
 					lastGpsFix = fix;
+				} 
+				else if (fix.getProvider().equals(LocationManager.NETWORK_PROVIDER)) {
+					lastNwFix = fix;
 				}
+				else {		
+					//do nothing
+				} 
 
 			} catch (JSONException e) {
 				Log.e(TAG, "JSONException in onLocationChanged", e);
@@ -79,12 +116,12 @@ public class LocationSensor {
 
 		@Override
 		public void onProviderDisabled(String provider) {
-			checkSensorSettings();
+			controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
 		}
 
 		@Override
 		public void onProviderEnabled(String provider) {
-			checkSensorSettings();
+			controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
 		}
 
 		@Override
@@ -100,23 +137,27 @@ public class LocationSensor {
 	public static final long MIN_SAMPLE_DELAY = 5000; // 5 sec
 	private static final int DISTANCE_ALARM_ID = 70;
 
-	private final Context context;
-	private final LocationManager locMgr;
+	private Controller controller;
+	private Context context;
+	public static LocationManager locMgr;
 	private final MyLocationListener gpsListener;
 	private final MyLocationListener nwListener;
 	private final MyLocationListener pasListener;
 
 	private long time;
 	private float distance;
+	//private Controller controller;
 
 	/**
 	 * Receiver for periodic alarms to check on the sensor status.
 	 */
 	private final BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
 
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			checkSensorSettings();
+			//controller = Controller.getController(context);
+			controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
 		}
 	};
 
@@ -124,9 +165,13 @@ public class LocationSensor {
 	private boolean isNetworkAllowed;
 
 	private boolean isListeningGps;
+	private boolean isListeningNw;	
 	private long listenGpsStart;
 	private long listenGpsStop;
 	private Location lastGpsFix;
+	private Location lastNwFix;
+	private long listenNwStart;
+	private long listenNwStop;
 
 	private TraveledDistanceEstimator distanceEstimator;
 
@@ -151,65 +196,7 @@ public class LocationSensor {
 		}
 	};
 
-	public LocationSensor(Context context) {
-		this.context = context;
-		locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		gpsListener = new MyLocationListener();
-		nwListener = new MyLocationListener();
-		pasListener = new MyLocationListener();
-		distanceEstimator = new TraveledDistanceEstimator();
-	}
-
-	/**
-	 * Checks to see if the sensor is still doing a useful job or whether it is better if we disable
-	 * it for a while. This method is a callback for a periodic alarm to check the sensor status.
-	 * 
-	 * @see #alarmReceiver
-	 */
-	private void checkSensorSettings() {
-
-		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
-		boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
-
-		if (selfAwareMode) {
-			// Log.v(TAG, "Check location sensor settings...");
-
-			if (isListeningGps) {
-
-				if (!isGpsProductive()) {
-					// switch off
-					setGpsListening(false);
-					notifyListeningStopped("not productive");
-
-				} else {
-					// we're fine
-				}
-
-			} else {
-
-				if (isAccelerating()) {
-					// switch on
-					setGpsListening(true);
-					notifyListeningRestarted("moved");
-
-				} else if (isPositionChanged()) {
-					// switch on
-					setGpsListening(true);
-					notifyListeningRestarted("position changed");
-
-				} else if (isSwitchedOffTooLong()) {
-					// switch on
-					setGpsListening(true);
-					notifyListeningRestarted("timeout");
-
-				} else {
-					// we're fine
-				}
-			}
-		}
-	}
-
+	
 	/**
 	 * Stops listening for location updates.
 	 */
@@ -239,6 +226,7 @@ public class LocationSensor {
 		getLastKnownLocation();
 	}
 
+	
 	private void getLastKnownLocation() {
 
 		// get the most recent location fixes
@@ -274,190 +262,9 @@ public class LocationSensor {
 		}
 	}
 
-	private boolean isAccelerating() {
-		// Log.v(TAG, "Check if device was accelerating recently");
 
-		boolean moving = true;
 
-		Cursor data = null;
-		try {
-			// get linear acceleration data
-			long timerange = 1000 * 60 * 15; // 15 minutes
-			Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_URI_PATH);
-			String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
-					DataPoint.VALUE };
-			String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LIN_ACCELERATION + "'"
-					+ " AND " + DataPoint.TIMESTAMP + ">"
-					+ (SNTP.getInstance().getTime() - timerange);
-			data = LocalStorage.getInstance(context).query(uri, projection, selection, null, null);
-
-			if (null == data || data.getCount() == 0) {
-				// no movement measurements: assume the device is moving
-				return true;
-			}
-
-			// find the largest motion measurement
-			data.moveToFirst();
-			double totalMotion = 0;
-			while (!data.isAfterLast()) {
-				String value = data.getString(data.getColumnIndex(DataPoint.VALUE));
-				JSONObject json = new JSONObject(value);
-				double x = json.getDouble("x-axis");
-				double y = json.getDouble("y-axis");
-				double z = json.getDouble("z-axis");
-				double motion = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
-				totalMotion += motion;
-				data.moveToNext();
-			}
-			double avgMotion = totalMotion / data.getCount();
-
-			if (avgMotion > 4) {
-				// device is moving
-				moving = true;
-			} else {
-				// device is not moving
-				moving = false;
-			}
-
-		} catch (JSONException e) {
-			Log.e(TAG, "Exception parsing linear acceleration data: ", e);
-			moving = true;
-		} finally {
-			if (null != data) {
-				data.close();
-			}
-		}
-
-		return moving;
-	}
-
-	/**
-	 * @return true if GPS has recently produced new data points.
-	 */
-	private boolean isGpsProductive() {
-
-		boolean productive = isListeningGps;
-		long maxDelay = 2 * time;
-		if (isListeningGps) {
-
-			// check if any updates have been received recently from the GPS sensor
-			if (lastGpsFix != null && lastGpsFix.getTime() > listenGpsStart) {
-				if (SNTP.getInstance().getTime() - lastGpsFix.getTime() > maxDelay) {
-					// no updates for long time
-					productive = false;
-				}
-			} else if (SNTP.getInstance().getTime() - listenGpsStart > maxDelay) {
-				// no updates for a long time
-				productive = false;
-			} else {
-				// GPS is productive
-			}
-
-		} else {
-			// not enabled
-		}
-
-		return productive;
-	}
-
-	private boolean isPositionChanged() {
-		// Log.v(TAG, "Check if position changed recently");
-
-		boolean moved = true;
-
-		Cursor data = null;
-		try {
-			// get location data from time since the last check
-			long timerange = 1000 * 60 * 15; // 15 minutes
-			Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_URI_PATH);
-			String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
-					DataPoint.VALUE };
-			String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LOCATION + "'" + " AND "
-					+ DataPoint.TIMESTAMP + ">" + (SNTP.getInstance().getTime() - timerange);
-			data = LocalStorage.getInstance(context).query(uri, projection, selection, null, null);
-
-			if (null == data || data.getCount() < 2) {
-				// no position changes: assume the device is moving
-				return true;
-			}
-
-			// find the first motion measurement
-			data.moveToFirst();
-			JSONObject startJson = new JSONObject(data.getString(data
-					.getColumnIndex(DataPoint.VALUE)));
-			Location startLoc = new Location("");
-			startLoc.setLatitude(startJson.getDouble("latitude"));
-			startLoc.setLongitude(startJson.getDouble("longitude"));
-			startLoc.setAccuracy((float) startJson.getDouble("accuracy"));
-			startLoc.setTime(data.getLong(data.getColumnIndex(DataPoint.TIMESTAMP)));
-
-			// find the last motion measurement
-			data.moveToLast();
-			JSONObject endJson = new JSONObject(
-					data.getString(data.getColumnIndex(DataPoint.VALUE)));
-			Location endLoc = new Location("");
-			endLoc.setLatitude(endJson.getDouble("latitude"));
-			endLoc.setLongitude(endJson.getDouble("longitude"));
-			endLoc.setAccuracy((float) endJson.getDouble("accuracy"));
-			endLoc.setTime(data.getLong(data.getColumnIndex(DataPoint.TIMESTAMP)));
-
-			// calculate the distance traveled
-			float distance = 0;
-			float accuracy = Float.MAX_VALUE;
-			if (null != startLoc && null != endLoc) {
-				float[] results = new float[1];
-				Location.distanceBetween(startLoc.getLatitude(), startLoc.getLongitude(),
-						endLoc.getLatitude(), endLoc.getLongitude(), results);
-				distance = results[0];
-				accuracy = startLoc.getAccuracy() + endLoc.getAccuracy();
-			}
-
-			if (distance > accuracy) {
-				Log.v(TAG, "Position has changed");
-				moved = true;
-			} else {
-				// position did NOT change
-				moved = false;
-			}
-
-		} catch (JSONException e) {
-			Log.e(TAG, "Exception parsing location data: ", e);
-			moved = true;
-		} finally {
-			if (null != data) {
-				data.close();
-			}
-		}
-
-		return moved;
-	}
-
-	private boolean isSwitchedOffTooLong() {
-
-		if (isListeningGps) {
-			Log.w(TAG, "No use checking if GPS is switched off too long: it is still listening!");
-			return false;
-		}
-
-		boolean tooLong = false;
-		long maxDelay = 1000 * 60 * 60; // 1 hour
-
-		if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
-			// GPS has been turned off for a long time, or was never even started
-			tooLong = true;
-		} else if (!locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-			// the network provider is disabled: GPS is the only option
-			tooLong = true;
-		} else {
-			tooLong = false;
-		}
-
-		return tooLong;
-	}
-
-	private void notifyListeningRestarted(String msg) {
+	public void notifyListeningRestarted(String msg) {
 
 		// Intent log = new Intent(MsgHandler.ACTION_NEW_MSG);
 		// log.putExtra(MsgHandler.KEY_SENSOR_NAME, "GPS logger");
@@ -468,7 +275,7 @@ public class LocationSensor {
 		// context.startService(log);
 	}
 
-	private void notifyListeningStopped(String msg) {
+	public void notifyListeningStopped(String msg) {
 
 		// Intent log = new Intent(MsgHandler.ACTION_NEW_MSG);
 		// log.putExtra(MsgHandler.KEY_SENSOR_NAME, "GPS logger");
@@ -487,8 +294,8 @@ public class LocationSensor {
 		this.distance = distance;
 	}
 
-	private void setGpsListening(boolean listen) {
-		if (listen) {
+	public void setGpsListening(boolean listen) {
+		if (listen) { 
 			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, distance, gpsListener);
 			isListeningGps = true;
 			listenGpsStart = SNTP.getInstance().getTime();
@@ -500,16 +307,23 @@ public class LocationSensor {
 		}
 	}
 
-	private void setNetworkListening(boolean listen) {
-		if (listen) {
+	public void setNetworkListening(boolean listen) {
+		if (listen/* && isNetworkAllowed*/) { 
 			try {
 				locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, distance,
 						nwListener);
+				isListeningNw = true;	
+				listenNwStart = SNTP.getInstance().getTime(); 
+				lastNwFix = null;	
 			} catch (IllegalArgumentException e) {
 				Log.e(TAG, "Failed to start listening to network provider! " + e);
+				listenNwStop = SNTP.getInstance().getTime(); 
+				isListeningNw = false;	
 			}
 		} else {
 			locMgr.removeUpdates(nwListener);
+			listenNwStop = SNTP.getInstance().getTime(); 
+			isListeningNw = false;	
 		}
 	}
 
@@ -536,9 +350,9 @@ public class LocationSensor {
 
 	private void startAlarms() {
 
-		// register to recieve the alarm
-		context.registerReceiver(alarmReceiver, new IntentFilter(ALARM_ACTION));
-		context.registerReceiver(distanceAlarmReceiver, new IntentFilter(DISTANCE_ALARM_ACTION));
+		// register to receive the alarm
+		context.getApplicationContext().registerReceiver(alarmReceiver, new IntentFilter(ALARM_ACTION));
+		context.getApplicationContext().registerReceiver(distanceAlarmReceiver, new IntentFilter(DISTANCE_ALARM_ACTION));
 
 		// start periodic alarm
 		Intent alarm = new Intent(ALARM_ACTION);

@@ -1,5 +1,12 @@
 package nl.sense_os.service.constants;
 
+import java.util.Locale;
+
+/**
+ * General utility class.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class Util {
 
 	private Util() {
@@ -20,6 +27,6 @@ public class Util {
 		}
 		int exp = (int) (Math.log(bytes) / Math.log(unit));
 		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+        return String.format(Locale.ENGLISH, "%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 }

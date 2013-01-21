@@ -1,9 +1,11 @@
 /**************************************************************************************************
- * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ * Copyright (C) 2012 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import nl.sense_os.service.R;
@@ -11,6 +13,9 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -21,40 +26,46 @@ import android.os.Handler;
 import android.util.Log;
 
 /**
- * Represents the air pressure sensor. Registers itself for updates from the Android
+ * Represents the magnetic field sensor. Registers itself for updates from the Android
  * {@link SensorManager}.
  * 
- * @author Steven Mulder <steven@sense-os.nl>
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class PressureSensor implements SensorEventListener {
+public class MagneticFieldSensor implements SensorEventListener {
 
-    private static final String TAG = "Sense Pressure Sensor";
+    private static final String TAG = "Sense Magnetic Field Sensor";
+    private static final String SENSOR_DISPLAY_NAME = "magnetic field";
+    private static MagneticFieldSensor instance;
+
+    /**
+     * Factory method to get the singleton instance.
+     * 
+     * @param context
+     * @return instance
+     */
+    public static MagneticFieldSensor getInstance(Context context) {
+        if (null == instance) {
+            instance = new MagneticFieldSensor(context);
+        }
+        return instance;
+    }
 
     private long sampleDelay = 0; // in milliseconds
     private long[] lastSampleTimes = new long[50];
     private Context context;
     private List<Sensor> sensors;
     private SensorManager smgr;
-    private Handler pressureHandler = new Handler();
-    private Runnable pressureThread = null;
-    private boolean pressureSensingActive = false;
+    private Handler magneticFieldHandler = new Handler();
+    private Runnable magneticFieldThread = null;
+    private boolean magneticFieldSensingActive = false;
 
-    protected PressureSensor(Context context) {
+    private MagneticFieldSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
-        if (null != smgr.getDefaultSensor(Sensor.TYPE_PRESSURE)) {
-            sensors.add(smgr.getDefaultSensor(Sensor.TYPE_PRESSURE));
+        if (null != smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)) {
+            sensors.add(smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
         }
-    }
-    
-    private static PressureSensor instance = null;
-    
-    public static PressureSensor getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new PressureSensor(context);
-	    }
-	    return instance;
     }
 
     /**
@@ -66,7 +77,7 @@ public class PressureSensor implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // do nothing
+        // not used
     }
 
     @Override
@@ -76,42 +87,47 @@ public class PressureSensor implements SensorEventListener {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
             String sensorName = "";
-            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
-                sensorName = SensorNames.PRESSURE;
+            if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                sensorName = SensorNames.MAGNETIC_FIELD;
             }
 
-            String jsonString = null;
-            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
-                jsonString = "{";
-                // value is millibar, convert to Pascal
-                float millibar = event.values[0];
-                float pascal = millibar * 100;
-                jsonString += "\"Pascal\":" + pascal;
-                jsonString += "}";
-            } else {
-                // not the right sensor
-                return;
-            }
+     		double x = event.values[0];         		
+    		// scale to three decimal precision
+    		x = BigDecimal.valueOf(x).setScale(3, 0).doubleValue();
+    		double y = event.values[1];         		
+    		// scale to three decimal precision
+    		y = BigDecimal.valueOf(y).setScale(3, 0).doubleValue();
+    		double z = event.values[2];         		
+    		// scale to three decimal precision
+    		z = BigDecimal.valueOf(z).setScale(3, 0).doubleValue();
+
+    		HashMap<String, Object> dataFields = new HashMap<String, Object>();
+    		dataFields.put("x", x);
+    		dataFields.put("y", y);
+    		dataFields.put("z", z);
+    		String jsonString = new JSONObject(dataFields).toString();
 
             // send msg to MsgHandler
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.VALUE, jsonString);
             i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+            i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
             i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
             context.startService(i);
-        }
-        if (sampleDelay > 500 && pressureSensingActive) {
-            // unregister the listener and start again in sampleDelay seconds
-            stopPressureSensing();
-            pressureHandler.postDelayed(pressureThread = new Runnable() {
 
-                @Override
-                public void run() {
-                    startPressureSensing(sampleDelay);
-                }
-            }, sampleDelay);
+            // unregister the listener and start again in sampleDelay seconds
+            if (sampleDelay > 500 && magneticFieldSensingActive) {
+                stopMagneticFieldSensing();
+                magneticFieldHandler.postDelayed(magneticFieldThread = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        startMagneticFieldSensing(sampleDelay);
+                    }
+                }, sampleDelay);
+            }
         }
     }
 
@@ -133,12 +149,12 @@ public class PressureSensor implements SensorEventListener {
      * @param sampleDelay
      *            Delay between samples in milliseconds
      */
-    public void startPressureSensing(long _sampleDelay) {
-        pressureSensingActive = true;
-        setSampleDelay(_sampleDelay);
+    public void startMagneticFieldSensing(long sampleDelay) {
+        // Log.v(TAG, "Registering magnetic field sensor");
+        magneticFieldSensingActive = true;
+        setSampleDelay(sampleDelay);
         for (Sensor sensor : sensors) {
-            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
-                // Log.d(TAG, "registering for sensor " + sensor.getName());
+            if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
                 smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }
@@ -147,17 +163,18 @@ public class PressureSensor implements SensorEventListener {
     /**
      * Stops the periodic sampling.
      */
-    public void stopPressureSensing() {
+    public void stopMagneticFieldSensing() {
+        // Log.v(TAG, "Unregistering magnetic field sensor");
         try {
-            pressureSensingActive = false;
+            magneticFieldSensingActive = false;
             smgr.unregisterListener(this);
 
-            if (pressureThread != null)
-                pressureHandler.removeCallbacks(pressureThread);
-            pressureThread = null;
+            if (magneticFieldThread != null)
+                magneticFieldHandler.removeCallbacks(magneticFieldThread);
+            magneticFieldThread = null;
 
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "Failed to stop sampling! " + e.getMessage());
         }
 
     }

@@ -16,9 +16,9 @@ import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.states.EpiStateMonitor;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -37,8 +37,37 @@ import android.os.PowerManager.WakeLock;
 import android.util.FloatMath;
 import android.util.Log;
 
+/**
+ * Represents the main motion sensor. Listens for events from the Android SensorManager and parses
+ * the results.<br/>
+ * <br/>
+ * The resulting data is divided over several separate sensors in CommonSense: *
+ * <ul>
+ * <li>accelerometer</li>
+ * <li>gyroscope</li>
+ * <li>motion energy</li>
+ * <li>linear acceleration</li>
+ * </ul>
+ * Besides these basic sensors, the sensor can also gather data for high-speed epilepsy detection
+ * and fall detection.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class MotionSensor implements SensorEventListener {
 
+	private static MotionSensor instance = null;
+	
+    protected MotionSensor(Context context) {
+		this.context = context;
+	}
+    
+    public static MotionSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new MotionSensor(context);
+	    }
+	    return instance;
+    }
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
      * the screen turns off.
@@ -115,9 +144,6 @@ public class MotionSensor implements SensorEventListener {
     private long lastRegistered = -1;
     private static final long DELAY_AFTER_REGISTRATION = 500;
 
-    public MotionSensor(Context context) {
-	this.context = context;
-    }
 
     /**
      * Calculates the linear acceleration of a raw accelerometer sample. Tries to determine the
@@ -195,8 +221,8 @@ public class MotionSensor implements SensorEventListener {
 		}
 		axis++;
 	    }
-	} catch (JSONException e) {
-	    Log.e(TAG, "JSONException creating motion JSON value", e);
+	} catch (Exception e) {
+	    Log.e(TAG, "Exception creating motion JSON value", e);
 	    return null;
 	}
 
@@ -421,7 +447,7 @@ public class MotionSensor implements SensorEventListener {
 	    sensorName = SensorNames.ORIENT;
 	    break;
 	case Sensor.TYPE_MAGNETIC_FIELD:
-	    sensorName = SensorNames.MAGNET_FIELD;
+	    sensorName = SensorNames.MAGNETIC_FIELD;
 	    break;
 	case Sensor.TYPE_GYROSCOPE:
 	    sensorName = SensorNames.GYRO;
@@ -530,6 +556,7 @@ public class MotionSensor implements SensorEventListener {
     @SuppressWarnings("deprecation")
     public void startMotionSensing(long sampleDelay) {
 
+    motionHandler = new Handler();
 	final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 		Context.MODE_PRIVATE);
 	isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
@@ -610,6 +637,7 @@ public class MotionSensor implements SensorEventListener {
      * Sets a periodic alarm that makes sure the the device is awake for a short while for every
      * sample.
      */
+    @SuppressLint("Wakelock")
     private void startWakeUpAlarms() {
 
 	// register receiver for wake up alarm

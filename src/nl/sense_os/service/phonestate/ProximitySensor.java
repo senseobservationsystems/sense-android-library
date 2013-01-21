@@ -3,6 +3,14 @@
  *************************************************************************************************/
 package nl.sense_os.service.phonestate;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -12,15 +20,12 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.provider.SNTP;
-
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Represents the proximity sensor. Listens for proximity sensor data from the Android
+ * SensorManager.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ */
 public class ProximitySensor implements SensorEventListener {
 
     private static final String TAG = "Sense Proximity Sensor";
@@ -34,7 +39,7 @@ public class ProximitySensor implements SensorEventListener {
     private Runnable ProximityThread = null;
     private boolean ProximitySensingActive = false;
 
-    public ProximitySensor(Context context) {
+    protected ProximitySensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
@@ -43,11 +48,18 @@ public class ProximitySensor implements SensorEventListener {
         }
     }
 
+    private static ProximitySensor instance = null;
+    
+    public static ProximitySensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new ProximitySensor(context);
+	    }
+	    return instance;
+    }
+    
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Log.d(TAG, "Accuracy changed...");
-        // Log.d(TAG, "Sensor: " + sensor.getName() + "(" + sensor.getType() + "), accuracy: " +
-        // accuracy);
+        // do nothing
     }
 
     @Override
@@ -99,6 +111,7 @@ public class ProximitySensor implements SensorEventListener {
     }
 
     public void startProximitySensing(long _sampleDelay) {
+    	ProximityHandler = new Handler();
         ProximitySensingActive = true;
         setSampleDelay(_sampleDelay);
         for (Sensor sensor : sensors) {

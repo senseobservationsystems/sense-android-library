@@ -22,6 +22,8 @@ import android.util.Log;
 /**
  * Handler for transmit tasks of persisted data (i.e. data that was stored in the SQLite database).
  * Removes the data from the database after the transmission is completed successfully.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class PersistedBufferTransmitHandler extends BufferTransmitHandler {
 

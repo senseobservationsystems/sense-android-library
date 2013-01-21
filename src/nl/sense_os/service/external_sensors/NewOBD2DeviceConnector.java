@@ -25,6 +25,11 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+/**
+ * Task that tries to connect to an OBD2 dongle via Bluetooth.
+ * 
+ * @author Roelof van den Berg <roelof@sense-os.nl>
+ */
 public class NewOBD2DeviceConnector implements Runnable {
     protected final String TAG = "OBD-II";
     protected final UUID serial_uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");

@@ -2,6 +2,32 @@ package nl.sense_os.service.constants;
 
 import android.content.Context;
 
+/**
+ * Contains all preference keys for the SharedPreferences that are used by the Sense library.<br/>
+ * <br/>
+ * Nota bene: there are three separate preference files:
+ * <ul>
+ * <li>{@link #MAIN_PREFS}, containing the settings for the sensors and sample and sync rates;</li>
+ * <li>{@link #AUTH_PREFS}, containing all user-related stuff like login, session, cached sensor
+ * IDs;</li>
+ * <li>{@link #STATUS_PREFS}, containing settings about which sensors are activated.</li>
+ * </ul>
+ * 
+ * To access the settings, you should not uses the default SharedPreference, but use the names of
+ * the right preference file instead:
+ * 
+ * <pre>
+ * // preferences about sensor settings are store in the main prefs
+ * SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+ * boolean useGps = mainPrefs.getBoolean(Main.Location.GPS, true);
+ * 
+ * // prefs about login are stored in auth prefs
+ * SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+ * String cookie = mainPrefs.getBoolean(Auth.LOGIN_COOKIE, null);
+ * </pre>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class SensePrefs {
 	/**
 	 * Keys for the authentication-related preferences of the Sense Platform
@@ -173,6 +199,12 @@ public class SensePrefs {
 			 * @see SensePrefs#MAIN_PREFS
 			 */
 			public static final String TEMPERATURE = "ambience_temperature";
+			/**
+			 * Key for preference that toggles use of the magnetic field sensor in ambience sensing.
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String MAGNETIC_FIELD = "ambience_magnetic_field";
 		}
 
 		public static class DevProx {
@@ -544,16 +576,23 @@ public class SensePrefs {
 		public static class Loudness {
 			/**
 			 * Key for learned value of total silence..
-			 * 
-			 * @see SensePrefs#AUTH_PREFS
 			 */
 			public static final String TOTAL_SILENCE = "total_silence";
 			/**
 			 * Key for learned value of highest loudness.
-			 * 
-			 * @see SensePrefs#AUTH_PREFS
 			 */
 			public static final String LOUDEST = "loudest";
+		}
+		
+		public static class AutoCalibratedNoise {
+			/**
+			 * Key for learned value of total silence..
+			 */
+            public static final String TOTAL_SILENCE = "AutoCalibratedNoise.total_silence";
+			/**
+			 * Key for learned value of highest loudness.
+			 */
+            public static final String LOUDEST = "AutoCalibratedNoise.loudest";
 		}
 	}
 

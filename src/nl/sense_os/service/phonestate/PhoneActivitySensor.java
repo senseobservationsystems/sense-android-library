@@ -18,10 +18,25 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+/**
+ * Represents the screen activity sensor. Listens for ACTION_SCREEN_ON and ACTION_SCREEN_OFF
+ * broadcasts from Android.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ */
 public class PhoneActivitySensor {
 
     private static final String TAG = "Sense Screen Activity";
     private final Context context;
+        
+    private static PhoneActivitySensor instance = null;
+    
+    public static PhoneActivitySensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new PhoneActivitySensor(context);
+	    }
+	    return instance;
+    }
 
     private BroadcastReceiver screenActivityReceiver = new BroadcastReceiver() {
 
@@ -57,7 +72,7 @@ public class PhoneActivitySensor {
         }
     };
 
-    public PhoneActivitySensor(Context context) {
+    protected PhoneActivitySensor(Context context) {
         this.context = context;
     }
 

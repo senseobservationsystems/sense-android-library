@@ -27,6 +27,8 @@ import android.util.Log;
 
 /**
  * Handler for transmission of a simple JSONObject containing sensor data for one sensor.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class DataTransmitHandler extends Handler {
 

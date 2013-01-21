@@ -3,12 +3,18 @@
  *************************************************************************************************/
 package nl.sense_os.service.deviceprox;
 
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
-
+/**
+ * Represents the main device proximity module. Acts as middleman for the
+ * {@link BluetoothDeviceProximity} and {@link WIFIDeviceProximity} classes.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class DeviceProximity {
 
     private Context context;

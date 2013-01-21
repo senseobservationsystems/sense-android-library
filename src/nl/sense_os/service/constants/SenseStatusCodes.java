@@ -1,5 +1,19 @@
 package nl.sense_os.service.constants;
 
+
+/**
+ * Utility class that contains constants to map the status preference integer to actual status of
+ * the system.<br/>
+ * <br/>
+ * Example:
+ * 
+ * <pre>
+ * int status = ServiceStateHelper.getInstance(service).getStatusCode();
+ * boolean ambience = (status &amp; SenseStatusCode.AMBIENCE) &gt; 0;
+ * </pre>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class SenseStatusCodes {
 
     public static final int AMBIENCE = 0x01;

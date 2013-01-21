@@ -21,6 +21,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+/**
+ * Class for giving feedback on state sensors in CommonSense. Used to 'teach' state sensors the
+ * correct label for certain inputs.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class FeedbackManager {
 
 	private static final String TAG = "FeedbackManager";
@@ -30,6 +36,21 @@ public class FeedbackManager {
 		this.context = context;
 	}
 
+    /**
+     * Teach the state sensor the correct label for a given time period.
+     * 
+     * @param name
+     *            Name of the state sensor
+     * @param start
+     *            Start timestamp
+     * @param end
+     *            End timestamp
+     * @param label
+     *            Correct label for this time period
+     * @return true of the operation completed successfully
+     * @throws IOException
+     * @throws JSONException
+     */
 	public boolean giveFeedback(String name, long start, long end, String label)
 			throws IOException, JSONException {
 
