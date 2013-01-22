@@ -103,12 +103,15 @@ public class LocationSensor {
 				return;
 			}
 
+            // use SNTP time
+            long timestamp = SNTP.getInstance().getTime();
+
 			// pass message to the MsgHandler
 			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.LOCATION);
 			i.putExtra(DataPoint.VALUE, json.toString());
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.TIMESTAMP, fix.getTime());
+            i.putExtra(DataPoint.TIMESTAMP, timestamp);
 			context.startService(i);
 
 			distanceEstimator.addPoint(fix);
