@@ -160,10 +160,10 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
 				i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
 				i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
 				context.startService(i);
-			}
 
-            // sample is successful: unregister the listener
-            stopSample();
+                // sample is successful: unregister the listener
+                stopSample();
+			}
         }
     }
 
