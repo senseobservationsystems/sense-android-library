@@ -13,16 +13,22 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
 
 import org.json.JSONObject;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 /**
@@ -31,8 +37,16 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class MagneticFieldSensor implements SensorEventListener {
+public class MagneticFieldSensor implements SensorEventListener, PeriodicPollingSensor {
 
+    /**
+     * Action for the periodic poll alarm Intent
+     */
+    private static final String ACTION_SAMPLE = MagneticFieldSensor.class.getName() + ".SAMPLE";
+    /**
+     * Request code for the periodic poll alarm Intent
+     */
+    private static final int REQ_CODE = 0xf00d401d;
     private static final String TAG = "Sense Magnetic Field Sensor";
     private static final String SENSOR_DISPLAY_NAME = "magnetic field";
     private static MagneticFieldSensor instance;
@@ -58,13 +72,41 @@ public class MagneticFieldSensor implements SensorEventListener {
     private Handler magneticFieldHandler = new Handler();
     private Runnable magneticFieldThread = null;
     private boolean magneticFieldSensingActive = false;
+    private PeriodicPollAlarmReceiver alarmReceiver;
+    private WakeLock wakeLock;
 
-    private MagneticFieldSensor(Context context) {
+    protected MagneticFieldSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
         if (null != smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
+        }
+
+        alarmReceiver = new PeriodicPollAlarmReceiver(this);
+    }
+
+    @Override
+    public void doSample() {
+        // Log.v(TAG, "start sample");
+
+        // acquire wake lock
+        if (null == wakeLock) {
+            PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        }
+        if (!wakeLock.isHeld()) {
+            wakeLock.acquire();
+        } else {
+            // Log.v(TAG, "Wake lock already held");
+        }
+
+        // register as sensor listener
+        for (Sensor sensor : sensors) {
+            if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                // Log.d(TAG, "registering for sensor " + sensor.getName());
+                smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            }
         }
     }
 
@@ -73,6 +115,11 @@ public class MagneticFieldSensor implements SensorEventListener {
      */
     public long getSampleDelay() {
         return sampleDelay;
+    }
+
+    @Override
+    public boolean isActive() {
+        return magneticFieldSensingActive;
     }
 
     @Override
@@ -86,48 +133,39 @@ public class MagneticFieldSensor implements SensorEventListener {
         if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
-            String sensorName = "";
-            if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                sensorName = SensorNames.MAGNETIC_FIELD;
-            }
+			String sensorName = "";
+			if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+				sensorName = SensorNames.MAGNETIC_FIELD;
 
-     		double x = event.values[0];         		
-    		// scale to three decimal precision
-    		x = BigDecimal.valueOf(x).setScale(3, 0).doubleValue();
-    		double y = event.values[1];         		
-    		// scale to three decimal precision
-    		y = BigDecimal.valueOf(y).setScale(3, 0).doubleValue();
-    		double z = event.values[2];         		
-    		// scale to three decimal precision
-    		z = BigDecimal.valueOf(z).setScale(3, 0).doubleValue();
+				double x = event.values[0];
+				// scale to three decimal precision
+				x = BigDecimal.valueOf(x).setScale(3, 0).doubleValue();
+				double y = event.values[1];
+				// scale to three decimal precision
+				y = BigDecimal.valueOf(y).setScale(3, 0).doubleValue();
+				double z = event.values[2];
+				// scale to three decimal precision
+				z = BigDecimal.valueOf(z).setScale(3, 0).doubleValue();
 
-    		HashMap<String, Object> dataFields = new HashMap<String, Object>();
-    		dataFields.put("x", x);
-    		dataFields.put("y", y);
-    		dataFields.put("z", z);
-    		String jsonString = new JSONObject(dataFields).toString();
+				HashMap<String, Object> dataFields = new HashMap<String, Object>();
+				dataFields.put("x", x);
+				dataFields.put("y", y);
+				dataFields.put("z", z);
+				String jsonString = new JSONObject(dataFields).toString();
 
-            // send msg to MsgHandler
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.VALUE, jsonString);
-            i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-            i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
-            i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-            context.startService(i);
+				// send msg to MsgHandler
+				Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+				i.putExtra(DataPoint.VALUE, jsonString);
+				i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+				i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
+				i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+				i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+				context.startService(i);
+			}
 
-            // unregister the listener and start again in sampleDelay seconds
-            if (sampleDelay > 500 && magneticFieldSensingActive) {
-                stopMagneticFieldSensing();
-                magneticFieldHandler.postDelayed(magneticFieldThread = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        startMagneticFieldSensing(sampleDelay);
-                    }
-                }, sampleDelay);
-            }
+            // sample is successful: unregister the listener
+            stopSample();
         }
     }
 
@@ -139,7 +177,9 @@ public class MagneticFieldSensor implements SensorEventListener {
      *            Sample delay in milliseconds
      */
     public void setSampleDelay(long sampleDelay) {
+        stopPolling();
         this.sampleDelay = sampleDelay;
+        startPolling();
     }
 
     /**
@@ -150,31 +190,55 @@ public class MagneticFieldSensor implements SensorEventListener {
      *            Delay between samples in milliseconds
      */
     public void startMagneticFieldSensing(long sampleDelay) {
-        // Log.v(TAG, "Registering magnetic field sensor");
+        // Log.v(TAG, "start sensor");
         magneticFieldSensingActive = true;
         setSampleDelay(sampleDelay);
-        for (Sensor sensor : sensors) {
-            if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            }
-        }
+    }
+
+    private void startPolling() {
+        // Log.v(TAG, "start polling");
+        context.registerReceiver(alarmReceiver, new IntentFilter(ACTION_SAMPLE));
+        Intent alarm = new Intent(ACTION_SAMPLE);
+        PendingIntent alarmOperation = PendingIntent.getBroadcast(context, REQ_CODE, alarm, 0);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.cancel(alarmOperation);
+        mgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sampleDelay,
+                alarmOperation);
     }
 
     /**
      * Stops the periodic sampling.
      */
     public void stopMagneticFieldSensing() {
-        // Log.v(TAG, "Unregistering magnetic field sensor");
+        // Log.v(TAG, "stop sensor");
+        stopPolling();
+        magneticFieldSensingActive = false;
+    }
+
+    private void stopPolling() {
+        // Log.v(TAG, "stop polling");
+        AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarms.cancel(PendingIntent.getBroadcast(context, REQ_CODE, new Intent(ACTION_SAMPLE), 0));
         try {
-            magneticFieldSensingActive = false;
+            context.unregisterReceiver(alarmReceiver);
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
+    }
+
+    private void stopSample() {
+        // Log.v(TAG, "stop sample");
+
+        // release wake lock
+        if (null != wakeLock && wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+
+        // unregister sensor listener
+        try {
             smgr.unregisterListener(this);
-
-            if (magneticFieldThread != null)
-                magneticFieldHandler.removeCallbacks(magneticFieldThread);
-            magneticFieldThread = null;
-
         } catch (Exception e) {
-            Log.e(TAG, "Failed to stop sampling! " + e.getMessage());
+            Log.e(TAG, "Failed to stop magnetic field sample!", e);
         }
 
     }
