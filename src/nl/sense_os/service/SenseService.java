@@ -676,7 +676,7 @@ public class SenseService extends Service {
 							// Log.v(TAG, "Camera is not supported in this version of Android");
 						}
 						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
-							magneticFieldSensor = new MagneticFieldSensor(SenseService.this);
+							magneticFieldSensor = MagneticFieldSensor.getInstance(SenseService.this);
 							magneticFieldSensor.startMagneticFieldSensing(finalInterval);
 						}
 						
