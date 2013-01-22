@@ -58,7 +58,7 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
     private PeriodicPollAlarmReceiver alarmReceiver;
     private WakeLock wakeLock;
 
-    public MagneticFieldSensor(Context context) {
+    protected MagneticFieldSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
@@ -68,6 +68,16 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
 
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
+    
+    protected static MagneticFieldSensor instance = null;
+    
+    public static MagneticFieldSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new MagneticFieldSensor(context);
+	    }
+	    return instance;
+    }
+    
 
     @Override
     public void doSample() {
