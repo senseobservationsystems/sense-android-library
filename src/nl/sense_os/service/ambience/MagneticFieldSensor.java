@@ -69,8 +69,6 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
     private Context context;
     private List<Sensor> sensors;
     private SensorManager smgr;
-    private Handler magneticFieldHandler = new Handler();
-    private Runnable magneticFieldThread = null;
     private boolean magneticFieldSensingActive = false;
     private PeriodicPollAlarmReceiver alarmReceiver;
     private WakeLock wakeLock;
