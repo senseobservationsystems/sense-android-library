@@ -94,7 +94,7 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         }
         if (!wakeLock.isHeld()) {
-            wakeLock.acquire();
+            wakeLock.acquire(500);
         } else {
             // Log.v(TAG, "Wake lock already held");
         }
