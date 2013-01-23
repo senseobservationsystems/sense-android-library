@@ -14,11 +14,8 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -34,14 +31,7 @@ import android.util.Log;
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class PressureSensor implements SensorEventListener, PeriodicPollingSensor {
-    /**
-     * Action for the periodic poll alarm Intent
-     */
-    private static final String ACTION_SAMPLE = PressureSensor.class.getName() + ".SAMPLE";
-    /**
-     * Request code for the periodic poll alarm Intent
-     */
-    private static final int REQ_CODE = 0xf00d421d;
+
     private static final String TAG = "Sense Pressure Sensor";
     private static PressureSensor instance = null;
 
@@ -105,7 +95,8 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
     /**
      * @return The delay between samples in milliseconds
      */
-    public long getSampleDelay() {
+    @Override
+    public long getSampleRate() {
         return sampleDelay;
     }
 
@@ -156,7 +147,8 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    public void setSampleDelay(long sampleDelay) {
+    @Override
+    public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;
         startPolling();
@@ -164,13 +156,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
 
     private void startPolling() {
         // Log.v(TAG, "start polling");
-        context.registerReceiver(alarmReceiver, new IntentFilter(ACTION_SAMPLE));
-        Intent alarm = new Intent(ACTION_SAMPLE);
-        PendingIntent alarmOperation = PendingIntent.getBroadcast(context, REQ_CODE, alarm, 0);
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.cancel(alarmOperation);
-        mgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sampleDelay,
-                alarmOperation);
+        alarmReceiver.start(context);
     }
 
     /**
@@ -180,29 +166,15 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
      * @param sampleDelay
      *            Delay between samples in milliseconds
      */
-    public void startPressureSensing(long _sampleDelay) {
+    @Override
+    public void startSensing(long sampleRate) {
         pressureSensingActive = true;
-        setSampleDelay(_sampleDelay);
+        setSampleRate(sampleRate);
     }
 
     private void stopPolling() {
         // Log.v(TAG, "stop polling");
-        AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarms.cancel(PendingIntent.getBroadcast(context, REQ_CODE, new Intent(ACTION_SAMPLE), 0));
-        try {
-            context.unregisterReceiver(alarmReceiver);
-        } catch (IllegalArgumentException e) {
-            // ignore
-        }
-    }
-
-    /**
-     * Stops the periodic sampling.
-     */
-    public void stopPressureSensing() {
-        // Log.v(TAG, "stop sensor");
-        stopPolling();
-        pressureSensingActive = false;
+        alarmReceiver.stop(context);
     }
 
     private void stopSample() {
@@ -220,5 +192,15 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
             Log.e(TAG, "Failed to stop pressure field sample!", e);
         }
 
+    }
+
+    /**
+     * Stops the periodic sampling.
+     */
+    @Override
+    public void stopSensing() {
+        // Log.v(TAG, "stop sensor");
+        stopPolling();
+        pressureSensingActive = false;
     }
 }

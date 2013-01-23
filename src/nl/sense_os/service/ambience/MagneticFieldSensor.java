@@ -18,11 +18,8 @@ import nl.sense_os.service.shared.PeriodicPollingSensor;
 
 import org.json.JSONObject;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -39,14 +36,6 @@ import android.util.Log;
  */
 public class MagneticFieldSensor implements SensorEventListener, PeriodicPollingSensor {
 
-    /**
-     * Action for the periodic poll alarm Intent
-     */
-    private static final String ACTION_SAMPLE = MagneticFieldSensor.class.getName() + ".SAMPLE";
-    /**
-     * Request code for the periodic poll alarm Intent
-     */
-    private static final int REQ_CODE = 0xf00d401d;
     private static final String TAG = "Sense Magnetic Field Sensor";
     private static final String SENSOR_DISPLAY_NAME = "magnetic field";
     private static MagneticFieldSensor instance;
@@ -80,7 +69,6 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
         if (null != smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
         }
-
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
@@ -111,7 +99,8 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
     /**
      * @return The delay between samples in milliseconds
      */
-    public long getSampleDelay() {
+    @Override
+    public long getSampleRate() {
         return sampleDelay;
     }
 
@@ -174,10 +163,16 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    public void setSampleDelay(long sampleDelay) {
+    @Override
+    public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;
         startPolling();
+    }
+
+    private void startPolling() {
+        // Log.v(TAG, "start polling");
+        alarmReceiver.start(context);
     }
 
     /**
@@ -187,41 +182,15 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
      * @param sampleDelay
      *            Delay between samples in milliseconds
      */
-    public void startMagneticFieldSensing(long sampleDelay) {
-        // Log.v(TAG, "start sensor");
+    @Override
+    public void startSensing(long sampleRate) {
         magneticFieldSensingActive = true;
-        setSampleDelay(sampleDelay);
-    }
-
-    private void startPolling() {
-        // Log.v(TAG, "start polling");
-        context.registerReceiver(alarmReceiver, new IntentFilter(ACTION_SAMPLE));
-        Intent alarm = new Intent(ACTION_SAMPLE);
-        PendingIntent alarmOperation = PendingIntent.getBroadcast(context, REQ_CODE, alarm, 0);
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.cancel(alarmOperation);
-        mgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sampleDelay,
-                alarmOperation);
-    }
-
-    /**
-     * Stops the periodic sampling.
-     */
-    public void stopMagneticFieldSensing() {
-        // Log.v(TAG, "stop sensor");
-        stopPolling();
-        magneticFieldSensingActive = false;
+        setSampleRate(sampleRate);
     }
 
     private void stopPolling() {
         // Log.v(TAG, "stop polling");
-        AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarms.cancel(PendingIntent.getBroadcast(context, REQ_CODE, new Intent(ACTION_SAMPLE), 0));
-        try {
-            context.unregisterReceiver(alarmReceiver);
-        } catch (IllegalArgumentException e) {
-            // ignore
-        }
+        alarmReceiver.stop(context);
     }
 
     private void stopSample() {
@@ -238,6 +207,16 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
         } catch (Exception e) {
             Log.e(TAG, "Failed to stop magnetic field sample!", e);
         }
+
+    }
+
+    /**
+     * Stops the periodic sampling.
+     */
+    @Override
+    public void stopSensing() {
+        magneticFieldSensingActive = false;
+        stopPolling();
 
     }
 }

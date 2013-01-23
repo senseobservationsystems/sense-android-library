@@ -594,7 +594,7 @@ public class SenseService extends Service {
 				// check pressure sensor presence
 				if (pressureSensor != null) {
 					Log.w(TAG, "pressure sensor is already present!");
-					pressureSensor.stopPressureSensing();
+                    pressureSensor.stopSensing();
 					pressureSensor = null;
 				}
 
@@ -608,7 +608,7 @@ public class SenseService extends Service {
 				// check magnetic field sensor presence
 				if (magneticFieldSensor != null) {
 					Log.w(TAG, "magnetic field  sensor is already present!");
-					magneticFieldSensor.stopMagneticFieldSensing();
+                    magneticFieldSensor.stopSensing();
 					magneticFieldSensor = null;
 				}
 				
@@ -678,12 +678,12 @@ public class SenseService extends Service {
 						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
                             magneticFieldSensor = MagneticFieldSensor
                                     .getInstance(SenseService.this);
-							magneticFieldSensor.startMagneticFieldSensing(finalInterval);
+                            magneticFieldSensor.startSensing(finalInterval);
 						}
 						
 						if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
 							pressureSensor = PressureSensor.getInstance(SenseService.this);
-							pressureSensor.startPressureSensing(finalInterval);
+                            pressureSensor.startSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -714,7 +714,7 @@ public class SenseService extends Service {
 					cameraLightSensor = null;
 				}
 				if (null != pressureSensor) {
-					pressureSensor.stopPressureSensing();
+                    pressureSensor.stopSensing();
 					pressureSensor = null;
 				}
 				if (null != temperatureSensor) {
@@ -722,14 +722,9 @@ public class SenseService extends Service {
 					temperatureSensor = null;
 				}
 				if (null != magneticFieldSensor) {
-					magneticFieldSensor.stopMagneticFieldSensing();
+                    magneticFieldSensor.stopSensing();
 					magneticFieldSensor = null;
 				}
-
-				/*if (ambienceHandler != null) {
-					ambienceHandler.getLooper().quit();
-					ambienceHandler = null;
-				}*/
 			}
 		}
 	}
