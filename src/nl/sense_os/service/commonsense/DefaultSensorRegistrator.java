@@ -88,8 +88,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match pressure sensor
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		if (null != sensor) {
-			success &= checkSensor(SensorNames.PRESSURE, "", SenseDataTypes.JSON, sensor.getName(),
-					"{\"Pascal\":0}", deviceType, deviceUuid);
+            success &= checkSensor(SensorNames.PRESSURE, SensorNames.PRESSURE,
+                    SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No pressure sensor present!");
 		}
@@ -97,8 +97,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match Magnetic Field sensor
 		sensor = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 		if (null != sensor) {
-			success &= checkSensor(SensorNames.MAGNETIC_FIELD, "", SenseDataTypes.JSON, sensor.getName(),
-					"{\"x\":0, \"y\":0, \"z\":0}", deviceType, deviceUuid);
+            success &= checkSensor(SensorNames.MAGNETIC_FIELD, SensorNames.MAGNETIC_FIELD,
+                    SenseDataTypes.JSON, sensor.getName(), "{\"x\":0, \"y\":0, \"z\":0}",
+                    deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No magnetic field sensor present!");
 		}
