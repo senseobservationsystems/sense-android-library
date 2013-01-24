@@ -3,6 +3,16 @@
  *************************************************************************************************/
 package nl.sense_os.service.motion;
 
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
+import android.content.Context;
+import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.util.FloatMath;
 import android.util.Log;
 
 /**
@@ -13,7 +23,7 @@ import android.util.Log;
  * 
  * @see MotionSensor
  */
-public class FallDetector {
+public class FallDetector implements MotionSensorInterface {
 
     private class Interrupt {
         boolean FREE_FALL = false;
@@ -51,64 +61,14 @@ public class FallDetector {
 
     private boolean useInactivity = false; // Use the inactivity property to determine a fall
 
-    public FallDetector() {
+    private Context context;
+
+    public FallDetector(Context context) {
+        this.context = context;
         interrupt = new Interrupt();
     }
 
-    public boolean fallDetected(float accVecSum) {
-        // Log.d("Fall detection:", "time:"+(System.currentTimeMillis()-time));
-        time = System.currentTimeMillis();
-
-        if (interrupt.FALL || (demo && interrupt.FREE_FALL))
-            reset();
-
-        freeFall(accVecSum);
-
-        if (demo) {
-            if (interrupt.FREE_FALL) {
-                reset();
-                return true;
-            }
-        } else {
-            activity(accVecSum);
-
-            if (useInactivity) {
-                if (!interrupt.INACTIVITY)
-                    inactivity(accVecSum);
-            } else
-                interrupt.FALL = interrupt.ACTIVITY;
-
-            if (interrupt.FALL) {
-                reset();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void freeFall(float accVecSum) {
-        if (accVecSum < THRESH_FF) {
-            if (startInterrupt == 0)
-                startInterrupt = System.currentTimeMillis();
-            else if ((System.currentTimeMillis() - startInterrupt > TIME_FF && !demo)
-                    || (System.currentTimeMillis() - startInterrupt > TIME_FF_DEMO && demo)) {
-                // Log.v("Fall detection", "FF time:" + (System.currentTimeMillis() -
-                // startInterrupt));
-                interrupt.FREE_FALL = true;
-            }
-        } else if (interrupt.FREE_FALL) {
-            interrupt.stopFreeFall = System.currentTimeMillis();
-            interrupt.FREE_FALL = false;
-            startInterrupt = 0;
-        } else
-            startInterrupt = 0;
-
-        if (interrupt.FREE_FALL) {
-            Log.w(TAG, "FALL!!!");
-        }
-    }
-
-    public void activity(float accVecSum) {
+    private void activity(float accVecSum) {
         if (interrupt.stopFreeFall == 0)
             return;
 
@@ -140,7 +100,60 @@ public class FallDetector {
         }
     }
 
-    public void inactivity(float accVecSum) {
+    private boolean fallDetected(float accVecSum) {
+        // Log.d("Fall detection:", "time:"+(System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
+
+        if (interrupt.FALL || (demo && interrupt.FREE_FALL))
+            reset();
+
+        freeFall(accVecSum);
+
+        if (demo) {
+            if (interrupt.FREE_FALL) {
+                reset();
+                return true;
+            }
+        } else {
+            activity(accVecSum);
+
+            if (useInactivity) {
+                if (!interrupt.INACTIVITY)
+                    inactivity(accVecSum);
+            } else
+                interrupt.FALL = interrupt.ACTIVITY;
+
+            if (interrupt.FALL) {
+                reset();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void freeFall(float accVecSum) {
+        if (accVecSum < THRESH_FF) {
+            if (startInterrupt == 0)
+                startInterrupt = System.currentTimeMillis();
+            else if ((System.currentTimeMillis() - startInterrupt > TIME_FF && !demo)
+                    || (System.currentTimeMillis() - startInterrupt > TIME_FF_DEMO && demo)) {
+                // Log.v("Fall detection", "FF time:" + (System.currentTimeMillis() -
+                // startInterrupt));
+                interrupt.FREE_FALL = true;
+            }
+        } else if (interrupt.FREE_FALL) {
+            interrupt.stopFreeFall = System.currentTimeMillis();
+            interrupt.FREE_FALL = false;
+            startInterrupt = 0;
+        } else
+            startInterrupt = 0;
+
+        if (interrupt.FREE_FALL) {
+            Log.w(TAG, "FALL!!!");
+        }
+    }
+
+    private void inactivity(float accVecSum) {
         if (interrupt.stopActivity == 0)
             return;
 
@@ -165,8 +178,49 @@ public class FallDetector {
         }
     }
 
+    @Override
+    public boolean isSampleComplete() {
+        // never unregister
+        return false;
+    }
+
+    @Override
+    public void onNewData(SensorEvent event) {
+
+        // check if this is useful data point
+        Sensor sensor = event.sensor;
+        if (sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
+            return;
+        }
+
+        float aX = event.values[1];
+        float aY = event.values[0];
+        float aZ = event.values[2];
+        float accVecSum = FloatMath.sqrt(aX * aX + aY * aY + aZ * aZ);
+
+        if (fallDetected(accVecSum)) {
+            // send msg
+            sendFallMessage(true);
+        }
+    }
+
     private void reset() {
         interrupt = new Interrupt();
         startInterrupt = 0;
+    }
+
+    public void sendFallMessage(boolean fall) {
+        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.FALL_DETECTOR);
+        i.putExtra(DataPoint.SENSOR_DESCRIPTION, demo ? "demo fall" : "human fall");
+        i.putExtra(DataPoint.VALUE, fall);
+        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.BOOL);
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        context.startService(i);
+    }
+
+    @Override
+    public void startNewSample() {
+        // not used
     }
 }
