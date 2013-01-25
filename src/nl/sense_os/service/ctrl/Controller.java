@@ -23,30 +23,26 @@ public abstract class Controller
 	public static synchronized Controller getController(Context context)
 	{
 		if (ref == null) {
-			ref = new CtrlExtended(context);
-            locListener = LocationSensor.getInstance(context);
-            motion = MotionSensor.getInstance(context);
+            ref = new CtrlExtended(context);
 		}
 		return ref;
 	}
 
-	/**
-	* @throws CloneNotSupportedException
-	* 	If the object could not be cloned
-	*/
-	public Object clone()
-			throws CloneNotSupportedException
-	{
-		throw new CloneNotSupportedException(); 
-	}
-
 	private static Controller ref;
-	
-	public static LocationSensor locListener; 
 
-	public static MotionSensor motion; 
-    
-	
+    public LocationSensor locListener;
+    public MotionSensor motion;
+
+    /**
+     * Private constructor to enforce singleton pattern.
+     * 
+     * @param context
+     *            Context to get location sensor and motion sensor instances
+     */
+    protected Controller(Context context) {
+        locListener = LocationSensor.getInstance(context);
+        motion = MotionSensor.getInstance(context);
+    }
 	
 	/**
 	* Checks to see if the sensor is still doing a useful job or whether it is better if we disable

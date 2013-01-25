@@ -131,21 +131,21 @@ public class LocationSensor {
 	}
 
 	private static final String TAG = "Sense LocationSensor";
-	public static final String ALARM_ACTION = "nl.sense_os.service.LocationAlarm";
-	public static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
-	public static final int ALARM_ID = 56;
+	private static final String ALARM_ACTION = "nl.sense_os.service.LocationAlarm";
+	private static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
+	private static final int ALARM_ID = 56;
 	public static final long MIN_SAMPLE_DELAY = 5000; // 5 sec
-	public static final int DISTANCE_ALARM_ID = 70;
+	private static final int DISTANCE_ALARM_ID = 70;
 
 	private Controller controller;
 	private Context context;
-	public static LocationManager locMgr;
+	private LocationManager locMgr;
 	private final MyLocationListener gpsListener;
 	private final MyLocationListener nwListener;
 	private final MyLocationListener pasListener;
 
-	public long time;
-	public float distance;
+	private long time;
+	private float distance;
 	//private Controller controller;
 
 	/**
@@ -285,13 +285,13 @@ public class LocationSensor {
 		// log.putExtra(MsgHandler.KEY_DATA_TYPE, "string");
 		// context.startService(log);
 	}
-
+	
 	/**
 	 * @param distance
 	 *            Minimum distance between location updates.
 	 */
-	public void setDistance(float distance) {
-		this.distance = distance;
+	public float getDistance() {
+		return this.distance;
 	}
 
 	public void setGpsListening(boolean listen) {
@@ -344,7 +344,7 @@ public class LocationSensor {
 	 * @param time
 	 *            Minimum time between location refresh attempts.
 	 */
-	public void setTime(long time) {
+	private void setTime(long time) {
 		this.time = time;
 	}
 

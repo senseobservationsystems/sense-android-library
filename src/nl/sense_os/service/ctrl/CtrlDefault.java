@@ -6,7 +6,6 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
@@ -31,11 +30,13 @@ public class CtrlDefault extends Controller{
 	
 	private Context context;
 	private static final String TAG = "Sense Controller";
+	private LocationManager locMgr;
 
 	
 	public CtrlDefault(Context context) {
-		super();
+        super(context);
 		this.context = context;
+		locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
 	}
 
@@ -263,7 +264,7 @@ public class CtrlDefault extends Controller{
 		if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
 			// GPS has been turned off for a long time, or was never even started
 			tooLong = true;
-        } else if (!(LocationSensor.locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
+        } else if (!(locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
 			// the network provider is disabled: GPS is the only option
 			tooLong = true;
 		} else {
@@ -341,4 +342,3 @@ public class CtrlDefault extends Controller{
         // not implemented in this controller
     }
 }
-

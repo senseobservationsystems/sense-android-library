@@ -106,19 +106,19 @@ public class MotionSensor implements SensorEventListener {
 
     private final BroadcastReceiver screenOffListener = new ScreenOffListener();
 
-    public final FallDetector fallDetector = new FallDetector();
+    private final FallDetector fallDetector = new FallDetector();
     private final Context context;
-    public boolean isFallDetectMode;
-    public boolean isEnergyMode;
-    public boolean isEpiMode;
-    public boolean isUnregisterWhenIdle;
-    public boolean firstStart = true;
-    public ArrayList<Sensor> sensors;
+    private boolean isFallDetectMode;
+    private boolean isEnergyMode;
+    private boolean isEpiMode;
+    private boolean isUnregisterWhenIdle;
+    private boolean firstStart = true;
+    private ArrayList<Sensor> sensors;
     private final long[] lastSampleTimes = new long[50];
-    public Handler motionHandler = new Handler();
-    public boolean motionSensingActive = false;
+    private Handler motionHandler = new Handler();
+    private boolean motionSensingActive = false;
     private Runnable motionThread = null;
-    public long sampleDelay = 0; // in milliseconds
+    private long sampleDelay = 0; // in milliseconds
     private long[] lastLocalSampleTimes = new long[50];
     private long localBufferTime = 15 * 1000;
     private long firstTimeSend = 0;
@@ -130,7 +130,7 @@ public class MotionSensor implements SensorEventListener {
     private long prevEnergySampleTime;
     private double avgSpeedChange;
     private int avgSpeedCount;
-    public boolean hasLinAccSensor;
+    private boolean hasLinAccSensor;
     private float[] gravity = { 0, 0, SensorManager.GRAVITY_EARTH };
 
     // members for waking up the device for sampling
