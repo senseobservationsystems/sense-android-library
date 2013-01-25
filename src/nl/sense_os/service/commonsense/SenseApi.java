@@ -1168,7 +1168,7 @@ public class SenseApi {
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.DEV_CONFIGURATION;
+		String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.CONFIGURATION;
 
 		url = url.replaceFirst("<id>", configuration_id);
 
