@@ -66,11 +66,18 @@ import android.util.Log;
 public class MsgHandler extends Service {
 
 	private static final String TAG = "Sense MsgHandler";
+    /**
+     * Key for Intent extra that defines the buffer type to send data from. The value should be
+     * either {@link #BUFFER_TYPE_FLASH} or {@link #BUFFER_TYPE_MEMORY}.
+     */
+    public static final String EXTRA_BUFFER_TYPE = "buffer-type";
+    public static final int BUFFER_TYPE_FLASH = 1;
+    public static final int BUFFER_TYPE_MEMORY = 0;
 
 	private static FileTransmitHandler fileHandler;
 	private static DataTransmitHandler dataTransmitHandler;
-	private static RecentBufferTransmitHandler recentDataHandler;
-	private static PersistedBufferTransmitHandler persistedDataHandler;
+	private static RecentBufferTransmitHandler memoryDataHandler;
+	private static PersistedBufferTransmitHandler flashDataHandler;
 	private static LocalStorage storage;
 
 	/**
@@ -220,20 +227,19 @@ public class MsgHandler extends Service {
 			SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-			{
+            int bufferType = intent.getIntExtra(EXTRA_BUFFER_TYPE, BUFFER_TYPE_FLASH);
+            if (bufferType == BUFFER_TYPE_FLASH) {
 				Message msg = Message.obtain();
 				Bundle args = new Bundle();
 				args.putString("cookie", cookie);
 				msg.setData(args);
-				persistedDataHandler.sendMessage(msg);
-			}
-
-			{
+				flashDataHandler.sendMessage(msg);
+            } else {
 				Message msg = Message.obtain();
 				Bundle args = new Bundle();
 				args.putString("cookie", cookie);
 				msg.setData(args);
-				recentDataHandler.sendMessage(msg);
+				memoryDataHandler.sendMessage(msg);
 			}
 		}
 	}
@@ -322,14 +328,14 @@ public class MsgHandler extends Service {
 		{
 			HandlerThread handlerThread = new HandlerThread("TransmitRecentDataThread");
 			handlerThread.start();
-			recentDataHandler = new RecentBufferTransmitHandler(this, storage,
+			memoryDataHandler = new RecentBufferTransmitHandler(this, storage,
 					handlerThread.getLooper());
 		}
 
 		{
 			HandlerThread handlerThread = new HandlerThread("TransmitPersistedDataThread");
 			handlerThread.start();
-			persistedDataHandler = new PersistedBufferTransmitHandler(this, storage,
+			flashDataHandler = new PersistedBufferTransmitHandler(this, storage,
 					handlerThread.getLooper());
 		}
 
@@ -352,8 +358,8 @@ public class MsgHandler extends Service {
 		emptyBufferToDb();
 
 		// stop buffered data transmission threads
-		persistedDataHandler.getLooper().quit();
-		recentDataHandler.getLooper().quit();
+		flashDataHandler.getLooper().quit();
+		memoryDataHandler.getLooper().quit();
 		fileHandler.getLooper().quit();
 		dataTransmitHandler.getLooper().quit();
 
