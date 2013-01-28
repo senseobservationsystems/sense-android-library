@@ -112,10 +112,11 @@ public abstract class BufferTransmitHandler extends Handler {
 			wakeLock.acquire();
 
 			cursor = getUnsentData();
-			if ((null != cursor) && cursor.moveToFirst()) {
+            if (null != cursor && cursor.moveToFirst()) {
 				transmit(cursor, cookie);
 			} else {
 				// nothing to transmit
+                onBufferEmpty();
 			}
 		} catch (Exception e) {
 			if (null != e.getMessage()) {
@@ -129,6 +130,11 @@ public abstract class BufferTransmitHandler extends Handler {
 			cleanup(cursor, wakeLock);
 		}
 	}
+	
+    /**
+     * Callback for when the buffer has been completely empty.
+     */
+    protected abstract void onBufferEmpty();
 
 	/**
 	 * Performs cleanup tasks after transmission was successfully completed. Should update the data
@@ -190,7 +196,24 @@ public abstract class BufferTransmitHandler extends Handler {
 		}
 	}
 
-	/**
+	private void sendFile(String name, String description, String dataType, String deviceUuid,
+            String value, long timestamp) throws JSONException {
+
+        // create sensor data JSON object with only 1 data point
+        JSONObject sensorData = new JSONObject();
+        JSONArray dataArray = new JSONArray();
+        JSONObject data = new JSONObject();
+        data.put("value", value);
+        data.put("date", dateFormatter.format(timestamp / 1000d));
+        dataArray.put(data);
+        sensorData.put("data", dataArray);
+
+        // send data point through MsgHandler
+        Context context = ctxRef.get();
+        MsgHandler.sendSensorData(context, name, description, dataType, deviceUuid, sensorData);
+    }
+
+    /**
 	 * Transmits the data points from {@link #cursor} to CommonSense. Any "file" type data points
 	 * will be sent separately via
 	 * {@link MsgHandler#sendSensorData(String, String, String, JSONObject)}.
@@ -277,29 +300,17 @@ public abstract class BufferTransmitHandler extends Handler {
 					points++;
 
 				} else {
-					/*
-					 * if the data type is a "file", we need special handling
-					 */
+                    // if the data type is a "file", we need special handling
+                    sendFile(name, description, dataType, deviceUuid, value, timestamp);
 
-					// create sensor data JSON object with only 1 data point
-					JSONObject sensorData = new JSONObject();
-					JSONArray dataArray = new JSONArray();
-					JSONObject data = new JSONObject();
-					data.put("value", value);
-					data.put("date", dateFormatter.format(timestamp / 1000d));
-					dataArray.put(data);
-					sensorData.put("data", dataArray);
-
-					MsgHandler.sendSensorData(ctxRef.get(), name, description, dataType,
-							deviceUuid, sensorData);
 				}
 
 				cursor.moveToNext();
 			}
-
-			if (sensorDataMap.size() < 1) {
-				// no data to transmit
-				continue;
+			
+            if (sensorDataMap.size() < 1) {
+			    // nothing to transmit
+			    continue;
 			}
 
 			// prepare the main JSON object for transmission
@@ -310,8 +321,8 @@ public abstract class BufferTransmitHandler extends Handler {
 			JSONObject transmission = new JSONObject();
 			transmission.put("sensors", sensors);
 
-			// perform the actual POST request
-			postData(cookie, transmission);
+            // perform the actual POST request
+            postData(cookie, transmission);
 		}
 	}
 }

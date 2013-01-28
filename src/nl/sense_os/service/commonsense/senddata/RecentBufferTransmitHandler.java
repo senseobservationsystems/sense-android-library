@@ -52,6 +52,11 @@ public class RecentBufferTransmitHandler extends BufferTransmitHandler {
 	}
 
 	@Override
+    protected void onBufferEmpty() {
+        // not used
+    }
+
+    @Override
 	protected void onTransmitSuccess(String cookie, JSONObject transmission) throws JSONException {
 
 		// log our great success

@@ -1,5 +1,6 @@
 package nl.sense_os.service.commonsense.senddata;
 
+import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
@@ -12,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -54,6 +56,15 @@ public class PersistedBufferTransmitHandler extends BufferTransmitHandler {
 			return null;
 		}
 	}
+
+    @Override
+    protected void onBufferEmpty() {
+        // Log.d(TAG, "Flash buffer is empty! Start sending from memory buffer.");
+        Context context = ctxRef.get();
+        Intent sendIntent = new Intent(context.getString(R.string.action_sense_send_data));
+        sendIntent.putExtra(MsgHandler.EXTRA_BUFFER_TYPE, MsgHandler.BUFFER_TYPE_MEMORY);
+        context.startService(sendIntent);
+    }
 
 	@Override
 	protected void onTransmitSuccess(String cookie, JSONObject transmission) throws JSONException {
@@ -109,11 +120,13 @@ public class PersistedBufferTransmitHandler extends BufferTransmitHandler {
 
 		// there is probably more data, try to send more
 		if (totalDatapoints == maxDataPoints) {
-			// Log.d(TAG,
-			// "There is more data! Sending another batch from the persistant storage.");
+            // Log.d(TAG, "There is more data! Sending another batch from the persistant storage.");
 
 			Message msg = obtainMessage(0, cookie);
 			this.sendMessage(msg);
+        } else {
+            // no more data left
+            onBufferEmpty();
 		}
 	}
 }
