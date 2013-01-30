@@ -1,13 +1,13 @@
 package nl.sense_os.service.commonsense.senddata;
 
+import java.util.List;
+
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.Util;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -57,34 +57,30 @@ public class RecentBufferTransmitHandler extends BufferTransmitHandler {
     }
 
     @Override
-	protected void onTransmitSuccess(String cookie, JSONObject transmission) throws JSONException {
+    protected void onTransmitSuccess(List<SensorDataEntry> sensorDatas) throws JSONException {
 
 		// log our great success
-		int bytes = transmission.toString().getBytes().length;
-		Log.i(TAG,
-				"Sent recent sensor data from the local storage! Raw data size: "
-						+ Util.humanReadableByteCount(bytes, false));
+        Log.i(TAG, "Sent recent sensor data from the local storage!");
 
 		// new content values with updated transmit state
 		ContentValues values = new ContentValues();
 		values.put(DataPoint.TRANSMIT_STATE, 1);
 
-		JSONArray sensorDatas = transmission.getJSONArray("sensors");
-		for (int i = 0; i < sensorDatas.length(); i++) {
-
-			JSONObject sensorData = sensorDatas.getJSONObject(i);
+        for (SensorDataEntry sensorData : sensorDatas) {
 
 			// get the name of the sensor, to use in the ContentResolver query
-			String sensorName = sensorData.getString("sensor_name");
+            String sensorName = sensorData.sensorName;
+            String description = sensorData.sensorDescription;
 
 			// select points for this sensor, between the first and the last time stamp
-			JSONArray dataPoints = sensorData.getJSONArray("data");
+            JSONArray dataPoints = sensorData.data;
 			String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
 			String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
 					"date");
 			long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
 			long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
-			String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
+            String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
+                    + DataPoint.SENSOR_DESCRIPTION + "='" + description + "'" + " AND "
 					+ DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
 					+ max;
 

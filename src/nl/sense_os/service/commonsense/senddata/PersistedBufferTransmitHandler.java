@@ -1,24 +1,20 @@
 package nl.sense_os.service.commonsense.senddata;
 
+import java.util.List;
+
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.Util;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 
 /**
@@ -68,32 +64,26 @@ public class PersistedBufferTransmitHandler extends BufferTransmitHandler {
     }
 
 	@Override
-	protected void onTransmitSuccess(String cookie, JSONObject transmission) throws JSONException {
+    protected void onTransmitSuccess(List<SensorDataEntry> sensorDatas) throws JSONException {
 
 		// log our great success
-		int bytes = transmission.toString().getBytes().length;
-		Log.i(TAG,
-				"Sent old sensor data from persistant storage! Raw data size: "
-						+ Util.humanReadableByteCount(bytes, false));
+        Log.i(TAG, "Sent old sensor data from persistant storage!");
 
-		int totalDatapoints = 0;
-		JSONArray sensorDatas = transmission.getJSONArray("sensors");
-		for (int i = 0; i < sensorDatas.length(); i++) {
-
-			JSONObject sensorData = sensorDatas.getJSONObject(i);
+        for (SensorDataEntry sensorData : sensorDatas) {
 
 			// get the name of the sensor, to use in the ContentResolver query
-			String sensorName = sensorData.getString("sensor_name");
+            String sensorName = sensorData.sensorName;
+            String description = sensorData.sensorDescription;
 
 			// select points for this sensor, between the first and the last time stamp
-			JSONArray dataPoints = sensorData.getJSONArray("data");
-			totalDatapoints += dataPoints.length();
+            JSONArray dataPoints = sensorData.data;
 			String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
 			String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
 					"date");
 			long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
 			long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
-			String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
+            String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
+                    + DataPoint.SENSOR_DESCRIPTION + "='" + description + "'" + " AND "
 					+ DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
 					+ max;
 
@@ -111,23 +101,6 @@ public class PersistedBufferTransmitHandler extends BufferTransmitHandler {
 			} catch (IllegalArgumentException e) {
 				Log.e(TAG, "Error deleting points from Local Storage!", e);
 			}
-		}
-
-		// check if there is more data left
-		SharedPreferences mainPrefs = ctxRef.get().getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
-		int maxDataPoints = mainPrefs.getBoolean(Main.Motion.EPIMODE, false) ? LocalStorage.QUERY_RESULTS_LIMIT_EPI_MODE
-				: LocalStorage.QUERY_RESULTS_LIMIT;
-
-		// there is probably more data, try to send more
-		if (totalDatapoints == maxDataPoints) {
-            // Log.d(TAG, "There is more data! Sending another batch from the persistant storage.");
-
-			Message msg = obtainMessage(0, cookie);
-			this.sendMessage(msg);
-        } else {
-            // no more data left
-            onBufferEmpty();
 		}
 	}
 }
