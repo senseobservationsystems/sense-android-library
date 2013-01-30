@@ -13,18 +13,21 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.util.FloatMath;
+import android.util.Log;
 
 public class MotionEnergySensor implements MotionSensorInterface {
 
     private static final long ENERGY_SAMPLE_LENGTH = 500;
+    private static final String TAG = "MotionEnergySensor";
 
-    private long prevEnergySampleTime;
+    private long prevSampleTime;
     private double avgSpeedChange;
     private int avgSpeedCount;
     private float[] gravity = { 0, 0, SensorManager.GRAVITY_EARTH };
     private Context context;
     private boolean hasLinAccSensor;
-    private long energySampleStart = 0;
+    private long sampleStartTime = 0;
+    private boolean sampleComplete;
 
     public MotionEnergySensor(Context context) {
         this.context = context;
@@ -55,9 +58,13 @@ public class MotionEnergySensor implements MotionSensorInterface {
         hasLinAccSensor = (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
     }
 
+    private boolean isEnoughDatapoints() {
+        return (sampleStartTime != 0 && System.currentTimeMillis() - sampleStartTime > ENERGY_SAMPLE_LENGTH);
+    }
+
     @Override
     public boolean isSampleComplete() {
-        return (energySampleStart != 0 && System.currentTimeMillis() - energySampleStart > ENERGY_SAMPLE_LENGTH);
+        return sampleComplete;
     }
 
     /**
@@ -68,6 +75,7 @@ public class MotionEnergySensor implements MotionSensorInterface {
      */
     @Override
     public void onNewData(SensorEvent event) {
+
         float[] linAcc = null;
 
         // check if this is a useful data point
@@ -93,11 +101,11 @@ public class MotionEnergySensor implements MotionSensorInterface {
 
             // record the start of the motion sample
             if (avgSpeedCount == 0) {
-                energySampleStart = System.currentTimeMillis();
+                sampleStartTime = System.currentTimeMillis();
             }
 
-            float timeStep = (System.currentTimeMillis() - prevEnergySampleTime) / 1000f;
-            prevEnergySampleTime = System.currentTimeMillis();
+            float timeStep = (System.currentTimeMillis() - prevSampleTime) / 1000f;
+            prevSampleTime = System.currentTimeMillis();
             if (timeStep > 0 && timeStep < 1) {
                 float accLength = FloatMath.sqrt((float) (Math.pow(linAcc[0], 2)
                         + Math.pow(linAcc[1], 2) + Math.pow(linAcc[2], 2)));
@@ -105,11 +113,14 @@ public class MotionEnergySensor implements MotionSensorInterface {
                 avgSpeedChange = (avgSpeedCount * avgSpeedChange + accLength) / (avgSpeedCount + 1);
                 avgSpeedCount++;
             }
+        } else {
+            Log.w(TAG, "Cannot calculate motion energy! Linear acceleration value is null");
         }
 
         // check if we gathered enough data points
-        if (isSampleComplete()) {
+        if (!sampleComplete && isEnoughDatapoints()) {
             sendData();
+            sampleComplete = true;
         }
     }
 
@@ -118,23 +129,24 @@ public class MotionEnergySensor implements MotionSensorInterface {
      */
     private void sendData() {
 
-            // round to three decimals
-            float value = BigDecimal.valueOf(avgSpeedChange).setScale(3, 0).floatValue();
+        // round to three decimals
+        float value = BigDecimal.valueOf(avgSpeedChange).setScale(3, 0).floatValue();
 
-            // prepare intent to send to MsgHandler
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MOTION_ENERGY);
-            i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
-            i.putExtra(DataPoint.VALUE, value);
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-            context.startService(i);
+        // prepare intent to send to MsgHandler
+        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MOTION_ENERGY);
+        i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
+        i.putExtra(DataPoint.VALUE, value);
+        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        context.startService(i);
     }
 
     @Override
     public void startNewSample() {
-        prevEnergySampleTime = 0;
-        energySampleStart = 0;
+        sampleComplete = false;
+        prevSampleTime = 0;
+        sampleStartTime = 0;
         avgSpeedChange = 0;
         avgSpeedCount = 0;
     }
