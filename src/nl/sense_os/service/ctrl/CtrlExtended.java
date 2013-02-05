@@ -126,7 +126,8 @@ public class CtrlExtended extends Controller {
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
 
         if (lastlocationmode.equals("nomode")) {
-            Log.w(TAG, "NOMODE");
+            // Log.v(TAG, "NOMODE");
+
             // We want to make sure that we have a location before going to idle mode
             Cursor data = null;
             long timerange = 2 * time; // 2 minutes
@@ -153,7 +154,8 @@ public class CtrlExtended extends Controller {
                 locListener.setGpsListening(true);
             }
         } else if ((!isAccelerating()) && (!isPositionChanged())) {
-            Log.w(TAG, "IDLE MODE");
+            // Log.v(TAG, "IDLE MODE");
+
             lastlocationmode = "idle";
             if (isListeningNw) {
                 locListener.setNetworkListening(false);
@@ -168,7 +170,8 @@ public class CtrlExtended extends Controller {
 
         } else if (isNwProductive(isListeningNw, time, lastNwFix, listenNwStart)
                 || isNwSwitchedOffTooLong(isListeningNw, listenNwStop)) {
-            Log.w(TAG, "NETWORK MODE");
+            // Log.v(TAG, "NETWORK MODE");
+
             if ("idle".equals(getLastMode())) {
                 lastlocationmode = "network";
                 // scheduleTransmissions();
@@ -183,7 +186,8 @@ public class CtrlExtended extends Controller {
 
         } else if (isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)
                 || isSwitchedOffTooLong(isListeningGps, listenGpsStop)) {
-            Log.w(TAG, "GPS MODE");
+            // Log.v(TAG, "GPS MODE");
+
             if ("idle".equals(getLastMode())) {
                 lastlocationmode = "gps";
                 // scheduleTransmissions();
@@ -197,7 +201,8 @@ public class CtrlExtended extends Controller {
             }
 
         } else {
-            Log.w(TAG, "NOAVAILABLE MODE");
+            // Log.v(TAG, "NOAVAILABLE MODE");
+
             if ("idle".equals(getLastMode())) {
                 lastlocationmode = "noavailable";
                 // scheduleTransmissions();
@@ -356,8 +361,7 @@ public class CtrlExtended extends Controller {
     private boolean isNwSwitchedOffTooLong(boolean isListeningNw, long listenNwStop) {
 
         if (isListeningNw) {
-            // Log.w(TAG,
-            // "No use checking if Network is switched off too long: it is still listening!");
+            // no use checking if Network is switched off too long: it is still listening
             return false;
         }
 
@@ -367,11 +371,9 @@ public class CtrlExtended extends Controller {
         if (SNTP.getInstance().getTime() - listenNwStop > maxDelay) {
             // Network has been turned off for a long time, or was never even started
             tooLong = true;
-            // Log.w(TAG, "Network has been turned off for a long time, or was never even started");
         } else if (!(LocationSensor.locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
             // the GPS provider is disabled: Network is the only option
             tooLong = true;
-            // Log.w(TAG, " the gps provider is disabled: NETWORK is the only option");
         } else {
             tooLong = false;
         }
@@ -434,8 +436,6 @@ public class CtrlExtended extends Controller {
             }
 
             if (distance > accuracy) {
-                Log.v(TAG, "Position has changed");
-                // Log.w(TAG, "Position has changed");
                 moved = true;
             } else {
                 // position did NOT change
@@ -457,8 +457,7 @@ public class CtrlExtended extends Controller {
     private boolean isSwitchedOffTooLong(boolean isListeningGps, long listenGpsStop) {
 
         if (isListeningGps) {
-            // Log.w(TAG,
-            // "No use checking if GPS is switched off too long: it is still listening!");
+            // no use checking if GPS is switched off too long: it is still listening!
             return false;
         }
 
@@ -472,7 +471,6 @@ public class CtrlExtended extends Controller {
         } else if (!(LocationSensor.locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
             // the network provider is disabled: GPS is the only option
             tooLong = true;
-            // Log.w(TAG, " the network provider is disabled: GPS is the only option");
         } else {
             tooLong = false;
         }
