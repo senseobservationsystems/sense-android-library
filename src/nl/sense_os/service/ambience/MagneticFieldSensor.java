@@ -80,6 +80,7 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
         if (null == wakeLock) {
             PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+            wakeLock.setReferenceCounted(false);
         }
         if (!wakeLock.isHeld()) {
             wakeLock.acquire(500);
