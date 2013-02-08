@@ -12,7 +12,6 @@ import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.senddata.DataTransmitHandler;
 import nl.sense_os.service.commonsense.senddata.FileTransmitHandler;
-import nl.sense_os.service.commonsense.senddata.PersistedBufferTransmitHandler;
 import nl.sense_os.service.commonsense.senddata.RecentBufferTransmitHandler;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -77,7 +76,6 @@ public class MsgHandler extends Service {
 	private static FileTransmitHandler fileHandler;
 	private static DataTransmitHandler dataTransmitHandler;
 	private static RecentBufferTransmitHandler memoryDataHandler;
-	private static PersistedBufferTransmitHandler flashDataHandler;
 	private static LocalStorage storage;
 
 	/**
@@ -227,20 +225,20 @@ public class MsgHandler extends Service {
 			SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-            int bufferType = intent.getIntExtra(EXTRA_BUFFER_TYPE, BUFFER_TYPE_FLASH);
-            if (bufferType == BUFFER_TYPE_FLASH) {
-				Message msg = Message.obtain();
-				Bundle args = new Bundle();
-				args.putString("cookie", cookie);
-				msg.setData(args);
-				flashDataHandler.sendMessage(msg);
-            } else {
+            // int bufferType = intent.getIntExtra(EXTRA_BUFFER_TYPE, BUFFER_TYPE_FLASH);
+            // if (bufferType == BUFFER_TYPE_FLASH) {
+            // Message msg = Message.obtain();
+            // Bundle args = new Bundle();
+            // args.putString("cookie", cookie);
+            // msg.setData(args);
+            // flashDataHandler.sendMessage(msg);
+            // } else {
 				Message msg = Message.obtain();
 				Bundle args = new Bundle();
 				args.putString("cookie", cookie);
 				msg.setData(args);
 				memoryDataHandler.sendMessage(msg);
-			}
+            // }
 		}
 	}
 
@@ -333,13 +331,6 @@ public class MsgHandler extends Service {
 		}
 
 		{
-			HandlerThread handlerThread = new HandlerThread("TransmitPersistedDataThread");
-			handlerThread.start();
-			flashDataHandler = new PersistedBufferTransmitHandler(this, storage,
-					handlerThread.getLooper());
-		}
-
-		{
 			HandlerThread handlerThread = new HandlerThread("TransmitFileThread");
 			handlerThread.start();
 			fileHandler = new FileTransmitHandler(this, storage, handlerThread.getLooper());
@@ -358,7 +349,6 @@ public class MsgHandler extends Service {
 		emptyBufferToDb();
 
 		// stop buffered data transmission threads
-		flashDataHandler.getLooper().quit();
 		memoryDataHandler.getLooper().quit();
 		fileHandler.getLooper().quit();
 		dataTransmitHandler.getLooper().quit();

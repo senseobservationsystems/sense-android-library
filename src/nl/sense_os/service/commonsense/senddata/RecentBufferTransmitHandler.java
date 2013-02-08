@@ -38,7 +38,8 @@ public class RecentBufferTransmitHandler extends BufferTransmitHandler {
 	protected Cursor getUnsentData() {
 		try {
 			String where = DataPoint.TRANSMIT_STATE + "=0";
-			Cursor unsent = storageRef.get().query(contentUri, null, where, null, null);
+            String sortOrder = DataPoint.TIMESTAMP + " ASC";
+            Cursor unsent = storageRef.get().query(contentUri, null, where, null, sortOrder);
 			if (null != unsent) {
 				Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
 			} else {
