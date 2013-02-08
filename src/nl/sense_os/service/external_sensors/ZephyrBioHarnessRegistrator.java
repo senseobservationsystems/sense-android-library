@@ -10,6 +10,19 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
+/**
+ * Helper class that registers sensors for a Zephyr BioHarness device:
+ * <ul>
+ * <li>accelerometer</li>
+ * <li>heart rate</li>
+ * <li>respiration</li>
+ * <li>temperature</li>
+ * <li>battery level</li>
+ * <li>worn status</li>
+ * </ul>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
 
     public ZephyrBioHarnessRegistrator(Context context) {

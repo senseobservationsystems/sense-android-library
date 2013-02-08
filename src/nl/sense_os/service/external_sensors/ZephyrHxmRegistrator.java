@@ -5,6 +5,18 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.content.Context;
 
+/**
+ * Helper class that registers sensors for a Zephyr HxM device:
+ * <ul>
+ * <li>heart rate</li>
+ * <li>speed</li>
+ * <li>distance</li>
+ * <li>battery charge</li>
+ * <li>strides</li>
+ * </ul>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class ZephyrHxmRegistrator extends SensorRegistrator {
 
     public ZephyrHxmRegistrator(Context context) {

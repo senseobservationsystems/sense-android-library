@@ -23,8 +23,9 @@ import android.os.HandlerThread;
 import android.util.Log;
 
 /**
- * @author Roelof van den Berg
+ * Generic class to represent an external sensor that needs to connect to the phone via Bluetooth.
  * 
+ * @author Roelof van den Berg <roelof@sense-os.nl>
  */
 public abstract class ExternalSensor {
     // static device specifics

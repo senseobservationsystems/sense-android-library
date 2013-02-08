@@ -13,7 +13,7 @@ bin/
 gen/
 
 # Local configuration file (sdk path, etc)
-local.propertieshtml/
+local.properties
 
 # doxygen output
 html/

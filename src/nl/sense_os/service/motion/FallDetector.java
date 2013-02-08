@@ -6,10 +6,12 @@ package nl.sense_os.service.motion;
 import android.util.Log;
 
 /**
- * @author Ted
+ * Fall detection class is based on the fall detection algorithm proposed on:
+ * http://www.ecnmag.com/Articles/2009/12/human-fall-detection/
  * 
- *         This Fall detection class is based on the fall detection algorithm proposed on:
- *         http://www.ecnmag.com/Articles/2009/12/human-fall-detection/
+ * @author Ted Schmidt <ted@sense-os.nl>
+ * 
+ * @see MotionSensor
  */
 public class FallDetector {
 

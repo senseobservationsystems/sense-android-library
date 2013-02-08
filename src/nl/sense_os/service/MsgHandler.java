@@ -40,6 +40,29 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * This class is responsible for handling the sensor data that has been collected by the different
+ * sensors. It has two main tasks:
+ * <ul>
+ * <li>Collect incoming sensor data and add it to the buffer.</li>
+ * <li>Periodically transmit all sensor data in the buffer to CommonSense.</li>
+ * </ul>
+ * Sensors that have sampled a new data point should send it to the MsgHandler by sending an Intent
+ * with {@link R.string#action_sense_new_data} that contains the details of the datapoint.<br/>
+ * <br/>
+ * For example:
+ * 
+ * <pre>
+ * Intent sensorData = new Intent(getString(R.string.action_sense_new_data));
+ * sensorData.putExtra(DataPoint.SENSOR_NAME, &quot;sensor name&quot;);
+ * sensorData.putExtra(DataPoint.VALUE, &quot;foo&quot;);
+ * sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
+ * sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+ * startService(sensorData);
+ * </pre>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class MsgHandler extends Service {
 
 	private static final String TAG = "Sense MsgHandler";
@@ -181,6 +204,9 @@ public class MsgHandler extends Service {
 		} catch (Exception e) {
 			Log.e(TAG, "Failed to handle new data point!", e);
 		}
+		
+		//broadcast this new data intent as well, so anybody can listen to data!
+		this.sendBroadcast(intent);
 	}
 
 	private void handleSendIntent(Intent intent) {

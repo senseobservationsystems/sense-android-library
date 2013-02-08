@@ -28,7 +28,7 @@ interface ISenseService
      * @param username 
      *         Username for the new user
      * @param password 
-     *         Unhashed password String for the new user
+     *         Hashed password String for the new user
      * @param email 
      *         Email address
      * @param country 

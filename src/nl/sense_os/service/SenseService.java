@@ -8,6 +8,7 @@ import java.util.Map;
 
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
+import nl.sense_os.service.ambience.MagneticFieldSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
 import nl.sense_os.service.ambience.TemperatureSensor;
@@ -21,6 +22,7 @@ import nl.sense_os.service.constants.SensePrefs.Main.External;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
@@ -50,6 +52,22 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Main Sense service class.<br/>
+ * <br/>
+ * Activities can bind to this service and call functions to:
+ * <ul>
+ * <li>log in;</li>
+ * <li>register;</li>
+ * <li>start sensing;</li>
+ * <li>start/stop individual sensor modules;</li>
+ * <li>set and get properties;</li>
+ * </ul>
+ * When the {@link #toggleMain(boolean)} method is called to start the sensing, the service starts
+ * itself and registers itself as a foreground service so it does not get easily killed by Android.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public class SenseService extends Service {
 
 	private static final String TAG = "Sense Service";
@@ -67,15 +85,17 @@ public class SenseService extends Service {
 	private ISenseService.Stub binder;
 
 	private ServiceStateHelper state;
-
+    
+	//private DataTransmitter dataTransmitter;
 	private BatterySensor batterySensor;
 	private DeviceProximity deviceProximity;
-	private LightSensor lightSensor;
+	private LightSensor lightSensor;  
 	private CameraLightSensor cameraLightSensor;
 	private TemperatureSensor temperatureSensor;
-	private LocationSensor locListener;
+	private LocationSensor locListener; 
+	private Controller controller;
 	private MotionSensor motionSensor;
-	private NoiseSensor noiseSensor;
+	private NoiseSensor noiseSensor;  
 	private PhoneActivitySensor phoneActivitySensor;
 	private PressureSensor pressureSensor;
 	private ProximitySensor proximitySensor;
@@ -83,6 +103,7 @@ public class SenseService extends Service {
 	private ZephyrBioHarness es_bioHarness;
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
+	private MagneticFieldSensor magneticFieldSensor;
 
 	/**
 	 * Handler on main application thread to display toasts to the user.
@@ -93,6 +114,7 @@ public class SenseService extends Service {
 	// separate threads for the sensing modules
 	private static Handler ambienceHandler, devProxHandler, extSensorHandler, locationHandler,
 			motionHandler, phoneStateHandler;
+	//public static Handler LightHandler  = new Handler(); 
 
 	/**
 	 * Changes login of the Sense service. Removes "private" data of the previous user from the
@@ -235,20 +257,29 @@ public class SenseService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.v(TAG, "Some component is binding to Sense Platform service");
+		if (null == binder) {
+			binder = new SenseServiceStub(this);
+		}
 		return binder;
 	}
 
 	/**
 	 * Does nothing except poop out a log message. The service is really started in onStart,
 	 * otherwise it would also start when an activity binds to it.
+	 * 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void onCreate() {
 		Log.v(TAG, "Sense Platform service is being created");
-		binder = new SenseServiceStub(this);
 		state = ServiceStateHelper.getInstance(this);
 	}
 
+	/**
+	 * Stops sensing, logs out, removes foreground status.
+	 * 
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onDestroy() {
 		Log.v(TAG, "Sense Platform service is being destroyed");
@@ -264,7 +295,8 @@ public class SenseService extends Service {
 
 		super.onDestroy();
 	}
-
+	
+	
 	/**
 	 * Performs tasks after successful login: update status bar notification; start transmitting
 	 * collected sensor data and register the gcm_id.
@@ -276,9 +308,6 @@ public class SenseService extends Service {
 
 		// update login status
 		state.setLoggedIn(true);
-
-		// start database leeglepelaar
-		DataTransmitter.scheduleTransmissions(this);
 
 		// store this login
 		SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
@@ -381,31 +410,32 @@ public class SenseService extends Service {
 	void onSyncRateChange() {
 		Log.v(TAG, "Sync rate changed");
 		if (state.isStarted()) {
-			DataTransmitter.scheduleTransmissions(this);
+			controller = Controller.getController(this);
+			controller.scheduleTransmissions();
 		}
 
 		// update any widgets
 		startService(new Intent(getString(R.string.action_widget_update)));
 	}
 
-	/**
-	 * Tries to register a new user using the username and password from the private preferences and
-	 * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
-	 * are bound to the service.
-	 * 
-	 * @param username
-	 * @param password
-	 *            Unhashed password
-	 * @param email
-	 * @param address
-	 * @param zipCode
-	 * @param country
-	 * @param name
-	 * @param surname
-	 * @param mobile
-	 * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-	 *         any other unexpected responses.
-	 */
+	    /**
+     * Tries to register a new user using the username and password from the private preferences and
+     * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
+     * are bound to the service.
+     * 
+     * @param username
+     * @param password
+     *            Hashed password
+     * @param email
+     * @param address
+     * @param zipCode
+     * @param country
+     * @param name
+     * @param surname
+     * @param mobile
+     * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
+     *         any other unexpected responses.
+     */
 	synchronized int register(String username, String password, String email, String address,
 			String zipCode, String country, String name, String surname, String mobile) {
 		Log.v(TAG, "Try to register new user");
@@ -416,12 +446,10 @@ public class SenseService extends Service {
 		// stop active sensing components
 		stopSensorModules();
 
-		String hashPass = SenseApi.hashPassword(password);
-
 		// save username and password in preferences
 		Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
 		authEditor.putString(Auth.LOGIN_USERNAME, username);
-		authEditor.putString(Auth.LOGIN_PASS, hashPass);
+        authEditor.putString(Auth.LOGIN_PASS, password);
 		authEditor.commit();
 
 		// try to register
@@ -431,7 +459,7 @@ public class SenseService extends Service {
 			// ", password hash: " + hashPass);
 
 			try {
-				registered = SenseApi.registerUser(this, username, hashPass, name, surname, email,
+                registered = SenseApi.registerUser(this, username, password, name, surname, email,
 						mobile);
 			} catch (Exception e) {
 				Log.w(TAG, "Exception during registration: '" + e.getMessage()
@@ -498,6 +526,9 @@ public class SenseService extends Service {
 
 		SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
 		if (statusPrefs.getBoolean(Status.MAIN, false)) {
+			// start database leeglepelaar
+			controller = Controller.getController(this);
+			controller.scheduleTransmissions();
 			togglePhoneState(statusPrefs.getBoolean(Status.PHONESTATE, false));
 			toggleLocation(statusPrefs.getBoolean(Status.LOCATION, false));
 			toggleAmbience(statusPrefs.getBoolean(Status.AMBIENCE, false));
@@ -563,7 +594,7 @@ public class SenseService extends Service {
 				// check pressure sensor presence
 				if (pressureSensor != null) {
 					Log.w(TAG, "pressure sensor is already present!");
-					pressureSensor.stopPressureSensing();
+                    pressureSensor.stopSensing();
 					pressureSensor = null;
 				}
 
@@ -573,6 +604,15 @@ public class SenseService extends Service {
 					temperatureSensor.stopSensing();
 					temperatureSensor = null;
 				}
+				
+				// check magnetic field sensor presence
+				if (magneticFieldSensor != null) {
+					Log.w(TAG, "magnetic field  sensor is already present!");
+                    magneticFieldSensor.stopSensing();
+					magneticFieldSensor = null;
+				}
+				
+				
 
 				// get sample rate from preferences
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -615,31 +655,40 @@ public class SenseService extends Service {
 
 						if (mainPrefs.getBoolean(Ambience.MIC, true)
 								|| mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
-							noiseSensor = new NoiseSensor(SenseService.this);
+							/*Notification note=new Notification();
+							note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
+							startForeground(1337, note);*/
+							noiseSensor = NoiseSensor.getInstance(SenseService.this);
 							noiseSensor.enable(finalInterval);
 						}
 						if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
-							lightSensor = new LightSensor(SenseService.this);
+							lightSensor = LightSensor.getInstance(SenseService.this);
 							lightSensor.startLightSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD
 								&& Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 							if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
-								cameraLightSensor = new CameraLightSensor(SenseService.this);
+								cameraLightSensor = CameraLightSensor.getInstance(SenseService.this);
 								cameraLightSensor.startLightSensing(finalInterval);
 							}
 						} else {
 							// Log.v(TAG, "Camera is not supported in this version of Android");
 						}
+						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
+                            magneticFieldSensor = MagneticFieldSensor
+                                    .getInstance(SenseService.this);
+                            magneticFieldSensor.startSensing(finalInterval);
+						}
+						
 						if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
-							pressureSensor = new PressureSensor(SenseService.this);
-							pressureSensor.startPressureSensing(finalInterval);
+							pressureSensor = PressureSensor.getInstance(SenseService.this);
+                            pressureSensor.startSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 							if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
-								temperatureSensor = new TemperatureSensor(SenseService.this);
+								temperatureSensor = TemperatureSensor.getInstance(SenseService.this);
 								temperatureSensor.startSensing(finalInterval);
 							}
 						} else {
@@ -665,17 +714,16 @@ public class SenseService extends Service {
 					cameraLightSensor = null;
 				}
 				if (null != pressureSensor) {
-					pressureSensor.stopPressureSensing();
+                    pressureSensor.stopSensing();
 					pressureSensor = null;
 				}
 				if (null != temperatureSensor) {
 					temperatureSensor.stopSensing();
 					temperatureSensor = null;
 				}
-
-				if (ambienceHandler != null) {
-					ambienceHandler.getLooper().quit();
-					ambienceHandler = null;
+				if (null != magneticFieldSensor) {
+                    magneticFieldSensor.stopSensing();
+					magneticFieldSensor = null;
 				}
 			}
 		}
@@ -930,7 +978,7 @@ public class SenseService extends Service {
 
 					@Override
 					public void run() {
-						locListener = new LocationSensor(SenseService.this);
+						locListener = LocationSensor.getInstance(SenseService.this);
 						locListener.enable(time, distance);
 					}
 				});
@@ -1026,7 +1074,7 @@ public class SenseService extends Service {
 
 					@Override
 					public void run() {
-						motionSensor = new MotionSensor(SenseService.this);
+						motionSensor = MotionSensor.getInstance(SenseService.this);
 						motionSensor.startMotionSensing(finalInterval);
 					}
 				});
@@ -1121,18 +1169,18 @@ public class SenseService extends Service {
 					public void run() {
 						try {
 							if (mainPrefs.getBoolean(PhoneState.BATTERY, true)) {
-								batterySensor = new BatterySensor(SenseService.this);
+								batterySensor = BatterySensor.getInstance(SenseService.this);
 								batterySensor.startBatterySensing(finalInterval);
 							}
 							if (mainPrefs.getBoolean(PhoneState.SCREEN_ACTIVITY, true)) {
-								phoneActivitySensor = new PhoneActivitySensor(SenseService.this);
+								phoneActivitySensor = PhoneActivitySensor.getInstance(SenseService.this);
 								phoneActivitySensor.startPhoneActivitySensing(finalInterval);
 							}
 							if (mainPrefs.getBoolean(PhoneState.PROXIMITY, true)) {
-								proximitySensor = new ProximitySensor(SenseService.this);
+								proximitySensor = ProximitySensor.getInstance(SenseService.this);
 								proximitySensor.startProximitySensing(finalInterval);
 							}
-							phoneStateListener = new SensePhoneState(SenseService.this);
+							phoneStateListener = SensePhoneState.getInstance(SenseService.this);
 							phoneStateListener.startSensing(finalInterval);
 						} catch (Exception e) {
 							Log.e(TAG, "Phone state thread failed to start!");
@@ -1160,10 +1208,10 @@ public class SenseService extends Service {
 					phoneActivitySensor.stopPhoneActivitySensing();
 					phoneActivitySensor = null;
 				}
-				if (null != phoneStateHandler) {
-					phoneStateHandler.getLooper().quit();
-					phoneStateHandler = null;
-				}
+//				if (null != phoneStateHandler) {
+//					phoneStateHandler.getLooper().quit();
+//					phoneStateHandler = null;
+//				}
 			}
 		}
 	}
@@ -1172,4 +1220,5 @@ public class SenseService extends Service {
 		Log.v(TAG, "Try to verify sensor IDs");
 		startService(new Intent(this, DefaultSensorRegistrationService.class));
 	}
+	
 }

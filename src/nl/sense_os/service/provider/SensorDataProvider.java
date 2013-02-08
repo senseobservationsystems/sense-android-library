@@ -3,14 +3,13 @@
  *************************************************************************************************/
 package nl.sense_os.service.provider;
 
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
 
 /**
  * ContentProvider that encapsulates recent sensor data. The data is stored in the devices RAM
@@ -28,6 +27,8 @@ import nl.sense_os.service.storage.LocalStorage;
  * <li>timestamp <= foo</li>
  * <li>combinations of a sensor_name and a timestamp selection</li>
  * </ul>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  * 
  * @see LocalStorage
  * @see DataPoint

@@ -3,6 +3,12 @@
  *************************************************************************************************/
 package nl.sense_os.service.provider;
 
+import java.util.HashMap;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensorData.BufferedData;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -17,17 +23,12 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensorData.BufferedData;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
-
-import java.util.HashMap;
-
 /**
  * ContentProvider that encapsulates recent sensor data. The data is persistently stored on the
  * devices flash memory, so this implementation is not very energy efficient. This implementation is
  * only kept as reference.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  * 
  * @see LocalStorage
  * @see DataPoint

@@ -18,9 +18,10 @@ import android.content.Context;
 /**
  * Class with constants for the Sense Platform service.
  * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
  * @deprecated Use new SensePrefs, SenseStatusCodes, SenseDataTypes SenseUrls classes instead
  */
-@Deprecated
 public class Constants {
 
     /* ======================================================================================== */

@@ -3,11 +3,6 @@ package nl.sense_os.service.ambience;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.util.Log;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -15,8 +10,18 @@ import nl.sense_os.service.constants.SensePrefs.SensorSpecifics;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
-/* scales to max and min */
+/**
+ * Helper class for {@link NoiseSensor}. Scales the measured sound level measurement according to
+ * the highest and lowest sound levels that have been recorded.
+ * 
+ * @author Pim Nijdam <pim@sense-os.nl>
+ */
 public class LoudnessSensor {
 	private class TimestampValueTuple {
 		long timestamp;
@@ -42,7 +47,7 @@ public class LoudnessSensor {
 	private double loudest;
 	private boolean filled = false;
 
-	public LoudnessSensor(Context context) {
+	protected LoudnessSensor(Context context) {
 		this.context = context;
 		AVERAGING_PERIOD = DEFAULT_AVERAGING_PERIOD;
 		//restore silence
@@ -53,6 +58,15 @@ public class LoudnessSensor {
         Log.v("Sense Loudness","Loudest " + loudest + ", total silence " + totalSilence);
         
 	}
+    
+	private static LoudnessSensor instance = null;
+    
+    public static LoudnessSensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new LoudnessSensor(context);
+	    }
+	    return instance;
+    }
 
 	public void onNewNoise(long ms, double dB) {
 		addNoiseInDb(ms, dB);
@@ -64,56 +78,6 @@ public class LoudnessSensor {
 				sendSensorValue(l, ms);
 		}
 	}
-
-	/*
-	private void addOldDataToNoisePD() {
-		try {
-			// get data
-			Uri volatileUri = Uri.parse("content://"
-					+ context.getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_URI_PATH);
-			Uri persistentUri = Uri.parse("content://"
-					+ context.getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_PERSISTED_URI_PATH);
-
-			insertValuesFrom(volatileUri);
-			insertValuesFrom(persistentUri);
-
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			e.printStackTrace();
-		}
-	}
-
-	private void insertValuesFrom(Uri uri) throws Exception {
-		long startTime = SNTP.getInstance().getTime() - timePeriod;
-
-		LocalStorage storage = LocalStorage.getInstance(context);
-
-		String[] projection = new String[] { DataPoint.VALUE,
-				DataPoint.TIMESTAMP, DataPoint.SENSOR_NAME };
-
-		String where = DataPoint.SENSOR_NAME + "='" + SensorNames.NOISE + "'"
-				+ " AND " + DataPoint.TIMESTAMP + ">" + startTime;
-
-		Cursor cursor = storage.query(uri, projection, where, null, null);
-
-		// add data to noisePD, TODO: weight with interval so we can
-		// correctly handle data sampled with a varying interval
-		int count = 0;
-		if (cursor.moveToFirst()) {
-			do {
-				double dB = cursor.getFloat(0);
-				noisePD.addValue(dB);
-			} while (cursor.moveToNe
-			
-			
-					xt());
-		}
-		Log.v(TAG, "got " + cursor.getCount() + " values from " + uri);
-		cursor.close();
-	}
-	*/
 
 	private void addNoiseInDb(long timestamp, double dB) {
 		// TODO: should we calculate something like phon or sone to better fit
