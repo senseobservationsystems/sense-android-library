@@ -5,6 +5,8 @@ import android.util.Log;
 
 /**
  * Helper class that registers the sensors for a device at CommonSense.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public abstract class SensorRegistrator {
 

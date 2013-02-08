@@ -9,6 +9,14 @@ import java.util.Set;
 
 import nl.sense_os.service.constants.SensorData.DataPoint;
 
+/**
+ * Hacky solution for parsing SQL-like queries on the LocalStorage. Normal ContentProviders will not
+ * need this class because they can handle these queries themselves, but our {@link LocalStorage}
+ * class does not.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * @see LocalStorage
+ */
 public class ParserUtils {
 
     @SuppressWarnings("unused")

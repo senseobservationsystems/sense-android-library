@@ -22,8 +22,10 @@ import android.content.Intent;
 import android.util.Log;
 
 /**
- * @author roelofvandenberg
- *
+ * Represents an OBD2 sensor. Connects to a dongle using bluetooth, and collects the sensor data
+ * coming from the vehicle.
+ * 
+ * @author Roelof van den Berg <roelof@sense-os.nl>
  */
 public class OBD2Sensor extends ExternalSensor {
 	protected final String TAG = "OBD-II";

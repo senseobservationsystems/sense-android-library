@@ -12,6 +12,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 
+/**
+ * Helper class to build a state sensor that periodically analyzes data from certain sensors on the
+ * phone. Implementing classes should put the analysis in {@link #updateState()}.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ */
 public abstract class AbstractStateMonitor extends Service {
 
 	private PendingIntent operation;

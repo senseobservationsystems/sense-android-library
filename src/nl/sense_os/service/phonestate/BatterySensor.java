@@ -3,13 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.phonestate;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
-import android.util.Log;
-
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -19,14 +12,36 @@ import nl.sense_os.service.provider.SNTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
+import android.util.Log;
+
+/**
+ * Represents the battery sensor. Registers itself for ACTION_BATTERY_CHANGED Broadcasts from
+ * Android.
+ * 
+ * @author Ted Schmidt <ted@sense-os.nl>
+ */
 public class BatterySensor {
     private static final String TAG = "Sense Battery sensor";
     private long sampleDelay = 0; // in milliseconds
     private long lastSampleTime;
     private Context context;
 
-    public BatterySensor(Context context) {
+    protected BatterySensor(Context context) {
         this.context = context;
+    }
+    
+    private static BatterySensor instance = null;
+    
+    public static BatterySensor getInstance(Context context) {
+	    if(instance == null) {
+	       instance = new BatterySensor(context);
+	    }
+	    return instance;
     }
 
     private BroadcastReceiver batteryChangeReceiver = new BroadcastReceiver() {

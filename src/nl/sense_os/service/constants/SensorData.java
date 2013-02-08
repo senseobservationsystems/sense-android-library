@@ -1,8 +1,18 @@
 package nl.sense_os.service.constants;
 
+import nl.sense_os.service.MsgHandler;
+import nl.sense_os.service.storage.LocalStorage;
 import android.content.ContentResolver;
 import android.provider.BaseColumns;
 
+/**
+ * Utiliy class that contains resources for representing sensor data points.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
+ * @see LocalStorage
+ * @see MsgHandler
+ */
 public class SensorData {
 
     /**
@@ -168,9 +178,9 @@ public class SensorData {
         public static final String GYRO = "gyroscope";
 
         /**
-         * Magnetic field sensor name. Part of the Motion sensors.
+         * Magnetic field sensor name. Part of the Ambience sensors.
          */
-        public static final String MAGNET_FIELD = "magnetic_field";
+        public static final String MAGNETIC_FIELD = "magnetic field";
 
         /**
          * Orientation sensor name. Part of the Motion sensors.
@@ -418,5 +428,21 @@ public class SensorData {
         private SensorNames() {
             // class should not be instantiated
         }
+    }
+    
+    /**
+     * Standard descriptions for sensors.
+     * 
+     * @see DataPoint#SENSOR_DESCRIPTION
+     */
+    public static class SensorDescriptions {
+        /**
+         * Auto-calibrated noise level sensor. Part of the Ambience sensors.
+         */
+        public static final String AUTO_CALIBRATED = "auto-calibrated";
+    }
+
+    private SensorData() {
+        // do not instantiate
     }
 }

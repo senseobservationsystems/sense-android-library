@@ -20,6 +20,8 @@ import android.util.Log;
  * Handler for transmit tasks of recently added data (i.e. data that is stored in system RAM
  * memory). Updates {@link DataPoint#TRANSMIT_STATE} of the data points after the transmission is
  * completed successfully.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class RecentBufferTransmitHandler extends BufferTransmitHandler {
 

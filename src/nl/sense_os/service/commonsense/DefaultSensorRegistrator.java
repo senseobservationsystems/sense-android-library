@@ -4,6 +4,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,6 +18,10 @@ import android.telephony.TelephonyManager;
 
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * 
+ * @see DefaultSensorRegistrationService
  */
 public class DefaultSensorRegistrator extends SensorRegistrator {
 
@@ -66,6 +71,10 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match noise sensor
 		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
 				"0.0", deviceType, deviceUuid);
+		
+		//match auto calibrated noise sensor
+		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorDescriptions.AUTO_CALIBRATED,
+				"0.0", deviceType, deviceUuid);
 
 		// match noise spectrum
 		success &= checkSensor(
@@ -79,10 +88,20 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match pressure sensor
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		if (null != sensor) {
-			success &= checkSensor(SensorNames.PRESSURE, "", SenseDataTypes.JSON, sensor.getName(),
-					"{\"millibar\":0}", deviceType, deviceUuid);
+            success &= checkSensor(SensorNames.PRESSURE, SensorNames.PRESSURE,
+                    SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No pressure sensor present!");
+		}
+		
+		// match Magnetic Field sensor
+		sensor = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		if (null != sensor) {
+            success &= checkSensor(SensorNames.MAGNETIC_FIELD, SensorNames.MAGNETIC_FIELD,
+                    SenseDataTypes.JSON, sensor.getName(), "{\"x\":0, \"y\":0, \"z\":0}",
+                    deviceType, deviceUuid);
+		} else {
+			// Log.v(TAG, "No magnetic field sensor present!");
 		}
 
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
