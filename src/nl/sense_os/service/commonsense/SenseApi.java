@@ -1136,7 +1136,7 @@ public class SenseApi {
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
 		String url = devMode ? SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION
-				: SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION;
+				: SenseUrls.DEVICE_UPDATE_CONFIGURATION;
 
 		// Get the device ID
 		String device_id = getDeviceId(context);
@@ -1168,7 +1168,7 @@ public class SenseApi {
 
 		String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 		boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-		String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.DEV_CONFIGURATION;
+		String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.CONFIGURATION;
 
 		url = url.replaceFirst("<id>", configuration_id);
 
