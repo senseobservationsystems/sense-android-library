@@ -10,9 +10,9 @@ import java.util.Locale;
 
 import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.commonsense.senddata.BufferTransmitHandler;
 import nl.sense_os.service.commonsense.senddata.DataTransmitHandler;
 import nl.sense_os.service.commonsense.senddata.FileTransmitHandler;
-import nl.sense_os.service.commonsense.senddata.RecentBufferTransmitHandler;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
@@ -75,7 +75,7 @@ public class MsgHandler extends Service {
 
 	private static FileTransmitHandler fileHandler;
 	private static DataTransmitHandler dataTransmitHandler;
-	private static RecentBufferTransmitHandler memoryDataHandler;
+    private static BufferTransmitHandler bufferHandler;
 	private static LocalStorage storage;
 
 	/**
@@ -225,20 +225,12 @@ public class MsgHandler extends Service {
 			SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
 
-            // int bufferType = intent.getIntExtra(EXTRA_BUFFER_TYPE, BUFFER_TYPE_FLASH);
-            // if (bufferType == BUFFER_TYPE_FLASH) {
-            // Message msg = Message.obtain();
-            // Bundle args = new Bundle();
-            // args.putString("cookie", cookie);
-            // msg.setData(args);
-            // flashDataHandler.sendMessage(msg);
-            // } else {
-				Message msg = Message.obtain();
-				Bundle args = new Bundle();
-				args.putString("cookie", cookie);
-				msg.setData(args);
-				memoryDataHandler.sendMessage(msg);
-            // }
+            // send the message to the handler
+            Message msg = Message.obtain();
+            Bundle args = new Bundle();
+            args.putString("cookie", cookie);
+            msg.setData(args);
+            bufferHandler.sendMessage(msg);
 		}
 	}
 
@@ -326,8 +318,7 @@ public class MsgHandler extends Service {
 		{
 			HandlerThread handlerThread = new HandlerThread("TransmitRecentDataThread");
 			handlerThread.start();
-			memoryDataHandler = new RecentBufferTransmitHandler(this, storage,
-					handlerThread.getLooper());
+            bufferHandler = new BufferTransmitHandler(this, storage, handlerThread.getLooper());
 		}
 
 		{
@@ -349,7 +340,7 @@ public class MsgHandler extends Service {
 		emptyBufferToDb();
 
 		// stop buffered data transmission threads
-		memoryDataHandler.getLooper().quit();
+		bufferHandler.getLooper().quit();
 		fileHandler.getLooper().quit();
 		dataTransmitHandler.getLooper().quit();
 

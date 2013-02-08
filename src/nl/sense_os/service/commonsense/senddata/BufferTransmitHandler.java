@@ -27,10 +27,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -39,16 +41,14 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 /**
- * Handler for tasks that send buffered sensor data to CommonSense. Nota that this handler is
+ * Handler for transmit tasks of recently added data. Updates {@link DataPoint#TRANSMIT_STATE} of
+ * the data points after the transmission is completed successfully. Note that this handler is
  * re-usable: every time the handler receives a message, it gets the latest data in a Cursor and
- * sends it to CommonSense.<br>
- * <br>
- * Subclasses have to implement {@link #getUnsentData()} and {@link #onTransmitSuccess(JSONObject)}
- * to make them work with their intended data source.
+ * sends it to CommonSense.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public abstract class BufferTransmitHandler extends Handler {
+public class BufferTransmitHandler extends Handler {
 
     class SensorDataEntry {
         String sensorId;
@@ -59,8 +59,9 @@ public abstract class BufferTransmitHandler extends Handler {
 
 	private static final String TAG = "BatchDataTransmitHandler";
 	private static final int MAX_POST_DATA = 100;
-	final WeakReference<Context> ctxRef;
-	final WeakReference<LocalStorage> storageRef;
+    private final Uri contentUri;
+    private final WeakReference<Context> ctxRef;
+    private final WeakReference<LocalStorage> storageRef;
 	private final String url;
 	private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
 	private final NumberFormat dateFormatter = new DecimalFormat("##########.###", symbols);
@@ -69,6 +70,9 @@ public abstract class BufferTransmitHandler extends Handler {
 		super(looper);
 		this.ctxRef = new WeakReference<Context>(context);
 		this.storageRef = new WeakReference<LocalStorage>(storage);
+
+        contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
+                + DataPoint.CONTENT_URI_PATH);
 
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
@@ -179,7 +183,22 @@ public abstract class BufferTransmitHandler extends Handler {
 	/**
 	 * @return Cursor with the data points that have to be sent to CommonSense.
 	 */
-	protected abstract Cursor getUnsentData();
+    private Cursor getUnsentData() {
+        try {
+            String where = DataPoint.TRANSMIT_STATE + "=0";
+            String sortOrder = DataPoint.TIMESTAMP + " ASC";
+            Cursor unsent = storageRef.get().query(contentUri, null, where, null, sortOrder);
+            if (null != unsent) {
+                Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
+            } else {
+                Log.w(TAG, "Failed to get unsent recent data points from local storage");
+            }
+            return unsent;
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Error querying Local Storage!", e);
+            return null;
+        }
+    }
 
 	@Override
 	public void handleMessage(Message msg) {
@@ -208,9 +227,6 @@ public abstract class BufferTransmitHandler extends Handler {
 				// nothing to transmit
 			}
 
-            // done
-            onBufferEmpty();
-
 		} catch (Exception e) {
 			if (null != e.getMessage()) {
 				Log.e(TAG, "Exception sending buffered data: '" + e.getMessage()
@@ -223,11 +239,6 @@ public abstract class BufferTransmitHandler extends Handler {
 			cleanup(cursor, wakeLock);
 		}
 	}
-	
-    /**
-     * Callback for when the buffer has been completely empty.
-     */
-    protected abstract void onBufferEmpty();
 
     /**
      * Performs cleanup tasks after transmission was successfully completed. Should update the data
@@ -238,8 +249,49 @@ public abstract class BufferTransmitHandler extends Handler {
      *            transmitted.
      * @throws Exception
      */
-    protected abstract void onTransmitSuccess(List<SensorDataEntry> sensorDatas)
-            throws JSONException;
+    private void onTransmitSuccess(List<SensorDataEntry> sensorDatas)
+            throws JSONException{
+        // log our great success
+        Log.i(TAG, "Sent recent sensor data from the local storage!");
+
+        // new content values with updated transmit state
+        ContentValues values = new ContentValues();
+        values.put(DataPoint.TRANSMIT_STATE, 1);
+
+        for (SensorDataEntry sensorData : sensorDatas) {
+
+            // get the name of the sensor, to use in the ContentResolver query
+            String sensorName = sensorData.sensorName;
+            String description = sensorData.sensorDescription;
+
+            // select points for this sensor, between the first and the last time stamp
+            JSONArray dataPoints = sensorData.data;
+            String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
+            String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
+                    "date");
+            long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
+            long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
+            String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
+                    + DataPoint.SENSOR_DESCRIPTION + "='" + description + "'" + " AND "
+                    + DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
+                    + max;
+
+            // update points in local storage
+            try {
+                int updated = storageRef.get().update(contentUri, values, where, null);
+                if (updated == dataPoints.length()) {
+                    // Log.v(TAG, "Updated all " + updated + " '" + sensorName
+                    // + "' data points in the local storage");
+                } else {
+                    Log.w(TAG, "Wrong number of '" + sensorName
+                            + "' data points updated after transmission! " + updated + " vs. "
+                            + dataPoints.length());
+                }
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Error updating points in Local Storage!", e);
+            }
+        }
+    }
 
     /**
      * POSTs the sensor data points to the main sensor data URL at CommonSense.
