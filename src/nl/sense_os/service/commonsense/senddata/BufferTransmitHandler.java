@@ -407,6 +407,9 @@ public class BufferTransmitHandler extends Handler {
 
             if (result) {
                 onTransmitSuccess(sensorDataList);
+            } else {
+                // abort! abort!
+                break;
             }
         }
     }
