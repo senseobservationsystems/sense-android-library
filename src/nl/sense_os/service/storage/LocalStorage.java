@@ -153,6 +153,7 @@ public class LocalStorage {
             rowId = inMemory.insert(values);
         } catch (BufferOverflowException e) {
             // in-memory storage is full!
+            deleteOldData();
             persistRecentData();
 
             // try again
@@ -180,9 +181,6 @@ public class LocalStorage {
 
     private int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
-
-        // delete old data from the persistent storage
-        deleteOldData();
 
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
@@ -279,6 +277,7 @@ public class LocalStorage {
             return updated;
 
         } else {
+            deleteOldData();
             persistRecentData();
         }
 
