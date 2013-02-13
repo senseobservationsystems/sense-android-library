@@ -4,6 +4,7 @@
 package nl.sense_os.service.storage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +61,8 @@ public class ParserUtils {
 
     /**
      * Tries to parse the selection String to see which data has to be returned for the query. Looks
-     * for occurrences of "sensor_name" in the selection String.
+     * for occurrences of {@link DataPoint#SENSOR_NAME} and {@link DataPoint#SENSOR_DESCRIPTION} in
+     * the selection String.
      * 
      * @param allSensors
      *            Set of all possible sensors, used to form the selection from.
@@ -73,78 +75,11 @@ public class ParserUtils {
     public static List<String> getSelectedSensors(Set<String> allSensors, String selection,
 	    String[] selectionArgs) {
 
-	List<String> names = new ArrayList<String>();
+        List<String> sensorNameMatches = getSensorNameMatches(allSensors, selection);
+        List<String> result = getSensorDescriptionMatches(new HashSet<String>(sensorNameMatches),
+                selection);
 
-	if (selection != null && selection.contains(DataPoint.SENSOR_NAME)) {
-
-	    // preprocess the selection string a bit
-	    selection = selection.replaceAll(" = ", "=");
-	    selection = selection.replaceAll("= ", "=");
-	    selection = selection.replaceAll(" =", "=");
-	    selection = selection.replaceAll(" != ", "!=");
-	    selection = selection.replaceAll("!= ", "!=");
-	    selection = selection.replaceAll(" !=", "!=");
-
-	    int eqKeyStart = selection.indexOf(DataPoint.SENSOR_NAME + "='");
-	    int neqKeyStart = selection.indexOf(DataPoint.SENSOR_NAME + "!='")
-		    + (DataPoint.SENSOR_NAME + "!='").length();
-
-	    if (-1 != eqKeyStart) {
-		// selection contains "sensor_name='"
-		int sensorNameStart = eqKeyStart + (DataPoint.SENSOR_NAME + "='").length();
-		int sensorNameEnd = selection.indexOf("'", sensorNameStart);
-		sensorNameEnd = sensorNameEnd == -1 ? selection.length() - 1 : sensorNameEnd;
-		String sensorName = selection.substring(sensorNameStart, sensorNameEnd);
-		if (sensorName.equals("?")) {
-		    throw new IllegalArgumentException(
-			    "LocalStorage cannot handle queries with arguments array, sorry...");
-		}
-		// Log.v(TAG, "Query contains: " + DataPoint.SENSOR_NAME + " = '" + sensorName +
-		// "'");
-
-		boolean inStorage = false;
-		for (String key : allSensors) {
-		    if (key.startsWith(sensorName)) {
-			names.add(key);
-			inStorage = true;
-		    }
-		}
-		// sometimes we want to select sensors that are not currently in the storage
-		if (!inStorage) {
-		    names.add(sensorName);
-		}
-
-	    } else if (-1 != neqKeyStart) {
-		// selection contains "sensor_name!='"
-		int sensorNameStart = neqKeyStart + (DataPoint.SENSOR_NAME + "!='").length();
-		int sensorNameEnd = selection.indexOf("'", sensorNameStart);
-		sensorNameEnd = sensorNameEnd == -1 ? selection.length() - 1 : sensorNameEnd;
-		String notSensorName = selection.substring(sensorNameStart, sensorNameEnd);
-		if (notSensorName.equals("?")) {
-		    throw new IllegalArgumentException(
-			    "LocalStorage cannot handle queries with arguments array, sorry...");
-		}
-		// Log.v(TAG, "Query contains: " + DataPoint.SENSOR_NAME + " != '" + notSensorName +
-		// "'");
-
-		for (String key : allSensors) {
-		    if (!key.startsWith(notSensorName)) {
-			names.add(key);
-		    }
-		}
-
-	    } else {
-		throw new IllegalArgumentException("Parser cannot handle selection query: "
-			+ selection);
-	    }
-
-	} else {
-	    // no selection: return all sensor names
-	    names.addAll(allSensors);
-	}
-
-	// return a copy of the list of names
-	return new ArrayList<String>(names);
+        return result;
     }
 
     /**
@@ -324,6 +259,159 @@ public class ParserUtils {
 	}
 
 	return result;
+    }
+
+    /**
+     * Returns list of sensors that have match the selected sensor description. If the selection
+     * String does not contain {@link DataPoint#SENSOR_DESCRIPTION}, the complete list of sensors is
+     * returned.
+     * 
+     * @param allSensors
+     * @param selection
+     * @return
+     */
+    private static List<String> getSensorDescriptionMatches(Set<String> allSensors, String selection) {
+        List<String> result = new ArrayList<String>();
+
+        if (selection != null && selection.contains(DataPoint.SENSOR_DESCRIPTION)) {
+
+            // preprocess the selection string a bit
+            selection = fixCompareSigns(selection);
+
+            int eqKeyStart = selection.indexOf(DataPoint.SENSOR_DESCRIPTION + "='");
+            int neqKeyStart = selection.indexOf(DataPoint.SENSOR_DESCRIPTION + "!='")
+                    + (DataPoint.SENSOR_DESCRIPTION + "!='").length();
+
+            if (-1 != eqKeyStart) {
+                // selection contains "sensor_description='"
+                int descriptionStart = eqKeyStart + (DataPoint.SENSOR_DESCRIPTION + "='").length();
+                int descriptionEnd = selection.indexOf("'", descriptionStart);
+                descriptionEnd = descriptionEnd == -1 ? selection.length() - 1 : descriptionEnd;
+                String description = selection.substring(descriptionStart, descriptionEnd);
+                if (description.equals("?")) {
+                    throw new IllegalArgumentException(
+                            "LocalStorage cannot handle queries with arguments array, sorry...");
+                }
+                // Log.v(TAG, "Query contains: " + DataPoint.SENSOR_DESCRIPTION + " = '" +
+                // description + "'");
+
+                for (String key : allSensors) {
+                    if (key.endsWith("(" + description + ")") || key.equals(description)) {
+                        result.add(key);
+                    }
+                }
+
+            } else if (-1 != neqKeyStart) {
+                // selection contains "sensor_description!='"
+                int descriptionStart = neqKeyStart
+                        + (DataPoint.SENSOR_DESCRIPTION + "!='").length();
+                int descriptionEnd = selection.indexOf("'", descriptionStart);
+                descriptionEnd = descriptionEnd == -1 ? selection.length() - 1 : descriptionEnd;
+                String notDescription = selection.substring(descriptionStart, descriptionEnd);
+                if (notDescription.equals("?")) {
+                    throw new IllegalArgumentException(
+                            "LocalStorage cannot handle queries with arguments array, sorry...");
+                }
+                // Log.v(TAG, "Query contains: " + DataPoint.SENSOR_DESCRIPTION + "!= '" +
+                // notDescription + "'");
+
+                for (String key : allSensors) {
+                    if (!(key.endsWith("(" + notDescription + ")") || key.equals(notDescription))) {
+                        result.add(key);
+                    }
+                }
+
+            } else {
+                throw new IllegalArgumentException("Parser cannot handle selection query: "
+                        + selection);
+            }
+
+        } else {
+            // no selection: return all sensor names
+            result.addAll(allSensors);
+        }
+
+        // return a copy of the list of names
+        return new ArrayList<String>(result);
+    }
+
+    /**
+     * Returns list of sensors that have match the selected sensor name. If the selection String
+     * does not contain {@link DataPoint#SENSOR_NAME}, the complete list of sensors is returned.
+     * 
+     * @param allSensors
+     * @param selection
+     * @return
+     */
+    private static List<String> getSensorNameMatches(Set<String> allSensors, String selection) {
+
+        List<String> result = new ArrayList<String>();
+
+        if (selection != null && selection.contains(DataPoint.SENSOR_NAME)) {
+
+            // preprocess the selection string a bit
+            selection = fixCompareSigns(selection);
+
+            int eqKeyStart = selection.indexOf(DataPoint.SENSOR_NAME + "='");
+            int neqKeyStart = selection.indexOf(DataPoint.SENSOR_NAME + "!='")
+                    + (DataPoint.SENSOR_NAME + "!='").length();
+
+            if (-1 != eqKeyStart) {
+                // selection contains "sensor_name='"
+                int sensorNameStart = eqKeyStart + (DataPoint.SENSOR_NAME + "='").length();
+                int sensorNameEnd = selection.indexOf("'", sensorNameStart);
+                sensorNameEnd = sensorNameEnd == -1 ? selection.length() - 1 : sensorNameEnd;
+                String sensorName = selection.substring(sensorNameStart, sensorNameEnd);
+                if (sensorName.equals("?")) {
+                    throw new IllegalArgumentException(
+                            "LocalStorage cannot handle queries with arguments array, sorry...");
+                }
+                // Log.v(TAG, "Query contains: " + DataPoint.SENSOR_NAME + " = '" + sensorName +
+                // "'");
+
+                boolean inStorage = false;
+                for (String key : allSensors) {
+                    if (key.startsWith(sensorName)) {
+                        result.add(key);
+                        inStorage = true;
+                    }
+                }
+                // sometimes we want to select sensors that are not currently in the storage
+                if (!inStorage) {
+                    result.add(sensorName);
+                }
+
+            } else if (-1 != neqKeyStart) {
+                // selection contains "sensor_name!='"
+                int sensorNameStart = neqKeyStart + (DataPoint.SENSOR_NAME + "!='").length();
+                int sensorNameEnd = selection.indexOf("'", sensorNameStart);
+                sensorNameEnd = sensorNameEnd == -1 ? selection.length() - 1 : sensorNameEnd;
+                String notSensorName = selection.substring(sensorNameStart, sensorNameEnd);
+                if (notSensorName.equals("?")) {
+                    throw new IllegalArgumentException(
+                            "LocalStorage cannot handle queries with arguments array, sorry...");
+                }
+                // Log.v(TAG, "Query contains: " + DataPoint.SENSOR_NAME + " != '" + notSensorName +
+                // "'");
+
+                for (String key : allSensors) {
+                    if (!key.startsWith(notSensorName)) {
+                        result.add(key);
+                    }
+                }
+
+            } else {
+                throw new IllegalArgumentException("Parser cannot handle selection query: "
+                        + selection);
+            }
+
+        } else {
+            // no selection: return all sensor names
+            result.addAll(allSensors);
+        }
+
+        // return a copy of the list of names
+        return new ArrayList<String>(result);
     }
 
     private ParserUtils() {
