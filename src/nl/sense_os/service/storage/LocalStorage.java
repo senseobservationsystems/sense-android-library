@@ -94,6 +94,36 @@ public class LocalStorage {
         }
     }
 
+    /**
+     * Removes old data from the persistent storage.
+     * 
+     * @return The number of data points deleted
+     */
+    private int deleteOldData() {
+        Log.i(TAG, "Delete old data points from persistent storage");
+
+        // set max retention time
+        long retentionLimit = SNTP.getInstance().getTime() - RETENTION_TIME;
+
+        // check preferences to see if the data needs to be sent to CommonSense
+        SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        boolean useCommonSense = prefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true);
+
+        String where = null;
+        if (useCommonSense) {
+            // delete data older than maximum retention time if it had been transmitted
+            where = DataPoint.TIMESTAMP + "<" + retentionLimit + " AND "
+                    + DataPoint.TRANSMIT_STATE + "==1";
+        } else {
+            // not using CommonSense: delete all data older than maximum retention time
+            where = DataPoint.TIMESTAMP + "<" + retentionLimit;
+        }
+        int deleted = persisted.delete(where, null);
+
+        return deleted;
+    }
+
     public String getType(Uri uri) {
         int uriType = matchUri(uri);
         if (uriType == LOCAL_VALUES_URI || uriType == REMOTE_VALUES_URI) {
@@ -123,7 +153,7 @@ public class LocalStorage {
             rowId = inMemory.insert(values);
         } catch (BufferOverflowException e) {
             // in-memory storage is full!
-            persistAllUnsentData();
+            persistRecentData();
 
             // try again
             rowId = inMemory.insert(values);
@@ -148,48 +178,37 @@ public class LocalStorage {
         }
     }
 
-    private int persistAllUnsentData() {
-        Log.i(TAG, "Persist all unsent data points from in-memory storage");
+    private int persistRecentData() {
+        Log.i(TAG, "Persist recent data points from in-memory storage");
 
-        Cursor unsentPoints = null;
-        int nrUnsentPoints = 0;
+        // delete old data from the persistent storage
+        deleteOldData();
+
+        Cursor recentPoints = null;
+        int nrRecentPoints = 0;
         try {
-            // remove old data from the persistent storage
             long retentionLimit = SNTP.getInstance().getTime() - RETENTION_TIME;
-            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                    Context.MODE_PRIVATE);
-            boolean useCommonSense = prefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true);
-            String selectOld = null;
-            if (useCommonSense) {
-                // delete data older than minimum retention time if it had been transmitted
-                selectOld = DataPoint.TIMESTAMP + "<" + retentionLimit + " AND "
-                        + DataPoint.TRANSMIT_STATE + "==1";
-            } else {
-                // not using CommonSense: delete all data older than minimum retention time
-                selectOld = DataPoint.TIMESTAMP + "<" + retentionLimit;
-            }
-            persisted.delete(selectOld, null);
 
             // get unsent or very recent data from the memory
             String selectUnsent = DataPoint.TRANSMIT_STATE + "!=1" + " OR " + DataPoint.TIMESTAMP + ">"
                     + retentionLimit;
-            unsentPoints = inMemory.query(DEFAULT_PROJECTION, selectUnsent, null, null);
-            nrUnsentPoints = unsentPoints.getCount();
+            recentPoints = inMemory.query(DEFAULT_PROJECTION, selectUnsent, null, null);
+            nrRecentPoints = recentPoints.getCount();
 
             // bulk insert the new data
-            persisted.bulkInsert(unsentPoints);
+            persisted.bulkInsert(recentPoints);
 
             // remove all the in-memory data
             inMemory.delete(null, null);
 
         } finally {
-            if (null != unsentPoints) {
-                unsentPoints.close();
-                unsentPoints = null;
+            if (null != recentPoints) {
+                recentPoints.close();
+                recentPoints = null;
             }
         }
 
-        return nrUnsentPoints;
+        return nrRecentPoints;
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
@@ -260,7 +279,7 @@ public class LocalStorage {
             return updated;
 
         } else {
-            persistAllUnsentData();
+            persistRecentData();
         }
 
         // notify content observers
