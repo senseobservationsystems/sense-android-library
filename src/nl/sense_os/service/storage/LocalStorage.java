@@ -226,9 +226,11 @@ public class LocalStorage {
                 // merge cursors
                 return new MergeCursor(new Cursor[] { persistedCursor, inMemoryCursor });
             } else {
+                persistedCursor.close();
                 return inMemoryCursor;
             }
         } else {
+            inMemoryCursor.close();
             return persistedCursor;
         }
     }
