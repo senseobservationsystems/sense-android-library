@@ -7,6 +7,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.DataProcessor;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -15,7 +16,7 @@ import android.hardware.SensorManager;
 import android.util.FloatMath;
 import android.util.Log;
 
-public class MotionEnergySensor implements MotionSensorInterface {
+public class MotionEnergySensor implements DataProcessor {
 
     private static final long ENERGY_SAMPLE_LENGTH = 500;
     private static final String TAG = "MotionEnergySensor";

@@ -8,6 +8,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.DataProcessor;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -23,7 +24,7 @@ import android.util.Log;
  * 
  * @see MotionSensor
  */
-public class FallDetector implements MotionSensorInterface {
+public class FallDetector implements DataProcessor {
 
     private class Interrupt {
         boolean FREE_FALL = false;

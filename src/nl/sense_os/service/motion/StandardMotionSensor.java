@@ -6,6 +6,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.DataProcessor;
 
 import org.json.JSONObject;
 
@@ -14,7 +15,7 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 
-public class StandardMotionSensor implements MotionSensorInterface {
+public class StandardMotionSensor implements DataProcessor {
 
     private Context context;
     private long[] lastSampleTimes = new long[50];

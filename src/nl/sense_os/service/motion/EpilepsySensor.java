@@ -4,6 +4,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.shared.DataProcessor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,7 +15,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.util.Log;
 
-public class EpilepsySensor implements MotionSensorInterface {
+public class EpilepsySensor implements DataProcessor {
 
     private static final String TAG = "EpilepsySensor";
     private long[] lastLocalSampleTimes = new long[50];

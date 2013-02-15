@@ -8,6 +8,7 @@ import java.util.List;
 
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.states.EpiStateMonitor;
@@ -97,10 +98,6 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 
     private final BroadcastReceiver screenOffListener = new ScreenOffListener();
 
-    private final FallDetector fallDetector;
-    private EpilepsySensor epiSensor;
-    private MotionEnergySensor energySensor;
-    private StandardMotionSensor standardSensor;
     private final Context context;
     private boolean isFallDetectMode;
     private boolean isEnergyMode;
@@ -108,6 +105,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     private boolean isUnregisterWhenIdle;
     private boolean firstStart = true;
     private List<Sensor> sensors;
+    private List<DataProcessor> dataProcessors;
     private boolean motionSensingActive = false;
     private long sampleDelay = 0; // in milliseconds
     private WakeLock wakeLock;
@@ -116,10 +114,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 
     protected MotionSensor(Context context) {
         this.context = context;
-        epiSensor = new EpilepsySensor(context);
-        energySensor = new MotionEnergySensor(context);
-        fallDetector = new FallDetector(context);
-        standardSensor = new StandardMotionSensor(context);
+        dataProcessors = new ArrayList<DataProcessor>();
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
@@ -139,10 +134,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         }
 
         // notify all special sensors
-        epiSensor.startNewSample();
-        standardSensor.startNewSample();
-        energySensor.startNewSample();
-        fallDetector.startNewSample();
+        for (DataProcessor dataProcessor : dataProcessors) {
+            dataProcessor.startNewSample();
+        }
 
         registerSensors();
     }
@@ -182,17 +176,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         // only unregister when sample delay is large enough
         unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
 
-        if (isEpiMode) {
-            unregister &= epiSensor.isSampleComplete();
-        } else {
-            unregister &= standardSensor.isSampleComplete();
+        for (DataProcessor dataProcessor : dataProcessors) {
+            unregister &= dataProcessor.isSampleComplete();
         }
-
-        // check if fall detector is complete
-        unregister &= isFallDetectMode ? fallDetector.isSampleComplete() : true;
-
-        // check if motion energy sensor is complete
-        unregister &= isEnergyMode ? energySensor.isSampleComplete() : true;
 
         return unregister;
     }
@@ -210,22 +196,8 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
             return;
         }
 
-        // pass sensor value to fall detector first
-        if (isFallDetectMode) {
-            fallDetector.onNewData(event);
-        }
-
-        // if motion energy sensor is active, determine energy of every sample
-        if (isEnergyMode) {
-            energySensor.onNewData(event);
-        }
-
-        if (isEpiMode) {
-            // add the data to the buffer if we are in Epi-mode
-            epiSensor.onNewData(event);
-        } else {
-            // use standard motion sensor
-            standardSensor.onNewData(event);
+        for (DataProcessor dataProcessor : dataProcessors) {
+            dataProcessor.onNewData(event);
         }
 
         // unregister sensor listener when we can
@@ -260,6 +232,10 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         }
     }
 
+    public void addDataProcessor(DataProcessor dataProcessor) {
+
+    }
+
     @Override
     public void setSampleRate(long sampleDelay) {
         stopPolling();
@@ -282,24 +258,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
         isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
 
-        if (isEpiMode) {
-            sampleDelay = 0;
-
-            context.startService(new Intent(context, EpiStateMonitor.class));
-        }
-
         // check if the fall detector is enabled
-        isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
-        if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
-            isFallDetectMode = true;
-
-            context.startService(new Intent(context, EpiStateMonitor.class));
-        }
-
-        if (firstStart && isFallDetectMode) {
-            fallDetector.sendFallMessage(false);
-            firstStart = false;
-        }
+        boolean isFallDetectDemo = mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false);
+        isFallDetectMode = isFallDetectDemo || mainPrefs.getBoolean(Motion.FALL_DETECT, false);
 
         sensors = MotionSensorUtils.getAvailableMotionSensors(context);
         if (isEpiMode) {
@@ -307,6 +268,39 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
             sensors = new ArrayList<Sensor>();
             SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             sensors.add(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+
+            // super fast sample delay
+            sampleDelay = 0;
+
+            // separate service to check epilepsy (not used anymore?)
+            context.startService(new Intent(context, EpiStateMonitor.class));
+
+            // only add epilepsy data processor
+            EpilepsySensor epiSensor = new EpilepsySensor(context);
+            addDataProcessor(epiSensor);
+
+        } else {
+            // add standard data processor
+            DataProcessor standard = new StandardMotionSensor(context);
+            addDataProcessor(standard);
+
+            // add motion energy data processor
+            if (isEnergyMode) {
+                DataProcessor energy = new MotionEnergySensor(context);
+                addDataProcessor(energy);
+            }
+
+            // add fall detection data processor
+            if (firstStart && isFallDetectMode) {
+
+                // add fall detector data processor
+                FallDetector fallDetector = new FallDetector(context);
+                fallDetector.demo = isFallDetectDemo;
+                addDataProcessor(fallDetector);
+
+                fallDetector.sendFallMessage(false);
+                firstStart = false;
+            }
         }
 
         motionSensingActive = true;
