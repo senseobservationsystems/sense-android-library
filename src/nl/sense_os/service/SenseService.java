@@ -44,6 +44,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -82,11 +83,23 @@ public class SenseService extends Service {
 	 */
 	public final static String ACTION_SERVICE_BROADCAST = "nl.sense_os.service.Broadcast";
 
-	private ISenseService.Stub binder;
+    /**
+     * Class used for the client Binder. Because we know this service always runs in the same
+     * process as its clients, we don't need to deal with IPC.
+     * 
+     * @see http://developer.android.com/guide/components/bound-services.html
+     */
+    public class SenseBinder extends Binder {
+
+        public SenseServiceStub getService() {
+            return new SenseServiceStub(SenseService.this);
+        }
+    }
+
+    private IBinder binder = new SenseBinder();
 
 	private ServiceStateHelper state;
-    
-	//private DataTransmitter dataTransmitter;
+
 	private BatterySensor batterySensor;
 	private DeviceProximity deviceProximity;
 	private LightSensor lightSensor;  
@@ -114,7 +127,6 @@ public class SenseService extends Service {
 	// separate threads for the sensing modules
 	private static Handler ambienceHandler, devProxHandler, extSensorHandler, locationHandler,
 			motionHandler, phoneStateHandler;
-	//public static Handler LightHandler  = new Handler(); 
 
 	/**
 	 * Changes login of the Sense service. Removes "private" data of the previous user from the
@@ -257,9 +269,6 @@ public class SenseService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.v(TAG, "Some component is binding to Sense Platform service");
-		if (null == binder) {
-			binder = new SenseServiceStub(this);
-		}
 		return binder;
 	}
 
