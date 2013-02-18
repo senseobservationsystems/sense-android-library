@@ -7,6 +7,7 @@ import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Binder;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -15,7 +16,7 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class SenseServiceStub extends ISenseService.Stub {
+public class SenseServiceStub extends Binder {
 
 	private static final String TAG = "SenseServiceStub";
 	private SenseService service;
@@ -25,7 +26,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		this.service = service;
 	}
 
-	@Override
 	public void changeLogin(final String username, final String password,
 			final ISenseServiceCallback callback) throws RemoteException {
 		// Log.v(TAG, "Change login");
@@ -45,7 +45,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}.start();
 	}
 
-	@Override
 	public boolean getPrefBool(String key, boolean defValue) throws RemoteException {
 		// Log.v(TAG, "Get preference: " + key);
 		SharedPreferences prefs;
@@ -66,7 +65,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public float getPrefFloat(String key, float defValue) throws RemoteException {
 		// Log.v(TAG, "Get preference: " + key);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -78,7 +76,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public int getPrefInt(String key, int defValue) throws RemoteException {
 		// Log.v(TAG, "Get preference: " + key);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -90,7 +87,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public long getPrefLong(String key, long defValue) throws RemoteException {
 		// Log.v(TAG, "Get preference: " + key);
 		SharedPreferences prefs;
@@ -107,7 +103,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public String getPrefString(String key, String defValue) throws RemoteException {
 		// Log.v(TAG, "Get preference: " + key);
 		SharedPreferences prefs;
@@ -129,7 +124,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public String getSessionId(String appSecret) throws RemoteException {
 		try {
 			return SenseApi.getSessionId(service, appSecret);
@@ -138,7 +132,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public void getStatus(ISenseServiceCallback callback) throws RemoteException {
 		callback.statusReport(ServiceStateHelper.getInstance(service).getStatusCode());
 	}
@@ -147,7 +140,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.logout();
 	}
 
-	@Override
 	public void register(final String username, final String password, final String email,
 			final String address, final String zipCode, final String country, final String name,
 			final String surname, final String mobile, final ISenseServiceCallback callback)
@@ -170,7 +162,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}.start();
 	}
 
-	@Override
 	public void setPrefBool(String key, final boolean value) throws RemoteException {
 		// Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
 
@@ -214,7 +205,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public void setPrefFloat(String key, float value) throws RemoteException {
 		// Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -227,7 +217,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public void setPrefInt(String key, int value) throws RemoteException {
 		// Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -240,7 +229,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public void setPrefLong(String key, long value) throws RemoteException {
 		// Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
 		SharedPreferences prefs;
@@ -257,7 +245,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public void setPrefString(String key, String value) throws RemoteException {
 		Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
 		SharedPreferences prefs;
@@ -288,7 +275,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		}
 	}
 
-	@Override
 	public void toggleAmbience(boolean active) {
 		// Log.v(TAG, "Toggle ambience: " + active);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
@@ -297,7 +283,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.toggleAmbience(active);
 	}
 
-	@Override
 	public void toggleDeviceProx(boolean active) {
 		// Log.v(TAG, "Toggle neighboring devices: " + active);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
@@ -306,7 +291,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.toggleDeviceProx(active);
 	}
 
-	@Override
 	public void toggleExternalSensors(boolean active) {
 		// Log.v(TAG, "Toggle external sensors: " + active);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
@@ -315,7 +299,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.toggleExternalSensors(active);
 	}
 
-	@Override
 	public void toggleLocation(boolean active) {
 		// Log.v(TAG, "Toggle location: " + active);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
@@ -324,7 +307,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.toggleLocation(active);
 	}
 
-	@Override
 	public void toggleMain(boolean active) {
 		// Log.v(TAG, "Toggle main: " + active);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
@@ -333,7 +315,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.toggleMain(active);
 	}
 
-	@Override
 	public void toggleMotion(boolean active) {
 		// Log.v(TAG, "Toggle motion: " + active);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
@@ -342,7 +323,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.toggleMotion(active);
 	}
 
-	@Override
 	public void togglePhoneState(boolean active) {
 		// Log.v(TAG, "Toggle phone state: " + active);
 		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
@@ -351,7 +331,6 @@ public class SenseServiceStub extends ISenseService.Stub {
 		service.togglePhoneState(active);
 	}
 
-	@Override
 	public void togglePopQuiz(boolean active) {
 		Log.w(TAG, "Toggle questionnaire ignored: this functionality is no longer supported!");
 	}
