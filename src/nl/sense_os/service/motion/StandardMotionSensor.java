@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.os.SystemClock;
 
 public class StandardMotionSensor implements DataProcessor {
 
@@ -56,7 +57,7 @@ public class StandardMotionSensor implements DataProcessor {
         }
 
         // store the sample time
-        lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
+        lastSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
 
         // send data point
         String sensorName = MotionSensorUtils.getSensorName(sensor);

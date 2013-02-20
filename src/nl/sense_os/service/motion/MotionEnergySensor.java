@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.os.SystemClock;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -60,7 +61,7 @@ public class MotionEnergySensor implements DataProcessor {
     }
 
     private boolean isEnoughDatapoints() {
-        return (sampleStartTime != 0 && System.currentTimeMillis() - sampleStartTime > ENERGY_SAMPLE_LENGTH);
+        return (sampleStartTime != 0 && SystemClock.elapsedRealtime() - sampleStartTime > ENERGY_SAMPLE_LENGTH);
     }
 
     @Override
@@ -102,11 +103,11 @@ public class MotionEnergySensor implements DataProcessor {
 
             // record the start of the motion sample
             if (avgSpeedCount == 0) {
-                sampleStartTime = System.currentTimeMillis();
+                sampleStartTime = SystemClock.elapsedRealtime();
             }
 
-            float timeStep = (System.currentTimeMillis() - prevSampleTime) / 1000f;
-            prevSampleTime = System.currentTimeMillis();
+            float timeStep = (SystemClock.elapsedRealtime() - prevSampleTime) / 1000f;
+            prevSampleTime = SystemClock.elapsedRealtime();
             if (timeStep > 0 && timeStep < 1) {
                 float accLength = FloatMath.sqrt((float) (Math.pow(linAcc[0], 2)
                         + Math.pow(linAcc[1], 2) + Math.pow(linAcc[2], 2)));
