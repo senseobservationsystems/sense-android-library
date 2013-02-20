@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.SystemClock;
 
 /**
  * Generic BroadcastReceiver implementation for {@link PeriodicPollingSensor} classes. Calls
@@ -50,8 +51,8 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
         PendingIntent alarmOperation = PendingIntent.getBroadcast(context, reqCode, alarm, 0);
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(alarmOperation);
-        mgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
-                alarmOperation);
+        mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),
+                interval, alarmOperation);
     }
 
     /**

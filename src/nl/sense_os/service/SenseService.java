@@ -1030,7 +1030,7 @@ public class SenseService extends Service {
 				// check motion sensor presence
 				if (motionSensor != null) {
 					Log.w(TAG, "Motion sensor is already present! Stopping the sensor");
-					motionSensor.stopMotionSensing();
+                    motionSensor.stopSensing();
 					motionSensor = null;
 				}
 
@@ -1075,7 +1075,7 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 						motionSensor = MotionSensor.getInstance(SenseService.this);
-						motionSensor.startMotionSensing(finalInterval);
+                        motionSensor.startSensing(finalInterval);
 					}
 				});
 
@@ -1083,7 +1083,7 @@ public class SenseService extends Service {
 
 				// stop sensing
 				if (null != motionSensor) {
-					motionSensor.stopMotionSensing();
+                    motionSensor.stopSensing();
 					motionSensor = null;
 				}
 
