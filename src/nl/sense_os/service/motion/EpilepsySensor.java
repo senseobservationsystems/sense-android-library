@@ -12,13 +12,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.os.SystemClock;
 import android.util.Log;
 
 public class EpilepsySensor implements MotionSensorInterface {
 
     private static final String TAG = "EpilepsySensor";
+    private static final long LOCAL_BUFFER_TIME = 15 * 1000;
+
     private long[] lastLocalSampleTimes = new long[50];
-    private long localBufferTime = 15 * 1000;
     private long firstTimeSend = 0;
     private JSONArray[] dataBuffer = new JSONArray[10];
     private Context context;
@@ -50,18 +52,19 @@ public class EpilepsySensor implements MotionSensorInterface {
         }
         dataBuffer[sensor.getType()].put(json);
         if (lastLocalSampleTimes[sensor.getType()] == 0) {
-            lastLocalSampleTimes[sensor.getType()] = System.currentTimeMillis();
+            lastLocalSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
         }
 
-        if (System.currentTimeMillis() > lastLocalSampleTimes[sensor.getType()] + localBufferTime) {
+        if (SystemClock.elapsedRealtime() > lastLocalSampleTimes[sensor.getType()]
+                + LOCAL_BUFFER_TIME) {
             // send the stuff
             sendData(sensor);
 
             // reset data buffer
             dataBuffer[sensor.getType()] = new JSONArray();
-            lastLocalSampleTimes[sensor.getType()] = System.currentTimeMillis();
+            lastLocalSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
             if (firstTimeSend == 0) {
-                firstTimeSend = System.currentTimeMillis();
+                firstTimeSend = SystemClock.elapsedRealtime();
             }
         }
     }
@@ -69,7 +72,7 @@ public class EpilepsySensor implements MotionSensorInterface {
     private void sendData(Sensor sensor) {
 
         String value = "{\"interval\":"
-                + Math.round(localBufferTime / dataBuffer[sensor.getType()].length())
+                + Math.round(LOCAL_BUFFER_TIME / dataBuffer[sensor.getType()].length())
                 + ",\"data\":" + dataBuffer[sensor.getType()].toString() + "}";
 
         // pass message to the MsgHandler

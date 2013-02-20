@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.os.SystemClock;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -76,22 +77,22 @@ public class FallDetector implements MotionSensorInterface {
         // and if it is within the time frame after a fall
         // then there is activity
         if (accVecSum >= THRESH_ACT) {
-            if (System.currentTimeMillis() - interrupt.stopFreeFall < TIME_FF_ACT) {
-                startInterrupt = System.currentTimeMillis();
+            if (SystemClock.elapsedRealtime() - interrupt.stopFreeFall < TIME_FF_ACT) {
+                startInterrupt = SystemClock.elapsedRealtime();
                 interrupt.ACTIVITY = true;
             }
         }
         // If the activity is over
         // note the stop time of this activity
         else if (interrupt.ACTIVITY) {
-            interrupt.stopActivity = System.currentTimeMillis();
+            interrupt.stopActivity = SystemClock.elapsedRealtime();
             startInterrupt = 0;
             interrupt.ACTIVITY = false;
         }
 
         // The time for an activity has passed and there was never an activity interrupt
         // reset;
-        if (System.currentTimeMillis() - interrupt.stopFreeFall > TIME_FF_ACT)
+        if (SystemClock.elapsedRealtime() - interrupt.stopFreeFall > TIME_FF_ACT)
             if (interrupt.stopActivity == 0)
                 reset();
 
@@ -101,8 +102,8 @@ public class FallDetector implements MotionSensorInterface {
     }
 
     private boolean fallDetected(float accVecSum) {
-        // Log.d("Fall detection:", "time:"+(System.currentTimeMillis()-time));
-        time = System.currentTimeMillis();
+        // Log.d("Fall detection:", "time:"+(SystemClock.elapsedRealtime()-time));
+        time = SystemClock.elapsedRealtime();
 
         if (interrupt.FALL || (demo && interrupt.FREE_FALL))
             reset();
@@ -134,15 +135,15 @@ public class FallDetector implements MotionSensorInterface {
     private void freeFall(float accVecSum) {
         if (accVecSum < THRESH_FF) {
             if (startInterrupt == 0)
-                startInterrupt = System.currentTimeMillis();
-            else if ((System.currentTimeMillis() - startInterrupt > TIME_FF && !demo)
-                    || (System.currentTimeMillis() - startInterrupt > TIME_FF_DEMO && demo)) {
-                // Log.v("Fall detection", "FF time:" + (System.currentTimeMillis() -
+                startInterrupt = SystemClock.elapsedRealtime();
+            else if ((SystemClock.elapsedRealtime() - startInterrupt > TIME_FF && !demo)
+                    || (SystemClock.elapsedRealtime() - startInterrupt > TIME_FF_DEMO && demo)) {
+                // Log.v("Fall detection", "FF time:" + (SystemClock.elapsedRealtime() -
                 // startInterrupt));
                 interrupt.FREE_FALL = true;
             }
         } else if (interrupt.FREE_FALL) {
-            interrupt.stopFreeFall = System.currentTimeMillis();
+            interrupt.stopFreeFall = SystemClock.elapsedRealtime();
             interrupt.FREE_FALL = false;
             startInterrupt = 0;
         } else
@@ -158,16 +159,16 @@ public class FallDetector implements MotionSensorInterface {
             return;
 
         if (accVecSum < THRESH_INACT) {
-            if (System.currentTimeMillis() - interrupt.stopActivity < TIME_ACT_INACT)
+            if (SystemClock.elapsedRealtime() - interrupt.stopActivity < TIME_ACT_INACT)
                 if (startInterrupt == 0)
-                    startInterrupt = System.currentTimeMillis();
+                    startInterrupt = SystemClock.elapsedRealtime();
 
-            if (startInterrupt != 0 && System.currentTimeMillis() - startInterrupt > TIME_INACT)
+            if (startInterrupt != 0 && SystemClock.elapsedRealtime() - startInterrupt > TIME_INACT)
                 interrupt.INACTIVITY = true;
         } else if (startInterrupt != 0 && !interrupt.INACTIVITY)
             reset();
 
-        if (System.currentTimeMillis() - interrupt.stopActivity >= TIME_ACT_INACT
+        if (SystemClock.elapsedRealtime() - interrupt.stopActivity >= TIME_ACT_INACT
                 && startInterrupt == 0)
             reset();
 
