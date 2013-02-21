@@ -32,17 +32,18 @@ public abstract class Controller
 
     public LocationSensor locListener;
     public MotionSensor motion;
-
-    /**
+	/**
      * Private constructor to enforce singleton pattern.
      * 
      * @param context
      *            Context to get location sensor and motion sensor instances
-     */
+	*/
     protected Controller(Context context) {
         locListener = LocationSensor.getInstance(context);
         motion = MotionSensor.getInstance(context);
     }
+    
+	
 	
 	/**
 	* Checks to see if the sensor is still doing a useful job or whether it is better if we disable

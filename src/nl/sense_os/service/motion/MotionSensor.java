@@ -3,24 +3,15 @@
  *************************************************************************************************/
 package nl.sense_os.service.motion;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.states.EpiStateMonitor;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,11 +21,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.FloatMath;
 import android.util.Log;
 
 /**
@@ -54,20 +43,8 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class MotionSensor implements SensorEventListener {
+public class MotionSensor implements SensorEventListener, PeriodicPollingSensor {
 
-	private static MotionSensor instance = null;
-	
-    protected MotionSensor(Context context) {
-		this.context = context;
-	}
-    
-    public static MotionSensor getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new MotionSensor(context);
-	    }
-	    return instance;
-    }
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
      * the screen turns off.
@@ -91,9 +68,8 @@ public class MotionSensor implements SensorEventListener {
 				@Override
 				public void run() {
 				// Unregisters the motion listener and registers it again.
-				// Log.v(TAG, "Screen went off, re-registering the Motion sensor");
-				stopMotionSensing();
-				startMotionSensing(sampleDelay);
+                        stopSensing();
+                        startSensing(sampleDelay);
 				};
 			};
 
@@ -102,254 +78,100 @@ public class MotionSensor implements SensorEventListener {
 	}
     }
 
+    private static final long DELAY_AFTER_REGISTRATION = 500;
     private static final String TAG = "Sense Motion";
 
+    private static MotionSensor instance = null;
+
+    /**
+     * Factory method to get the singleton instance.
+     * 
+     * @param context
+     * @return instance
+     */
+    public static MotionSensor getInstance(Context context) {
+        if (instance == null) {
+            instance = new MotionSensor(context);
+        }
+        return instance;
+    }
     private final BroadcastReceiver screenOffListener = new ScreenOffListener();
 
-    private final FallDetector fallDetector = new FallDetector();
+    private final FallDetector fallDetector;
+    private EpilepsySensor epiSensor;
+    private MotionEnergySensor energySensor;
+    private StandardMotionSensor standardSensor;
     private final Context context;
     private boolean isFallDetectMode;
     private boolean isEnergyMode;
     private boolean isEpiMode;
     private boolean isUnregisterWhenIdle;
     private boolean firstStart = true;
-    private ArrayList<Sensor> sensors;
-    private final long[] lastSampleTimes = new long[50];
-    private Handler motionHandler = new Handler();
+    private List<Sensor> sensors;
     private boolean motionSensingActive = false;
-    private Runnable motionThread = null;
     private long sampleDelay = 0; // in milliseconds
-    private long[] lastLocalSampleTimes = new long[50];
-    private long localBufferTime = 15 * 1000;
-    private long firstTimeSend = 0;
-    private JSONArray[] dataBuffer = new JSONArray[10];
-
-    // members for calculating the avg speed change during a time period, for motion energy sensor
-    private static final long ENERGY_SAMPLE_LENGTH = 500;
-    private long energySampleStart = 0;
-    private long prevEnergySampleTime;
-    private double avgSpeedChange;
-    private int avgSpeedCount;
-    private boolean hasLinAccSensor;
-    private float[] gravity = { 0, 0, SensorManager.GRAVITY_EARTH };
-
-    // members for waking up the device for sampling
-    private static final String ACTION_WAKEUP_ALARM = "nl.sense_os.service.MotionWakeUp";
-    private static final int ALARM_ID = 256;
-
-    private BroadcastReceiver wakeReceiver;
     private WakeLock wakeLock;
 
     private boolean isRegistered;
-    private long lastRegistered = -1;
-    private static final long DELAY_AFTER_REGISTRATION = 500;
+    private PeriodicPollAlarmReceiver alarmReceiver;
 
 
-    /**
-     * Calculates the linear acceleration of a raw accelerometer sample. Tries to determine the
-     * gravity component by putting the signal through a first-order low-pass filter.
-     * 
-     * @param values
-     *            Array with accelerometer values for the three axes.
-     * @return The approximate linear acceleration of the sample.
-     */
-    private float[] calcLinAcc(float[] values) {
-
-	// low-pass filter raw accelerometer data to approximate the gravity
-	final float alpha = 0.8f; // filter constants should depend on sample rate
-	gravity[0] = alpha * gravity[0] + (1 - alpha) * values[0];
-	gravity[1] = alpha * gravity[1] + (1 - alpha) * values[1];
-	gravity[2] = alpha * gravity[2] + (1 - alpha) * values[2];
-
-	return new float[] { values[0] - gravity[0], values[1] - gravity[1], values[2] - gravity[2] };
+    protected MotionSensor(Context context) {
+        this.context = context;
+        epiSensor = new EpilepsySensor(context);
+        energySensor = new MotionEnergySensor(context);
+        fallDetector = new FallDetector(context);
+        standardSensor = new StandardMotionSensor(context);
+        alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
-    @SuppressWarnings("deprecation")
-    private JSONObject createJsonValue(SensorEvent event) {
+    @Override
+    public void doSample() {
 
-	final Sensor sensor = event.sensor;
-	final JSONObject json = new JSONObject();
-
-	int axis = 0;
-	try {
-	    for (double value : event.values) {
-		// scale to three decimal precision
-		value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
-
-		switch (axis) {
-		case 0:
-		    if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
-			    || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
-			    || sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-			json.put("x-axis", value);
-		    } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
-			    || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-			json.put("azimuth", value);
-		    } else {
-			Log.e(TAG, "Unexpected sensor type creating JSON value");
-			return null;
+        // get wake lock
+        if (null == wakeLock) {
+            PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 		    }
-		    break;
-		case 1:
-		    if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
-			    || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
-			    || sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-			json.put("y-axis", value);
-		    } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
-			    || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-			json.put("pitch", value);
+        if (!wakeLock.isHeld()) {
+            Log.i(TAG, "Acquire wake lock for 500ms");
+            wakeLock.acquire(500);
 		    } else {
-			Log.e(TAG, "Unexpected sensor type creating JSON value");
-			return null;
-		    }
-		    break;
-		case 2:
-		    if (sensor.getType() == Sensor.TYPE_ACCELEROMETER
-			    || sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
-			    || sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-			json.put("z-axis", value);
-		    } else if (sensor.getType() == Sensor.TYPE_ORIENTATION
-			    || sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-			json.put("roll", value);
-		    } else {
-			Log.e(TAG, "Unexpected sensor type creating JSON value");
-			return null;
-		    }
-		    break;
-		default:
-		    Log.w(TAG, "Unexpected sensor value! More than three axes?!");
-		}
-		axis++;
-	    }
-	} catch (JSONException e) {
-	    Log.e(TAG, "JSONException creating motion JSON value", e);
-	    return null;
+            // Log.v(TAG, "Wake lock already held");
 	}
 
-	return json;
+        // notify all special sensors
+        epiSensor.startNewSample();
+        standardSensor.startNewSample();
+        energySensor.startNewSample();
+        fallDetector.startNewSample();
+
+        registerSensors();
     }
 
-    /**
-     * Measures the speed change and determines the average, for the motion energy sensor.
-     * 
-     * @param event
-     *            The sensor change event with accelerometer or linear acceleration data.
-     */
-    private void doEnergySample(SensorEvent event) {
-
-	float[] linAcc = null;
-
-	// approximate linear acceleration if we have no special sensor for it
-	if (!hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == event.sensor.getType()) {
-	    linAcc = calcLinAcc(event.values);
-	} else if (hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == event.sensor.getType()) {
-	    linAcc = event.values;
+    private void enableScreenOffListener(boolean enable) {
+        if (enable) {
+            // Register the receiver for SCREEN OFF events
+            IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+            context.registerReceiver(screenOffListener, filter);
 	} else {
-	    // sensor is not the right type
-	    return;
-	}
-
-	// calculate speed change and adjust average
-	if (null != linAcc) {
-
-	    // record the start of the motion sample
-	    if (avgSpeedCount == 0) {
-		energySampleStart = System.currentTimeMillis();
-	    }
-
-	    float timeStep = (System.currentTimeMillis() - prevEnergySampleTime) / 1000f;
-	    prevEnergySampleTime = System.currentTimeMillis();
-	    if (timeStep > 0 && timeStep < 1) {
-		float accLength = FloatMath.sqrt((float) (Math.pow(linAcc[0], 2)
-			+ Math.pow(linAcc[1], 2) + Math.pow(linAcc[2], 2)));
-
-		// float speedChange = accLength * timeStep;
-		// Log.v(TAG, "Speed change: " + speedChange);
-
-		avgSpeedChange = (avgSpeedCount * avgSpeedChange + accLength) / (avgSpeedCount + 1);
-		avgSpeedCount++;
+            // Unregister the receiver for SCREEN OFF events
+            try {
+                context.unregisterReceiver(screenOffListener);
+            } catch (IllegalArgumentException e) {
+                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
 	    }
 	}
     }
 
-    private void doEpiSample(Sensor sensor, JSONObject json) {
-
-	if (dataBuffer[sensor.getType()] == null) {
-	    dataBuffer[sensor.getType()] = new JSONArray();
-	}
-	dataBuffer[sensor.getType()].put(json);
-	if (lastLocalSampleTimes[sensor.getType()] == 0) {
-	    lastLocalSampleTimes[sensor.getType()] = System.currentTimeMillis();
-	}
-
-	if (System.currentTimeMillis() > lastLocalSampleTimes[sensor.getType()] + localBufferTime) {
-	    // send the stuff
-	    // pass message to the MsgHandler
-	    Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-	    i.putExtra(DataPoint.SENSOR_NAME, SensorNames.ACCELEROMETER_EPI);
-	    i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-	    i.putExtra(
-		    DataPoint.VALUE,
-		    "{\"interval\":"
-			    + Math.round(localBufferTime / dataBuffer[sensor.getType()].length())
-			    + ",\"data\":" + dataBuffer[sensor.getType()].toString() + "}");
-	    i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
-	    i.putExtra(DataPoint.TIMESTAMP, lastLocalSampleTimes[sensor.getType()]);
-	    context.startService(i);
-	    dataBuffer[sensor.getType()] = new JSONArray();
-	    lastLocalSampleTimes[sensor.getType()] = System.currentTimeMillis();
-	    if (firstTimeSend == 0) {
-		firstTimeSend = System.currentTimeMillis();
-	    }
-	    
-	}
-    }
-
-    private void doFallSample(SensorEvent event) {
-	float aX = event.values[1];
-	float aY = event.values[0];
-	float aZ = event.values[2];
-	float accVecSum = FloatMath.sqrt(aX * aX + aY * aY + aZ * aZ);
-
-	if (fallDetector.fallDetected(accVecSum)) {
-	    sendFallMessage(true); // send msg
-	}
-    }
-
-    public long getSampleDelay() {
+    @Override
+    public long getSampleRate() {
 	return sampleDelay;
     }
 
-    /**
-     * @return Time stamp of the oldest sample, or -1 if not all sensors have sampled yet.
-     */
-    private long getOldestSampleTime() {
-
-	int count = 0;
-	long oldestSample = Long.MAX_VALUE;
-	for (long time : lastSampleTimes) {
-	    if (time != 0) {
-		count++;
-		if (time < oldestSample) {
-		    oldestSample = time;
-		}
-	    }
-	}
-
-	if (count < sensors.size()) {
-	    return -1;
-	} else {
-	    return oldestSample;
-	}
-    }
-
-    /**
-     * @return true if it is too long since the sensor was registered.
-     */
-    private boolean isTimeToRegister() {
-	return motionSensingActive
-		&& !isRegistered
-		&& System.currentTimeMillis() - getOldestSampleTime() + DELAY_AFTER_REGISTRATION > sampleDelay;
+    @Override
+    public boolean isActive() {
+        return motionSensingActive;
     }
 
     /**
@@ -359,24 +181,20 @@ public class MotionSensor implements SensorEventListener {
 
 	boolean unregister = isUnregisterWhenIdle;
 
-	// only unregister if all sensors have submitted a new sample
-	long oldestSample = getOldestSampleTime();
-	if (oldestSample == -1) {
-	    unregister = false;
+        // only unregister when sample delay is large enough
+        unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
+
+        if (isEpiMode) {
+            unregister &= epiSensor.isSampleComplete();
 	} else {
-	    unregister = unregister && (lastRegistered < oldestSample);
+            unregister &= standardSensor.isSampleComplete();
 	}
 
-	// only unregister when sample delay is large enough
-	unregister = unregister && sampleDelay > DELAY_AFTER_REGISTRATION;
+        // check if fall detector is complete
+        unregister &= isFallDetectMode ? fallDetector.isSampleComplete() : true;
 
-	// only unregister when fall detection is not active
-	unregister = unregister && !isFallDetectMode;
-
-	// only unregister when energy sample has finished
-	unregister = unregister
-		&& (!isEnergyMode || (energySampleStart != 0 && System.currentTimeMillis()
-			- energySampleStart > ENERGY_SAMPLE_LENGTH));
+        // check if motion energy sensor is complete
+        unregister &= isEnergyMode ? energySensor.isSampleComplete() : true;
 
 	return unregister;
     }
@@ -386,104 +204,45 @@ public class MotionSensor implements SensorEventListener {
 	// do nothing
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onSensorChanged(SensorEvent event) {
 
 	if (!motionSensingActive) {
-	    Log.w(TAG, "Motion sensor value received when sensor is inactive! (Re)try stopping...");
-	    stopMotionSensing();
+            Log.w(TAG, "Motion sensor value received when sensor is inactive!");
 	    return;
 	}
 
-	final Sensor sensor = event.sensor;
 
 	// pass sensor value to fall detector first
-	if (isFallDetectMode && sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-	    doFallSample(event);
+        if (isFallDetectMode) {
+            fallDetector.onNewData(event);
 	}
 
 	// if motion energy sensor is active, determine energy of every sample
-	boolean isEnergySample = !hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == sensor.getType()
-		|| hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == sensor.getType();
-	if (isEnergyMode && isEnergySample) {
-	    doEnergySample(event);
+        if (isEnergyMode) {
+            energySensor.onNewData(event);
 	}
 
-	// check sensor delay
-	if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
-	    lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
+        if (isEpiMode) {
+            // add the data to the buffer if we are in Epi-mode
+            epiSensor.onNewData(event);
 	} else {
-	    // new sample is too soon
+            // use standard motion sensor
+            standardSensor.onNewData(event);
+        }
 
-	    // unregister when sensor listener when we can
+        // unregister sensor listener when we can
 	    if (isTimeToUnregister()) {
 
 		// unregister the listener and start again in sampleDelay seconds
-		unregisterSensors();
-		motionHandler.postDelayed(motionThread = new Runnable() {
-
-		    @Override
-		    public void run() {
-			registerSensors();
-		    }
-		}, sampleDelay - DELAY_AFTER_REGISTRATION);
-	    }
-	    return;
-	}
-
-	// Epi-mode is only interested in the accelerometer
-	if (isEpiMode && sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
-	    return;
-	}
-
-	// determine sensor name
-	String sensorName = "";
-	switch (sensor.getType()) {
-	case Sensor.TYPE_ACCELEROMETER:
-	    sensorName = SensorNames.ACCELEROMETER;
-	    break;
-	case Sensor.TYPE_ORIENTATION:
-	    sensorName = SensorNames.ORIENT;
-	    break;
-	case Sensor.TYPE_MAGNETIC_FIELD:
-	    sensorName = SensorNames.MAGNET_FIELD;
-	    break;
-	case Sensor.TYPE_GYROSCOPE:
-	    sensorName = SensorNames.GYRO;
-	    break;
-	case Sensor.TYPE_LINEAR_ACCELERATION:
-	    sensorName = SensorNames.LIN_ACCELERATION;
-	    break;
-	default:
-	    Log.w(TAG, "Unexpected sensor type: " + sensor.getType());
-	    return;
-	}
-
-	// prepare JSON object to send to MsgHandler
-	final JSONObject json = createJsonValue(event);
-	if (null == json) {
-	    // error occurred creating the JSON object
-	    return;
-	}
-
-	// add the data to the buffer if we are in Epi-mode:
-	if (isEpiMode) {
-	    doEpiSample(sensor, json);
-	} else {
-	    sendNormalMessage(sensor, sensorName, json);
-	}
-
-	// send motion energy message
-	if (isEnergyMode && isEnergySample) {
-	    sendEnergyMessage();
+            stopSample();
 	}
     }
 
     /**
      * Registers for updates from the device's motion sensors.
      */
-    public synchronized void registerSensors() {
+    private synchronized void registerSensors() {
 
 	if (!isRegistered) {
 	    // Log.v(TAG, "Register the motion sensor for updates");
@@ -504,222 +263,92 @@ public class MotionSensor implements SensorEventListener {
 	}
     }
 
-    /**
-     * Sends message with average motion energy to the MsgHandler.
-     */
-    private void sendEnergyMessage() {
+    @Override
+    public void setSampleRate(long sampleDelay) {
+        stopPolling();
+        this.sampleDelay = sampleDelay;
+        startPolling();
+    }
 
-	if (avgSpeedCount > 1) {
-	    // Log.v(TAG, NAME_MOTION_ENERGY + " value. Count: " + avgSpeedCount);
+    private void startPolling() {
+        // Log.v(TAG, "start polling");
+        alarmReceiver.start(context);
+    }
 
-	    // round to three decimals
-	    float value = BigDecimal.valueOf(avgSpeedChange).setScale(3, 0).floatValue();
+    @Override
+    public void startSensing(long sampleDelay) {
+        // Log.v(TAG, "start sensing");
 
-	    // prepare intent to send to MsgHandler
-	    Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-	    i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MOTION_ENERGY);
-	    i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
-	    i.putExtra(DataPoint.VALUE, value);
-	    i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-	    i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-	    context.startService(i);
+	final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+		Context.MODE_PRIVATE);
+	isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
+	isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
+	isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
 
+	if (isEpiMode) {
+	    sampleDelay = 0;
+
+	    context.startService(new Intent(context, EpiStateMonitor.class));
 	}
-	avgSpeedChange = 0;
-	avgSpeedCount = 0;
-    }
 
-    public void sendFallMessage(boolean fall) {
-	Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-	i.putExtra(DataPoint.SENSOR_NAME, SensorNames.FALL_DETECTOR);
-	i.putExtra(DataPoint.SENSOR_DESCRIPTION, fallDetector.demo ? "demo fall" : "human fall");
-	i.putExtra(DataPoint.VALUE, fall);
-	i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.BOOL);
-	i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-	context.startService(i);
-    }
+	// check if the fall detector is enabled
+	isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
+	if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
+	    isFallDetectMode = true;
 
-    private void sendNormalMessage(Sensor sensor, String sensorName, JSONObject json) {
-	Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-	i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-	i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-	i.putExtra(DataPoint.VALUE, json.toString());
-	i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-	i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-	context.startService(i);
-    }
-
-    public void setSampleDelay(long sampleDelay) {
-	this.sampleDelay = sampleDelay;
-    }
-
-    @SuppressWarnings("deprecation")
-    public void startMotionSensing(long sampleDelay) {
-
-	    motionHandler = new Handler();
-		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-			Context.MODE_PRIVATE);
-		isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
-		isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
-		isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
-	
-		if (isEpiMode) {
-		    sampleDelay = 0;
-	
-		    Log.v(TAG, "Start epi state sensor");
-		    context.startService(new Intent(context, EpiStateMonitor.class));
-		}
-	
-		// check if the fall detector is enabled
-		isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
-		if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
-		    isFallDetectMode = true;
-	
-		    Log.v(TAG, "Start epi state sensor");
-		    context.startService(new Intent(context, EpiStateMonitor.class));
-		}
-	
-		if (firstStart && isFallDetectMode) {
-		    sendFallMessage(false);
-		    firstStart = false;
-		}
-	
-		SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-		sensors = new ArrayList<Sensor>();
-	
-		// add accelerometer
-		if (null != mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) {
-		    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-		}
-	
-		if (!isEpiMode) {
-		    // add orientation sensor
-		    if (null != mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION)) {
-			sensors.add(mgr.getDefaultSensor(Sensor.TYPE_ORIENTATION));
-		    }
-		    // add gyroscope
-		    if (null != mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE)) {
-			sensors.add(mgr.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
-		    }
-		    // add linear acceleration
-		    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-			// only devices with gingerbread+ have linear acceleration sensors
-			if (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
-			    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-			    hasLinAccSensor = true;
-			}
-		    }
-		}
-	
-		motionSensingActive = true;
-		setSampleDelay(sampleDelay);
-		registerSensors();
-		startWakeUpAlarms();
-		enableScreenOffListener(true);
-    }
-
-    public void enableScreenOffListener(boolean enable) {
-	if (enable) {
-	    // Register the receiver for SCREEN OFF events
-	    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-	    context.registerReceiver(screenOffListener, filter);
-	} else {
-	    // Unregister the receiver for SCREEN OFF events
-	    try {
-		context.unregisterReceiver(screenOffListener);
-	    } catch (IllegalArgumentException e) {
-		// Log.v(TAG, "Ignoring exception when unregistering screen off listener");
-	    }
+	    context.startService(new Intent(context, EpiStateMonitor.class));
 	}
+
+	if (firstStart && isFallDetectMode) {
+            fallDetector.sendFallMessage(false);
+	    firstStart = false;
+	}
+
+        sensors = MotionSensorUtils.getAvailableMotionSensors(context);
+        if (isEpiMode) {
+            // only listen to accelerometer in epi mode
+	sensors = new ArrayList<Sensor>();
+
+            SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            sensors.add(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+	}
+
+	motionSensingActive = true;
+        setSampleRate(sampleDelay);
     }
 
-    /**
-     * Sets a periodic alarm that makes sure the the device is awake for a short while for every
-     * sample.
-     */
-    public void startWakeUpAlarms() {
+    private void stopPolling() {
+        // Log.v(TAG, "stop polling");
+        alarmReceiver.stop(context);
+    }
 
-	// register receiver for wake up alarm
-	wakeReceiver = new BroadcastReceiver() {
+    private void stopSample() {
+        // Log.v(TAG, "stop sample");
 
-	    @Override
-	    public void onReceive(Context context, Intent intent) {
-		// Log.v(TAG, "Wake up! " + new SimpleDateFormat("k:mm:ss.SSS").format(new Date()));
-
-		if (null == wakeLock) {
-		    PowerManager powerMgr = (PowerManager) context
-			    .getSystemService(Context.POWER_SERVICE);
-		    wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-		}
-		if (!wakeLock.isHeld()) {
-		    Log.i(TAG, "Acquire wake lock for 500ms");
-		    wakeLock.acquire(500);
-		} else {
-		    // Log.v(TAG, "Wake lock already held");
+        // release wake lock
+        if (null != wakeLock && wakeLock.isHeld()) {
+            wakeLock.release();
 		}
 
-		if (isTimeToRegister()) {
-		    // Log.v(TAG, "Time to register!");
-		    registerSensors();
-		}
-	    }
-	};
-	context.registerReceiver(wakeReceiver, new IntentFilter(ACTION_WAKEUP_ALARM));
-
-	// schedule alarm to go off and wake up the receiver
-	Intent wakeUp = new Intent(ACTION_WAKEUP_ALARM);
-	PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, wakeUp, 0);
-	final AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-	mgr.cancel(operation);
-	mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0, sampleDelay, operation);
+        unregisterSensors();
     }
 
     /**
      * Unregisters the listener for updates from the motion sensors, and stops waking up the device
      * for sampling.
      */
-    public void stopMotionSensing() {
-	// Log.v(TAG, "Stop motion sensor");
-
-	try {
+    @Override
+    public void stopSensing() {
+        // Log.v(TAG, "stop sensing");
+        stopSample();
+        stopPolling();
+        enableScreenOffListener(false);
 	    motionSensingActive = false;
-	    unregisterSensors();
-
-	    if (motionThread != null) {
-		motionHandler.removeCallbacks(motionThread);
-		motionThread = null;
-	    }
-
-	} catch (Exception e) {
-	    Log.e(TAG, e.getMessage());
-	}
 
 	if (isEpiMode || isFallDetectMode) {
-	    Log.v(TAG, "Stop epi state sensor");
 	    context.stopService(new Intent(context, EpiStateMonitor.class));
 	}
 
-	enableScreenOffListener(false);
-	stopWakeUpAlarms();
-    }
-
-    /**
-     * Stops the periodic alarm to wake up the device and take a sample.
-     */
-    private void stopWakeUpAlarms() {
-
-	// unregister wake up receiver
-	try {
-	    context.unregisterReceiver(wakeReceiver);
-	} catch (IllegalArgumentException e) {
-	    // do nothing
-	}
-
-	// cancel the wake up alarm
-	Intent wakeUp = new Intent(ACTION_WAKEUP_ALARM);
-	PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, wakeUp, 0);
-	final AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-	mgr.cancel(operation);
     }
 
     private synchronized void unregisterSensors() {
@@ -728,7 +357,6 @@ public class MotionSensor implements SensorEventListener {
 	    // Log.v(TAG, "Unregister the motion sensor for updates");
 	    ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE))
 		    .unregisterListener(this);
-	    lastRegistered = System.currentTimeMillis();
 	} else {
 	    // Log.v(TAG, "Did not unregister for motion sensor updates: already unregistered");
 	}

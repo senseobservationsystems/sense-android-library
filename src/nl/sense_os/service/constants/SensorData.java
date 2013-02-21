@@ -44,6 +44,7 @@ public class SensorData {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
                 + "/vnd.sense_os.data_point";
         public static final String CONTENT_URI_PATH = "/recent_values";
+        @Deprecated
         public static final String CONTENT_PERSISTED_URI_PATH = "/persisted_values";
         public static final String CONTENT_REMOTE_URI_PATH = "/remote_values";
 
@@ -178,9 +179,9 @@ public class SensorData {
         public static final String GYRO = "gyroscope";
 
         /**
-         * Magnetic field sensor name. Part of the Motion sensors.
+         * Magnetic field sensor name. Part of the Ambience sensors.
          */
-        public static final String MAGNET_FIELD = "magnetic_field";
+        public static final String MAGNETIC_FIELD = "magnetic field";
 
         /**
          * Orientation sensor name. Part of the Motion sensors.
@@ -428,6 +429,18 @@ public class SensorData {
         private SensorNames() {
             // class should not be instantiated
         }
+    }
+    
+    /**
+     * Standard descriptions for sensors.
+     * 
+     * @see DataPoint#SENSOR_DESCRIPTION
+     */
+    public static class SensorDescriptions {
+        /**
+         * Auto-calibrated noise level sensor. Part of the Ambience sensors.
+         */
+        public static final String AUTO_CALIBRATED = "auto-calibrated";
     }
 
     private SensorData() {

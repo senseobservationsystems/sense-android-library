@@ -49,22 +49,6 @@ import android.util.Log;
  */
 public class NoiseSensor extends PhoneStateListener {
 
-	private static NoiseSensor instance = null;
-	
-    protected NoiseSensor(Context context) {
-		this.context = context;
-		controller = Controller.getController(context);
-		loudnessSensor = LoudnessSensor.getInstance(context);
-	}
-    
-    public static NoiseSensor getInstance(Context context) {
-    	if(instance == null) {
-	        instance = new NoiseSensor(context);
-	    }
-	    return instance;
-    }
-    
-    
 	/**
 	 * Receiver for periodic alarm broadcast that wakes up the device and starts
 	 * a noise measurement.
@@ -88,8 +72,7 @@ public class NoiseSensor extends PhoneStateListener {
 		}
 	}
 	
-
-	/**
+    /**
 	 * Runnable that performs one noise sample. Starts the recording, reads the
 	 * buffer contents, calculates the noise power and sends the measurement to
 	 * the {@link MsgHandler}. Also schedules the next sample job.
@@ -109,6 +92,23 @@ public class NoiseSensor extends PhoneStateListener {
 		private int FFT_MAX_HZ = 1000;
 
 		// power of 2
+
+		private float[] audioToFloat(byte[] buffer, int readBytes) {
+			float[] samples = new float[readBytes / 2];
+			int cnt = 0;
+			for (int x = 0; x < readBytes - 1; x = x + 2) {
+				double sample = 0;
+				for (int b = 0; b < BYTES_PER_SAMPLE; b++) {
+					int v = (int) buffer[x + b];
+					if (b < BYTES_PER_SAMPLE - 1 || BYTES_PER_SAMPLE == 1) {
+						v &= 0xFF;
+					}
+					sample += v << (b * 8);
+				}
+				samples[cnt++] = (float) sample;
+			}
+			return samples;
+		}
 
 		/**
 		 * @param samples
@@ -147,20 +147,6 @@ public class NoiseSensor extends PhoneStateListener {
 
 			// Log.d(TAG, "noise in db " + dB);
 			return dB;
-		}
-
-		// java versions before 6 don't have Arrays.copyOfRange, so make our own
-		private float[] copyOfRange(float[] array, int start, int end) {
-			if (end < start || start < 0)
-				throw new IndexOutOfBoundsException(); // isn't there a
-														// RangeException??
-			if (array.length < end - start)
-				throw new IndexOutOfBoundsException();
-			float[] copy = new float[end - start];
-			for (int i = start, j = 0; i < end; i++, j++)
-				copy[j] = array[i];
-
-			return copy;
 		}
 
 		private double[] calculateSpectrum(float[] samples) {
@@ -218,21 +204,18 @@ public class NoiseSensor extends PhoneStateListener {
 			return bins;
 		}
 
-		private float[] audioToFloat(byte[] buffer, int readBytes) {
-			float[] samples = new float[readBytes / 2];
-			int cnt = 0;
-			for (int x = 0; x < readBytes - 1; x = x + 2) {
-				double sample = 0;
-				for (int b = 0; b < BYTES_PER_SAMPLE; b++) {
-					int v = (int) buffer[x + b];
-					if (b < BYTES_PER_SAMPLE - 1 || BYTES_PER_SAMPLE == 1) {
-						v &= 0xFF;
-					}
-					sample += v << (b * 8);
-				}
-				samples[cnt++] = (float) sample;
-			}
-			return samples;
+		// java versions before 6 don't have Arrays.copyOfRange, so make our own
+		private float[] copyOfRange(float[] array, int start, int end) {
+			if (end < start || start < 0)
+				throw new IndexOutOfBoundsException(); // isn't there a
+														// RangeException??
+			if (array.length < end - start)
+				throw new IndexOutOfBoundsException();
+			float[] copy = new float[end - start];
+			for (int i = start, j = 0; i < end; i++, j++)
+				copy[j] = array[i];
+
+			return copy;
 		}
 		
 
@@ -396,6 +379,7 @@ public class NoiseSensor extends PhoneStateListener {
 
 						if (dB != -1 && !Double.valueOf(dB).isNaN()) {
 							loudnessSensor.onNewNoise(startTimestamp, dB);
+							autoCalibratedNoiseSensor.onNewNoise(startTimestamp, dB);
 						}
 
 					} catch (Exception e) {
@@ -469,13 +453,12 @@ public class NoiseSensor extends PhoneStateListener {
 			}
 		}
 	}
-
-	/**
+    
+    /**
 	 * Runnable that starts one sound stream recording. Afterwards, the
 	 * recording is sent to the {@link MsgHandler}. Also schedules the next
 	 * sample job.
 	 */
-	@SuppressWarnings("unused")
 	private class SoundStreamJob implements Runnable {
 
 		private static final int MAX_FILES = 60;
@@ -530,8 +513,7 @@ public class NoiseSensor extends PhoneStateListener {
 								// recording is done, upload file
 								recorder.stop();
 								recorder.reset();
-								// wait until finished otherwise it will be
-								// overwritten
+                                // wait until finished otherwise it will be overwritten
 								SoundStreamJob tmp = soundStreamJob;
 
 								// pass message to the MsgHandler
@@ -546,13 +528,11 @@ public class NoiseSensor extends PhoneStateListener {
 										.getInstance().getTime());
 								context.startService(i);
 
-								/*
-								 * if (isEnabled && listenInterval == -1 &&
-								 * tmp.equals(soundStreamJob)) { fileCounter =
-								 * ++fileCounter % MAX_FILES; soundStreamJob =
-								 * new SoundStreamJob(fileCounter);
-								 * soundStreamHandler.post(soundStreamJob); }
-								 */
+                                if (isEnabled && listenInterval == -1 && tmp.equals(soundStreamJob)) {
+                                    fileCounter = ++fileCounter % MAX_FILES;
+                                    soundStreamJob = new SoundStreamJob(fileCounter);
+                                    soundStreamHandler.post(soundStreamJob);
+                                }
 
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -584,34 +564,57 @@ public class NoiseSensor extends PhoneStateListener {
 					// probably already stopped
 				}
 
-				// if we reset, we can reuse the object by going back to
-				// setAudioSource() step
+                // if we reset, we can reuse the object by going back to setAudioSource() step
 				recorder.reset();
-
-				// if we release instead of reset, the object cannot be reused
-				// recorder.release();
-				// recorder = null;
 			}
 		}
 	}
 
+	private static NoiseSensor instance = null;
+
 	private static final String TAG = "Sense NoiseSensor";
+
 	private static final int REQID = 0xF00;
+
 	private static final String ACTION_NOISE = "nl.sense_os.service.NoiseSample";
+
+    /**
+     * Factory method to get the singleton instance.
+     * 
+     * @param context
+     * @return instance
+     */
+	public static NoiseSensor getInstance(Context context) {
+    	if(instance == null) {
+	        instance = new NoiseSensor(context);
+	    }
+	    return instance;
+    }
+
 	private boolean isEnabled = false;
 	private boolean isCalling = false;
 	private int listenInterval; // Update interval in msec
 	private Context context;
-	private Handler soundStreamHandler = new Handler(
-			Looper.getMainLooper());
+    private Handler soundStreamHandler = new Handler(Looper.getMainLooper());
 	private SoundStreamJob soundStreamJob = null;
 	private Handler noiseSampleHandler = new Handler();
 	private NoiseSampleJob noiseSampleJob = null;
 	private AlarmReceiver alarmReceiver = new AlarmReceiver();
 	private LoudnessSensor loudnessSensor;
+	private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
 	private Controller controller;
-	//private static Service serv;
 
+    /**
+     * Private constructor
+     * 
+     * @param context
+     */
+    private NoiseSensor(Context context) {
+		this.context = context;
+		controller = Controller.getController(context);
+		loudnessSensor = LoudnessSensor.getInstance(context);
+		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
+	}
 
 	/**
 	 * Disables the noise sensor, stopping the sound recording and unregistering
@@ -624,9 +627,7 @@ public class NoiseSensor extends PhoneStateListener {
 		stopSampling();
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
-		//PhoneStateListener phoneStateListener= new PhoneStateListener();
 		telMgr.listen(this, PhoneStateListener.LISTEN_NONE);
-		//SenseService.stopForeground(true);
 	}
 
 	/**
@@ -638,19 +639,10 @@ public class NoiseSensor extends PhoneStateListener {
 		disable();
 		listenInterval = interval;
 		isEnabled = true;
-		
-		//Notification note=new Notification();
-		
-		//note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
 
-		//SenseService.startForeground(1337, note);
-
-		// registering the phone state listener will trigger a call to
-		// startListening()
-
+        // registering the phone state listener will trigger a call to startListening()
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
-		//PhoneStateListener phoneStateListener= new PhoneStateListener();
 		telMgr.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
 
 	}
@@ -680,6 +672,57 @@ public class NoiseSensor extends PhoneStateListener {
 
 		} catch (Exception e) {
 			Log.e(TAG, "Exception in onCallStateChanged!", e);
+		}
+	}
+
+	/**
+	 * Starts the sound sensing jobs.
+	 */
+	private void startSampling() {
+		Log.v(TAG, "Start sound sensor sampling");
+
+		try {
+
+			// different job if the listen interval is "real-time"
+            if (listenInterval == -1) {
+                // start recording
+                if (soundStreamJob != null) {
+                    soundStreamHandler.removeCallbacks(soundStreamJob);
+                }
+                soundStreamJob = new SoundStreamJob(0);
+                soundStreamHandler.post(soundStreamJob);
+
+            } else {
+				Calendar now = Calendar.getInstance();
+				// calculate offset of the local clock
+                int offset = (int) (System.currentTimeMillis() - SNTP.getInstance().getTime());
+				// align the start time on the minute of ntp time
+				Calendar startTime = (Calendar) now.clone();
+				startTime.set(Calendar.SECOND, 0);
+				startTime.set(Calendar.MILLISECOND, 0);
+				// correct for the difference in local time and ntp time
+                startTime.add(Calendar.MILLISECOND, offset);
+
+                // advance to the next minute until the start time is at least 100 ms in the future
+				while (startTime.getTimeInMillis() - now.getTimeInMillis() <= 100) {
+                    // use add() to make sure the hour field increments when you cross 60 minutes
+                    startTime.add(Calendar.MINUTE, 1);
+				}
+
+                context.registerReceiver(alarmReceiver, new IntentFilter(ACTION_NOISE));
+				Intent alarm = new Intent(ACTION_NOISE);
+                PendingIntent alarmOperation = PendingIntent.getBroadcast(context, REQID, alarm, 0);
+                AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+				mgr.cancel(alarmOperation);
+				mgr.setRepeating(AlarmManager.RTC_WAKEUP,
+						startTime.getTimeInMillis(), listenInterval,
+						alarmOperation);
+                // Log.d(TAG, "Start at second " + startTime.get(Calendar.SECOND) + ", offset is " +
+				// offset);
+			}
+
+		} catch (Exception e) {
+			Log.e(TAG, "Exception in startSensing:" + e.getMessage());
 		}
 	}
 
@@ -716,64 +759,6 @@ public class NoiseSensor extends PhoneStateListener {
 
 		} catch (Exception e) {
 			Log.e(TAG, "Exception in pauseListening!", e);
-		}
-	}
-
-	/**
-	 * Starts the sound sensing jobs.
-	 */
-	private void startSampling() {
-		Log.v(TAG, "Start sound sensor sampling");
-
-		try {
-
-			// different job if the listen interval is "real-time"
-			/*
-			 * if (listenInterval == -1) {
-			 * 
-			 * // start recording if (soundStreamJob != null) {
-			 * soundStreamHandler.removeCallbacks(soundStreamJob); }
-			 * soundStreamJob = new SoundStreamJob(0);
-			 * soundStreamHandler.post(soundStreamJob); } else
-			 */{
-				Calendar now = Calendar.getInstance();
-				// calculate offset of the local clock
-				int offset = (int) (System.currentTimeMillis() - SNTP
-						.getInstance().getTime());
-				// align the start time on the minute of ntp time
-				Calendar startTime = (Calendar) now.clone();
-				startTime.set(Calendar.SECOND, 0);
-				startTime.set(Calendar.MILLISECOND, 0);
-				// correct for the difference in local time and ntp time
-				startTime.roll(Calendar.MILLISECOND, offset);
-
-				// int align = listenInterval - (startTime.get(Calendar.SECOND)
-				// * 1000 % listenInterval);
-				// startTime.roll(Calendar.MILLISECOND, align);
-				// advance to the next minute until the start time is at least
-				// 100 ms in the future
-				while (startTime.getTimeInMillis() - now.getTimeInMillis() <= 100) {
-					startTime.roll(Calendar.MINUTE, 1);
-				}
-
-				context.registerReceiver(alarmReceiver, new IntentFilter(
-						ACTION_NOISE));
-				Intent alarm = new Intent(ACTION_NOISE);
-				PendingIntent alarmOperation = PendingIntent.getBroadcast(
-						context, REQID, alarm, 0);
-				AlarmManager mgr = (AlarmManager) context
-						.getSystemService(Context.ALARM_SERVICE);
-				mgr.cancel(alarmOperation);
-				mgr.setRepeating(AlarmManager.RTC_WAKEUP,
-						startTime.getTimeInMillis(), listenInterval,
-						alarmOperation);
-				// Log.d(TAG, "Start at second " +
-				// startTime.get(Calendar.SECOND) + ", offset is " +
-				// offset);
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, "Exception in startSensing:" + e.getMessage());
 		}
 	}
 }

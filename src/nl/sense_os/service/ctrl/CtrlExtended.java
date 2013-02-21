@@ -1,6 +1,5 @@
 package nl.sense_os.service.ctrl;
 
-
 import nl.sense_os.service.DataTransmitter;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
@@ -34,6 +33,7 @@ public class CtrlExtended extends Controller{
 	private Context context;
 	private static final String TAG = "Sense Controller";
 	private LocationManager locMgr;
+
 	
 	public CtrlExtended(Context context) {
         super(context);
@@ -145,11 +145,11 @@ public class CtrlExtended extends Controller{
 	* to the Network provider and switch to Gps provider only if the first one is not productive. 
 	*/
 	public void checkSensorSettings(boolean isGpsAllowed, boolean isListeningNw, boolean isListeningGps, long time, Location lastGpsFix, 
-			long listenGpsStart, Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
-
-		
+											long listenGpsStart, Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
+	
+	
 		if (lastlocationmode.equals(NOMODE)) {
-		
+	
 			Log.w(TAG, "NO MODE");
 			for (int i = 0; i < 5; i++)
 				Log.w(TAG, "Table Nw" + networkTableAcc[i]);
@@ -159,6 +159,7 @@ public class CtrlExtended extends Controller{
 				locSampleRate(30 * 1000);
 			}*/
 			bestProvider = bestProvider(isListeningGps, time, listenGpsStart, isListeningNw, listenNwStart,  lastGpsFix, lastNwFix);
+			
 			
 			if (((gpsIndexFlag == flag.NOT_READY) || (networkIndexFlag == flag.NOT_READY))) {
 				//remain in no mode
@@ -170,7 +171,7 @@ public class CtrlExtended extends Controller{
 				gpsIndexFlag = flag.NOT_READY;
 				networkIndexFlag = flag.NOT_READY;
 			}
-		
+			
 			if (!isListeningNw) {
 				locListener.setNetworkListening(true);
 			}
@@ -198,11 +199,11 @@ public class CtrlExtended extends Controller{
 			if (isListeningGps) {
 				locListener.setGpsListening(false);
 			}
-				//Data-Transmitter to idle?
+			//Data-Transmitter to idle?
 			if (IDLE.equals(getLastMode())) {
 				//scheduleTransmissions(); 
 			}
-		
+			
 		}
 		else {
 			if (isPositionChanged(200) || NwisSwitchedOffTooLong(isListeningNw, listenNwStop) || isSwitchedOffTooLong(isListeningNw, listenNwStop) || (gpsIndexFlag == flag.RECHECK) || (networkIndexFlag == flag.RECHECK)) {
@@ -211,7 +212,7 @@ public class CtrlExtended extends Controller{
 				}*/
 				if (!isListeningNw) {
 					locListener.setNetworkListening(true);
-				}
+			}
 				if (!isListeningGps) {
 					locListener.setGpsListening(true);
 				}
@@ -242,16 +243,16 @@ public class CtrlExtended extends Controller{
 				Log.w(TAG, "AVG Nw" + networkAvgAcc);
 				Log.w(TAG, "AVG Gps" + gpsAvgAcc);
 				lastlocationmode = NETWORK;
-				if (!isListeningNw) {
-					locListener.setNetworkListening(true);
-				}
+			if (!isListeningNw) {
+				locListener.setNetworkListening(true);
+			}
 				if (!isNwProductive(isListeningNw, time, lastNwFix, listenNwStart)) {
 					locListener.setGpsListening(true);
 				}
 				//gpsIndexFlag == 2 means that we currently sample for the average gps accuracy
 				else if (isListeningGps && (gpsIndexFlag != flag.RECHECK)) {
-					locListener.setGpsListening(false);
-				}
+				locListener.setGpsListening(false);
+			}
 			
 			} 
 			else if ((bestProvider.equals(GPS) && isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)) || isSwitchedOffTooLong(isListeningGps, listenGpsStop)) {
@@ -266,21 +267,21 @@ public class CtrlExtended extends Controller{
 				Log.w(TAG, "AVG Nw" + networkAvgAcc);
 				Log.w(TAG, "AVG Gps" + gpsAvgAcc);
 				lastlocationmode = GPS;
-				if (!isListeningGps) {
-					locListener.setGpsListening(true);
-				}
+			if (!isListeningGps) {
+				locListener.setGpsListening(true);
+			}
 				if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)) {
 					locListener.setNetworkListening(true);
 				}
 				//networkIndexFlag == 2 means that we currently sample for the average network accuracy
 				else if (isListeningNw && (networkIndexFlag != flag.RECHECK)) {
-					locListener.setNetworkListening(false);
-				}
+				locListener.setNetworkListening(false);
+			}
 			
 			}
 		}
 		/*	else {
-		
+
 			if ("idle".equals(getLastMode())) {
 				lastlocationmode = "noavailable";
 				//scheduleTransmissions(); 
@@ -293,9 +294,8 @@ public class CtrlExtended extends Controller{
 				locListener.setGpsListening(false);
 			}
 		}*/
-
-	}
 	
+	}
 	
 	/**
 	* Uses the accelerometer instead of the linear acceleration
@@ -370,6 +370,7 @@ public class CtrlExtended extends Controller{
 		return moving;
 	}
 	
+	
 	private boolean isGpsProductive(boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart) {
 	
 		boolean productive = isListeningGps;
@@ -398,6 +399,7 @@ public class CtrlExtended extends Controller{
 	
 		return productive;
 	}
+	
 	
 	private boolean isNwProductive(boolean isListeningNw, long time, Location lastNwFix, long listenNwStart) {
 	
@@ -428,8 +430,11 @@ public class CtrlExtended extends Controller{
 		return productive;
 	}
 	
+	
+	
 	private boolean isPositionChanged(int distanceTraveled) {
 		// Log.v(TAG, "Check if position changed recently");
+	
 		boolean moved = true;
 		Cursor data = null;
 		if (positionFlag == flag.NOT_READY && (distanceTraveled == 0)) { 
@@ -439,83 +444,84 @@ public class CtrlExtended extends Controller{
 			return moved;
 		}
 		else if ((System.currentTimeMillis() - startTime) >= 4 * 60 * 1000 || (distanceTraveled != 0)) {
-
-			try {
+	
+		try {
 				Log.w(TAG, "1B");
-				// get location data from time since the last check
-				long timerange = 1000 * 60 * 15; // 15 minutes
-				Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
-						+ DataPoint.CONTENT_URI_PATH);
-				String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
-						DataPoint.VALUE };
-				String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LOCATION + "'" + " AND "
-						+ DataPoint.TIMESTAMP + ">" + (SNTP.getInstance().getTime() - timerange);
-				data = LocalStorage.getInstance(context).query(uri, projection, selection, null, null);
-		
-				if (null == data || data.getCount() < 2) {
-					// no position changes: assume the device is moving
-					//Log.w(TAG, "no position changes: assume the device is moving!");
-					return false;	
-				}
-		
-				// find the first motion measurement
-				data.moveToFirst();
-				JSONObject startJson = new JSONObject(data.getString(data
-						.getColumnIndex(DataPoint.VALUE)));
-				Location startLoc = new Location("");
-				startLoc.setLatitude(startJson.getDouble("latitude"));
-				startLoc.setLongitude(startJson.getDouble("longitude"));
-				startLoc.setAccuracy((float) startJson.getDouble("accuracy"));
-				startLoc.setTime(data.getLong(data.getColumnIndex(DataPoint.TIMESTAMP)));
-		
-				// find the last motion measurement
-				data.moveToLast();
-				JSONObject endJson = new JSONObject(
-						data.getString(data.getColumnIndex(DataPoint.VALUE)));
-				Location endLoc = new Location("");
-				endLoc.setLatitude(endJson.getDouble("latitude"));
-				endLoc.setLongitude(endJson.getDouble("longitude"));
-				endLoc.setAccuracy((float) endJson.getDouble("accuracy"));
-				endLoc.setTime(data.getLong(data.getColumnIndex(DataPoint.TIMESTAMP)));
-		
-				// calculate the distance traveled
-				float distance = 0;
-				float accuracy = Float.MAX_VALUE;
-				if (null != startLoc && null != endLoc) {
-					float[] results = new float[1];
-					Location.distanceBetween(startLoc.getLatitude(), startLoc.getLongitude(),
-							endLoc.getLatitude(), endLoc.getLongitude(), results);
-					distance = results[0];
-					accuracy = startLoc.getAccuracy() + endLoc.getAccuracy();
-				}
-		
-				if (distance > accuracy + distanceTraveled) {
-					Log.v(TAG, "Position has changed");
-					//Log.w(TAG, "Position has changed"); 
-					moved = true;
-				} else {
-					// position did NOT change
-					moved = false;
-				}
-		
-			} catch (JSONException e) {
-				Log.e(TAG, "Exception parsing location data: ", e);
-				//moved = true;
-			} finally {
-				if (null != data) {
-					data.close();
-				}
+			// get location data from time since the last check
+			long timerange = 1000 * 60 * 15; // 15 minutes
+			Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
+					+ DataPoint.CONTENT_URI_PATH);
+			String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
+					DataPoint.VALUE };
+			String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LOCATION + "'" + " AND "
+					+ DataPoint.TIMESTAMP + ">" + (SNTP.getInstance().getTime() - timerange);
+			data = LocalStorage.getInstance(context).query(uri, projection, selection, null, null);
+	
+			if (null == data || data.getCount() < 2) {
+				// no position changes: assume the device is moving
+				//Log.w(TAG, "no position changes: assume the device is moving!");
+				return false;	
 			}
-		
-			return moved;
-
+	
+			// find the first motion measurement
+			data.moveToFirst();
+			JSONObject startJson = new JSONObject(data.getString(data
+					.getColumnIndex(DataPoint.VALUE)));
+			Location startLoc = new Location("");
+			startLoc.setLatitude(startJson.getDouble("latitude"));
+			startLoc.setLongitude(startJson.getDouble("longitude"));
+			startLoc.setAccuracy((float) startJson.getDouble("accuracy"));
+			startLoc.setTime(data.getLong(data.getColumnIndex(DataPoint.TIMESTAMP)));
+	
+			// find the last motion measurement
+			data.moveToLast();
+			JSONObject endJson = new JSONObject(
+					data.getString(data.getColumnIndex(DataPoint.VALUE)));
+			Location endLoc = new Location("");
+			endLoc.setLatitude(endJson.getDouble("latitude"));
+			endLoc.setLongitude(endJson.getDouble("longitude"));
+			endLoc.setAccuracy((float) endJson.getDouble("accuracy"));
+			endLoc.setTime(data.getLong(data.getColumnIndex(DataPoint.TIMESTAMP)));
+	
+			// calculate the distance traveled
+			float distance = 0;
+			float accuracy = Float.MAX_VALUE;
+			if (null != startLoc && null != endLoc) {
+				float[] results = new float[1];
+				Location.distanceBetween(startLoc.getLatitude(), startLoc.getLongitude(),
+						endLoc.getLatitude(), endLoc.getLongitude(), results);
+				distance = results[0];
+				accuracy = startLoc.getAccuracy() + endLoc.getAccuracy();
+			}
+	
+				if (distance > accuracy + distanceTraveled) {
+				Log.v(TAG, "Position has changed");
+				//Log.w(TAG, "Position has changed"); 
+				moved = true;
+			} else {
+				// position did NOT change
+				moved = false;
+			}
+	
+		} catch (JSONException e) {
+			Log.e(TAG, "Exception parsing location data: ", e);
+			//moved = true;
+		} finally {
+			if (null != data) {
+				data.close();
+			}
 		}
+	
+		return moved;
+	}
+	
+	
+	
 		else {
 			Log.w(TAG, "1C");
 			return true;
 		}
 	}
-	
 	private boolean isSwitchedOffTooLong(boolean isListeningGps, long listenGpsStop) {
 	
 		if (isListeningGps) {
@@ -584,8 +590,8 @@ public class CtrlExtended extends Controller{
 	* 	New motion sample interval 
 	*/
     public void motionSampleRate(long sampleDelay) {
-    	motion.stopMotionSensing();
-    	motion.startMotionSensing(sampleDelay);
+        motion.stopSensing();
+        motion.startSensing(sampleDelay);
     }
     
 	private static float previous_lux = 0;	
@@ -731,3 +737,4 @@ public class CtrlExtended extends Controller{
 					operation);
 	}
 }
+

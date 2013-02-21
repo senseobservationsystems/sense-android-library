@@ -8,6 +8,7 @@ import java.util.Map;
 
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
+import nl.sense_os.service.ambience.MagneticFieldSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
 import nl.sense_os.service.ambience.TemperatureSensor;
@@ -102,6 +103,7 @@ public class SenseService extends Service {
 	private ZephyrBioHarness es_bioHarness;
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
+	private MagneticFieldSensor magneticFieldSensor;
 
 	/**
 	 * Handler on main application thread to display toasts to the user.
@@ -416,24 +418,24 @@ public class SenseService extends Service {
 		startService(new Intent(getString(R.string.action_widget_update)));
 	}
 
-	/**
-	 * Tries to register a new user using the username and password from the private preferences and
-	 * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
-	 * are bound to the service.
-	 * 
-	 * @param username
-	 * @param password
-	 *            Unhashed password
-	 * @param email
-	 * @param address
-	 * @param zipCode
-	 * @param country
-	 * @param name
-	 * @param surname
-	 * @param mobile
-	 * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-	 *         any other unexpected responses.
-	 */
+	    /**
+     * Tries to register a new user using the username and password from the private preferences and
+     * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
+     * are bound to the service.
+     * 
+     * @param username
+     * @param password
+     *            Hashed password
+     * @param email
+     * @param address
+     * @param zipCode
+     * @param country
+     * @param name
+     * @param surname
+     * @param mobile
+     * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
+     *         any other unexpected responses.
+     */
 	synchronized int register(String username, String password, String email, String address,
 			String zipCode, String country, String name, String surname, String mobile) {
 		Log.v(TAG, "Try to register new user");
@@ -444,12 +446,10 @@ public class SenseService extends Service {
 		// stop active sensing components
 		stopSensorModules();
 
-		String hashPass = SenseApi.hashPassword(password);
-
 		// save username and password in preferences
 		Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
 		authEditor.putString(Auth.LOGIN_USERNAME, username);
-		authEditor.putString(Auth.LOGIN_PASS, hashPass);
+        authEditor.putString(Auth.LOGIN_PASS, password);
 		authEditor.commit();
 
 		// try to register
@@ -459,7 +459,7 @@ public class SenseService extends Service {
 			// ", password hash: " + hashPass);
 
 			try {
-				registered = SenseApi.registerUser(this, username, hashPass, name, surname, email,
+                registered = SenseApi.registerUser(this, username, password, name, surname, email,
 						mobile);
 			} catch (Exception e) {
 				Log.w(TAG, "Exception during registration: '" + e.getMessage()
@@ -594,7 +594,7 @@ public class SenseService extends Service {
 				// check pressure sensor presence
 				if (pressureSensor != null) {
 					Log.w(TAG, "pressure sensor is already present!");
-					pressureSensor.stopPressureSensing();
+                    pressureSensor.stopSensing();
 					pressureSensor = null;
 				}
 
@@ -604,6 +604,15 @@ public class SenseService extends Service {
 					temperatureSensor.stopSensing();
 					temperatureSensor = null;
 				}
+				
+				// check magnetic field sensor presence
+				if (magneticFieldSensor != null) {
+					Log.w(TAG, "magnetic field  sensor is already present!");
+                    magneticFieldSensor.stopSensing();
+					magneticFieldSensor = null;
+				}
+				
+				
 
 				// get sample rate from preferences
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -666,9 +675,15 @@ public class SenseService extends Service {
 						} else {
 							// Log.v(TAG, "Camera is not supported in this version of Android");
 						}
+						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
+                            magneticFieldSensor = MagneticFieldSensor
+                                    .getInstance(SenseService.this);
+                            magneticFieldSensor.startSensing(finalInterval);
+						}
+						
 						if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
 							pressureSensor = PressureSensor.getInstance(SenseService.this);
-							pressureSensor.startPressureSensing(finalInterval);
+                            pressureSensor.startSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -699,18 +714,17 @@ public class SenseService extends Service {
 					cameraLightSensor = null;
 				}
 				if (null != pressureSensor) {
-					pressureSensor.stopPressureSensing();
+                    pressureSensor.stopSensing();
 					pressureSensor = null;
 				}
 				if (null != temperatureSensor) {
 					temperatureSensor.stopSensing();
 					temperatureSensor = null;
 				}
-
-				/*if (ambienceHandler != null) {
-					ambienceHandler.getLooper().quit();
-					ambienceHandler = null;
-				}*/
+				if (null != magneticFieldSensor) {
+                    magneticFieldSensor.stopSensing();
+					magneticFieldSensor = null;
+				}
 			}
 		}
 	}
@@ -1016,7 +1030,7 @@ public class SenseService extends Service {
 				// check motion sensor presence
 				if (motionSensor != null) {
 					Log.w(TAG, "Motion sensor is already present! Stopping the sensor");
-					motionSensor.stopMotionSensing();
+                    motionSensor.stopSensing();
 					motionSensor = null;
 				}
 
@@ -1061,7 +1075,7 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 						motionSensor = MotionSensor.getInstance(SenseService.this);
-						motionSensor.startMotionSensing(finalInterval);
+                        motionSensor.startSensing(finalInterval);
 					}
 				});
 
@@ -1069,7 +1083,7 @@ public class SenseService extends Service {
 
 				// stop sensing
 				if (null != motionSensor) {
-					motionSensor.stopMotionSensing();
+                    motionSensor.stopSensing();
 					motionSensor = null;
 				}
 

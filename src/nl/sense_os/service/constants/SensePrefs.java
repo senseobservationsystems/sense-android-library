@@ -199,6 +199,12 @@ public class SensePrefs {
 			 * @see SensePrefs#MAIN_PREFS
 			 */
 			public static final String TEMPERATURE = "ambience_temperature";
+			/**
+			 * Key for preference that toggles use of the magnetic field sensor in ambience sensing.
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String MAGNETIC_FIELD = "ambience_magnetic_field";
 		}
 
 		public static class DevProx {
@@ -570,16 +576,23 @@ public class SensePrefs {
 		public static class Loudness {
 			/**
 			 * Key for learned value of total silence..
-			 * 
-			 * @see SensePrefs#AUTH_PREFS
 			 */
 			public static final String TOTAL_SILENCE = "total_silence";
 			/**
 			 * Key for learned value of highest loudness.
-			 * 
-			 * @see SensePrefs#AUTH_PREFS
 			 */
 			public static final String LOUDEST = "loudest";
+		}
+		
+		public static class AutoCalibratedNoise {
+			/**
+			 * Key for learned value of total silence..
+			 */
+            public static final String TOTAL_SILENCE = "AutoCalibratedNoise.total_silence";
+			/**
+			 * Key for learned value of highest loudness.
+			 */
+            public static final String LOUDEST = "AutoCalibratedNoise.loudest";
 		}
 	}
 

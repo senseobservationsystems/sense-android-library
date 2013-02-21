@@ -4,16 +4,17 @@
 package com.phonegap.plugins.sense;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Locale;
 
+import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.R;
-import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.feedback.FeedbackManager;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.apache.cordova.api.PluginResult.Status;
@@ -21,13 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -133,43 +129,17 @@ public class SensePlugin extends Plugin {
 		}
 	}
 
-	/**
-	 * Service connection to handle connection with the Sense service. Manages the
-	 * <code>service</code> field when the service is connected or disconnected.
-	 */
-	private class SenseServiceConn implements ServiceConnection {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			Log.v(TAG, "Connection to Sense Platform service established...");
-			service = ISenseService.Stub.asInterface(binder);
-			isServiceBound = true;
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName className) {
-			Log.v(TAG, "Connection to Sense Platform service lost...");
-
-			/* this is not called when the service is stopped, only when it is suddenly killed! */
-			service = null;
-			isServiceBound = false;
-		}
-	}
 
 	private static final String TAG = "PhoneGap Sense";
 
 	private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
 
-	private final ServiceConnection conn = new SenseServiceConn();
-	private boolean isServiceBound;
-	private ISenseService service;
 	private ISenseServiceCallback callback = new SenseServiceCallback();
 	private String getStatusCallbackId;
 	private String changeLoginCallbackId;
-
-	private PhoneGapSensorRegistrator sensorRegistrator;
-
 	private String registerCallbackId;
+
+    private SensePlatform sensePlatform;
 
 	private PluginResult addDataPoint(JSONArray data, String callbackId) throws JSONException {
 
@@ -183,81 +153,40 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, "addDataPoint('" + name + "', '" + displayName + "', '" + description + "', '"
 				+ dataType + "', '" + value + "', " + timestamp + ")");
 
-		// verify sensor ID
-		if (null == sensorRegistrator) {
-			sensorRegistrator = new PhoneGapSensorRegistrator(cordova.getActivity());
-		}
-		// new Thread() {
-		//
-		// @Override
-		// public void run() {
-		sensorRegistrator.checkSensor(name, displayName, dataType, description, value, null, null);
-		// }
-		// }.start();
+        boolean result = sensePlatform.addDataPoint(name, displayName, description, dataType,
+                value, timestamp);
 
-		// send data point
-		String action = cordova.getActivity().getString(
-				nl.sense_os.service.R.string.action_sense_new_data);
-		Intent intent = new Intent(action);
-		intent.putExtra(DataPoint.SENSOR_NAME, name);
-		intent.putExtra(DataPoint.DISPLAY_NAME, displayName);
-		intent.putExtra(DataPoint.SENSOR_DESCRIPTION, description);
-		intent.putExtra(DataPoint.DATA_TYPE, dataType);
-		intent.putExtra(DataPoint.VALUE, value);
-		intent.putExtra(DataPoint.TIMESTAMP, timestamp);
-		ComponentName serviceName = cordova.getActivity().startService(intent);
-
-		if (null != serviceName) {
-			return new PluginResult(Status.OK);
-		} else {
-			Log.w(TAG, "Could not start MsgHandler service!");
-			return new PluginResult(Status.ERROR, "could not add data to Sense service");
-		}
-	}
-
-	/**
-	 * Binds to the Sense Service, creating it if necessary.
-	 */
-	private void bindToSenseService() {
-		if (!isServiceBound) {
-			Log.v(TAG, "Try to connect with Sense Platform service");
-			final Intent service = new Intent(cordova.getActivity().getString(
-					R.string.action_sense_service));
-			isServiceBound = cordova.getActivity().bindService(service, conn,
-					Context.BIND_AUTO_CREATE);
-			if (!isServiceBound) {
-				Log.w(TAG, "Failed to connect with the Sense Platform service!");
-			}
-		} else {
-			// already bound
-		}
+        if (result) {
+            return new PluginResult(Status.OK);
+        } else {
+            Log.w(TAG, "Could not start MsgHandler service!");
+            return new PluginResult(Status.ERROR, "could not add data to Sense service");
+        }
 	}
 
 	private PluginResult changeLogin(final JSONArray data, final String callbackId)
 			throws JSONException, RemoteException {
 
 		// get the parameters
-		final String username = data.getString(0).toLowerCase();
+        final String username = data.getString(0).toLowerCase(Locale.ENGLISH);
 		final String password = data.getString(1);
 		Log.v(TAG, "changeLogin('" + username + "', '" + password + "')");
 
-		if (null != service) {
-			changeLoginCallbackId = callbackId;
-			new Thread() {
-				public void run() {
-					try {
-						service.changeLogin(username, password, callback);
-					} catch (RemoteException e) {
-						Log.e(TAG, "Failed to call changeLogin()! " + e);
-						error(new PluginResult(Status.ERROR, e.getMessage()), changeLoginCallbackId);
-					}
-				};
-			}.run();
-
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        changeLoginCallbackId = callbackId;
+        new Thread() {
+            public void run() {
+                try {
+                    sensePlatform.login(username, password, callback);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Failed to call changeLogin()! " + e);
+                    error(new PluginResult(Status.ERROR, e.getMessage()), changeLoginCallbackId);
+                } catch (IllegalStateException e) {
+                    Log.e(TAG, "Failed to bind to service in time!");
+                    error(new PluginResult(Status.ERROR, "Failed to bind to service in time!"),
+                            changeLoginCallbackId);
+                }
+            };
+        }.run();
 
 		// keep the callback ID so we can use it when the service returns
 		PluginResult r = new PluginResult(Status.NO_RESULT);
@@ -336,50 +265,13 @@ public class SensePlugin extends Plugin {
 		}
 	}
 
-	private PluginResult giveFeedback(JSONArray data, final String callbackId) throws JSONException {
-
-		// get the parameters
-		final String name = data.getString(0);
-		final long start = data.getLong(1);
-		final long end = data.getLong(2);
-		final String label = data.getString(3);
-
-		Log.v(TAG, "giveFeedback('" + name + "', " + start + ", " + end + ", '" + label + "')");
-
-		// make sure the latest data is sent to CommonSense
-		flushBuffer(null, null);
-
-		new Thread() {
-			public void run() {
-				FeedbackManager fm = new FeedbackManager(cordova.getActivity());
-				try {
-					boolean result = fm.giveFeedback(name, start, end, label);
-					if (true == result) {
-						success(new PluginResult(Status.OK), callbackId);
-					} else {
-						error(new PluginResult(Status.ERROR, "Generic error"), callbackId);
-					}
-				} catch (IOException e) {
-					error(new PluginResult(Status.IO_EXCEPTION, e.getMessage()), callbackId);
-				} catch (JSONException e) {
-					error(new PluginResult(Status.JSON_EXCEPTION, e.getMessage()), callbackId);
-				}
-			};
-		}.start();
-
-		// keep the callback ID so we can use it when the service returns
-		PluginResult r = new PluginResult(Status.NO_RESULT);
-		r.setKeepCallback(true);
-		return r;
-	}
 
 	private PluginResult flushBuffer(JSONArray data, String callbackId) {
 
 		Log.v(TAG, "flushBuffer()");
 
-		Intent flush = new Intent(cordova.getActivity().getString(R.string.action_sense_send_data));
-		ComponentName started = cordova.getActivity().startService(flush);
-		if (null != started) {
+        boolean result = sensePlatform.flushData();
+        if (result) {
 			return new PluginResult(Status.OK);
 		} else {
 			return new PluginResult(Status.INSTANTIATION_EXCEPTION);
@@ -414,6 +306,7 @@ public class SensePlugin extends Plugin {
 		String key = data.getString(0);
 		Log.v(TAG, "getPreference('" + key + "')");
 
+        ISenseService service = sensePlatform.getService();
 		if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
 				|| key.equals(Auth.LOGIN_USERNAME)) {
 			String result = service.getPrefString(key, null);
@@ -431,16 +324,11 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyThisDevice + ")");
 
 		try {
-			Uri uri = Uri.parse("content://"
-					+ cordova.getActivity().getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_REMOTE_URI_PATH);
-			String deviceUuid = onlyThisDevice ? SenseApi.getDefaultDeviceUuid(cordova
-					.getActivity()) : null;
-			JSONArray result = getValues(sensorName, deviceUuid, uri);
+            JSONArray result = sensePlatform.getData(sensorName, onlyThisDevice);
 
-			Log.v(TAG, "Found " + result.length() + " '" + sensorName
-					+ "' data points in the CommonSense");
-			return new PluginResult(Status.OK, result);
+            Log.v(TAG, "Found " + result.length() + " '" + sensorName
+                    + "' data points in the CommonSense");
+            return new PluginResult(Status.OK, result);
 
 		} catch (JSONException e) {
 			throw e;
@@ -453,6 +341,7 @@ public class SensePlugin extends Plugin {
 
 		Log.v(TAG, "getSessionId()");
 
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 
 			// try the login
@@ -477,6 +366,7 @@ public class SensePlugin extends Plugin {
 
 		Log.v(TAG, "getStatus()");
 
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			getStatusCallbackId = callbackId;
 			service.getStatus(callback);
@@ -536,8 +426,39 @@ public class SensePlugin extends Plugin {
 		}
 	}
 
+	private PluginResult giveFeedback(JSONArray data, final String callbackId) throws JSONException {
+
+		// get the parameters
+		final String name = data.getString(0);
+		final long start = data.getLong(1);
+		final long end = data.getLong(2);
+		final String label = data.getString(3);
+
+		Log.v(TAG, "giveFeedback('" + name + "', " + start + ", " + end + ", '" + label + "')");
+
+        new Thread() {
+            public void run() {
+                try {
+                    sensePlatform.giveFeedback(name, new Date(start), new Date(end), label);
+                } catch (IllegalStateException e) {
+                    Log.e(TAG, "Failed to bind to service in time!");
+                    error(new PluginResult(Status.ERROR, "Failed to bind to service in time!"),
+                            callbackId);
+                } catch (IOException e) {
+                    error(new PluginResult(Status.IO_EXCEPTION, e.getMessage()), callbackId);
+                } catch (JSONException e) {
+                    error(new PluginResult(Status.IO_EXCEPTION, e.getMessage()), callbackId);
+                }
+            }
+        }.start();
+
+		// keep the callback ID so we can use it when the service returns
+		PluginResult r = new PluginResult(Status.NO_RESULT);
+		r.setKeepCallback(true);
+		return r;
+	}
 	private PluginResult init(JSONArray data, String callbackId) {
-		bindToSenseService();
+        sensePlatform = new SensePlatform(cordova.getActivity());
 		return new PluginResult(Status.OK);
 	}
 
@@ -567,7 +488,7 @@ public class SensePlugin extends Plugin {
 
 	private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
 		Log.v(TAG, "logout()");
-		service.logout();
+        sensePlatform.logout();
 		return new PluginResult(Status.OK);
 	}
 
@@ -576,7 +497,7 @@ public class SensePlugin extends Plugin {
 	 */
 	@Override
 	public void onDestroy() {
-		unbindFromSenseService();
+        sensePlatform.close();
 		super.onDestroy();
 	}
 
@@ -585,6 +506,7 @@ public class SensePlugin extends Plugin {
 		String packageName = cordova.getActivity().getPackageName();
 		if (packageName.equals("nl.sense_os.ivitality")) {
 			Log.w(TAG, "Set special iVitality sensor settings");
+            ISenseService service = sensePlatform.getService();
 			try {
 				service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
 				service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
@@ -592,6 +514,7 @@ public class SensePlugin extends Plugin {
 				service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
 				service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
 				service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
+				service.setPrefBool(SensePrefs.Main.Ambience.MAGNETIC_FIELD, true);
 				service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
 				service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
 				service.toggleAmbience(true);
@@ -635,25 +558,22 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, "register('" + username + "', '" + password + "', '" + name + "', '" + surname
 				+ "', '" + email + "', '" + phone + "')");
 
-		// do the registration
-		if (null != service) {
-			registerCallbackId = callbackId;
-			new Thread() {
-				public void run() {
-					try {
-						service.register(username, password, email, address, zipCode, country,
-								name, surname, phone, callback);
-					} catch (RemoteException e) {
-						Log.e(TAG, "Failed to call register()! " + e);
-						error(new PluginResult(Status.ERROR, e.getMessage()), registerCallbackId);
-					}
-				};
-			}.run();
-
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        // do the registration
+        registerCallbackId = callbackId;
+        new Thread() {
+            public void run() {
+                try {
+                    sensePlatform.registerUser(username, password, email, address, zipCode,
+                            country, name, surname, phone, callback);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Failed to call register()! " + e);
+                    error(new PluginResult(Status.ERROR, e.getMessage()), registerCallbackId);
+                } catch (IllegalStateException e) {
+                    error(new PluginResult(Status.ERROR, "Failed to bind to service in time!"),
+                            registerCallbackId);
+                }
+            };
+        }.run();
 
 		// keep the callback ID so we can use it when the service returns
 		PluginResult r = new PluginResult(Status.NO_RESULT);
@@ -668,6 +588,7 @@ public class SensePlugin extends Plugin {
 		String key = data.getString(0);
 
 		// get the preference value
+        ISenseService service = sensePlatform.getService();
 		if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
 				|| key.equals(Auth.LOGIN_USERNAME)) {
 			String value = data.getString(1);
@@ -690,6 +611,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
 
 		// do the call
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleAmbience(active);
 		} else {
@@ -708,6 +630,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " external sensors");
 
 		// do the call
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleExternalSensors(active);
 		} else {
@@ -726,6 +649,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " main status");
 
 		// do the call
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleMain(active);
 		} else {
@@ -744,6 +668,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " motion sensors");
 
 		// do the call
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleMotion(active);
 		} else {
@@ -762,6 +687,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " neighboring devices sensors");
 
 		// do the call
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleDeviceProx(active);
 		} else {
@@ -780,6 +706,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
 
 		// do the call
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			service.togglePhoneState(active);
 		} else {
@@ -798,6 +725,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " position sensors");
 
 		// do the call
+        ISenseService service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleLocation(active);
 		} else {
@@ -806,19 +734,5 @@ public class SensePlugin extends Plugin {
 		}
 
 		return new PluginResult(Status.OK);
-	}
-
-	/**
-	 * Unbinds from the Sense service, resets {@link #service} and {@link #isServiceBound}.
-	 */
-	private void unbindFromSenseService() {
-		if (true == isServiceBound && null != conn) {
-			Log.v(TAG, "Unbind from Sense Platform service");
-			cordova.getActivity().unbindService(conn);
-		} else {
-			// already unbound
-		}
-		service = null;
-		isServiceBound = false;
 	}
 }

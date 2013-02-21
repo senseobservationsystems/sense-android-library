@@ -1,10 +1,11 @@
 /**************************************************************************************************
- * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
+ * Copyright (C) 2012 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import nl.sense_os.service.R;
@@ -14,6 +15,9 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
+
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -25,15 +29,16 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 /**
- * Represents the air pressure sensor. Registers itself for updates from the Android
+ * Represents the magnetic field sensor. Registers itself for updates from the Android
  * {@link SensorManager}.
  * 
- * @author Steven Mulder <steven@sense-os.nl>
+ * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class PressureSensor implements SensorEventListener, PeriodicPollingSensor {
+public class MagneticFieldSensor implements SensorEventListener, PeriodicPollingSensor {
 
-    private static final String TAG = "Sense Pressure Sensor";
-    private static PressureSensor instance = null;
+    private static final String TAG = "Sense Magnetic Field Sensor";
+    private static final String SENSOR_DISPLAY_NAME = "magnetic field";
+    private static MagneticFieldSensor instance;
 
     /**
      * Factory method to get the singleton instance.
@@ -41,11 +46,11 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
      * @param context
      * @return instance
      */
-    public static PressureSensor getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new PressureSensor(context);
-	    }
-	    return instance;
+    public static MagneticFieldSensor getInstance(Context context) {
+        if (null == instance) {
+            instance = new MagneticFieldSensor(context);
+        }
+        return instance;
     }
 
     private long sampleDelay = 0; // in milliseconds
@@ -53,18 +58,17 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
     private Context context;
     private List<Sensor> sensors;
     private SensorManager smgr;
-    private boolean pressureSensingActive = false;
+    private boolean magneticFieldSensingActive = false;
     private PeriodicPollAlarmReceiver alarmReceiver;
     private WakeLock wakeLock;
-    
-    protected PressureSensor(Context context) {
+
+    protected MagneticFieldSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensors = new ArrayList<Sensor>();
-        if (null != smgr.getDefaultSensor(Sensor.TYPE_PRESSURE)) {
-            sensors.add(smgr.getDefaultSensor(Sensor.TYPE_PRESSURE));
+        if (null != smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)) {
+            sensors.add(smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
         }
-
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
@@ -85,7 +89,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
 
         // register as sensor listener
         for (Sensor sensor : sensors) {
-            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
+            if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
                 // Log.d(TAG, "registering for sensor " + sensor.getName());
                 smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
@@ -102,12 +106,12 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
 
     @Override
     public boolean isActive() {
-        return pressureSensingActive;
+        return magneticFieldSensingActive;
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // do nothing
+        // not used
     }
 
     @Override
@@ -116,27 +120,39 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
         if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
-            String sensorName = "";
-            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
-                sensorName = SensorNames.PRESSURE;
+			String sensorName = "";
+			if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+				sensorName = SensorNames.MAGNETIC_FIELD;
 
-                // value is millibar, convert to Pascal
-                float millibar = event.values[0];
-                float pascal = millibar * 100;
-                float value = BigDecimal.valueOf(pascal).setScale(3, 0).floatValue();
+				double x = event.values[0];
+				// scale to three decimal precision
+				x = BigDecimal.valueOf(x).setScale(3, 0).doubleValue();
+				double y = event.values[1];
+				// scale to three decimal precision
+				y = BigDecimal.valueOf(y).setScale(3, 0).doubleValue();
+				double z = event.values[2];
+				// scale to three decimal precision
+				z = BigDecimal.valueOf(z).setScale(3, 0).doubleValue();
 
-                // send msg to MsgHandler
-                Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-                i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-                i.putExtra(DataPoint.VALUE, value);
-                i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-                i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-                i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-                context.startService(i);
+				HashMap<String, Object> dataFields = new HashMap<String, Object>();
+				dataFields.put("x", x);
+				dataFields.put("y", y);
+				dataFields.put("z", z);
+				String jsonString = new JSONObject(dataFields).toString();
+
+				// send msg to MsgHandler
+				Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+				i.putExtra(DataPoint.VALUE, jsonString);
+				i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+				i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
+				i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+				i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+				context.startService(i);
 
                 // sample is successful: unregister the listener
                 stopSample();
-            }
+			}
         }
     }
 
@@ -168,7 +184,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
      */
     @Override
     public void startSensing(long sampleRate) {
-        pressureSensingActive = true;
+        magneticFieldSensingActive = true;
         setSampleRate(sampleRate);
     }
 
@@ -189,7 +205,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
         try {
             smgr.unregisterListener(this);
         } catch (Exception e) {
-            Log.e(TAG, "Failed to stop pressure field sample!", e);
+            Log.e(TAG, "Failed to stop magnetic field sample!", e);
         }
 
     }
@@ -199,8 +215,8 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
      */
     @Override
     public void stopSensing() {
-        // Log.v(TAG, "stop sensor");
+        magneticFieldSensingActive = false;
         stopPolling();
-        pressureSensingActive = false;
+
     }
 }

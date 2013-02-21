@@ -27,6 +27,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
+
 public class LightSensor implements SensorEventListener {
 
     private static final String TAG = "Sense Light Sensor";
@@ -39,6 +40,7 @@ public class LightSensor implements SensorEventListener {
     private Handler LightHandler = new Handler();
     private Runnable LightThread = null;
     private boolean LightSensingActive = false;
+
     private Controller controller;
     
     private static LightSensor instance = null;
@@ -51,7 +53,6 @@ public class LightSensor implements SensorEventListener {
         if (null != smgr.getDefaultSensor(Sensor.TYPE_LIGHT)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_LIGHT));
         }
-
     }
 
     public static LightSensor getInstance(Context context) {
