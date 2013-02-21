@@ -36,11 +36,14 @@ public class CtrlDefault extends Controller {
     }
 
     private static final String TAG = "Sense Controller";
+
     private Context context;
+    private LocationManager locMgr;
 
     public CtrlDefault(Context context) {
         super();
         this.context = context;
+        locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
@@ -53,7 +56,6 @@ public class CtrlDefault extends Controller {
         // not implemented in this controller
     }
 
-    @Override
     public void checkSensorSettings(boolean isGpsAllowed, boolean isListeningNw,
             boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart,
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
@@ -64,7 +66,7 @@ public class CtrlDefault extends Controller {
 
         if (selfAwareMode) {
             // Log.v(TAG, "Check location sensor settings...");
-
+            LocationSensor locListener = LocationSensor.getInstance(context);
             if (isListeningGps) {
 
                 if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)) {
@@ -243,7 +245,7 @@ public class CtrlDefault extends Controller {
             }
 
             if (distance > accuracy) {
-                Log.v(TAG, "Position has changed");
+                // Log.v(TAG, "Position has changed");
                 moved = true;
             } else {
                 // position did NOT change
@@ -265,7 +267,7 @@ public class CtrlDefault extends Controller {
     private boolean isSwitchedOffTooLong(boolean isListeningGps, long listenGpsStop) {
 
         if (isListeningGps) {
-            Log.w(TAG, "No use checking if GPS is switched off too long: it is still listening!");
+            // Log.d(TAG,"No use checking if GPS is switched off too long: it is still listening!");
             return false;
         }
 
@@ -275,7 +277,7 @@ public class CtrlDefault extends Controller {
         if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
             // GPS has been turned off for a long time, or was never even started
             tooLong = true;
-        } else if (!(LocationSensor.locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
+        } else if (!(locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
             // the network provider is disabled: GPS is the only option
             tooLong = true;
         } else {
@@ -285,7 +287,6 @@ public class CtrlDefault extends Controller {
         return tooLong;
     }
 
-    @Override
     public void scheduleTransmissions() {
 
         Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));
@@ -325,12 +326,12 @@ public class CtrlDefault extends Controller {
                 interval = Intervals.OFTEN;
                 break;
             default:
-                Log.e(TAG, "Unexpected sample rate value: " + sampleRate);
+                Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
                 return;
             }
             break;
         default:
-            Log.e(TAG, "Unexpected sync rate value: " + syncRate);
+            Log.w(TAG, "Unexpected sync rate value: " + syncRate);
             return;
         }
         am.cancel(operation);

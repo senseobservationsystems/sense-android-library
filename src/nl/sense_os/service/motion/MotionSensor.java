@@ -11,6 +11,7 @@ import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.states.EpiStateMonitor;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,31 +51,31 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
      */
     private class ScreenOffListener extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Check action just to be on the safe side.
-            if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                return;
-            }
+	@Override
+	public void onReceive(Context context, Intent intent) {
+	    // Check action just to be on the safe side.
+	    if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+			return;
+	    }
 
-            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                    Context.MODE_PRIVATE);
-            boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
-            if (useFix) {
-                // wait half a second and re-register
-                Runnable restartSensing = new Runnable() {
+	    SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+		    Context.MODE_PRIVATE);
+	    boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
+	    if (useFix) {
+			// wait half a second and re-register
+			Runnable restartSensing = new Runnable() {
 
-                    @Override
-                    public void run() {
-                        // Unregisters the motion listener and registers it again.
+				@Override
+				public void run() {
+				// Unregisters the motion listener and registers it again.
                         stopSensing();
                         startSensing(sampleDelay);
-                    };
-                };
+				};
+			};
 
-                new Handler().postDelayed(restartSensing, 500);
-            }
-        }
+			new Handler().postDelayed(restartSensing, 500);
+	    }
+	}
     }
 
     private static final long DELAY_AFTER_REGISTRATION = 500;
@@ -94,7 +95,6 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         }
         return instance;
     }
-
     private final BroadcastReceiver screenOffListener = new ScreenOffListener();
 
     private final FallDetector fallDetector;
@@ -111,8 +111,10 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     private boolean motionSensingActive = false;
     private long sampleDelay = 0; // in milliseconds
     private WakeLock wakeLock;
+
     private boolean isRegistered;
     private PeriodicPollAlarmReceiver alarmReceiver;
+
 
     protected MotionSensor(Context context) {
         this.context = context;
@@ -130,13 +132,13 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         if (null == wakeLock) {
             PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        }
+		    }
         if (!wakeLock.isHeld()) {
             Log.i(TAG, "Acquire wake lock for 500ms");
             wakeLock.acquire(500);
-        } else {
+		    } else {
             // Log.v(TAG, "Wake lock already held");
-        }
+	}
 
         // notify all special sensors
         epiSensor.startNewSample();
@@ -152,19 +154,19 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
             // Register the receiver for SCREEN OFF events
             IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
             context.registerReceiver(screenOffListener, filter);
-        } else {
+	} else {
             // Unregister the receiver for SCREEN OFF events
             try {
                 context.unregisterReceiver(screenOffListener);
             } catch (IllegalArgumentException e) {
                 // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
-            }
-        }
+	    }
+	}
     }
 
     @Override
     public long getSampleRate() {
-        return sampleDelay;
+	return sampleDelay;
     }
 
     @Override
@@ -177,16 +179,16 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
      */
     private boolean isTimeToUnregister() {
 
-        boolean unregister = isUnregisterWhenIdle;
+	boolean unregister = isUnregisterWhenIdle;
 
         // only unregister when sample delay is large enough
         unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
 
         if (isEpiMode) {
             unregister &= epiSensor.isSampleComplete();
-        } else {
+	} else {
             unregister &= standardSensor.isSampleComplete();
-        }
+	}
 
         // check if fall detector is complete
         unregister &= isFallDetectMode ? fallDetector.isSampleComplete() : true;
@@ -194,46 +196,47 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         // check if motion energy sensor is complete
         unregister &= isEnergyMode ? energySensor.isSampleComplete() : true;
 
-        return unregister;
+	return unregister;
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // do nothing
+	// do nothing
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (!motionSensingActive) {
+	if (!motionSensingActive) {
             Log.w(TAG, "Motion sensor value received when sensor is inactive!");
-            return;
-        }
+	    return;
+	}
 
-        // pass sensor value to fall detector first
+
+	// pass sensor value to fall detector first
         if (isFallDetectMode) {
             fallDetector.onNewData(event);
-        }
+	}
 
-        // if motion energy sensor is active, determine energy of every sample
+	// if motion energy sensor is active, determine energy of every sample
         if (isEnergyMode) {
             energySensor.onNewData(event);
-        }
+	}
 
         if (isEpiMode) {
             // add the data to the buffer if we are in Epi-mode
             epiSensor.onNewData(event);
-        } else {
+	} else {
             // use standard motion sensor
             standardSensor.onNewData(event);
         }
 
         // unregister sensor listener when we can
-        if (isTimeToUnregister()) {
+	    if (isTimeToUnregister()) {
 
-            // unregister the listener and start again in sampleDelay seconds
+		// unregister the listener and start again in sampleDelay seconds
             stopSample();
-        }
+	}
     }
 
     /**
@@ -241,23 +244,23 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
      */
     private synchronized void registerSensors() {
 
-        if (!isRegistered) {
-            // Log.v(TAG, "Register the motion sensor for updates");
+	if (!isRegistered) {
+	    // Log.v(TAG, "Register the motion sensor for updates");
 
-            SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+	    SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-            int delay = isFallDetectMode || isEpiMode || isEnergyMode ? SensorManager.SENSOR_DELAY_GAME
-                    : SensorManager.SENSOR_DELAY_NORMAL;
+	    int delay = isFallDetectMode || isEpiMode || isEnergyMode ? SensorManager.SENSOR_DELAY_GAME
+		    : SensorManager.SENSOR_DELAY_NORMAL;
 
-            for (Sensor sensor : sensors) {
-                mgr.registerListener(this, sensor, delay);
-            }
+	    for (Sensor sensor : sensors) {
+		mgr.registerListener(this, sensor, delay);
+	    }
 
-            isRegistered = true;
+	    isRegistered = true;
 
-        } else {
-            // Log.v(TAG, "Did not register for motion sensor updates: already registered");
-        }
+	} else {
+	    // Log.v(TAG, "Did not register for motion sensor updates: already registered");
+	}
     }
 
     @Override
@@ -276,40 +279,41 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     public void startSensing(long sampleDelay) {
         // Log.v(TAG, "start sensing");
 
-        final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                Context.MODE_PRIVATE);
-        isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
-        isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
-        isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
+	final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+		Context.MODE_PRIVATE);
+	isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
+	isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
+	isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
 
-        if (isEpiMode) {
-            sampleDelay = 0;
+	if (isEpiMode) {
+	    sampleDelay = 0;
 
-            context.startService(new Intent(context, EpiStateMonitor.class));
-        }
+	    context.startService(new Intent(context, EpiStateMonitor.class));
+	}
 
-        // check if the fall detector is enabled
-        isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
-        if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
-            isFallDetectMode = true;
+	// check if the fall detector is enabled
+	isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
+	if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
+	    isFallDetectMode = true;
 
-            context.startService(new Intent(context, EpiStateMonitor.class));
-        }
+	    context.startService(new Intent(context, EpiStateMonitor.class));
+	}
 
-        if (firstStart && isFallDetectMode) {
+	if (firstStart && isFallDetectMode) {
             fallDetector.sendFallMessage(false);
-            firstStart = false;
-        }
+	    firstStart = false;
+	}
 
         sensors = MotionSensorUtils.getAvailableMotionSensors(context);
         if (isEpiMode) {
             // only listen to accelerometer in epi mode
-            sensors = new ArrayList<Sensor>();
+	sensors = new ArrayList<Sensor>();
+
             SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             sensors.add(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-        }
+	}
 
-        motionSensingActive = true;
+	motionSensingActive = true;
         setSampleRate(sampleDelay);
     }
 
@@ -324,7 +328,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         // release wake lock
         if (null != wakeLock && wakeLock.isHeld()) {
             wakeLock.release();
-        }
+		}
 
         unregisterSensors();
     }
@@ -339,23 +343,24 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         stopSample();
         stopPolling();
         enableScreenOffListener(false);
-        motionSensingActive = false;
+	    motionSensingActive = false;
 
-        if (isEpiMode || isFallDetectMode) {
-            context.stopService(new Intent(context, EpiStateMonitor.class));
-        }
+	if (isEpiMode || isFallDetectMode) {
+	    context.stopService(new Intent(context, EpiStateMonitor.class));
+	}
+
     }
 
     private synchronized void unregisterSensors() {
 
-        if (isRegistered) {
-            // Log.v(TAG, "Unregister the motion sensor for updates");
-            ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE))
-                    .unregisterListener(this);
-        } else {
-            // Log.v(TAG, "Did not unregister for motion sensor updates: already unregistered");
-        }
+	if (isRegistered) {
+	    // Log.v(TAG, "Unregister the motion sensor for updates");
+	    ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE))
+		    .unregisterListener(this);
+	} else {
+	    // Log.v(TAG, "Did not unregister for motion sensor updates: already unregistered");
+	}
 
-        isRegistered = false;
+	isRegistered = false;
     }
 }

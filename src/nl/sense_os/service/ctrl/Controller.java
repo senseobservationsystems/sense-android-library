@@ -1,6 +1,5 @@
 package nl.sense_os.service.ctrl;
 
-import nl.sense_os.service.location.LocationSensor;
 import android.content.Context;
 import android.location.Location;
 
@@ -12,7 +11,6 @@ import android.location.Location;
 public abstract class Controller {
 
     private static Controller ref;
-    public static LocationSensor locListener;
 
     /**
      * Returns a controller instance
@@ -24,9 +22,15 @@ public abstract class Controller {
     public static synchronized Controller getController(Context context) {
         if (ref == null) {
             ref = new CtrlExtended(context);
-            locListener = LocationSensor.getInstance(context);
         }
         return ref;
+    }
+
+    /**
+     * Private constructor to enforce singleton pattern.
+     */
+    protected Controller() {
+        // nothing to do
     }
 
     /**
@@ -83,4 +87,5 @@ public abstract class Controller {
      * Starts periodic transmission of the buffered sensor data.
      */
     public abstract void scheduleTransmissions();
+
 }
