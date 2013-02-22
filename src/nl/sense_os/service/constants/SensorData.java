@@ -44,6 +44,7 @@ public class SensorData {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
                 + "/vnd.sense_os.data_point";
         public static final String CONTENT_URI_PATH = "/recent_values";
+        @Deprecated
         public static final String CONTENT_PERSISTED_URI_PATH = "/persisted_values";
         public static final String CONTENT_REMOTE_URI_PATH = "/remote_values";
 

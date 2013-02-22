@@ -1,8 +1,6 @@
 package nl.sense_os.service.motion;
 
 import java.util.List;
-import java.util.logging.Logger;
-
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -18,6 +16,8 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.util.Log;
+import android.os.SystemClock;
+
 
 public class StandardMotionSensor implements DataProcessor {
 
@@ -65,7 +65,7 @@ public class StandardMotionSensor implements DataProcessor {
         }
 
         // store the sample time
-        lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
+        lastSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
 
         // send data point
         String sensorName = MotionSensorUtils.getSensorName(sensor);
