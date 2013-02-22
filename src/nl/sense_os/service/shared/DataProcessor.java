@@ -1,6 +1,5 @@
 package nl.sense_os.service.shared;
 
-import android.hardware.SensorEvent;
 
 /**
  * Interface for data processor implementations. These processors can register at the main sensor
@@ -30,5 +29,5 @@ public interface DataProcessor {
      * 
      * @param event
      */
-    void onNewData(SensorEvent event);
+    void onNewData(SensorDataPoint dataPoint);
 }

@@ -30,7 +30,7 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class PressureSensor implements SensorEventListener, PeriodicPollingSensor {
+public class PressureSensor extends PeriodicPollingSensor implements SensorEventListener {
 
     private static final String TAG = "Sense Pressure Sensor";
     private static PressureSensor instance = null;
@@ -95,11 +95,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
     /**
      * @return The delay between samples in milliseconds
      */
-    @Override
-    public long getSampleRate() {
-        return sampleDelay;
-    }
-
+  
     @Override
     public boolean isActive() {
         return pressureSensingActive;
@@ -147,7 +143,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    @Override
+    
     public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;

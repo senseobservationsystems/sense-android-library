@@ -4,7 +4,10 @@
 package nl.sense_os.service;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
@@ -22,6 +25,7 @@ import nl.sense_os.service.constants.SensePrefs.Main.External;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
@@ -34,6 +38,8 @@ import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.SenseSensor;
 
 import org.json.JSONObject;
 
@@ -118,6 +124,8 @@ public class SenseService extends Service {
 	private NewOBD2DeviceConnector es_obd2sensor;
 	private MagneticFieldSensor magneticFieldSensor;
 
+	private HashMap<String, AtomicReference<SenseSensor> > registeredSensors = new HashMap<String, AtomicReference<SenseSensor> >(); 
+		
 	/**
 	 * Handler on main application thread to display toasts to the user.
 	 */
@@ -1038,11 +1046,12 @@ public class SenseService extends Service {
 
 				// check motion sensor presence
 				if (motionSensor != null) {
+					unregisterSensor(SensorNames.MOTION);
 					Log.w(TAG, "Motion sensor is already present! Stopping the sensor");
                     motionSensor.stopSensing();
 					motionSensor = null;
 				}
-
+				
 				// get sample rate
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
 						MODE_PRIVATE);
@@ -1076,6 +1085,7 @@ public class SenseService extends Service {
 
 				if (null == motionHandler) {
 					HandlerThread motionThread = new HandlerThread("Motion thread");
+					
 					motionThread.start();
 					motionHandler = new Handler(motionThread.getLooper());
 				}
@@ -1084,12 +1094,14 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 						motionSensor = MotionSensor.getInstance(SenseService.this);
+						registerSensor(SensorNames.MOTION, new AtomicReference<SenseSensor>(motionSensor));
                         motionSensor.startSensing(finalInterval);
 					}
 				});
 
 			} else {
 
+				unregisterSensor(SensorNames.MOTION);
 				// stop sensing
 				if (null != motionSensor) {
                     motionSensor.stopSensing();
@@ -1230,4 +1242,62 @@ public class SenseService extends Service {
 		startService(new Intent(this, DefaultSensorRegistrationService.class));
 	}
 	
+	/**
+	 * Register a SenseSensor 
+	 * 
+	 * This methods registers a SenseSensor with the given sensorName at the SenseService.
+	 * When a SenseSensor is registered data processors can subscribe to the sensor for sensor data.
+	 * Existing SenseSensors with the same name will be overwritten 	 
+	 * 
+	 * @param sensorName The name of the Sensor
+	 * @param sensor The AtomicReference to the SenseSensor 
+	 */
+	public void registerSensor(String sensorName, AtomicReference<SenseSensor> sensor)
+	{	
+		registeredSensors.put(sensorName, sensor);		
+	}
+	
+	/**
+	 * Subscribe to a SenseSensor
+	 * 
+	 * This method subscribes a DataProcessor to receive SensorDataPoints from a SenseSensor.
+	 * 
+	 * @param sensorName The name of the registered SenseSensor
+	 * @param dataProcessor The AtomicReference to the DataProcessor that receives the sensor data 
+	 */
+	public void subscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
+	{
+		AtomicReference<SenseSensor> sensor = registeredSensors.get(sensorName);
+		if(sensor != null && sensor.get() != null)
+			sensor.get().addSubscriber(dataProcessor);
+	}
+	
+	/**
+	 * Un-Subscribe to a SenseSensor
+	 * 
+	 * This method un-subscribes a DataProcessor from a SenseSensor.
+	 * 
+	 * @param sensorName The name of the registered SenseSensor
+	 * @param dataProcessor The AtomicReference to the DataProcessor that receives the sensor data 
+	 */
+	public void unSubscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
+	{
+		AtomicReference<SenseSensor> sensor = registeredSensors.get(sensorName);
+		if(sensor != null && sensor.get() != null)
+			sensor.get().removeSubscriber(dataProcessor);
+	}
+	
+	/**
+	 * Unregister a SenseSensor
+	 * 
+	 * This method unregisters a SenseSensor.
+	 * No new DataProcessors can subscribe to the SenseSensor anymore, 
+	 * but DataProcessors which have already subscribed to the SenseSensor will stay subscribed.
+	 * 
+	 * @param sensorName The name of the registerd SenseSensor
+	 */
+	public void unregisterSensor(String sensorName)
+	{
+		registeredSensors.remove(sensorName);		
+	}
 }

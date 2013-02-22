@@ -9,6 +9,8 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -186,8 +188,12 @@ public class FallDetector implements DataProcessor {
     }
 
     @Override
-    public void onNewData(SensorEvent event) {
+    public void onNewData(SensorDataPoint dataPoint) {
 
+    	if(dataPoint.getDataType() != DataType.SENSOREVENT)
+        	return;
+        
+        SensorEvent event = dataPoint.getSensorEventValue(); 
         // check if this is useful data point
         Sensor sensor = event.sensor;
         if (sensor.getType() != Sensor.TYPE_ACCELEROMETER) {

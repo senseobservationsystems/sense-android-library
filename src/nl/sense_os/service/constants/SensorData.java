@@ -166,6 +166,13 @@ public class SensorData {
          * sensor.
          */
         public static final String ACCELEROMETER = "accelerometer";
+        
+        /**
+         * MotionSensor. The basis for the other Motion sensors.
+         * sensor.
+         */
+        public static final String MOTION = "motion";
+
 
         /**
          * Linear acceleration sensor name. Part of the Motion sensors.

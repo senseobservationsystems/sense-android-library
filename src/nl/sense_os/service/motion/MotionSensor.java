@@ -5,12 +5,16 @@ package nl.sense_os.service.motion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import nl.sense_os.service.SenseService;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
+import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.states.EpiStateMonitor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -43,7 +47,7 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class MotionSensor implements SensorEventListener, PeriodicPollingSensor {
+public class MotionSensor extends PeriodicPollingSensor implements SensorEventListener  {
 
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
@@ -104,21 +108,22 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     private boolean isEpiMode;
     private boolean isUnregisterWhenIdle;
     private boolean firstStart = true;
-    private List<Sensor> sensors;
-    private List<DataProcessor> dataProcessors;
-    private boolean motionSensingActive = false;
-    private long sampleDelay = 0; // in milliseconds
+    private List<Sensor> sensors;    
+    private boolean motionSensingActive = false;    
     private WakeLock wakeLock;
     private boolean isRegistered;
     private PeriodicPollAlarmReceiver alarmReceiver;
+    // TODO:
+    // Should be moved to the service where all the sensors are registered
+    // and added as data processor when the preference is selected
+    // or at least out of startSensing, does not need to create this coupling at startSensing 
+    private AtomicReference<DataProcessor> epi, fall, energy, standard = null;
 
     protected MotionSensor(Context context) {
         this.context = context;
-        dataProcessors = new ArrayList<DataProcessor>();
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
-
-    @Override
+    
     public void doSample() {
 
         // get wake lock
@@ -134,9 +139,8 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         }
 
         // notify all special sensors
-        for (DataProcessor dataProcessor : dataProcessors) {
-            dataProcessor.startNewSample();
-        }
+        notifySubscribers();
+          
 
         registerSensors();
     }
@@ -156,11 +160,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         }
     }
 
-    @Override
-    public long getSampleRate() {
-        return sampleDelay;
-    }
-
+ 
     @Override
     public boolean isActive() {
         return motionSensingActive;
@@ -176,9 +176,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         // only unregister when sample delay is large enough
         unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
 
-        for (DataProcessor dataProcessor : dataProcessors) {
-            unregister &= dataProcessor.isSampleComplete();
-        }
+       
+            unregister &= this.checkSubscribers();
+       
 
         return unregister;
     }
@@ -196,10 +196,8 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
             return;
         }
 
-        for (DataProcessor dataProcessor : dataProcessors) {
-            dataProcessor.onNewData(event);
-        }
-
+        sendToSubscribers(new SensorDataPoint(event));
+        
         // unregister sensor listener when we can
         if (isTimeToUnregister()) {
 
@@ -232,11 +230,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         }
     }
 
-    public void addDataProcessor(DataProcessor dataProcessor) {
-
-    }
-
-    @Override
+    
     public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;
@@ -248,7 +242,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         alarmReceiver.start(context);
     }
 
-    @Override
+    
     public void startSensing(long sampleDelay) {
         // Log.v(TAG, "start sensing");
 
@@ -276,18 +270,21 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
             context.startService(new Intent(context, EpiStateMonitor.class));
 
             // only add epilepsy data processor
-            EpilepsySensor epiSensor = new EpilepsySensor(context);
-            addDataProcessor(epiSensor);
+            EpilepsySensor epiSensor = new EpilepsySensor(context);    
+            this.epi = new AtomicReference<DataProcessor>(epiSensor);
+            addSubscriber(this.epi);
 
         } else {
             // add standard data processor
             DataProcessor standard = new StandardMotionSensor(context);
-            addDataProcessor(standard);
+            this.standard = new AtomicReference<DataProcessor>(standard);
+            addSubscriber(this.standard);
 
             // add motion energy data processor
             if (isEnergyMode) {
                 DataProcessor energy = new MotionEnergySensor(context);
-                addDataProcessor(energy);
+                this.energy = new AtomicReference<DataProcessor>(energy);
+                addSubscriber(this.energy);
             }
 
             // add fall detection data processor
@@ -296,7 +293,11 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
                 // add fall detector data processor
                 FallDetector fallDetector = new FallDetector(context);
                 fallDetector.demo = isFallDetectDemo;
-                addDataProcessor(fallDetector);
+                
+                // Example how to subscribe via the service
+                // Context should not be used for this                
+                this.fall =  new AtomicReference<DataProcessor>(fallDetector);
+                ((SenseService)context).subscribeToSensor(SensorNames.MOTION, this.fall );
 
                 fallDetector.sendFallMessage(false);
                 firstStart = false;
@@ -335,6 +336,19 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         enableScreenOffListener(false);
         motionSensingActive = false;
 
+        // only remove the DataProcessors added in the class
+        // keep external DataProcessors
+        if(this.epi != null)        
+        	removeSubscriber(epi);
+        if(this.standard != null)
+        	removeSubscriber(standard);
+        if(this.fall != null)
+        	removeSubscriber(fall);
+        if(this.energy != null)
+        	removeSubscriber(energy);
+        
+    	epi = standard = fall = energy = null;
+        
         if (isEpiMode || isFallDetectMode) {
             context.stopService(new Intent(context, EpiStateMonitor.class));
         }

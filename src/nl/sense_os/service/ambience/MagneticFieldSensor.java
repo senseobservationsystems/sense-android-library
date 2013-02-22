@@ -34,7 +34,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class MagneticFieldSensor implements SensorEventListener, PeriodicPollingSensor {
+public class MagneticFieldSensor extends PeriodicPollingSensor implements SensorEventListener {
 
     private static final String TAG = "Sense Magnetic Field Sensor";
     private static final String SENSOR_DISPLAY_NAME = "magnetic field";
@@ -96,13 +96,6 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
         }
     }
 
-    /**
-     * @return The delay between samples in milliseconds
-     */
-    @Override
-    public long getSampleRate() {
-        return sampleDelay;
-    }
 
     @Override
     public boolean isActive() {
@@ -163,7 +156,7 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    @Override
+    
     public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;

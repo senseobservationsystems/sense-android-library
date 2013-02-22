@@ -50,18 +50,18 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class SensePhoneState extends PhoneStateListener {
+public class SensePhoneState {
 
 	private static final String TAG = "Sense PhoneStateListener";
-	
+
 	private static SensePhoneState instance = null;
-    
-    public static SensePhoneState getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new SensePhoneState(context);
-	    }
-	    return instance;
-    }
+
+	public static SensePhoneState getInstance(Context context) {
+		if(instance == null) {
+			instance = new SensePhoneState(context);
+		}
+		return instance;
+	}
 
 	private class OutgoingCallReceiver extends BroadcastReceiver {
 
@@ -185,7 +185,7 @@ public class SensePhoneState extends PhoneStateListener {
 			events |= PhoneStateListener.LISTEN_CALL_STATE;
 
 			// listen to outgoing calls
-		outgoingCallReceiver = new OutgoingCallReceiver();
+			outgoingCallReceiver = new OutgoingCallReceiver();
 			context.registerReceiver(outgoingCallReceiver, new IntentFilter(
 					Intent.ACTION_NEW_OUTGOING_CALL));
 		}
@@ -205,7 +205,7 @@ public class SensePhoneState extends PhoneStateListener {
 		if (0 != events) {
 			// start listening to the phone state
 			/* THIS TRIGGERS AN EXCEPTION WHEN STOPPING AND STARTING THE SENSOR */
-			telMgr.listen(this, events);
+			telMgr.listen(phoneStateListener, events);
 			//telMgr.listen(this, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
 
@@ -224,7 +224,7 @@ public class SensePhoneState extends PhoneStateListener {
 		} else {
 			Log.w(TAG, "Phone state sensor is started but is not registered for any events");
 		}
-		
+
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class SensePhoneState extends PhoneStateListener {
 	 */
 	public void stopSensing() {
 		Log.v(TAG, "stopSensing From " + this);
-		telMgr.listen(this, PhoneStateListener.LISTEN_NONE);
+		telMgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
 
 		if (null != transmitTimer) {
 			transmitTimer.cancel();
@@ -248,172 +248,175 @@ public class SensePhoneState extends PhoneStateListener {
 		}
 	}
 
-	@Override
-	public void onCallStateChanged(int state, String incomingNumber) {
+	PhoneStateListener phoneStateListener = new PhoneStateListener()
+	{
+		@Override
+		public void onCallStateChanged(int state, String incomingNumber) {
 
-		JSONObject json = new JSONObject();
-		try {
-			switch (state) {
-			case TelephonyManager.CALL_STATE_IDLE:
-				json.put("state", "idle");
-				break;
-			case TelephonyManager.CALL_STATE_OFFHOOK:
-				json.put("state", "calling");
-				break;
-			case TelephonyManager.CALL_STATE_RINGING:
-				json.put("state", "ringing");
-				json.put("incomingNumber", incomingNumber);
-				break;
-			default:
-				Log.e(TAG, "Unexpected call state: " + state);
+			JSONObject json = new JSONObject();
+			try {
+				switch (state) {
+				case TelephonyManager.CALL_STATE_IDLE:
+					json.put("state", "idle");
+					break;
+				case TelephonyManager.CALL_STATE_OFFHOOK:
+					json.put("state", "calling");
+					break;
+				case TelephonyManager.CALL_STATE_RINGING:
+					json.put("state", "ringing");
+					json.put("incomingNumber", incomingNumber);
+					break;
+				default:
+					Log.e(TAG, "Unexpected call state: " + state);
+					return;
+				}
+			} catch (JSONException e) {
+				Log.e(TAG, "JSONException in onCallChanged", e);
 				return;
 			}
-		} catch (JSONException e) {
-			Log.e(TAG, "JSONException in onCallChanged", e);
-			return;
+
+			// immediately send data point
+			sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
 		}
 
-		// immediately send data point
-		sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
-	}
+		@Override
+		public void onCellLocationChanged(CellLocation location) {
+			// TODO: Catch listen cell location!
+		}
 
-	@Override
-	public void onCellLocationChanged(CellLocation location) {
-		// TODO: Catch listen cell location!
-	}
+		@Override
+		public void onDataActivity(int direction) {
+			// not used to prevent a loop
+		}
 
-	@Override
-	public void onDataActivity(int direction) {
-		// not used to prevent a loop
-	}
+		@Override
+		public void onDataConnectionStateChanged(int state) {
+			// Log.v(TAG, "Connection state changed...");
 
-	@Override
-	public void onDataConnectionStateChanged(int state) {
-		// Log.v(TAG, "Connection state changed...");
-
-		String strState = "";
-		switch (state) {
-		case TelephonyManager.DATA_CONNECTED:
-			// send the URL on which the phone can be reached
-			String ip = "";
-			try {
-				Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-				while (nis.hasMoreElements()) {
-					NetworkInterface ni = nis.nextElement();
-					Enumeration<InetAddress> iis = ni.getInetAddresses();
-					while (iis.hasMoreElements()) {
-						InetAddress ia = iis.nextElement();
-						if (ni.getDisplayName().equalsIgnoreCase("rmnet0")) {
-							ip = ia.getHostAddress();
+			String strState = "";
+			switch (state) {
+			case TelephonyManager.DATA_CONNECTED:
+				// send the URL on which the phone can be reached
+				String ip = "";
+				try {
+					Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+					while (nis.hasMoreElements()) {
+						NetworkInterface ni = nis.nextElement();
+						Enumeration<InetAddress> iis = ni.getInetAddresses();
+						while (iis.hasMoreElements()) {
+							InetAddress ia = iis.nextElement();
+							if (ni.getDisplayName().equalsIgnoreCase("rmnet0")) {
+								ip = ia.getHostAddress();
+							}
 						}
 					}
+				} catch (Exception e) {
+					Log.e(TAG, "Error getting my own IP:", e);
 				}
-			} catch (Exception e) {
-				Log.e(TAG, "Error getting my own IP:", e);
-			}
-			if (ip.length() > 1) {
-				lastIp = ip;
-			}
+				if (ip.length() > 1) {
+					lastIp = ip;
+				}
 
-			strState = "connected";
+				strState = "connected";
 
-			break;
-		case TelephonyManager.DATA_CONNECTING:
-			strState = "connecting";
-			break;
-		case TelephonyManager.DATA_DISCONNECTED:
-			strState = "disconnected";
-			break;
-		case TelephonyManager.DATA_SUSPENDED:
-			strState = "suspended";
-			break;
-		default:
-			Log.e(TAG, "Unexpected data connection state: " + state);
-			return;
-		}
-
-		lastDataConnectionState = strState;
-
-		// check network type
-		ConnectivityManager connectivityManager = (ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo active = connectivityManager.getActiveNetworkInfo();
-		String typeName;
-		int type = -1;
-		if (active == null)
-			typeName = "none";
-		else {
-			typeName = active.getTypeName();
-			type = active.getType();
-		}
-
-		// only send changes. Note that this method is also called when another part of the state
-		// changed.
-		if (previousConnectionType != type) {
-			previousConnectionType = type;
-
-			// send data point immediately
-			sendDataPoint(SensorNames.CONN_TYPE, typeName, SenseDataTypes.STRING);
-		}
-	}
-
-	@Override
-	public void onMessageWaitingIndicatorChanged(boolean unreadMsgs) {
-		// Log.v(TAG, "Message waiting changed...");
-		lastMsgIndicatorState = unreadMsgs;
-		msgIndicatorUpdated = true;
-	}
-
-	@Override
-	public void onServiceStateChanged(ServiceState serviceState) {
-
-		JSONObject json = new JSONObject();
-		try {
-			switch (serviceState.getState()) {
-			case ServiceState.STATE_EMERGENCY_ONLY:
-				json.put("state", "emergency calls only");
 				break;
-			case ServiceState.STATE_IN_SERVICE:
-				json.put("state", "in service");
-				String number = ((TelephonyManager) context
-						.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number();
-				json.put("phone number", number);
+			case TelephonyManager.DATA_CONNECTING:
+				strState = "connecting";
 				break;
-			case ServiceState.STATE_OUT_OF_SERVICE:
-				json.put("state", "out of service");
+			case TelephonyManager.DATA_DISCONNECTED:
+				strState = "disconnected";
 				break;
-			case ServiceState.STATE_POWER_OFF:
-				json.put("state", "power off");
+			case TelephonyManager.DATA_SUSPENDED:
+				strState = "suspended";
 				break;
+			default:
+				Log.e(TAG, "Unexpected data connection state: " + state);
+				return;
 			}
 
-			json.put("manualSet", serviceState.getIsManualSelection() ? true : false);
+			lastDataConnectionState = strState;
 
-		} catch (JSONException e) {
-			Log.e(TAG, "JSONException in onServiceStateChanged", e);
-			return;
-		}
-
-		lastServiceState = json.toString();
-	}
-
-	@Override
-	public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-
-		JSONObject json = new JSONObject();
-		try {
-			if (signalStrength.isGsm()) {
-				json.put("GSM signal strength", signalStrength.getGsmSignalStrength());
-				json.put("GSM bit error rate", signalStrength.getGsmBitErrorRate());
-			} else {
-				json.put("CDMA dBm", signalStrength.getCdmaDbm());
-				json.put("EVDO dBm", signalStrength.getEvdoDbm());
+			// check network type
+			ConnectivityManager connectivityManager = (ConnectivityManager) context
+					.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo active = connectivityManager.getActiveNetworkInfo();
+			String typeName;
+			int type = -1;
+			if (active == null)
+				typeName = "none";
+			else {
+				typeName = active.getTypeName();
+				type = active.getType();
 			}
-		} catch (JSONException e) {
-			Log.e(TAG, "JSONException in onSignalStrengthsChanged", e);
-			return;
+
+			// only send changes. Note that this method is also called when another part of the state
+			// changed.
+			if (previousConnectionType != type) {
+				previousConnectionType = type;
+
+				// send data point immediately
+				sendDataPoint(SensorNames.CONN_TYPE, typeName, SenseDataTypes.STRING);
+			}
 		}
 
-		lastSignalStrength = json.toString();
-	}
+		@Override
+		public void onMessageWaitingIndicatorChanged(boolean unreadMsgs) {
+			// Log.v(TAG, "Message waiting changed...");
+			lastMsgIndicatorState = unreadMsgs;
+			msgIndicatorUpdated = true;
+		}
+
+		@Override
+		public void onServiceStateChanged(ServiceState serviceState) {
+
+			JSONObject json = new JSONObject();
+			try {
+				switch (serviceState.getState()) {
+				case ServiceState.STATE_EMERGENCY_ONLY:
+					json.put("state", "emergency calls only");
+					break;
+				case ServiceState.STATE_IN_SERVICE:
+					json.put("state", "in service");
+					String number = ((TelephonyManager) context
+							.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number();
+					json.put("phone number", number);
+					break;
+				case ServiceState.STATE_OUT_OF_SERVICE:
+					json.put("state", "out of service");
+					break;
+				case ServiceState.STATE_POWER_OFF:
+					json.put("state", "power off");
+					break;
+				}
+
+				json.put("manualSet", serviceState.getIsManualSelection() ? true : false);
+
+			} catch (JSONException e) {
+				Log.e(TAG, "JSONException in onServiceStateChanged", e);
+				return;
+			}
+
+			lastServiceState = json.toString();
+		}
+
+		@Override
+		public void onSignalStrengthsChanged(SignalStrength signalStrength) {
+
+			JSONObject json = new JSONObject();
+			try {
+				if (signalStrength.isGsm()) {
+					json.put("GSM signal strength", signalStrength.getGsmSignalStrength());
+					json.put("GSM bit error rate", signalStrength.getGsmBitErrorRate());
+				} else {
+					json.put("CDMA dBm", signalStrength.getCdmaDbm());
+					json.put("EVDO dBm", signalStrength.getEvdoDbm());
+				}
+			} catch (JSONException e) {
+				Log.e(TAG, "JSONException in onSignalStrengthsChanged", e);
+				return;
+			}
+
+			lastSignalStrength = json.toString();
+		}
+	};
 }
