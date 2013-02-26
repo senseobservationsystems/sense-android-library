@@ -21,6 +21,7 @@ public class SensorDataPoint {
 		STRING,
 		ARRAYLIST,
 		JSON,
+		JSONSTRING,
 		FILE,		
 		SENSOREVENT		
 	};
@@ -117,7 +118,7 @@ public class SensorDataPoint {
 	 * Set the dataType
 	 * 
 	 * This method overrides the dataType which has been set automatically.
-	 * This is method can be used when a more precise dataType like FILE is needed. 
+	 * This method can be used when a more precise dataType like FILE is needed. 
 	 * 
 	 * @param dataType
 	 * 		The dataType of the SensorDataPoint

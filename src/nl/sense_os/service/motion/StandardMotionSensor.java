@@ -4,6 +4,7 @@ import java.util.List;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -21,74 +22,82 @@ import android.os.SystemClock;
 
 public class StandardMotionSensor extends DataProcessor {
 
-    private static final String TAG = "StandardMotionSensor";
+	private static final String TAG = "StandardMotionSensor";
 	private Context context;
-    private long[] lastSampleTimes = new long[50];
-    private final List<Sensor> sensors;
+	private long[] lastSampleTimes = new long[50];
+	private final List<Sensor> sensors;
 
-    public StandardMotionSensor(Context context) {
-        this.context = context;
-        sensors = MotionSensorUtils.getAvailableMotionSensors(context);
-    }
-    
-    public boolean isSampleComplete() {
+	public StandardMotionSensor(Context context) {
+		this.context = context;
+		sensors = MotionSensorUtils.getAvailableMotionSensors(context);
+	}
 
-        // only unregister if all sensors have submitted a new sample
-        int count = 0;
-        boolean complete = false;
-        for (long time : lastSampleTimes) {
-            if (time != 0) {
-                count++;
-                if (count >= sensors.size()) {
-                    complete = true;
-                    break;
-                }
-            }
-        }
+	public boolean isSampleComplete() {
 
-        return complete;
-    }
-    
-    public void onNewData(SensorDataPoint dataPoint) {
+		// only unregister if all sensors have submitted a new sample
+		int count = 0;
+		boolean complete = false;
+		for (long time : lastSampleTimes) {
+			if (time != 0) {
+				count++;
+				if (count >= sensors.size()) {
+					complete = true;
+					break;
+				}
+			}
+		}
 
-    	if(dataPoint.getDataType() != DataType.SENSOREVENT)
-        	return;
-        
-        SensorEvent event = dataPoint.getSensorEventValue(); 
-        // check if the data point is not too soon
-        Sensor sensor = event.sensor;
-        if (lastSampleTimes[sensor.getType()] != 0) {
-            // we already have a sample for this sensor
-            return;
-        }
+		return complete;
+	}
 
-        // store the sample time
-        lastSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
+	public void onNewData(SensorDataPoint dataPoint) {
 
-        // send data point
-        String sensorName = MotionSensorUtils.getSensorName(sensor);
-        JSONObject json = MotionSensorUtils.createJsonValue(event);
-        sendData(sensor, sensorName, json);
-    }
+		if(dataPoint.getDataType() != DataType.SENSOREVENT)
+			return;
 
-    private void sendData(Sensor sensor, String sensorName, JSONObject json) {
-    	try
-    	{
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, json.toString());
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        context.startService(i);
-    	}
-        catch(Exception e)
-        {
-        	Log.e(TAG, "Error seding data from StandardMotionSensor");
-        }
-    }
+		SensorEvent event = dataPoint.getSensorEventValue(); 
+		// check if the data point is not too soon
+		Sensor sensor = event.sensor;
+		if (lastSampleTimes[sensor.getType()] != 0) {
+			// we already have a sample for this sensor
+			return;
+		}
 
-    public void startNewSample() {
-        lastSampleTimes = new long[50];
-    }
+		// store the sample time
+		lastSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
+
+		// send data point
+		String sensorName = MotionSensorUtils.getSensorName(sensor);
+		JSONObject json = MotionSensorUtils.createJsonValue(event);
+		sendData(sensor, sensorName, json);
+	}
+
+	private void sendData(Sensor sensor, String sensorName, JSONObject json) {
+		try
+		{
+			this.notifySubscribers();
+			SensorDataPoint dataPoint = new SensorDataPoint(json);
+			dataPoint.sensorName = sensorName;
+			dataPoint.sensorDescription = sensor.getName();
+			dataPoint.timeStamp = SNTP.getInstance().getTime();        
+			this.sendToSubscribers(dataPoint);
+
+			// TODO: implement MsgHandler as data processor
+			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+			i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+			i.putExtra(DataPoint.VALUE, json.toString());
+			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+			context.startService(i);
+		}
+		catch(Exception e)
+		{
+			Log.e(TAG, "Error seding data from StandardMotionSensor");
+		}
+	}
+
+	public void startNewSample() {
+		lastSampleTimes = new long[50];
+	}
 }

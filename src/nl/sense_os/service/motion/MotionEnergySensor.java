@@ -136,16 +136,25 @@ public class MotionEnergySensor extends DataProcessor {
      */
     private void sendData() {
 
+    	this.notifySubscribers();
         // round to three decimals
         float value = BigDecimal.valueOf(avgSpeedChange).setScale(3, 0).floatValue();
-
+        
+        SensorDataPoint dataPoint = new SensorDataPoint(value);
+        dataPoint.sensorName = SensorNames.MOTION_ENERGY;
+        dataPoint.sensorDescription = SensorNames.MOTION_ENERGY;
+        dataPoint.timeStamp = SNTP.getInstance().getTime();        
+        this.sendToSubscribers(dataPoint);
+        
+        //TODO: add the MsgHandler as data processor
+        
         // prepare intent to send to MsgHandler
         Intent i = new Intent(context.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MOTION_ENERGY);
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
         i.putExtra(DataPoint.VALUE, value);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        i.putExtra(DataPoint.TIMESTAMP,  dataPoint.timeStamp);
         context.startService(i);
     }
 

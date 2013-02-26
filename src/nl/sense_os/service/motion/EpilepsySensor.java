@@ -4,6 +4,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -80,6 +81,21 @@ public class EpilepsySensor extends DataProcessor {
                 + Math.round(LOCAL_BUFFER_TIME / dataBuffer[sensor.getType()].length())
                 + ",\"data\":" + dataBuffer[sensor.getType()].toString() + "}";
 
+        try
+        {
+        	this.notifySubscribers();        
+        	SensorDataPoint dataPoint = new SensorDataPoint(new JSONObject(value));
+        	dataPoint.sensorName = SensorNames.ACCELEROMETER_EPI;
+        	dataPoint.sensorDescription = sensor.getName();
+        	dataPoint.timeStamp = lastLocalSampleTimes[sensor.getType()];        	
+        	this.sendToSubscribers(dataPoint);
+        }
+        catch(Exception e)
+        {
+        	Log.e(TAG, "Error in sending data to subscribers");
+        }
+        
+        // TODO: implement MsgHandler as data processor
         // pass message to the MsgHandler
         Intent i = new Intent(context.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.ACCELEROMETER_EPI);
