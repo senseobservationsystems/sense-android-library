@@ -55,6 +55,8 @@ public class MotionSensorUtils {
         try {
             for (double value : event.values) {
                 // scale to three decimal precision
+            	if(Double.isNaN(value))
+            		continue;
                 value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
 
                 switch (axis) {
