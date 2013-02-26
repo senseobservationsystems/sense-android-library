@@ -123,9 +123,8 @@ public class SenseService extends Service {
 	private ZephyrBioHarness es_bioHarness;
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
-	private MagneticFieldSensor magneticFieldSensor;
-
-	private HashMap<String, AtomicReference<Subscribable> > registeredSensors = new HashMap<String, AtomicReference<Subscribable> >(); 
+	private MagneticFieldSensor magneticFieldSensor;	
+	private HashMap<String, Vector<AtomicReference<Subscribable>> > registeredSensors = new HashMap<String, Vector<AtomicReference<Subscribable> > >(); 
 		
 	/**
 	 * Handler on main application thread to display toasts to the user.
@@ -677,11 +676,16 @@ public class SenseService extends Service {
 							note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
 							startForeground(1337, note);*/
 							noiseSensor = NoiseSensor.getInstance(SenseService.this);
-							//registerSensor(SensorNames.NOISE, new AtomicReference<Subscribable>(noiseSensor));
+							AtomicReference<Subscribable> noiseRef = new AtomicReference<Subscribable>(noiseSensor); 
+							registerSensor(SensorNames.NOISE, noiseRef);							
+							registerSensor(SensorNames.AUDIO_SPECTRUM, noiseRef);
+							registerSensor(SensorNames.LOUDNESS, noiseRef);							
+							registerSensor(SensorNames.NOISE, noiseSensor.getAutoCalibratedNoiseSensor());
 							noiseSensor.enable(finalInterval);
 						}
 						if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
 							lightSensor = LightSensor.getInstance(SenseService.this);
+							registerSensor(SensorNames.LIGHT, new AtomicReference<Subscribable>(lightSensor));
 							lightSensor.startLightSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
@@ -689,25 +693,28 @@ public class SenseService extends Service {
 								&& Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 							if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
 								cameraLightSensor = CameraLightSensor.getInstance(SenseService.this);
+								registerSensor(SensorNames.CAMERA_LIGHT, new AtomicReference<Subscribable>(cameraLightSensor));
 								cameraLightSensor.startLightSensing(finalInterval);
 							}
 						} else {
 							// Log.v(TAG, "Camera is not supported in this version of Android");
 						}
 						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
-                            magneticFieldSensor = MagneticFieldSensor
-                                    .getInstance(SenseService.this);
+                            magneticFieldSensor = MagneticFieldSensor.getInstance(SenseService.this);
+                            registerSensor(SensorNames.MAGNETIC_FIELD, new AtomicReference<Subscribable>(magneticFieldSensor));
                             magneticFieldSensor.startSensing(finalInterval);
 						}
 						
 						if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
 							pressureSensor = PressureSensor.getInstance(SenseService.this);
+							registerSensor(SensorNames.PRESSURE, new AtomicReference<Subscribable>(pressureSensor));
                             pressureSensor.startSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 							if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
 								temperatureSensor = TemperatureSensor.getInstance(SenseService.this);
+								registerSensor(SensorNames.TEMPERATURE, new AtomicReference<Subscribable>(temperatureSensor));
 								temperatureSensor.startSensing(finalInterval);
 							}
 						} else {
@@ -722,26 +729,36 @@ public class SenseService extends Service {
 				// stop sensing
 				if (null != noiseSensor) {
 					noiseSensor.disable();
+					// unregister is not needed for Singleton Sensors
+					unregisterSensor(SensorNames.NOISE, new AtomicReference<Subscribable>(noiseSensor));
+					unregisterSensor(SensorNames.AUDIO_SPECTRUM, new AtomicReference<Subscribable>(noiseSensor));
+					unregisterSensor(SensorNames.LOUDNESS, new AtomicReference<Subscribable>(noiseSensor));
+					unregisterSensor(SensorNames.NOISE, new AtomicReference<Subscribable>(noiseSensor));
 					noiseSensor = null;
 				}
 				if (null != lightSensor) {
 					lightSensor.stopLightSensing();
+					unregisterSensor(SensorNames.LIGHT, new AtomicReference<Subscribable>(lightSensor));					
 					lightSensor = null;
 				}
 				if (null != cameraLightSensor) {
 					cameraLightSensor.stopLightSensing();
+					unregisterSensor(SensorNames.CAMERA_LIGHT, new AtomicReference<Subscribable>(cameraLightSensor));					
 					cameraLightSensor = null;
 				}
 				if (null != pressureSensor) {
                     pressureSensor.stopSensing();
+                    unregisterSensor(SensorNames.PRESSURE, new AtomicReference<Subscribable>(pressureSensor));                    
 					pressureSensor = null;
 				}
 				if (null != temperatureSensor) {
 					temperatureSensor.stopSensing();
+					unregisterSensor(SensorNames.TEMPERATURE, new AtomicReference<Subscribable>(temperatureSensor));					
 					temperatureSensor = null;
 				}
 				if (null != magneticFieldSensor) {
                     magneticFieldSensor.stopSensing();
+                    unregisterSensor(SensorNames.MAGNETIC_FIELD, new AtomicReference<Subscribable>(magneticFieldSensor));                    
 					magneticFieldSensor = null;
 				}
 			}
@@ -800,7 +817,9 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 						deviceProximity = new DeviceProximity(SenseService.this);
-
+						registerSensor(SensorNames.WIFI_SCAN,deviceProximity.getWIFIDeviceProximity());
+						registerSensor(SensorNames.BLUETOOTH_DISCOVERY,deviceProximity.getBluetoothDeviceProximity());
+						registerSensor(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,deviceProximity.getBluetoothDeviceProximity());
 						// start sensing
 						deviceProximity.startEnvironmentScanning(finalInterval);
 					}
@@ -811,6 +830,9 @@ public class SenseService extends Service {
 				// stop sensing
 				if (null != deviceProximity) {
 					deviceProximity.stopEnvironmentScanning();
+					unregisterSensor(SensorNames.WIFI_SCAN, deviceProximity.getWIFIDeviceProximity());
+					unregisterSensor(SensorNames.BLUETOOTH_DISCOVERY,deviceProximity.getBluetoothDeviceProximity());
+					unregisterSensor(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,deviceProximity.getBluetoothDeviceProximity());
 					deviceProximity = null;
 				}
 
@@ -890,15 +912,29 @@ public class SenseService extends Service {
 					public void run() {
 						if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
 							es_bioHarness = new ZephyrBioHarness(SenseService.this);
+							AtomicReference<Subscribable> bioRef = new AtomicReference<Subscribable>(es_bioHarness);
+							registerSensor(SensorNames.ACCELEROMETER, bioRef);
+							registerSensor(SensorNames.HEART_RATE, bioRef);
+							registerSensor(SensorNames.RESPIRATION, bioRef);
+							registerSensor(SensorNames.TEMPERATURE, bioRef);
+							registerSensor(SensorNames.BATTERY_LEVEL,bioRef);
+							registerSensor(SensorNames.WORN_STATUS, bioRef);
 							es_bioHarness.startBioHarness(finalInterval);
 						}
 						if (mainPrefs.getBoolean(External.ZephyrHxM.MAIN, false)) {
 							es_HxM = new ZephyrHxM(SenseService.this);
+							AtomicReference<Subscribable> hxmRef = new AtomicReference<Subscribable>(es_HxM);
+							registerSensor(SensorNames.HEART_RATE, hxmRef);
+							registerSensor(SensorNames.SPEED, hxmRef);
+							registerSensor(SensorNames.DISTANCE, hxmRef);
+							registerSensor(SensorNames.BATTERY_CHARGE, hxmRef);
+							registerSensor(SensorNames.STRIDES, hxmRef);
 							es_HxM.startHxM(finalInterval);
 						}
 						if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
-							es_obd2sensor = new NewOBD2DeviceConnector(SenseService.this,
-									finalInterval);
+							es_obd2sensor = new NewOBD2DeviceConnector(SenseService.this, finalInterval);
+							registerSensor(SensorNames.OBD_STANDARDS, new AtomicReference<Subscribable>(es_obd2sensor));
+							
 							es_obd2sensor.run();
 						}
 					}
@@ -910,6 +946,12 @@ public class SenseService extends Service {
 				if (null != es_bioHarness) {
 					// Log.w(TAG, "Bioharness sensor is already present!");
 					es_bioHarness.stopBioHarness();
+					unregisterSensor(SensorNames.ACCELEROMETER, new AtomicReference<Subscribable>(es_bioHarness));
+					unregisterSensor(SensorNames.HEART_RATE, new AtomicReference<Subscribable>(es_bioHarness));
+					unregisterSensor(SensorNames.RESPIRATION, new AtomicReference<Subscribable>(es_bioHarness));
+					unregisterSensor(SensorNames.TEMPERATURE, new AtomicReference<Subscribable>(es_bioHarness));
+					unregisterSensor(SensorNames.BATTERY_LEVEL, new AtomicReference<Subscribable>(es_bioHarness));
+					unregisterSensor(SensorNames.WORN_STATUS, new AtomicReference<Subscribable>(es_bioHarness));
 					es_bioHarness = null;
 				}
 
@@ -917,6 +959,11 @@ public class SenseService extends Service {
 				if (null != es_HxM) {
 					// Log.w(TAG, "HxM sensor is already present!");
 					es_HxM.stopHxM();
+					unregisterSensor(SensorNames.HEART_RATE, new AtomicReference<Subscribable>(es_HxM));
+					unregisterSensor(SensorNames.SPEED, new AtomicReference<Subscribable>(es_HxM));
+					unregisterSensor(SensorNames.DISTANCE, new AtomicReference<Subscribable>(es_HxM));
+					unregisterSensor(SensorNames.BATTERY_CHARGE, new AtomicReference<Subscribable>(es_HxM));
+					unregisterSensor(SensorNames.STRIDES, new AtomicReference<Subscribable>(es_HxM));
 					es_HxM = null;
 				}
 
@@ -924,6 +971,7 @@ public class SenseService extends Service {
 				if (null != es_obd2sensor) {
 					// Log.w(TAG, "OBD-II sensor is already present!");
 					es_obd2sensor.stop();
+					unregisterSensor(SensorNames.OBD_STANDARDS, new AtomicReference<Subscribable>(es_obd2sensor));
 					es_obd2sensor = null;
 				}
 
@@ -998,6 +1046,10 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 						locListener = LocationSensor.getInstance(SenseService.this);
+						AtomicReference<Subscribable> locRef = new AtomicReference<Subscribable>(locListener);
+						registerSensor(SensorNames.LOCATION, locRef);
+						registerSensor(SensorNames.TRAVELED_DISTANCE_1H, locRef);
+						registerSensor(SensorNames.TRAVELED_DISTANCE_24H, locRef);
 						locListener.enable(time, distance);
 					}
 				});
@@ -1007,6 +1059,10 @@ public class SenseService extends Service {
 				// stop location listener
 				if (null != locListener) {
 					locListener.disable();
+					// unregister is not needed for Singleton Sensors
+					unregisterSensor(SensorNames.LOCATION, new AtomicReference<Subscribable>(locListener));					
+					unregisterSensor(SensorNames.TRAVELED_DISTANCE_1H, new AtomicReference<Subscribable>(locListener));		
+					unregisterSensor(SensorNames.TRAVELED_DISTANCE_24H, new AtomicReference<Subscribable>(locListener));		
 					locListener = null;
 				}
 
@@ -1047,8 +1103,7 @@ public class SenseService extends Service {
 			if (true == active) {
 
 				// check motion sensor presence
-				if (motionSensor != null) {
-					unregisterSensor(SensorNames.MOTION);
+				if (motionSensor != null) {							
 					Log.w(TAG, "Motion sensor is already present! Stopping the sensor");
                     motionSensor.stopSensing();
 					motionSensor = null;
@@ -1096,15 +1151,15 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 						motionSensor = MotionSensor.getInstance(SenseService.this);
-						registerSensor(SensorNames.MOTION, new AtomicReference<Subscribable>(motionSensor));
+						registerSensor(SensorNames.MOTION, new AtomicReference<Subscribable>(motionSensor));						
                         motionSensor.startSensing(finalInterval);
 					}
 				});
 
 			} else {
 
-				// TODO: deleting a sensor will remove the subscribers, only stop sensors! 
-				unregisterSensor(SensorNames.MOTION);
+				// unregister is not needed for Singleton Sensors
+				unregisterSensor(SensorNames.MOTION, new AtomicReference<Subscribable>(motionSensor));
 				// stop sensing
 				if (null != motionSensor) {
                     motionSensor.stopSensing();
@@ -1257,7 +1312,34 @@ public class SenseService extends Service {
 	 */
 	public void registerSensor(String sensorName, AtomicReference<Subscribable> sensor)
 	{	
-		registeredSensors.put(sensorName, sensor);		
+		// check if the sensor is already registered
+		if(isSensorRegistered(sensorName, sensor))
+			return;
+		
+		Vector<AtomicReference<Subscribable>> subscribables;
+		if(registeredSensors.containsKey(sensorName))
+			subscribables = registeredSensors.get(sensorName);
+		else
+			subscribables = new Vector<AtomicReference<Subscribable> >();
+		subscribables.add(sensor);
+		registeredSensors.put(sensorName, subscribables);		
+	}
+	
+	public boolean isSensorRegistered(String sensorName, AtomicReference<Subscribable> sensor)
+	{
+		if(!registeredSensors.containsKey(sensorName))
+			return false;
+			
+		Vector<AtomicReference<Subscribable>> subscribables = registeredSensors.get(sensorName);
+		for (int i = 0; i < subscribables.size(); i++) 
+		{
+			AtomicReference<Subscribable> item = subscribables.elementAt(i);
+			if(item == null || item.get() == null)			
+				subscribables.removeElementAt(i);			
+			else if(item.get() == sensor.get())
+				return true;				
+		}		
+		return false;
 	}
 	
 	/**
@@ -1267,12 +1349,22 @@ public class SenseService extends Service {
 	 * 
 	 * @param sensorName The name of the registered SenseSensor
 	 * @param dataProcessor The AtomicReference to the DataProcessor that receives the sensor data 
+	 * @return boolean Returns True if the DataProcessors is successfully subscribed to the sensor, if It was already subscribed it will return false
 	 */
-	public void subscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
+	public boolean subscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
 	{
-		AtomicReference<Subscribable> sensor = registeredSensors.get(sensorName);
-		if(sensor != null && sensor.get() != null)
-			sensor.get().addSubscriber(dataProcessor);
+		Vector<AtomicReference<Subscribable>> subscribables = registeredSensors.get(sensorName);
+		if(subscribables == null)
+			return false;
+		
+		boolean subscribed = false;
+		for (int i = 0; i < subscribables.size(); i++) 
+		{
+			AtomicReference<Subscribable> item = subscribables.elementAt(i);
+			if(item != null && item.get() != null)			
+				subscribed |= item.get().addSubscriber(dataProcessor);
+		}
+		return subscribed;
 	}
 	
 	/**
@@ -1285,9 +1377,15 @@ public class SenseService extends Service {
 	 */
 	public void unSubscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
 	{
-		AtomicReference<Subscribable> sensor = registeredSensors.get(sensorName);
-		if(sensor != null && sensor.get() != null)
-			sensor.get().removeSubscriber(dataProcessor);
+		if(!registeredSensors.containsKey(sensorName))
+			return;
+		Vector<AtomicReference<Subscribable>> subscribables = registeredSensors.get(sensorName);
+		for (int i = 0; i < subscribables.size(); i++) 
+		{
+			AtomicReference<Subscribable> item = subscribables.elementAt(i);		
+			if(item != null && item.get() != null)
+			item.get().removeSubscriber(dataProcessor);
+		}
 	}
 	
 	/**
@@ -1299,8 +1397,22 @@ public class SenseService extends Service {
 	 * 
 	 * @param sensorName The name of the registered SenseSensor
 	 */
-	public void unregisterSensor(String sensorName)
+	public void unregisterSensor(String sensorName, AtomicReference<Subscribable> sensor)
 	{
-		registeredSensors.remove(sensorName);		
+		if(!registeredSensors.containsKey(sensorName))
+			return;
+			
+		Vector<AtomicReference<Subscribable>> subscribables = registeredSensors.get(sensorName);
+		if(subscribables == null)
+			return;
+		for (int i = 0; i < subscribables.size(); i++) 
+		{
+			AtomicReference<Subscribable> item = subscribables.elementAt(i);
+			if(item == null || (item.get() == sensor.get()))
+			{
+				subscribables.removeElementAt(i);
+				--i;
+			}
+		}
 	}
 }

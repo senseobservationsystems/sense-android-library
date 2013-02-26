@@ -3,8 +3,11 @@
  *************************************************************************************************/
 package nl.sense_os.service.deviceprox;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
+import nl.sense_os.service.shared.Subscribable;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -59,6 +62,16 @@ public class DeviceProximity {
         if (isWifiEnabled) {
             wifiDP.startEnvironmentScanning(interval);
         }
+    }
+    
+    public AtomicReference<Subscribable> getBluetoothDeviceProximity()
+    {
+    	return new AtomicReference<Subscribable>(bluetoothDP);
+    }
+    
+    public AtomicReference<Subscribable> getWIFIDeviceProximity()
+    {
+    	return new AtomicReference<Subscribable>(wifiDP);
     }
 
     public void stopEnvironmentScanning() {

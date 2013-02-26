@@ -30,12 +30,12 @@ import android.util.Log;
  * 
  * @see CameraLightValue
  */
-public class CameraLightSensor {
+public class CameraLightSensor extends Subscribable{
 
 	/**
 	 * Callback that handles a new light value datapoint and sends it to the MsgHandler.
 	 */
-	private class NewCameraLightValue extends Subscribable implements CameraLightValueCallback {
+	private class NewCameraLightValue implements CameraLightValueCallback {
 
 		@Override
 		public void lightValueCallback(float lightValue, int camera_id) {
@@ -48,12 +48,12 @@ public class CameraLightSensor {
 			JSONObject jsonObj = new JSONObject(dataFields);
 			String jsonString = jsonObj.toString();
 
-			this.notifySubscribers();
+			notifySubscribers();
 			SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
 			dataPoint.sensorName = sensorName;
 			dataPoint.sensorDescription = sensorDescription;
 			dataPoint.timeStamp = SNTP.getInstance().getTime();        
-			this.sendToSubscribers(dataPoint);
+			sendToSubscribers(dataPoint);
 
 			// pass message to the MsgHandler
 			Intent i = new Intent(context.getString(R.string.action_sense_new_data));

@@ -6,6 +6,7 @@ package nl.sense_os.service.ambience;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicReference;
 
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
@@ -17,6 +18,7 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONObject;
@@ -531,7 +533,15 @@ public class NoiseSensor extends Subscribable{
 								recorder.reset();
 								// wait until finished otherwise it will be overwritten
 								SoundStreamJob tmp = soundStreamJob;
-
+								
+								notifySubscribers();
+								SensorDataPoint dataPoint = new SensorDataPoint(fileName);
+								dataPoint.sensorName = SensorNames.MIC;
+								dataPoint.sensorDescription = SensorNames.MIC;
+								dataPoint.setDataType(DataType.FILE);
+								dataPoint.timeStamp = SNTP.getInstance().getTime();        
+								sendToSubscribers(dataPoint);
+								
 								// pass message to the MsgHandler
 								Intent i = new Intent(
 										context.getString(R.string.action_sense_new_data));
@@ -540,8 +550,7 @@ public class NoiseSensor extends Subscribable{
 								i.putExtra(DataPoint.VALUE, fileName);
 								i.putExtra(DataPoint.DATA_TYPE,
 										SenseDataTypes.FILE);
-								i.putExtra(DataPoint.TIMESTAMP, SNTP
-										.getInstance().getTime());
+								i.putExtra(DataPoint.TIMESTAMP,dataPoint.timeStamp);
 								context.startService(i);
 
 								if (isEnabled && listenInterval == -1 && tmp.equals(soundStreamJob)) {
@@ -630,6 +639,11 @@ public class NoiseSensor extends Subscribable{
 		controller = Controller.getController(context);
 		loudnessSensor = LoudnessSensor.getInstance(context);
 		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
+	}
+	
+	public AtomicReference<Subscribable> getAutoCalibratedNoiseSensor()
+	{
+		return new AtomicReference<Subscribable>(autoCalibratedNoiseSensor);
 	}
 
 	/**

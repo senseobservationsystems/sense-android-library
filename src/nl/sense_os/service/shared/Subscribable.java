@@ -27,14 +27,30 @@ public abstract class Subscribable {
      * 
      * This methods adds a DataProcessor as sensor data subscriber for this SenseSensor.
      * If an instance of the DataProcessor is already subscribed then it will be ignored
+     * 
      * @param subscriber
      * 		The DataProcessor that wants the sensor data as input
+     * @return boolean True if the DataProcessor could subscribe to the service, false if the DataProcessor was already subscribed
      */
 	
-	public void addSubscriber(AtomicReference<DataProcessor>  subscriber) 
+	public boolean addSubscriber(AtomicReference<DataProcessor>  subscriber) 
 	{
-		if(!subscribers.contains(subscriber))		
+		if(!hasSubscriber(subscriber))		
 			subscribers.add(subscriber);
+		else
+			return false;
+		return true;		
+	}
+	
+	public Boolean hasSubscriber(AtomicReference<DataProcessor> subscriber)
+	{
+		for (int i = 0; i < subscribers.size(); i++) 
+		{
+			AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+			if(item.get() == subscriber.get())
+				return true;			
+		}
+		return false;
 	}
 
 	/**
@@ -47,6 +63,15 @@ public abstract class Subscribable {
 	
 	public void removeSubscriber(AtomicReference<DataProcessor> subscriber) 
 	{
+		for (int i = 0; i < subscribers.size(); i++) 
+		{
+			AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+			if(item.get() == subscriber.get())
+			{
+				subscribers.removeElementAt(i);
+				--i;
+			}
+		}
 		if(subscribers.contains(subscriber))
 			subscribers.remove(subscriber);
 	}
