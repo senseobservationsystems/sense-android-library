@@ -12,6 +12,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,7 +162,7 @@ public class OBD2Sensor extends ExternalSensor {
     long maximumexecutetime = 5000; // maximum time for this execution in milliseconds
     long executioninterval = 100; // time in between execution attempts in milliseconds
 	
-	public abstract class OBD2Command{
+	public abstract class OBD2Command {
     	protected final String command;
     	protected final InputStream in;
     	protected final OutputStream out;
@@ -247,12 +249,22 @@ public class OBD2Sensor extends ExternalSensor {
     	protected String sensor_name;
     	//TODO: fix what is commented out
     	public void sendIntent(){
+    		
+    		// useless because no one will subscribe to the OBD2Command class
+    		// TODO: refactor this sensor
+    		notifySubscribers();
+    		SensorDataPoint dataPoint = new SensorDataPoint(getJSON());
+    		dataPoint.sensorName = sensor_name;
+    		dataPoint.sensorDescription = sensor_name;
+    		dataPoint.timeStamp = SNTP.getInstance().getTime();        
+    		sendToSubscribers(dataPoint);
+    		
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
             i.putExtra(DataPoint.SENSOR_NAME, sensor_name);
             //i.putExtra(DataPoint.SENSOR_DESCRIPTION, deviceType);
             i.putExtra(DataPoint.VALUE, getJSON().toString());
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
             //TODO: i.putExtra(DataPoint.DEVICE_UUID, )
             context.startService(i);
     	}

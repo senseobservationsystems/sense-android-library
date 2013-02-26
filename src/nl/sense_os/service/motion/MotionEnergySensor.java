@@ -122,8 +122,8 @@ public class MotionEnergySensor extends DataProcessor {
             }
         } else {
             Log.w(TAG, "Cannot calculate motion energy! Linear acceleration value is null");
-        }
 
+        }
         // check if we gathered enough data points
         if (!sampleComplete && isEnoughDatapoints()) {
             sendData();
@@ -135,11 +135,11 @@ public class MotionEnergySensor extends DataProcessor {
      * Sends message with average motion energy to the MsgHandler.
      */
     private void sendData() {
-
-    	this.notifySubscribers();
+    	
         // round to three decimals
         float value = BigDecimal.valueOf(avgSpeedChange).setScale(3, 0).floatValue();
         
+        this.notifySubscribers();
         SensorDataPoint dataPoint = new SensorDataPoint(value);
         dataPoint.sensorName = SensorNames.MOTION_ENERGY;
         dataPoint.sensorDescription = SensorNames.MOTION_ENERGY;

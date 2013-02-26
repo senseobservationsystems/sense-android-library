@@ -11,6 +11,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONObject;
 
@@ -29,7 +31,7 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class TemperatureSensor implements SensorEventListener {
+public class TemperatureSensor extends Subscribable implements SensorEventListener {
 
     private static final String TAG = "Sense Temperature Sensor";
 
@@ -72,15 +74,23 @@ public class TemperatureSensor implements SensorEventListener {
 
             Map<String, Object> jsonFields = new HashMap<String, Object>();
             jsonFields.put("celsius", event.values[0]);
-            String value = new JSONObject(jsonFields).toString();
+            JSONObject jsonObj = new JSONObject(jsonFields);
+            String value = jsonObj.toString();
 
+            this.notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
+            dataPoint.sensorName = sensorName;
+            dataPoint.sensorDescription = sensor.getName();
+            dataPoint.timeStamp = SNTP.getInstance().getTime();        
+            this.sendToSubscribers(dataPoint);
+            
             // send msg to MsgHandler
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.VALUE, value);
             i.putExtra(DataPoint.SENSOR_NAME, sensorName);
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
             context.startService(i);
         }
         if (sampleDelay > 500 && sensorActive) {

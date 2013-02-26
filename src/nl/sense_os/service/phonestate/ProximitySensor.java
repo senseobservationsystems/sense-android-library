@@ -6,11 +6,15 @@ package nl.sense_os.service.phonestate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -26,7 +30,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class ProximitySensor implements SensorEventListener {
+public class ProximitySensor extends Subscribable implements SensorEventListener {
 
     private static final String TAG = "Sense Proximity Sensor";
 
@@ -84,6 +88,19 @@ public class ProximitySensor implements SensorEventListener {
             }
             jsonString += "}";
 
+            try{
+	            
+	            this.notifySubscribers();
+	            SensorDataPoint dataPoint = new SensorDataPoint(new JSONObject(jsonString));
+	            dataPoint.sensorName = sensorName;
+	            dataPoint.sensorDescription = sensor.getName();
+	            dataPoint.timeStamp = SNTP.getInstance().getTime();        
+	            this.sendToSubscribers(dataPoint);
+            }
+            catch(Exception e)
+            {
+            	Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
+            }
             // pass message to the MsgHandler
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
             i.putExtra(DataPoint.SENSOR_NAME, sensorName);

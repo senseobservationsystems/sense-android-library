@@ -16,6 +16,8 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONObject;
 
@@ -47,7 +49,7 @@ import android.util.Log;
  * 
  * @see LoudnessSensor
  */
-public class NoiseSensor{
+public class NoiseSensor extends Subscribable{
 
 	/**
 	 * Receiver for periodic alarm broadcast that wakes up the device and starts
@@ -328,6 +330,13 @@ public class NoiseSensor{
 						if (dB != -1 && !Double.valueOf(dB).isNaN()) {
 							// Log.d(TAG, "Sampled noise level: " + dB);
 
+							notifySubscribers();
+							SensorDataPoint dataPoint = new SensorDataPoint(dB);
+							dataPoint.sensorName = SensorNames.NOISE;
+							dataPoint.sensorDescription = SensorNames.NOISE;
+							dataPoint.timeStamp = startTimestamp;        
+							sendToSubscribers(dataPoint);
+
 							// pass message to the MsgHandler
 							Intent sensorData = new Intent(
 									context.getString(R.string.action_sense_new_data));
@@ -362,6 +371,13 @@ public class NoiseSensor{
 								// value
 							}
 
+							notifySubscribers();
+							SensorDataPoint dataPoint = new SensorDataPoint(jsonSpectrum);
+							dataPoint.sensorName = SensorNames.AUDIO_SPECTRUM;
+							dataPoint.sensorDescription ="audio spectrum (dB)";
+							dataPoint.timeStamp = startTimestamp;        
+							sendToSubscribers(dataPoint);
+							
 							Intent sensorData = new Intent(
 									context.getString(R.string.action_sense_new_data));
 							sensorData.putExtra(DataPoint.SENSOR_NAME,

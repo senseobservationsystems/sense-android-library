@@ -14,6 +14,7 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
+import nl.sense_os.service.shared.SensorDataPoint;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -121,13 +122,20 @@ public class PressureSensor extends PeriodicPollingSensor implements SensorEvent
                 float pascal = millibar * 100;
                 float value = BigDecimal.valueOf(pascal).setScale(3, 0).floatValue();
 
+                this.notifySubscribers();
+                SensorDataPoint dataPoint = new SensorDataPoint(value);
+                dataPoint.sensorName = sensorName;
+                dataPoint.sensorDescription = sensor.getName();
+                dataPoint.timeStamp = SNTP.getInstance().getTime();        
+                this.sendToSubscribers(dataPoint);
+                
                 // send msg to MsgHandler
                 Intent i = new Intent(context.getString(R.string.action_sense_new_data));
                 i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
                 i.putExtra(DataPoint.VALUE, value);
                 i.putExtra(DataPoint.SENSOR_NAME, sensorName);
                 i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-                i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+                i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
                 context.startService(i);
 
                 // sample is successful: unregister the listener

@@ -11,6 +11,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONObject;
 
@@ -33,7 +35,7 @@ public class CameraLightSensor {
 	/**
 	 * Callback that handles a new light value datapoint and sends it to the MsgHandler.
 	 */
-	private class NewCameraLightValue implements CameraLightValueCallback {
+	private class NewCameraLightValue extends Subscribable implements CameraLightValueCallback {
 
 		@Override
 		public void lightValueCallback(float lightValue, int camera_id) {
@@ -43,7 +45,15 @@ public class CameraLightSensor {
 			String sensorDescription = "camera " + camera_id + " average luminance";
 			HashMap<String, Object> dataFields = new HashMap<String, Object>();
 			dataFields.put("lux", lightValue);
-			String jsonString = new JSONObject(dataFields).toString();
+			JSONObject jsonObj = new JSONObject(dataFields);
+			String jsonString = jsonObj.toString();
+
+			this.notifySubscribers();
+			SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
+			dataPoint.sensorName = sensorName;
+			dataPoint.sensorDescription = sensorDescription;
+			dataPoint.timeStamp = SNTP.getInstance().getTime();        
+			this.sendToSubscribers(dataPoint);
 
 			// pass message to the MsgHandler
 			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
@@ -52,7 +62,7 @@ public class CameraLightSensor {
 			i.putExtra(DataPoint.VALUE, jsonString);
 			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
 			context.startService(i);
 			// Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
 			nextUpdate(camera_id);
@@ -93,18 +103,18 @@ public class CameraLightSensor {
 	private String TAG = "Camera Light Sensor";
 
 	private CameraLightSensor(Context context) {
-        this.context = context;
-        cameraLightValue = new CameraLightValue();
-    }
-    
+		this.context = context;
+		cameraLightValue = new CameraLightValue();
+	}
+
 	private static CameraLightSensor instance = null;
-    
-    public static CameraLightSensor getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new CameraLightSensor(context);
-	    }
-	    return instance;
-    }
+
+	public static CameraLightSensor getInstance(Context context) {
+		if(instance == null) {
+			instance = new CameraLightSensor(context);
+		}
+		return instance;
+	}
 
 	private void nextUpdate(int camera_id) {
 		// check if there are more camera's else wait
@@ -118,7 +128,7 @@ public class CameraLightSensor {
 			} else {
 				++camera_id;
 				cameraLightValueHandler
-						.post(updateAndSendValues = new UpdateAndSendCameraLightValues(camera_id));
+				.post(updateAndSendValues = new UpdateAndSendCameraLightValues(camera_id));
 			}
 		}
 	}
@@ -145,7 +155,7 @@ public class CameraLightSensor {
 			// add the runnable
 			if (updateAndSendValues == null)
 				cameraLightValueHandler
-						.post(updateAndSendValues = new UpdateAndSendCameraLightValues(0));
+				.post(updateAndSendValues = new UpdateAndSendCameraLightValues(0));
 		} catch (Exception e) {
 			Log.e(TAG, "Error in starting the Camera Light sensor: " + e.getMessage());
 		}

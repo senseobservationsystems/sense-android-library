@@ -677,6 +677,7 @@ public class SenseService extends Service {
 							note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
 							startForeground(1337, note);*/
 							noiseSensor = NoiseSensor.getInstance(SenseService.this);
+							//registerSensor(SensorNames.NOISE, new AtomicReference<Subscribable>(noiseSensor));
 							noiseSensor.enable(finalInterval);
 						}
 						if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
@@ -1102,6 +1103,7 @@ public class SenseService extends Service {
 
 			} else {
 
+				// TODO: deleting a sensor will remove the subscribers, only stop sensors! 
 				unregisterSensor(SensorNames.MOTION);
 				// stop sensing
 				if (null != motionSensor) {
@@ -1295,7 +1297,7 @@ public class SenseService extends Service {
 	 * No new DataProcessors can subscribe to the SenseSensor anymore, 
 	 * but DataProcessors which have already subscribed to the SenseSensor will stay subscribed.
 	 * 
-	 * @param sensorName The name of the registerd SenseSensor
+	 * @param sensorName The name of the registered SenseSensor
 	 */
 	public void unregisterSensor(String sensorName)
 	{

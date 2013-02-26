@@ -11,6 +11,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONObject;
 
@@ -54,7 +56,7 @@ import android.widget.Toast;
  * @author Steven Mulder <steven@sense-os.nl>
  */
 @TargetApi(10)
-public class NfcScan  {
+public class NfcScan extends Subscribable {
 
 	public static class NfcDialog extends DialogFragment {
 
@@ -329,14 +331,22 @@ public class NfcScan  {
 			if (null != tagMsg) {
 				jsonFields.put("message", tagMsg);
 			}
-			String value = new JSONObject(jsonFields).toString();
+			JSONObject jsonObj = new JSONObject(jsonFields); 
+			String value = jsonObj.toString();
 
+			notifySubscribers();
+			SensorDataPoint sensorDataPoint = new SensorDataPoint(jsonObj);
+			sensorDataPoint.sensorName = SensorNames.NFC_SCAN;
+			sensorDataPoint.sensorDescription = SensorNames.NFC_SCAN;
+			sensorDataPoint.timeStamp = SNTP.getInstance().getTime();        
+			sendToSubscribers(sensorDataPoint);
+			
 			// submit value
 			Intent dataPoint = new Intent(getString(R.string.action_sense_new_data));
 			dataPoint.putExtra(DataPoint.SENSOR_NAME, SensorNames.NFC_SCAN);
 			dataPoint.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.NFC_SCAN);
 			dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			dataPoint.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+			dataPoint.putExtra(DataPoint.TIMESTAMP, sensorDataPoint.timeStamp);
 			dataPoint.putExtra(DataPoint.VALUE, value);
 			startService(dataPoint);
 		}

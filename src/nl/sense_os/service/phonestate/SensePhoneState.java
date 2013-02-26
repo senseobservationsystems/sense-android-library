@@ -16,6 +16,8 @@ import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +52,7 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class SensePhoneState {
+public class SensePhoneState extends Subscribable {
 
 	private static final String TAG = "Sense PhoneStateListener";
 
@@ -150,6 +152,36 @@ public class SensePhoneState {
 	}
 
 	private void sendDataPoint(String sensorName, Object value, String dataType) {
+				try
+		{
+			SensorDataPoint dataPoint = new SensorDataPoint(0);
+			if (dataType.equals(SenseDataTypes.BOOL)) {
+				dataPoint =  new  SensorDataPoint((Boolean) value);
+			} else if (dataType.equals(SenseDataTypes.FLOAT)) {
+				dataPoint =  new  SensorDataPoint((Float) value);
+			} else if (dataType.equals(SenseDataTypes.INT)) {
+				dataPoint =  new  SensorDataPoint((Integer) value);
+			} else if (dataType.equals(SenseDataTypes.JSON)) {
+				dataPoint =  new  SensorDataPoint(new JSONObject((String)value));
+			} else if (dataType.equals(SenseDataTypes.STRING)) {
+				dataPoint =  new  SensorDataPoint((String) value);
+			} else {
+				dataPoint = null;
+			}
+			if(dataPoint != null)	    	
+			{
+				notifySubscribers();
+				dataPoint.sensorName = sensorName;
+				dataPoint.sensorDescription = sensorName;
+				dataPoint.timeStamp = SNTP.getInstance().getTime();        
+				sendToSubscribers(dataPoint);
+			}
+		}catch(Exception e)
+		{
+			Log.e(TAG, "Error sending data point to subscribers of the ZephyrBioHarness");
+		}
+		
+		
 		Intent intent = new Intent(context.getString(R.string.action_sense_new_data));
 		intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
 		intent.putExtra(DataPoint.DATA_TYPE, dataType);

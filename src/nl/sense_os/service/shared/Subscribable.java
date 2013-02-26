@@ -52,6 +52,17 @@ public abstract class Subscribable {
 	}
 	
 	/**
+	 * Has Subscribers
+	 * 
+	 * This method returns whether this Subscribable has subscribers
+	 * @return Boolean Returns true if there are subscribers
+	 */	
+	public Boolean hasSubscribers() 
+	{
+		return !subscribers.isEmpty();			
+	}
+	
+	/**
 	 * Send data to DataProcessors
 	 * 
 	 * This method sends a SensorDataPoint to all the subscribers.
@@ -60,6 +71,7 @@ public abstract class Subscribable {
 	 */
 	protected void sendToSubscribers(SensorDataPoint dataPoint)
 	{
+		// TODO: do a-sync
 		for (int i = 0; i < subscribers.size(); i++)
 		{
 			DataProcessor dp =  subscribers.get(i).get();

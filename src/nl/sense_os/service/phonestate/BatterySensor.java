@@ -8,6 +8,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +27,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class BatterySensor {
+public class BatterySensor extends Subscribable{
     private static final String TAG = "Sense Battery sensor";
     private long sampleDelay = 0; // in milliseconds
     private long lastSampleTime;
@@ -121,11 +123,18 @@ public class BatterySensor {
                 if (gotData) {
                     // Log.v(TAG, "Transmit battery state: " + json.toString());
 
+                	notifySubscribers();
+                	SensorDataPoint dataPoint = new SensorDataPoint(json);
+                	dataPoint.sensorName = SensorNames.BATTERY_SENSOR;
+                	dataPoint.sensorDescription = SensorNames.BATTERY_SENSOR;
+                	dataPoint.timeStamp = SNTP.getInstance().getTime();        
+                	sendToSubscribers(dataPoint);
+                	
                     Intent i = new Intent(context.getString(R.string.action_sense_new_data));
                     i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
                     i.putExtra(DataPoint.VALUE, json.toString());
                     i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BATTERY_SENSOR);
-                    i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+                    i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
                     lastSampleTime = System.currentTimeMillis();
                     context.startService(i);
                 }
