@@ -1,6 +1,7 @@
 package nl.sense_os.service.shared;
 
 
+
 /**
  * Interface for data processor implementations. These processors can register at the main sensor
  * modules to divide the handling of the incoming sensor data over different specific processing
