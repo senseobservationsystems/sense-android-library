@@ -27,7 +27,7 @@ import android.util.Log;
  * 
  * @see MotionSensor
  */
-public class FallDetector implements DataProcessor {
+public class FallDetector extends DataProcessor {
 
     private class Interrupt {
         boolean FREE_FALL = false;
@@ -182,13 +182,13 @@ public class FallDetector implements DataProcessor {
         }
     }
 
-    @Override
+    
     public boolean isSampleComplete() {
         // never unregister
         return false;
     }
 
-    @Override
+    
     public void onNewData(SensorDataPoint dataPoint) {
 
     	if(dataPoint.getDataType() != DataType.SENSOREVENT)
@@ -227,7 +227,7 @@ public class FallDetector implements DataProcessor {
         context.startService(i);
     }
 
-    @Override
+    
     public void startNewSample() {
         // not used
     }

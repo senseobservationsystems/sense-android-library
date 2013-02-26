@@ -18,7 +18,7 @@ import android.hardware.SensorEvent;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class EpilepsySensor implements DataProcessor {
+public class EpilepsySensor extends DataProcessor {
 
     private static final String TAG = "EpilepsySensor";
     private static final long LOCAL_BUFFER_TIME = 15 * 1000;
@@ -31,14 +31,12 @@ public class EpilepsySensor implements DataProcessor {
     public EpilepsySensor(Context context) {
         this.context = context;
     }
-
-    @Override
+    
     public boolean isSampleComplete() {
         // never unregister
         return false;
     }
-
-    @Override
+    
     public void onNewData(SensorDataPoint dataPoint) {
 
     	if(dataPoint.getDataType() != DataType.SENSOREVENT)
@@ -91,8 +89,7 @@ public class EpilepsySensor implements DataProcessor {
         i.putExtra(DataPoint.TIMESTAMP, lastLocalSampleTimes[sensor.getType()]);
         context.startService(i);
     }
-
-    @Override
+    
     public void startNewSample() {
         // not used
     }

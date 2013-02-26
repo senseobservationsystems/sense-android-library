@@ -19,7 +19,7 @@ import android.util.Log;
 import android.os.SystemClock;
 
 
-public class StandardMotionSensor implements DataProcessor {
+public class StandardMotionSensor extends DataProcessor {
 
     private static final String TAG = "StandardMotionSensor";
 	private Context context;
@@ -30,8 +30,7 @@ public class StandardMotionSensor implements DataProcessor {
         this.context = context;
         sensors = MotionSensorUtils.getAvailableMotionSensors(context);
     }
-
-    @Override
+    
     public boolean isSampleComplete() {
 
         // only unregister if all sensors have submitted a new sample
@@ -49,8 +48,7 @@ public class StandardMotionSensor implements DataProcessor {
 
         return complete;
     }
-
-    @Override
+    
     public void onNewData(SensorDataPoint dataPoint) {
 
     	if(dataPoint.getDataType() != DataType.SENSOREVENT)
@@ -90,7 +88,6 @@ public class StandardMotionSensor implements DataProcessor {
         }
     }
 
-    @Override
     public void startNewSample() {
         lastSampleTimes = new long[50];
     }

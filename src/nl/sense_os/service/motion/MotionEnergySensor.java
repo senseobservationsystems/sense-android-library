@@ -19,7 +19,7 @@ import android.os.SystemClock;
 import android.util.FloatMath;
 import android.util.Log;
 
-public class MotionEnergySensor implements DataProcessor {
+public class MotionEnergySensor extends DataProcessor {
 
     private static final long ENERGY_SAMPLE_LENGTH = 500;
     private static final String TAG = "MotionEnergySensor";
@@ -66,7 +66,6 @@ public class MotionEnergySensor implements DataProcessor {
         return (sampleStartTime != 0 && SystemClock.elapsedRealtime() - sampleStartTime > ENERGY_SAMPLE_LENGTH);
     }
 
-    @Override
     public boolean isSampleComplete() {
         return sampleComplete;
     }
@@ -77,7 +76,6 @@ public class MotionEnergySensor implements DataProcessor {
      * @param event
      *            The sensor change event with accelerometer or linear acceleration data.
      */
-    @Override
     public void onNewData(SensorDataPoint dataPoint) {
 
         float[] linAcc = null;
@@ -151,7 +149,6 @@ public class MotionEnergySensor implements DataProcessor {
         context.startService(i);
     }
 
-    @Override
     public void startNewSample() {
         sampleComplete = false;
         prevSampleTime = 0;
