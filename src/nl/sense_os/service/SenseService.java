@@ -40,6 +40,7 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SenseSensor;
+import nl.sense_os.service.shared.Subscribable;
 
 import org.json.JSONObject;
 
@@ -124,7 +125,7 @@ public class SenseService extends Service {
 	private NewOBD2DeviceConnector es_obd2sensor;
 	private MagneticFieldSensor magneticFieldSensor;
 
-	private HashMap<String, AtomicReference<SenseSensor> > registeredSensors = new HashMap<String, AtomicReference<SenseSensor> >(); 
+	private HashMap<String, AtomicReference<Subscribable> > registeredSensors = new HashMap<String, AtomicReference<Subscribable> >(); 
 		
 	/**
 	 * Handler on main application thread to display toasts to the user.
@@ -1094,7 +1095,7 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 						motionSensor = MotionSensor.getInstance(SenseService.this);
-						registerSensor(SensorNames.MOTION, new AtomicReference<SenseSensor>(motionSensor));
+						registerSensor(SensorNames.MOTION, new AtomicReference<Subscribable>(motionSensor));
                         motionSensor.startSensing(finalInterval);
 					}
 				});
@@ -1252,7 +1253,7 @@ public class SenseService extends Service {
 	 * @param sensorName The name of the Sensor
 	 * @param sensor The AtomicReference to the SenseSensor 
 	 */
-	public void registerSensor(String sensorName, AtomicReference<SenseSensor> sensor)
+	public void registerSensor(String sensorName, AtomicReference<Subscribable> sensor)
 	{	
 		registeredSensors.put(sensorName, sensor);		
 	}
@@ -1267,7 +1268,7 @@ public class SenseService extends Service {
 	 */
 	public void subscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
 	{
-		AtomicReference<SenseSensor> sensor = registeredSensors.get(sensorName);
+		AtomicReference<Subscribable> sensor = registeredSensors.get(sensorName);
 		if(sensor != null && sensor.get() != null)
 			sensor.get().addSubscriber(dataProcessor);
 	}
@@ -1282,7 +1283,7 @@ public class SenseService extends Service {
 	 */
 	public void unSubscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
 	{
-		AtomicReference<SenseSensor> sensor = registeredSensors.get(sensorName);
+		AtomicReference<Subscribable> sensor = registeredSensors.get(sensorName);
 		if(sensor != null && sensor.get() != null)
 			sensor.get().removeSubscriber(dataProcessor);
 	}
