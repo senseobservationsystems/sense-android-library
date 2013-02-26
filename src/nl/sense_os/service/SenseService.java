@@ -1301,11 +1301,12 @@ public class SenseService extends Service {
 	}
 	
 	/**
-	 * Register a SenseSensor 
+	 * Register a Subscribable 
 	 * 
-	 * This methods registers a SenseSensor with the given sensorName at the SenseService.
+	 * This methods registers a Subscribable (SenseSensor/DataProcessor) with the given sensorName at the SenseService.
 	 * When a SenseSensor is registered data processors can subscribe to the sensor for sensor data.
-	 * Existing SenseSensors with the same name will be overwritten 	 
+	 * Register a Subscribable (SenseSensors/DataProcessor) with an existing sensorName will add the new subscribable
+	 * Only if the subscribable object already then it will not be added.
 	 * 
 	 * @param sensorName The name of the Sensor
 	 * @param sensor The AtomicReference to the SenseSensor 
@@ -1325,6 +1326,15 @@ public class SenseService extends Service {
 		registeredSensors.put(sensorName, subscribables);		
 	}
 	
+	/**
+	 * Is the Subscribable registered
+	 * 
+	 * This method checks if the provided AtomicReference<Subscribable> is already registered under this sensorName
+	 * 
+	 * @param sensorName The name of the Subscribable (SenseSensor/DataProcessor)
+	 * @param sensor The AtomicReference of the Subscribable object
+	 * @return True if the Subscribable is already registered under this sensor name
+	 */
 	public boolean isSensorRegistered(String sensorName, AtomicReference<Subscribable> sensor)
 	{
 		if(!registeredSensors.containsKey(sensorName))
