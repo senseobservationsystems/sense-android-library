@@ -187,6 +187,8 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
 	    if (isEpiMode) {
 	    	unregister &= epiSensor.isSampleComplete();
+	    } else if (isBurstMode) {
+	    	unregister &= burstSensor.isSampleComplete();
 		} else {
 	        unregister &= standardSensor.isSampleComplete();
 		}
@@ -197,11 +199,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 	    // check if motion energy sensor is complete
 	    unregister &= isEnergyMode ? energySensor.isSampleComplete() : true;
 
-	    // check if motion energy sensor is complete
-	    //unregister &= isBurstMode ? burstSensor.isSampleComplete() : true;
-	    //TODO
-	    return burstSensor.isSampleComplete();
-		//return unregister;
+		return unregister;
     }
 
     @Override
