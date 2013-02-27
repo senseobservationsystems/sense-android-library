@@ -192,6 +192,11 @@ public class SensorData {
          * Epi-mode accelerometer sensor. Special part of the Motion sensors.
          */
         public static final String ACCELEROMETER_EPI = "accelerometer (epi-mode)";
+        
+        /**
+         * Burst-mode accelerometer sensor. Special part of the Motion sensors.
+         */
+        public static final String ACCELEROMETER_BURST = "accelerometer (burst-mode)";
 
         /**
          * Motion energy sensor name. Special part of the Motion sensors.

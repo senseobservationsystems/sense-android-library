@@ -17,6 +17,7 @@ import android.os.SystemClock;
 
 public class StandardMotionSensor implements MotionSensorInterface {
 
+	private static final String TAG = "StandardSensor";
     private Context context;
     private long[] lastSampleTimes = new long[50];
     private final List<Sensor> sensors;
@@ -47,7 +48,7 @@ public class StandardMotionSensor implements MotionSensorInterface {
 
     @Override
     public void onNewData(SensorEvent event) {
-
+    	
         // check if the data point is not too soon
         Sensor sensor = event.sensor;
         if (lastSampleTimes[sensor.getType()] != 0) {

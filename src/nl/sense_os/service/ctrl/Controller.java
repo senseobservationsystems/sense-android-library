@@ -21,7 +21,7 @@ public abstract class Controller {
      */
     public static synchronized Controller getController(Context context) {
         if (ref == null) {
-            ref = new CtrlExtended(context);
+            ref = new CtrlDefault(context);
         }
         return ref;
     }

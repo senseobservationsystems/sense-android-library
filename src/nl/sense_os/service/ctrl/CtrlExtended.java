@@ -245,10 +245,9 @@ public class CtrlExtended extends Controller {
                 locListener.setGpsListening(true);
             }
         } else if ((!isAccelerating()) && (!isPositionChanged(0))) {
-            /*
-             * if (motion.sampleDelay != 1000) { motionSampleRate(1000); }
-             */
-            // Log.v(TAG, "IDLE");
+            
+            //motionSampleRate(60 * 1000);
+            //Log.w(TAG, "IDLE");
             /*
              * if (locListener.time != 60 * 1000) { locSampleRate(60 * 1000); }
              */
@@ -642,8 +641,9 @@ public class CtrlExtended extends Controller {
      */
     public void motionSampleRate(long sampleDelay) {
         MotionSensor motion = MotionSensor.getInstance(context);
-        motion.stopSensing();
-        motion.startSensing(sampleDelay);
+        //motion.stopSensing();
+        if (motion.getSampleRate() != sampleDelay)
+        	motion.setSampleRate(sampleDelay);
     }
 
     private boolean NwisSwitchedOffTooLong(boolean isListeningNw, long listenNwStop) {

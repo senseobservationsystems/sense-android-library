@@ -11,7 +11,6 @@ import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.states.EpiStateMonitor;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -99,12 +98,14 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 
     private final FallDetector fallDetector;
     private EpilepsySensor epiSensor;
+    private BurstSensor burstSensor;
     private MotionEnergySensor energySensor;
     private StandardMotionSensor standardSensor;
     private final Context context;
     private boolean isFallDetectMode;
     private boolean isEnergyMode;
     private boolean isEpiMode;
+    private boolean isBurstMode = true;
     private boolean isUnregisterWhenIdle;
     private boolean firstStart = true;
     private List<Sensor> sensors;
@@ -119,6 +120,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     protected MotionSensor(Context context) {
         this.context = context;
         epiSensor = new EpilepsySensor(context);
+        burstSensor = new BurstSensor(context);
         energySensor = new MotionEnergySensor(context);
         fallDetector = new FallDetector(context);
         standardSensor = new StandardMotionSensor(context);
@@ -136,12 +138,13 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         if (!wakeLock.isHeld()) {
             Log.i(TAG, "Acquire wake lock for 500ms");
             wakeLock.acquire(500);
-		    } else {
+	    } else {
             // Log.v(TAG, "Wake lock already held");
-	}
+	    }
 
         // notify all special sensors
         epiSensor.startNewSample();
+        burstSensor.startNewSample();
         standardSensor.startNewSample();
         energySensor.startNewSample();
         fallDetector.startNewSample();
@@ -154,19 +157,19 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
             // Register the receiver for SCREEN OFF events
             IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
             context.registerReceiver(screenOffListener, filter);
-	} else {
-            // Unregister the receiver for SCREEN OFF events
-            try {
-                context.unregisterReceiver(screenOffListener);
-            } catch (IllegalArgumentException e) {
-                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
-	    }
-	}
+		} else {
+	            // Unregister the receiver for SCREEN OFF events
+	            try {
+	                context.unregisterReceiver(screenOffListener);
+	            } catch (IllegalArgumentException e) {
+	                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
+		    }
+		}
     }
 
     @Override
     public long getSampleRate() {
-	return sampleDelay;
+    	return sampleDelay;
     }
 
     @Override
@@ -179,24 +182,26 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
      */
     private boolean isTimeToUnregister() {
 
-	boolean unregister = isUnregisterWhenIdle;
-
+    	boolean unregister = isUnregisterWhenIdle;
         // only unregister when sample delay is large enough
         unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
+	    if (isEpiMode) {
+	    	unregister &= epiSensor.isSampleComplete();
+		} else {
+	        unregister &= standardSensor.isSampleComplete();
+		}
 
-        if (isEpiMode) {
-            unregister &= epiSensor.isSampleComplete();
-	} else {
-            unregister &= standardSensor.isSampleComplete();
-	}
+	    // check if fall detector is complete
+	    unregister &= isFallDetectMode ? fallDetector.isSampleComplete() : true;
 
-        // check if fall detector is complete
-        unregister &= isFallDetectMode ? fallDetector.isSampleComplete() : true;
+	    // check if motion energy sensor is complete
+	    unregister &= isEnergyMode ? energySensor.isSampleComplete() : true;
 
-        // check if motion energy sensor is complete
-        unregister &= isEnergyMode ? energySensor.isSampleComplete() : true;
-
-	return unregister;
+	    // check if motion energy sensor is complete
+	    //unregister &= isBurstMode ? burstSensor.isSampleComplete() : true;
+	    //TODO
+	    return burstSensor.isSampleComplete();
+		//return unregister;
     }
 
     @Override
@@ -207,36 +212,42 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-	if (!motionSensingActive) {
-            Log.w(TAG, "Motion sensor value received when sensor is inactive!");
-	    return;
-	}
+		if (!motionSensingActive) {
+	            Log.v(TAG, "Motion sensor value received when sensor is inactive!");
+		    return;
+		}
 
-
-	// pass sensor value to fall detector first
-        if (isFallDetectMode) {
-            fallDetector.onNewData(event);
-	}
-
-	// if motion energy sensor is active, determine energy of every sample
-        if (isEnergyMode) {
-            energySensor.onNewData(event);
-	}
-
-        if (isEpiMode) {
-            // add the data to the buffer if we are in Epi-mode
-            epiSensor.onNewData(event);
-	} else {
-            // use standard motion sensor
-            standardSensor.onNewData(event);
-        }
-
-        // unregister sensor listener when we can
+		// unregister sensor listener when we can
 	    if (isTimeToUnregister()) {
 
-		// unregister the listener and start again in sampleDelay seconds
+	    	// unregister the listener and start again in sampleDelay seconds
             stopSample();
-	}
+	    } else { 
+			// pass sensor value to fall detector first
+		    if (isFallDetectMode) {
+		        fallDetector.onNewData(event);
+			}
+	
+		    // if motion energy sensor is active, determine energy of every sample
+	        if (isEnergyMode) {
+	            energySensor.onNewData(event);
+	        }
+	
+	        if (isEpiMode || isBurstMode) {
+	            // add the data to the buffer if we are in Epi-mode
+	        	if (isEpiMode) {
+	        		epiSensor.onNewData(event);
+	        	}
+	        	// add the data to the buffer if we are in Burst-mode
+	        	if (isBurstMode) {
+	        		burstSensor.onNewData(event);
+	        	}
+	        } else {
+	            // use standard motion sensor
+	            standardSensor.onNewData(event);
+	        }
+	    }
+
     }
 
     /**
@@ -244,23 +255,23 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
      */
     private synchronized void registerSensors() {
 
-	if (!isRegistered) {
-	    // Log.v(TAG, "Register the motion sensor for updates");
-
-	    SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-
-	    int delay = isFallDetectMode || isEpiMode || isEnergyMode ? SensorManager.SENSOR_DELAY_GAME
-		    : SensorManager.SENSOR_DELAY_NORMAL;
-
-	    for (Sensor sensor : sensors) {
-		mgr.registerListener(this, sensor, delay);
-	    }
-
-	    isRegistered = true;
-
-	} else {
-	    // Log.v(TAG, "Did not register for motion sensor updates: already registered");
-	}
+		if (!isRegistered) {
+		    // Log.v(TAG, "Register the motion sensor for updates");
+	
+		    SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+	
+		    int delay = isFallDetectMode || isEpiMode || isBurstMode || isEnergyMode ? SensorManager.SENSOR_DELAY_GAME
+			    : SensorManager.SENSOR_DELAY_NORMAL;
+	
+		    for (Sensor sensor : sensors) {
+			mgr.registerListener(this, sensor, delay);
+		    }
+	
+		    isRegistered = true;
+	
+		} else {
+		    // Log.v(TAG, "Did not register for motion sensor updates: already registered");
+		}
     }
 
     @Override
@@ -271,7 +282,8 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     }
 
     private void startPolling() {
-        // Log.v(TAG, "start polling");
+        Log.v(TAG, "start polling" + this.sampleDelay);
+         
         alarmReceiver.start(context);
     }
 
@@ -279,46 +291,49 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     public void startSensing(long sampleDelay) {
         // Log.v(TAG, "start sensing");
 
-	final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-		Context.MODE_PRIVATE);
-	isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
-	isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
-	isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
-
-	if (isEpiMode) {
-	    sampleDelay = 0;
-
-	    context.startService(new Intent(context, EpiStateMonitor.class));
-	}
-
-	// check if the fall detector is enabled
-	isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
-	if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
-	    isFallDetectMode = true;
-
-	    context.startService(new Intent(context, EpiStateMonitor.class));
-	}
-
-	if (firstStart && isFallDetectMode) {
-            fallDetector.sendFallMessage(false);
-	    firstStart = false;
-	}
+		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+			Context.MODE_PRIVATE);
+		isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
+		//isBurstMode = mainPrefs.getBoolean(Motion.BURSTMODE, false);
+		isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
+		isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
+	
+		if (isEpiMode) {
+		    sampleDelay = 0;
+	
+		    context.startService(new Intent(context, EpiStateMonitor.class));
+		} else if (isBurstMode) {
+			sampleDelay = 10 * 1000;
+		}
+	
+		// check if the fall detector is enabled
+		isFallDetectMode = mainPrefs.getBoolean(Motion.FALL_DETECT, false);
+		if (fallDetector.demo == mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false)) {
+		    isFallDetectMode = true;
+	
+		    context.startService(new Intent(context, EpiStateMonitor.class));
+		}
+	
+		if (firstStart && isFallDetectMode) {
+	            fallDetector.sendFallMessage(false);
+		    firstStart = false;
+		}
 
         sensors = MotionSensorUtils.getAvailableMotionSensors(context);
         if (isEpiMode) {
             // only listen to accelerometer in epi mode
-	sensors = new ArrayList<Sensor>();
+        	sensors = new ArrayList<Sensor>();
 
             SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             sensors.add(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-	}
+        }
 
-	motionSensingActive = true;
+        motionSensingActive = true;
         setSampleRate(sampleDelay);
     }
 
-    private void stopPolling() {
-        // Log.v(TAG, "stop polling");
+    public void stopPolling() {
+         Log.v(TAG, "stop polling" + this.sampleDelay);
         alarmReceiver.stop(context);
     }
 
@@ -345,9 +360,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         enableScreenOffListener(false);
 	    motionSensingActive = false;
 
-	if (isEpiMode || isFallDetectMode) {
-	    context.stopService(new Intent(context, EpiStateMonitor.class));
-	}
+		if (isEpiMode || isFallDetectMode || isBurstMode) {
+		    context.stopService(new Intent(context, EpiStateMonitor.class));
+		}
 
     }
 
