@@ -124,7 +124,11 @@ public class SenseService extends Service {
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
 	private MagneticFieldSensor magneticFieldSensor;	
-	private HashMap<String, Vector<AtomicReference<Subscribable>> > registeredSensors = new HashMap<String, Vector<AtomicReference<Subscribable> > >(); 
+	// a list with the registered Subscribable (SenseSensor/DataProcessor)
+	private HashMap<String, Vector<AtomicReference<Subscribable>> > registeredSensors = new HashMap<String, Vector<AtomicReference<Subscribable> > >();
+	// a list with the data processors and the sensorName they subscribed to.
+	// this is used to connect a DataProcessor to a Subscribable when a Subscribable registers after a data processor already subscribed for a certain sensor
+	private HashMap<String, Vector<AtomicReference<DataProcessor>> > subscribedDataProcessors = new HashMap<String, Vector<AtomicReference<DataProcessor> > >(); 
 		
 	/**
 	 * Handler on main application thread to display toasts to the user.
@@ -1323,7 +1327,24 @@ public class SenseService extends Service {
 		else
 			subscribables = new Vector<AtomicReference<Subscribable> >();
 		subscribables.add(sensor);
-		registeredSensors.put(sensorName, subscribables);		
+		registeredSensors.put(sensorName, subscribables);
+		
+		// subscribe DataProcessors from queue to the new Subscribable
+		if(!subscribedDataProcessors.containsKey(sensorName))
+			return;
+			
+		Vector<AtomicReference<DataProcessor>> subscribers = subscribedDataProcessors.get(sensorName);
+		for (int i = 0; i < subscribers.size(); i++) 
+		{
+			AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+			if(item == null || item.get() == null)		
+			{
+				subscribers.removeElementAt(i);
+				--i;
+			}
+			else			
+				sensor.get().addSubscriber(item);			
+		}	
 	}
 	
 	/**
@@ -1345,8 +1366,40 @@ public class SenseService extends Service {
 		{
 			AtomicReference<Subscribable> item = subscribables.elementAt(i);
 			if(item == null || item.get() == null)			
-				subscribables.removeElementAt(i);			
+			{
+				subscribables.removeElementAt(i);
+				--i;
+			}
 			else if(item.get() == sensor.get())
+				return true;				
+		}		
+		return false;
+	}
+	
+	/**
+	 * Is the DataProcessor subscribed
+	 * 
+	 * This method checks if the provided AtomicReference<DataProcessor> is already subscribed for this sensorName
+	 * 
+	 * @param sensorName The name of the Subscribable (SenseSensor/DataProcessor)
+	 * @param sensor The AtomicReference of the Subscribable object
+	 * @return True if the Subscribable is already registered under this sensor name
+	 */
+	public boolean isDataProcessorSubscribed(String sensorName, AtomicReference<DataProcessor> dataProcessor)
+	{
+		if(!subscribedDataProcessors.containsKey(sensorName))
+			return false;
+			
+		Vector<AtomicReference<DataProcessor>> subscribers = subscribedDataProcessors.get(sensorName);
+		for (int i = 0; i < subscribers.size(); i++) 
+		{
+			AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+			if(item == null || item.get() == null)		
+			{
+				subscribers.removeElementAt(i);
+				--i;
+			}
+			else if(item.get() == dataProcessor.get())
 				return true;				
 		}		
 		return false;
@@ -1356,13 +1409,30 @@ public class SenseService extends Service {
 	 * Subscribe to a SenseSensor
 	 * 
 	 * This method subscribes a DataProcessor to receive SensorDataPoints from a SenseSensor.
+	 * If the Subscribable with sensorName to subscribe to is not registered yet then the data processor will be put in the queue
+	 * and will be subscribed to the Subscribable (SenseSensor/DataProcessor) when it is registered
 	 * 
 	 * @param sensorName The name of the registered SenseSensor
 	 * @param dataProcessor The AtomicReference to the DataProcessor that receives the sensor data 
-	 * @return boolean Returns True if the DataProcessors is successfully subscribed to the sensor, if It was already subscribed it will return false
+	 * @return boolean Returns True if the DataProcessors is successfully subscribed to the sensor. 
+	 * 			It will return false when the sensor is not registered yet, 
+	 * 			the data processor will then be put in the queue and will be subscribed when the sensor is registered
 	 */
 	public boolean subscribeToSensor(String sensorName, AtomicReference<DataProcessor> dataProcessor)
 	{
+		//put the data processor in a queue to attach later when a new sensor is registered
+		if(isDataProcessorSubscribed(sensorName, dataProcessor))
+			return false;
+				
+		Vector<AtomicReference<DataProcessor>> subscribers;
+		if(subscribedDataProcessors.containsKey(sensorName))
+			subscribers = subscribedDataProcessors.get(sensorName);
+		else
+			subscribers = new Vector<AtomicReference<DataProcessor> >();
+		subscribers.add(dataProcessor);
+		subscribedDataProcessors.put(sensorName, subscribers);		
+		
+		
 		Vector<AtomicReference<Subscribable>> subscribables = registeredSensors.get(sensorName);
 		if(subscribables == null)
 			return false;
@@ -1389,6 +1459,25 @@ public class SenseService extends Service {
 	{
 		if(!registeredSensors.containsKey(sensorName))
 			return;
+		
+		if(subscribedDataProcessors.containsKey(sensorName))
+		{			
+			Vector<AtomicReference<DataProcessor>> subscribers = subscribedDataProcessors.get(sensorName);
+			for (int i = 0; i < subscribers.size(); i++) 
+			{
+				AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+				if(item == null || item.get() == null)		
+				{
+					subscribers.removeElementAt(i);
+					--i;
+				}
+				else if(item.get() == dataProcessor.get())
+				{
+					subscribers.removeElementAt(i);
+					--i;
+				}
+			}		
+		}
 		Vector<AtomicReference<Subscribable>> subscribables = registeredSensors.get(sensorName);
 		for (int i = 0; i < subscribables.size(); i++) 
 		{

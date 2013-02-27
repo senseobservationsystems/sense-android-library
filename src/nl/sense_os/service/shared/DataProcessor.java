@@ -1,8 +1,9 @@
 package nl.sense_os.service.shared;
 
 /**
- * Interface for data processor implementations. These processors can register at the main sensor
- * modules to divide the handling of the incoming sensor data over different specific processing
+ * Abstract class for data processors. These processors can register at a Subscribable SenseSensor or DataProcessor directly 
+ * or preferably via the SenseService.
+ * These modules are to divide the handling of the incoming sensor data over different specific processing
  * implementations.
  * 
  * @author Steven Mulder <steven@sense-os.nl>

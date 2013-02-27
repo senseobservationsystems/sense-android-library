@@ -26,6 +26,10 @@ public class SenseServiceStub extends Binder {
 		this.service = service;
 	}
 
+	public SenseService getSenseService()
+	{
+		return service;
+	}
 	public void changeLogin(final String username, final String password,
 			final ISenseServiceCallback callback) throws RemoteException {
 		// Log.v(TAG, "Change login");
