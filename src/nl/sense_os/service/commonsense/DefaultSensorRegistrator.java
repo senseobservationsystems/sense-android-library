@@ -230,6 +230,13 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 						deviceType, deviceUuid);
 			}
 
+			//TODO
+			//if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
+				success &= checkSensor(SensorNames.ACCELEROMETER_BURST, "acceleration (burst-mode)",
+						SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
+						deviceType, deviceUuid);
+			//}
+			
 			// match motion energy
 			if (mainPrefs.getBoolean(Main.Motion.MOTION_ENERGY, false)) {
 				success &= checkSensor(SensorNames.MOTION_ENERGY, SensorNames.MOTION_ENERGY,
