@@ -7,7 +7,7 @@ package nl.sense_os.service.shared;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public interface DataProcessor extends DataProducer {
+public interface DataProcessor {
 
     /**
      * Starts a new sample.

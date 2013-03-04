@@ -13,10 +13,10 @@ import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.DataProducer;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.DataProducer;
 import nl.sense_os.service.states.EpiStateMonitor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -282,7 +282,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
         } else {
             // add standard data processor
-            DataProcessor standard = new StandardMotionSensor(context);
+            StandardMotionSensor standard = new StandardMotionSensor(context);
             this.standard = new AtomicReference<DataProcessor>(standard);
             ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER,
                     new AtomicReference<DataProducer>(standard));
@@ -298,7 +298,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
             // add motion energy data processor
             if (isEnergyMode) {
-                DataProcessor energy = new MotionEnergySensor(context);
+                MotionEnergySensor energy = new MotionEnergySensor(context);
                 this.energy = new AtomicReference<DataProcessor>(energy);
                 ((SenseService) context).registerDataProducer(SensorNames.MOTION_ENERGY,
                         new AtomicReference<DataProducer>(energy));
