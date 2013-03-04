@@ -13,6 +13,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -35,7 +36,8 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class MagneticFieldSensor extends PeriodicPollingSensor implements SensorEventListener {
+public class MagneticFieldSensor extends BaseSensor implements SensorEventListener,
+        PeriodicPollingSensor {
 
     private static final String TAG = "Sense Magnetic Field Sensor";
     private static final String SENSOR_DISPLAY_NAME = "magnetic field";

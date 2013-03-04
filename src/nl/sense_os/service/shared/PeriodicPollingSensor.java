@@ -6,19 +6,18 @@ package nl.sense_os.service.shared;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public abstract class PeriodicPollingSensor extends SenseSensor {
+public interface PeriodicPollingSensor extends SenseSensor {
 
     /**
      * Called by the {@link PeriodicPollAlarmReceiver} to check if the sensor is still active.
      * 
      * @return true if the sensor is active
      */
-	public boolean isActive(){
-    	return false;
-    }
+    public abstract boolean isActive();
 
     /**
      * Performs a sample. Called by the {@link PeriodicPollAlarmReceiver}.
      */
     public abstract void doSample();
+
 }

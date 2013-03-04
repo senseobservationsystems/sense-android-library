@@ -1,14 +1,13 @@
 package nl.sense_os.service.shared;
 
 /**
- * Abstract class for data processors. These processors can register at a Subscribable SenseSensor or DataProcessor directly 
- * or preferably via the SenseService.
- * These modules are to divide the handling of the incoming sensor data over different specific processing
- * implementations.
+ * Interface for data processors. These processors can register directly at a DataProducer, or
+ * preferably via the SenseService. These modules are to divide the handling of the incoming sensor
+ * data over different specific processing implementations.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public abstract class DataProcessor extends Subscribable{
+public interface DataProcessor extends DataProducer {
 
     /**
      * Starts a new sample.

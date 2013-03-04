@@ -12,7 +12,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONObject;
 
@@ -56,7 +56,7 @@ import android.widget.Toast;
  * @author Steven Mulder <steven@sense-os.nl>
  */
 @TargetApi(10)
-public class NfcScan extends Subscribable {
+public class NfcScan extends BaseDataProducer {
 
 	public static class NfcDialog extends DialogFragment {
 
@@ -88,7 +88,7 @@ public class NfcScan extends Subscribable {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					fragmentActivity.submit();
+				    listenerRef.get().submit();
 				}
 			});
 			builder.setNegativeButton(android.R.string.cancel, new OnClickListener() {
@@ -105,7 +105,7 @@ public class NfcScan extends Subscribable {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
 			Log.v(TAG, "Dialog dismissed...");
-			fragmentActivity.finish();
+			listenerRef.get().finish();
 		}
 	}
 

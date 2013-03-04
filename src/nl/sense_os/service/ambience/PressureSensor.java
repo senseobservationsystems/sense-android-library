@@ -12,6 +12,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -31,7 +32,8 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class PressureSensor extends PeriodicPollingSensor implements SensorEventListener {
+public class PressureSensor extends BaseSensor implements SensorEventListener,
+        PeriodicPollingSensor {
 
     private static final String TAG = "Sense Pressure Sensor";
     private static PressureSensor instance = null;

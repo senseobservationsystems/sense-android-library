@@ -19,7 +19,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.BaseDataProducer;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -42,7 +42,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class ZephyrHxM extends Subscribable{
+public class ZephyrHxM extends BaseDataProducer{
 
     /*
      * Scan thread

@@ -17,9 +17,10 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.DataProducer;
 
 import org.json.JSONObject;
 
@@ -51,7 +52,7 @@ import android.util.Log;
  * 
  * @see LoudnessSensor
  */
-public class NoiseSensor extends Subscribable{
+public class NoiseSensor extends BaseDataProducer{
 
 	/**
 	 * Receiver for periodic alarm broadcast that wakes up the device and starts
@@ -641,9 +642,9 @@ public class NoiseSensor extends Subscribable{
 		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
 	}
 	
-	public AtomicReference<Subscribable> getAutoCalibratedNoiseSensor()
+    public AtomicReference<DataProducer> getAutoCalibratedNoiseSensor()
 	{
-		return new AtomicReference<Subscribable>(autoCalibratedNoiseSensor);
+        return new AtomicReference<DataProducer>(autoCalibratedNoiseSensor);
 	}
 
 	/**

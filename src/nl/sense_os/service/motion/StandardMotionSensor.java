@@ -1,11 +1,12 @@
 package nl.sense_os.service.motion;
 
 import java.util.List;
+
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -16,11 +17,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.util.Log;
 import android.os.SystemClock;
+import android.util.Log;
 
 
-public class StandardMotionSensor extends DataProcessor {
+public class StandardMotionSensor extends BaseDataProducer implements DataProcessor {
 
 	private static final String TAG = "StandardMotionSensor";
 	private Context context;
@@ -32,6 +33,7 @@ public class StandardMotionSensor extends DataProcessor {
 		sensors = MotionSensorUtils.getAvailableMotionSensors(context);
 	}
 
+    @Override
 	public boolean isSampleComplete() {
 
 		// only unregister if all sensors have submitted a new sample
@@ -50,6 +52,7 @@ public class StandardMotionSensor extends DataProcessor {
 		return complete;
 	}
 
+    @Override
 	public void onNewData(SensorDataPoint dataPoint) {
 
 		if(dataPoint.getDataType() != DataType.SENSOREVENT)
@@ -97,6 +100,7 @@ public class StandardMotionSensor extends DataProcessor {
 		}
 	}
 
+    @Override
 	public void startNewSample() {
 		lastSampleTimes = new long[50];
 	}

@@ -12,7 +12,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONObject;
 
@@ -30,7 +30,7 @@ import android.util.Log;
  * 
  * @see CameraLightValue
  */
-public class CameraLightSensor extends Subscribable{
+public class CameraLightSensor extends BaseDataProducer{
 
 	/**
 	 * Callback that handles a new light value datapoint and sends it to the MsgHandler.

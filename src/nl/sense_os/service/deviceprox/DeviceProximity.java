@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.DataProducer;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -64,14 +64,14 @@ public class DeviceProximity {
         }
     }
     
-    public AtomicReference<Subscribable> getBluetoothDeviceProximity()
+    public AtomicReference<DataProducer> getBluetoothDeviceProximity()
     {
-    	return new AtomicReference<Subscribable>(bluetoothDP);
+        return new AtomicReference<DataProducer>(bluetoothDP);
     }
     
-    public AtomicReference<Subscribable> getWIFIDeviceProximity()
+    public AtomicReference<DataProducer> getWIFIDeviceProximity()
     {
-    	return new AtomicReference<Subscribable>(wifiDP);
+        return new AtomicReference<DataProducer>(wifiDP);
     }
 
     public void stopEnvironmentScanning() {

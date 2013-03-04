@@ -4,7 +4,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -19,7 +19,7 @@ import android.hardware.SensorEvent;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class EpilepsySensor extends DataProcessor {
+public class EpilepsySensor extends BaseDataProducer implements DataProcessor {
 
     private static final String TAG = "EpilepsySensor";
     private static final long LOCAL_BUFFER_TIME = 15 * 1000;
@@ -32,12 +32,14 @@ public class EpilepsySensor extends DataProcessor {
     public EpilepsySensor(Context context) {
         this.context = context;
     }
-    
+
+    @Override
     public boolean isSampleComplete() {
         // never unregister
         return false;
     }
-    
+
+    @Override
     public void onNewData(SensorDataPoint dataPoint) {
 
     	if(dataPoint.getDataType() != DataType.SENSOREVENT)
@@ -105,7 +107,8 @@ public class EpilepsySensor extends DataProcessor {
         i.putExtra(DataPoint.TIMESTAMP, lastLocalSampleTimes[sensor.getType()]);
         context.startService(i);
     }
-    
+
+    @Override
     public void startNewSample() {
         // not used
     }

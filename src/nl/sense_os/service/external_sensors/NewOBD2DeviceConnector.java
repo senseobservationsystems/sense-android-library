@@ -15,7 +15,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.BaseDataProducer;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -32,7 +32,7 @@ import android.util.Log;
  * 
  * @author Roelof van den Berg <roelof@sense-os.nl>
  */
-public class NewOBD2DeviceConnector extends Subscribable implements Runnable {
+public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable {
 	protected final String TAG = "OBD-II";
 	protected final UUID serial_uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 

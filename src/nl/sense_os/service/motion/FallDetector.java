@@ -8,6 +8,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -27,7 +28,7 @@ import android.util.Log;
  * 
  * @see MotionSensor
  */
-public class FallDetector extends DataProcessor {
+public class FallDetector extends BaseDataProducer implements DataProcessor {
 
 	private class Interrupt {
 		boolean FREE_FALL = false;
@@ -182,13 +183,13 @@ public class FallDetector extends DataProcessor {
 		}
 	}
 
-
+    @Override
 	public boolean isSampleComplete() {
 		// never unregister
 		return false;
 	}
 
-
+    @Override
 	public void onNewData(SensorDataPoint dataPoint) {
 
 		if(dataPoint.getDataType() != DataType.SENSOREVENT)
@@ -236,7 +237,7 @@ public class FallDetector extends DataProcessor {
 		context.startService(i);
 	}
 
-
+    @Override
 	public void startNewSample() {
 		// not used
 	}

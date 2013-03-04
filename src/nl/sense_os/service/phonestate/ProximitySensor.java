@@ -14,7 +14,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.BaseDataProducer;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -30,7 +30,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class ProximitySensor extends Subscribable implements SensorEventListener {
+public class ProximitySensor extends BaseDataProducer implements SensorEventListener {
 
     private static final String TAG = "Sense Proximity Sensor";
 

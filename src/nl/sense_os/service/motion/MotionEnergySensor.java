@@ -7,6 +7,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -19,7 +20,7 @@ import android.os.SystemClock;
 import android.util.FloatMath;
 import android.util.Log;
 
-public class MotionEnergySensor extends DataProcessor {
+public class MotionEnergySensor extends BaseDataProducer implements DataProcessor {
 
     private static final long ENERGY_SAMPLE_LENGTH = 500;
     private static final String TAG = "MotionEnergySensor";
@@ -66,6 +67,7 @@ public class MotionEnergySensor extends DataProcessor {
         return (sampleStartTime != 0 && SystemClock.elapsedRealtime() - sampleStartTime > ENERGY_SAMPLE_LENGTH);
     }
 
+    @Override
     public boolean isSampleComplete() {
         return sampleComplete;
     }
@@ -76,6 +78,7 @@ public class MotionEnergySensor extends DataProcessor {
      * @param event
      *            The sensor change event with accelerometer or linear acceleration data.
      */
+    @Override
     public void onNewData(SensorDataPoint dataPoint) {
 
         float[] linAcc = null;
@@ -158,6 +161,7 @@ public class MotionEnergySensor extends DataProcessor {
         context.startService(i);
     }
 
+    @Override
     public void startNewSample() {
         sampleComplete = false;
         prevSampleTime = 0;

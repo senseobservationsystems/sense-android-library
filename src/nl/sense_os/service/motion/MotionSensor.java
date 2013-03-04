@@ -11,11 +11,12 @@ import nl.sense_os.service.SenseService;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.DataProducer;
 import nl.sense_os.service.states.EpiStateMonitor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -48,7 +49,7 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class MotionSensor extends PeriodicPollingSensor implements SensorEventListener  {
+public class MotionSensor extends BaseSensor implements SensorEventListener, PeriodicPollingSensor {
 
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
@@ -231,10 +232,10 @@ public class MotionSensor extends PeriodicPollingSensor implements SensorEventLi
         }
     }
 
-    
+    @Override
     public void setSampleRate(long sampleDelay) {
+        super.setSampleRate(sampleDelay);
         stopPolling();
-        this.sampleDelay = sampleDelay;
         startPolling();
     }
 
@@ -275,25 +276,32 @@ public class MotionSensor extends PeriodicPollingSensor implements SensorEventLi
             this.epi = new AtomicReference<DataProcessor>(epiSensor);
             // register the sensor at the sense Service
             // TODO: connect to the service in a different manner
-            ((SenseService)context).registerSensor(SensorNames.ACCELEROMETER_EPI, new AtomicReference<Subscribable>(epiSensor));
+            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_EPI,
+                    new AtomicReference<DataProducer>(epiSensor));
             addSubscriber(this.epi);
 
         } else {
             // add standard data processor
             DataProcessor standard = new StandardMotionSensor(context);
             this.standard = new AtomicReference<DataProcessor>(standard);
-            ((SenseService)context).registerSensor(SensorNames.ACCELEROMETER, new AtomicReference<Subscribable>(standard));
-            ((SenseService)context).registerSensor(SensorNames.ORIENT, new AtomicReference<Subscribable>(standard));
-            ((SenseService)context).registerSensor(SensorNames.MAGNETIC_FIELD, new AtomicReference<Subscribable>(standard));
-            ((SenseService)context).registerSensor(SensorNames.GYRO, new AtomicReference<Subscribable>(standard));
-            ((SenseService)context).registerSensor(SensorNames.LIN_ACCELERATION, new AtomicReference<Subscribable>(standard));
+            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER,
+                    new AtomicReference<DataProducer>(standard));
+            ((SenseService) context).registerDataProducer(SensorNames.ORIENT,
+                    new AtomicReference<DataProducer>(standard));
+            ((SenseService) context).registerDataProducer(SensorNames.MAGNETIC_FIELD,
+                    new AtomicReference<DataProducer>(standard));
+            ((SenseService) context).registerDataProducer(SensorNames.GYRO,
+                    new AtomicReference<DataProducer>(standard));
+            ((SenseService) context).registerDataProducer(SensorNames.LIN_ACCELERATION,
+                    new AtomicReference<DataProducer>(standard));
             addSubscriber(this.standard);
 
             // add motion energy data processor
             if (isEnergyMode) {
                 DataProcessor energy = new MotionEnergySensor(context);
                 this.energy = new AtomicReference<DataProcessor>(energy);
-                ((SenseService)context).registerSensor(SensorNames.MOTION_ENERGY, new AtomicReference<Subscribable>(energy));
+                ((SenseService) context).registerDataProducer(SensorNames.MOTION_ENERGY,
+                        new AtomicReference<DataProducer>(energy));
                 addSubscriber(this.energy);
             }
 
@@ -308,7 +316,8 @@ public class MotionSensor extends PeriodicPollingSensor implements SensorEventLi
                 // Context should not be used for this                
                 this.fall =  new AtomicReference<DataProcessor>(fallDetector);
                 ((SenseService)context).subscribeToSensor(SensorNames.MOTION, this.fall);
-                ((SenseService)context).registerSensor(SensorNames.FALL_DETECTOR, new AtomicReference<Subscribable>(fallDetector));
+                ((SenseService) context).registerDataProducer(SensorNames.FALL_DETECTOR,
+                        new AtomicReference<DataProducer>(fallDetector));
 
                 fallDetector.sendFallMessage(false);
                 firstStart = false;

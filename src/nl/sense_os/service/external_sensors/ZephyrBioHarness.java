@@ -16,7 +16,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONObject;
 
@@ -38,7 +38,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class ZephyrBioHarness extends Subscribable {
+public class ZephyrBioHarness extends BaseDataProducer {
 
 	/*
 	 * Scan thread

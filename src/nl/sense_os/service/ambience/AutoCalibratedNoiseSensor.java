@@ -7,9 +7,8 @@ import nl.sense_os.service.constants.SensePrefs.SensorSpecifics;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +25,7 @@ import android.util.Log;
  *  
  * @author Pim Nijdam <pim@sense-os.nl>
  */
-public class AutoCalibratedNoiseSensor extends Subscribable {
+public class AutoCalibratedNoiseSensor extends BaseDataProducer {
 	private static final String TAG = "AutoCalibratedNoiseSensor";
 	private static final float DEFAULT_TOTAL_SILENCE = Float.MAX_VALUE;
 	private static final float DEFAULT_LOUDEST = Float.MIN_VALUE;

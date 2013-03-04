@@ -12,7 +12,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.Subscribable;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONObject;
 
@@ -31,7 +31,7 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class TemperatureSensor extends Subscribable implements SensorEventListener {
+public class TemperatureSensor extends BaseDataProducer implements SensorEventListener {
 
     private static final String TAG = "Sense Temperature Sensor";
 
