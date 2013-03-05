@@ -1,6 +1,5 @@
 package nl.sense_os.service.shared;
 
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Interface for sensor data producing components that support subscriptions. Implementing classes
@@ -20,7 +19,7 @@ public interface DataProducer {
      * @return True if the DataProcessor could subscribe to the service, false if the DataProcessor
      *         was already subscribed
      */
-    public abstract boolean addSubscriber(AtomicReference<DataProcessor> subscriber);
+    public abstract boolean addSubscriber(DataProcessor subscriber);
 
     /**
      * Checks if a DataProcessor has been added as a subscriber.
@@ -28,7 +27,7 @@ public interface DataProducer {
      * @param subscriber
      * @return True if the DataProcessor is listed as a subscriber
      */
-    public abstract boolean hasSubscriber(AtomicReference<DataProcessor> subscriber);
+    public abstract boolean hasSubscriber(DataProcessor subscriber);
 
     /**
      * @return True if there are subscribers
@@ -41,6 +40,6 @@ public interface DataProducer {
      * @param subscriber
      *            The DataProcessor needs to be unsubscribed
      */
-    public abstract void removeSubscriber(AtomicReference<DataProcessor> subscriber);
+    public abstract void removeSubscriber(DataProcessor subscriber);
 
 }

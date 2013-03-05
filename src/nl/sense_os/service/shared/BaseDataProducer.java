@@ -25,18 +25,24 @@ public abstract class BaseDataProducer implements DataProducer {
 	protected Vector<AtomicReference<DataProcessor> > subscribers = new Vector<AtomicReference<DataProcessor> >();
 	
     @Override
-	public boolean addSubscriber(AtomicReference<DataProcessor>  subscriber) 
+    public boolean addSubscriber(DataProcessor dataProcessor)
 	{
-		if(!hasSubscriber(subscriber))		
-			subscribers.add(subscriber);
-		else
+		if (!hasSubscriber(dataProcessor)) {
+            AtomicReference<DataProcessor> subscriber = new AtomicReference<DataProcessor>(
+                    dataProcessor);
+            subscribers.add(subscriber);
+        } else {
 			return false;
+        }
 		return true;		
 	}
 
     @Override
-    public boolean hasSubscriber(AtomicReference<DataProcessor> subscriber)
+    public boolean hasSubscriber(DataProcessor dataProcessor)
 	{
+        AtomicReference<DataProcessor> subscriber = new AtomicReference<DataProcessor>(
+                dataProcessor);
+
 		for (int i = 0; i < subscribers.size(); i++) 
 		{
 			AtomicReference<DataProcessor> item = subscribers.elementAt(i);
@@ -47,8 +53,11 @@ public abstract class BaseDataProducer implements DataProducer {
 	}
 
     @Override
-	public void removeSubscriber(AtomicReference<DataProcessor> subscriber) 
+    public void removeSubscriber(DataProcessor dataProcessor)
 	{
+        AtomicReference<DataProcessor> subscriber = new AtomicReference<DataProcessor>(
+                dataProcessor);
+
 		for (int i = 0; i < subscribers.size(); i++) 
 		{
 			AtomicReference<DataProcessor> item = subscribers.elementAt(i);
@@ -111,9 +120,9 @@ public abstract class BaseDataProducer implements DataProducer {
 	 * @return boolean 
 	 * 		Returns true when all the subscribers have complete samples.
 	 */
-	protected Boolean checkSubscribers()
+    protected boolean checkSubscribers()
 	{
-		Boolean isComplete = true;
+        boolean isComplete = true;
 		for (int i = 0; i < subscribers.size(); i++)		
 		{
 			DataProcessor dp =  subscribers.get(i).get();

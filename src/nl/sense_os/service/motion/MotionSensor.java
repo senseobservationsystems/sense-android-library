@@ -5,15 +5,12 @@ package nl.sense_os.service.motion;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import nl.sense_os.service.SenseService;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.shared.BaseSensor;
-import nl.sense_os.service.shared.DataProcessor;
-import nl.sense_os.service.shared.DataProducer;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -119,7 +116,10 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     // Should be moved to the service where all the sensors are registered
     // and added as data processor when the preference is selected
     // or at least out of startSensing, does not need to create this coupling at startSensing 
-    private AtomicReference<DataProcessor> epi, fall, energy, standard = null;
+    private EpilepsySensor epi;
+    private FallDetector fall;
+    private MotionEnergySensor energy;
+    private StandardMotionSensor standard = null;
 
     protected MotionSensor(Context context) {
         this.context = context;
@@ -272,36 +272,26 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             context.startService(new Intent(context, EpiStateMonitor.class));
 
             // only add epilepsy data processor
-            EpilepsySensor epiSensor = new EpilepsySensor(context);    
-            this.epi = new AtomicReference<DataProcessor>(epiSensor);
+            this.epi = new EpilepsySensor(context);
             // register the sensor at the sense Service
             // TODO: connect to the service in a different manner
-            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_EPI,
-                    new AtomicReference<DataProducer>(epiSensor));
+            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_EPI, epi);
             addSubscriber(this.epi);
 
         } else {
             // add standard data processor
-            StandardMotionSensor standard = new StandardMotionSensor(context);
-            this.standard = new AtomicReference<DataProcessor>(standard);
-            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER,
-                    new AtomicReference<DataProducer>(standard));
-            ((SenseService) context).registerDataProducer(SensorNames.ORIENT,
-                    new AtomicReference<DataProducer>(standard));
-            ((SenseService) context).registerDataProducer(SensorNames.MAGNETIC_FIELD,
-                    new AtomicReference<DataProducer>(standard));
-            ((SenseService) context).registerDataProducer(SensorNames.GYRO,
-                    new AtomicReference<DataProducer>(standard));
-            ((SenseService) context).registerDataProducer(SensorNames.LIN_ACCELERATION,
-                    new AtomicReference<DataProducer>(standard));
+            standard = new StandardMotionSensor(context);
+            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER, standard);
+            ((SenseService) context).registerDataProducer(SensorNames.ORIENT, standard);
+            ((SenseService) context).registerDataProducer(SensorNames.MAGNETIC_FIELD, standard);
+            ((SenseService) context).registerDataProducer(SensorNames.GYRO, standard);
+            ((SenseService) context).registerDataProducer(SensorNames.LIN_ACCELERATION, standard);
             addSubscriber(this.standard);
 
             // add motion energy data processor
             if (isEnergyMode) {
-                MotionEnergySensor energy = new MotionEnergySensor(context);
-                this.energy = new AtomicReference<DataProcessor>(energy);
-                ((SenseService) context).registerDataProducer(SensorNames.MOTION_ENERGY,
-                        new AtomicReference<DataProducer>(energy));
+                energy = new MotionEnergySensor(context);
+                ((SenseService) context).registerDataProducer(SensorNames.MOTION_ENERGY, energy);
                 addSubscriber(this.energy);
             }
 
@@ -309,17 +299,15 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             if (firstStart && isFallDetectMode) {
 
                 // add fall detector data processor
-                FallDetector fallDetector = new FallDetector(context);
-                fallDetector.demo = isFallDetectDemo;
+                fall = new FallDetector(context);
+                fall.demo = isFallDetectDemo;
                 
                 // Example how to subscribe via the service
-                // Context should not be used for this                
-                this.fall =  new AtomicReference<DataProcessor>(fallDetector);
-                ((SenseService)context).subscribeToSensor(SensorNames.MOTION, this.fall);
-                ((SenseService) context).registerDataProducer(SensorNames.FALL_DETECTOR,
-                        new AtomicReference<DataProducer>(fallDetector));
+                // Context should not be used for this
+                ((SenseService) context).subscribeDataProcessor(SensorNames.MOTION, fall);
+                ((SenseService) context).registerDataProducer(SensorNames.FALL_DETECTOR, fall);
 
-                fallDetector.sendFallMessage(false);
+                fall.sendFallMessage(false);
                 firstStart = false;
             }
         }
@@ -367,7 +355,10 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         if(this.energy != null)
         	removeSubscriber(energy);
         
-    	epi = standard = fall = energy = null;
+        epi = null;
+        standard = null;
+        fall = null;
+        energy = null;
         
         if (isEpiMode || isFallDetectMode) {
             context.stopService(new Intent(context, EpiStateMonitor.class));

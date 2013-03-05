@@ -6,7 +6,6 @@ package nl.sense_os.service.ambience;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.concurrent.atomic.AtomicReference;
 
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
@@ -18,9 +17,9 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.DataProducer;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
-import nl.sense_os.service.shared.DataProducer;
 
 import org.json.JSONObject;
 
@@ -642,9 +641,9 @@ public class NoiseSensor extends BaseDataProducer{
 		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
 	}
 	
-    public AtomicReference<DataProducer> getAutoCalibratedNoiseSensor()
+    public DataProducer getAutoCalibratedNoiseSensor()
 	{
-        return new AtomicReference<DataProducer>(autoCalibratedNoiseSensor);
+        return autoCalibratedNoiseSensor;
 	}
 
 	/**

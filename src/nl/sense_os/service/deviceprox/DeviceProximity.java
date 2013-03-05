@@ -3,8 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.deviceprox;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
 import nl.sense_os.service.shared.DataProducer;
@@ -64,14 +62,14 @@ public class DeviceProximity {
         }
     }
     
-    public AtomicReference<DataProducer> getBluetoothDeviceProximity()
+    public DataProducer getBluetoothDeviceProximity()
     {
-        return new AtomicReference<DataProducer>(bluetoothDP);
+        return bluetoothDP;
     }
     
-    public AtomicReference<DataProducer> getWIFIDeviceProximity()
+    public DataProducer getWIFIDeviceProximity()
     {
-        return new AtomicReference<DataProducer>(wifiDP);
+        return wifiDP;
     }
 
     public void stopEnvironmentScanning() {
