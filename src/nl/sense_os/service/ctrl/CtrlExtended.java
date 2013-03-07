@@ -1,5 +1,7 @@
 package nl.sense_os.service.ctrl;
 
+import java.util.List;
+
 import nl.sense_os.service.DataTransmitter;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
@@ -20,9 +22,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.hardware.Sensor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -245,10 +249,9 @@ public class CtrlExtended extends Controller {
                 locListener.setGpsListening(true);
             }
         } else if ((!isAccelerating()) && (!isPositionChanged(0))) {
-            /*
-             * if (motion.sampleDelay != 1000) { motionSampleRate(1000); }
-             */
-            // Log.v(TAG, "IDLE");
+            
+            //motionSampleRate(60 * 1000);
+            //Log.w(TAG, "IDLE");
             /*
              * if (locListener.time != 60 * 1000) { locSampleRate(60 * 1000); }
              */
@@ -642,8 +645,9 @@ public class CtrlExtended extends Controller {
      */
     public void motionSampleRate(long sampleDelay) {
         MotionSensor motion = MotionSensor.getInstance(context);
-        motion.stopSensing();
-        motion.startSensing(sampleDelay);
+        //motion.stopSensing();
+        if (motion.getSampleRate() != sampleDelay)
+        	motion.setSampleRate(sampleDelay);
     }
 
     private boolean NwisSwitchedOffTooLong(boolean isListeningNw, long listenNwStop) {
@@ -729,5 +733,58 @@ public class CtrlExtended extends Controller {
         am.cancel(operation);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
                 operation);
+    }
+    
+    private static final long DEFAULT_BURST_RATE = 10 * 1000;
+    private static final long IDLE_BURST_RATE = 12 * 1000;
+    private static double IDLE_MOTION_THRESHOLD = 0.09;
+    private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
+    private long firstIdleDetectedTime = 0;
+	
+	public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
+    	//right now only the accelerometer is used
+    	if (sensorType != Sensor.TYPE_ACCELEROMETER)
+    		return;
+
+    	//Initialize with the first vector for the algorithm in the for loop
+    	double[] firstVector = dataBuffer.get(0);
+		double xLast = firstVector[0];
+		double yLast = firstVector[1];
+		double zLast = firstVector[2];
+    	
+		double totalMotion = 0;
+    	for (double[] vector : dataBuffer) {
+			// loop over the array to calculate some magic "totalMotion" value
+			// that indicates the amount of motion during the burst
+    		double x = vector[0];
+    		double y = vector[1];
+    		double z = vector[2];
+    		
+    		double motion = Math.pow((Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
+            totalMotion += motion;
+            x = xLast;
+            y = yLast;
+            z = zLast;
+    	}
+    	
+    	MotionSensor motionSensor = MotionSensor.getInstance(context);
+    	double avgMotion = totalMotion / (dataBuffer.size() - 1);
+    	
+    	//Control logic to choose the sample rate for burst motion sensors
+    	if (avgMotion > IDLE_MOTION_THRESHOLD) {
+    		firstIdleDetectedTime = 0;
+    		if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
+    			motionSensor.setSampleRate(DEFAULT_BURST_RATE);
+    		}
+    	} else {
+    		if (firstIdleDetectedTime == 0) {
+    			firstIdleDetectedTime = SystemClock.elapsedRealtime();
+    		} else {
+    			if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD) && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
+    				motionSensor.setSampleRate(IDLE_BURST_RATE);
+    			}
+    		}
+    	}
+    	Log.v(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
     }
 }

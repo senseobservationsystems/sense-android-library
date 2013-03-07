@@ -384,6 +384,12 @@ public class SensePrefs {
 			 */
 			public static final String EPIMODE = "epimode";
 			/**
+			 * Key for preference that toggles "burst-mode", drastically changing motion sensing
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String BURSTMODE = "burstmode";
+			/**
 			 * Key for preference that determines whether to unregister the motion sensor between
 			 * samples. Nota bene: unregistering the sensor breaks the screen rotation on some
 			 * phones (e.g. Nexus S).

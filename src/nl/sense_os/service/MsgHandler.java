@@ -202,7 +202,7 @@ public class MsgHandler extends Service {
 				data.put("date", timeInSecs);
 				dataArray.put(data);
 				sensorData.put("data", dataArray);
-
+				
 				sendSensorData(this, sensorName, description, dataType, deviceUuid, sensorData);
 			}
 
