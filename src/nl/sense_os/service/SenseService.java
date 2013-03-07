@@ -1372,6 +1372,19 @@ public class SenseService extends Service {
         }
         return false;
 	}
+    
+    /**
+     * Checks if a DataProducer is already registered under this sensorName
+     * 
+     * @param sensorName
+     *            The name of the DataProducer    
+     * @return True if a is already registered under this sensor name
+     */
+    public boolean isDataProducerRegistered(String sensorName)
+	{
+		return registeredProducers.containsKey(sensorName);
+	
+	}
 	
 	    /**
      * Is the DataProcessor subscribed
