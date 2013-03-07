@@ -1,5 +1,7 @@
 package nl.sense_os.service.ctrl;
 
+import java.util.List;
+
 import nl.sense_os.service.DataTransmitter;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
@@ -11,7 +13,6 @@ import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -355,7 +356,7 @@ public class CtrlDefault extends Controller {
 	private long[] lastLocalSampleTimes = new long[50];
 	private boolean sampleComplete = false;
 	
-    public boolean stopBurst(JSONObject json, JSONArray dataBuffer, int sensorType, long localBufferTime) {
+    public boolean stopBurst(JSONObject json, List<double[]> dataBuffer, int sensorType, long localBufferTime) {
     	
     	MotionSensor motionSensor = MotionSensor.getInstance(context);
     	sampleComplete = false;
@@ -384,7 +385,7 @@ public class CtrlDefault extends Controller {
 	        if (SystemClock.elapsedRealtime() > lastLocalSampleTimes[sensorType] + localBufferTime) {
 	
 	        	lastLocalSampleTimes[sensorType] = 0;
-	        	avgMotion = totalMotion / (dataBuffer.length() - 1);
+	        	avgMotion = totalMotion / (dataBuffer.size() - 1);
 	        	
 	        	if (avgMotion > IDLE_MOTION_THRESHOLD) {
 	        		firstIdleDetectedTime = 0;

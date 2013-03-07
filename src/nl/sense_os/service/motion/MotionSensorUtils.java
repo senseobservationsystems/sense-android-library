@@ -44,6 +44,41 @@ public class MotionSensorUtils {
         }
         return sensorName;
     }
+    
+    public static String getSensorHeader(Sensor sensor) {
+        String header = "";
+        switch (sensor.getType()) {
+        case Sensor.TYPE_ACCELEROMETER:
+            header = "x-axis, y-axis, z-axis";
+            break;
+        case Sensor.TYPE_GYROSCOPE:
+        	header = "azimuth, pitch, roll";
+            break;
+        case Sensor.TYPE_LINEAR_ACCELERATION:
+        	header = "x-axis, y-axis, z-axis";
+            break;
+        default:
+            Log.w(TAG, "Unexpected sensor type: " + sensor.getType());
+            return null;
+        }
+        return header;
+    }
+    
+    public static double[] getValues(SensorEvent event) {
+    	
+        final double[] values = new double[3];
+
+        int axis = 0;
+
+        for (double value : event.values) {
+            // scale to three decimal precision
+            value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
+            values[axis] = value;
+            axis++;
+        }
+
+        return values;
+    }
 
     @SuppressWarnings("deprecation")
     public static JSONObject createJsonValue(SensorEvent event) {

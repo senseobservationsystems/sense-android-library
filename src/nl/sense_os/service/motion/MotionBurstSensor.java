@@ -1,12 +1,14 @@
 package nl.sense_os.service.motion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -23,7 +25,7 @@ public class MotionBurstSensor implements MotionSensorInterface {
     private int SENSOR_TYPE = 0;
     private String SENSOR_NAME;
 
-    private JSONArray dataBuffer;
+    private List<double[]> dataBuffer = new ArrayList<double[]>();
     private Context context;
     private boolean sampleComplete = false;
 
@@ -54,26 +56,50 @@ public class MotionBurstSensor implements MotionSensorInterface {
         JSONObject json = MotionSensorUtils.createJsonValue(event);
 
         if (dataBuffer == null) {
-            dataBuffer = new JSONArray();
+            dataBuffer = new ArrayList<double[]>();
         }
-        dataBuffer.put(json);
+        dataBuffer.add(MotionSensorUtils.getValues(event));
         
         sampleComplete = controller.stopBurst(json, dataBuffer, SENSOR_TYPE, LOCAL_BUFFER_TIME);
         if (sampleComplete == true) {
         	sendData(sensor);
         	
         	// reset data buffer
-        	dataBuffer = new JSONArray();
+        	dataBuffer = new ArrayList<double[]>();
         }
        
     }
+    
+    private String ListToString(List<double[]> dataBuffer) {
+    	String dataBufferString = "";
+    	
+    	dataBufferString += "[";
+    	for (int z = 0; z < dataBuffer.size(); z++) {
+    		double[] values = dataBuffer.get(z);
+    		dataBufferString += "[";
+    		for (int i = 0; i < 3; i++) {
+	    		dataBufferString += values[i];
+	    		if (i != 2 )
+	    			dataBufferString += ", ";    		
+    		}		
+    		dataBufferString += "]";
+    		if (z != (dataBuffer.size() - 1))
+    			dataBufferString += ",";
+    	}
+    	dataBufferString += "]";
+    	
+    	return dataBufferString;
+    }
 
     private void sendData(Sensor sensor) {
-
-        String value = "{\"interval\":"
-                + Math.round((double) LOCAL_BUFFER_TIME / (double) dataBuffer.length())
-                + ",\"data\":" + dataBuffer.toString() + "}";
-        
+    	
+    	String dataBufferString = ListToString(dataBuffer);
+    	Log.w(TAG, "Array! " + dataBufferString);
+    	String value = "{\"interval\":"
+                + Math.round((double) LOCAL_BUFFER_TIME / (double) dataBuffer.size())
+                + ",\"header\":\"" + MotionSensorUtils.getSensorHeader(sensor).toString()
+                + "\",\"values\":\"" + dataBufferString + "\"}";
+    	
         // pass message to the MsgHandler
         Intent i = new Intent(context.getString(R.string.action_sense_new_data));
         

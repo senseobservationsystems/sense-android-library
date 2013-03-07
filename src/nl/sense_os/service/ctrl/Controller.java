@@ -1,6 +1,7 @@
 package nl.sense_os.service.ctrl;
 
-import org.json.JSONArray;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -105,6 +106,6 @@ public abstract class Controller {
      * 
      * @see #alarmReceiver
      */
-    public abstract boolean stopBurst(JSONObject json, JSONArray dataBuffer, int sensorType, long localBufferTime);
+    public abstract boolean stopBurst(JSONObject json, List<double[]> dataBuffer, int sensorType, long localBufferTime);
     
 }
