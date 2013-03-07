@@ -1,5 +1,8 @@
 package nl.sense_os.service.ctrl;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.location.Location;
 
@@ -87,5 +90,21 @@ public abstract class Controller {
      * Starts periodic transmission of the buffered sensor data.
      */
     public abstract void scheduleTransmissions();
-
+    
+    /**
+     * Checks to see if burst is completed and resets the motion sample rate in case of idle mode
+     * 
+     * @param json
+     *            The data point.
+     * @param dataBuffer
+     *            Buffer that contains the data points captured during the burst.
+     * @param sensorType
+     *            The type of motion sensor.
+     * @param localBufferTime
+     *            Burst duration.
+     * 
+     * @see #alarmReceiver
+     */
+    public abstract boolean stopBurst(JSONObject json, JSONArray dataBuffer, int sensorType, long localBufferTime);
+    
 }

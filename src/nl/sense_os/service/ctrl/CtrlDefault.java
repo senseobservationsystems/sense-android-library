@@ -7,9 +7,11 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.location.LocationSensor;
+import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,9 +21,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.hardware.Sensor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -337,5 +341,80 @@ public class CtrlDefault extends Controller {
         am.cancel(operation);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
                 operation);
+    }
+    
+    private static final long DEFAULT_BURST_RATE = 10 * 1000;
+    private static final long IDLE_BURST_RATE = 12 * 1000;
+    private static double IDLE_MOTION_THRESHOLD = 0.09;
+    private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
+    private long firstIdleDetectedTime = 0;
+    private double avgMotion = 0, motion = 0, totalMotion = 0;
+    private double x1 = 0, x2 = 0;
+	private double y1 = 0, y2 = 0;
+	private double z1 = 0, z2 = 0;
+	private long[] lastLocalSampleTimes = new long[50];
+	private boolean sampleComplete = false;
+	
+    public boolean stopBurst(JSONObject json, JSONArray dataBuffer, int sensorType, long localBufferTime) {
+    	
+    	MotionSensor motionSensor = MotionSensor.getInstance(context);
+    	sampleComplete = false;
+    	if (sensorType == Sensor.TYPE_ACCELEROMETER) {
+    		try {
+				x2 = json.getDouble("x-axis");
+				y2 = json.getDouble("y-axis");
+				z2 = json.getDouble("z-axis");
+	        } catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        if (lastLocalSampleTimes[sensorType] == 0) {
+	        	lastLocalSampleTimes[sensorType] = SystemClock.elapsedRealtime();
+	        	x1 = x2;
+	            y1 = y2;
+	            z1 = z2;
+	        }
+	        else {
+	        	motion = Math.pow((Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z2 - z1)), 2);
+	            x1 = x2;
+	            y1 = y2;
+	            z1 = z2;
+	            totalMotion += motion;
+	        }
+	        if (SystemClock.elapsedRealtime() > lastLocalSampleTimes[sensorType] + localBufferTime) {
+	
+	        	lastLocalSampleTimes[sensorType] = 0;
+	        	avgMotion = totalMotion / (dataBuffer.length() - 1);
+	        	
+	        	if (avgMotion > IDLE_MOTION_THRESHOLD) {
+	        		firstIdleDetectedTime = 0;
+	        		if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
+	        			motionSensor.setSampleRate(DEFAULT_BURST_RATE);
+	        		}
+	        	} else {
+	        		if (firstIdleDetectedTime == 0) {
+	        			firstIdleDetectedTime = SystemClock.elapsedRealtime();
+	        		} else {
+	        			if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD) && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
+	        				motionSensor.setSampleRate(IDLE_BURST_RATE);
+	        			}
+	        		}
+	        	}
+	        	Log.w(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
+	        	
+	        	totalMotion = 0;
+	        	sampleComplete = true;
+	        }
+    	}
+    	else {
+    		if (lastLocalSampleTimes[sensorType] == 0) {
+            	lastLocalSampleTimes[sensorType] = SystemClock.elapsedRealtime();
+            }
+            if (SystemClock.elapsedRealtime() > lastLocalSampleTimes[sensorType] + localBufferTime) {
+            	lastLocalSampleTimes[sensorType] = 0;
+            	sampleComplete = true;
+            }
+    	}
+    	return sampleComplete;
     }
 }

@@ -268,6 +268,12 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 				success &= checkSensor(SensorNames.LIN_ACCELERATION, SensorNames.LIN_ACCELERATION,
 						SenseDataTypes.JSON, sensor.getName(),
 						"{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType, deviceUuid);
+				//TODO
+				//if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
+					success &= checkSensor(SensorNames.LINEAR_BURST, "linear acceleration (burst-mode)",
+							SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
+							deviceType, deviceUuid);
+				//}
 
 			} else {
 				// Log.v(TAG, "No linear acceleration sensor present!");
@@ -292,6 +298,11 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 					sensor.getName(),
 					"{\"azimuth rate\":1.0,\"pitch rate\":1.0,\"roll rate\":1.0}", deviceType,
 					deviceUuid);
+			//if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
+			success &= checkSensor(SensorNames.GYRO_BURST, "gyroscope (burst-mode)",
+					SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
+					deviceType, deviceUuid);
+			//}
 
 		} else {
 			// Log.v(TAG, "No gyroscope present!");

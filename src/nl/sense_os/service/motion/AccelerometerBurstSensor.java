@@ -17,9 +17,9 @@ import android.hardware.SensorEvent;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class BurstSensor implements MotionSensorInterface {
+public class AccelerometerBurstSensor implements MotionSensorInterface {
 
-    private static final String TAG = "BurstSensor";
+    private static final String TAG = "AccelerometerBurstSensor";
     private static final long LOCAL_BUFFER_TIME = 3 * 1000;
     private static final long DEFAULT_BURST_RATE = 10 * 1000;
     private static final long IDLE_BURST_RATE = 12 * 1000;
@@ -33,7 +33,7 @@ public class BurstSensor implements MotionSensorInterface {
     private Context context;
     private boolean sampleComplete = false;
 
-    public BurstSensor(Context context) {
+    public AccelerometerBurstSensor(Context context) {
         this.context = context;
     }
 
@@ -60,6 +60,13 @@ public class BurstSensor implements MotionSensorInterface {
         Log.v(TAG, "New data from " + MotionSensorUtils.getSensorName(sensor));
 
         JSONObject json = MotionSensorUtils.createJsonValue(event);
+       
+        if (dataBuffer[sensor.getType()] == null) {
+            dataBuffer[sensor.getType()] = new JSONArray();
+        }
+        dataBuffer[sensor.getType()].put(json);
+        
+        
         try {
 			x2 = json.getDouble("x-axis");
 			y2 = json.getDouble("y-axis");
@@ -68,10 +75,6 @@ public class BurstSensor implements MotionSensorInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        if (dataBuffer[sensor.getType()] == null) {
-            dataBuffer[sensor.getType()] = new JSONArray();
-        }
-        dataBuffer[sensor.getType()].put(json);
         if (lastLocalSampleTimes[sensor.getType()] == 0) {
         	lastLocalSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
         	x1 = x2;

@@ -8,6 +8,7 @@ import java.util.List;
 
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.states.EpiStateMonitor;
@@ -98,7 +99,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 
     private final FallDetector fallDetector;
     private EpilepsySensor epiSensor;
-    private BurstSensor burstSensor;
+    private MotionBurstSensor accelerometerBurstSensor;
+    private MotionBurstSensor gyroBurstSensor;
+    private MotionBurstSensor linearBurstSensor;
     private MotionEnergySensor energySensor;
     private StandardMotionSensor standardSensor;
     private final Context context;
@@ -120,7 +123,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     protected MotionSensor(Context context) {
         this.context = context;
         epiSensor = new EpilepsySensor(context);
-        burstSensor = new BurstSensor(context);
+        accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER, SensorNames.ACCELEROMETER_BURST);
+        gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE, SensorNames.GYRO_BURST);
+        linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION , SensorNames.LINEAR_BURST);
         energySensor = new MotionEnergySensor(context);
         fallDetector = new FallDetector(context);
         standardSensor = new StandardMotionSensor(context);
@@ -144,7 +149,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 
         // notify all special sensors
         epiSensor.startNewSample();
-        burstSensor.startNewSample();
+        accelerometerBurstSensor.startNewSample();
+        gyroBurstSensor.startNewSample();
+        linearBurstSensor.startNewSample();
         standardSensor.startNewSample();
         energySensor.startNewSample();
         fallDetector.startNewSample();
@@ -188,7 +195,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 	    if (isEpiMode) {
 	    	unregister &= epiSensor.isSampleComplete();
 	    } else if (isBurstMode) {
-	    	unregister &= burstSensor.isSampleComplete();
+	    	unregister &= accelerometerBurstSensor.isSampleComplete();
 		} else {
 	        unregister &= standardSensor.isSampleComplete();
 		}
@@ -238,7 +245,9 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 	        	}
 	        	// add the data to the buffer if we are in Burst-mode
 	        	if (isBurstMode) {
-	        		burstSensor.onNewData(event);
+	        		accelerometerBurstSensor.onNewData(event);
+	        		gyroBurstSensor.onNewData(event);
+	        		linearBurstSensor.onNewData(event);
 	        	}
 	        } else {
 	            // use standard motion sensor

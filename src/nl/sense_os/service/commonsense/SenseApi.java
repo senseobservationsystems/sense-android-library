@@ -218,7 +218,9 @@ public class SenseApi {
 					|| name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
 					|| name.equals(SensorNames.MAGNETIC_FIELD)
 					|| name.equals(SensorNames.ACCELEROMETER_EPI)
-					|| name.equals(SensorNames.ACCELEROMETER_BURST)) {
+					|| name.equals(SensorNames.ACCELEROMETER_BURST)
+					|| name.equals(SensorNames.GYRO_BURST)
+					|| name.equals(SensorNames.LINEAR_BURST)) {
 				// special case to take care of changed motion sensor descriptions since Gingerbread
 				if (name.equals(sensor.getString("name"))) {
 					// Log.d(TAG, "Using inexact match for '" + name + "' sensor ID...");
