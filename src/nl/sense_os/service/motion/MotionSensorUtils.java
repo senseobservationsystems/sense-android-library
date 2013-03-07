@@ -64,7 +64,7 @@ public class MotionSensorUtils {
         return header;
     }
     
-    public static double[] getValues(SensorEvent event) {
+    public static double[] getVector(SensorEvent event) {
     	
         final double[] values = new double[3];
 

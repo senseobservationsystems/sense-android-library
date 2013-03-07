@@ -25,7 +25,7 @@ public interface MotionSensorInterface {
 
     /**
      * Handles a new data point. Nota bene: the sensor event is not guaranteed to be from the sensor
-     * that the MotionSensorInterface is interested in, som implementing classes need to check this.
+     * that the MotionSensorInterface is interested in, some implementing classes need to check this.
      * 
      * @param event
      */

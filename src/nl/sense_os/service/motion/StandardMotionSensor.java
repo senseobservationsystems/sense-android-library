@@ -16,8 +16,6 @@ import android.hardware.SensorEvent;
 import android.os.SystemClock;
 
 public class StandardMotionSensor implements MotionSensorInterface {
-
-	private static final String TAG = "StandardSensor";
     private Context context;
     private long[] lastSampleTimes = new long[50];
     private final List<Sensor> sensors;

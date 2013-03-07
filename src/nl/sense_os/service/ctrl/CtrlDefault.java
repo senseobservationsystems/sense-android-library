@@ -345,77 +345,55 @@ public class CtrlDefault extends Controller {
     }
     
     private static final long DEFAULT_BURST_RATE = 10 * 1000;
-    private static final long IDLE_BURST_RATE = 12 * 1000;
+    private static final long IDLE_BURST_RATE = 30 * 1000;
     private static double IDLE_MOTION_THRESHOLD = 0.09;
-    private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
+    private static final double IDLE_TIME_THRESHOLD = 3*60*1000;
     private long firstIdleDetectedTime = 0;
-    private double avgMotion = 0, motion = 0, totalMotion = 0;
-    private double x1 = 0, x2 = 0;
-	private double y1 = 0, y2 = 0;
-	private double z1 = 0, z2 = 0;
-	private long[] lastLocalSampleTimes = new long[50];
-	private boolean sampleComplete = false;
 	
-    public boolean stopBurst(JSONObject json, List<double[]> dataBuffer, int sensorType, long localBufferTime) {
+    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
+    	//right now only the accelerometer is used
+    	if (sensorType != Sensor.TYPE_ACCELEROMETER)
+    		return;
+
+    	//Initialize with the first vector for the algorithm in the for loop
+    	double[] firstVector = dataBuffer.get(0);
+		double xLast = firstVector[0];
+		double yLast = firstVector[1];
+		double zLast = firstVector[2];
+    	
+		double totalMotion = 0;
+    	for (double[] vector : dataBuffer) {
+			// loop over the array to calculate some magic "totalMotion" value
+			// that indicates the amount of motion during the burst
+    		double x = vector[0];
+    		double y = vector[1];
+    		double z = vector[2];
+    		
+    		double motion = Math.pow((Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
+            totalMotion += motion;
+            x = xLast;
+            y = yLast;
+            z = zLast;
+    	}
     	
     	MotionSensor motionSensor = MotionSensor.getInstance(context);
-    	sampleComplete = false;
-    	if (sensorType == Sensor.TYPE_ACCELEROMETER) {
-    		try {
-				x2 = json.getDouble("x-axis");
-				y2 = json.getDouble("y-axis");
-				z2 = json.getDouble("z-axis");
-	        } catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        if (lastLocalSampleTimes[sensorType] == 0) {
-	        	lastLocalSampleTimes[sensorType] = SystemClock.elapsedRealtime();
-	        	x1 = x2;
-	            y1 = y2;
-	            z1 = z2;
-	        }
-	        else {
-	        	motion = Math.pow((Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z2 - z1)), 2);
-	            x1 = x2;
-	            y1 = y2;
-	            z1 = z2;
-	            totalMotion += motion;
-	        }
-	        if (SystemClock.elapsedRealtime() > lastLocalSampleTimes[sensorType] + localBufferTime) {
-	
-	        	lastLocalSampleTimes[sensorType] = 0;
-	        	avgMotion = totalMotion / (dataBuffer.size() - 1);
-	        	
-	        	if (avgMotion > IDLE_MOTION_THRESHOLD) {
-	        		firstIdleDetectedTime = 0;
-	        		if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
-	        			motionSensor.setSampleRate(DEFAULT_BURST_RATE);
-	        		}
-	        	} else {
-	        		if (firstIdleDetectedTime == 0) {
-	        			firstIdleDetectedTime = SystemClock.elapsedRealtime();
-	        		} else {
-	        			if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD) && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
-	        				motionSensor.setSampleRate(IDLE_BURST_RATE);
-	        			}
-	        		}
-	        	}
-	        	Log.w(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
-	        	
-	        	totalMotion = 0;
-	        	sampleComplete = true;
-	        }
+    	double avgMotion = totalMotion / (dataBuffer.size() - 1);
+    	
+    	//Control logic to choose the sample rate for burst motion sensors
+    	if (avgMotion > IDLE_MOTION_THRESHOLD) {
+    		firstIdleDetectedTime = 0;
+    		if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
+    			motionSensor.setSampleRate(DEFAULT_BURST_RATE);
+    		}
+    	} else {
+    		if (firstIdleDetectedTime == 0) {
+    			firstIdleDetectedTime = SystemClock.elapsedRealtime();
+    		} else {
+    			if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD) && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
+    				motionSensor.setSampleRate(IDLE_BURST_RATE);
+    			}
+    		}
     	}
-    	else {
-    		if (lastLocalSampleTimes[sensorType] == 0) {
-            	lastLocalSampleTimes[sensorType] = SystemClock.elapsedRealtime();
-            }
-            if (SystemClock.elapsedRealtime() > lastLocalSampleTimes[sensorType] + localBufferTime) {
-            	lastLocalSampleTimes[sensorType] = 0;
-            	sampleComplete = true;
-            }
-    	}
-    	return sampleComplete;
+    	Log.v(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
     }
 }

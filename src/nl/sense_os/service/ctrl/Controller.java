@@ -106,6 +106,6 @@ public abstract class Controller {
      * 
      * @see #alarmReceiver
      */
-    public abstract boolean stopBurst(JSONObject json, List<double[]> dataBuffer, int sensorType, long localBufferTime);
+    public abstract void onMotionBurst(List<double[]> dataBuffer, int sensorType);
     
 }
