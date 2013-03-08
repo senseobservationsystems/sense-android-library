@@ -301,7 +301,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 			Context.MODE_PRIVATE);
 		isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
-		isBurstMode = true; //mainPrefs.getBoolean(Motion.BURSTMODE, false);
+		isBurstMode = mainPrefs.getBoolean(Motion.BURSTMODE, false);
 		isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
 		isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
 	
