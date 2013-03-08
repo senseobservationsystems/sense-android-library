@@ -371,9 +371,9 @@ public class CtrlDefault extends Controller {
     		
     		double motion = Math.pow((Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
             totalMotion += motion;
-            x = xLast;
-            y = yLast;
-            z = zLast;
+            xLast = x;
+            yLast = y;
+            zLast = z;
     	}
     	
     	MotionSensor motionSensor = MotionSensor.getInstance(context);
