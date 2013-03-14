@@ -22,6 +22,7 @@ import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
@@ -176,7 +177,13 @@ public class MsgHandler extends Service {
 				sensorValue += intent.getIntExtra(DataPoint.VALUE, Integer.MIN_VALUE);
 			} else if (dataType.equals(SenseDataTypes.JSON)
 					|| dataType.equals(SenseDataTypes.JSON_TIME_SERIES)) {
-				sensorValue += new JSONObject(intent.getStringExtra(DataPoint.VALUE)).toString();
+                try {
+                    sensorValue += new JSONObject(intent.getStringExtra(DataPoint.VALUE))
+                            .toString();
+                } catch (JSONException e) {
+                    // assume value is an array
+                    sensorValue += new JSONArray(intent.getStringExtra(DataPoint.VALUE)).toString();
+                }
 			} else if (dataType.equals(SenseDataTypes.STRING)
 					|| dataType.equals(SenseDataTypes.FILE)) {
 				sensorValue += intent.getStringExtra(DataPoint.VALUE);

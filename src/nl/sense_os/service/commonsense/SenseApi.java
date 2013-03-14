@@ -708,16 +708,23 @@ public class SenseApi {
 		sensor.put("display_name", displayName);
 		sensor.put("pager_type", "");
 		sensor.put("data_type", dataType);
-		if (dataType.compareToIgnoreCase("json") == 0) {
-			JSONObject dataStructJSon = new JSONObject(value);
-			JSONArray fieldNames = dataStructJSon.names();
-			for (int x = 0; x < fieldNames.length(); x++) {
-				String fieldName = fieldNames.getString(x);
-				int start = dataStructJSon.get(fieldName).getClass().getName().lastIndexOf(".");
-				dataStructJSon.put(fieldName, dataStructJSon.get(fieldName).getClass().getName()
-						.substring(start + 1));
-			}
-			sensor.put("data_structure", dataStructJSon.toString().replaceAll("\"", "\\\""));
+        if (dataType.compareToIgnoreCase(SenseDataTypes.JSON) == 0
+                || dataType.compareToIgnoreCase(SenseDataTypes.JSON_TIME_SERIES) == 0) {
+            JSONObject dataStructJSon = null;
+            try {
+                dataStructJSon = new JSONObject(value);
+                JSONArray fieldNames = dataStructJSon.names();
+                for (int x = 0; x < fieldNames.length(); x++) {
+                    String fieldName = fieldNames.getString(x);
+                    int start = dataStructJSon.get(fieldName).getClass().getName().lastIndexOf(".");
+                    dataStructJSon.put(fieldName, dataStructJSon.get(fieldName).getClass()
+                            .getName().substring(start + 1));
+                }
+            } catch (JSONException e) {
+                // apparently the data structure cannot be parsed from the value
+                dataStructJSon = new JSONObject();
+            }
+            sensor.put("data_structure", dataStructJSon.toString().replaceAll("\"", "\\\""));
 		}
 		postData.put("sensor", sensor);
 
