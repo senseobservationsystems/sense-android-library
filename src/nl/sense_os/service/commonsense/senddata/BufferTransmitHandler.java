@@ -6,10 +6,11 @@ import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
@@ -26,10 +27,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -38,21 +41,27 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 /**
- * Handler for tasks that send buffered sensor data to CommonSense. Nota that this handler is
+ * Handler for transmit tasks of recently added data. Updates {@link DataPoint#TRANSMIT_STATE} of
+ * the data points after the transmission is completed successfully. Note that this handler is
  * re-usable: every time the handler receives a message, it gets the latest data in a Cursor and
- * sends it to CommonSense.<br>
- * <br>
- * Subclasses have to implement {@link #getUnsentData()} and {@link #onTransmitSuccess(JSONObject)}
- * to make them work with their intended data source.
+ * sends it to CommonSense.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public abstract class BufferTransmitHandler extends Handler {
+public class BufferTransmitHandler extends Handler {
+
+    class SensorDataEntry {
+        String sensorId;
+        String sensorName;
+        String sensorDescription;
+        JSONArray data;
+    }
 
 	private static final String TAG = "BatchDataTransmitHandler";
 	private static final int MAX_POST_DATA = 100;
-	final WeakReference<Context> ctxRef;
-	final WeakReference<LocalStorage> storageRef;
+    private final Uri contentUri;
+    private final WeakReference<Context> ctxRef;
+    private final WeakReference<LocalStorage> storageRef;
 	private final String url;
 	private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
 	private final NumberFormat dateFormatter = new DecimalFormat("##########.###", symbols);
@@ -61,6 +70,9 @@ public abstract class BufferTransmitHandler extends Handler {
 		super(looper);
 		this.ctxRef = new WeakReference<Context>(context);
 		this.storageRef = new WeakReference<LocalStorage>(storage);
+
+        contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
+                + DataPoint.CONTENT_URI_PATH);
 
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
@@ -86,10 +98,107 @@ public abstract class BufferTransmitHandler extends Handler {
 		}
 	}
 
+    private List<SensorDataEntry> getSensorDataList(Cursor cursor) throws IOException,
+            JSONException {
+
+        // map of transmission entries, indexed by the sensor name and description
+        Map<String, SensorDataEntry> map = new HashMap<String, SensorDataEntry>();
+        String name, description, dataType, value, deviceUuid;
+        long timestamp;
+        int points = 0;
+        while ((points < MAX_POST_DATA) && !cursor.isAfterLast()) {
+
+            // get the data point details
+            try {
+                name = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.SENSOR_NAME));
+                description = cursor.getString(cursor
+                        .getColumnIndexOrThrow(DataPoint.SENSOR_DESCRIPTION));
+                dataType = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.DATA_TYPE));
+                value = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.VALUE));
+                timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(DataPoint.TIMESTAMP));
+                deviceUuid = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.DEVICE_UUID));
+
+                // set default sensor ID if it is missing
+                deviceUuid = deviceUuid != null ? deviceUuid : SenseApi.getDefaultDeviceUuid(ctxRef
+                        .get());
+
+            } catch (IllegalArgumentException e) {
+                // something is wrong with this data point, skip it
+                Log.w(TAG, "Exception getting data point details from cursor: '" + e.getMessage()
+                        + "'. Skip data point...");
+                cursor.moveToNext();
+                continue;
+            }
+
+            /*
+             * "normal" data is added to the map until we reach the max amount of points
+             */
+            if (!dataType.equals(SenseDataTypes.FILE)) {
+
+                // construct JSON representation of the value
+                JSONObject jsonDataPoint = new JSONObject();
+                jsonDataPoint.put("date", dateFormatter.format(timestamp / 1000d));
+                jsonDataPoint.put("value", value);
+
+                // put the new value Object in the appropriate sensor's data
+                String key = name + description;
+                SensorDataEntry sensorEntry = map.get(key);
+                JSONArray data = null;
+                if (sensorEntry == null) {
+                    sensorEntry = new SensorDataEntry();
+                    String id = SenseApi.getSensorId(ctxRef.get(), name, description, dataType,
+                            deviceUuid);
+                    if (null == id) {
+                        // skip sensor data that does not have a sensor ID yet
+                        Log.w(TAG, "cannot find sensor ID for " + name + " (" + description + ")");
+                        cursor.moveToNext();
+                        continue;
+                    }
+                    sensorEntry.sensorId = id;
+                    sensorEntry.sensorName = name;
+                    sensorEntry.sensorDescription = description;
+                    data = new JSONArray();
+                } else {
+                    data = sensorEntry.data;
+                }
+                data.put(jsonDataPoint);
+                sensorEntry.data = data;
+                map.put(key, sensorEntry);
+
+                // count the added point to the total number of sensor data
+                points++;
+
+            } else {
+                // if the data type is a "file", we need special handling
+                sendFile(name, description, dataType, deviceUuid, value, timestamp);
+
+            }
+
+            cursor.moveToNext();
+        }
+
+        return new ArrayList<BufferTransmitHandler.SensorDataEntry>(map.values());
+    }
+
 	/**
 	 * @return Cursor with the data points that have to be sent to CommonSense.
 	 */
-	protected abstract Cursor getUnsentData();
+    private Cursor getUnsentData() {
+        try {
+            String where = DataPoint.TRANSMIT_STATE + "=0";
+            String sortOrder = DataPoint.TIMESTAMP + " ASC";
+            Cursor unsent = storageRef.get().query(contentUri, null, where, null, sortOrder);
+            if (null != unsent) {
+                Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
+            } else {
+                Log.w(TAG, "Failed to get unsent recent data points from local storage");
+            }
+            return unsent;
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Error querying Local Storage!", e);
+            return null;
+        }
+    }
 
 	@Override
 	public void handleMessage(Message msg) {
@@ -112,11 +221,12 @@ public abstract class BufferTransmitHandler extends Handler {
 			wakeLock.acquire();
 
 			cursor = getUnsentData();
-			if ((null != cursor) && cursor.moveToFirst()) {
+            if (null != cursor && cursor.moveToFirst()) {
 				transmit(cursor, cookie);
 			} else {
 				// nothing to transmit
 			}
+
 		} catch (Exception e) {
 			if (null != e.getMessage()) {
 				Log.e(TAG, "Exception sending buffered data: '" + e.getMessage()
@@ -130,188 +240,177 @@ public abstract class BufferTransmitHandler extends Handler {
 		}
 	}
 
-	/**
-	 * Performs cleanup tasks after transmission was successfully completed. Should update the data
-	 * point records to show that they have been sent to CommonSense.
-	 * 
-	 * @param transmission
-	 *            The JSON Object that was sent to CommonSense. Contains all the data points that
-	 *            were transmitted.
-	 * @throws Exception
-	 */
-	protected abstract void onTransmitSuccess(String cookie, JSONObject transmission)
-			throws JSONException;
+    /**
+     * Performs cleanup tasks after transmission was successfully completed. Should update the data
+     * point records to show that they have been sent to CommonSense.
+     * 
+     * @param sensorDatas
+     *            List of data that was sent to CommonSense. Contains all the data points that were
+     *            transmitted.
+     * @throws Exception
+     */
+    private void onTransmitSuccess(List<SensorDataEntry> sensorDatas)
+            throws JSONException{
+        // log our great success
+        Log.i(TAG, "Sent recent sensor data from the local storage!");
 
-	/**
-	 * POSTs the sensor data points to the main sensor data URL at CommonSense.
-	 * 
-	 * @param cookie
-	 * 
-	 * @param transmission
-	 *            JSON Object with data points for transmission
-	 * @throws JSONException
-	 * @throws MalformedURLException
-	 */
-	private void postData(String cookie, JSONObject transmission) throws JSONException,
-			MalformedURLException {
+        // new content values with updated transmit state
+        ContentValues values = new ContentValues();
+        values.put(DataPoint.TRANSMIT_STATE, 1);
 
-		Map<String, String> response = null;
-		try {
-			response = SenseApi.request(ctxRef.get(), url, transmission, cookie);
-		} catch (IOException e) {
-			// handle failure later
-		}
+        for (SensorDataEntry sensorData : sensorDatas) {
 
-		if (response == null) {
-			// Error when sending
-			Log.w(TAG, "Failed to send buffered data points.\nData will be retried later.");
+            // get the name of the sensor, to use in the ContentResolver query
+            String sensorName = sensorData.sensorName;
+            String description = sensorData.sensorDescription;
 
-		} else if (response.get("http response code").compareToIgnoreCase("201") != 0) {
-			// incorrect status code
-			String statusCode = response.get("http response code");
+            // select points for this sensor, between the first and the last time stamp
+            JSONArray dataPoints = sensorData.data;
+            String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
+            String lastTimeStamp = dataPoints.getJSONObject(dataPoints.length() - 1).getString(
+                    "date");
+            long min = Math.round(Double.parseDouble(frstTimeStamp) * 1000);
+            long max = Math.round(Double.parseDouble(lastTimeStamp) * 1000);
+            String where = DataPoint.SENSOR_NAME + "='" + sensorName + "'" + " AND "
+                    + DataPoint.SENSOR_DESCRIPTION + "='" + description + "'" + " AND "
+                    + DataPoint.TIMESTAMP + ">=" + min + " AND " + DataPoint.TIMESTAMP + " <="
+                    + max;
 
-			// if un-authorized: relogin
-			if (statusCode.compareToIgnoreCase("403") == 0) {
-				final Intent serviceIntent = new Intent(ctxRef.get().getString(
-						R.string.action_sense_service));
-				serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
-				ctxRef.get().startService(serviceIntent);
-			}
+            // update points in local storage
+            try {
+                int updated = storageRef.get().update(contentUri, values, where, null);
+                if (updated == dataPoints.length()) {
+                    // Log.v(TAG, "Updated all " + updated + " '" + sensorName
+                    // + "' data points in the local storage");
+                } else {
+                    Log.w(TAG, "Wrong number of '" + sensorName
+                            + "' data points updated after transmission! " + updated + " vs. "
+                            + dataPoints.length());
+                }
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Error updating points in Local Storage!", e);
+            }
+        }
+    }
 
-			// Show the HTTP response Code
-			Log.w(TAG, "Failed to send buffered data points: " + statusCode
-					+ ", Response content: '" + response.get("content") + "'\n"
-					+ "Data will be retried later");
-			Log.d(TAG, "transmission: '" + transmission + "'");
+    /**
+     * POSTs the sensor data points to the main sensor data URL at CommonSense.
+     * 
+     * @param cookie
+     * 
+     * @param transmission
+     *            JSON Object with data points for transmission
+     * @return true if successfully sent
+     * @throws JSONException
+     * @throws MalformedURLException
+     */
+    private boolean postData(String cookie, JSONObject transmission) throws JSONException,
+            MalformedURLException {
 
-		} else {
-			// Data sent successfully
-			onTransmitSuccess(cookie, transmission);
-		}
-	}
+        Map<String, String> response = null;
+        try {
+            response = SenseApi.request(ctxRef.get(), url, transmission, cookie);
+        } catch (IOException e) {
+            // handle failure later
+        }
 
-	/**
-	 * Transmits the data points from {@link #cursor} to CommonSense. Any "file" type data points
-	 * will be sent separately via
-	 * {@link MsgHandler#sendSensorData(String, String, String, JSONObject)}.
-	 * 
-	 * @param cookie
-	 * @param cursor
-	 * 
-	 * @throws JSONException
-	 * @throws IOException
-	 */
-	private void transmit(Cursor cursor, String cookie) throws JSONException, IOException {
+        boolean result = false;
 
-		// continue until all points in the cursor have been sent
-		HashMap<String, JSONObject> sensorDataMap = null;
-		while (!cursor.isAfterLast()) {
+        if (response == null) {
+            // Error when sending
+            Log.w(TAG, "Failed to send buffered data points.\nData will be retried later.");
+            result = false;
 
-			// organize the data into a hash map sorted by sensor
-			sensorDataMap = new HashMap<String, JSONObject>();
-			String name, description, dataType, value, deviceUuid;
-			long timestamp;
-			int points = 0;
-			while ((points < MAX_POST_DATA) && !cursor.isAfterLast()) {
+        } else if (response.get("http response code").compareToIgnoreCase("201") != 0) {
+            // incorrect status code
+            String statusCode = response.get("http response code");
 
-				// get the data point details
-				try {
-					name = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.SENSOR_NAME));
-					description = cursor.getString(cursor
-							.getColumnIndexOrThrow(DataPoint.SENSOR_DESCRIPTION));
-					dataType = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.DATA_TYPE));
-					value = cursor.getString(cursor.getColumnIndexOrThrow(DataPoint.VALUE));
-					timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(DataPoint.TIMESTAMP));
-					deviceUuid = cursor.getString(cursor
-							.getColumnIndexOrThrow(DataPoint.DEVICE_UUID));
+            // if un-authorized: relogin
+            if (statusCode.compareToIgnoreCase("403") == 0) {
+                final Intent serviceIntent = new Intent(ctxRef.get().getString(
+                        R.string.action_sense_service));
+                serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
+                ctxRef.get().startService(serviceIntent);
+            }
 
-					// set default sensor ID if it is missing
-					deviceUuid = deviceUuid != null ? deviceUuid : SenseApi
-							.getDefaultDeviceUuid(ctxRef.get());
+            // Show the HTTP response Code
+            Log.w(TAG, "Failed to send buffered data points: " + statusCode
+                    + ", Response content: '" + response.get("content") + "'\n"
+                    + "Data will be retried later");
 
-				} catch (IllegalArgumentException e) {
-					// something is wrong with this data point, skip it
-					Log.w(TAG,
-							"Exception getting data point details from cursor: '" + e.getMessage()
-									+ "'. Skip data point...");
-					cursor.moveToNext();
-					continue;
-				}
+            result = false;
 
-				/*
-				 * "normal" data is added to the map until we reach the max amount of points
-				 */
-				if (!dataType.equals(SenseDataTypes.FILE)) {
+        } else {
+            // Data sent successfully
+            result = true;
+        }
 
-					// construct JSON representation of the value
-					JSONObject jsonDataPoint = new JSONObject();
-					jsonDataPoint.put("date", dateFormatter.format(timestamp / 1000d));
-					jsonDataPoint.put("value", value);
+        return result;
+    }
 
-					// put the new value Object in the appropriate sensor's data
-					String key = name + description;
-					JSONObject sensorEntry = sensorDataMap.get(key);
-					JSONArray data = null;
-					if (sensorEntry == null) {
-						sensorEntry = new JSONObject();
-						String id = SenseApi.getSensorId(ctxRef.get(), name, description, dataType,
-								deviceUuid);
-						if (null == id) {
-							// skip sensor data that does not have a sensor ID yet
-							Log.w(TAG, "cannot find sensor ID for " + name + " (" + description
-									+ ")");
-							cursor.moveToNext();
-							continue;
-						}
-						sensorEntry.put("sensor_id", id);
-						sensorEntry.put("sensor_name", name);
-						data = new JSONArray();
-					} else {
-						data = sensorEntry.getJSONArray("data");
-					}
-					data.put(jsonDataPoint);
-					sensorEntry.put("data", data);
-					sensorDataMap.put(key, sensorEntry);
+	private void sendFile(String name, String description, String dataType, String deviceUuid,
+            String value, long timestamp) throws JSONException {
 
-					// count the added point to the total number of sensor data
-					points++;
+        // create sensor data JSON object with only 1 data point
+        JSONObject sensorData = new JSONObject();
+        JSONArray dataArray = new JSONArray();
+        JSONObject data = new JSONObject();
+        data.put("value", value);
+        data.put("date", dateFormatter.format(timestamp / 1000d));
+        dataArray.put(data);
+        sensorData.put("data", dataArray);
 
-				} else {
-					/*
-					 * if the data type is a "file", we need special handling
-					 */
+        // send data point through MsgHandler
+        Context context = ctxRef.get();
+        MsgHandler.sendSensorData(context, name, description, dataType, deviceUuid, sensorData);
+    }
 
-					// create sensor data JSON object with only 1 data point
-					JSONObject sensorData = new JSONObject();
-					JSONArray dataArray = new JSONArray();
-					JSONObject data = new JSONObject();
-					data.put("value", value);
-					data.put("date", dateFormatter.format(timestamp / 1000d));
-					dataArray.put(data);
-					sensorData.put("data", dataArray);
+    /**
+     * Transmits the data points from {@link #cursor} to CommonSense. Any "file" type data points
+     * will be sent separately via
+     * {@link MsgHandler#sendSensorData(String, String, String, JSONObject)}.
+     * 
+     * @param cookie
+     * @param cursor
+     * 
+     * @throws JSONException
+     * @throws IOException
+     */
+    private void transmit(Cursor cursor, String cookie) throws JSONException, IOException {
 
-					MsgHandler.sendSensorData(ctxRef.get(), name, description, dataType,
-							deviceUuid, sensorData);
-				}
+        // continue until all points in the cursor have been sent
+        List<SensorDataEntry> sensorDataList = null;
+        while (!cursor.isAfterLast()) {
 
-				cursor.moveToNext();
-			}
+            // organize the data into a hash map sorted by sensor
+            sensorDataList = getSensorDataList(cursor);
 
-			if (sensorDataMap.size() < 1) {
-				// no data to transmit
-				continue;
-			}
+            if (sensorDataList.size() < 1) {
+                // nothing to transmit
+                continue;
+            }
 
-			// prepare the main JSON object for transmission
-			JSONArray sensors = new JSONArray();
-			for (Entry<String, JSONObject> entry : sensorDataMap.entrySet()) {
-				sensors.put(entry.getValue());
-			}
-			JSONObject transmission = new JSONObject();
-			transmission.put("sensors", sensors);
+            // prepare the main JSON object for transmission
+            JSONArray sensors = new JSONArray();
+            for (SensorDataEntry sensorDataEntry : sensorDataList) {
+                JSONObject transmissionEntry = new JSONObject();
+                transmissionEntry.put("sensor_id", sensorDataEntry.sensorId);
+                transmissionEntry.put("sensor_name", sensorDataEntry.sensorName);
+                transmissionEntry.put("data", sensorDataEntry.data);
+                sensors.put(transmissionEntry);
+            }
+            JSONObject transmission = new JSONObject();
+            transmission.put("sensors", sensors);
 
-			// perform the actual POST request
-			postData(cookie, transmission);
-		}
-	}
+            // perform the actual POST request
+            boolean result = postData(cookie, transmission);
+
+            if (result) {
+                onTransmitSuccess(sensorDataList);
+            } else {
+                // abort! abort!
+                break;
+            }
+        }
+    }
 }

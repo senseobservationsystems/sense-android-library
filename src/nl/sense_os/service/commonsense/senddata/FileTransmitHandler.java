@@ -189,17 +189,8 @@ public class FileTransmitHandler extends Handler {
 			Uri contentUri = Uri.parse("content://"
 					+ ctxRef.get().getString(R.string.local_storage_authority)
 					+ DataPoint.CONTENT_URI_PATH);
-			int updated = storageRef.get().update(contentUri, values, where, null);
-			int deleted = 0;
-			if (0 == updated) {
-				contentUri = Uri.parse("content://"
-						+ ctxRef.get().getString(R.string.local_storage_authority)
-						+ DataPoint.CONTENT_PERSISTED_URI_PATH);
-				deleted = storageRef.get().delete(contentUri, where, null);
-			}
-			if ((deleted == 1) || (updated == 1)) {
-				// ok
-			} else {
+            int updated = storageRef.get().update(contentUri, values, where, null);
+            if (updated != 1) {
 				Log.w(TAG,
 						"Failed to update the local storage after a file was successfully sent to CommonSense!");
 			}

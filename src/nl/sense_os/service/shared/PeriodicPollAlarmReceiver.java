@@ -6,10 +6,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.SystemClock;
 
 /**
- * Generic BroadcastReceiver implementation for {@link PeriodicPollingSensor} classes. Calls
- * {@link PeriodicPollingSensor#doSample()} whenever a broadcast is received.
+ * Generic BroadcastReceiver implementation for {@link BasePeriodicPollingSensor} classes. Calls
+ * {@link BasePeriodicPollingSensor#doSample()} whenever a broadcast is received.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
@@ -33,7 +34,7 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Starts periodically calling {@link PeriodicPollingSensor#doSample()}. Schedules a periodic
+     * Starts periodically calling {@link BasePeriodicPollingSensor#doSample()}. Schedules a periodic
      * alarm, and registers itself as alarm receiver.
      * 
      * @param context
@@ -50,8 +51,8 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
         PendingIntent alarmOperation = PendingIntent.getBroadcast(context, reqCode, alarm, 0);
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(alarmOperation);
-        mgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
-                alarmOperation);
+        mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),
+                interval, alarmOperation);
     }
 
     /**

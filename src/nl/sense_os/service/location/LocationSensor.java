@@ -11,6 +11,8 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +44,7 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class LocationSensor {
+public class LocationSensor extends BaseDataProducer {
 	
 	private static LocationSensor instance = null;
 	
@@ -106,6 +108,13 @@ public class LocationSensor {
             // use SNTP time
             long timestamp = SNTP.getInstance().getTime();
 
+            notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(json);
+            dataPoint.sensorName = SensorNames.LOCATION;
+            dataPoint.sensorDescription = SensorNames.LOCATION;
+            dataPoint.timeStamp = timestamp;        
+            sendToSubscribers(dataPoint);
+            
 			// pass message to the MsgHandler
 			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.LOCATION);
@@ -186,12 +195,20 @@ public class LocationSensor {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			double distance = distanceEstimator.getTraveledDistance();
+			
+			notifySubscribers();
+			SensorDataPoint dataPoint = new SensorDataPoint(distance);
+			dataPoint.sensorName = SensorNames.TRAVELED_DISTANCE_1H;
+			dataPoint.sensorDescription = SensorNames.TRAVELED_DISTANCE_1H;
+			dataPoint.timeStamp = SNTP.getInstance().getTime();        
+			sendToSubscribers(dataPoint);
+			
 			// pass message to the MsgHandler
 			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.TRAVELED_DISTANCE_1H);
 			i.putExtra(DataPoint.VALUE, (float) distance);
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
 			context.startService(i);
 
 			// start counting again, from the last location

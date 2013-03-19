@@ -10,6 +10,8 @@ import nl.sense_os.service.constants.SensePrefs.SensorSpecifics;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.BaseDataProducer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,7 +24,7 @@ import android.util.Log;
  * 
  * @author Pim Nijdam <pim@sense-os.nl>
  */
-public class LoudnessSensor {
+public class LoudnessSensor extends BaseDataProducer {
 	private class TimestampValueTuple {
 		long timestamp;
 		double value;
@@ -51,22 +53,22 @@ public class LoudnessSensor {
 		this.context = context;
 		AVERAGING_PERIOD = DEFAULT_AVERAGING_PERIOD;
 		//restore silence
-        SharedPreferences sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
-                Context.MODE_PRIVATE);
-        totalSilence = sensorSpecifics.getFloat(SensorSpecifics.Loudness.TOTAL_SILENCE, DEFAULT_TOTAL_SILENCE);
-        loudest = sensorSpecifics.getFloat(SensorSpecifics.Loudness.LOUDEST, DEFAULT_LOUDEST);
-        Log.v("Sense Loudness","Loudest " + loudest + ", total silence " + totalSilence);
-        
+		SharedPreferences sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
+				Context.MODE_PRIVATE);
+		totalSilence = sensorSpecifics.getFloat(SensorSpecifics.Loudness.TOTAL_SILENCE, DEFAULT_TOTAL_SILENCE);
+		loudest = sensorSpecifics.getFloat(SensorSpecifics.Loudness.LOUDEST, DEFAULT_LOUDEST);
+		Log.v("Sense Loudness","Loudest " + loudest + ", total silence " + totalSilence);
+
 	}
-    
+
 	private static LoudnessSensor instance = null;
-    
-    public static LoudnessSensor getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new LoudnessSensor(context);
-	    }
-	    return instance;
-    }
+
+	public static LoudnessSensor getInstance(Context context) {
+		if(instance == null) {
+			instance = new LoudnessSensor(context);
+		}
+		return instance;
+	}
 
 	public void onNewNoise(long ms, double dB) {
 		addNoiseInDb(ms, dB);
@@ -122,24 +124,31 @@ public class LoudnessSensor {
 
 	private void setLowestEver(double lowest) {
 		totalSilence = lowest;
-        Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
-                Context.MODE_PRIVATE).edit();
-        sensorSpecifics.putFloat(SensorSpecifics.Loudness.TOTAL_SILENCE, (float)totalSilence);
-        sensorSpecifics.commit();
+		Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
+				Context.MODE_PRIVATE).edit();
+		sensorSpecifics.putFloat(SensorSpecifics.Loudness.TOTAL_SILENCE, (float)totalSilence);
+		sensorSpecifics.commit();
 	}
 	private void setHighestEver(double highest) {
 		loudest = highest;
-        Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
-                Context.MODE_PRIVATE).edit();
-        sensorSpecifics.putFloat(SensorSpecifics.Loudness.LOUDEST, (float)loudest);
-        sensorSpecifics.commit();
+		Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
+				Context.MODE_PRIVATE).edit();
+		sensorSpecifics.putFloat(SensorSpecifics.Loudness.LOUDEST, (float)loudest);
+		sensorSpecifics.commit();
 	}
 
 	private void sendSensorValue(double value, long ms) {
+
+		this.notifySubscribers();
+		SensorDataPoint dataPoint = new SensorDataPoint(value);
+		dataPoint.sensorName = SensorNames.LOUDNESS;
+		dataPoint.sensorDescription = SensorNames.LOUDNESS;
+		dataPoint.timeStamp = ms;        
+		this.sendToSubscribers(dataPoint);
+
 		Intent sensorData = new Intent(
 				context.getString(R.string.action_sense_new_data));
-		sensorData.putExtra(DataPoint.SENSOR_NAME,
-				SensorNames.LOUDNESS);
+		sensorData.putExtra(DataPoint.SENSOR_NAME,SensorNames.LOUDNESS);
 		sensorData.putExtra(DataPoint.VALUE, (float)value);
 		sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 		sensorData.putExtra(DataPoint.TIMESTAMP, ms);
