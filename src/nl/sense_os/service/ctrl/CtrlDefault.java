@@ -70,7 +70,7 @@ public class CtrlDefault extends Controller {
         boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
 
         if (selfAwareMode) {
-            // Log.v(TAG, "Check location sensor settings...");
+            Log.v(TAG, "Check location sensor settings...");
             LocationSensor locListener = LocationSensor.getInstance(context);
             if (isListeningGps) {
 

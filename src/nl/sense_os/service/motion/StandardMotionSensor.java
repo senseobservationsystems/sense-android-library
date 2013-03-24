@@ -14,11 +14,13 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class StandardMotionSensor implements MotionSensorInterface {
     private Context context;
     private long[] lastSampleTimes = new long[50];
     private final List<Sensor> sensors;
+    private static final String TAG = "Standard Motion";
 
     public StandardMotionSensor(Context context) {
         this.context = context;
@@ -54,6 +56,7 @@ public class StandardMotionSensor implements MotionSensorInterface {
             return;
         }
 
+        Log.v(TAG, "Check motion");
         // store the sample time
         lastSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
 
