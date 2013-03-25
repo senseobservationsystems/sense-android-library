@@ -35,15 +35,11 @@ public class ProximitySensor extends BaseDataProducer implements SensorEventList
 
 	private static final String TAG = "Sense Proximity Sensor";
 
-	private long sampleDelay = 0; // in milliseconds
-	private long[] lastSampleTimes = new long[50];
 	private Context context;
 	private List<Sensor> sensors;
 	private SensorManager smgr;
 	private Handler proximityHandler = new Handler();
 	private Runnable proximityThread = null;
-	private boolean proximitySensingActive = false;
-	private SensorEvent last_event = null;
 
 	protected ProximitySensor(Context context) {
 		this.context = context;
@@ -70,105 +66,70 @@ public class ProximitySensor extends BaseDataProducer implements SensorEventList
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// catch the event, and send it when the time is right
-		last_event = event;
+		Sensor sensor = event.sensor;
+
+		String sensorName = "";
+		if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
+			sensorName = SensorNames.PROXIMITY;
+		}
+
+		String jsonString = "{";
+		int x = 0;
+		for (float value : event.values) {
+			if (x == 0) {
+				if (sensor.getType() == Sensor.TYPE_PROXIMITY)
+					jsonString += "\"distance\":" + value;
+			}
+			x++;
+		}
+		jsonString += "}";
+
+		try{
+
+			this.notifySubscribers();
+			SensorDataPoint dataPoint = new SensorDataPoint(new JSONObject(jsonString));
+			dataPoint.sensorName = sensorName;
+			dataPoint.sensorDescription = sensor.getName();
+			dataPoint.timeStamp = SNTP.getInstance().getTime();        
+			this.sendToSubscribers(dataPoint);
+		}
+		catch(Exception e)
+		{
+			Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
+		}
+		
+		// pass message to the MsgHandler
+		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+		i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+		i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+		i.putExtra(DataPoint.VALUE, jsonString);
+		i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+		i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+		this.context.startService(i);	
 	}
 
-    /**
-     * Runnable class that checks the last received sensor value and creates a new data point.
-     * 
-     * @author Ted Schmidt <ted@sense-os.nl>
-     */
-	protected class ProcessAndSend implements Runnable 
-	{
-		public void run()
-		{	
-			if (last_event != null && (System.currentTimeMillis() > lastSampleTimes[last_event.sensor.getType()] + sampleDelay)) 
-			{
-				Sensor sensor = last_event.sensor;
-				lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
-				String sensorName = "";
-				if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
-					sensorName = SensorNames.PROXIMITY;
-				}
-
-				String jsonString = "{";
-				int x = 0;
-				for (float value : last_event.values) {
-					if (x == 0) {
-						if (sensor.getType() == Sensor.TYPE_PROXIMITY)
-							jsonString += "\"distance\":" + value;
-					}
-					x++;
-				}
-				jsonString += "}";
-
-				try{
-
-					notifySubscribers();
-					SensorDataPoint dataPoint = new SensorDataPoint(new JSONObject(jsonString));
-					dataPoint.sensorName = sensorName;
-					dataPoint.sensorDescription = sensor.getName();
-					dataPoint.timeStamp = SNTP.getInstance().getTime();
-					sendToSubscribers(dataPoint);
-				}
-				catch(Exception e)
-				{
-					Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
-				}
-				// pass message to the MsgHandler
-				Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-				i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-				i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-				i.putExtra(DataPoint.VALUE, jsonString);
-				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-				i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-				context.startService(i);
-			}
- else {
-                // Log.d(TAG, "too fast");
-            }
-			if (proximitySensingActive) {
-				proximityHandler.postDelayed(proximityThread = new ProcessAndSend(), sampleDelay);
+	public void startProximitySensing() {
+        proximityHandler = new Handler();
+	
+		for (Sensor sensor : sensors) {
+			if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
+				// Log.d(TAG, "registering for sensor " + sensor.getName());
+				smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 			}
 		}
 	}
 
-		public void setSampleDelay(long _sampleDelay) {
-			sampleDelay = _sampleDelay;
-		}
+	public void stopProximitySensing() {
+		try {			
+			smgr.unregisterListener(this);
 
-		public void startProximitySensing(long _sampleDelay) {
-			//_sampleDelay = 0;
-			proximityHandler = new Handler();
-			proximitySensingActive = true;
-			setSampleDelay(_sampleDelay);
-			for (Sensor sensor : sensors) {
-				if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
-					// Log.d(TAG, "registering for sensor " + sensor.getName());
-					smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-					proximityHandler.postDelayed(proximityThread = new ProcessAndSend(), sampleDelay);
-				}
-			}
-		}
+            if (proximityThread != null)
+                proximityHandler.removeCallbacks(proximityThread);
+            proximityThread = null;
 
-		public void stopProximitySensing() {
-			try {
-				proximitySensingActive = false;
-				smgr.unregisterListener(this);
-
-				if (proximityThread != null)
-					proximityHandler.removeCallbacks(proximityThread);
-				proximityThread = null;
-
-			} catch (Exception e) {
-				Log.e(TAG, e.getMessage());
-			}
-
-		}
-
-		public long getSampleDelay() {
-			return sampleDelay;
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
 		}
 	}
+}
