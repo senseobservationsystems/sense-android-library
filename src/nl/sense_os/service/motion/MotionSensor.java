@@ -336,7 +336,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         }
 
         motionSensingActive = true;
-        setSampleRate(30*1000);
+        setSampleRate(sampleDelay);
     }
 
     public void stopPolling() {

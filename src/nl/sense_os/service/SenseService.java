@@ -34,6 +34,7 @@ import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.scheduler.Scheduler;
 
 import org.json.JSONObject;
 
@@ -94,6 +95,7 @@ public class SenseService extends Service {
 	private TemperatureSensor temperatureSensor;
 	private LocationSensor locListener; 
 	private Controller controller;
+	private Scheduler scheduler;
 	private MotionSensor motionSensor;
 	private NoiseSensor noiseSensor;  
 	private PhoneActivitySensor phoneActivitySensor;
@@ -528,7 +530,9 @@ public class SenseService extends Service {
 		if (statusPrefs.getBoolean(Status.MAIN, false)) {
 			// start database leeglepelaar
 			controller = Controller.getController(this);
+			scheduler = Scheduler.getInstance(this);
 			controller.scheduleTransmissions();
+			scheduler.schedule();
 			togglePhoneState(statusPrefs.getBoolean(Status.PHONESTATE, false));
 			toggleLocation(statusPrefs.getBoolean(Status.LOCATION, false));
 			toggleAmbience(statusPrefs.getBoolean(Status.AMBIENCE, false));

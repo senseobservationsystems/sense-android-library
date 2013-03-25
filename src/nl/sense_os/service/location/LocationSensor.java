@@ -74,7 +74,7 @@ public class LocationSensor {
 					return;
 				}
 			}
-			
+			Log.v(TAG, "Check location");
 			//controller = Controller.getController(context);
 			JSONObject json = new JSONObject();
 			try {
@@ -362,7 +362,7 @@ public class LocationSensor {
 		PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, alarm, 0);
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		am.cancel(operation);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), time, operation);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 30*1000, operation);
 
 		// start periodic for distance
 		Intent distanceAlarm = new Intent(DISTANCE_ALARM_ACTION);
@@ -384,7 +384,7 @@ public class LocationSensor {
 
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
-		isGpsAllowed = mainPrefs.getBoolean(Main.Location.GPS, true);
+		isGpsAllowed = false;//mainPrefs.getBoolean(Main.Location.GPS, true);
 		isNetworkAllowed = mainPrefs.getBoolean(Main.Location.NETWORK, true);
 
 		// start listening to GPS and/or Network location

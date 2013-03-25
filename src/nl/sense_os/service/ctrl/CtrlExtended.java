@@ -81,11 +81,18 @@ public class CtrlExtended extends Controller {
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    public String bestProvider(boolean isListeningGps, long time, long listenGpsStart,
+    public String bestProvider(boolean isGpsAllowed, boolean isListeningGps, long time, long listenGpsStart,
             boolean isListeningNw, long listenNwStart, Location lastGpsFix, Location lastNwFix) {
         // Log.v(TAG, "BEST PROVIDER CALLED");
 
-        if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)
+        if (isGpsAllowed == false) {
+        	gpsIndexAcc = 0;
+            gpsIndexFlag = flag.READY;
+            networkIndexAcc = 0;
+            networkIndexFlag = flag.READY;
+            return NETWORK;
+        }
+        else if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)
                 && (networkIndexAcc == 5)) {
             gpsIndexAcc = 0;
             gpsIndexFlag = flag.READY;
@@ -215,21 +222,24 @@ public class CtrlExtended extends Controller {
             boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart,
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
 
+    	
+    	Log.v(TAG, "Check location sensor settings...");
         LocationSensor locListener = LocationSensor.getInstance(context);
 
         if (lastlocationmode.equals(NOMODE)) {
 
-            // Log.v(TAG, "NO MODE");
+            //Log.v(TAG, "NO MODE");
+        	/*
             for (int i = 0; i < 5; i++) {
                 // Log.d(TAG, "Table Nw" + networkTableAcc[i]);
             }
             for (int i = 0; i < 5; i++) {
-                Log.d(TAG, "Table Gps" + gpsTableAcc[i]);
-            }
+                //Log.d(TAG, "Table Gps" + gpsTableAcc[i]);
+            }*/
             /*
              * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
              */
-            bestProvider = bestProvider(isListeningGps, time, listenGpsStart, isListeningNw,
+            bestProvider = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart, isListeningNw,
                     listenNwStart, lastGpsFix, lastNwFix);
 
             if (((gpsIndexFlag == flag.NOT_READY) || (networkIndexFlag == flag.NOT_READY))) {
@@ -245,7 +255,7 @@ public class CtrlExtended extends Controller {
             if (!isListeningNw) {
                 locListener.setNetworkListening(true);
             }
-            if (!isListeningGps) {
+            if (!isListeningGps && (isGpsAllowed == true)) {
                 locListener.setGpsListening(true);
             }
         } else if ((!isAccelerating()) && (!isPositionChanged(0))) {
@@ -273,9 +283,9 @@ public class CtrlExtended extends Controller {
             }
 
         } else {
-            if (isPositionChanged(200) || NwisSwitchedOffTooLong(isListeningNw, listenNwStop)
+            if ((isGpsAllowed == true) && (isPositionChanged(200) || NwisSwitchedOffTooLong(isListeningNw, listenNwStop)
                     || isSwitchedOffTooLong(isListeningNw, listenNwStop)
-                    || (gpsIndexFlag == flag.RECHECK) || (networkIndexFlag == flag.RECHECK)) {
+                    || (gpsIndexFlag == flag.RECHECK) || (networkIndexFlag == flag.RECHECK))) {
                 /*
                  * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
                  */
@@ -287,7 +297,7 @@ public class CtrlExtended extends Controller {
                 }
                 gpsIndexFlag = flag.RECHECK;
                 networkIndexFlag = flag.RECHECK;
-                String temp = bestProvider(isListeningGps, time, listenGpsStart, isListeningNw,
+                String temp = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart, isListeningNw,
                         listenNwStart, lastGpsFix, lastNwFix);
                 // Log.d(TAG, "FLAG GPS" + gpsIndexFlag + "FLAG NW" + networkIndexFlag);
                 if ((gpsIndexFlag == flag.READY) || (networkIndexFlag == flag.READY))
@@ -306,24 +316,18 @@ public class CtrlExtended extends Controller {
                  * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
                  */
                 // Log.v(TAG, "NETWORK MODE");
-                for (int i = 0; i < 5; i++) {
-                    // Log.d(TAG, "Table Nw" + networkTableAcc[i]);
-                }
-                for (int i = 0; i < 5; i++) {
-                    // Log.d(TAG, "Table Gps" + gpsTableAcc[i]);
-                }
-                // Log.d(TAG, "AVG Nw" + networkAvgAcc);
-                // Log.d(TAG, "AVG Gps" + gpsAvgAcc);
                 lastlocationmode = NETWORK;
                 if (!isListeningNw) {
                     locListener.setNetworkListening(true);
                 }
-                if (!isNwProductive(isListeningNw, time, lastNwFix, listenNwStart)) {
-                    locListener.setGpsListening(true);
-                }
-                // gpsIndexFlag == 2 means that we currently sample for the average gps accuracy
-                else if (isListeningGps && (gpsIndexFlag != flag.RECHECK)) {
-                    locListener.setGpsListening(false);
+                if (isGpsAllowed == true) {
+	                if (!isNwProductive(isListeningNw, time, lastNwFix, listenNwStart)) {
+	                    locListener.setGpsListening(true);
+	                }
+	                // gpsIndexFlag == 2 means that we currently sample for the average gps accuracy
+	                else if (isListeningGps && (gpsIndexFlag != flag.RECHECK)) {
+	                    locListener.setGpsListening(false);
+	                }
                 }
 
             } else if ((bestProvider.equals(GPS) && isGpsProductive(isListeningGps, time,
@@ -333,14 +337,6 @@ public class CtrlExtended extends Controller {
                  * if (locListener.time != 3 * 60 * 1000) { locSampleRate(3 * 60 * 1000); }
                  */
                 // Log.v(TAG, "GPS MODE");
-                for (int i = 0; i < 5; i++) {
-                    // Log.d(TAG, "Table Nw" + networkTableAcc[i]);
-                }
-                for (int i = 0; i < 5; i++) {
-                    // Log.d(TAG, "Table Gps" + gpsTableAcc[i]);
-                }
-                // Log.d(TAG, "AVG Nw" + networkAvgAcc);
-                // Log.d(TAG, "AVG Gps" + gpsAvgAcc);
                 lastlocationmode = GPS;
                 if (!isListeningGps) {
                     locListener.setGpsListening(true);

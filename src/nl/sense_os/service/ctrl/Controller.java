@@ -2,8 +2,6 @@ package nl.sense_os.service.ctrl;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.location.Location;
 
@@ -25,7 +23,7 @@ public abstract class Controller {
      */
     public static synchronized Controller getController(Context context) {
         if (ref == null) {
-            ref = new CtrlDefault(context);
+            ref = new CtrlExtended(context);
         }
         return ref;
     }
