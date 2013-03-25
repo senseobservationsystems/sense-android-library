@@ -1195,7 +1195,7 @@ public class SenseService extends Service {
 				// check proximity sensor presence
 				if (proximitySensor != null) {
 					Log.w(TAG, "proximity sensor is already present!");
-					proximitySensor.stopProximitySensing();
+                    proximitySensor.stopSensing();
 					proximitySensor = null;
 				}
 
@@ -1259,7 +1259,7 @@ public class SenseService extends Service {
 							}
 							if (mainPrefs.getBoolean(PhoneState.PROXIMITY, true)) {
 								proximitySensor = ProximitySensor.getInstance(SenseService.this);
-								proximitySensor.startProximitySensing(finalInterval);
+                                proximitySensor.startSensing(finalInterval);
 							}
 							phoneStateListener = SensePhoneState.getInstance(SenseService.this);
 							phoneStateListener.startSensing(finalInterval);
@@ -1278,7 +1278,7 @@ public class SenseService extends Service {
 					phoneStateListener = null;
 				}
 				if (null != proximitySensor) {
-					proximitySensor.stopProximitySensing();
+                    proximitySensor.stopSensing();
 					proximitySensor = null;
 				}
 				if (null != batterySensor) {
