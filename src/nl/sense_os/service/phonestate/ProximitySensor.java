@@ -6,15 +6,16 @@ package nl.sense_os.service.phonestate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.SensorDataPoint;
+
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -39,9 +40,9 @@ public class ProximitySensor extends BaseDataProducer implements SensorEventList
 	private Context context;
 	private List<Sensor> sensors;
 	private SensorManager smgr;
-	private Handler ProximityHandler = new Handler();
-	private Runnable ProximityThread = null;
-	private boolean ProximitySensingActive = false;
+	private Handler proximityHandler = new Handler();
+	private Runnable proximityThread = null;
+	private boolean proximitySensingActive = false;
 	private SensorEvent last_event = null;
 
 	protected ProximitySensor(Context context) {
@@ -69,11 +70,16 @@ public class ProximitySensor extends BaseDataProducer implements SensorEventList
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// catch the event, and send it when the time is right	
-		last_event = event;		
+		// catch the event, and send it when the time is right
+		last_event = event;
 	}
 
-	class processAndSend implements Runnable 
+    /**
+     * Runnable class that checks the last received sensor value and creates a new data point.
+     * 
+     * @author Ted Schmidt <ted@sense-os.nl>
+     */
+	protected class ProcessAndSend implements Runnable 
 	{
 		public void run()
 		{	
@@ -104,7 +110,7 @@ public class ProximitySensor extends BaseDataProducer implements SensorEventList
 					SensorDataPoint dataPoint = new SensorDataPoint(new JSONObject(jsonString));
 					dataPoint.sensorName = sensorName;
 					dataPoint.sensorDescription = sensor.getName();
-					dataPoint.timeStamp = SNTP.getInstance().getTime();        
+					dataPoint.timeStamp = SNTP.getInstance().getTime();
 					sendToSubscribers(dataPoint);
 				}
 				catch(Exception e)
@@ -120,10 +126,11 @@ public class ProximitySensor extends BaseDataProducer implements SensorEventList
 				i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
 				context.startService(i);
 			}
-			else
-				Log.e(TAG,  "to fast");
-			if (ProximitySensingActive) {				
-				ProximityHandler.postDelayed(ProximityThread = new processAndSend(), sampleDelay);
+ else {
+                // Log.d(TAG, "too fast");
+            }
+			if (proximitySensingActive) {
+				proximityHandler.postDelayed(proximityThread = new ProcessAndSend(), sampleDelay);
 			}
 		}
 	}
@@ -134,26 +141,26 @@ public class ProximitySensor extends BaseDataProducer implements SensorEventList
 
 		public void startProximitySensing(long _sampleDelay) {
 			//_sampleDelay = 0;
-			ProximityHandler = new Handler();
-			ProximitySensingActive = true;
+			proximityHandler = new Handler();
+			proximitySensingActive = true;
 			setSampleDelay(_sampleDelay);
 			for (Sensor sensor : sensors) {
 				if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
-					// Log.d(TAG, "registering for sensor " + sensor.getName());					
+					// Log.d(TAG, "registering for sensor " + sensor.getName());
 					smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-					ProximityHandler.postDelayed(ProximityThread = new processAndSend(), sampleDelay);
+					proximityHandler.postDelayed(proximityThread = new ProcessAndSend(), sampleDelay);
 				}
 			}
 		}
 
 		public void stopProximitySensing() {
 			try {
-				ProximitySensingActive = false;
+				proximitySensingActive = false;
 				smgr.unregisterListener(this);
 
-				if (ProximityThread != null)
-					ProximityHandler.removeCallbacks(ProximityThread);
-				ProximityThread = null;
+				if (proximityThread != null)
+					proximityHandler.removeCallbacks(proximityThread);
+				proximityThread = null;
 
 			} catch (Exception e) {
 				Log.e(TAG, e.getMessage());
