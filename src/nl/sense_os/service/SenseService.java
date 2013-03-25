@@ -1259,7 +1259,7 @@ public class SenseService extends Service {
 							}
 							if (mainPrefs.getBoolean(PhoneState.PROXIMITY, true)) {
 								proximitySensor = ProximitySensor.getInstance(SenseService.this);
-								proximitySensor.startProximitySensing(finalInterval);
+								proximitySensor.startProximitySensing();
 							}
 							phoneStateListener = SensePhoneState.getInstance(SenseService.this);
 							phoneStateListener.startSensing(finalInterval);
