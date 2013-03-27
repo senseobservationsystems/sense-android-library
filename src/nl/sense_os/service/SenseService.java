@@ -1252,14 +1252,18 @@ public class SenseService extends Service {
 							if (mainPrefs.getBoolean(PhoneState.BATTERY, true)) {
 								batterySensor = BatterySensor.getInstance(SenseService.this);
 								batterySensor.startBatterySensing(finalInterval);
+								registerDataProducer(SensorNames.BATTERY_SENSOR, batterySensor);
 							}
 							if (mainPrefs.getBoolean(PhoneState.SCREEN_ACTIVITY, true)) {
 								phoneActivitySensor = PhoneActivitySensor.getInstance(SenseService.this);
 								phoneActivitySensor.startPhoneActivitySensing(finalInterval);
+								registerDataProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
 							}
 							if (mainPrefs.getBoolean(PhoneState.PROXIMITY, true)) {
 								proximitySensor = ProximitySensor.getInstance(SenseService.this);
                                 proximitySensor.startSensing(finalInterval);
+                                registerDataProducer(SensorNames.PROXIMITY, proximitySensor);
+                                
 							}
 							phoneStateListener = SensePhoneState.getInstance(SenseService.this);
 							phoneStateListener.startSensing(finalInterval);
@@ -1276,17 +1280,21 @@ public class SenseService extends Service {
 				if (null != phoneStateListener) {
 					phoneStateListener.stopSensing();
 					phoneStateListener = null;
+					
 				}
 				if (null != proximitySensor) {
                     proximitySensor.stopSensing();
-					proximitySensor = null;
+                    unregisterDataProducer(SensorNames.PROXIMITY, proximitySensor);
+					proximitySensor = null;					 
 				}
 				if (null != batterySensor) {
 					batterySensor.stopBatterySensing();
+					unregisterDataProducer(SensorNames.BATTERY_SENSOR, batterySensor);
 					batterySensor = null;
 				}
 				if (null != phoneActivitySensor) {
 					phoneActivitySensor.stopPhoneActivitySensing();
+					unregisterDataProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
 					phoneActivitySensor = null;
 				}
 //				if (null != phoneStateHandler) {
