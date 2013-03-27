@@ -31,19 +31,28 @@
 
 package nl.sense_os.service.external_sensors.smartwatch;
 
+import nl.sense_os.platform.TrivialSensorRegistrator;
 import nl.sense_os.service.R;
+import nl.sense_os.service.commonsense.SensorRegistrator;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.motion.MotionBurstSensor;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
-import com.sonyericsson.extras.liveware.aef.sensor.Sensor.SensorAccuracy;
+import com.sonyericsson.extras.liveware.aef.sensor.Sensor.SensorInterruptMode;
+import com.sonyericsson.extras.liveware.aef.sensor.Sensor.SensorRates;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensor;
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEvent;
@@ -52,83 +61,146 @@ import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorExc
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorManager;
 
 /**
- * The sample sensor control handles the accelerometer sensor on an accessory.
- * This class exists in one instance for every supported host application that
- * we have registered to
+ * The sample sensor control handles the accelerometer sensor on an accessory. This class exists in
+ * one instance for every supported host application that we have registered to
  */
-class SmartWatchSensorControl extends ControlExtension {
+class SmartWatchSensorControl extends ControlExtension implements PeriodicPollingSensor {
 
     public static final int WIDTH = 128;
-
     public static final int HEIGHT = 128;
-
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.RGB_565;
-
-    private AccessorySensor mSensor = null;
+    private static final String TAG = "SmartWatchSensorControl";
+    private static final String SENSOR_DESCRIPTION = "smartwatch";
 
     private final AccessorySensorEventListener mListener = new AccessorySensorEventListener() {
 
+        @Override
         public void onSensorEvent(AccessorySensorEvent sensorEvent) {
-            updateDisplay(sensorEvent);
+            onSensorChanged(sensorEvent);
         }
     };
 
+    private AccessorySensor mSensor = null;
+    private MotionBurstSensor burstSensor;
+    private long sampleRate;
+    private boolean active;
+    private boolean registered;
+    private WakeLock wakeLock;
+    private PeriodicPollAlarmReceiver alarmReceiver;
+
     /**
      * Create sample sensor control.
-     *
-     * @param hostAppPackageName Package name of host application.
-     * @param context The context.
+     * 
+     * @param hostAppPackageName
+     *            Package name of host application.
+     * @param context
+     *            The context.
      */
     SmartWatchSensorControl(final String hostAppPackageName, final Context context) {
         super(context, hostAppPackageName);
 
         AccessorySensorManager manager = new AccessorySensorManager(context, hostAppPackageName);
         mSensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
+
+        burstSensor = new MotionBurstSensor(context, android.hardware.Sensor.TYPE_ACCELEROMETER,
+                SensorNames.ACCELEROMETER_BURST);
+        alarmReceiver = new PeriodicPollAlarmReceiver(this);
+    }
+
+    @Override
+    public void doSample() {
+        Log.v(TAG, "sample");
+
+        // get wake lock
+        if (null == wakeLock) {
+            PowerManager powerMgr = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        }
+        if (!wakeLock.isHeld()) {
+            Log.i(TAG, "Acquire wake lock for 500ms");
+            wakeLock.acquire(500);
+        } else {
+            // Log.v(TAG, "Wake lock already held");
+        }
+
+        // notify the data handler
+        burstSensor.startNewSample();
+
+        registerListener();
+    }
+
+    @Override
+    public long getSampleRate() {
+        return sampleRate;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * @return true if all active sensors have recently passed a data point.
+     */
+    private boolean isTimeToUnregister() {
+        return burstSensor.isSampleComplete();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.v(TAG, "destroy");
+        stopSensing();
+    }
+
+    @Override
+    public void onPause() {
+        Log.v(TAG, "pause");
+        unregisterListener();
     }
 
     @Override
     public void onResume() {
         Log.d(SmartWatchExtensionService.LOG_TAG, "Starting control");
-        // Note: Setting the screen to be always on will drain the accessory
-        // battery. It is done here solely for demonstration purposes
-        setScreenState(Control.Intents.SCREEN_STATE_ON);
 
-        // Start listening for sensor updates.
-        if (mSensor != null) {
-            try {
-                mSensor.registerInterruptListener(mListener);
-            } catch (AccessorySensorException e) {
-                Log.d(SmartWatchExtensionService.LOG_TAG, "Failed to register listener");
-            }
-        }
+        updateDisplay();
 
-        updateDisplay(null);
-
-    }
-
-    @Override
-    public void onPause() {
-        // Stop sensor
-        if (mSensor != null) {
-            mSensor.unregisterListener();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        // Stop sensor
-        if (mSensor != null) {
-            mSensor.unregisterListener();
-            mSensor = null;
-        }
+        startSensing(10 * 1000);
     }
 
     /**
      * Update the display with new accelerometer data.
-     *
-     * @param sensorEvent The sensor event.
+     * 
+     * @param sensorEvent
+     *            The sensor event.
      */
-    private void updateDisplay(AccessorySensorEvent sensorEvent) {
+    private void onSensorChanged(AccessorySensorEvent sensorEvent) {
+        if (!active) {
+            Log.v(TAG, "SmartWatch sensor value received when sensor is inactive!");
+            return;
+        }
+
+        // unregister sensor listener when we can
+        if (isTimeToUnregister()) {
+
+            // unregister the listener and start again in sampleDelay seconds
+            stopSample();
+        } else {
+
+            // Update the values.
+            if (sensorEvent != null) {
+                float[] values = sensorEvent.getSensorValues();
+                burstSensor.onNewData(android.hardware.Sensor.TYPE_ACCELEROMETER,
+                        SENSOR_DESCRIPTION, values);
+            }
+        }
+    }
+
+    private void updateDisplay() {
+
+        // Note: Setting the screen to be always on will drain the accessory
+        // battery. It is done here solely for demonstration purposes
+        setScreenState(Control.Intents.SCREEN_STATE_DIM);
+
         // Create bitmap to draw in.
         Bitmap bitmap = Bitmap.createBitmap(WIDTH, HEIGHT, BITMAP_CONFIG);
 
@@ -138,64 +210,99 @@ class SmartWatchSensorControl extends ControlExtension {
         LinearLayout root = new LinearLayout(mContext);
         root.setLayoutParams(new LayoutParams(WIDTH, HEIGHT));
 
-        LinearLayout sampleLayout = (LinearLayout)LinearLayout.inflate(mContext,
-                R.layout.smartwatch_accelerometer_values, root);
-
-        // Update the values.
-        if (sensorEvent != null) {
-            float[] values = sensorEvent.getSensorValues();
-
-            if (values != null && values.length == 3) {
-                TextView xView = (TextView)sampleLayout.findViewById(R.id.accelerometer_value_x);
-                TextView yView = (TextView)sampleLayout.findViewById(R.id.accelerometer_value_y);
-                TextView zView = (TextView)sampleLayout.findViewById(R.id.accelerometer_value_z);
-
-                // Show values with one decimal.
-                xView.setText(String.format("%.1f", values[0]));
-                yView.setText(String.format("%.1f", values[1]));
-                zView.setText(String.format("%.1f", values[2]));
-            }
-
-            // Show time stamp in milliseconds. (Reading is in nanoseconds.)
-            TextView timeStampView = (TextView)sampleLayout
-                    .findViewById(R.id.accelerometer_value_timestamp);
-            timeStampView.setText(String.format("%d", (long)(sensorEvent.getTimestamp() / 1e6)));
-
-            // Show sensor accuracy.
-            TextView accuracyView = (TextView)sampleLayout
-                    .findViewById(R.id.accelerometer_value_accuracy);
-            accuracyView.setText(getAccuracyText(sensorEvent.getAccuracy()));
-        }
-
-        sampleLayout.measure(WIDTH, HEIGHT);
-        sampleLayout
-                .layout(0, 0, sampleLayout.getMeasuredWidth(), sampleLayout.getMeasuredHeight());
+        LinearLayout layout = (LinearLayout) LinearLayout.inflate(mContext,
+                R.layout.smartwatch_layout, root);
+        layout.measure(WIDTH, HEIGHT);
+        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
 
         Canvas canvas = new Canvas(bitmap);
-        sampleLayout.draw(canvas);
+        layout.draw(canvas);
 
         showBitmap(bitmap);
     }
 
     /**
-     * Convert an accuracy value to a text.
-     *
-     * @param accuracy The accuracy value.
-     * @return The text.
+     * Registers for updates from the SmartWatch sensors.
      */
-    private String getAccuracyText(int accuracy) {
-
-        switch (accuracy) {
-        case SensorAccuracy.SENSOR_STATUS_UNRELIABLE:
-            return mContext.getString(R.string.smartwatch_accuracy_unreliable);
-        case SensorAccuracy.SENSOR_STATUS_ACCURACY_LOW:
-            return mContext.getString(R.string.smartwatch_accuracy_low);
-        case SensorAccuracy.SENSOR_STATUS_ACCURACY_MEDIUM:
-            return mContext.getString(R.string.smartwatch_accuracy_medium);
-        case SensorAccuracy.SENSOR_STATUS_ACCURACY_HIGH:
-            return mContext.getString(R.string.smartwatch_accuracy_high);
-        default:
-            return String.format("%d", accuracy);
+    private synchronized void registerListener() {
+        if (!registered) {
+            // Start listening for sensor updates.
+            if (mSensor != null) {
+                Log.v(TAG, "Register the listener for updates from the SmartWatch");
+                try {
+                    mSensor.registerListener(mListener, SensorRates.SENSOR_DELAY_NORMAL,
+                            SensorInterruptMode.SENSOR_INTERRUPT_ENABLED);
+                    registered = true;
+                } catch (AccessorySensorException e) {
+                    Log.d(TAG, "Failed to register listener");
+                }
+            }
         }
     }
+
+    @Override
+    public void setSampleRate(long sampleRate) {
+        stopPolling();
+        this.sampleRate = sampleRate;
+        startPolling();
+    }
+
+    private void startPolling() {
+        Log.v(TAG, "start polling @" + getSampleRate());
+        alarmReceiver.start(mContext);
+    }
+
+    @Override
+    public void startSensing(long sampleRate) {
+
+        // register the sensor
+        new Thread() {
+
+            @Override
+            public void run() {
+                SensorRegistrator registrator = new TrivialSensorRegistrator(mContext);
+                registrator.checkSensor(SensorNames.ACCELEROMETER_BURST,
+                        "acceleration (burst-mode)", SenseDataTypes.JSON, SENSOR_DESCRIPTION,
+                        "{\"interval\":0,\"data\":[]}", null, null);
+            }
+        }.start();
+
+        active = true;
+        setSampleRate(sampleRate);
+    }
+
+    private void stopPolling() {
+        Log.v(TAG, "stop polling");
+        alarmReceiver.stop(mContext);
+    }
+
+    private void stopSample() {
+        // Log.v(TAG, "stop sample");
+
+        // release wake lock
+        if (null != wakeLock && wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+
+        unregisterListener();
+    }
+
+    @Override
+    public void stopSensing() {
+        stopSample();
+        stopPolling();
+        active = false;
+    }
+
+    private synchronized void unregisterListener() {
+        if (registered) {
+            Log.v(TAG, "unregister sensor listener");
+
+            // Stop sensor
+            if (mSensor != null) {
+                mSensor.unregisterListener();
+            }
+            registered = false;
+        }
+   }
 }

@@ -93,9 +93,6 @@ public class SmartWatchRegistrationInformation extends RegistrationInformation {
                 R.drawable.ic_smartwatch_extension);
 
         ContentValues values = new ContentValues();
-
-        values.put(Registration.ExtensionColumns.CONFIGURATION_TEXT,
-                mContext.getString(R.string.smartwatch_configuration_text));
         values.put(Registration.ExtensionColumns.NAME,
                 mContext.getString(R.string.smartwatch_extension_name));
         values.put(Registration.ExtensionColumns.EXTENSION_KEY,
