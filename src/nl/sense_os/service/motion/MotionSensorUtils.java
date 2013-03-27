@@ -8,6 +8,7 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -45,9 +46,9 @@ public class MotionSensorUtils {
         return sensorName;
     }
     
-    public static String getSensorHeader(Sensor sensor) {
+    public static String getSensorHeader(int sensorType) {
         String header = "";
-        switch (sensor.getType()) {
+        switch (sensorType) {
         case Sensor.TYPE_ACCELEROMETER:
             header = "x-axis, y-axis, z-axis";
             break;
@@ -58,19 +59,19 @@ public class MotionSensorUtils {
         	header = "x-axis, y-axis, z-axis";
             break;
         default:
-            Log.w(TAG, "Unexpected sensor type: " + sensor.getType());
+            Log.w(TAG, "Unexpected sensor type: " + sensorType);
             return null;
         }
         return header;
     }
     
-    public static double[] getVector(SensorEvent event) {
+    public static double[] getVector(float[] sensorValues) {
     	
         final double[] values = new double[3];
 
         int axis = 0;
 
-        for (double value : event.values) {
+        for (double value : sensorValues) {
             // scale to three decimal precision
             value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
             values[axis] = value;
@@ -145,7 +146,9 @@ public class MotionSensorUtils {
         return json;
     }
 
+    // TODO: Remove reference to deprecated orientation sensor
     @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public static List<Sensor> getAvailableMotionSensors(Context context) {
 
         SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
