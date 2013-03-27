@@ -37,6 +37,7 @@ import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.motion.MotionBurstSensor;
+import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import android.content.Context;
@@ -61,13 +62,27 @@ import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorExc
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorManager;
 
 /**
- * The sample sensor control handles the accelerometer sensor on an accessory. This class exists in
- * one instance for every supported host application that we have registered to
+ * <p>
+ * Sony SmartWatch control extension that reads out the accelerometer sensor on a SmartWatch. Based
+ * on the SampleSensorExtension project from the SmartExtension SDK.
+ * </p>
+ * <p>
+ * The extension is created and started automatically when the user taps the extension icon on his
+ * SmartWatch. This is handled by the Sony SmartConnect application.
+ * </p>
+ * <p>
+ * When the extension is started it starts periodically listening for acceleration sensor updates,
+ * similar to the standard {@link MotionSensor}. The incoming data is sent to a
+ * {@link MotionBurstSensor}, that takes care of sending it to the MsgHandler.
+ * </p>
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
+ * @see http://developer.sonymobile.com/downloads/documentation/sony-add-on-sdk-documentation-kit/
  */
 class SmartWatchSensorControl extends ControlExtension implements PeriodicPollingSensor {
 
-    public static final int WIDTH = 128;
-    public static final int HEIGHT = 128;
+    protected static final int WIDTH = 128;
+    protected static final int HEIGHT = 128;
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.RGB_565;
     private static final String TAG = "SmartWatchSensorControl";
     private static final String SENSOR_DESCRIPTION = "smartwatch";
@@ -89,7 +104,7 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
     private PeriodicPollAlarmReceiver alarmReceiver;
 
     /**
-     * Create sample sensor control.
+     * Constructor.
      * 
      * @param hostAppPackageName
      *            Package name of host application.
@@ -99,9 +114,11 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
     SmartWatchSensorControl(final String hostAppPackageName, final Context context) {
         super(context, hostAppPackageName);
 
+        // find the sensor on the SmartWatch
         AccessorySensorManager manager = new AccessorySensorManager(context, hostAppPackageName);
         mSensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
 
+        // create the data processor that will handle the incoming data+
         burstSensor = new MotionBurstSensor(context, android.hardware.Sensor.TYPE_ACCELEROMETER,
                 SensorNames.ACCELEROMETER_BURST);
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
@@ -126,7 +143,10 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
         // notify the data handler
         burstSensor.startNewSample();
 
+        // register for accelerometer data again
         registerListener();
+
+        // TODO: turn off the display to save energy?
     }
 
     @Override
@@ -140,7 +160,7 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
     }
 
     /**
-     * @return true if all active sensors have recently passed a data point.
+     * @return true if all active data processors say that they are done.
      */
     private boolean isTimeToUnregister() {
         return burstSensor.isSampleComplete();
@@ -148,27 +168,27 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
 
     @Override
     public void onDestroy() {
-        Log.v(TAG, "destroy");
         stopSensing();
     }
 
     @Override
     public void onPause() {
-        Log.v(TAG, "pause");
         unregisterListener();
     }
 
     @Override
     public void onResume() {
-        Log.d(SmartWatchExtensionService.LOG_TAG, "Starting control");
 
+        // show something on the watch display
         updateDisplay();
 
+        // TODO: use the main app sample rate
         startSensing(10 * 1000);
     }
 
     /**
-     * Update the display with new accelerometer data.
+     * Handles new sensor data from the SmartWatch. The data is passed to the data processor, and if
+     * it is possible we unregister the listener to save energy.
      * 
      * @param sensorEvent
      *            The sensor event.
@@ -195,34 +215,8 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
         }
     }
 
-    private void updateDisplay() {
-
-        // Note: Setting the screen to be always on will drain the accessory
-        // battery. It is done here solely for demonstration purposes
-        setScreenState(Control.Intents.SCREEN_STATE_DIM);
-
-        // Create bitmap to draw in.
-        Bitmap bitmap = Bitmap.createBitmap(WIDTH, HEIGHT, BITMAP_CONFIG);
-
-        // Set default density to avoid scaling.
-        bitmap.setDensity(DisplayMetrics.DENSITY_DEFAULT);
-
-        LinearLayout root = new LinearLayout(mContext);
-        root.setLayoutParams(new LayoutParams(WIDTH, HEIGHT));
-
-        LinearLayout layout = (LinearLayout) LinearLayout.inflate(mContext,
-                R.layout.smartwatch_layout, root);
-        layout.measure(WIDTH, HEIGHT);
-        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
-
-        Canvas canvas = new Canvas(bitmap);
-        layout.draw(canvas);
-
-        showBitmap(bitmap);
-    }
-
     /**
-     * Registers for updates from the SmartWatch sensors.
+     * Registers for updates from the SmartWatch accelerometer.
      */
     private synchronized void registerListener() {
         if (!registered) {
@@ -247,19 +241,22 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
         startPolling();
     }
 
+    /**
+     * Starts the periodic alarms to do a sample.
+     */
     private void startPolling() {
-        Log.v(TAG, "start polling @" + getSampleRate());
         alarmReceiver.start(mContext);
     }
 
     @Override
     public void startSensing(long sampleRate) {
 
-        // register the sensor
+        // register the SmartWatch acceleration sensor
         new Thread() {
 
             @Override
             public void run() {
+                // use a separate Thread to prevent NetworkOnMainThreadException
                 SensorRegistrator registrator = new TrivialSensorRegistrator(mContext);
                 registrator.checkSensor(SensorNames.ACCELEROMETER_BURST,
                         "acceleration (burst-mode)", SenseDataTypes.JSON, SENSOR_DESCRIPTION,
@@ -268,11 +265,12 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
         }.start();
 
         active = true;
+
+        // set the sample rate to trigger periodic polling for data
         setSampleRate(sampleRate);
     }
 
     private void stopPolling() {
-        Log.v(TAG, "stop polling");
         alarmReceiver.stop(mContext);
     }
 
@@ -305,4 +303,34 @@ class SmartWatchSensorControl extends ControlExtension implements PeriodicPollin
             registered = false;
         }
    }
+
+    /**
+     * Shows a simple message on the watch display. The display need to be on in order to keep the
+     * accelerometer active.
+     */
+    private void updateDisplay() {
+
+        // Note: Setting the screen to be always on will drain the accessory
+        // battery. It is done here solely for demonstration purposes
+        setScreenState(Control.Intents.SCREEN_STATE_DIM);
+
+        // Create bitmap to draw in.
+        Bitmap bitmap = Bitmap.createBitmap(WIDTH, HEIGHT, BITMAP_CONFIG);
+
+        // Set default density to avoid scaling.
+        bitmap.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+
+        LinearLayout root = new LinearLayout(mContext);
+        root.setLayoutParams(new LayoutParams(WIDTH, HEIGHT));
+
+        LinearLayout layout = (LinearLayout) LinearLayout.inflate(mContext,
+                R.layout.smartwatch_layout, root);
+        layout.measure(WIDTH, HEIGHT);
+        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
+
+        Canvas canvas = new Canvas(bitmap);
+        layout.draw(canvas);
+
+        showBitmap(bitmap);
+    }
 }

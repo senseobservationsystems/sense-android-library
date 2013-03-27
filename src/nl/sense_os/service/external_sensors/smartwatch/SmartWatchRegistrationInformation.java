@@ -43,7 +43,10 @@ import com.sonyericsson.extras.liveware.extension.util.registration.Registration
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensor;
 
 /**
- * Provides information needed during extension registration
+ * Provides information needed during extension registration at the SmartConnect app. Copied from
+ * the sample project in the SmartExtension SDK.
+ * 
+ * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SmartWatchRegistrationInformation extends RegistrationInformation {
 
