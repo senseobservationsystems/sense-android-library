@@ -3,6 +3,7 @@
  *************************************************************************************************/
 package nl.sense_os.service.location;
 
+import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -11,6 +12,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.scheduler.Scheduler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,13 +45,14 @@ import android.util.Log;
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class LocationSensor {
-	
+
 	private static LocationSensor instance = null;
 	
     protected LocationSensor(Context context) {
 		this.context = context;
 		locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         controller = Controller.getController(context);
+        sc = Scheduler.getInstance(this.context);
 		gpsListener = new MyLocationListener();
 		nwListener = new MyLocationListener();
 		pasListener = new MyLocationListener();
@@ -141,11 +144,13 @@ public class LocationSensor {
 	private static final int DISTANCE_ALARM_ID = 70;
 
 	private Controller controller;
+	private Scheduler sc;
 	private Context context;
 	private LocationManager locMgr;
 	private final MyLocationListener gpsListener;
 	private final MyLocationListener nwListener;
 	private final MyLocationListener pasListener;
+	private SensePlatform sensePlatform;
 
 	private long time;
 	private float distance;
@@ -163,6 +168,11 @@ public class LocationSensor {
 			controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
 		}
 	};
+	
+	//TODO
+	public void doSample() {
+		controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
+	}
 
 	private boolean isGpsAllowed;
 	private boolean isNetworkAllowed;
@@ -208,6 +218,7 @@ public class LocationSensor {
 
 		stopListening();
 		stopAlarms();
+		sc.unRegister(task);
 	}
 
 	/**
@@ -221,6 +232,7 @@ public class LocationSensor {
 	public void enable(long time, float distance) {
 		// Log.v(TAG, "Enable location sensor");
 
+		//sc.register(task);
 		setTime(time);
 		this.distance = distance;
 
@@ -343,12 +355,23 @@ public class LocationSensor {
 		}
 	}
 
+	final Runnable task = new Runnable() {
+		public void run() { 
+			doSample();
+	}};
+	
 	/**
 	 * @param time
 	 *            Minimum time between location refresh attempts.
 	 */
 	private void setTime(long time) {
 		this.time = time;
+		
+		//TODO
+
+		
+		sc.schedule(task, this.time, 0);
+
 	}
 
 	private void startAlarms() {
@@ -362,7 +385,7 @@ public class LocationSensor {
 		PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, alarm, 0);
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		am.cancel(operation);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 30*1000, operation);
+		//am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), time, operation);
 
 		// start periodic for distance
 		Intent distanceAlarm = new Intent(DISTANCE_ALARM_ACTION);

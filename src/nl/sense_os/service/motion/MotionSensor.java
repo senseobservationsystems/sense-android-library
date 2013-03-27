@@ -6,12 +6,15 @@ package nl.sense_os.service.motion;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.scheduler.Scheduler;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.states.EpiStateMonitor;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +48,10 @@ import android.util.Log;
  */
 public class MotionSensor implements SensorEventListener, PeriodicPollingSensor {
 
+	
+	/*public void Notifier (SchedulerCallback event) {
+	   sc = event;
+	}*/
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
      * the screen turns off.
@@ -104,6 +111,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     private MotionBurstSensor linearBurstSensor;
     private MotionEnergySensor energySensor;
     private StandardMotionSensor standardSensor;
+    private Scheduler sc;
     private final Context context;
     private boolean isFallDetectMode;
     private boolean isEnergyMode;
@@ -115,6 +123,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
     private boolean motionSensingActive = false;
     private long sampleDelay = 0; // in milliseconds
     private WakeLock wakeLock;
+    private SensePlatform sensePlatform;
 
     private boolean isRegistered;
     private PeriodicPollAlarmReceiver alarmReceiver;
@@ -122,6 +131,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 
     protected MotionSensor(Context context) {
         this.context = context;
+        sc = Scheduler.getInstance(this.context);
         epiSensor = new EpilepsySensor(context);
         accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER, SensorNames.ACCELEROMETER_BURST);
         gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE, SensorNames.GYRO_BURST);
@@ -281,17 +291,29 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
 		}
     }
 
-    @Override
+    final Runnable task = new Runnable() {
+		public void run() { 
+			doSample();
+	}};
+	
+    @SuppressLint("CommitPrefEdits")
+	@Override
     public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;
         startPolling();
+        
+        //TODO
+
+		
+		sc.schedule(task, this.sampleDelay, 0);
+
     }
 
     private void startPolling() {
         Log.v(TAG, "start polling" + this.sampleDelay);
          
-        alarmReceiver.start(context);
+        //alarmReceiver.start(context);
     }
 
     @Override
@@ -364,6 +386,7 @@ public class MotionSensor implements SensorEventListener, PeriodicPollingSensor 
         // Log.v(TAG, "stop sensing");
         stopSample();
         stopPolling();
+        sc.unRegister(task);
         enableScreenOffListener(false);
 	    motionSensingActive = false;
 

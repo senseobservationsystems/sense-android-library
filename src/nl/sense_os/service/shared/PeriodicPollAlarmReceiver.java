@@ -1,5 +1,6 @@
 package nl.sense_os.service.shared;
 
+import nl.sense_os.service.scheduler.Scheduler;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -14,7 +15,7 @@ import android.os.SystemClock;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
+public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runnable {
 
     private final PeriodicPollingSensor sensor;
     private final String action;
@@ -29,6 +30,12 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (sensor.isActive()) {
+            sensor.doSample();
+        }
+    }
+    
+    public void run() {
+    	if (sensor.isActive()) {
             sensor.doSample();
         }
     }
@@ -53,6 +60,8 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
         mgr.cancel(alarmOperation);
         mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),
                 interval, alarmOperation);
+        
+        Scheduler.getInstance(context).schedule(this, interval, (long)(interval * 0.1));
     }
 
     /**
@@ -74,5 +83,7 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
         } catch (IllegalArgumentException e) {
             // ignore
         }
+        
+        Scheduler.getInstance(context).unRegister(this);
     }
 }

@@ -69,8 +69,6 @@ public class CtrlDefault extends Controller {
                 Context.MODE_PRIVATE);
         boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
         Log.v(TAG, "Check location sensor settings...");
-//        MotionSensor motion = MotionSensor.getInstance(context);
-//		motion.doSample();
         if (selfAwareMode) {
            // Log.v(TAG, "Check location sensor settings...");
             LocationSensor locListener = LocationSensor.getInstance(context);
