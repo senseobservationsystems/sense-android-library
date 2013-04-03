@@ -104,39 +104,39 @@ public class BluetoothDeviceProximity {
 	    }
 	}
 
-	@Override
-	public void run() {
-	    Log.d(TAG, "Run Bluetooth discovery thread");
-	    if (scanEnabled) {
-		if (btAdapter.isEnabled()) {
-		    // start discovery
-		    deviceArray = new Vector<Map<BluetoothDevice, Short>>();
-		    context.registerReceiver(btReceiver, new IntentFilter(
-			    BluetoothDevice.ACTION_FOUND));
-		    context.registerReceiver(btReceiver, new IntentFilter(
-			    BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
+        @Override
+        public void run() {
+            Log.d(TAG, "Run Bluetooth discovery thread");
+            if (scanEnabled && null != btAdapter) {
+                if (btAdapter.isEnabled()) {
+                    // start discovery
+                    deviceArray = new Vector<Map<BluetoothDevice, Short>>();
+                    context.registerReceiver(btReceiver, new IntentFilter(
+                            BluetoothDevice.ACTION_FOUND));
+                    context.registerReceiver(btReceiver, new IntentFilter(
+                            BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
 
-		    Log.i(TAG, "Starting Bluetooth discovery");
-		    btAdapter.startDiscovery();
-		} else if (btAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON) {
-		    // listen for the adapter state to change to STATE_ON
-		    context.registerReceiver(btReceiver, new IntentFilter(
-			    BluetoothAdapter.ACTION_STATE_CHANGED));
-		} else {
-		    // ask user for permission to start bluetooth
-		    // Log.v(TAG, "Asking user to start bluetooth");
-		    Intent startBt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		    startBt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		    context.startActivity(startBt);
+                    Log.i(TAG, "Starting Bluetooth discovery");
+                    btAdapter.startDiscovery();
+                } else if (btAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON) {
+                    // listen for the adapter state to change to STATE_ON
+                    context.registerReceiver(btReceiver, new IntentFilter(
+                            BluetoothAdapter.ACTION_STATE_CHANGED));
+                } else {
+                    // ask user for permission to start bluetooth
+                    // Log.v(TAG, "Asking user to start bluetooth");
+                    Intent startBt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startBt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(startBt);
 
-		    // listen for the adapter state to change to STATE_ON
-		    context.registerReceiver(btReceiver, new IntentFilter(
-			    BluetoothAdapter.ACTION_STATE_CHANGED));
-		}
-	    } else {
-		stop();
-	    }
-	}
+                    // listen for the adapter state to change to STATE_ON
+                    context.registerReceiver(btReceiver, new IntentFilter(
+                            BluetoothAdapter.ACTION_STATE_CHANGED));
+                }
+            } else {
+                stop();
+            }
+        }
 
 	public void stop() {
 	    try {
