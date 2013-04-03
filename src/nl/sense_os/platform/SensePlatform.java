@@ -265,6 +265,57 @@ public class SensePlatform {
     }
 
     /**
+     * Retrieve a number of values of a sensor from the local storage.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getLocalData(String sensorName, boolean onlyFromDevice)
+            throws IllegalStateException, JSONException {
+        return getLocalData(sensorName, onlyFromDevice, 100);
+    }
+
+    /**
+     * Retrieve a number of values of a sensor from the local storage.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @param limit
+     *            Maximum amount of data points.
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getLocalData(String sensorName, boolean onlyFromDevice, int limit)
+            throws IllegalStateException, JSONException {
+        checkSenseService();
+
+        JSONArray result = new JSONArray();
+
+        // select remote path in local storage
+        String localStorage = context.getString(R.string.local_storage_authority);
+        Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_URI_PATH);
+
+        // get the data
+        result = getValues(sensorName, onlyFromDevice, limit, uri);
+
+        return result;
+    }
+
+    /**
      * @return The intent action for new sensor data. This can be used to subscribe to new data.
      */
 	public String getNewDataAction() {
