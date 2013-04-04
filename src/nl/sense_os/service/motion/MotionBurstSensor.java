@@ -101,7 +101,6 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 				+ ",\"header\":\"" + MotionSensorUtils.getSensorHeader(sensor).toString()
 				+ "\",\"values\":\"" + dataBufferString + "\"}";
 		try {
-
 			this.notifySubscribers();
 			SensorDataPoint dataPoint;
 

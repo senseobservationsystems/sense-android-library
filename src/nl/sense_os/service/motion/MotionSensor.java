@@ -322,10 +322,13 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     		if (isBurstMode) {
     			sampleDelay = 10 * 1000;
     		    accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER, SensorNames.ACCELEROMETER_BURST);
+    		    addSubscriber(this.accelerometerBurstSensor);
     		    ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST, accelerometerBurstSensor);
     		    gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE, SensorNames.GYRO_BURST);
+    		    addSubscriber(this.gyroBurstSensor);
     		    ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
     		    linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION , SensorNames.LINEAR_BURST);
+    		    addSubscriber(this.linearBurstSensor);
     		    ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST, linearBurstSensor);
     		}	
         }
