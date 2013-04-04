@@ -10,6 +10,7 @@ import nl.sense_os.service.SenseService;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+
 import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
@@ -54,31 +55,31 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private class ScreenOffListener extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Check action just to be on the safe side.
-            if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                return;
-            }
+	@Override
+	public void onReceive(Context context, Intent intent) {
+	    // Check action just to be on the safe side.
+	    if (false == intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+			return;
+	    }
 
-            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                    Context.MODE_PRIVATE);
-            boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
-            if (useFix) {
-                // wait half a second and re-register
-                Runnable restartSensing = new Runnable() {
+	    SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+		    Context.MODE_PRIVATE);
+	    boolean useFix = prefs.getBoolean(Motion.SCREENOFF_FIX, false);
+	    if (useFix) {
+			// wait half a second and re-register
+			Runnable restartSensing = new Runnable() {
 
-                    @Override
-                    public void run() {
-                        // Unregisters the motion listener and registers it again.
+				@Override
+				public void run() {
+				// Unregisters the motion listener and registers it again.
                         stopSensing();
                         startSensing(sampleDelay);
-                    };
-                };
+				};
+			};
 
-                new Handler().postDelayed(restartSensing, 500);
-            }
-        }
+			new Handler().postDelayed(restartSensing, 500);
+	    }
+	}
     }
 
     private static final long DELAY_AFTER_REGISTRATION = 500;
@@ -98,18 +99,23 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         }
         return instance;
     }
-
     private final BroadcastReceiver screenOffListener = new ScreenOffListener();
+
+    private MotionBurstSensor accelerometerBurstSensor;
+    private MotionBurstSensor gyroBurstSensor;
+    private MotionBurstSensor linearBurstSensor;
 
     private final Context context;
     private boolean isFallDetectMode;
     private boolean isEnergyMode;
     private boolean isEpiMode;
+    private boolean isBurstMode;
     private boolean isUnregisterWhenIdle;
     private boolean firstStart = true;
     private List<Sensor> sensors;    
     private boolean motionSensingActive = false;    
     private WakeLock wakeLock;
+
     private boolean isRegistered;
     private PeriodicPollAlarmReceiver alarmReceiver;
     // TODO:
@@ -121,8 +127,12 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     private MotionEnergySensor energy;
     private StandardMotionSensor standard = null;
 
+
     protected MotionSensor(Context context) {
         this.context = context;
+
+      
+
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
     
@@ -132,17 +142,16 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         if (null == wakeLock) {
             PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        }
+		    }
         if (!wakeLock.isHeld()) {
             Log.i(TAG, "Acquire wake lock for 500ms");
             wakeLock.acquire(500);
-        } else {
+	    } else {
             // Log.v(TAG, "Wake lock already held");
-        }
+	    }
 
         // notify all special sensors
         notifySubscribers();
-          
 
         registerSensors();
     }
@@ -152,17 +161,16 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             // Register the receiver for SCREEN OFF events
             IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
             context.registerReceiver(screenOffListener, filter);
-        } else {
-            // Unregister the receiver for SCREEN OFF events
-            try {
-                context.unregisterReceiver(screenOffListener);
-            } catch (IllegalArgumentException e) {
-                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
-            }
-        }
+		} else {
+	            // Unregister the receiver for SCREEN OFF events
+	            try {
+	                context.unregisterReceiver(screenOffListener);
+	            } catch (IllegalArgumentException e) {
+	                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
+		    }
+		}
     }
 
- 
     @Override
     public boolean isActive() {
         return motionSensingActive;
@@ -173,21 +181,16 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private boolean isTimeToUnregister() {
 
-        boolean unregister = isUnregisterWhenIdle;
-
+    	boolean unregister = isUnregisterWhenIdle;
         // only unregister when sample delay is large enough
         unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
-
-       
-            unregister &= this.checkSubscribers();
-       
-
-        return unregister;
+	    unregister &= this.checkSubscribers();
+	    return unregister;
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // do nothing
+	// do nothing
     }
 
     @Override
@@ -203,9 +206,9 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         // unregister sensor listener when we can
         if (isTimeToUnregister()) {
 
-            // unregister the listener and start again in sampleDelay seconds
+	    	// unregister the listener and start again in sampleDelay seconds
             stopSample();
-        }
+	    } 
     }
 
     /**
@@ -213,23 +216,23 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private synchronized void registerSensors() {
 
-        if (!isRegistered) {
-            // Log.v(TAG, "Register the motion sensor for updates");
-
-            SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-
-            int delay = isFallDetectMode || isEpiMode || isEnergyMode ? SensorManager.SENSOR_DELAY_GAME
-                    : SensorManager.SENSOR_DELAY_NORMAL;
-
-            for (Sensor sensor : sensors) {
-                mgr.registerListener(this, sensor, delay);
-            }
-
-            isRegistered = true;
-
-        } else {
-            // Log.v(TAG, "Did not register for motion sensor updates: already registered");
-        }
+		if (!isRegistered) {
+		    // Log.v(TAG, "Register the motion sensor for updates");
+	
+		    SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+	
+		    int delay = isFallDetectMode || isEpiMode || isBurstMode || isEnergyMode ? SensorManager.SENSOR_DELAY_GAME
+			    : SensorManager.SENSOR_DELAY_NORMAL;
+	
+		    for (Sensor sensor : sensors) {
+			mgr.registerListener(this, sensor, delay);
+		    }
+	
+		    isRegistered = true;
+	
+		} else {
+		    // Log.v(TAG, "Did not register for motion sensor updates: already registered");
+		}
     }
 
     @Override
@@ -240,7 +243,8 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     private void startPolling() {
-        // Log.v(TAG, "start polling");
+        Log.v(TAG, "start polling" + this.sampleDelay);
+         
         alarmReceiver.start(context);
     }
 
@@ -248,20 +252,24 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     public void startSensing(long sampleDelay) {
         // Log.v(TAG, "start sensing");
 
+
         final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         isEpiMode = mainPrefs.getBoolean(Motion.EPIMODE, false);
         isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
+        isBurstMode = mainPrefs.getBoolean(Motion.BURSTMODE, false);
         isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
 
         // check if the fall detector is enabled
         boolean isFallDetectDemo = mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false);
         isFallDetectMode = isFallDetectDemo || mainPrefs.getBoolean(Motion.FALL_DETECT, false);
 
+		
         sensors = MotionSensorUtils.getAvailableMotionSensors(context);
         if (isEpiMode) {
             // only listen to accelerometer in epi mode
-            sensors = new ArrayList<Sensor>();
+        	sensors = new ArrayList<Sensor>();
+
             SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             sensors.add(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
 
@@ -310,14 +318,23 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
                 fall.sendFallMessage(false);
                 firstStart = false;
             }
+            // add burst mode
+    		if (isBurstMode) {
+    			sampleDelay = 10 * 1000;
+    		    accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER, SensorNames.ACCELEROMETER_BURST);
+    		    ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST, accelerometerBurstSensor);
+    		    gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE, SensorNames.GYRO_BURST);
+    		    ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
+    		    linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION , SensorNames.LINEAR_BURST);
+    		    ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST, linearBurstSensor);
+    		}	
         }
-
         motionSensingActive = true;
         setSampleRate(sampleDelay);
     }
 
-    private void stopPolling() {
-        // Log.v(TAG, "stop polling");
+    public void stopPolling() {
+         Log.v(TAG, "stop polling" + this.sampleDelay);
         alarmReceiver.stop(context);
     }
 
@@ -327,7 +344,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         // release wake lock
         if (null != wakeLock && wakeLock.isHeld()) {
             wakeLock.release();
-        }
+		}
 
         unregisterSensors();
     }
@@ -342,7 +359,11 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         stopSample();
         stopPolling();
         enableScreenOffListener(false);
-        motionSensingActive = false;
+	    motionSensingActive = false;
+
+		if (isEpiMode || isFallDetectMode || isBurstMode) {
+		    context.stopService(new Intent(context, EpiStateMonitor.class));
+		}
 
         // only remove the DataProcessors added in the class
         // keep external DataProcessors
@@ -354,27 +375,37 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         	removeSubscriber(fall);
         if(this.energy != null)
         	removeSubscriber(energy);
+        if(this.accelerometerBurstSensor != null)
+        	removeSubscriber(accelerometerBurstSensor);
+        if(this.linearBurstSensor != null)
+        	removeSubscriber(linearBurstSensor);
+        if(this.gyroBurstSensor != null)
+        	removeSubscriber(gyroBurstSensor);
         
         epi = null;
         standard = null;
         fall = null;
         energy = null;
+        accelerometerBurstSensor = null;
+        linearBurstSensor = null;
+        gyroBurstSensor = null;
         
-        if (isEpiMode || isFallDetectMode) {
-            context.stopService(new Intent(context, EpiStateMonitor.class));
-        }
+        if (isEpiMode || isFallDetectMode || isBurstMode) {
+		    context.stopService(new Intent(context, EpiStateMonitor.class));
+		}
+
     }
 
     private synchronized void unregisterSensors() {
 
-        if (isRegistered) {
-            // Log.v(TAG, "Unregister the motion sensor for updates");
-            ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE))
-                    .unregisterListener(this);
-        } else {
-            // Log.v(TAG, "Did not unregister for motion sensor updates: already unregistered");
-        }
+	if (isRegistered) {
+	    // Log.v(TAG, "Unregister the motion sensor for updates");
+	    ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE))
+		    .unregisterListener(this);
+	} else {
+	    // Log.v(TAG, "Did not unregister for motion sensor updates: already unregistered");
+	}
 
-        isRegistered = false;
+	isRegistered = false;
     }
 }

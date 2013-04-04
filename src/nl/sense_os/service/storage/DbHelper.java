@@ -20,7 +20,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Version of the database. Increment this when the database structure is changed.
      */
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     /**
      * Name of the table with the data points.
@@ -47,13 +47,13 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final StringBuilder sb = new StringBuilder("CREATE TABLE " + DbHelper.TABLE + "(");
         sb.append(BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT");
-        sb.append(", " + DataPoint.SENSOR_NAME + " STRING");
-        sb.append(", " + DataPoint.DISPLAY_NAME + " STRING");
-        sb.append(", " + DataPoint.SENSOR_DESCRIPTION + " STRING");
-        sb.append(", " + DataPoint.DATA_TYPE + " STRING");
+        sb.append(", " + DataPoint.SENSOR_NAME + " TEXT");
+        sb.append(", " + DataPoint.DISPLAY_NAME + " TEXT");
+        sb.append(", " + DataPoint.SENSOR_DESCRIPTION + " TEXT");
+        sb.append(", " + DataPoint.DATA_TYPE + " TEXT");
         sb.append(", " + DataPoint.TIMESTAMP + " INTEGER");
-        sb.append(", " + DataPoint.VALUE + " STRING");
-        sb.append(", " + DataPoint.DEVICE_UUID + " STRING");
+        sb.append(", " + DataPoint.VALUE + " TEXT");
+        sb.append(", " + DataPoint.DEVICE_UUID + " TEXT");
         sb.append(", " + DataPoint.TRANSMIT_STATE + " INTEGER");
         sb.append(");");
         db.execSQL(sb.toString());

@@ -4,10 +4,13 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+
 import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
+import nl.sense_os.service.provider.SNTP;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -80,7 +83,7 @@ public class EpilepsySensor extends BaseDataProducer implements DataProcessor {
     private void sendData(Sensor sensor) {
 
         String value = "{\"interval\":"
-                + Math.round(LOCAL_BUFFER_TIME / dataBuffer[sensor.getType()].length())
+                + Math.round((double) LOCAL_BUFFER_TIME / (double) dataBuffer[sensor.getType()].length())
                 + ",\"data\":" + dataBuffer[sensor.getType()].toString() + "}";
 
         try
@@ -104,7 +107,7 @@ public class EpilepsySensor extends BaseDataProducer implements DataProcessor {
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
         i.putExtra(DataPoint.VALUE, value);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
-        i.putExtra(DataPoint.TIMESTAMP, lastLocalSampleTimes[sensor.getType()]);
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME);
         context.startService(i);
     }
 

@@ -151,7 +151,7 @@ public class LocationSensor extends BaseDataProducer {
 
 	private Controller controller;
 	private Context context;
-	public static LocationManager locMgr;
+	private LocationManager locMgr;
 	private final MyLocationListener gpsListener;
 	private final MyLocationListener nwListener;
 	private final MyLocationListener pasListener;
@@ -163,7 +163,7 @@ public class LocationSensor extends BaseDataProducer {
 	/**
 	 * Receiver for periodic alarms to check on the sensor status.
 	 */
-	private final BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
+	public BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
 
 		
 		@Override
@@ -190,7 +190,7 @@ public class LocationSensor extends BaseDataProducer {
 	/**
 	 * Receiver for periodic alarms to calculate distance values.
 	 */
-	private final BroadcastReceiver distanceAlarmReceiver = new BroadcastReceiver() {
+	public final BroadcastReceiver distanceAlarmReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -305,13 +305,13 @@ public class LocationSensor extends BaseDataProducer {
 		// log.putExtra(MsgHandler.KEY_DATA_TYPE, "string");
 		// context.startService(log);
 	}
-
+	
 	/**
 	 * @param distance
 	 *            Minimum distance between location updates.
 	 */
-	public void setDistance(float distance) {
-		this.distance = distance;
+	public float getDistance() {
+		return this.distance;
 	}
 
 	public void setGpsListening(boolean listen) {
@@ -364,7 +364,7 @@ public class LocationSensor extends BaseDataProducer {
 	 * @param time
 	 *            Minimum time between location refresh attempts.
 	 */
-	public void setTime(long time) {
+	private void setTime(long time) {
 		this.time = time;
 	}
 
@@ -420,7 +420,7 @@ public class LocationSensor extends BaseDataProducer {
 		}
 	}
 
-	private void stopAlarms() {
+	public void stopAlarms() {
 		// unregister the receiver
 		try {
 			context.unregisterReceiver(alarmReceiver);

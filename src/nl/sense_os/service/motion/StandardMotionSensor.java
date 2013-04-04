@@ -23,6 +23,7 @@ import android.util.Log;
 
 public class StandardMotionSensor extends BaseDataProducer implements DataProcessor {
 
+
 	private static final String TAG = "StandardMotionSensor";
 	private Context context;
 	private long[] lastSampleTimes = new long[50];
@@ -99,6 +100,7 @@ public class StandardMotionSensor extends BaseDataProducer implements DataProces
 			Log.e(TAG, "Error seding data from StandardMotionSensor");
 		}
 	}
+
 
     @Override
 	public void startNewSample() {
