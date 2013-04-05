@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
+import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.util.Log;
 
 public class MotionBurstSensor extends BaseDataProducer implements DataProcessor {
@@ -47,11 +48,12 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 	public boolean isSampleComplete() {
 		return sampleComplete;
 	}
-
-	public void onNewData(SensorEvent event) {
+	
+	@Override
+	public void onNewData(SensorDataPoint dataPoint) {
 
 		sampleComplete = false;
-
+		SensorEvent event =  dataPoint.getSensorEventValue();
 		Sensor sensor = event.sensor;
 		if (sensor.getType() != SENSOR_TYPE) {
 			return;
@@ -133,9 +135,4 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 		sampleComplete = false;
 	}
 
-	@Override
-	public void onNewData(SensorDataPoint dataPoint) {
-		// TODO Auto-generated method stub
-
-	}
 }
