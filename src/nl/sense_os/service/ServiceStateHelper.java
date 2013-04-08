@@ -73,15 +73,15 @@ public class ServiceStateHelper {
 				icon = R.drawable.ic_stat_notify_sense;
 				contentText = R.string.stat_notify_content_on_loggedin;
 			} else {
-				icon = R.drawable.ic_stat_notify_sense_alert;
+                icon = R.drawable.ic_stat_notify_sense_warning;
 				contentText = R.string.stat_notify_content_on_loggedout;
 			}
 		} else {
 			if (isLoggedIn()) {
-				icon = R.drawable.ic_stat_notify_sense_disabled;
+                icon = R.drawable.ic_stat_notify_sense_error;
 				contentText = R.string.stat_notify_content_off_loggedin;
 			} else {
-				icon = R.drawable.ic_stat_notify_sense_disabled;
+                icon = R.drawable.ic_stat_notify_sense_error;
 				contentText = R.string.stat_notify_content_off_loggedout;
 			}
 		}
