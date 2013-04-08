@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 
+import org.json.JSONObject;
+
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -16,6 +18,8 @@ import nl.sense_os.service.constants.SensePrefs.Main.External;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.BaseDataProducer;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -38,7 +42,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class ZephyrHxM {
+public class ZephyrHxM extends BaseDataProducer{
 
     /*
      * Scan thread
@@ -376,8 +380,37 @@ public class ZephyrHxM {
 	    return false;
 	}
 
-	private void sendDataPoint(String sensorName, String description, Object value,
-		String dataType) {
+	private void sendDataPoint(String sensorName, String description, Object value, String dataType) {		
+		try
+		{
+			SensorDataPoint dataPoint = new SensorDataPoint(0);
+			if (dataType.equals(SenseDataTypes.BOOL)) {
+				dataPoint =  new  SensorDataPoint((Boolean) value);
+			} else if (dataType.equals(SenseDataTypes.FLOAT)) {
+				dataPoint =  new  SensorDataPoint((Float) value);
+			} else if (dataType.equals(SenseDataTypes.INT)) {
+				dataPoint =  new  SensorDataPoint((Integer) value);
+			} else if (dataType.equals(SenseDataTypes.JSON)) {
+				dataPoint =  new  SensorDataPoint(new JSONObject((String)value));
+			} else if (dataType.equals(SenseDataTypes.STRING)) {
+				dataPoint =  new  SensorDataPoint((String) value);
+			} else {
+				dataPoint = null;
+			}
+			if(dataPoint != null)	    	
+			{
+				notifySubscribers();
+				dataPoint.sensorName = sensorName;
+				dataPoint.sensorDescription = description;
+				dataPoint.timeStamp = SNTP.getInstance().getTime();        
+				sendToSubscribers(dataPoint);
+			}
+		}catch(Exception e)
+		{
+			Log.e(TAG, "Error sending data point to subscribers of the ZephyrBioHarness");
+		}
+		
+		
 	    Intent intent = new Intent(context.getString(R.string.action_sense_new_data));
 	    intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
 	    intent.putExtra(DataPoint.SENSOR_DESCRIPTION, description);

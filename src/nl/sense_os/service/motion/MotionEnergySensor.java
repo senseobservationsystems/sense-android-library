@@ -7,6 +7,10 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -16,7 +20,7 @@ import android.os.SystemClock;
 import android.util.FloatMath;
 import android.util.Log;
 
-public class MotionEnergySensor implements MotionSensorInterface {
+public class MotionEnergySensor extends BaseDataProducer implements DataProcessor {
 
     private static final long ENERGY_SAMPLE_LENGTH = 500;
     private static final String TAG = "MotionEnergySensor";
@@ -75,10 +79,15 @@ public class MotionEnergySensor implements MotionSensorInterface {
      *            The sensor change event with accelerometer or linear acceleration data.
      */
     @Override
-    public void onNewData(SensorEvent event) {
+    public void onNewData(SensorDataPoint dataPoint) {
 
         float[] linAcc = null;
 
+        if(dataPoint.getDataType() != DataType.SENSOREVENT)
+        	return;
+        
+        SensorEvent event = dataPoint.getSensorEventValue(); 
+        	
         // check if this is a useful data point
         Sensor sensor = event.sensor;
         boolean isEnergySample = !hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == sensor.getType()
@@ -116,8 +125,8 @@ public class MotionEnergySensor implements MotionSensorInterface {
             }
         } else {
             Log.w(TAG, "Cannot calculate motion energy! Linear acceleration value is null");
-        }
 
+        }
         // check if we gathered enough data points
         if (!sampleComplete && isEnoughDatapoints()) {
             sendData();
@@ -129,17 +138,26 @@ public class MotionEnergySensor implements MotionSensorInterface {
      * Sends message with average motion energy to the MsgHandler.
      */
     private void sendData() {
-
+    	
         // round to three decimals
         float value = BigDecimal.valueOf(avgSpeedChange).setScale(3, 0).floatValue();
-
+        
+        this.notifySubscribers();
+        SensorDataPoint dataPoint = new SensorDataPoint(value);
+        dataPoint.sensorName = SensorNames.MOTION_ENERGY;
+        dataPoint.sensorDescription = SensorNames.MOTION_ENERGY;
+        dataPoint.timeStamp = SNTP.getInstance().getTime();        
+        this.sendToSubscribers(dataPoint);
+        
+        //TODO: add the MsgHandler as data processor
+        
         // prepare intent to send to MsgHandler
         Intent i = new Intent(context.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MOTION_ENERGY);
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
         i.putExtra(DataPoint.VALUE, value);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        i.putExtra(DataPoint.TIMESTAMP,  dataPoint.timeStamp);
         context.startService(i);
     }
 

@@ -8,6 +8,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +26,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class PhoneActivitySensor {
+public class PhoneActivitySensor extends BaseDataProducer{
 
     private static final String TAG = "Sense Screen Activity";
     private final Context context;
@@ -63,11 +65,18 @@ public class PhoneActivitySensor {
                 Log.e(TAG, "JSONException preparing screen activity data");
             }
 
+            notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(json);
+            dataPoint.sensorName = SensorNames.SCREEN_ACTIVITY;
+            dataPoint.sensorDescription = SensorNames.SCREEN_ACTIVITY;
+            dataPoint.timeStamp = SNTP.getInstance().getTime();        
+            sendToSubscribers(dataPoint);
+            
             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.VALUE, json.toString());
             i.putExtra(DataPoint.SENSOR_NAME, SensorNames.SCREEN_ACTIVITY);
-            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
             context.startService(i);
         }
     };

@@ -13,8 +13,10 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
+import nl.sense_os.service.shared.SensorDataPoint;
 
 import org.json.JSONObject;
 
@@ -34,7 +36,8 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class MagneticFieldSensor implements SensorEventListener, PeriodicPollingSensor {
+public class MagneticFieldSensor extends BaseSensor implements SensorEventListener,
+        PeriodicPollingSensor {
 
     private static final String TAG = "Sense Magnetic Field Sensor";
     private static final String SENSOR_DISPLAY_NAME = "magnetic field";
@@ -97,13 +100,6 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
         }
     }
 
-    /**
-     * @return The delay between samples in milliseconds
-     */
-    @Override
-    public long getSampleRate() {
-        return sampleDelay;
-    }
 
     @Override
     public boolean isActive() {
@@ -139,7 +135,15 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
 				dataFields.put("x", x);
 				dataFields.put("y", y);
 				dataFields.put("z", z);
-				String jsonString = new JSONObject(dataFields).toString();
+				JSONObject jsonObj = new JSONObject(dataFields);
+				String jsonString = jsonObj.toString();
+				
+				this.notifySubscribers();
+				SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
+				dataPoint.sensorName = sensorName;
+				dataPoint.sensorDescription = sensor.getName();
+				dataPoint.timeStamp = SNTP.getInstance().getTime();        
+				this.sendToSubscribers(dataPoint);
 
 				// send msg to MsgHandler
 				Intent i = new Intent(context.getString(R.string.action_sense_new_data));
@@ -148,7 +152,7 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
 				i.putExtra(DataPoint.SENSOR_NAME, sensorName);
 				i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
 				i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-				i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
 				context.startService(i);
 
                 // sample is successful: unregister the listener
@@ -164,7 +168,7 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    @Override
+    
     public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;

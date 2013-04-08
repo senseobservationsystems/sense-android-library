@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.UUID;
 
+import nl.sense_os.service.shared.BaseDataProducer;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -27,7 +29,7 @@ import android.util.Log;
  * 
  * @author Roelof van den Berg <roelof@sense-os.nl>
  */
-public abstract class ExternalSensor {
+public abstract class ExternalSensor extends BaseDataProducer {
     // static device specifics
     // TODO terug goedmaken
     protected static final String TAG = "OBD-II";
