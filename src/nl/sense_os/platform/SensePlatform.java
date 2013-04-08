@@ -3,9 +3,10 @@ package nl.sense_os.platform;
 import java.io.IOException;
 import java.util.Date;
 
-import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.R;
+import nl.sense_os.service.SenseService.SenseBinder;
+import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -48,7 +49,7 @@ public class SensePlatform {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			Log.v(TAG, "Bound to Sense Platform service...");
 
-			service = ISenseService.Stub.asInterface(binder);
+            service = ((SenseBinder) binder).getService();
 			isServiceBound = true;
 
             // notify the external service connection
@@ -89,7 +90,7 @@ public class SensePlatform {
 	/**
      * Interface for the SenseService. Gets instantiated by {@link #serviceConn}.
      */
-    private ISenseService service;
+    private SenseServiceStub service;
 
     /**
      * Callback for events for the binding with the Sense service
@@ -325,7 +326,7 @@ public class SensePlatform {
     /**
      * @return The Sense service instance
      */
-	public ISenseService getService() {
+    public SenseServiceStub getService() {
         checkSenseService();
 		return service;
 	}
