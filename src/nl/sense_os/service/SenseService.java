@@ -4,10 +4,10 @@
 package nl.sense_os.service;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.atomic.AtomicReference;
 
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.LightSensor;
@@ -123,15 +123,14 @@ public class SenseService extends Service {
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
 	private MagneticFieldSensor magneticFieldSensor;	
-    /** a list with the registered DataProducer */
-    private HashMap<String, Vector<AtomicReference<DataProducer>>> registeredProducers = new HashMap<String, Vector<AtomicReference<DataProducer>>>();
     /**
-     * a list with the data processors and the sensorName they subscribed to. this is used to
-     * connect a DataProcessor to a DataProducer when a DataProducer registers after a data
-     * processor already subscribed for a certain sensor
+     * All registered DataProducers, mapped by sensor name.
      */
-	private HashMap<String, Vector<AtomicReference<DataProcessor>> > subscribedProcessors = new HashMap<String, Vector<AtomicReference<DataProcessor> > >(); 
-		
+    private Map<String, List<DataProducer>> registeredProducers = new HashMap<String, List<DataProducer>>();
+    /**
+     * All subscribed DataProcessors, mapped by the sensor name they are subscribed to.
+     */
+    private Map<String, List<DataProcessor>> subscribedProcessors = new HashMap<String, List<DataProcessor>>();
 	/**
 	 * Handler on main application thread to display toasts to the user.
 	 */
@@ -200,25 +199,24 @@ public class SenseService extends Service {
 		}
 	}
 
-	/**
+	    /**
      * @param sensorName
      *            The name of the DataProducer (SenseSensor/DataProcessor)
      * @param sensor
      *            The AtomicReference of the DataProducer object
-     * @return true if the DataProducer is already registered under this sensor name
+     * @return true if this DataProducer is already registered under this sensor name
      */
     public boolean isDataProcessorSubscribed(String sensorName, DataProcessor dataProcessor) {
+
         if (!subscribedProcessors.containsKey(sensorName)) {
+            // nothing is subscribed to this sensor name
             return false;
         }
 
-        Vector<AtomicReference<DataProcessor>> processors = subscribedProcessors.get(sensorName);
-        for (int i = 0; i < processors.size(); i++) {
-            AtomicReference<DataProcessor> item = processors.elementAt(i);
-            if (item == null || item.get() == null) {
-                processors.removeElementAt(i);
-                --i;
-            } else if (item.get().equals(dataProcessor)) {
+        // check if dataProcessor is in the list of subscribed processors
+        List<DataProcessor> processors = subscribedProcessors.get(sensorName);
+        for (DataProcessor registeredProcessor : processors) {
+            if (registeredProcessor.equals(dataProcessor)) {
                 return true;
             }
         }
@@ -242,17 +240,16 @@ public class SenseService extends Service {
      * @return true if the data producer is already registered under this sensor name
      */
     public boolean isDataProducerRegistered(String sensorName, DataProducer dataProducer) {
+
         if (!registeredProducers.containsKey(sensorName)) {
+            // nothing is registered under this sensor name
             return false;
         }
 
-        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(sensorName);
-        for (int i = 0; i < producers.size(); i++) {
-            AtomicReference<DataProducer> item = producers.elementAt(i);
-            if (item == null || item.get() == null) {
-                producers.removeElementAt(i);
-                --i;
-            } else if (item.get().equals(dataProducer)) {
+        // check if dataProducer is already in the list of registered producers
+        List<DataProducer> producers = registeredProducers.get(sensorName);
+        for (DataProducer registeredProducer : producers) {
+            if (registeredProducer.equals(dataProducer)) {
                 return true;
             }
         }
@@ -589,35 +586,29 @@ synchronized int register(String username, String password, String email, String
      *            The data producer
      */
     public void registerDataProducer(String name, DataProducer producer) {
-        // check if the data producer is already registered
+
         if (isDataProducerRegistered(name, producer)) {
+            // data producer is already registered
             return;
         }
 
-        Vector<AtomicReference<DataProducer>> producers;
-        AtomicReference<DataProducer> sensor = new AtomicReference<DataProducer>(producer);
-        if (registeredProducers.containsKey(name)) {
-            producers = registeredProducers.get(name);
-        } else {
-            producers = new Vector<AtomicReference<DataProducer>>();
+        // add the producer to the list of registered producers
+        List<DataProducer> producers = registeredProducers.get(name);
+        if (null == producers) {
+            producers = new ArrayList<DataProducer>();
         }
-        producers.add(sensor);
+        producers.add(producer);
         registeredProducers.put(name, producers);
 
-        // subscribe DataProcessors from queue to the new DataProducer
+        // see if there are any data processors subscribed to this sensor name
         if (!subscribedProcessors.containsKey(name)) {
             return;
         }
 
-        Vector<AtomicReference<DataProcessor>> subscribers = subscribedProcessors.get(name);
-        for (int i = 0; i < subscribers.size(); i++) {
-            AtomicReference<DataProcessor> item = subscribers.elementAt(i);
-            if (item == null || item.get() == null) {
-                subscribers.removeElementAt(i);
-                --i;
-            } else {
-                sensor.get().addSubscriber(item.get());
-            }
+        // subscribe existing DataProcessors to the new DataProducer
+        List<DataProcessor> subscribers = subscribedProcessors.get(name);
+        for (DataProcessor subscriber : subscribers) {
+            producer.addSubscriber(subscriber);
         }
     }
 
@@ -706,32 +697,30 @@ synchronized int register(String username, String password, String email, String
      * @return true if the DataProcessor is successfully subscribed to the DataProducer.
      */
     public boolean subscribeDataProcessor(String name, DataProcessor processor) {
-        // put the data processor in a queue to attach later when a new sensor is registered
+
         if (isDataProcessorSubscribed(name, processor)) {
+            // processor is already subscribed
             return false;
         }
 
-        Vector<AtomicReference<DataProcessor>> processors;
-        AtomicReference<DataProcessor> dataProcessor = new AtomicReference<DataProcessor>(processor);
-        if (subscribedProcessors.containsKey(name)) {
-            processors = subscribedProcessors.get(name);
-        } else {
-            processors = new Vector<AtomicReference<DataProcessor>>();
+        // add the processor to the list of subscribed processors
+        List<DataProcessor> processors = subscribedProcessors.get(name);
+        if (null == processors) {
+            processors = new ArrayList<DataProcessor>();
         }
-        processors.add(dataProcessor);
+        processors.add(processor);
         subscribedProcessors.put(name, processors);
 
-        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(name);
+        // see if there are any producers for this sensor name
+        List<DataProducer> producers = registeredProducers.get(name);
         if (producers == null) {
             return false;
         }
 
+        // subscribe the new processor to the existing producers
         boolean subscribed = false;
-        for (int i = 0; i < producers.size(); i++) {
-            AtomicReference<DataProducer> item = producers.elementAt(i);
-            if (item != null && item.get() != null) {
-                subscribed |= item.get().addSubscriber(dataProcessor.get());
-            }
+        for (DataProducer producer : producers) {
+            subscribed |= producer.addSubscriber(processor);
         }
         return subscribed;
     }
@@ -1462,25 +1451,18 @@ synchronized int register(String username, String password, String email, String
      *            The name of the registered DataProducer
      */
     public void unregisterDataProducer(String name, DataProducer dataProducer) {
-        AtomicReference<DataProducer> sensor = new AtomicReference<DataProducer>(dataProducer);
 
         if (!registeredProducers.containsKey(name)) {
+            // this producer is not registered under this name
             return;
         }
 
-        Vector<AtomicReference<DataProducer>> dataProducers = registeredProducers.get(name);
-        if (dataProducers == null) {
-            return;
-        }
-        for (int i = 0; i < dataProducers.size(); i++) {
-            AtomicReference<DataProducer> item = dataProducers.elementAt(i);
-            if (item == null || (item.get() == sensor.get())) {
-                dataProducers.removeElementAt(i);
-                --i;
-            }
-        }
+        // remove the producer from the list of registered producers for this sensor name
+        List<DataProducer> dataProducers = registeredProducers.get(name);
+        dataProducers.remove(dataProducer);
+        registeredProducers.put(name, dataProducers);
     }
-	
+
     /**
      * Unsubscribes a DataProcessor from a DataProducer.
      * 
@@ -1490,32 +1472,29 @@ synchronized int register(String username, String password, String email, String
      *            The AtomicReference to the DataProcessor that receives the sensor data
      */
     public void unsubscribeProcessor(String name, DataProcessor dataProcessor) {
+
         if (!registeredProducers.containsKey(name)) {
+            // there are no data producers to unsubscribe from
             return;
         }
 
-        if (subscribedProcessors.containsKey(name)) {
-            Vector<AtomicReference<DataProcessor>> processors = subscribedProcessors.get(name);
-            for (int i = 0; i < processors.size(); i++) {
-                AtomicReference<DataProcessor> item = processors.elementAt(i);
-                if (item == null || item.get() == null) {
-                    processors.removeElementAt(i);
-                    --i;
-                } else if (item.get().equals(dataProcessor)) {
-                    processors.removeElementAt(i);
-                    --i;
-                }
-            }
+        if (!subscribedProcessors.containsKey(name)) {
+            // this processor is not registered (?)
+            return;
         }
-        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(name);
-        for (int i = 0; i < producers.size(); i++) {
-            AtomicReference<DataProducer> item = producers.elementAt(i);
-            if (item != null && item.get() != null) {
-                item.get().removeSubscriber(dataProcessor);
-            }
+
+        // remove the processor from the list of subscribed processors
+        List<DataProcessor> processors = subscribedProcessors.get(name);
+        processors.remove(dataProcessor);
+        subscribedProcessors.put(name, processors);
+
+        // unsubscribe the processor from the producers for this sensor name
+        List<DataProducer> producers = registeredProducers.get(name);
+        for (DataProducer registeredProducer : producers) {
+            registeredProducer.removeSubscriber(dataProcessor);
         }
     }
-	
+
     private synchronized void verifySensorIds() {
 		Log.v(TAG, "Try to verify sensor IDs");
 		startService(new Intent(this, DefaultSensorRegistrationService.class));
