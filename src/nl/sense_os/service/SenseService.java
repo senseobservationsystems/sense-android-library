@@ -77,19 +77,7 @@ import android.widget.Toast;
  */
 public class SenseService extends Service {
 
-	private static final String TAG = "Sense Service";
-
 	/**
-	 * Intent action to force a re-login attempt when the service is started.
-	 */
-	public static final String EXTRA_RELOGIN = "relogin";
-
-	/**
-	 * Intent action for broadcasts that the service state has changed.
-	 */
-	public final static String ACTION_SERVICE_BROADCAST = "nl.sense_os.service.Broadcast";
-
-    /**
      * Class used for the client Binder. Because we know this service always runs in the same
      * process as its clients, we don't need to deal with IPC.
      * 
@@ -101,6 +89,18 @@ public class SenseService extends Service {
             return new SenseServiceStub(SenseService.this);
         }
     }
+
+	private static final String TAG = "Sense Service";
+
+	/**
+	 * Intent action to force a re-login attempt when the service is started.
+	 */
+	public static final String EXTRA_RELOGIN = "relogin";
+
+    /**
+	 * Intent action for broadcasts that the service state has changed.
+	 */
+	public final static String ACTION_SERVICE_BROADCAST = "nl.sense_os.service.Broadcast";
 
     private IBinder binder = new SenseBinder();
 
@@ -201,6 +201,65 @@ public class SenseService extends Service {
 	}
 
 	/**
+     * @param sensorName
+     *            The name of the DataProducer (SenseSensor/DataProcessor)
+     * @param sensor
+     *            The AtomicReference of the DataProducer object
+     * @return true if the DataProducer is already registered under this sensor name
+     */
+    public boolean isDataProcessorSubscribed(String sensorName, DataProcessor dataProcessor) {
+        if (!subscribedProcessors.containsKey(sensorName)) {
+            return false;
+        }
+
+        Vector<AtomicReference<DataProcessor>> processors = subscribedProcessors.get(sensorName);
+        for (int i = 0; i < processors.size(); i++) {
+            AtomicReference<DataProcessor> item = processors.elementAt(i);
+            if (item == null || item.get() == null) {
+                processors.removeElementAt(i);
+                --i;
+            } else if (item.get().equals(dataProcessor)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+	/**
+     * @param sensorName
+     *            The name of the DataProducer
+     * @return true if a data producer is already registered under this sensor name
+     */
+    public boolean isDataProducerRegistered(String sensorName) {
+        return registeredProducers.containsKey(sensorName);
+    }
+
+	/**
+     * @param sensorName
+     *            The name of the DataProducer
+     * @param sensor
+     *            The AtomicReference of the DataProducer object
+     * @return true if the data producer is already registered under this sensor name
+     */
+    public boolean isDataProducerRegistered(String sensorName, DataProducer dataProducer) {
+        if (!registeredProducers.containsKey(sensorName)) {
+            return false;
+        }
+
+        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(sensorName);
+        for (int i = 0; i < producers.size(); i++) {
+            AtomicReference<DataProducer> item = producers.elementAt(i);
+            if (item == null || item.get() == null) {
+                producers.removeElementAt(i);
+                --i;
+            } else if (item.get().equals(dataProducer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+	/**
 	 * Tries to login using the username and password from the private preferences and updates the
 	 * {@link #isLoggedIn} status accordingly. Can also be called from Activities that are bound to
 	 * the service.
@@ -279,7 +338,8 @@ public class SenseService extends Service {
 		// log out before changing to a new user
 		onLogOut();
 	}
-
+	
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.v(TAG, "Some component is binding to Sense Platform service");
@@ -318,8 +378,7 @@ public class SenseService extends Service {
 
 		super.onDestroy();
 	}
-	
-	
+
 	/**
 	 * Performs tasks after successful login: update status bar notification; start transmitting
 	 * collected sensor data and register the gcm_id.
@@ -356,13 +415,13 @@ public class SenseService extends Service {
 		stopService(new Intent(getString(R.string.action_sense_send_data)));
 	}
 
-	void onSampleRateChange() {
-		Log.v(TAG, "Sample rate changed");
-		if (state.isStarted()) {
-			stopSensorModules();
-			startSensorModules();
-		}
-	}
+	    void onSampleRateChange() {
+        	Log.v(TAG, "Sample rate changed");
+        	if (state.isStarted()) {
+        		stopSensorModules();
+        		startSensorModules();
+        	}
+        }
 
 	/**
 	 * Starts the Sense service. Tries to log in and start sensing; starts listening for network
@@ -441,78 +500,126 @@ public class SenseService extends Service {
 		startService(new Intent(getString(R.string.action_widget_update)));
 	}
 
-	    /**
-     * Tries to register a new user using the username and password from the private preferences and
-     * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
-     * are bound to the service.
+	/**
+    * Tries to register a new user using the username and password from the private preferences and
+    * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
+    * are bound to the service.
+    * 
+    * @param username
+    * @param password
+    *            Hashed password
+    * @param email
+    * @param address
+    * @param zipCode
+    * @param country
+    * @param name
+    * @param surname
+    * @param mobile
+    * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
+    *         any other unexpected responses.
+    */
+synchronized int register(String username, String password, String email, String address,
+    	String zipCode, String country, String name, String surname, String mobile) {
+    Log.v(TAG, "Try to register new user");
+
+    // log out before registering a new user
+    logout();
+
+    // stop active sensing components
+    stopSensorModules();
+
+    // save username and password in preferences
+    Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+    authEditor.putString(Auth.LOGIN_USERNAME, username);
+    authEditor.putString(Auth.LOGIN_PASS, password);
+    authEditor.commit();
+
+    // try to register
+    int registered = -1;
+    if ((null != username) && (null != password)) {
+    	// Log.v(TAG, "Registering: " + username +
+    	// ", password hash: " + hashPass);
+
+    	try {
+            registered = SenseApi.registerUser(this, username, password, name, surname, email,
+    				mobile);
+    	} catch (Exception e) {
+    		Log.w(TAG, "Exception during registration: '" + e.getMessage()
+    				+ "'. Connection problems?");
+    		// handle result below
+    	}
+    } else {
+    	Log.w(TAG, "Cannot register: username or password unavailable");
+    }
+
+    // handle result
+    switch (registered) {
+    case 0:
+    	Log.i(TAG, "Successful registration for '" + username + "'");
+    	login();
+    	break;
+    case -1:
+    	Log.w(TAG, "Registration failed");
+    	state.setLoggedIn(false);
+    	break;
+    case -2:
+    	Log.w(TAG, "Registration failed: user already exists");
+    	state.setLoggedIn(false);
+    	break;
+    default:
+    	Log.w(TAG, "Unexpected registration result: " + registered);
+    }
+
+    return registered;
+}
+
+	/**
+     * <p>
+     * Registers a DataProducer with the given name at the SenseService.
+     * </p>
+     * <p>
+     * When a data producer is registered, data processors can subscribe to its sensor data.
+     * Registering a data producer with an existing name will add the new data producer only if this
+     * data producer is a different instance from the other data producer.
+     * </p>
      * 
-     * @param username
-     * @param password
-     *            Hashed password
-     * @param email
-     * @param address
-     * @param zipCode
-     * @param country
      * @param name
-     * @param surname
-     * @param mobile
-     * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-     *         any other unexpected responses.
+     *            The name of the data producer
+     * @param producer
+     *            The data producer
      */
-	synchronized int register(String username, String password, String email, String address,
-			String zipCode, String country, String name, String surname, String mobile) {
-		Log.v(TAG, "Try to register new user");
+    public void registerDataProducer(String name, DataProducer producer) {
+        // check if the data producer is already registered
+        if (isDataProducerRegistered(name, producer)) {
+            return;
+        }
 
-		// log out before registering a new user
-		logout();
+        Vector<AtomicReference<DataProducer>> producers;
+        AtomicReference<DataProducer> sensor = new AtomicReference<DataProducer>(producer);
+        if (registeredProducers.containsKey(name)) {
+            producers = registeredProducers.get(name);
+        } else {
+            producers = new Vector<AtomicReference<DataProducer>>();
+        }
+        producers.add(sensor);
+        registeredProducers.put(name, producers);
 
-		// stop active sensing components
-		stopSensorModules();
+        // subscribe DataProcessors from queue to the new DataProducer
+        if (!subscribedProcessors.containsKey(name)) {
+            return;
+        }
 
-		// save username and password in preferences
-		Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
-		authEditor.putString(Auth.LOGIN_USERNAME, username);
-        authEditor.putString(Auth.LOGIN_PASS, password);
-		authEditor.commit();
-
-		// try to register
-		int registered = -1;
-		if ((null != username) && (null != password)) {
-			// Log.v(TAG, "Registering: " + username +
-			// ", password hash: " + hashPass);
-
-			try {
-                registered = SenseApi.registerUser(this, username, password, name, surname, email,
-						mobile);
-			} catch (Exception e) {
-				Log.w(TAG, "Exception during registration: '" + e.getMessage()
-						+ "'. Connection problems?");
-				// handle result below
-			}
-		} else {
-			Log.w(TAG, "Cannot register: username or password unavailable");
-		}
-
-		// handle result
-		switch (registered) {
-		case 0:
-			Log.i(TAG, "Successful registration for '" + username + "'");
-			login();
-			break;
-		case -1:
-			Log.w(TAG, "Registration failed");
-			state.setLoggedIn(false);
-			break;
-		case -2:
-			Log.w(TAG, "Registration failed: user already exists");
-			state.setLoggedIn(false);
-			break;
-		default:
-			Log.w(TAG, "Unexpected registration result: " + registered);
-		}
-
-		return registered;
-	}
+        Vector<AtomicReference<DataProcessor>> subscribers = subscribedProcessors.get(name);
+        for (int i = 0; i < subscribers.size(); i++) {
+            AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+            if (item == null || item.get() == null) {
+                subscribers.removeElementAt(i);
+                --i;
+            } else {
+                sensor.get().addSubscriber(item.get());
+            }
+        }
+    }
 
 	/**
 	 * Displays a Toast message using the process's main Thread.
@@ -584,6 +691,50 @@ public class SenseService extends Service {
 		// send broadcast that something has changed in the status
 		sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
 	}
+
+	/**
+     * Subscribe to a DataProducer<br/>
+     * <br/>
+     * This method subscribes a DataProcessor to receive SensorDataPoints from a DataProducer. If
+     * the DataProducer with name to subscribe to is not registered yet then the data processor will
+     * be put in the queue and will be subscribed to the DataProducer when it is registered.
+     * 
+     * @param name
+     *            The name of the registered DataProducer
+     * @param processor
+     *            The DataProcessor that receives the sensor data
+     * @return true if the DataProcessor is successfully subscribed to the DataProducer.
+     */
+    public boolean subscribeDataProcessor(String name, DataProcessor processor) {
+        // put the data processor in a queue to attach later when a new sensor is registered
+        if (isDataProcessorSubscribed(name, processor)) {
+            return false;
+        }
+
+        Vector<AtomicReference<DataProcessor>> processors;
+        AtomicReference<DataProcessor> dataProcessor = new AtomicReference<DataProcessor>(processor);
+        if (subscribedProcessors.containsKey(name)) {
+            processors = subscribedProcessors.get(name);
+        } else {
+            processors = new Vector<AtomicReference<DataProcessor>>();
+        }
+        processors.add(dataProcessor);
+        subscribedProcessors.put(name, processors);
+
+        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(name);
+        if (producers == null) {
+            return false;
+        }
+
+        boolean subscribed = false;
+        for (int i = 0; i < producers.size(); i++) {
+            AtomicReference<DataProducer> item = producers.elementAt(i);
+            if (item != null && item.get() != null) {
+                subscribed |= item.get().addSubscriber(dataProcessor.get());
+            }
+        }
+        return subscribed;
+    }
 
 	synchronized void toggleAmbience(boolean active) {
 
@@ -985,8 +1136,8 @@ public class SenseService extends Service {
 			}
 		}
 	}
-
-	synchronized void toggleLocation(boolean active) {
+	
+    synchronized void toggleLocation(boolean active) {
 
 		if (active != state.isLocationActive()) {
 			Log.i(TAG, (active ? "Enable" : "Disable") + " position sensor");
@@ -1076,7 +1227,7 @@ public class SenseService extends Service {
 		}
 	}
 
-	synchronized void toggleMain(boolean active) {
+    synchronized void toggleMain(boolean active) {
 		Log.i(TAG, (active ? "Enable" : "Disable") + " main sensing status");
 
 		if (true == active) {
@@ -1096,7 +1247,7 @@ public class SenseService extends Service {
 		}
 	}
 
-	synchronized void toggleMotion(boolean active) {
+    synchronized void toggleMotion(boolean active) {
 
 		if (active != state.isMotionActive()) {
 			Log.i(TAG, (active ? "Enable" : "Disable") + " motion sensors");
@@ -1177,7 +1328,7 @@ public class SenseService extends Service {
 		}
 	}
 
-	synchronized void togglePhoneState(boolean active) {
+    synchronized void togglePhoneState(boolean active) {
 
 		if (active != state.isPhoneStateActive()) {
 			Log.i(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
@@ -1297,215 +1448,10 @@ public class SenseService extends Service {
 					unregisterDataProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
 					phoneActivitySensor = null;
 				}
-//				if (null != phoneStateHandler) {
-//					phoneStateHandler.getLooper().quit();
-//					phoneStateHandler = null;
-//				}
 			}
 		}
 	}
 
-	private synchronized void verifySensorIds() {
-		Log.v(TAG, "Try to verify sensor IDs");
-		startService(new Intent(this, DefaultSensorRegistrationService.class));
-	}
-	
-    /**
-     * Registers a DataProducer with the given name at the SenseService.<br/>
-     * <br/>
-     * When a data producer is registered data processors can subscribe to its sensor data.
-     * Registering a data producer with an existing name will add the new data producer only if the
-     * object already then it will not be added.
-     * 
-     * @param name
-     *            The name of the data producer
-     * @param sensor
-     *            The AtomicReference to the DataProducer
-     */
-    public void registerDataProducer(String name, DataProducer producer)
-	{	
-		// check if the sensor is already registered
-        if (isDataProducerRegistered(name, producer))
-			return;
-		
-        Vector<AtomicReference<DataProducer>> producers;
-        AtomicReference<DataProducer> sensor = new AtomicReference<DataProducer>(producer);
-		if(registeredProducers.containsKey(name))
-			producers = registeredProducers.get(name);
-		else
-            producers = new Vector<AtomicReference<DataProducer>>();
-		producers.add(sensor);
-		registeredProducers.put(name, producers);
-		
-        // subscribe DataProcessors from queue to the new DataProducer
-		if(!subscribedProcessors.containsKey(name))
-			return;
-			
-		Vector<AtomicReference<DataProcessor>> subscribers = subscribedProcessors.get(name);
-		for (int i = 0; i < subscribers.size(); i++) 
-		{
-			AtomicReference<DataProcessor> item = subscribers.elementAt(i);
-			if(item == null || item.get() == null)		
-			{
-				subscribers.removeElementAt(i);
-				--i;
-			}
-			else			
-                sensor.get().addSubscriber(item.get());
-		}	
-	}
-	
-    /**
-     * Checks if the provided DataProducer is already registered under this sensorName
-     * 
-     * @param sensorName
-     *            The name of the DataProducer
-     * @param sensor
-     *            The AtomicReference of the DataProducer object
-     * @return True if the DataProducer is already registered under this sensor name
-     */
-    public boolean isDataProducerRegistered(String sensorName, DataProducer dataProducer)
-	{
-		if(!registeredProducers.containsKey(sensorName))
-			return false;
-			
-        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(sensorName);
-        for (int i = 0; i < producers.size(); i++) {
-            AtomicReference<DataProducer> item = producers.elementAt(i);
-            if (item == null || item.get() == null) {
-                producers.removeElementAt(i);
-                --i;
-            } else if (item.get().equals(dataProducer))
-                return true;
-        }
-        return false;
-	}
-    
-    /**
-     * Checks if a DataProducer is already registered under this sensorName
-     * 
-     * @param sensorName
-     *            The name of the DataProducer    
-     * @return True if a is already registered under this sensor name
-     */
-    public boolean isDataProducerRegistered(String sensorName)
-	{
-		return registeredProducers.containsKey(sensorName);
-	
-	}
-	
-	    /**
-     * Is the DataProcessor subscribed
-     * 
-     * This method checks if the provided AtomicReference<DataProcessor> is already subscribed for
-     * this sensorName
-     * 
-     * @param sensorName
-     *            The name of the DataProducer (SenseSensor/DataProcessor)
-     * @param sensor
-     *            The AtomicReference of the DataProducer object
-     * @return True if the DataProducer is already registered under this sensor name
-     */
-    public boolean isDataProcessorSubscribed(String sensorName, DataProcessor dataProcessor)
-	{
-		if(!subscribedProcessors.containsKey(sensorName))
-			return false;
-			
-        Vector<AtomicReference<DataProcessor>> processors = subscribedProcessors.get(sensorName);
-        for (int i = 0; i < processors.size(); i++) {
-            AtomicReference<DataProcessor> item = processors.elementAt(i);
-            if (item == null || item.get() == null) {
-                processors.removeElementAt(i);
-                --i;
-            } else if (item.get().equals(dataProcessor))
-                return true;
-        }
-		return false;
-	}
-	
-    /**
-     * Subscribe to a DataProducer<br/>
-     * <br/>
-     * This method subscribes a DataProcessor to receive SensorDataPoints from a DataProducer. If
-     * the DataProducer with name to subscribe to is not registered yet then the data processor will
-     * be put in the queue and will be subscribed to the DataProducer when it is registered.
-     * 
-     * @param name
-     *            The name of the registered DataProducer
-     * @param processor
-     *            The DataProcessor that receives the sensor data
-     * @return True if the DataProcessor is successfully subscribed to the DataProducer. It will
-     *         return false when the sensor is not registered yet, the data processor will then be
-     *         put in the queue and will be subscribed when the sensor is registered
-     */
-    public boolean subscribeDataProcessor(String name, DataProcessor processor)
-	{
-		//put the data processor in a queue to attach later when a new sensor is registered
-        if (isDataProcessorSubscribed(name, processor))
-			return false;
-				
-        Vector<AtomicReference<DataProcessor>> processors;
-        AtomicReference<DataProcessor> dataProcessor = new AtomicReference<DataProcessor>(processor);
-		if(subscribedProcessors.containsKey(name))
-			processors = subscribedProcessors.get(name);
-		else
-			processors = new Vector<AtomicReference<DataProcessor> >();
-		processors.add(dataProcessor);
-		subscribedProcessors.put(name, processors);		
-		
-		
-        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(name);
-		if(producers == null)
-			return false;
-		
-		boolean subscribed = false;
-		for (int i = 0; i < producers.size(); i++) 
-		{
-            AtomicReference<DataProducer> item = producers.elementAt(i);
-			if(item != null && item.get() != null)			
-                subscribed |= item.get().addSubscriber(dataProcessor.get());
-		}
-		return subscribed;
-	}
-	
-    /**
-     * Unsubscribes a DataProcessor from a DataProducer.
-     * 
-     * @param name
-     *            The name of the registered DataProducer
-     * @param dataProcessor
-     *            The AtomicReference to the DataProcessor that receives the sensor data
-     */
-    public void unsubscribeProcessor(String name, DataProcessor dataProcessor)
-	{
-		if(!registeredProducers.containsKey(name))
-			return;
-		
-		if(subscribedProcessors.containsKey(name))
-		{			
-			Vector<AtomicReference<DataProcessor>> processors = subscribedProcessors.get(name);
-			for (int i = 0; i < processors.size(); i++) 
-			{
-				AtomicReference<DataProcessor> item = processors.elementAt(i);
-				if(item == null || item.get() == null)		
-				{
-					processors.removeElementAt(i);
-					--i;
-                } else if (item.get().equals(dataProcessor)) {
-					processors.removeElementAt(i);
-					--i;
-				}
-			}		
-		}
-        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(name);
-		for (int i = 0; i < producers.size(); i++) 
-		{
-            AtomicReference<DataProducer> item = producers.elementAt(i);
-			if(item != null && item.get() != null)
-                item.get().removeSubscriber(dataProcessor);
-		}
-	}
-	
     /**
      * Unregisters a DataProducer.<br/>
      * <br/>
@@ -1515,24 +1461,63 @@ public class SenseService extends Service {
      * @param name
      *            The name of the registered DataProducer
      */
-    public void unregisterDataProducer(String name, DataProducer dataProducer)
-	{
+    public void unregisterDataProducer(String name, DataProducer dataProducer) {
         AtomicReference<DataProducer> sensor = new AtomicReference<DataProducer>(dataProducer);
 
-		if(!registeredProducers.containsKey(name))
-			return;
-			
+        if (!registeredProducers.containsKey(name)) {
+            return;
+        }
+
         Vector<AtomicReference<DataProducer>> dataProducers = registeredProducers.get(name);
-		if(dataProducers == null)
-			return;
-		for (int i = 0; i < dataProducers.size(); i++) 
-		{
+        if (dataProducers == null) {
+            return;
+        }
+        for (int i = 0; i < dataProducers.size(); i++) {
             AtomicReference<DataProducer> item = dataProducers.elementAt(i);
-			if(item == null || (item.get() == sensor.get()))
-			{
-				dataProducers.removeElementAt(i);
-				--i;
-			}
-		}
+            if (item == null || (item.get() == sensor.get())) {
+                dataProducers.removeElementAt(i);
+                --i;
+            }
+        }
+    }
+	
+    /**
+     * Unsubscribes a DataProcessor from a DataProducer.
+     * 
+     * @param name
+     *            The name of the registered DataProducer
+     * @param dataProcessor
+     *            The AtomicReference to the DataProcessor that receives the sensor data
+     */
+    public void unsubscribeProcessor(String name, DataProcessor dataProcessor) {
+        if (!registeredProducers.containsKey(name)) {
+            return;
+        }
+
+        if (subscribedProcessors.containsKey(name)) {
+            Vector<AtomicReference<DataProcessor>> processors = subscribedProcessors.get(name);
+            for (int i = 0; i < processors.size(); i++) {
+                AtomicReference<DataProcessor> item = processors.elementAt(i);
+                if (item == null || item.get() == null) {
+                    processors.removeElementAt(i);
+                    --i;
+                } else if (item.get().equals(dataProcessor)) {
+                    processors.removeElementAt(i);
+                    --i;
+                }
+            }
+        }
+        Vector<AtomicReference<DataProducer>> producers = registeredProducers.get(name);
+        for (int i = 0; i < producers.size(); i++) {
+            AtomicReference<DataProducer> item = producers.elementAt(i);
+            if (item != null && item.get() != null) {
+                item.get().removeSubscriber(dataProcessor);
+            }
+        }
+    }
+	
+    private synchronized void verifySensorIds() {
+		Log.v(TAG, "Try to verify sensor IDs");
+		startService(new Intent(this, DefaultSensorRegistrationService.class));
 	}
 }

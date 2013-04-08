@@ -26,7 +26,7 @@ public interface DataProcessor {
      * Handles a new data point. Take care: the sensor event is not guaranteed to be from the sensor
      * that the DataProcessor is interested in, so implementing classes need to check this.
      * 
-     * @param event
+     * @param dataPoint
      */
     public abstract void onNewData(SensorDataPoint dataPoint);
 }

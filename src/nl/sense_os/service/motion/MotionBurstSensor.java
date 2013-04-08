@@ -6,7 +6,6 @@ import java.util.List;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.BaseDataProducer;
@@ -21,7 +20,6 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
-import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.util.Log;
 
 public class MotionBurstSensor extends BaseDataProducer implements DataProcessor {
@@ -49,6 +47,24 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 		return sampleComplete;
 	}
 	
+	private String listToString(List<double[]> dataBuffer) {
+
+		//initialize with some capacity to avoid too much extending.
+		StringBuffer dataBufferString = new StringBuffer(50); 
+
+		dataBufferString.append("[");
+		boolean isFirstRow = true;
+		for (double[] values : dataBuffer) {
+			if (false == isFirstRow)
+				dataBufferString.append(",");
+			isFirstRow = false;
+			String row = "["+values[0]+","+values[1]+","+values[2]+"]";
+			dataBufferString.append(row);
+		}
+		dataBufferString.append("]");
+		return dataBufferString.toString();
+	}
+
 	@Override
 	public void onNewData(SensorDataPoint dataPoint) {
 
@@ -77,24 +93,6 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 		}
 	}
 
-	private String listToString(List<double[]> dataBuffer) {
-
-		//initialize with some capacity to avoid too much extending.
-		StringBuffer dataBufferString = new StringBuffer(50); 
-
-		dataBufferString.append("[");
-		boolean isFirstRow = true;
-		for (double[] values : dataBuffer) {
-			if (false == isFirstRow)
-				dataBufferString.append(",");
-			isFirstRow = false;
-			String row = "["+values[0]+","+values[1]+","+values[2]+"]";
-			dataBufferString.append(row);
-		}
-		dataBufferString.append("]");
-		return dataBufferString.toString();
-	}
-
 	private void sendData(Sensor sensor) {
 
 		String dataBufferString = listToString(dataBuffer);
@@ -102,6 +100,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 				+ Math.round((double) LOCAL_BUFFER_TIME / (double) dataBuffer.size())
 				+ ",\"header\":\"" + MotionSensorUtils.getSensorHeader(sensor).toString()
 				+ "\",\"values\":\"" + dataBufferString + "\"}";
+
 		try {
 			this.notifySubscribers();
 			SensorDataPoint dataPoint;
@@ -110,12 +109,14 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 
 			dataPoint.sensorName = SENSOR_NAME;
 			dataPoint.sensorDescription = sensor.getName();
-			dataPoint.timeStamp = SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME;        
+            dataPoint.timeStamp = SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME;
 			this.sendToSubscribers(dataPoint);
+
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            Log.w(TAG, "Failed to send motion burst data", e);
+            return;
 		}
+
 		// pass message to the MsgHandler
 		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 
@@ -126,7 +127,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 		i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME);
 		context.startService(i);
 
-		//A bit ugly, but for now this sensor knows the controller. TODO: controller can just get the values
+        // TODO: Let controller get the values instead of the sensor notifying the controller
 		controller.onMotionBurst(dataBuffer, SENSOR_TYPE);
 	}
 
@@ -134,5 +135,4 @@ public class MotionBurstSensor extends BaseDataProducer implements DataProcessor
 	public void startNewSample() {
 		sampleComplete = false;
 	}
-
 }
