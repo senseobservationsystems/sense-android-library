@@ -1,8 +1,8 @@
 package nl.sense.demo;
 
 import nl.sense_os.platform.SensePlatform;
-import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
@@ -118,7 +118,7 @@ public class MainActivity extends Activity implements ServiceConnection {
     private void onLoggedIn() {
 		try {
             // start sensing
-			ISenseService service = sensePlatform.getService();
+            SenseServiceStub service = sensePlatform.getService();
 			service.toggleMain(true);
 			service.toggleAmbience(true);
 			service.toggleLocation(true);
@@ -181,7 +181,7 @@ public class MainActivity extends Activity implements ServiceConnection {
             // complete
 
             // turn off some specific sensors
-			ISenseService service = sensePlatform.getService();
+            SenseServiceStub service = sensePlatform.getService();
 			service.setPrefBool(Ambience.LIGHT, false);
 			service.setPrefBool(Ambience.CAMERA_LIGHT, false);
 			service.setPrefBool(Ambience.PRESSURE, false);
