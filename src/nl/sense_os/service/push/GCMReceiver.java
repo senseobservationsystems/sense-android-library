@@ -199,7 +199,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
             builder.setDefaults(Notification.DEFAULT_SOUND)
-                    .setSmallIcon(R.drawable.ic_stat_notify_sense)
+                    .setSmallIcon(R.drawable.ic_stat_sense)
                     .setWhen(System.currentTimeMillis()).setContentTitle(title)
                     .setContentText(text).setTicker(text)
                     .setContentIntent(PendingIntent.getService(this, 0, new Intent(), 0));
