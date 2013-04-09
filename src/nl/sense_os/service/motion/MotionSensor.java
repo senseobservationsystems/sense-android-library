@@ -10,6 +10,7 @@ import nl.sense_os.service.SenseService;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
@@ -302,8 +303,12 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             return;
         }
 
-        sendToSubscribers(new SensorDataPoint(event));
-        
+        SensorDataPoint dataPoint = new SensorDataPoint(event);
+		dataPoint.sensorName = SensorNames.MOTION;
+		dataPoint.sensorDescription =  SensorNames.MOTION;
+		dataPoint.timeStamp = SNTP.getInstance().getTime();        
+		this.sendToSubscribers(dataPoint);
+                
         // unregister sensor listener when we can
         if (isTimeToUnregister()) {
 
