@@ -555,7 +555,7 @@ public class ZephyrHxM extends BaseDataProducer {
     private void sendNotification(String text) {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.drawable.ic_stat_notify_sense_warning);
+        builder.setSmallIcon(R.drawable.ic_stat_sense_warning);
         builder.setContentTitle(context.getString(R.string.stat_notify_title));
         builder.setTicker(text);
         builder.setWhen(System.currentTimeMillis());

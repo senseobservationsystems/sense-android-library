@@ -70,18 +70,18 @@ public class ServiceStateHelper {
 		int contentText = -1;
 		if (isStarted()) {
 			if (isLoggedIn()) {
-				icon = R.drawable.ic_stat_notify_sense;
+				icon = R.drawable.ic_stat_sense;
 				contentText = R.string.stat_notify_content_on_loggedin;
 			} else {
-                icon = R.drawable.ic_stat_notify_sense_warning;
+                icon = R.drawable.ic_stat_sense_warning;
 				contentText = R.string.stat_notify_content_on_loggedout;
 			}
 		} else {
 			if (isLoggedIn()) {
-                icon = R.drawable.ic_stat_notify_sense_error;
+                icon = R.drawable.ic_stat_sense_error;
 				contentText = R.string.stat_notify_content_off_loggedin;
 			} else {
-                icon = R.drawable.ic_stat_notify_sense_error;
+                icon = R.drawable.ic_stat_sense_error;
 				contentText = R.string.stat_notify_content_off_loggedout;
 			}
 		}
