@@ -7,6 +7,8 @@ import nl.sense_os.service.constants.SensePrefs.SensorSpecifics;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.SensorDataPoint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,7 +25,7 @@ import android.util.Log;
  *  
  * @author Pim Nijdam <pim@sense-os.nl>
  */
-public class AutoCalibratedNoiseSensor {
+public class AutoCalibratedNoiseSensor extends BaseDataProducer {
 	private static final String TAG = "AutoCalibratedNoiseSensor";
 	private static final float DEFAULT_TOTAL_SILENCE = Float.MAX_VALUE;
 	private static final float DEFAULT_LOUDEST = Float.MIN_VALUE;
@@ -38,28 +40,28 @@ public class AutoCalibratedNoiseSensor {
 	protected AutoCalibratedNoiseSensor(Context context) {
 		this.context = context;
 		//restore silence
-        SharedPreferences sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
-                Context.MODE_PRIVATE);
-        totalSilence = sensorSpecifics.getFloat(SensorSpecifics.AutoCalibratedNoise.TOTAL_SILENCE, DEFAULT_TOTAL_SILENCE);
-        loudest = sensorSpecifics.getFloat(SensorSpecifics.AutoCalibratedNoise.LOUDEST, DEFAULT_LOUDEST);
-        Log.v(TAG,"Loudest " + loudest + ", total silence " + totalSilence);
-        
+		SharedPreferences sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
+				Context.MODE_PRIVATE);
+		totalSilence = sensorSpecifics.getFloat(SensorSpecifics.AutoCalibratedNoise.TOTAL_SILENCE, DEFAULT_TOTAL_SILENCE);
+		loudest = sensorSpecifics.getFloat(SensorSpecifics.AutoCalibratedNoise.LOUDEST, DEFAULT_LOUDEST);
+		Log.v(TAG,"Loudest " + loudest + ", total silence " + totalSilence);
+
 	}
-    
+
 	private static AutoCalibratedNoiseSensor instance = null;
-    
-    public static AutoCalibratedNoiseSensor getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new AutoCalibratedNoiseSensor(context);
-	    }
-	    return instance;
-    }
+
+	public static AutoCalibratedNoiseSensor getInstance(Context context) {
+		if(instance == null) {
+			instance = new AutoCalibratedNoiseSensor(context);
+		}
+		return instance;
+	}
 
 	public void onNewNoise(long ms, double dB) {
-			double calibrated = calibratedValue(dB);
-			//check that at least a certain variance is observed, otherwise don't upload this sensor just yet
-			if (loudest - totalSilence > MIN_LOUDNESS_DYNAMIC)
-				sendSensorValue(calibrated, ms);
+		double calibrated = calibratedValue(dB);
+		//check that at least a certain variance is observed, otherwise don't upload this sensor just yet
+		if (loudest - totalSilence > MIN_LOUDNESS_DYNAMIC)
+			sendSensorValue(calibrated, ms);
 	}
 
 	private double calibratedValue(double db) {
@@ -76,20 +78,28 @@ public class AutoCalibratedNoiseSensor {
 
 	private void setLowestEver(double lowest) {
 		totalSilence = lowest;
-        Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
-                Context.MODE_PRIVATE).edit();
-        sensorSpecifics.putFloat(SensorSpecifics.AutoCalibratedNoise.TOTAL_SILENCE, (float)totalSilence);
-        sensorSpecifics.commit();
+		Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
+				Context.MODE_PRIVATE).edit();
+		sensorSpecifics.putFloat(SensorSpecifics.AutoCalibratedNoise.TOTAL_SILENCE, (float)totalSilence);
+		sensorSpecifics.commit();
 	}
 	private void setHighestEver(double highest) {
 		loudest = highest;
-        Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
-                Context.MODE_PRIVATE).edit();
-        sensorSpecifics.putFloat(SensorSpecifics.AutoCalibratedNoise.LOUDEST, (float)loudest);
-        sensorSpecifics.commit();
+		Editor sensorSpecifics = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS,
+				Context.MODE_PRIVATE).edit();
+		sensorSpecifics.putFloat(SensorSpecifics.AutoCalibratedNoise.LOUDEST, (float)loudest);
+		sensorSpecifics.commit();
 	}
 
 	private void sendSensorValue(double value, long ms) {
+
+		this.notifySubscribers();
+		SensorDataPoint dataPoint = new SensorDataPoint(value);
+		dataPoint.sensorName = SensorNames.NOISE;
+		dataPoint.sensorDescription = SensorDescriptions.AUTO_CALIBRATED;
+		dataPoint.timeStamp = ms;        
+		this.sendToSubscribers(dataPoint);
+
 		Intent sensorData = new Intent(
 				context.getString(R.string.action_sense_new_data));
 		sensorData.putExtra(DataPoint.SENSOR_NAME,

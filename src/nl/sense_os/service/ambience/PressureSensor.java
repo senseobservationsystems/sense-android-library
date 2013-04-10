@@ -12,8 +12,10 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
+import nl.sense_os.service.shared.SensorDataPoint;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -30,7 +32,8 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class PressureSensor implements SensorEventListener, PeriodicPollingSensor {
+public class PressureSensor extends BaseSensor implements SensorEventListener,
+        PeriodicPollingSensor {
 
     private static final String TAG = "Sense Pressure Sensor";
     private static PressureSensor instance = null;
@@ -95,11 +98,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
     /**
      * @return The delay between samples in milliseconds
      */
-    @Override
-    public long getSampleRate() {
-        return sampleDelay;
-    }
-
+  
     @Override
     public boolean isActive() {
         return pressureSensingActive;
@@ -125,13 +124,20 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
                 float pascal = millibar * 100;
                 float value = BigDecimal.valueOf(pascal).setScale(3, 0).floatValue();
 
+                this.notifySubscribers();
+                SensorDataPoint dataPoint = new SensorDataPoint(value);
+                dataPoint.sensorName = sensorName;
+                dataPoint.sensorDescription = sensor.getName();
+                dataPoint.timeStamp = SNTP.getInstance().getTime();        
+                this.sendToSubscribers(dataPoint);
+                
                 // send msg to MsgHandler
                 Intent i = new Intent(context.getString(R.string.action_sense_new_data));
                 i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
                 i.putExtra(DataPoint.VALUE, value);
                 i.putExtra(DataPoint.SENSOR_NAME, sensorName);
                 i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-                i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+                i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
                 context.startService(i);
 
                 // sample is successful: unregister the listener
@@ -147,7 +153,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    @Override
+    
     public void setSampleRate(long sampleDelay) {
         stopPolling();
         this.sampleDelay = sampleDelay;

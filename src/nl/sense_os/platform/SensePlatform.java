@@ -3,9 +3,10 @@ package nl.sense_os.platform;
 import java.io.IOException;
 import java.util.Date;
 
-import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.R;
+import nl.sense_os.service.SenseService.SenseBinder;
+import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -48,7 +49,7 @@ public class SensePlatform {
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			Log.v(TAG, "Bound to Sense Platform service...");
 
-			service = ISenseService.Stub.asInterface(binder);
+            service = ((SenseBinder) binder).getService();
 			isServiceBound = true;
 
             // notify the external service connection
@@ -89,7 +90,7 @@ public class SensePlatform {
 	/**
      * Interface for the SenseService. Gets instantiated by {@link #serviceConn}.
      */
-    private ISenseService service;
+    private SenseServiceStub service;
 
     /**
      * Callback for events for the binding with the Sense service
@@ -265,6 +266,57 @@ public class SensePlatform {
     }
 
     /**
+     * Retrieve a number of values of a sensor from the local storage.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getLocalData(String sensorName, boolean onlyFromDevice)
+            throws IllegalStateException, JSONException {
+        return getLocalData(sensorName, onlyFromDevice, 100);
+    }
+
+    /**
+     * Retrieve a number of values of a sensor from the local storage.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @param limit
+     *            Maximum amount of data points.
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getLocalData(String sensorName, boolean onlyFromDevice, int limit)
+            throws IllegalStateException, JSONException {
+        checkSenseService();
+
+        JSONArray result = new JSONArray();
+
+        // select remote path in local storage
+        String localStorage = context.getString(R.string.local_storage_authority);
+        Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_URI_PATH);
+
+        // get the data
+        result = getValues(sensorName, onlyFromDevice, limit, uri);
+
+        return result;
+    }
+
+    /**
      * @return The intent action for new sensor data. This can be used to subscribe to new data.
      */
 	public String getNewDataAction() {
@@ -274,7 +326,7 @@ public class SensePlatform {
     /**
      * @return The Sense service instance
      */
-	public ISenseService getService() {
+    public SenseServiceStub getService() {
         checkSenseService();
 		return service;
 	}

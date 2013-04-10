@@ -2,8 +2,6 @@ package nl.sense_os.service.ctrl;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.location.Location;
 

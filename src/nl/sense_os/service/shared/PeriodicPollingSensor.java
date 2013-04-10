@@ -13,10 +13,11 @@ public interface PeriodicPollingSensor extends SenseSensor {
      * 
      * @return true if the sensor is active
      */
-    boolean isActive();
+    public abstract boolean isActive();
 
     /**
      * Performs a sample. Called by the {@link PeriodicPollAlarmReceiver}.
      */
-    void doSample();
+    public abstract void doSample();
+
 }

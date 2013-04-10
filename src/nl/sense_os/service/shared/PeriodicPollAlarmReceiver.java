@@ -9,8 +9,8 @@ import android.content.IntentFilter;
 import android.os.SystemClock;
 
 /**
- * Generic BroadcastReceiver implementation for {@link PeriodicPollingSensor} classes. Calls
- * {@link PeriodicPollingSensor#doSample()} whenever a broadcast is received.
+ * Generic BroadcastReceiver implementation for {@link BasePeriodicPollingSensor} classes. Calls
+ * {@link BasePeriodicPollingSensor#doSample()} whenever a broadcast is received.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
@@ -34,7 +34,7 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Starts periodically calling {@link PeriodicPollingSensor#doSample()}. Schedules a periodic
+     * Starts periodically calling {@link BasePeriodicPollingSensor#doSample()}. Schedules a periodic
      * alarm, and registers itself as alarm receiver.
      * 
      * @param context

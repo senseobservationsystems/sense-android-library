@@ -5,6 +5,7 @@ package nl.sense_os.service.deviceprox;
 
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
+import nl.sense_os.service.shared.DataProducer;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -59,6 +60,16 @@ public class DeviceProximity {
         if (isWifiEnabled) {
             wifiDP.startEnvironmentScanning(interval);
         }
+    }
+    
+    public DataProducer getBluetoothDeviceProximity()
+    {
+        return bluetoothDP;
+    }
+    
+    public DataProducer getWIFIDeviceProximity()
+    {
+        return wifiDP;
     }
 
     public void stopEnvironmentScanning() {

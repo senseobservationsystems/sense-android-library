@@ -4,7 +4,13 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
+
+import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import nl.sense_os.service.provider.SNTP;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,7 +22,7 @@ import android.hardware.SensorEvent;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class EpilepsySensor implements MotionSensorInterface {
+public class EpilepsySensor extends BaseDataProducer implements DataProcessor {
 
     private static final String TAG = "EpilepsySensor";
     private static final long LOCAL_BUFFER_TIME = 15 * 1000;
@@ -37,8 +43,12 @@ public class EpilepsySensor implements MotionSensorInterface {
     }
 
     @Override
-    public void onNewData(SensorEvent event) {
+    public void onNewData(SensorDataPoint dataPoint) {
+
+    	if(dataPoint.getDataType() != DataType.SENSOREVENT)
+        	return;
         
+        SensorEvent event = dataPoint.getSensorEventValue(); 
         // check if this is useful data
         Sensor sensor = event.sensor;
         if (sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
@@ -75,7 +85,22 @@ public class EpilepsySensor implements MotionSensorInterface {
         String value = "{\"interval\":"
                 + Math.round((double) LOCAL_BUFFER_TIME / (double) dataBuffer[sensor.getType()].length())
                 + ",\"data\":" + dataBuffer[sensor.getType()].toString() + "}";
+
+        try
+        {
+        	this.notifySubscribers();        
+        	SensorDataPoint dataPoint = new SensorDataPoint(new JSONObject(value));
+        	dataPoint.sensorName = SensorNames.ACCELEROMETER_EPI;
+        	dataPoint.sensorDescription = sensor.getName();
+        	dataPoint.timeStamp = lastLocalSampleTimes[sensor.getType()];        	
+        	this.sendToSubscribers(dataPoint);
+        }
+        catch(Exception e)
+        {
+        	Log.e(TAG, "Error in sending data to subscribers");
+        }
         
+        // TODO: implement MsgHandler as data processor
         // pass message to the MsgHandler
         Intent i = new Intent(context.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.ACCELEROMETER_EPI);

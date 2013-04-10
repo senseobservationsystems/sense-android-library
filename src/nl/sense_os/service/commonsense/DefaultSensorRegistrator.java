@@ -340,9 +340,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match proximity
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 		if (null != sensor) {
-			success &= checkSensor(SensorNames.PROXIMITY, SensorNames.PROXIMITY,
-					SenseDataTypes.JSON, sensor.getName(), "{\"distance\":1.0}", deviceType,
-					deviceUuid);
+            success &= checkSensor(SensorNames.PROXIMITY, SensorNames.PROXIMITY,
+                    SenseDataTypes.FLOAT, sensor.getName(), "0.0", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No proximity sensor present!");
 		}
