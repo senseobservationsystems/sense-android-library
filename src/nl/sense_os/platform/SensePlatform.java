@@ -279,9 +279,9 @@ public class SensePlatform {
      * @throws JSONException
      *             If the response from CommonSense could not be parsed
      */
-    public JSONArray getLocalData(String sensorName, boolean onlyFromDevice)
+    public JSONArray getLocalData(String sensorName)
             throws IllegalStateException, JSONException {
-        return getLocalData(sensorName, onlyFromDevice, 100);
+        return getLocalData(sensorName, 100);
     }
 
     /**
@@ -300,7 +300,7 @@ public class SensePlatform {
      * @throws JSONException
      *             If the response from CommonSense could not be parsed
      */
-    public JSONArray getLocalData(String sensorName, boolean onlyFromDevice, int limit)
+    public JSONArray getLocalData(String sensorName, int limit)
             throws IllegalStateException, JSONException {
         checkSenseService();
 
@@ -311,7 +311,7 @@ public class SensePlatform {
         Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_URI_PATH);
 
         // get the data
-        result = getValues(sensorName, onlyFromDevice, limit, uri);
+        result = getValues(sensorName, true, limit, uri);
 
         return result;
     }
