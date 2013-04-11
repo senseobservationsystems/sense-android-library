@@ -70,7 +70,7 @@ public class PressureSensor implements SensorEventListener, PeriodicPollingSenso
 
     @Override
     public void doSample() {
-        // Log.v(TAG, "start sample");
+        Log.v(TAG, "Check pressure");
 
         // acquire wake lock
         if (null == wakeLock) {

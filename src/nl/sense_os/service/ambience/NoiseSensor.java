@@ -57,6 +57,7 @@ public class NoiseSensor extends PhoneStateListener {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Log.v(TAG, "Check noise");
 			// clear old sample jobs
 			if (noiseSampleJob != null) {
 				noiseSampleJob.stopRecording();

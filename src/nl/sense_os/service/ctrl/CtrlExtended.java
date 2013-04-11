@@ -228,7 +228,7 @@ public class CtrlExtended extends Controller {
 
         if (lastlocationmode.equals(NOMODE)) {
 
-            //Log.v(TAG, "NO MODE");
+            Log.v(TAG, "NO MODE");
         	/*
             for (int i = 0; i < 5; i++) {
                 // Log.d(TAG, "Table Nw" + networkTableAcc[i]);
@@ -261,7 +261,7 @@ public class CtrlExtended extends Controller {
         } else if ((!isAccelerating()) && (!isPositionChanged(0))) {
             
             //motionSampleRate(60 * 1000);
-            //Log.w(TAG, "IDLE");
+            Log.v(TAG, "IDLE");
             /*
              * if (locListener.time != 60 * 1000) { locSampleRate(60 * 1000); }
              */
@@ -315,7 +315,7 @@ public class CtrlExtended extends Controller {
                 /*
                  * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
                  */
-                // Log.v(TAG, "NETWORK MODE");
+                Log.v(TAG, "NETWORK MODE");
                 lastlocationmode = NETWORK;
                 if (!isListeningNw) {
                     locListener.setNetworkListening(true);
@@ -336,7 +336,7 @@ public class CtrlExtended extends Controller {
                 /*
                  * if (locListener.time != 3 * 60 * 1000) { locSampleRate(3 * 60 * 1000); }
                  */
-                // Log.v(TAG, "GPS MODE");
+                Log.v(TAG, "GPS MODE");
                 lastlocationmode = GPS;
                 if (!isListeningGps) {
                     locListener.setGpsListening(true);

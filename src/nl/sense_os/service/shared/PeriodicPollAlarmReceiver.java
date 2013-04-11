@@ -1,13 +1,10 @@
 package nl.sense_os.service.shared;
 
 import nl.sense_os.service.scheduler.Scheduler;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.SystemClock;
 
 /**
  * Generic BroadcastReceiver implementation for {@link PeriodicPollingSensor} classes. Calls
@@ -17,7 +14,8 @@ import android.os.SystemClock;
  */
 public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runnable {
 
-    private final PeriodicPollingSensor sensor;
+    private static final String TAG = null;
+	private final PeriodicPollingSensor sensor;
     private final String action;
     private final int reqCode;
 
@@ -54,14 +52,16 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runn
 
         // schedule alarm broadcasts
         long interval = sensor.getSampleRate();
+         /*
         Intent alarm = new Intent(action);
         PendingIntent alarmOperation = PendingIntent.getBroadcast(context, reqCode, alarm, 0);
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(alarmOperation);
         mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),
                 interval, alarmOperation);
-        
-        Scheduler.getInstance(context).schedule(this, interval, (long)(interval * 0.1));
+         */
+        // Case Study
+        Scheduler.getInstance(context).register(this, interval, (long)(interval * 0.1));
     }
 
     /**
@@ -74,7 +74,8 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runn
     public void stop(Context context) {
 
         // stop alarm broadcasts
-        AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    	 /*
+    	AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarms.cancel(PendingIntent.getBroadcast(context, reqCode, new Intent(action), 0));
 
         // unregister as receiver for alarms
@@ -83,7 +84,8 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runn
         } catch (IllegalArgumentException e) {
             // ignore
         }
-        
-        Scheduler.getInstance(context).unRegister(this);
+         */
+        // Case Study
+        Scheduler.getInstance(context).unregister(this);
     }
 }

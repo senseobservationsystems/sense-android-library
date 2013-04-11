@@ -11,12 +11,6 @@ public class Scheduler {
 
 	private final Context context;
 	
-	
-	//private static Scheduler instance = null;
-	
-	
-	//public CallMe ()
-
     /**
      * Factory method to get the singleton instance.
      * 
@@ -49,6 +43,7 @@ public class Scheduler {
 		public Runnable runnable;
 		public long interval;
 		public long flexibility;
+		public long nextExecution;
 	}
 
 	private List<Task> tasksList = new CopyOnWriteArrayList<Task>(); 
@@ -57,25 +52,45 @@ public class Scheduler {
 	 * Called when a sample rate changes
 	 * Use Preferences for the rates
 	 */
-
-	private long interval = 5000; 
 	
-	public void unRegister(Runnable command) {
+	public void unregister(Runnable command) {
 		for (Task task : tasksList)
         {
             if (task.runnable.equals(command)) {
             	tasksList.remove(task);
             }
         }
+		if (!tasksList.isEmpty()){
+			//In order to maintain the task with the shortest interval in position 0
+			long interval = tasksList.get(0).interval;
+			Task temp = null;
+			int index = 0;
+	    	for (int i = 1; i < tasksList.size(); i++) {
+				if (tasksList.get(i).interval < interval) {
+					interval = tasksList.get(i).interval;
+					index = i;
+					temp = tasksList.get(i);
+				}
+	        }
+	    	if (index != 0) {
+	    		tasksList.remove(index);
+	    		tasksList.add(0, temp);
+	    	}
+			
+			Log.w(TAG, "task list size " + tasksList.size() + "interval " + tasksList.get(0).interval);
+			
+			ScheduleAlarmTool.start(context, tasksList);
+		}
 	}
 	
-	public void schedule(Runnable command, long sensorInterval, long sensorFlexibility) {
+	public void register(Runnable command, long sensorInterval, long sensorFlexibility) {
 		
 		int index = -1;
 		Task newTask = new Task();
 		newTask.runnable = command;
 		newTask.interval = sensorInterval;
 		newTask.flexibility = sensorFlexibility;
+		newTask.nextExecution = ScheduleAlarmTool.getNextExecution() + sensorInterval;
 		for (Task task : tasksList)
         {
             if (task.runnable.equals(newTask.runnable)) {
@@ -88,22 +103,26 @@ public class Scheduler {
 	    else {
 	    	tasksList.add(newTask);
 	    }
-		/*
-		if (tasksList.size() == 1) {
-			interval = sensorInterval;
-		}
-		else {
-			interval = gcd(tasksList.get(0).interval, tasksList.get(1).interval);
-		}
-		*/
-		//int cycle0 = (int)(tasksList.get(0).interval)/(int)interval;
-		//int cycle1 = (int)(tasksList.get(1).interval)/(int)interval;
 		
+		//In order to maintain the task with the shortest interval in position 0
+		long interval = tasksList.get(0).interval;
+		Task temp = null;
+		index = 0;
+    	for (int i = 1; i < tasksList.size(); i++) {
+			if (tasksList.get(i).interval < interval) {
+				interval = tasksList.get(i).interval;
+				index = i;
+				temp = tasksList.get(i);
+			}
+        }
+    	if (index != 0) {
+    		tasksList.remove(index);
+    		tasksList.add(0, temp);
+    	}
+				
+		Log.w(TAG, "task list size " + tasksList.size() + "interval " + tasksList.get(0).interval);
 		
-		Log.w(TAG, "task list size " + tasksList.size() + "interval " + interval);
-		
-		ScheduleAlarmTool.cancel(context);
-		ScheduleAlarmTool.schedule(context, interval);
+		ScheduleAlarmTool.start(context, tasksList);
 	}
 
 }

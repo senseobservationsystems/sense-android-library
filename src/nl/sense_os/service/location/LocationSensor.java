@@ -3,7 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.location;
 
-import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -52,7 +51,6 @@ public class LocationSensor {
 		this.context = context;
 		locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         controller = Controller.getController(context);
-        sc = Scheduler.getInstance(this.context);
 		gpsListener = new MyLocationListener();
 		nwListener = new MyLocationListener();
 		pasListener = new MyLocationListener();
@@ -144,13 +142,11 @@ public class LocationSensor {
 	private static final int DISTANCE_ALARM_ID = 70;
 
 	private Controller controller;
-	private Scheduler sc;
 	private Context context;
 	private LocationManager locMgr;
 	private final MyLocationListener gpsListener;
 	private final MyLocationListener nwListener;
 	private final MyLocationListener pasListener;
-	private SensePlatform sensePlatform;
 
 	private long time;
 	private float distance;
@@ -217,8 +213,9 @@ public class LocationSensor {
 		// Log.v(TAG, "Disable location sensor");
 
 		stopListening();
-		stopAlarms();
-		sc.unRegister(task);
+		// Case Study 
+		//stopAlarms();
+		Scheduler.getInstance(context).unregister(task);
 	}
 
 	/**
@@ -232,12 +229,12 @@ public class LocationSensor {
 	public void enable(long time, float distance) {
 		// Log.v(TAG, "Enable location sensor");
 
-		//sc.register(task);
 		setTime(time);
 		this.distance = distance;
 
 		startListening();
-		startAlarms();
+		// Case Study 
+		//startAlarms();
 		getLastKnownLocation();
 	}
 
@@ -367,10 +364,8 @@ public class LocationSensor {
 	private void setTime(long time) {
 		this.time = time;
 		
-		//TODO
-
-		
-		sc.schedule(task, this.time, 0);
+		// Case Study 
+		Scheduler.getInstance(context).register(task, this.time, (long)(time * 0.1));
 
 	}
 
@@ -385,15 +380,14 @@ public class LocationSensor {
 		PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, alarm, 0);
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		am.cancel(operation);
-		//am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), time, operation);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), time, operation);
 
 		// start periodic for distance
 		Intent distanceAlarm = new Intent(DISTANCE_ALARM_ACTION);
 		PendingIntent operation2 = PendingIntent.getBroadcast(context, DISTANCE_ALARM_ID,
 				distanceAlarm, 0);
 		am.cancel(operation2);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 60L * 60 * 1000,
-				operation2);
+		//am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 60L * 60 * 1000, operation2);
 
 		/*
 		 * TODO: this also for 24 hours PendingIntent operation3 =

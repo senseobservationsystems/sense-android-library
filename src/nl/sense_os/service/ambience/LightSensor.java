@@ -75,6 +75,7 @@ public class LightSensor implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+    	Log.v(TAG, "Check light");
         Sensor sensor = event.sensor;
         if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
@@ -121,6 +122,7 @@ public class LightSensor implements SensorEventListener {
 
     public void setSampleDelay(long _sampleDelay) {
         sampleDelay = _sampleDelay;
+        //Scheduler.getInstance(context).register(this, sampleDelay, (long)(sampleDelay * 0.1));
     }
 
     public void startLightSensing(long _sampleDelay) {

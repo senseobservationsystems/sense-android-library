@@ -74,7 +74,7 @@ public class MagneticFieldSensor implements SensorEventListener, PeriodicPolling
 
     @Override
     public void doSample() {
-        // Log.v(TAG, "start sample");
+        Log.v(TAG, "Check magnetic field");
 
         // acquire wake lock
         if (null == wakeLock) {

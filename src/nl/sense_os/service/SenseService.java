@@ -34,7 +34,6 @@ import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.scheduler.NewScheduler;
 
 import org.json.JSONObject;
 
@@ -95,7 +94,6 @@ public class SenseService extends Service {
 	private TemperatureSensor temperatureSensor;
 	private LocationSensor locListener; 
 	private Controller controller;
-	private NewScheduler scheduler;
 	private MotionSensor motionSensor;
 	private NoiseSensor noiseSensor;  
 	private PhoneActivitySensor phoneActivitySensor;
@@ -530,9 +528,7 @@ public class SenseService extends Service {
 		if (statusPrefs.getBoolean(Status.MAIN, false)) {
 			// start database leeglepelaar
 			controller = Controller.getController(this);
-			scheduler = NewScheduler.getInstance(this);
 			controller.scheduleTransmissions();
-			//scheduler.schedule();
 			togglePhoneState(statusPrefs.getBoolean(Status.PHONESTATE, false));
 			toggleLocation(statusPrefs.getBoolean(Status.LOCATION, false));
 			toggleAmbience(statusPrefs.getBoolean(Status.AMBIENCE, false));
@@ -657,8 +653,9 @@ public class SenseService extends Service {
 					@Override
 					public void run() {
 
-						if (mainPrefs.getBoolean(Ambience.MIC, true)
-								|| mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
+						if (mainPrefs.getBoolean(Ambience.MIC, true) || mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
+						//Case study
+						//if (false) {
 							/*Notification note=new Notification();
 							note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
 							startForeground(1337, note);*/
@@ -666,12 +663,15 @@ public class SenseService extends Service {
 							noiseSensor.enable(finalInterval);
 						}
 						if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
+						//Case study
+						//if (false) {
 							lightSensor = LightSensor.getInstance(SenseService.this);
 							lightSensor.startLightSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
-						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD
-								&& Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD && Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+						//Case study
+						//if (false) {
 							if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
 								cameraLightSensor = CameraLightSensor.getInstance(SenseService.this);
 								cameraLightSensor.startLightSensing(finalInterval);
@@ -680,17 +680,27 @@ public class SenseService extends Service {
 							// Log.v(TAG, "Camera is not supported in this version of Android");
 						}
 						if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
-                            magneticFieldSensor = MagneticFieldSensor
+						//Case study
+						//if (true) {
+							magneticFieldSensor = MagneticFieldSensor
                                     .getInstance(SenseService.this);
                             magneticFieldSensor.startSensing(finalInterval);
+                            // Case Study
+                            //magneticFieldSensor.startSensing(10 * 1000);
 						}
 						
 						if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
+						//Case study
+						//if (true) {
 							pressureSensor = PressureSensor.getInstance(SenseService.this);
                             pressureSensor.startSensing(finalInterval);
+                            // Case Study
+                            //pressureSensor.startSensing(10 * 1000);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+						//Case study
+						//if (false) {
 							if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
 								temperatureSensor = TemperatureSensor.getInstance(SenseService.this);
 								temperatureSensor.startSensing(finalInterval);
@@ -984,6 +994,8 @@ public class SenseService extends Service {
 					public void run() {
 						locListener = LocationSensor.getInstance(SenseService.this);
 						locListener.enable(time, distance);
+						// Case Study
+						//locListener.enable(30 * 1000, distance);
 					}
 				});
 
@@ -1080,6 +1092,8 @@ public class SenseService extends Service {
 					public void run() {
 						motionSensor = MotionSensor.getInstance(SenseService.this);
                         motionSensor.startSensing(finalInterval);
+                        // Case Study
+                        //motionSensor.startSensing(5 * 1000);
 					}
 				});
 
