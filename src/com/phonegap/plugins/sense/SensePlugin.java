@@ -503,46 +503,42 @@ public class SensePlugin extends Plugin {
 		super.onDestroy();
 	}
 
-	private void onLoginSuccess() {
-		// special for ivitality
-		String packageName = cordova.getActivity().getPackageName();
-		if (packageName.equals("nl.sense_os.ivitality")) {
-			Log.w(TAG, "Set special iVitality sensor settings");
+    private void onLoginSuccess() {
+        // special for ivitality
+        String packageName = cordova.getActivity().getPackageName();
+        if (packageName.equals("nl.sense_os.ivitality")) {
+            Log.w(TAG, "Set special iVitality sensor settings");
             SenseServiceStub service = sensePlatform.getService();
-			try {
-				service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
-				service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
+            service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+            service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
 
-				service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
-				service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
-				service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
-				service.setPrefBool(SensePrefs.Main.Ambience.MAGNETIC_FIELD, true);
-				service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
-				service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
-				service.toggleAmbience(true);
+            service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
+            service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);
+            service.setPrefBool(SensePrefs.Main.Ambience.PRESSURE, false);
+            service.setPrefBool(SensePrefs.Main.Ambience.MAGNETIC_FIELD, true);
+            service.setPrefBool(SensePrefs.Main.Ambience.CAMERA_LIGHT, true);
+            service.setPrefBool(SensePrefs.Main.Ambience.AUDIO_SPECTRUM, false);
+            service.toggleAmbience(true);
 
-				service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
-				service.toggleMotion(true);
+            service.setPrefBool(SensePrefs.Main.Motion.MOTION_ENERGY, true);
+            service.toggleMotion(true);
 
-				service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
-				service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
-				service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
-				service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);
-				service.setPrefBool(SensePrefs.Main.PhoneState.DATA_CONNECTION, false);
-				service.setPrefBool(SensePrefs.Main.PhoneState.IP_ADDRESS, false);
-				service.setPrefBool(SensePrefs.Main.PhoneState.SERVICE_STATE, false);
-				service.setPrefBool(SensePrefs.Main.PhoneState.SIGNAL_STRENGTH, false);
-				service.setPrefBool(SensePrefs.Main.PhoneState.UNREAD_MSG, false);
-				service.togglePhoneState(true);
+            service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
+            service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
+            service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
+            service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);
+            service.setPrefBool(SensePrefs.Main.PhoneState.DATA_CONNECTION, false);
+            service.setPrefBool(SensePrefs.Main.PhoneState.IP_ADDRESS, false);
+            service.setPrefBool(SensePrefs.Main.PhoneState.SERVICE_STATE, false);
+            service.setPrefBool(SensePrefs.Main.PhoneState.SIGNAL_STRENGTH, false);
+            service.setPrefBool(SensePrefs.Main.PhoneState.UNREAD_MSG, false);
+            service.togglePhoneState(true);
 
-				service.toggleMain(true);
+            service.toggleMain(true);
 
-				service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
-			} catch (RemoteException e) {
-				Log.e(TAG, "Failed to init special sense setttings for ivitality");
-			}
-		}
-	}
+            service.setPrefBool(SensePrefs.Status.AUTOSTART, true);
+        }
+    }
 
 	private PluginResult register(JSONArray data, String callbackId) throws JSONException,
 			RemoteException {

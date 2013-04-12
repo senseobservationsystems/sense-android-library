@@ -18,324 +18,321 @@ import android.util.Log;
  */
 public class SenseServiceStub extends Binder {
 
-	private static final String TAG = "SenseServiceStub";
-	private SenseService service;
+    private static final String TAG = "SenseServiceStub";
+    private SenseService service;
 
-	public SenseServiceStub(SenseService service) {
-		super();
-		this.service = service;
-	}
+    public SenseServiceStub(SenseService service) {
+        super();
+        this.service = service;
+    }
 
-	public SenseService getSenseService()
-	{
-		return service;
-	}
-	public void changeLogin(final String username, final String password,
-			final ISenseServiceCallback callback) throws RemoteException {
-		// Log.v(TAG, "Change login");
+    public SenseService getSenseService() {
+        return service;
+    }
 
-		// perform login on separate thread and respond via callback
-		new Thread() {
+    public void changeLogin(final String username, final String password,
+            final ISenseServiceCallback callback) {
+        // Log.v(TAG, "Change login");
 
-			@Override
-			public void run() {
-				int result = service.changeLogin(username, password);
-				try {
-					callback.onChangeLoginResult(result);
-				} catch (RemoteException e) {
-					Log.e(TAG, "Failed to call back to bound activity after login change: " + e);
-				}
-			}
-		}.start();
-	}
+        // perform login on separate thread and respond via callback
+        new Thread() {
 
-	public boolean getPrefBool(String key, boolean defValue) throws RemoteException {
-		// Log.v(TAG, "Get preference: " + key);
-		SharedPreferences prefs;
-		if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
-				|| key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
-				|| key.equals(Status.MAIN) || key.equals(Status.MOTION)
-				|| key.equals(Status.PHONESTATE) || key.equals(Status.AUTOSTART)) {
-			prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS, Context.MODE_PRIVATE);
-		} else {
-			prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
+            @Override
+            public void run() {
+                int result = service.changeLogin(username, password);
+                try {
+                    callback.onChangeLoginResult(result);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Failed to call back to bound activity after login change: " + e);
+                }
+            }
+        }.start();
+    }
 
-		// return the preference value
-		try {
-			return prefs.getBoolean(key, defValue);
-		} catch (ClassCastException e) {
-			return defValue;
-		}
-	}
+    public boolean getPrefBool(String key, boolean defValue) {
+        // Log.v(TAG, "Get preference: " + key);
+        SharedPreferences prefs;
+        if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
+                || key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
+                || key.equals(Status.MAIN) || key.equals(Status.MOTION)
+                || key.equals(Status.PHONESTATE) || key.equals(Status.AUTOSTART)) {
+            prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS, Context.MODE_PRIVATE);
+        } else {
+            prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
 
-	public float getPrefFloat(String key, float defValue) throws RemoteException {
-		// Log.v(TAG, "Get preference: " + key);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
-		try {
-			return prefs.getFloat(key, defValue);
-		} catch (ClassCastException e) {
-			return defValue;
-		}
-	}
+        // return the preference value
+        try {
+            return prefs.getBoolean(key, defValue);
+        } catch (ClassCastException e) {
+            return defValue;
+        }
+    }
 
-	public int getPrefInt(String key, int defValue) throws RemoteException {
-		// Log.v(TAG, "Get preference: " + key);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
-		try {
-			return prefs.getInt(key, defValue);
-		} catch (ClassCastException e) {
-			return defValue;
-		}
-	}
+    public float getPrefFloat(String key, float defValue) {
+        // Log.v(TAG, "Get preference: " + key);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        try {
+            return prefs.getFloat(key, defValue);
+        } catch (ClassCastException e) {
+            return defValue;
+        }
+    }
 
-	public long getPrefLong(String key, long defValue) throws RemoteException {
-		// Log.v(TAG, "Get preference: " + key);
-		SharedPreferences prefs;
-		if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
-			prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		} else {
-			prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
+    public int getPrefInt(String key, int defValue) {
+        // Log.v(TAG, "Get preference: " + key);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        try {
+            return prefs.getInt(key, defValue);
+        } catch (ClassCastException e) {
+            return defValue;
+        }
+    }
 
-		try {
-			return prefs.getLong(key, defValue);
-		} catch (ClassCastException e) {
-			return defValue;
-		}
-	}
+    public long getPrefLong(String key, long defValue) {
+        // Log.v(TAG, "Get preference: " + key);
+        SharedPreferences prefs;
+        if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
+            prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        } else {
+            prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
 
-	public String getPrefString(String key, String defValue) throws RemoteException {
-		// Log.v(TAG, "Get preference: " + key);
-		SharedPreferences prefs;
-		if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
-				|| key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
-				|| key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
-				|| key.equals(Auth.PHONE_TYPE)) {
-			prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		} else {
-			// all other preferences
-			prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
+        try {
+            return prefs.getLong(key, defValue);
+        } catch (ClassCastException e) {
+            return defValue;
+        }
+    }
 
-		// return the preference value
-		try {
-			return prefs.getString(key, defValue);
-		} catch (ClassCastException e) {
-			return defValue;
-		}
-	}
+    public String getPrefString(String key, String defValue) {
+        // Log.v(TAG, "Get preference: " + key);
+        SharedPreferences prefs;
+        if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
+                || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
+                || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
+                || key.equals(Auth.PHONE_TYPE)) {
+            prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        } else {
+            // all other preferences
+            prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
 
-	public String getSessionId(String appSecret) throws RemoteException {
-		try {
-			return SenseApi.getSessionId(service, appSecret);
-		} catch (IllegalAccessException e) {
-			throw new RemoteException();
-		}
-	}
+        // return the preference value
+        try {
+            return prefs.getString(key, defValue);
+        } catch (ClassCastException e) {
+            return defValue;
+        }
+    }
 
-	public void getStatus(ISenseServiceCallback callback) throws RemoteException {
-		callback.statusReport(ServiceStateHelper.getInstance(service).getStatusCode());
-	}
+    public String getSessionId(String appSecret) throws IllegalAccessException {
+        return SenseApi.getSessionId(service, appSecret);
+    }
 
-	public void logout() {
-		service.logout();
-	}
+    public void getStatus(ISenseServiceCallback callback) throws RemoteException {
+        callback.statusReport(ServiceStateHelper.getInstance(service).getStatusCode());
+    }
 
-	public void register(final String username, final String password, final String email,
-			final String address, final String zipCode, final String country, final String name,
-			final String surname, final String mobile, final ISenseServiceCallback callback)
-			throws RemoteException {
-		// Log.v(TAG, "Register: '" + username + "'");
+    public void logout() {
+        service.logout();
+    }
 
-		// perform registration on separate thread and respond via callback
-		new Thread() {
+    public void register(final String username, final String password, final String email,
+            final String address, final String zipCode, final String country, final String name,
+            final String surname, final String mobile, final ISenseServiceCallback callback) {
+        // Log.v(TAG, "Register: '" + username + "'");
 
-			@Override
-			public void run() {
-				int result = service.register(username, password, email, address, zipCode, country,
-						name, surname, mobile);
-				try {
-					callback.onRegisterResult(result);
-				} catch (RemoteException e) {
-					Log.e(TAG, "Failed to call back to bound activity after registration: " + e);
-				}
-			}
-		}.start();
-	}
+        // perform registration on separate thread and respond via callback
+        new Thread() {
 
-	public void setPrefBool(String key, final boolean value) throws RemoteException {
-		// Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
+            @Override
+            public void run() {
+                int result = service.register(username, password, email, address, zipCode, country,
+                        name, surname, mobile);
+                try {
+                    callback.onRegisterResult(result);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Failed to call back to bound activity after registration: " + e);
+                }
+            }
+        }.start();
+    }
 
-		SharedPreferences prefs;
-		if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
-				|| key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
-				|| key.equals(Status.MAIN) || key.equals(Status.MOTION)
-				|| key.equals(Status.PHONESTATE) || key.equals(Status.AUTOSTART)) {
-			prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS, Context.MODE_PRIVATE);
-		} else {
-			prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
+    public void setPrefBool(String key, final boolean value) {
+        // Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
 
-		// store value
-		boolean oldValue = prefs.getBoolean(key, !value);
-		if (value != oldValue) {
-			boolean stored = prefs.edit().putBoolean(key, value).commit();
-			if (stored == false) {
-				Log.w(TAG, "Preference '" + key + "' not stored!");
-			} else if (key.equals(Advanced.DEV_MODE)
-					&& ServiceStateHelper.getInstance(service).isLoggedIn()) {
-				logout();
-				// reset GCM id
-				SharedPreferences authPrefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS,
-						Context.MODE_PRIVATE);
-				authPrefs.edit().putString(Auth.GCM_REGISTRATION_ID, "").commit();
-			} else if (key.equals(Advanced.USE_COMMONSENSE)) {
-				// login on a separate thread
-				new Thread() {
-					public void run() {
-						if (value) {
-							Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
-							service.login();
-						} else {
-							Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
-							service.logout();
-						}
-					}
-				}.start();
-			}
-		}
-	}
+        SharedPreferences prefs;
+        if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
+                || key.equals(Status.EXTERNAL) || key.equals(Status.LOCATION)
+                || key.equals(Status.MAIN) || key.equals(Status.MOTION)
+                || key.equals(Status.PHONESTATE) || key.equals(Status.AUTOSTART)) {
+            prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS, Context.MODE_PRIVATE);
+        } else {
+            prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
 
-	public void setPrefFloat(String key, float value) throws RemoteException {
-		// Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
+        // store value
+        boolean oldValue = prefs.getBoolean(key, !value);
+        if (value != oldValue) {
+            boolean stored = prefs.edit().putBoolean(key, value).commit();
+            if (stored == false) {
+                Log.w(TAG, "Preference '" + key + "' not stored!");
+            } else if (key.equals(Advanced.DEV_MODE)
+                    && ServiceStateHelper.getInstance(service).isLoggedIn()) {
+                logout();
+                // reset GCM id
+                SharedPreferences authPrefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS,
+                        Context.MODE_PRIVATE);
+                authPrefs.edit().putString(Auth.GCM_REGISTRATION_ID, "").commit();
+            } else if (key.equals(Advanced.USE_COMMONSENSE)) {
+                // login on a separate thread
+                new Thread() {
 
-		// store value
-		boolean stored = prefs.edit().putFloat(key, value).commit();
-		if (stored == false) {
-			Log.w(TAG, "Preference " + key + " not stored!");
-		}
-	}
+                    @Override
+                    public void run() {
+                        if (value) {
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
+                            service.login();
+                        } else {
+                            Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
+                            service.logout();
+                        }
+                    }
+                }.start();
+            }
+        }
+    }
 
-	public void setPrefInt(String key, int value) throws RemoteException {
-		// Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
+    public void setPrefFloat(String key, float value) {
+        // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
 
-		// store value
-		boolean stored = prefs.edit().putFloat(key, value).commit();
-		if (stored == false) {
-			Log.w(TAG, "Preference " + key + " not stored!");
-		}
-	}
+        // store value
+        boolean stored = prefs.edit().putFloat(key, value).commit();
+        if (stored == false) {
+            Log.w(TAG, "Preference " + key + " not stored!");
+        }
+    }
 
-	public void setPrefLong(String key, long value) throws RemoteException {
-		// Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-		SharedPreferences prefs;
-		if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
-			prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		} else {
-			prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
+    public void setPrefInt(String key, int value) {
+        // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
 
-		// store value
-		boolean stored = prefs.edit().putLong(key, value).commit();
-		if (stored == false) {
-			Log.w(TAG, "Preference " + key + " not stored!");
-		}
-	}
+        // store value
+        boolean stored = prefs.edit().putFloat(key, value).commit();
+        if (stored == false) {
+            Log.w(TAG, "Preference " + key + " not stored!");
+        }
+    }
 
-	public void setPrefString(String key, String value) throws RemoteException {
-		Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
-		SharedPreferences prefs;
-		if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
-				|| key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
-				|| key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
-				|| key.equals(Auth.PHONE_TYPE)) {
-			prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-		} else {
-			// all other preferences
-			prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-		}
+    public void setPrefLong(String key, long value) {
+        // Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
+        SharedPreferences prefs;
+        if (key.equals(Auth.SENSOR_LIST_COMPLETE_TIME)) {
+            prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        } else {
+            prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
 
-		// store value
-		String oldValue = prefs.getString(key, null);
-		if (!value.equals(oldValue)) {
-			boolean stored = prefs.edit().putString(key, value).commit();
-			if (stored == false) {
-				Log.w(TAG, "Preference " + key + " not stored!");
-			}
+        // store value
+        boolean stored = prefs.edit().putLong(key, value).commit();
+        if (stored == false) {
+            Log.w(TAG, "Preference " + key + " not stored!");
+        }
+    }
 
-			// special check for sync and sample rate changes
-			if (key.equals(SensePrefs.Main.SAMPLE_RATE)) {
-				service.onSampleRateChange();
-			} else if (key.equals(SensePrefs.Main.SYNC_RATE)) {
-				service.onSyncRateChange();
-			}
-		}
-	}
+    public void setPrefString(String key, String value) {
+        Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
+        SharedPreferences prefs;
+        if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
+                || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
+                || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
+                || key.equals(Auth.PHONE_TYPE)) {
+            prefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        } else {
+            // all other preferences
+            prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
 
-	public void toggleAmbience(boolean active) {
-		// Log.v(TAG, "Toggle ambience: " + active);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
-				Context.MODE_PRIVATE);
-		prefs.edit().putBoolean(Status.AMBIENCE, active).commit();
-		service.toggleAmbience(active);
-	}
+        // store value
+        String oldValue = prefs.getString(key, null);
+        if (!value.equals(oldValue)) {
+            boolean stored = prefs.edit().putString(key, value).commit();
+            if (stored == false) {
+                Log.w(TAG, "Preference " + key + " not stored!");
+            }
 
-	public void toggleDeviceProx(boolean active) {
-		// Log.v(TAG, "Toggle neighboring devices: " + active);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
-				Context.MODE_PRIVATE);
-		prefs.edit().putBoolean(Status.DEV_PROX, active).commit();
-		service.toggleDeviceProx(active);
-	}
+            // special check for sync and sample rate changes
+            if (key.equals(SensePrefs.Main.SAMPLE_RATE)) {
+                service.onSampleRateChange();
+            } else if (key.equals(SensePrefs.Main.SYNC_RATE)) {
+                service.onSyncRateChange();
+            }
+        }
+    }
 
-	public void toggleExternalSensors(boolean active) {
-		// Log.v(TAG, "Toggle external sensors: " + active);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
-				Context.MODE_PRIVATE);
-		prefs.edit().putBoolean(Status.EXTERNAL, active).commit();
-		service.toggleExternalSensors(active);
-	}
+    public void toggleAmbience(boolean active) {
+        // Log.v(TAG, "Toggle ambience: " + active);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Status.AMBIENCE, active).commit();
+        service.toggleAmbience(active);
+    }
 
-	public void toggleLocation(boolean active) {
-		// Log.v(TAG, "Toggle location: " + active);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
-				Context.MODE_PRIVATE);
-		prefs.edit().putBoolean(Status.LOCATION, active).commit();
-		service.toggleLocation(active);
-	}
+    public void toggleDeviceProx(boolean active) {
+        // Log.v(TAG, "Toggle neighboring devices: " + active);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Status.DEV_PROX, active).commit();
+        service.toggleDeviceProx(active);
+    }
 
-	public void toggleMain(boolean active) {
-		// Log.v(TAG, "Toggle main: " + active);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
-				Context.MODE_PRIVATE);
-		prefs.edit().putBoolean(Status.MAIN, active).commit();
-		service.toggleMain(active);
-	}
+    public void toggleExternalSensors(boolean active) {
+        // Log.v(TAG, "Toggle external sensors: " + active);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Status.EXTERNAL, active).commit();
+        service.toggleExternalSensors(active);
+    }
 
-	public void toggleMotion(boolean active) {
-		// Log.v(TAG, "Toggle motion: " + active);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
-				Context.MODE_PRIVATE);
-		prefs.edit().putBoolean(Status.MOTION, active).commit();
-		service.toggleMotion(active);
-	}
+    public void toggleLocation(boolean active) {
+        // Log.v(TAG, "Toggle location: " + active);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Status.LOCATION, active).commit();
+        service.toggleLocation(active);
+    }
 
-	public void togglePhoneState(boolean active) {
-		// Log.v(TAG, "Toggle phone state: " + active);
-		SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
-				Context.MODE_PRIVATE);
-		prefs.edit().putBoolean(Status.PHONESTATE, active).commit();
-		service.togglePhoneState(active);
-	}
+    public void toggleMain(boolean active) {
+        // Log.v(TAG, "Toggle main: " + active);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Status.MAIN, active).commit();
+        service.toggleMain(active);
+    }
 
-	public void togglePopQuiz(boolean active) {
-		Log.w(TAG, "Toggle questionnaire ignored: this functionality is no longer supported!");
-	}
+    public void toggleMotion(boolean active) {
+        // Log.v(TAG, "Toggle motion: " + active);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Status.MOTION, active).commit();
+        service.toggleMotion(active);
+    }
+
+    public void togglePhoneState(boolean active) {
+        // Log.v(TAG, "Toggle phone state: " + active);
+        SharedPreferences prefs = service.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Status.PHONESTATE, active).commit();
+        service.togglePhoneState(active);
+    }
+
+    public void togglePopQuiz(boolean active) {
+        Log.w(TAG, "Toggle questionnaire ignored: this functionality is no longer supported!");
+    }
 }
