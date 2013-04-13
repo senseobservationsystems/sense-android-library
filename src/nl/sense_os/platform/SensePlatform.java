@@ -280,8 +280,8 @@ public class SensePlatform {
 	}
 
     /**
-     * Gets array of values from the LocalStorage
-     * 
+     * Gets array of values from the LocalStorage in <code>DESC</code> order.
+     *
      * @param sensorName
      *            Name of the sensor to get values from.
      * @param onlyFromDevice
@@ -292,8 +292,31 @@ public class SensePlatform {
      *            The uri to get data from, can be either local or remote.
      * @return JSONArray with values for the sensor with the selected name and device
      * @throws JSONException
+     * @see #getValues(String, boolean, Integer, android.net.Uri, String)
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri)
+            throws JSONException {
+
+        return getValues(sensorName, onlyFromDevice, limit, uri, "DESC");
+    }
+
+    /**
+     * Gets array of values from the LocalStorage
+     * 
+     * @param sensorName
+     *            Name of the sensor to get values from.
+     * @param onlyFromDevice
+     *            If true this function only looks for sensors attached to this device.
+     * @param limit
+     *            Maximum amount of data points. Optional, use null to set the default limit (100).
+     * @param uri
+     *            The uri to get data from, can be either local or remote.
+     * @param sortOrder
+     *            The sort order, one of <code>DESC</code> or <code>ASC</code>.
+     * @return JSONArray with values for the sensor with the selected name and device
+     * @throws JSONException
+     */
+    private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri, String sortOrder)
             throws JSONException {
 		Cursor cursor = null;
 		JSONArray result = new JSONArray();
@@ -306,7 +329,7 @@ public class SensePlatform {
 			selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
 		}
 		String[] selectionArgs = null;
-		String sortOrder = null;
+
 		try {
 			cursor = LocalStorage.getInstance(context).query(uri, projection, selection, selectionArgs, sortOrder);
 

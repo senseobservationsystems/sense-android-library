@@ -363,7 +363,9 @@ public class LocalStorage {
 
 	// get the data for the sensor
 	String url = SenseUrls.SENSOR_DATA.replace("<id>", id) + "?start_date="
-		+ timeRangeSelect[0] / 1000d + "&end_date=" + timeRangeSelect[1] / 1000d;
+		+ (timeRangeSelect[0] / 1000d) + "&end_date=" + (timeRangeSelect[1] / 1000d) +
+            "&sort=" + sortOrder;
+
 	String cookie = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE)
 		.getString(Auth.LOGIN_COOKIE, null);
 	Map<String, String> response = SenseApi.request(context, url, null, cookie);
