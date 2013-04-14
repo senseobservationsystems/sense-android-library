@@ -331,7 +331,7 @@ public class SensePlatform {
 		String[] selectionArgs = null;
 
 		try {
-			cursor = LocalStorage.getInstance(context).query(uri, projection, selection, selectionArgs, sortOrder);
+			cursor = LocalStorage.getInstance(context).query(uri, projection, selection, selectionArgs, limit, sortOrder);
 
 			if (null != cursor && cursor.moveToFirst()) {
 				while (!cursor.isAfterLast()) {
