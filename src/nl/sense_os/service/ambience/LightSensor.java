@@ -13,6 +13,8 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 import org.json.JSONObject;
@@ -33,7 +35,7 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  */
 
-public class LightSensor extends BaseDataProducer implements SensorEventListener {
+public class LightSensor extends BaseDataProducer implements SensorEventListener, PeriodicPollingSensor {
 
     private static final String TAG = "Sense Light Sensor";
 
@@ -45,6 +47,7 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
     private Handler LightHandler = new Handler();
     private Runnable LightThread = null;
     private boolean LightSensingActive = false;
+    private PeriodicPollAlarmReceiver pollAlarmReceiver;
 
     private Controller controller;
     
@@ -53,6 +56,7 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
     private LightSensor(Context context) {
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
         controller = Controller.getController(context);
         sensors = new ArrayList<Sensor>();
         if (null != smgr.getDefaultSensor(Sensor.TYPE_LIGHT)) {
@@ -68,8 +72,8 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
         return instance;
     }
 
-
-    public long getSampleDelay() {
+    @Override
+    public long getSampleRate() {
         return sampleDelay;
     }
 
@@ -77,6 +81,16 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// do nothing
 	}
+	
+	@Override
+    public void doSample() {
+		for (Sensor sensor : sensors) {
+            if (sensor.getType() == Sensor.TYPE_LIGHT) {
+                // Log.d(TAG, "registering for sensor " + sensor.getName());
+                smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            }
+        }
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -126,39 +140,37 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
             i.putExtra(DataPoint.TIMESTAMP, time);
             this.context.startService(i);
         }
-        if (sampleDelay > 500 && LightSensingActive) {
-            // unregister the listener and start again in sampleDelay seconds
-            stopLightSensing();
-            LightHandler.postDelayed(LightThread = new Runnable() {
-
-                @Override
-                public void run() {
-                    startLightSensing(sampleDelay);
-                }
-            }, sampleDelay);
-        }
+        stopSensing();
     }
 
-    public void setSampleDelay(long _sampleDelay) {
+    @Override
+	public void setSampleRate(long _sampleDelay) {
         sampleDelay = _sampleDelay;
     }
 
     public void startLightSensing(long _sampleDelay) {
         LightSensingActive = true;
-        setSampleDelay(_sampleDelay);
+        setSampleRate(_sampleDelay);
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
                 // Log.d(TAG, "registering for sensor " + sensor.getName());
-                smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            	pollAlarmReceiver.start(context);
             }
         }
     }
 
     public void stopLightSensing() {
+    	LightSensingActive = false;
+    	pollAlarmReceiver.stop(context);
+
+    }
+
+	@Override
+	public void stopSensing() {
         try {
             LightSensingActive = false;
             smgr.unregisterListener(this);
-
+            //stop?
             if (LightThread != null) {
                 LightHandler.removeCallbacks(LightThread);
             }
@@ -167,6 +179,18 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
+		
+	}
 
-    }
+	@Override
+	public void startSensing(long sampleDelay) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isActive() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
