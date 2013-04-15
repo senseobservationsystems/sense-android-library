@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
         // 0 := normal (buffer 5 min)
         // -1 := often (buffer 1 min)
         // -2 := real time (every new data point is uploaded immediately)
-        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
+        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, "0");
 
         // show message
         showToast(R.string.msg_prefs_set);
