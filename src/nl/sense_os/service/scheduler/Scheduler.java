@@ -75,22 +75,6 @@ public class Scheduler {
             tasksList.add(newTask);
         }
 
-        // In order to maintain the task with the shortest interval in position 0
-        long interval = tasksList.get(0).interval;
-        Task temp = null;
-        index = 0;
-        for (int i = 1; i < tasksList.size(); i++) {
-            if (tasksList.get(i).interval < interval) {
-                interval = tasksList.get(i).interval;
-                index = i;
-                temp = tasksList.get(i);
-            }
-        }
-        if (index != 0) {
-            tasksList.remove(index);
-            tasksList.add(0, temp);
-        }
-
         Log.v(TAG, "task list size " + tasksList.size() + "interval " + tasksList.get(0).interval);
 
         scheduleTool.setTasks(tasksList);
@@ -109,21 +93,6 @@ public class Scheduler {
             }
         }
         if (!tasksList.isEmpty()) {
-            // In order to maintain the task with the shortest interval in position 0
-            long interval = tasksList.get(0).interval;
-            Task temp = null;
-            int index = 0;
-            for (int i = 1; i < tasksList.size(); i++) {
-                if (tasksList.get(i).interval < interval) {
-                    interval = tasksList.get(i).interval;
-                    index = i;
-                    temp = tasksList.get(i);
-                }
-            }
-            if (index != 0) {
-                tasksList.remove(index);
-                tasksList.add(0, temp);
-            }
 
             Log.v(TAG, "task list size " + tasksList.size() + "interval "
                     + tasksList.get(0).interval);

@@ -11,8 +11,8 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.scheduler.Scheduler;
 import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 
@@ -134,6 +134,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     private static final int DISTANCE_ALARM_ID = 70;
     private static final float MIN_DISTANCE = 0;
     private static LocationSensor instance = null;
+    private PeriodicPollAlarmReceiver pollAlarmReceiver;
 
     /**
      * Factory method to get the singleton instance.
@@ -181,11 +182,6 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     private Location lastNwFix;
     private long listenNwStart;
     private long listenNwStop;
-    private final Runnable task = new Runnable() {
-        public void run() {
-            doSample();
-        }
-    };
     private long sampleDelay;
 
     private boolean active;
@@ -221,6 +217,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
     protected LocationSensor(Context context) {
         this.context = context;
+        pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         controller = Controller.getController(context);
         gpsListener = new MyLocationListener();
@@ -340,7 +337,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     @Override
     public void setSampleRate(long sampleDelay) {
         this.sampleDelay = sampleDelay;
-        Scheduler.getInstance(context).register(task, sampleDelay, (long) (sampleDelay * 0.1));
+        pollAlarmReceiver.start(context);
     }
 
     private void startAlarms() {
@@ -434,6 +431,6 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         active = false;
         stopListening();
         stopAlarms();
-        Scheduler.getInstance(context).unregister(task);
+        pollAlarmReceiver.stop(context);
     }
 }

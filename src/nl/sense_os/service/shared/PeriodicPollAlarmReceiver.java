@@ -24,9 +24,9 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runn
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (sensor.isActive()) {
+        /*if (sensor.isActive()) {
             sensor.doSample();
-        }
+        }*/
     }
     
     public void run() {

@@ -119,7 +119,6 @@ public class ScheduleAlarmTool {
             }
         }
 
-        //
         Runnable sumTask = new Runnable() {
             public void run() {
                 for (Runnable task : tasksToExecute) {
