@@ -1,22 +1,21 @@
 package nl.sense.demo;
 
 import nl.sense_os.platform.SensePlatform;
-import nl.sense_os.service.ISenseService;
-import nl.sense_os.service.ISenseServiceCallback;
-import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.SenseServiceStub;
+import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
-import nl.sense_os.service.constants.SensePrefs.Main.Location;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.Activity;
-import android.content.ComponentName;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 /**
  * Main activity of the Sense Platform Demo. This activity is created to demonstrate the most
@@ -32,184 +31,215 @@ import android.util.Log;
  * <li>Send data for a non-standard sensor: "position_annotation".</li>
  * <li>Get data from a certain sensor.</li>
  * </ul>
- * This class implements the {@link ServiceConnection} interface so it can receive callbacks from the
- * SensePlatform object.
+ * This class implements the {@link ServiceConnection} interface so it can receive callbacks from
+ * the SensePlatform object.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  * @author Pim Nijdam <pim@sense-os.nl>
  */
-public class MainActivity extends Activity implements ServiceConnection {
-	
-	/**
-	 * Service stub for callbacks from the Sense service.
-	 */
-	private class SenseCallback extends ISenseServiceCallback.Stub {
-		@Override
-		public void onChangeLoginResult(int result) throws RemoteException {
-			switch (result) {
-			case 0:
-				Log.v(TAG, "Change login OK");
-                onLoggedIn();
-				break;
-			case -1:
-				Log.v(TAG, "Login failed! Connectivity problems?");
-				break;
-			case -2:
-				Log.v(TAG, "Login failed! Invalid username or password.");
-				break;
-			default:
-				Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
-			}
-		}
-
-		@Override
-		public void onRegisterResult(int result) throws RemoteException {
-            // not used
-		}
-
-		@Override
-		public void statusReport(final int status) {
-            // not used
-		}
-	}
+public class MainActivity extends Activity {
 
     private static final String TAG = "Sense Demo";
+    private static final String DEMO_SENSOR_NAME = "demo";
+    private SenseApplication application;
 
-    private SensePlatform sensePlatform;
-	private SenseCallback callback = new SenseCallback();
-	
+    private void flushData() {
+        Log.v(TAG, "Flush buffers");
+        application.getSensePlatform().flushData();
+        showToast(R.string.msg_flush_data);
+    }
+
+    private void getLocalData() {
+        Log.v(TAG, "Get data from CommonSense");
+
+        // start new Thread to prevent NetworkOnMainThreadException
+        new Thread() {
+            public void run() {
+
+                JSONArray data;
+                try {
+                    data = application.getSensePlatform().getLocalData(DEMO_SENSOR_NAME, 10);
+
+                    // show message
+                    showToast(R.string.msg_query_local, data.length());
+
+                } catch (IllegalStateException e) {
+                    Log.w(TAG, "Failed to query remote data", e);
+                    showToast(R.string.msg_error, e.getMessage());
+                } catch (JSONException e) {
+                    Log.w(TAG, "Failed to parse remote data", e);
+                    showToast(R.string.msg_error, e.getMessage());
+                }
+            };
+        }.start();
+    }
 
     /**
      * An example how to get data from a sensor
      */
-    private void getData() {
-		try {
-			JSONArray data = sensePlatform.getData("position", true, 10);
-            Log.v(TAG, "Received: '" + data + "'");
-			
-		} catch (Exception e) {
-            Log.e(TAG, "Failed to get data!", e);
-		}
-	}
+    private void getRemoteData() {
+        Log.v(TAG, "Get data from CommonSense");
+
+        // start new Thread to prevent NetworkOnMainThreadException
+        new Thread() {
+            public void run() {
+
+                JSONArray data;
+                try {
+                    data = application.getSensePlatform().getData(DEMO_SENSOR_NAME, true, 10);
+
+                    // show message
+                    showToast(R.string.msg_query_remote, data.length());
+
+                } catch (IllegalStateException e) {
+                    Log.w(TAG, "Failed to query remote data", e);
+                    showToast(R.string.msg_error, e.getMessage());
+                } catch (JSONException e) {
+                    Log.w(TAG, "Failed to parse remote data", e);
+                    showToast(R.string.msg_error, e.getMessage());
+                }
+            };
+        }.start();
+    }
+
+    /**
+     * Handles clicks on the UI
+     * 
+     * @param v
+     */
+    public void onClick(View v) {
+        switch (v.getId()) {
+        case R.id.buttonLogin:
+            startActivity(new Intent(this, LoginActivity.class));
+            break;
+        case R.id.buttonPrefs:
+            setPreferences();
+            break;
+        case R.id.buttonStart:
+            startSense();
+            break;
+        case R.id.buttonStop:
+            stopSense();
+            break;
+        case R.id.buttonDataPoint:
+            insertData();
+            break;
+        case R.id.buttonFlush:
+            flushData();
+            break;
+        case R.id.buttonLocalData:
+            getLocalData();
+            break;
+        case R.id.buttonRemoteData:
+            getRemoteData();
+            break;
+        default:
+            Log.w(TAG, "Unexpected button pressed: " + v);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // trivial UI
         setContentView(R.layout.activity_main);
-    }
 
-	@Override
-    protected void onDestroy() {
-        // close binding with the Sense service
-        // (the service will remain running on its own if it is not explicitly stopped!)
-        sensePlatform.close();
-
-        super.onDestroy();
+        // the activity needs to be part of a SenseApplication so it can talk to the SensePlatform
+        application = (SenseApplication) getApplication();
     }
 
     /**
-     * Callback for when the service logged in, gets called from the SenseCallback object.<br/>
-     * <br/>
-     * Starts sensing, and sends and gets some data. It is recommended to wait until the login has
-     * finished before actually starting the sensing.
-     */
-    private void onLoggedIn() {
-		try {
-            // start sensing
-			ISenseService service = sensePlatform.getService();
-			service.toggleMain(true);
-			service.toggleAmbience(true);
-			service.toggleLocation(true);
-			
-			sendData();
-			getData();
-		} catch (Exception e) {
-            Log.e(TAG, "Exception while starting sense library.", e);
-		}
-	}
-	
-    @Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
-        // set up the sense service as soon as we are connected to it
-		setupSense();
-	}
-	
-    @Override
-	public void onServiceDisconnected(ComponentName className) {
-        // not used
-	}
-
-    @Override
-	protected void onStart() {
-		Log.v(TAG, "onStart");
-		super.onStart();
-
-        // create SensePlatform instance to do the complicated work
-        // (when the service is ready, we get a call to onServiceConnected)
-		sensePlatform = new SensePlatform(this, this);
-	}
-
-	/**
      * An example of how to upload data for a custom sensor.
      */
-    private void sendData() {
+    private void insertData() {
+        Log.v(TAG, "Insert data point");
+
         // Description of the sensor
-		String name = "position_annotation";
-		String displayName = "Annotation";
-		String dataType = "json";
-		String description = name;
+        final String name = DEMO_SENSOR_NAME;
+        final String displayName = "demo data";
+        final String dataType = SenseDataTypes.JSON;
+        final String description = name;
         // the value to be sent, in json format
-		String value = "{\"latitude\":\"51.903469\",\"longitude\":\"4.459865\",\"comment\":\"What a nice quiet place!\"}"; //json value
-		long timestamp = System.currentTimeMillis();
-		try {
-			sensePlatform.addDataPoint(name, displayName, description, dataType, value, timestamp);
-		} catch (Exception e) {
-            Log.e(TAG, "Failed to add data point!", e);
-		}
-	}
+        final String value = "{\"foo\":\"bar\",\"baz\":\"quux\"}";
+        final long timestamp = System.currentTimeMillis();
 
-	/**
-     * Sets up the Sense service preferences and logs in
+        // start new Thread to prevent NetworkOnMainThreadException
+        new Thread() {
+
+            @Override
+            public void run() {
+                application.getSensePlatform().addDataPoint(name, displayName, description,
+                        dataType, value, timestamp);
+            }
+        }.start();
+
+        // show message
+        showToast(R.string.msg_sent_data, name);
+    }
+
+    /**
+     * Sets up the Sense service preferences
      */
-	private void setupSense() {
-		try {
-            // log in (you only need to do this once, Sense will remember the login)
-            sensePlatform.login("foo", SenseApi.hashPassword("bar"), callback);
-            // this is an asynchronous call, we get a call to the callback object when the login is
-            // complete
+    private void setPreferences() {
+        Log.v(TAG, "Set preferences");
 
-            // turn off some specific sensors
-			ISenseService service = sensePlatform.getService();
-			service.setPrefBool(Ambience.LIGHT, false);
-			service.setPrefBool(Ambience.CAMERA_LIGHT, false);
-			service.setPrefBool(Ambience.PRESSURE, false);
+        SenseServiceStub senseService = application.getSensePlatform().getService();
 
-            // turn on specific sensors
-			service.setPrefBool(Ambience.MIC, true);
-            // NOTE: spectrum might be too heavy for the phone or consume too much energy
-            service.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
-			service.setPrefBool(Location.GPS, true);
-			service.setPrefBool(Location.NETWORK, true);
-			service.setPrefBool(Location.AUTO_GPS, true);
-			
-            // set how often to sample
-            // 1 := rarely (~every 15 min)
-            // 0 := normal (~every 5 min)
-            // -1 := often (~every 10 sec)
-            // -2 := real time (this setting affects power consumption considerably!)
-			service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+        // turn off some specific sensors
+        senseService.setPrefBool(Ambience.LIGHT, false);
+        senseService.setPrefBool(Ambience.CAMERA_LIGHT, false);
+        senseService.setPrefBool(Ambience.PRESSURE, false);
 
-            // set how often to upload
-            // 1 := eco mode (buffer data for 30 minutes before bulk uploading)
-            // 0 := normal (buffer 5 min)
-            // -1 := often (buffer 1 min)
-            // -2 := real time (every new data point is uploaded immediately)
-			service.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
-			
-		} catch (Exception e) {
-            Log.e(TAG, "Exception while setting up Sense library.", e);
-		}
-	}
+        // turn on specific sensors
+        senseService.setPrefBool(Ambience.MIC, true);
+        // NOTE: spectrum might be too heavy for the phone or consume too much energy
+        senseService.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
+
+        // set how often to sample
+        // 1 := rarely (~every 15 min)
+        // 0 := normal (~every 5 min)
+        // -1 := often (~every 10 sec)
+        // -2 := real time (this setting affects power consumption considerably!)
+        senseService.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+
+        // set how often to upload
+        // 1 := eco mode (buffer data for 30 minutes before bulk uploading)
+        // 0 := normal (buffer 5 min)
+        // -1 := often (buffer 1 min)
+        // -2 := real time (every new data point is uploaded immediately)
+        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, "0");
+
+        // show message
+        showToast(R.string.msg_prefs_set);
+    }
+
+    private void startSense() {
+        Log.v(TAG, "Start Sense");
+
+        SenseServiceStub senseService = application.getSensePlatform().getService();
+
+        // enable some specific sensor modules
+        senseService.togglePhoneState(true);
+        senseService.toggleMotion(true);
+        senseService.toggleLocation(true);
+
+        // enable main state
+        senseService.toggleMain(true);
+    }
+
+    private void stopSense() {
+        Log.v(TAG, "Stop Sense");
+        application.getSensePlatform().getService().toggleMain(false);
+    }
+
+    private void showToast(final int resId, final Object... formatArgs) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                CharSequence msg = getString(resId, formatArgs);
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }
