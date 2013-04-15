@@ -1,9 +1,8 @@
 <resources>
 
-    <string name="app_name">Demo</string>
+    <string name="app_name">Sense Demo</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Sense Demo</string>
 
     <!-- OVERRIDE INTENT ACTIONS FOR BUNDLED SENSE PLATFORM (ALSO CHANGE IN MANIFEST!!) -->
     <string name="action_sense_service">nl.sense_os.demo.SENSE_SERVICE</string>
@@ -22,4 +21,5 @@
     <string name="stat_notify_content_off_loggedout">Meting gestopt, geen verbinding met server</string>
     <string name="stat_notify_content_on_loggedin">"Meting actief, ingelogd als \'%s\'"</string>
     <string name="stat_notify_content_on_loggedout">Meting actief, geen verbinding met server</string>
+
 </resources>
