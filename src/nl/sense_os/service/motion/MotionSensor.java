@@ -150,8 +150,8 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 		    }
         if (!wakeLock.isHeld()) {
-            Log.i(TAG, "Acquire wake lock for 500ms");
-            wakeLock.acquire(500);
+            Log.i(TAG, "Acquire wake lock");
+            wakeLock.acquire();
 	    } else {
             // Log.v(TAG, "Wake lock already held");
 	    }
