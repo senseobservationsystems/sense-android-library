@@ -2,9 +2,21 @@
 <resources>
 
     <string name="title_activity_main">Sense Demo</string>
-    <string name="button_login">Log in</string>
-    <string name="button_data_point">Insert data point</string>
+    <string name="button_login">Start login activity</string>
+    <string name="button_data_point">Insert custom data point</string>
+    <string name="button_flush">Synchronize data to CommonSense</string>
     <string name="button_local_data">Query data from phone</string>
     <string name="button_remote_data">Query data from CommonSense</string>
+    <string name="button_start">Start sensing</string>
+    <string name="button_stop">Stop sensing</string>
+    <string name="button_prefs">Set preferences</string>
+    <string name="label_init">Initialization:</string>
+    <string name="label_data">Sensor data:</string>
+    <string name="msg_prefs_set">Preferences set</string>
+    <string name="msg_sent_data">Inserted data point for \'%s\'</string>
+    <string name="msg_query_local">Found %d data points on phone</string>
+    <string name="msg_query_remote">Found %d data points on CommonSense</string>
+    <string name="msg_error">Error: \'%s\'</string>
+    <string name="msg_flush_data">Flushed buffers to CommonSense</string>
 
 </resources>
