@@ -14,7 +14,6 @@ import android.content.IntentFilter;
  */
 public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runnable {
 
-    private static final String TAG = null;
 	private final PeriodicPollingSensor sensor;
     private final String action;
     private final int reqCode;
@@ -52,15 +51,6 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runn
 
         // schedule alarm broadcasts
         long interval = sensor.getSampleRate();
-         /*
-        Intent alarm = new Intent(action);
-        PendingIntent alarmOperation = PendingIntent.getBroadcast(context, reqCode, alarm, 0);
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.cancel(alarmOperation);
-        mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),
-                interval, alarmOperation);
-         */
-        // Case Study
         Scheduler.getInstance(context).register(this, interval, (long)(interval * 0.1));
     }
 
@@ -74,18 +64,6 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runn
     public void stop(Context context) {
 
         // stop alarm broadcasts
-    	 /*
-    	AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarms.cancel(PendingIntent.getBroadcast(context, reqCode, new Intent(action), 0));
-
-        // unregister as receiver for alarms
-        try {
-            context.unregisterReceiver(this);
-        } catch (IllegalArgumentException e) {
-            // ignore
-        }
-         */
-        // Case Study
         Scheduler.getInstance(context).unregister(this);
     }
 }

@@ -137,7 +137,6 @@ public class LocationSensor {
 	private static final String TAG = "Sense LocationSensor";
 	private static final String ALARM_ACTION = "nl.sense_os.service.LocationAlarm";
 	private static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
-	private static final int ALARM_ID = 56;
 	public static final long MIN_SAMPLE_DELAY = 5000; // 5 sec
 	private static final int DISTANCE_ALARM_ID = 70;
 
@@ -160,7 +159,6 @@ public class LocationSensor {
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//controller = Controller.getController(context);
 			controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
 		}
 	};
@@ -213,8 +211,7 @@ public class LocationSensor {
 		// Log.v(TAG, "Disable location sensor");
 
 		stopListening();
-		// Case Study 
-		//stopAlarms();
+		stopAlarms();
 		Scheduler.getInstance(context).unregister(task);
 	}
 
@@ -233,8 +230,7 @@ public class LocationSensor {
 		this.distance = distance;
 
 		startListening();
-		// Case Study 
-		//startAlarms();
+		startAlarms();
 		getLastKnownLocation();
 	}
 
@@ -364,7 +360,6 @@ public class LocationSensor {
 	private void setTime(long time) {
 		this.time = time;
 		
-		// Case Study 
 		Scheduler.getInstance(context).register(task, this.time, (long)(time * 0.1));
 
 	}
@@ -375,19 +370,14 @@ public class LocationSensor {
 		context.getApplicationContext().registerReceiver(alarmReceiver, new IntentFilter(ALARM_ACTION));
 		context.getApplicationContext().registerReceiver(distanceAlarmReceiver, new IntentFilter(DISTANCE_ALARM_ACTION));
 
-		// start periodic alarm
-		Intent alarm = new Intent(ALARM_ACTION);
-		PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, alarm, 0);
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		am.cancel(operation);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), time, operation);
 
 		// start periodic for distance
 		Intent distanceAlarm = new Intent(DISTANCE_ALARM_ACTION);
 		PendingIntent operation2 = PendingIntent.getBroadcast(context, DISTANCE_ALARM_ID,
 				distanceAlarm, 0);
 		am.cancel(operation2);
-		//am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 60L * 60 * 1000, operation2);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, SNTP.getInstance().getTime(), 60L * 60 * 1000, operation2);
 
 		/*
 		 * TODO: this also for 24 hours PendingIntent operation3 =
@@ -423,17 +413,13 @@ public class LocationSensor {
 	public void stopAlarms() {
 		// unregister the receiver
 		try {
-			context.unregisterReceiver(alarmReceiver);
 			context.unregisterReceiver(distanceAlarmReceiver);
 		} catch (IllegalArgumentException e) {
 			// do nothing
 		}
 
-		// stop the alarms
-		Intent alarm = new Intent(ALARM_ACTION);
-		PendingIntent operation = PendingIntent.getBroadcast(context, ALARM_ID, alarm, 0);
+		// stop the alarm
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		am.cancel(operation);
 
 		Intent distanceAlarm = new Intent(ALARM_ACTION);
 		PendingIntent operation2 = PendingIntent.getBroadcast(context, DISTANCE_ALARM_ID,

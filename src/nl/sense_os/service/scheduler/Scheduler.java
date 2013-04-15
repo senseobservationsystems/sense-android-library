@@ -32,13 +32,6 @@ public class Scheduler {
         this.context = context;
 	}
 	
-	private static long gcd(long p, long q) {
-	    if (q == 0) {
-	      return p;
-	    }
-	    return gcd(q, p % q);
-	}
-	
 	class Task {
 		public Runnable runnable;
 		public long interval;

@@ -34,7 +34,7 @@ public class ScheduleAlarmTool {
         mgr.cancel(operation);
     }
 
-    private static long interval, nextExecution = 0;
+    private static long nextExecution = 0;
     private static long remainedFlexibility;
 
     public static long getNextExecution() {
