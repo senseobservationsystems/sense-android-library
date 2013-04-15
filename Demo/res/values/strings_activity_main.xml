@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_main">Sense Demo</string>
+    <string name="button_login">Log in</string>
+    <string name="button_data_point">Insert data point</string>
+    <string name="button_local_data">Query data from phone</string>
+    <string name="button_remote_data">Query data from CommonSense</string>
+
+</resources>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nl.sense.demo"
     android:versionCode="1"
@@ -76,11 +77,11 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name" android:name="SenseApplication">
 
         <!-- MAIN LAUNCHER ACTIVITY -->
         <activity
-            android:name=".MainActivity"
+            android:name="nl.sense.demo.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -147,6 +148,7 @@
             android:name="nl.sense_os.service.appwidget.DummyAppWidgetService"
             android:exported="false" >
             <intent-filter>
+
                 <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
                 <action android:name="nl.sense_os.demo.UPDATE_APP_WIDGET" />
             </intent-filter>
@@ -221,6 +223,12 @@
             android:name="nl.sense_os.service.provider.SensorDataProvider"
             android:authorities="nl.sense_os.demo.LocalStorage"
             android:exported="true" />
+
+        <activity
+            android:name="nl.sense.demo.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
     </application>
 
 </manifest>

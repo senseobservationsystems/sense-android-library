@@ -3,12 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
+    <Button
+        android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world"
-        tools:context=".MainActivity" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:onClick="onClick"
+        android:text="@string/button_login" />
+
+    <Button
+        android:id="@+id/buttonDataPoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/buttonLogin"
+        android:onClick="onClick"
+        android:text="@string/button_data_point" />
+
+    <Button
+        android:id="@+id/buttonLocalData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/buttonDataPoint"
+        android:onClick="onClick"
+        android:text="@string/button_local_data" />
+
+    <Button
+        android:id="@+id/buttonRemoteData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/buttonLocalData"
+        android:onClick="onClick"
+        android:text="@string/button_remote_data" />
 
 </RelativeLayout>

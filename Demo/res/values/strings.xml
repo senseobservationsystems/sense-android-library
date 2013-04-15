@@ -1,8 +1,6 @@
 <resources>
 
     <string name="app_name">Sense Demo</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_main">Sense Demo</string>
 
     <!-- OVERRIDE INTENT ACTIONS FOR BUNDLED SENSE PLATFORM (ALSO CHANGE IN MANIFEST!!) -->
     <string name="action_sense_service">nl.sense_os.demo.SENSE_SERVICE</string>
