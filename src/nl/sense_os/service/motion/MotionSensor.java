@@ -54,6 +54,10 @@ import android.util.Log;
  */
 public class MotionSensor extends BaseSensor implements SensorEventListener, PeriodicPollingSensor {
 
+	
+	/*public void Notifier (SchedulerCallback event) {
+	   sc = event;
+	}*/
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
      * the screen turns off.
@@ -341,7 +345,12 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         }
     }
 
-    @Override
+    final Runnable task = new Runnable() {
+		public void run() { 
+			doSample();
+	}};
+	
+	@Override
     public void setSampleRate(long sampleDelay) {
         super.setSampleRate(sampleDelay);
         stopPolling();
@@ -417,6 +426,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         // Log.v(TAG, "stop sensing");
         stopSample();
         stopPolling();
+        //sc.unRegister(task);
         enableScreenOffListener(false);
 	    motionSensingActive = false;
 

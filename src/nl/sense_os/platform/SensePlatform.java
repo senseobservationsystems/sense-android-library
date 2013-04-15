@@ -213,6 +213,10 @@ public class SensePlatform {
 		flushData();
 		// TODO: block till flush finishes or returns an error
 	}
+    
+    public Context getContext() {
+		return context;
+	}
 
     /**
      * Retrieve a number of values of a sensor from CommonSense.

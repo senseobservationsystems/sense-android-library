@@ -68,9 +68,9 @@ public class CtrlDefault extends Controller {
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
-
+        Log.v(TAG, "Check location sensor settings...");
         if (selfAwareMode) {
-            // Log.v(TAG, "Check location sensor settings...");
+           // Log.v(TAG, "Check location sensor settings...");
             LocationSensor locListener = LocationSensor.getInstance(context);
             if (isListeningGps) {
 
@@ -85,7 +85,7 @@ public class CtrlDefault extends Controller {
 
             } else {
 
-                if (isAccelerating()) {
+              if (isAccelerating()) {
                     // switch on
                     locListener.setGpsListening(true);
                     locListener.notifyListeningRestarted("moved");

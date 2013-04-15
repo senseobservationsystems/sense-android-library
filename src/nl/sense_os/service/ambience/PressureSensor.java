@@ -73,7 +73,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
 
     @Override
     public void doSample() {
-        // Log.v(TAG, "start sample");
+        Log.v(TAG, "Check pressure");
 
         // acquire wake lock
         if (null == wakeLock) {
@@ -174,6 +174,19 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
      */
     @Override
     public void startSensing(long sampleRate) {
+        // check if the sensor is physically present on this phone
+        boolean found = false;
+        for (Sensor sensor : sensors) {
+            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            Log.w(TAG, "No pressure sensor!");
+            return;
+        }
+
         pressureSensingActive = true;
         setSampleRate(sampleRate);
     }

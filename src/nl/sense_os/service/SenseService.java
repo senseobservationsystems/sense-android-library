@@ -89,7 +89,6 @@ public class SenseService extends Service {
             return new SenseServiceStub(SenseService.this);
         }
     }
-
 	private static final String TAG = "Sense Service";
 
 	/**
@@ -97,7 +96,7 @@ public class SenseService extends Service {
 	 */
 	public static final String EXTRA_RELOGIN = "relogin";
 
-    /**
+	/**
 	 * Intent action for broadcasts that the service state has changed.
 	 */
 	public final static String ACTION_SERVICE_BROADCAST = "nl.sense_os.service.Broadcast";
@@ -105,7 +104,7 @@ public class SenseService extends Service {
     private IBinder binder = new SenseBinder();
 
 	private ServiceStateHelper state;
-
+    
 	private BatterySensor batterySensor;
 	private DeviceProximity deviceProximity;
 	private LightSensor lightSensor;  
@@ -122,7 +121,8 @@ public class SenseService extends Service {
 	private ZephyrBioHarness es_bioHarness;
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
-	private MagneticFieldSensor magneticFieldSensor;	
+	private MagneticFieldSensor magneticFieldSensor;
+
     /**
      * All registered DataProducers, mapped by sensor name.
      */
@@ -199,7 +199,7 @@ public class SenseService extends Service {
 		}
 	}
 
-	    /**
+    /**
      * @param sensorName
      *            The name of the DataProducer (SenseSensor/DataProcessor)
      * @param sensor
@@ -254,7 +254,7 @@ public class SenseService extends Service {
             }
         }
         return false;
-    }
+	}
 
 	/**
 	 * Tries to login using the username and password from the private preferences and updates the
@@ -335,8 +335,7 @@ public class SenseService extends Service {
 		// log out before changing to a new user
 		onLogOut();
 	}
-	
-	
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.v(TAG, "Some component is binding to Sense Platform service");
@@ -375,7 +374,8 @@ public class SenseService extends Service {
 
 		super.onDestroy();
 	}
-
+	
+	
 	/**
 	 * Performs tasks after successful login: update status bar notification; start transmitting
 	 * collected sensor data and register the gcm_id.
@@ -412,13 +412,13 @@ public class SenseService extends Service {
 		stopService(new Intent(getString(R.string.action_sense_send_data)));
 	}
 
-	    void onSampleRateChange() {
-        	Log.v(TAG, "Sample rate changed");
-        	if (state.isStarted()) {
-        		stopSensorModules();
-        		startSensorModules();
-        	}
-        }
+	void onSampleRateChange() {
+		Log.v(TAG, "Sample rate changed");
+		if (state.isStarted()) {
+			stopSensorModules();
+			startSensorModules();
+		}
+	}
 
 	/**
 	 * Starts the Sense service. Tries to log in and start sensing; starts listening for network
@@ -497,78 +497,78 @@ public class SenseService extends Service {
 		startService(new Intent(getString(R.string.action_widget_update)));
 	}
 
-	/**
-    * Tries to register a new user using the username and password from the private preferences and
-    * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
-    * are bound to the service.
-    * 
-    * @param username
-    * @param password
-    *            Hashed password
-    * @param email
-    * @param address
-    * @param zipCode
-    * @param country
-    * @param name
-    * @param surname
-    * @param mobile
-    * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-    *         any other unexpected responses.
-    */
-synchronized int register(String username, String password, String email, String address,
-    	String zipCode, String country, String name, String surname, String mobile) {
-    Log.v(TAG, "Try to register new user");
+	    /**
+     * Tries to register a new user using the username and password from the private preferences and
+     * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
+     * are bound to the service.
+     * 
+     * @param username
+     * @param password
+     *            Hashed password
+     * @param email
+     * @param address
+     * @param zipCode
+     * @param country
+     * @param name
+     * @param surname
+     * @param mobile
+     * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
+     *         any other unexpected responses.
+     */
+	synchronized int register(String username, String password, String email, String address,
+			String zipCode, String country, String name, String surname, String mobile) {
+		Log.v(TAG, "Try to register new user");
 
-    // log out before registering a new user
-    logout();
+		// log out before registering a new user
+		logout();
 
-    // stop active sensing components
-    stopSensorModules();
+		// stop active sensing components
+		stopSensorModules();
 
-    // save username and password in preferences
-    Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
-    authEditor.putString(Auth.LOGIN_USERNAME, username);
-    authEditor.putString(Auth.LOGIN_PASS, password);
-    authEditor.commit();
+		// save username and password in preferences
+		Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+		authEditor.putString(Auth.LOGIN_USERNAME, username);
+        authEditor.putString(Auth.LOGIN_PASS, password);
+		authEditor.commit();
 
-    // try to register
-    int registered = -1;
-    if ((null != username) && (null != password)) {
-    	// Log.v(TAG, "Registering: " + username +
-    	// ", password hash: " + hashPass);
+		// try to register
+		int registered = -1;
+		if ((null != username) && (null != password)) {
+			// Log.v(TAG, "Registering: " + username +
+			// ", password hash: " + hashPass);
 
-    	try {
-            registered = SenseApi.registerUser(this, username, password, name, surname, email,
-    				mobile);
-    	} catch (Exception e) {
-    		Log.w(TAG, "Exception during registration: '" + e.getMessage()
-    				+ "'. Connection problems?");
-    		// handle result below
-    	}
-    } else {
-    	Log.w(TAG, "Cannot register: username or password unavailable");
-    }
+			try {
+                registered = SenseApi.registerUser(this, username, password, name, surname, email,
+						mobile);
+			} catch (Exception e) {
+				Log.w(TAG, "Exception during registration: '" + e.getMessage()
+						+ "'. Connection problems?");
+				// handle result below
+			}
+		} else {
+			Log.w(TAG, "Cannot register: username or password unavailable");
+		}
 
-    // handle result
-    switch (registered) {
-    case 0:
-    	Log.i(TAG, "Successful registration for '" + username + "'");
-    	login();
-    	break;
-    case -1:
-    	Log.w(TAG, "Registration failed");
-    	state.setLoggedIn(false);
-    	break;
-    case -2:
-    	Log.w(TAG, "Registration failed: user already exists");
-    	state.setLoggedIn(false);
-    	break;
-    default:
-    	Log.w(TAG, "Unexpected registration result: " + registered);
-    }
+		// handle result
+		switch (registered) {
+		case 0:
+			Log.i(TAG, "Successful registration for '" + username + "'");
+			login();
+			break;
+		case -1:
+			Log.w(TAG, "Registration failed");
+			state.setLoggedIn(false);
+			break;
+		case -2:
+			Log.w(TAG, "Registration failed: user already exists");
+			state.setLoggedIn(false);
+			break;
+		default:
+			Log.w(TAG, "Unexpected registration result: " + registered);
+		}
 
-    return registered;
-}
+		return registered;
+	}
 
 	/**
      * <p>
@@ -724,7 +724,6 @@ synchronized int register(String username, String password, String email, String
         }
         return subscribed;
     }
-
 	synchronized void toggleAmbience(boolean active) {
 
 		if (active != state.isAmbienceActive()) {
@@ -962,6 +961,7 @@ synchronized int register(String username, String password, String email, String
 					@Override
 					public void run() {
 						deviceProximity = new DeviceProximity(SenseService.this);
+
 						registerDataProducer(SensorNames.WIFI_SCAN,deviceProximity.getWIFIDeviceProximity());
 						registerDataProducer(SensorNames.BLUETOOTH_DISCOVERY,deviceProximity.getBluetoothDeviceProximity());
 						registerDataProducer(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,deviceProximity.getBluetoothDeviceProximity());
@@ -1077,7 +1077,6 @@ synchronized int register(String username, String password, String email, String
 						if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
 							es_obd2sensor = new NewOBD2DeviceConnector(SenseService.this, finalInterval);
                             registerDataProducer(SensorNames.OBD_STANDARDS, es_obd2sensor);
-							
 							es_obd2sensor.run();
 						}
 					}
@@ -1125,8 +1124,8 @@ synchronized int register(String username, String password, String email, String
 			}
 		}
 	}
-	
-    synchronized void toggleLocation(boolean active) {
+
+	synchronized void toggleLocation(boolean active) {
 
 		if (active != state.isLocationActive()) {
 			Log.i(TAG, (active ? "Enable" : "Disable") + " position sensor");
@@ -1137,7 +1136,7 @@ synchronized int register(String username, String password, String email, String
 				// check location sensor presence
 				if (locListener != null) {
 					Log.w(TAG, "location sensor is already present!");
-					locListener.disable();
+                    locListener.stopSensing();
 					locListener = null;
 				}
 
@@ -1147,23 +1146,18 @@ synchronized int register(String username, String password, String email, String
 				final int rate = Integer.parseInt(mainPrefs.getString(SensePrefs.Main.SAMPLE_RATE,
 						"0"));
 				long minTime = -1;
-				float minDistance = -1;
 				switch (rate) {
 				case -2: // real-time
 					minTime = 1000;
-					minDistance = 0;
 					break;
 				case -1: // often
 					minTime = 30 * 1000;
-					minDistance = 0;
 					break;
 				case 0: // normal
 					minTime = 5 * 60 * 1000;
-					minDistance = 0;
 					break;
 				case 1: // rarely
 					minTime = 15 * 60 * 1000;
-					minDistance = 0;
 					break;
 				default:
 					Log.e(TAG, "Unexpected commonsense rate: " + rate);
@@ -1173,11 +1167,9 @@ synchronized int register(String username, String password, String email, String
 				if (mainPrefs.getBoolean(Advanced.AGOSTINO, false)) {
 					Log.i(TAG, "Location sensor is in Agostino mode!");
 					minTime = 60 * 1000;
-					minDistance = 100;
 				}
 
 				final long time = minTime;
-				final float distance = minDistance;
 
 				if (null == locationHandler) {
 					HandlerThread handlerThread = new HandlerThread("Location thread");
@@ -1192,7 +1184,7 @@ synchronized int register(String username, String password, String email, String
                         registerDataProducer(SensorNames.LOCATION, locListener);
                         registerDataProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
                         registerDataProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
-						locListener.enable(time, distance);
+                        locListener.startSensing(time);
 					}
 				});
 
@@ -1200,7 +1192,7 @@ synchronized int register(String username, String password, String email, String
 
 				// stop location listener
 				if (null != locListener) {
-					locListener.disable();
+                    locListener.stopSensing();
 					// unregister is not needed for Singleton Sensors
                     unregisterDataProducer(SensorNames.LOCATION, locListener);
                     unregisterDataProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
@@ -1216,7 +1208,7 @@ synchronized int register(String username, String password, String email, String
 		}
 	}
 
-    synchronized void toggleMain(boolean active) {
+	synchronized void toggleMain(boolean active) {
 		Log.i(TAG, (active ? "Enable" : "Disable") + " main sensing status");
 
 		if (true == active) {
@@ -1236,7 +1228,7 @@ synchronized int register(String username, String password, String email, String
 		}
 	}
 
-    synchronized void toggleMotion(boolean active) {
+	synchronized void toggleMotion(boolean active) {
 
 		if (active != state.isMotionActive()) {
 			Log.i(TAG, (active ? "Enable" : "Disable") + " motion sensors");
@@ -1245,12 +1237,12 @@ synchronized int register(String username, String password, String email, String
 			if (true == active) {
 
 				// check motion sensor presence
-				if (motionSensor != null) {							
+				if (motionSensor != null) {
 					Log.w(TAG, "Motion sensor is already present! Stopping the sensor");
                     motionSensor.stopSensing();
 					motionSensor = null;
 				}
-				
+
 				// get sample rate
 				final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
 						MODE_PRIVATE);
@@ -1284,7 +1276,6 @@ synchronized int register(String username, String password, String email, String
 
 				if (null == motionHandler) {
 					HandlerThread motionThread = new HandlerThread("Motion thread");
-					
 					motionThread.start();
 					motionHandler = new Handler(motionThread.getLooper());
 				}
@@ -1317,7 +1308,7 @@ synchronized int register(String username, String password, String email, String
 		}
 	}
 
-    synchronized void togglePhoneState(boolean active) {
+	synchronized void togglePhoneState(boolean active) {
 
 		if (active != state.isPhoneStateActive()) {
 			Log.i(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
@@ -1403,7 +1394,6 @@ synchronized int register(String username, String password, String email, String
 								proximitySensor = ProximitySensor.getInstance(SenseService.this);
                                 proximitySensor.startSensing(finalInterval);
                                 registerDataProducer(SensorNames.PROXIMITY, proximitySensor);
-                                
 							}
 							phoneStateListener = SensePhoneState.getInstance(SenseService.this);
 							phoneStateListener.startSensing(finalInterval);
@@ -1420,12 +1410,11 @@ synchronized int register(String username, String password, String email, String
 				if (null != phoneStateListener) {
 					phoneStateListener.stopSensing();
 					phoneStateListener = null;
-					
 				}
 				if (null != proximitySensor) {
                     proximitySensor.stopSensing();
                     unregisterDataProducer(SensorNames.PROXIMITY, proximitySensor);
-					proximitySensor = null;					 
+					proximitySensor = null;
 				}
 				if (null != batterySensor) {
 					batterySensor.stopBatterySensing();
@@ -1437,6 +1426,10 @@ synchronized int register(String username, String password, String email, String
 					unregisterDataProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
 					phoneActivitySensor = null;
 				}
+//				if (null != phoneStateHandler) {
+//					phoneStateHandler.getLooper().quit();
+//					phoneStateHandler = null;
+//				}
 			}
 		}
 	}
@@ -1494,9 +1487,9 @@ synchronized int register(String username, String password, String email, String
             registeredProducer.removeSubscriber(dataProcessor);
         }
     }
-
-    private synchronized void verifySensorIds() {
+	private synchronized void verifySensorIds() {
 		Log.v(TAG, "Try to verify sensor IDs");
 		startService(new Intent(this, DefaultSensorRegistrationService.class));
 	}
+	
 }

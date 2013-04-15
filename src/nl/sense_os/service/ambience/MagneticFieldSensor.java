@@ -77,7 +77,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
 
     @Override
     public void doSample() {
-        // Log.v(TAG, "start sample");
+        Log.v(TAG, "Check magnetic field");
 
         // acquire wake lock
         if (null == wakeLock) {
@@ -189,6 +189,20 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
      */
     @Override
     public void startSensing(long sampleRate) {
+
+        // check if the sensor is physically present on this phone
+        boolean found = false;
+        for (Sensor sensor : sensors) {
+            if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            Log.w(TAG, "No magnetic field sensor!");
+            return;
+        }
+
         magneticFieldSensingActive = true;
         setSampleRate(sampleRate);
     }
