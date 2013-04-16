@@ -44,6 +44,7 @@ public class SensorData {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
                 + "/vnd.sense_os.data_point";
         public static final String CONTENT_URI_PATH = "/recent_values";
+        @Deprecated
         public static final String CONTENT_PERSISTED_URI_PATH = "/persisted_values";
         public static final String CONTENT_REMOTE_URI_PATH = "/remote_values";
 
@@ -166,6 +167,13 @@ public class SensorData {
          * sensor.
          */
         public static final String ACCELEROMETER = "accelerometer";
+        
+        /**
+         * MotionSensor. The basis for the other Motion sensors.
+         * sensor.
+         */
+        public static final String MOTION = "motion";
+
 
         /**
          * Linear acceleration sensor name. Part of the Motion sensors.
@@ -191,7 +199,22 @@ public class SensorData {
          * Epi-mode accelerometer sensor. Special part of the Motion sensors.
          */
         public static final String ACCELEROMETER_EPI = "accelerometer (epi-mode)";
+        
+        /**
+         * Burst-mode accelerometer sensor. Special part of the Motion sensors.
+         */
+        public static final String ACCELEROMETER_BURST = "accelerometer (burst-mode)";
 
+        /**
+         * Burst-mode gyroscope sensor. Special part of the Motion sensors.
+         */
+        public static final String GYRO_BURST = "gyroscope (burst-mode)";
+        
+        /**
+         * Burst-mode linear acceleration sensor. Special part of the Motion sensors.
+         */
+        public static final String LINEAR_BURST = "linear acceleration (burst-mode)";
+        
         /**
          * Motion energy sensor name. Special part of the Motion sensors.
          */

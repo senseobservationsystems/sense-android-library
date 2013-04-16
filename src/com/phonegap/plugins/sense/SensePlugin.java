@@ -8,9 +8,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import nl.sense_os.platform.SensePlatform;
-import nl.sense_os.service.ISenseService;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.R;
+import nl.sense_os.service.SenseServiceStub;
+import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
@@ -306,7 +307,7 @@ public class SensePlugin extends Plugin {
 		String key = data.getString(0);
 		Log.v(TAG, "getPreference('" + key + "')");
 
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
 				|| key.equals(Auth.LOGIN_USERNAME)) {
 			String result = service.getPrefString(key, null);
@@ -337,15 +338,16 @@ public class SensePlugin extends Plugin {
 		}
 	}
 
-	private PluginResult getSession(JSONArray data, String callbackId) throws RemoteException {
+    private PluginResult getSession(JSONArray data, String callbackId) throws RemoteException,
+            IllegalAccessException {
 
 		Log.v(TAG, "getSessionId()");
 
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 
 			// try the login
-			String sessionId = service.getSessionId(SECRET);
+            String sessionId = SenseApi.getSessionId(cordova.getActivity(), SECRET);
 
 			// check the result
 			if (null != sessionId) {
@@ -366,7 +368,7 @@ public class SensePlugin extends Plugin {
 
 		Log.v(TAG, "getStatus()");
 
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			getStatusCallbackId = callbackId;
 			service.getStatus(callback);
@@ -506,7 +508,7 @@ public class SensePlugin extends Plugin {
 		String packageName = cordova.getActivity().getPackageName();
 		if (packageName.equals("nl.sense_os.ivitality")) {
 			Log.w(TAG, "Set special iVitality sensor settings");
-            ISenseService service = sensePlatform.getService();
+            SenseServiceStub service = sensePlatform.getService();
 			try {
 				service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
 				service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
@@ -588,7 +590,7 @@ public class SensePlugin extends Plugin {
 		String key = data.getString(0);
 
 		// get the preference value
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
 				|| key.equals(Auth.LOGIN_USERNAME)) {
 			String value = data.getString(1);
@@ -611,7 +613,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
 
 		// do the call
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleAmbience(active);
 		} else {
@@ -630,7 +632,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " external sensors");
 
 		// do the call
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleExternalSensors(active);
 		} else {
@@ -649,7 +651,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " main status");
 
 		// do the call
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleMain(active);
 		} else {
@@ -668,7 +670,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " motion sensors");
 
 		// do the call
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleMotion(active);
 		} else {
@@ -687,7 +689,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " neighboring devices sensors");
 
 		// do the call
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleDeviceProx(active);
 		} else {
@@ -706,7 +708,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
 
 		// do the call
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			service.togglePhoneState(active);
 		} else {
@@ -725,7 +727,7 @@ public class SensePlugin extends Plugin {
 		Log.v(TAG, (active ? "Enable" : "Disable") + " position sensors");
 
 		// do the call
-        ISenseService service = sensePlatform.getService();
+        SenseServiceStub service = sensePlatform.getService();
 		if (null != service) {
 			service.toggleLocation(active);
 		} else {

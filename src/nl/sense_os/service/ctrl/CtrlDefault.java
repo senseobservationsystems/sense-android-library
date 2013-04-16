@@ -1,5 +1,7 @@
 package nl.sense_os.service.ctrl;
 
+import java.util.List;
+
 import nl.sense_os.service.DataTransmitter;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
@@ -7,6 +9,7 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.location.LocationSensor;
+import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
@@ -19,9 +22,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.hardware.Sensor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -36,11 +41,14 @@ public class CtrlDefault extends Controller {
     }
 
     private static final String TAG = "Sense Controller";
+
     private Context context;
+    private LocationManager locMgr;
 
     public CtrlDefault(Context context) {
         super();
         this.context = context;
+        locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
@@ -53,7 +61,6 @@ public class CtrlDefault extends Controller {
         // not implemented in this controller
     }
 
-    @Override
     public void checkSensorSettings(boolean isGpsAllowed, boolean isListeningNw,
             boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart,
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
@@ -64,7 +71,7 @@ public class CtrlDefault extends Controller {
 
         if (selfAwareMode) {
             // Log.v(TAG, "Check location sensor settings...");
-
+            LocationSensor locListener = LocationSensor.getInstance(context);
             if (isListeningGps) {
 
                 if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)) {
@@ -243,7 +250,7 @@ public class CtrlDefault extends Controller {
             }
 
             if (distance > accuracy) {
-                Log.v(TAG, "Position has changed");
+                // Log.v(TAG, "Position has changed");
                 moved = true;
             } else {
                 // position did NOT change
@@ -265,7 +272,7 @@ public class CtrlDefault extends Controller {
     private boolean isSwitchedOffTooLong(boolean isListeningGps, long listenGpsStop) {
 
         if (isListeningGps) {
-            Log.w(TAG, "No use checking if GPS is switched off too long: it is still listening!");
+            // Log.d(TAG,"No use checking if GPS is switched off too long: it is still listening!");
             return false;
         }
 
@@ -275,7 +282,7 @@ public class CtrlDefault extends Controller {
         if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
             // GPS has been turned off for a long time, or was never even started
             tooLong = true;
-        } else if (!(LocationSensor.locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
+        } else if (!(locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
             // the network provider is disabled: GPS is the only option
             tooLong = true;
         } else {
@@ -285,7 +292,6 @@ public class CtrlDefault extends Controller {
         return tooLong;
     }
 
-    @Override
     public void scheduleTransmissions() {
 
         Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));
@@ -325,16 +331,69 @@ public class CtrlDefault extends Controller {
                 interval = Intervals.OFTEN;
                 break;
             default:
-                Log.e(TAG, "Unexpected sample rate value: " + sampleRate);
+                Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
                 return;
             }
             break;
         default:
-            Log.e(TAG, "Unexpected sync rate value: " + syncRate);
+            Log.w(TAG, "Unexpected sync rate value: " + syncRate);
             return;
         }
         am.cancel(operation);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
                 operation);
+    }
+    
+    private static final long DEFAULT_BURST_RATE = 10 * 1000;
+    private static final long IDLE_BURST_RATE = 30 * 1000;
+    private static double IDLE_MOTION_THRESHOLD = 0.09;
+    private static final double IDLE_TIME_THRESHOLD = 3*60*1000;
+    private long firstIdleDetectedTime = 0;
+	
+    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
+    	//right now only the accelerometer is used
+    	if (sensorType != Sensor.TYPE_ACCELEROMETER)
+    		return;
+
+    	//Initialize with the first vector for the algorithm in the for loop
+    	double[] firstVector = dataBuffer.get(0);
+		double xLast = firstVector[0];
+		double yLast = firstVector[1];
+		double zLast = firstVector[2];
+    	
+		double totalMotion = 0;
+    	for (double[] vector : dataBuffer) {
+			// loop over the array to calculate some magic "totalMotion" value
+			// that indicates the amount of motion during the burst
+    		double x = vector[0];
+    		double y = vector[1];
+    		double z = vector[2];
+    		
+    		double motion = Math.pow((Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
+            totalMotion += motion;
+            xLast = x;
+            yLast = y;
+            zLast = z;
+    	}
+    	
+    	MotionSensor motionSensor = MotionSensor.getInstance(context);
+    	double avgMotion = totalMotion / (dataBuffer.size() - 1);
+    	
+    	//Control logic to choose the sample rate for burst motion sensors
+    	if (avgMotion > IDLE_MOTION_THRESHOLD) {
+    		firstIdleDetectedTime = 0;
+    		if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
+    			motionSensor.setSampleRate(DEFAULT_BURST_RATE);
+    		}
+    	} else {
+    		if (firstIdleDetectedTime == 0) {
+    			firstIdleDetectedTime = SystemClock.elapsedRealtime();
+    		} else {
+    			if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD) && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
+    				motionSensor.setSampleRate(IDLE_BURST_RATE);
+    			}
+    		}
+    	}
+    	Log.v(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
     }
 }

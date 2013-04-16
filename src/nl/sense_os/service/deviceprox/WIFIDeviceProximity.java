@@ -10,6 +10,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +32,7 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class WIFIDeviceProximity {
+public class WIFIDeviceProximity extends BaseDataProducer{
 
     /*
      * Wi-Fi Scan thread
@@ -62,12 +64,19 @@ public class WIFIDeviceProximity {
                             deviceJson.put("rssi", result.level);
                             deviceJson.put("capabilities", result.capabilities);
 
+                            notifySubscribers();
+                            SensorDataPoint dataPoint = new SensorDataPoint(deviceJson);
+                            dataPoint.sensorName = SensorNames.WIFI_SCAN;
+                            dataPoint.sensorDescription = SensorNames.WIFI_SCAN;
+                            dataPoint.timeStamp = SNTP.getInstance().getTime();        
+                            sendToSubscribers(dataPoint);
+                            
                             // pass device data to the MsgHandler
                             Intent i = new Intent(context.getString(R.string.action_sense_new_data));
                             i.putExtra(DataPoint.SENSOR_NAME, SensorNames.WIFI_SCAN);
                             i.putExtra(DataPoint.VALUE, deviceJson.toString());
                             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-                            i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+                            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
                             WIFIDeviceProximity.this.context.startService(i);
                         }
 

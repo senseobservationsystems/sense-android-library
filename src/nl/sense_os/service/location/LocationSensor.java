@@ -11,6 +11,8 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +44,7 @@ import android.util.Log;
  * @author Ted Schmidt <ted@sense-os.nl>
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class LocationSensor {
+public class LocationSensor extends BaseDataProducer {
 	
 	private static LocationSensor instance = null;
 	
@@ -104,8 +106,15 @@ public class LocationSensor {
 			}
 
             // use SNTP time
-            long timestamp = SNTP.getInstance().getTime();
+            long timestamp = fix.getTime();
 
+            notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(json);
+            dataPoint.sensorName = SensorNames.LOCATION;
+            dataPoint.sensorDescription = SensorNames.LOCATION;
+            dataPoint.timeStamp = timestamp;        
+            sendToSubscribers(dataPoint);
+            
 			// pass message to the MsgHandler
 			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.LOCATION);
@@ -142,7 +151,7 @@ public class LocationSensor {
 
 	private Controller controller;
 	private Context context;
-	public static LocationManager locMgr;
+	private LocationManager locMgr;
 	private final MyLocationListener gpsListener;
 	private final MyLocationListener nwListener;
 	private final MyLocationListener pasListener;
@@ -154,7 +163,7 @@ public class LocationSensor {
 	/**
 	 * Receiver for periodic alarms to check on the sensor status.
 	 */
-	private final BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
+	public BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
 
 		
 		@Override
@@ -181,17 +190,25 @@ public class LocationSensor {
 	/**
 	 * Receiver for periodic alarms to calculate distance values.
 	 */
-	private final BroadcastReceiver distanceAlarmReceiver = new BroadcastReceiver() {
+	public final BroadcastReceiver distanceAlarmReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			double distance = distanceEstimator.getTraveledDistance();
+			
+			notifySubscribers();
+			SensorDataPoint dataPoint = new SensorDataPoint(distance);
+			dataPoint.sensorName = SensorNames.TRAVELED_DISTANCE_1H;
+			dataPoint.sensorDescription = SensorNames.TRAVELED_DISTANCE_1H;
+			dataPoint.timeStamp = SNTP.getInstance().getTime();        
+			sendToSubscribers(dataPoint);
+			
 			// pass message to the MsgHandler
 			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.TRAVELED_DISTANCE_1H);
 			i.putExtra(DataPoint.VALUE, (float) distance);
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
 			context.startService(i);
 
 			// start counting again, from the last location
@@ -237,10 +254,11 @@ public class LocationSensor {
 		Location nwFix = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
 		// see which is best
+		long hist_time = SNTP.getInstance().getTime() - 1000 * 60 * 5;
 		if (null != gpsFix || null != nwFix) {
 			Location bestFix = null;
 			if (null != gpsFix) {
-				if (SNTP.getInstance().getTime() - 1000 * 60 * 60 * 1 < gpsFix.getTime()) {
+				if (hist_time < gpsFix.getTime() && gpsFix.getTime() < SNTP.getInstance().getTime()) {
 					// recent GPS fix
 					bestFix = gpsFix;
 				}
@@ -249,7 +267,7 @@ public class LocationSensor {
 				if (null == bestFix) {
 					bestFix = nwFix;
 				} else if (nwFix.getTime() < gpsFix.getTime()
-						&& nwFix.getAccuracy() < bestFix.getAccuracy() + 100) {
+						&& nwFix.getAccuracy() < bestFix.getAccuracy() + 100 && hist_time < nwFix.getTime() &&  nwFix.getTime() < SNTP.getInstance().getTime()) {
 					// network fix is more recent and pretty accurate
 					bestFix = nwFix;
 				}
@@ -288,13 +306,13 @@ public class LocationSensor {
 		// log.putExtra(MsgHandler.KEY_DATA_TYPE, "string");
 		// context.startService(log);
 	}
-
+	
 	/**
 	 * @param distance
 	 *            Minimum distance between location updates.
 	 */
-	public void setDistance(float distance) {
-		this.distance = distance;
+	public float getDistance() {
+		return this.distance;
 	}
 
 	public void setGpsListening(boolean listen) {
@@ -347,7 +365,7 @@ public class LocationSensor {
 	 * @param time
 	 *            Minimum time between location refresh attempts.
 	 */
-	public void setTime(long time) {
+	private void setTime(long time) {
 		this.time = time;
 	}
 
@@ -403,7 +421,7 @@ public class LocationSensor {
 		}
 	}
 
-	private void stopAlarms() {
+	public void stopAlarms() {
 		// unregister the receiver
 		try {
 			context.unregisterReceiver(alarmReceiver);
