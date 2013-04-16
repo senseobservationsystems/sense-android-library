@@ -89,6 +89,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
             // use SNTP time
             long timestamp = SNTP.getInstance().getTime();
+
             notifySubscribers();
             SensorDataPoint dataPoint = new SensorDataPoint(json);
             dataPoint.sensorName = SensorNames.LOCATION;
@@ -148,14 +149,6 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         return instance;
     }
 
-    private Controller controller;
-    private Context context;
-    private LocationManager locMgr;
-    private final MyLocationListener gpsListener;
-    private final MyLocationListener nwListener;
-    private final MyLocationListener pasListener;
-    private long time;
-
     /**
      * Receiver for periodic alarms to check on the sensor status.
      */
@@ -169,27 +162,12 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         }
     };
 
-    private boolean isGpsAllowed;
-
-    private boolean isNetworkAllowed;
-
-    private boolean isListeningGps;
-    private boolean isListeningNw;
-    private long listenGpsStart;
-    private long listenGpsStop;
-    private Location lastGpsFix;
-    private Location lastNwFix;
-    private long listenNwStart;
-    private long listenNwStop;
     private final Runnable task = new Runnable() {
         public void run() {
             doSample();
         }
     };
-    private long sampleDelay;
 
-    private boolean active;
-    private TraveledDistanceEstimator distanceEstimator;
     /**
      * Receiver for periodic alarms to calculate distance values.
      */
@@ -219,6 +197,32 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         }
     };
 
+    private Controller controller;
+    private Context context;
+    private LocationManager locMgr;
+    private final MyLocationListener gpsListener;
+    private final MyLocationListener nwListener;
+    private final MyLocationListener pasListener;
+    private long time;
+    private boolean isGpsAllowed;
+    private boolean isNetworkAllowed;
+    private boolean isListeningGps;
+    private boolean isListeningNw;
+    private long listenGpsStart;
+    private long listenGpsStop;
+    private Location lastGpsFix;
+    private Location lastNwFix;
+    private long listenNwStart;
+    private long listenNwStop;
+    private long sampleDelay;
+    private boolean active;
+    private TraveledDistanceEstimator distanceEstimator;
+
+    /**
+     * Constructor.
+     * 
+     * @param context
+     */
     protected LocationSensor(Context context) {
         this.context = context;
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -242,10 +246,11 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         Location nwFix = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         // see which is best
+        long hist_time = SNTP.getInstance().getTime() - 1000 * 60 * 5;
         if (null != gpsFix || null != nwFix) {
             Location bestFix = null;
             if (null != gpsFix) {
-                if (SNTP.getInstance().getTime() - 1000 * 60 * 60 * 1 < gpsFix.getTime()) {
+                if (hist_time < gpsFix.getTime() && gpsFix.getTime() < SNTP.getInstance().getTime()) {
                     // recent GPS fix
                     bestFix = gpsFix;
                 }
@@ -254,7 +259,9 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
                 if (null == bestFix) {
                     bestFix = nwFix;
                 } else if (nwFix.getTime() < gpsFix.getTime()
-                        && nwFix.getAccuracy() < bestFix.getAccuracy() + 100) {
+                        && nwFix.getAccuracy() < bestFix.getAccuracy() + 100
+                        && hist_time < nwFix.getTime()
+                        && nwFix.getTime() < SNTP.getInstance().getTime()) {
                     // network fix is more recent and pretty accurate
                     bestFix = nwFix;
                 }
@@ -292,7 +299,8 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
     public void setGpsListening(boolean listen) {
         if (listen) {
-            locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, MIN_DISTANCE, gpsListener);
+            locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, MIN_DISTANCE,
+                    gpsListener);
             isListeningGps = true;
             listenGpsStart = SNTP.getInstance().getTime();
             lastGpsFix = null;
