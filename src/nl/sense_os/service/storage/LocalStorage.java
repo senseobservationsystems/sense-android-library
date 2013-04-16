@@ -281,7 +281,13 @@ public class LocalStorage {
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-	    String sortOrder) {
+                        String sortOrder) {
+
+        return query(uri, projection, where, selectionArgs, MAX_VOLATILE_VALUES, sortOrder);
+    }
+
+    public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
+	    int limit, String sortOrder) {
 	// Log.v(TAG, "Query data points in local storage");
 
 	// default projection
@@ -310,7 +316,7 @@ public class LocalStorage {
 	    }
 	case REMOTE_VALUES_URI:
 	    try {
-		return queryRemote(uri, projection, where, selectionArgs, sortOrder);
+		return queryRemote(uri, projection, where, selectionArgs, limit, sortOrder);
 	    } catch (Exception e) {
 		Log.e(TAG, "Failed to query the CommonSense data points", e);
 		return null;
@@ -340,7 +346,9 @@ public class LocalStorage {
     }
 
     private Cursor queryRemote(Uri uri, String[] projection, String where, String[] selectionArgs,
-	    String sortOrder) throws JSONException, URISyntaxException, IOException {
+                               int limit, String sortOrder)
+            throws JSONException, URISyntaxException, IOException {
+
 	Log.i(TAG, "Query data points in CommonSense");
 
 	// try to parse the selection criteria
@@ -363,7 +371,9 @@ public class LocalStorage {
 
 	// get the data for the sensor
 	String url = SenseUrls.SENSOR_DATA.replace("<id>", id) + "?start_date="
-		+ timeRangeSelect[0] / 1000d + "&end_date=" + timeRangeSelect[1] / 1000d;
+		+ (timeRangeSelect[0] / 1000d) + "&end_date=" + (timeRangeSelect[1] / 1000d) +
+            "&sort=" + sortOrder + "&per_page=" + limit;
+
 	String cookie = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE)
 		.getString(Auth.LOGIN_COOKIE, null);
 	Map<String, String> response = SenseApi.request(context, url, null, cookie);
