@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_m_a_f_air_flow_rate =
+[
+    [ "OBD2CommandMAFAirFlowRate", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_m_a_f_air_flow_rate.html#abdcd48187a79d0c68275a43339cded66", null ],
+    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_m_a_f_air_flow_rate.html#a9b59fe7c457c5d2db5a92c17d70dd420", null ]
+];
