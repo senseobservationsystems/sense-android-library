@@ -80,7 +80,6 @@ public class ScheduleAlarmTool {
      * Schedules the next task to execute.
      */
     public void schedule() {
-        Log.v(TAG, "Schedule next execution");
 
         int i, j;
         final List<Runnable> tasksToExecute = new CopyOnWriteArrayList<Runnable>();
@@ -135,6 +134,8 @@ public class ScheduleAlarmTool {
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(operation);
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
+        
+        Log.w(TAG, "Schedule next execution aaa " + (nextExecution-SystemClock.elapsedRealtime()) );
     }
 
     public void setTasks(List<Task> tasks) {

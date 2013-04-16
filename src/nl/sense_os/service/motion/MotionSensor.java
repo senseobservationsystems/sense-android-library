@@ -147,7 +147,8 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     @Override
     public void doSample() {
-
+    	
+    	Log.v(TAG, "Check motion");
         // get wake lock
         if (null == wakeLock) {
             PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);

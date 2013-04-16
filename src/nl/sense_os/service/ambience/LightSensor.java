@@ -95,7 +95,9 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
+        Log.v(TAG, "Check error");
         if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
+        	Log.v(TAG, "Check light");
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
             String sensorName = "";
