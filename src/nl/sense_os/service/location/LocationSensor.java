@@ -106,7 +106,7 @@ public class LocationSensor extends BaseDataProducer {
 			}
 
             // use SNTP time
-            long timestamp = fix.getTime();
+            long timestamp = SNTP.getInstance().getTime();
 
             notifySubscribers();
             SensorDataPoint dataPoint = new SensorDataPoint(json);
