@@ -106,7 +106,7 @@ public class LocationSensor extends BaseDataProducer {
 			}
 
             // use SNTP time
-            long timestamp = SNTP.getInstance().getTime();
+            long timestamp = fix.getTime();
 
             notifySubscribers();
             SensorDataPoint dataPoint = new SensorDataPoint(json);
@@ -254,10 +254,11 @@ public class LocationSensor extends BaseDataProducer {
 		Location nwFix = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
 		// see which is best
+		long hist_time = SNTP.getInstance().getTime() - 1000 * 60 * 5;
 		if (null != gpsFix || null != nwFix) {
 			Location bestFix = null;
 			if (null != gpsFix) {
-				if (SNTP.getInstance().getTime() - 1000 * 60 * 60 * 1 < gpsFix.getTime()) {
+				if (hist_time < gpsFix.getTime() && gpsFix.getTime() < SNTP.getInstance().getTime()) {
 					// recent GPS fix
 					bestFix = gpsFix;
 				}
@@ -266,7 +267,7 @@ public class LocationSensor extends BaseDataProducer {
 				if (null == bestFix) {
 					bestFix = nwFix;
 				} else if (nwFix.getTime() < gpsFix.getTime()
-						&& nwFix.getAccuracy() < bestFix.getAccuracy() + 100) {
+						&& nwFix.getAccuracy() < bestFix.getAccuracy() + 100 && hist_time < nwFix.getTime() &&  nwFix.getTime() < SNTP.getInstance().getTime()) {
 					// network fix is more recent and pretty accurate
 					bestFix = nwFix;
 				}
