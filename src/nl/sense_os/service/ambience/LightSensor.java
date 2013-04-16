@@ -46,7 +46,6 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
     private SensorManager smgr;
     private Handler LightHandler = new Handler();
     private Runnable LightThread = null;
-    private boolean LightSensingActive = false;
     private PeriodicPollAlarmReceiver pollAlarmReceiver;
 
     private Controller controller;
@@ -84,6 +83,7 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
 	
 	@Override
     public void doSample() {
+		Log.v(TAG, "Check In");
 		for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
                 // Log.d(TAG, "registering for sensor " + sensor.getName());
@@ -151,18 +151,17 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
     }
 
     public void startLightSensing(long _sampleDelay) {
-        LightSensingActive = true;
         setSampleRate(_sampleDelay);
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
                 // Log.d(TAG, "registering for sensor " + sensor.getName());
+            	Log.v(TAG, "Check start");
             	pollAlarmReceiver.start(context);
             }
         }
     }
 
     public void stopLightSensing() {
-    	LightSensingActive = false;
     	pollAlarmReceiver.stop(context);
 
     }
@@ -170,7 +169,6 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
 	@Override
 	public void stopSensing() {
         try {
-            LightSensingActive = false;
             smgr.unregisterListener(this);
             //stop?
             if (LightThread != null) {
@@ -195,4 +193,5 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 }

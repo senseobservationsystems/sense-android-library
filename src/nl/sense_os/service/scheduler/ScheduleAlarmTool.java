@@ -135,7 +135,7 @@ public class ScheduleAlarmTool {
         mgr.cancel(operation);
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
         
-        Log.w(TAG, "Schedule next execution aaa " + (nextExecution-SystemClock.elapsedRealtime()) );
+        Log.w(TAG, "Schedule next execution in " + (nextExecution-SystemClock.elapsedRealtime()) );
     }
 
     public void setTasks(List<Task> tasks) {

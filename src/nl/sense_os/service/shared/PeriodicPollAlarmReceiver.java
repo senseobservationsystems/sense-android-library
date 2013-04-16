@@ -1,10 +1,7 @@
 package nl.sense_os.service.shared;
 
 import nl.sense_os.service.scheduler.Scheduler;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 
 /**
  * Generic BroadcastReceiver implementation for {@link BasePeriodicPollingSensor} classes. Calls
@@ -12,27 +9,16 @@ import android.content.IntentFilter;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runnable {
+public class PeriodicPollAlarmReceiver implements Runnable {
 
 	private final PeriodicPollingSensor sensor;
-    private final String action;
 
     public PeriodicPollAlarmReceiver(PeriodicPollingSensor sensor) {
         this.sensor = sensor;
-        action = sensor.getClass().getName() + ".SAMPLE";
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        /*if (sensor.isActive()) {
-            sensor.doSample();
-        }*/
     }
     
     public void run() {
-    	if (sensor.isActive()) {
             sensor.doSample();
-        }
     }
 
     /**
@@ -43,9 +29,6 @@ public class PeriodicPollAlarmReceiver extends BroadcastReceiver implements Runn
      *            Application context, used to register as BroadcastReceiver, and to schedule alarms
      */
     public void start(Context context) {
-
-        // register for alarms
-        context.registerReceiver(this, new IntentFilter(action));
 
         // schedule alarm broadcasts
         long interval = sensor.getSampleRate();
