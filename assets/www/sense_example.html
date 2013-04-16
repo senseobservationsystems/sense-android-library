@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <!-- <meta name="viewport" content="width=320; user-scalable=no" /> -->
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>PhoneGap</title>
+        <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="md5.js"></script>
+        <script type="text/javascript" charset="utf-8" src="sense_platform.js"></script>
+        <script type="text/javascript" charset="utf-8" src="sense_example.js"></script>
+    </head>
+                
+    <body onload="onLoad();" id="stage" class="theme">
+        <h1>Welcome to Sense's plugin!</h1>
+        <h2>this file is located at assets/www/sense_example.html</h2> 
+        <a class="btn" onclick="onLoginClick();">Login as 'foo' / 'bar'</a>
+        <a class="btn" onclick="onLogoutClick();">Log out</a>
+        
+        <a class="btn large" onclick="onRegisterClick();">Register user 'username'</a>
+        
+        <a class="btn" onclick="onStartSensingClick();">Start sensing</a>
+        <a class="btn" onclick="onStopSensingClick();">Stop sensing</a>  
+        
+        <a class="btn small" onclick="onSampleClick(SensePlatform.SAMPLE_REALTIME);">Sample<br/>real time</a>  
+        <a class="btn small" onclick="onSampleClick(SensePlatform.SAMPLE_OFTEN);">Sample<br/>often</a>  
+        <a class="btn small" onclick="onSampleClick(SensePlatform.SAMPLE_NORMAL);">Sample<br/>normal</a>  
+        <a class="btn small" onclick="onSampleClick(SensePlatform.SAMPLE_RARELY);">Sample<br/>rarely</a>  
+        
+        <a class="btn small" onclick="onSyncClick(SensePlatform.SYNC_REALTIME);">Sync<br/>real time</a>  
+        <a class="btn small" onclick="onSyncClick(SensePlatform.SYNC_OFTEN);">Sync<br/>often</a>  
+        <a class="btn small" onclick="onSyncClick(SensePlatform.SYNC_NORMAL);">Sync<br/>normal</a>  
+        <a class="btn small" onclick="onSyncClick(SensePlatform.SYNC_ECO);">Sync<br/>rarely</a>  
+        
+        <a class="btn" onclick="onStartPhoneStateClick();">Start phone state sensors</a>        
+        <a class="btn" onclick="onStopPhoneStateClick();">Stop phone state sensors</a>
+        
+        <a class="btn" onclick="onStartPositionClick();">Start position sensors</a> 
+        <a class="btn" onclick="onStopPositionClick();">Stop position sensors</a>  
+        
+        <a class="btn" onclick="onStartAmbienceClick();">Start ambience sensors</a> 
+        <a class="btn" onclick="onStopAmbienceClick();">Stop ambience sensors</a>  
+        
+        <a class="btn" onclick="onStartMotionClick();">Start motion sensors</a>
+        <a class="btn" onclick="onStopMotionClick();">Stop motion sensors</a>
+        
+        <a class="btn" onclick="onStartNeighDevClick();">Start scanning devices</a>
+        <a class="btn" onclick="onStopNeighDevClick();">Stop scanning devices</a>
+        
+        <a class="btn" onclick="onStartExternalClick();">Start external sensors</a>
+        <a class="btn" onclick="onStopExternalClick();">Stop external sensors</a>
+        
+        <a class="btn large" onclick="onAddDataPointClick();">Add data point for 'pgsensor'</a>  
+         
+        <a class="btn" onclick="onGetLocalDataClick();">Get recent 'pgsensor' data from phone</a>            
+        <a class="btn" onclick="onGetRemoteDataClick();">Get 'pgsensor' data from CommonSense</a>  
+            
+        <a class="btn large" onclick="onFlushBufferClick();">Flush sensor data buffer</a>  
+        
+        <a class="btn large" onclick="onGiveFeedbackClick();">Give feedback for 'Activity'</a>  
+            
+        <a class="btn large" onclick="onGetStatusClick();">Get Sense status</a>
+        
+        <a class="btn large" onclick="onGetSessionIdClick();">Get CommonSense session ID</a>
+    </body>
+</html>
