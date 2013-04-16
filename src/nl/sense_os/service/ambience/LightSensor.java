@@ -83,7 +83,6 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
 	
 	@Override
     public void doSample() {
-		Log.v(TAG, "Check In");
 		for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
                 // Log.d(TAG, "registering for sensor " + sensor.getName());
@@ -95,7 +94,6 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        Log.v(TAG, "Check error");
         if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
         	Log.v(TAG, "Check light");
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
@@ -155,7 +153,6 @@ public class LightSensor extends BaseDataProducer implements SensorEventListener
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
                 // Log.d(TAG, "registering for sensor " + sensor.getName());
-            	Log.v(TAG, "Check start");
             	pollAlarmReceiver.start(context);
             }
         }

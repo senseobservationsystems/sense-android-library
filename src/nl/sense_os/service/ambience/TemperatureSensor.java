@@ -11,8 +11,10 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
+import nl.sense_os.service.shared.SensorDataPoint;
 
 import org.json.JSONObject;
 
@@ -31,7 +33,7 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class TemperatureSensor extends BaseDataProducer implements SensorEventListener {
+public class TemperatureSensor extends BaseDataProducer implements SensorEventListener, PeriodicPollingSensor {
 
     private static final String TAG = "Sense Temperature Sensor";
 
@@ -43,10 +45,11 @@ public class TemperatureSensor extends BaseDataProducer implements SensorEventLi
 
     private Handler handler = new Handler();
     private Runnable startSampleTask = null;
-    private boolean sensorActive = false;
+    private PeriodicPollAlarmReceiver pollAlarmReceiver;
 
     protected TemperatureSensor(Context context) {
         this.context = context;
+        pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
    
@@ -68,6 +71,7 @@ public class TemperatureSensor extends BaseDataProducer implements SensorEventLi
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
         if (event.timestamp > lastSampleTime + sampleDelay) {
+        	Log.v(TAG, "Check temperature");
             lastSampleTime = event.timestamp;
 
             String sensorName = SensorNames.AMBIENT_TEMPERATURE;
@@ -93,41 +97,32 @@ public class TemperatureSensor extends BaseDataProducer implements SensorEventLi
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
             context.startService(i);
         }
-        if (sampleDelay > 500 && sensorActive) {
-            // unregister the listener and start again in sampleDelay seconds
-            stopSensing();
-
-            startSampleTask = new Runnable() {
-
-                @Override
-                public void run() {
-                    startSensing(sampleDelay);
-                }
-            };
-            handler.postDelayed(startSampleTask, sampleDelay);
-        }
+        stopTemperatureSensing();
     }
 
-    public void setSampleDelay(long sampleDelay) {
+    @Override
+	public void setSampleRate(long sampleDelay) {
         this.sampleDelay = sampleDelay;
     }
 
     public void startSensing(long sampleDelay) {
     	handler = new Handler();
-        sensorActive = true;
-        setSampleDelay(sampleDelay);
+        setSampleRate(sampleDelay);
 
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         if (null != sensor) {
             // Log.d(TAG, "registering for sensor " + sensor.getName());
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        	pollAlarmReceiver.start(context);
         }
     }
-
+    
     public void stopSensing() {
-        try {
-            sensorActive = false;
+    	pollAlarmReceiver.stop(context);
 
+    }
+
+    public void stopTemperatureSensing() {
+        try {
             sensorManager.unregisterListener(this);
 
             if (startSampleTask != null) {
@@ -139,4 +134,23 @@ public class TemperatureSensor extends BaseDataProducer implements SensorEventLi
             Log.e(TAG, "Error stopping temperature sensor: " + e);
         }
     }
+
+	@Override
+	public long getSampleRate() {
+		return this.sampleDelay;
+	}
+
+	@Override
+	public boolean isActive() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void doSample() {
+		Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        if (null != sensor) {
+        	sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+	}
 }

@@ -18,17 +18,15 @@ import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.DataProducer;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
 import org.json.JSONObject;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -51,31 +49,54 @@ import android.util.Log;
  * 
  * @see LoudnessSensor
  */
-public class NoiseSensor extends BaseDataProducer{
+public class NoiseSensor extends BaseDataProducer implements PeriodicPollingSensor{
 
-	/**
-	 * Receiver for periodic alarm broadcast that wakes up the device and starts
-	 * a noise measurement.
-	 */
-	private class AlarmReceiver extends BroadcastReceiver {
+	@Override
+	public void doSample() {
+		// clear old sample jobs
+		if (noiseSampleJob != null) {
+			noiseSampleJob.stopRecording();
+			noiseSampleHandler.removeCallbacks(noiseSampleJob);
+		}
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Log.v(TAG, "Check noise");
-			// clear old sample jobs
-			if (noiseSampleJob != null) {
-				noiseSampleJob.stopRecording();
-				noiseSampleHandler.removeCallbacks(noiseSampleJob);
-			}
-
-			// start sample job
-			if (isEnabled /* && listenInterval != -1 */) {
-				noiseSampleJob = new NoiseSampleJob();
-				//noiseSampleHandler = new Handler();
-				noiseSampleHandler.post(noiseSampleJob);
-			}
+		// start sample job
+		if (isEnabled /* && listenInterval != -1 */) {
+			noiseSampleJob = new NoiseSampleJob();
+			//noiseSampleHandler = new Handler();
+			noiseSampleHandler.post(noiseSampleJob);
 		}
 	}
+
+	@Override
+	public void startSensing(long sampleDelay) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopSensing() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public long getSampleRate() {
+		return listenInterval;
+	}
+
+	@Override
+	public void setSampleRate(long sampleDelay) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isActive() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
 
 	/**
 	 * Runnable that performs one noise sample. Starts the recording, reads the
@@ -275,6 +296,7 @@ public class NoiseSensor extends BaseDataProducer{
 		@Override
 		public void run() {
 
+			Log.v(TAG, "Check noise");
 			if (isEnabled && !isCalling) {
 
 				boolean init = initAudioRecord();
@@ -600,10 +622,6 @@ public class NoiseSensor extends BaseDataProducer{
 
 	private static final String TAG = "Sense NoiseSensor";
 
-	private static final int REQID = 0xF00;
-
-	private static final String ACTION_NOISE = "nl.sense_os.service.NoiseSample";
-
 	/**
 	 * Factory method to get the singleton instance.
 	 * 
@@ -625,18 +643,20 @@ public class NoiseSensor extends BaseDataProducer{
 	private SoundStreamJob soundStreamJob = null;
 	private Handler noiseSampleHandler = new Handler();
 	private NoiseSampleJob noiseSampleJob = null;
-	private AlarmReceiver alarmReceiver = new AlarmReceiver();
 	private LoudnessSensor loudnessSensor;
 	private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
 	private Controller controller;
+	private PeriodicPollAlarmReceiver pollAlarmReceiver;
 
 	/**
 	 * Private constructor
 	 * 
 	 * @param context
+	 * @return 
 	 */
 	private NoiseSensor(Context context) {
 		this.context = context;
+		pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
 		controller = Controller.getController(context);
 		loudnessSensor = LoudnessSensor.getInstance(context);
 		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
@@ -656,6 +676,7 @@ public class NoiseSensor extends BaseDataProducer{
 
 		isEnabled = false;
 		stopSampling();
+		pollAlarmReceiver.stop(context);
 		TelephonyManager telMgr = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		telMgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
@@ -741,14 +762,7 @@ public class NoiseSensor extends BaseDataProducer{
 					startTime.add(Calendar.MINUTE, 1);
 				}
 
-				context.registerReceiver(alarmReceiver, new IntentFilter(ACTION_NOISE));
-				Intent alarm = new Intent(ACTION_NOISE);
-				PendingIntent alarmOperation = PendingIntent.getBroadcast(context, REQID, alarm, 0);
-				AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-				mgr.cancel(alarmOperation);
-				mgr.setRepeating(AlarmManager.RTC_WAKEUP,
-						startTime.getTimeInMillis(), listenInterval,
-						alarmOperation);
+				pollAlarmReceiver.start(context);
 				// Log.d(TAG, "Start at second " + startTime.get(Calendar.SECOND) + ", offset is " +
 				// offset);
 			}
@@ -765,17 +779,6 @@ public class NoiseSensor extends BaseDataProducer{
 		Log.v(TAG, "Stop sound sensor sampling");
 
 		try {
-
-			// stop the alarms
-			AlarmManager alarms = (AlarmManager) context
-					.getSystemService(Context.ALARM_SERVICE);
-			alarms.cancel(PendingIntent.getBroadcast(context, REQID,
-					new Intent(ACTION_NOISE), 0));
-			try {
-				context.unregisterReceiver(alarmReceiver);
-			} catch (IllegalArgumentException e) {
-				// ignore
-			}
 
 			// stop the sound recordings/*
 			if (soundStreamJob != null) {

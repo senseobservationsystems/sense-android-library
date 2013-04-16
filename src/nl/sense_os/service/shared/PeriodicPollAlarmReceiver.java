@@ -18,7 +18,7 @@ public class PeriodicPollAlarmReceiver implements Runnable {
     }
     
     public void run() {
-            sensor.doSample();
+        sensor.doSample();
     }
 
     /**
