@@ -255,15 +255,13 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
                     bestFix = gpsFix;
                 }
             }
-            if (null != nwFix) {
-                if (null == bestFix) {
-                    bestFix = nwFix;
-                } else if (nwFix.getTime() < gpsFix.getTime()
-                        && nwFix.getAccuracy() < bestFix.getAccuracy() + 100
-                        && hist_time < nwFix.getTime()
-                        && nwFix.getTime() < SNTP.getInstance().getTime()) {
+            if (null != nwFix) {            	
+                if ((bestFix != null && nwFix.getTime() < bestFix.getTime()
+                        && nwFix.getAccuracy() < bestFix.getAccuracy() + 100) 
+                        || bestFix == null) {
                     // network fix is more recent and pretty accurate
-                    bestFix = nwFix;
+                	if(hist_time < nwFix.getTime() && nwFix.getTime() < SNTP.getInstance().getTime())
+                		bestFix = nwFix;
                 }
             }
             if (null != bestFix) {
