@@ -239,41 +239,40 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
                 lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
     }
 
+    /**
+     * Gets the last known location fixes from the location providers, and sends it to the location
+     * listener as first data point.
+     */
     private void getLastKnownLocation() {
 
         // get the most recent location fixes
         Location gpsFix = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Location nwFix = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        // see which is best
-        long hist_time = SNTP.getInstance().getTime() - 1000 * 60 * 5;
-        if (null != gpsFix || null != nwFix) {
-            Location bestFix = null;
-            if (null != gpsFix) {
-                if (hist_time < gpsFix.getTime() && gpsFix.getTime() < SNTP.getInstance().getTime()) {
-                    // recent GPS fix
-                    bestFix = gpsFix;
-                }
+        // see which provides the best recent fix
+        Location bestFix = gpsFix;
+        if (null != nwFix) {
+
+            // see if network provider has better recent fix
+            if (null == bestFix) {
+                // gps did not provide a recent fix
+                bestFix = nwFix;
+            } else if (nwFix.getTime() < bestFix.getTime()
+                    && nwFix.getAccuracy() < bestFix.getAccuracy() + 100) {
+                // network fix is more recent and pretty accurate
+                bestFix = nwFix;
             }
-            if (null != nwFix) {
-                if (null == bestFix) {
-                    bestFix = nwFix;
-                } else if (nwFix.getTime() < gpsFix.getTime()
-                        && nwFix.getAccuracy() < bestFix.getAccuracy() + 100
-                        && hist_time < nwFix.getTime()
-                        && nwFix.getTime() < SNTP.getInstance().getTime()) {
-                    // network fix is more recent and pretty accurate
-                    bestFix = nwFix;
-                }
-            }
-            if (null != bestFix) {
+        }
+
+        // send best recent fix to location listener
+        if (null != bestFix) {
+            // check that the fix is not too old or from the future
+            long presentTime = SNTP.getInstance().getTime();
+            long oldTime = presentTime - 1000 * 60 * 5;
+            if (bestFix.getTime() > oldTime && bestFix.getTime() < presentTime) {
                 // use last known location as first sensor value
                 gpsListener.onLocationChanged(bestFix);
-            } else {
-                // no usable last known location
             }
-        } else {
-            // no last known location
         }
     }
 
