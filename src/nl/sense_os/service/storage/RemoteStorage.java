@@ -38,7 +38,7 @@ class RemoteStorage {
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-            String sortOrder) throws JSONException, URISyntaxException, IOException {
+            int limit, String sortOrder) throws JSONException, URISyntaxException, IOException {
         // Log.v(TAG, "Query data points in CommonSense");
 
         // try to parse the selection criteria
@@ -62,6 +62,9 @@ class RemoteStorage {
         // get the data for the sensor
         String url = SenseUrls.SENSOR_DATA.replace("<id>", id) + "?start_date="
                 + timeRangeSelect[0] / 1000d + "&end_date=" + timeRangeSelect[1] / 1000d;
+        url += "&per_page=" + limit;
+        url += sortOrder != null ? "&sort=" + sortOrder : "";
+
         String cookie = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE)
                 .getString(Auth.LOGIN_COOKIE, null);
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
