@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="nl.sense_os.phonegap"
+    android:versionCode="20110905"
+    android:versionName="1.0.0" >
+
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="true" />
+    <!-- implied by permission PROCESS OUTGOING_CALLS, but not required -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <!-- implied by permission CAMERA, but not required -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <!-- implied by permission NFC, but not required -->
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Permission to receive Google Cloud Messages -->
+    <uses-permission android:name="nl.sense_os.pgtest.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission
+        android:name="nl.sense_os.pgtest.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="15" />
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+        <activity android:name="ExampleApp" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="PhoneGapExamples"
+            android:configChanges="orientation|screenSize|keyboardHidden" >
+        </activity>
+        <activity
+            android:name="SenseExamples"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="nl.sense_os.pgtest.NOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- COMPONENTS OF GENERIC SENSE PLATFORM -->
+        <service
+            android:name="nl.sense_os.service.SenseService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="nl.sense_os.pgtest.SenseService" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="nl.sense_os.service.MsgHandler"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="nl.sense_os.pgtest.MsgHandler.NEW_DATA" />
+                <action android:name="nl.sense_os.pgtest.MsgHandler.SEND_DATA" />
+            </intent-filter>
+        </service>
+        <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
+        <service
+            android:name="nl.sense_os.service.appwidget.DummyAppWidgetService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="nl.sense_os.pgtest.AppWidgetUpdate" />
+            </intent-filter>
+        </service>
+        <service android:name="nl.sense_os.service.states.EpiStateMonitor" />
+        <service android:name="nl.sense_os.service.push.GCMReceiver" />
+
+        <activity
+            android:name="nl.sense_os.service.deviceprox.NfcScan"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc" />
+        </activity>
+
+        <receiver
+            android:name="nl.sense_os.service.BootRx"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="nl.sense_os.service.AliveChecker"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="nl.sense_os.pgtest.AliveCheck" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="nl.sense_os.service.NetworkMonitor"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="nl.sense_os.service.DataTransmitter"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="nl.sense_os.pgtest.DataTransmit" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="nl.sense_os.service.push.GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+
+            <!-- Receive the message -->
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="nl.sense_os.pgtest" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

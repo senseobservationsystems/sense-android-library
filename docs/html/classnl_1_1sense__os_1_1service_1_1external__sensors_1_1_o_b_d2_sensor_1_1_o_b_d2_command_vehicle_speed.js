@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_vehicle_speed =
+[
+    [ "OBD2CommandVehicleSpeed", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_vehicle_speed.html#a570f60341439f65f769dd1b23a38c0a6", null ],
+    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_vehicle_speed.html#a5b14a648e120bdbcd36e833a3478d363", null ]
+];

@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_load =
+[
+    [ "OBD2CommandEngineLoad", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_load.html#a1b1cf138a618c89b86cc938abdd2a6d1", null ],
+    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_load.html#afd4ce52dcee826366f677e12dd8314d9", null ]
+];
