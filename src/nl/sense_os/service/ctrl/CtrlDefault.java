@@ -128,7 +128,9 @@ public class CtrlDefault extends Controller {
 
             if (null == data || data.getCount() == 0) {
                 // no movement measurements: assume the device is moving
-                return true;
+            	// strange assumption, then the check isPositionChanged is useless 
+            	// and the GPS is continuously turned off and on
+                return false;
             }
 
             // find the largest motion measurement
@@ -156,7 +158,7 @@ public class CtrlDefault extends Controller {
 
         } catch (JSONException e) {
             Log.e(TAG, "Exception parsing linear acceleration data: ", e);
-            moving = true;
+            moving = false;
         } finally {
             if (null != data) {
                 data.close();

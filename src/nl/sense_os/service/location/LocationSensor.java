@@ -156,7 +156,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time,
+            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, sampleDelay,
                     lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop,
                     listenNwStop);
         }
