@@ -18,7 +18,9 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
 
-import org.apache.cordova.api.PluginResult.Status;
+import org.apache.cordova.CordovaArgs;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,480 +30,447 @@ import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-
 /**
  * PhoneGap plugin implementation for the Sense Platform. Provides PhoneGap applications with an
  * interface to the native Sense service from JavaScript.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class SensePlugin extends Plugin {
+public class SensePlugin extends CordovaPlugin {
 
-	/**
-	 * Standard action labels that correspond to the actions that are used in the JavaScript part of
-	 * the plugin.
-	 */
-	private static class Actions {
-		static final String ADD_DATA_POINT = "add_data_point";
-		static final String CHANGE_LOGIN = "change_login";
-		static final String FLUSH_BUFFER = "flush_buffer";
-		static final String GET_COMMONSENSE_DATA = "get_commonsense_data";
-		static final String GET_DATA = "get_data";
-		static final String GET_STATUS = "get_status";
-		static final String GET_SESSION = "get_session";
-		static final String GET_PREF = "get_pref";
-		static final String GIVE_FEEDBACK = "give_feedback";
-		static final String INIT = "init";
-		static final String LOGOUT = "logout";
-		static final String REGISTER = "register";
-		static final String SET_PREF = "set_pref";
-		static final String TOGGLE_MAIN = "toggle_main";
-		static final String TOGGLE_AMBIENCE = "toggle_ambience";
-		static final String TOGGLE_EXTERNAL = "toggle_external";
-		static final String TOGGLE_MOTION = "toggle_motion";
-		static final String TOGGLE_NEIGHDEV = "toggle_neighdev";
-		static final String TOGGLE_PHONESTATE = "toggle_phonestate";
-		static final String TOGGLE_POSITION = "toggle_position";
-	}
+    /**
+     * Standard action labels that correspond to the actions that are used in the JavaScript part of
+     * the plugin.
+     */
+    private static class Actions {
+        static final String ADD_DATA_POINT = "add_data_point";
+        static final String CHANGE_LOGIN = "change_login";
+        static final String FLUSH_BUFFER = "flush_buffer";
+        static final String GET_COMMONSENSE_DATA = "get_commonsense_data";
+        static final String GET_DATA = "get_data";
+        static final String GET_STATUS = "get_status";
+        static final String GET_SESSION = "get_session";
+        static final String GET_PREF = "get_pref";
+        static final String GIVE_FEEDBACK = "give_feedback";
+        static final String INIT = "init";
+        static final String LOGOUT = "logout";
+        static final String REGISTER = "register";
+        static final String SET_PREF = "set_pref";
+        static final String TOGGLE_MAIN = "toggle_main";
+        static final String TOGGLE_AMBIENCE = "toggle_ambience";
+        static final String TOGGLE_EXTERNAL = "toggle_external";
+        static final String TOGGLE_MOTION = "toggle_motion";
+        static final String TOGGLE_NEIGHDEV = "toggle_neighdev";
+        static final String TOGGLE_PHONESTATE = "toggle_phonestate";
+        static final String TOGGLE_POSITION = "toggle_position";
+    }
 
-	private class SenseServiceCallback extends ISenseServiceCallback.Stub {
+    private class SenseServiceCallback extends ISenseServiceCallback.Stub {
 
-		@Override
-		public void onChangeLoginResult(int result) throws RemoteException {
-			switch (result) {
-			case 0:
-				Log.v(TAG, "Change login OK");
-				success(new PluginResult(Status.OK, result), changeLoginCallbackId);
-				onLoginSuccess();
-				break;
-			case -1:
-				Log.v(TAG, "Login failed! Connectivity problems?");
-				error(new PluginResult(Status.IO_EXCEPTION,
-						"Error logging in, probably connectivity problems."), changeLoginCallbackId);
-				break;
-			case -2:
-				Log.v(TAG, "Login failed! Invalid username or password.");
-				error(new PluginResult(Status.ERROR, "Invalid username or password."),
-						changeLoginCallbackId);
-				break;
-			default:
-				Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
-				error(new PluginResult(Status.ERROR, "Unexpected result: " + result),
-						changeLoginCallbackId);
-			}
-		}
+        @Override
+        public void onChangeLoginResult(int result) throws RemoteException {
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Change login OK");
+                changeLoginCallback.success(result);
+                onLoginSuccess();
+                break;
+            case -1:
+                Log.v(TAG, "Login failed! Connectivity problems?");
+                changeLoginCallback.error("Error logging in, probably connectivity problems.");
+                break;
+            case -2:
+                Log.v(TAG, "Login failed! Invalid username or password.");
+                changeLoginCallback.error("Invalid username or password.");
+                break;
+            default:
+                Log.w(TAG, "Unexpected login result! Unexpected result: " + result);
+                changeLoginCallback.error("Unexpected result: " + result);
+            }
+        }
 
-		@Override
-		public void onRegisterResult(int result) throws RemoteException {
-			switch (result) {
-			case 0:
-				Log.v(TAG, "Registration OK");
-				success(new PluginResult(Status.OK, result), registerCallbackId);
-				break;
-			case -1:
-				Log.v(TAG, "Registration failed! Connectivity problems?");
-				error(new PluginResult(Status.IO_EXCEPTION, result), registerCallbackId);
-				break;
-			case -2:
-				Log.v(TAG, "Registration failed! Username already taken.");
-				error(new PluginResult(Status.ERROR, result), registerCallbackId);
-				break;
-			default:
-				Log.w(TAG, "Unexpected registration result! Unexpected registration result: "
-						+ result);
-				error(new PluginResult(Status.ERROR, result), registerCallbackId);
-				break;
-			}
-		}
+        @Override
+        public void onRegisterResult(int result) throws RemoteException {
+            switch (result) {
+            case 0:
+                Log.v(TAG, "Registration OK");
+                registerCallback.success(result);
+                break;
+            case -1:
+                Log.v(TAG, "Registration failed! Connectivity problems?");
+                registerCallback.error(result);
+                break;
+            case -2:
+                Log.v(TAG, "Registration failed! Username already taken.");
+                registerCallback.error(result);
+                break;
+            default:
+                Log.w(TAG, "Unexpected registration result! Unexpected registration result: "
+                        + result);
+                registerCallback.error(result);
+                break;
+            }
+        }
 
-		@Override
-		public void statusReport(final int status) throws RemoteException {
-			cordova.getActivity().runOnUiThread(new Runnable() {
+        @Override
+        public void statusReport(final int status) throws RemoteException {
+            // Log.d(TAG, "Received Sense Platform service status: " + status);
+            getStatusCallback.success(status);
+        }
+    }
 
-				@Override
-				public void run() {
-					// Log.d(TAG, "Received Sense Platform service status: " + status);
-					SensePlugin.this.success(new PluginResult(Status.OK, status),
-							getStatusCallbackId);
-				}
-			});
-		}
-	}
+    private static final String TAG = "PhoneGap Sense";
 
+    private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
 
-	private static final String TAG = "PhoneGap Sense";
-
-	private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
-
-	private ISenseServiceCallback callback = new SenseServiceCallback();
-	private String getStatusCallbackId;
-	private String changeLoginCallbackId;
-	private String registerCallbackId;
+    private ISenseServiceCallback callback = new SenseServiceCallback();
+    private CallbackContext getStatusCallback;
+    private CallbackContext changeLoginCallback;
+    private CallbackContext registerCallback;
 
     private SensePlatform sensePlatform;
 
-	private PluginResult addDataPoint(JSONArray data, String callbackId) throws JSONException {
+    private void addDataPoint(CordovaArgs args, final CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the parameters
-		final String name = data.getString(0);
-		final String displayName = data.getString(1);
-		final String description = data.getString(2);
-		final String dataType = data.getString(3);
-		final String value = data.getString(4);
-		final long timestamp = data.getLong(5);
-		Log.v(TAG, "addDataPoint('" + name + "', '" + displayName + "', '" + description + "', '"
-				+ dataType + "', '" + value + "', " + timestamp + ")");
+        // get the parameters
+        final String name = args.getString(0);
+        final String displayName = args.getString(1);
+        final String description = args.getString(2);
+        final String dataType = args.getString(3);
+        final String value = args.getString(4);
+        final long timestamp = args.getLong(5);
+        Log.v(TAG, "addDataPoint('" + name + "', '" + displayName + "', '" + description + "', '"
+                + dataType + "', '" + value + "', " + timestamp + ")");
 
-        boolean result = sensePlatform.addDataPoint(name, displayName, description, dataType,
-                value, timestamp);
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = sensePlatform.addDataPoint(name, displayName, description,
+                        dataType, value, timestamp);
 
-        if (result) {
-            return new PluginResult(Status.OK);
-        } else {
-            Log.w(TAG, "Could not start MsgHandler service!");
-            return new PluginResult(Status.ERROR, "could not add data to Sense service");
-        }
-	}
+                if (result) {
+                    callbackContext.success();
+                } else {
+                    Log.w(TAG, "Could not start MsgHandler service!");
+                    callbackContext.error("could not add data to Sense service");
+                }
+            }
+        });
+    }
 
-	private PluginResult changeLogin(final JSONArray data, final String callbackId)
-			throws JSONException, RemoteException {
+    private void changeLogin(final CordovaArgs args, final CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the parameters
-        final String username = data.getString(0).toLowerCase(Locale.ENGLISH);
-		final String password = data.getString(1);
-		Log.v(TAG, "changeLogin('" + username + "', '" + password + "')");
+        // get the parameters
+        final String username = args.getString(0).toLowerCase(Locale.ENGLISH);
+        final String password = args.getString(1);
+        Log.v(TAG, "changeLogin('" + username + "', '" + password + "')");
 
-        changeLoginCallbackId = callbackId;
-        new Thread() {
+        changeLoginCallback = callbackContext;
+        cordova.getThreadPool().execute(new Runnable() {
+
+            @Override
             public void run() {
                 try {
                     sensePlatform.login(username, password, callback);
                 } catch (RemoteException e) {
                     Log.e(TAG, "Failed to call changeLogin()! " + e);
-                    error(new PluginResult(Status.ERROR, e.getMessage()), changeLoginCallbackId);
+                    callbackContext.error(e.getMessage());
                 } catch (IllegalStateException e) {
                     Log.e(TAG, "Failed to bind to service in time!");
-                    error(new PluginResult(Status.ERROR, "Failed to bind to service in time!"),
-                            changeLoginCallbackId);
+                    callbackContext.error("Failed to bind to service in time!");
                 }
             };
-        }.run();
+        });
+    }
 
-		// keep the callback ID so we can use it when the service returns
-		PluginResult r = new PluginResult(Status.NO_RESULT);
-		r.setKeepCallback(true);
-		return r;
-	}
+    /**
+     * Executes the request.
+     * 
+     * This method is called from the WebView thread. To do a non-trivial amount of work, use:
+     * cordova.getThreadPool().execute(runnable);
+     * 
+     * To run on the UI thread, use: cordova.getActivity().runOnUiThread(runnable);
+     * 
+     * @param action
+     *            The action to execute.
+     * @param args
+     *            The exec() arguments, wrapped with some Cordova helpers.
+     * @param callbackContext
+     *            The callback context used when calling back into JavaScript.
+     * @return Whether the action was valid.
+     */
+    @Override
+    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext)
+            throws JSONException {
+        try {
+            if (Actions.INIT.equals(action)) {
+                init(args, callbackContext);
+            } else if (Actions.ADD_DATA_POINT.equals(action)) {
+                addDataPoint(args, callbackContext);
+            } else if (Actions.CHANGE_LOGIN.equals(action)) {
+                changeLogin(args, callbackContext);
+            } else if (Actions.FLUSH_BUFFER.equals(action)) {
+                flushBuffer(args, callbackContext);
+            } else if (Actions.GET_COMMONSENSE_DATA.equals(action)) {
+                getRemoteValues(args, callbackContext);
+            } else if (Actions.GET_DATA.equals(action)) {
+                getLocalValues(args, callbackContext);
+            } else if (Actions.GET_PREF.equals(action)) {
+                getPreference(args, callbackContext);
+            } else if (Actions.GET_STATUS.equals(action)) {
+                getStatus(args, callbackContext);
+            } else if (Actions.GET_SESSION.equals(action)) {
+                getSession(args, callbackContext);
+            } else if (Actions.GIVE_FEEDBACK.equals(action)) {
+                giveFeedback(args, callbackContext);
+            } else if (Actions.LOGOUT.equals(action)) {
+                logout(args, callbackContext);
+            } else if (Actions.REGISTER.equals(action)) {
+                register(args, callbackContext);
+            } else if (Actions.SET_PREF.equals(action)) {
+                setPreference(args, callbackContext);
+            } else if (Actions.TOGGLE_AMBIENCE.equals(action)) {
+                toggleAmbience(args, callbackContext);
+            } else if (Actions.TOGGLE_EXTERNAL.equals(action)) {
+                toggleExternal(args, callbackContext);
+            } else if (Actions.TOGGLE_MAIN.equals(action)) {
+                toggleMain(args, callbackContext);
+            } else if (Actions.TOGGLE_MOTION.equals(action)) {
+                toggleMotion(args, callbackContext);
+            } else if (Actions.TOGGLE_NEIGHDEV.equals(action)) {
+                toggleNeighboringDevices(args, callbackContext);
+            } else if (Actions.TOGGLE_PHONESTATE.equals(action)) {
+                togglePhoneState(args, callbackContext);
+            } else if (Actions.TOGGLE_POSITION.equals(action)) {
+                togglePosition(args, callbackContext);
+            } else {
+                Log.e(TAG, "Invalid action: '" + action + "'");
+                return false;
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "RemoteException communicating with Sense Platform for action '" + action
+                    + "'", e);
+            return false;
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "IllegalAccessException getting session id", e);
+            return false;
+        }
 
-	/**
-	 * Executes the request and returns PluginResult.
-	 * 
-	 * @param action
-	 *            The action to execute.
-	 * @param args
-	 *            JSONArray of arguments for the plugin.
-	 * @param callbackId
-	 *            The callback id used when calling back into JavaScript.
-	 * @return A PluginResult object with a status and message.
-	 */
-	@Override
-	public PluginResult execute(String action, final JSONArray data, final String callbackId) {
-		try {
-			if (Actions.INIT.equals(action)) {
-				return init(data, callbackId);
-			} else if (Actions.ADD_DATA_POINT.equals(action)) {
-				return addDataPoint(data, callbackId);
-			} else if (Actions.CHANGE_LOGIN.equals(action)) {
-				return changeLogin(data, callbackId);
-			} else if (Actions.FLUSH_BUFFER.equals(action)) {
-				return flushBuffer(data, callbackId);
-			} else if (Actions.GET_COMMONSENSE_DATA.equals(action)) {
-				return getRemoteValues(data, callbackId);
-			} else if (Actions.GET_DATA.equals(action)) {
-				return getLocalValues(data, callbackId);
-			} else if (Actions.GET_PREF.equals(action)) {
-				return getPreference(data, callbackId);
-			} else if (Actions.GET_STATUS.equals(action)) {
-				return getStatus(data, callbackId);
-			} else if (Actions.GET_SESSION.equals(action)) {
-				return getSession(data, callbackId);
-			} else if (Actions.GIVE_FEEDBACK.equals(action)) {
-				return giveFeedback(data, callbackId);
-			} else if (Actions.LOGOUT.equals(action)) {
-				return logout(data, callbackId);
-			} else if (Actions.REGISTER.equals(action)) {
-				return register(data, callbackId);
-			} else if (Actions.SET_PREF.equals(action)) {
-				return setPreference(data, callbackId);
-			} else if (Actions.TOGGLE_AMBIENCE.equals(action)) {
-				return toggleAmbience(data, callbackId);
-			} else if (Actions.TOGGLE_EXTERNAL.equals(action)) {
-				return toggleExternal(data, callbackId);
-			} else if (Actions.TOGGLE_MAIN.equals(action)) {
-				return toggleMain(data, callbackId);
-			} else if (Actions.TOGGLE_MOTION.equals(action)) {
-				return toggleMotion(data, callbackId);
-			} else if (Actions.TOGGLE_NEIGHDEV.equals(action)) {
-				return toggleNeighboringDevices(data, callbackId);
-			} else if (Actions.TOGGLE_PHONESTATE.equals(action)) {
-				return togglePhoneState(data, callbackId);
-			} else if (Actions.TOGGLE_POSITION.equals(action)) {
-				return togglePosition(data, callbackId);
-			} else {
-				Log.e(TAG, "Invalid action: '" + action + "'");
-				return new PluginResult(Status.INVALID_ACTION);
-			}
-		} catch (JSONException e) {
-			Log.e(TAG, "JSONException getting arguments for action '" + action + "'", e);
-			return new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
-		} catch (RemoteException e) {
-			Log.e(TAG, "RemoteException communicating with Sense Platform for action '" + action
-					+ "'", e);
-			return new PluginResult(Status.ERROR, e.getMessage());
-		} catch (Exception e) {
-			Log.e(TAG, "Unexpected error while executing action: " + action, e);
-			return new PluginResult(Status.ERROR, e.getMessage());
-		}
-	}
+        return true;
+    }
 
+    private void flushBuffer(CordovaArgs args, CallbackContext callbackContext) {
+        Log.v(TAG, "flushBuffer()");
 
-	private PluginResult flushBuffer(JSONArray data, String callbackId) {
+        cordova.getThreadPool().execute(new Runnable() {
 
-		Log.v(TAG, "flushBuffer()");
-
-        boolean result = sensePlatform.flushData();
-        if (result) {
-			return new PluginResult(Status.OK);
-		} else {
-			return new PluginResult(Status.INSTANTIATION_EXCEPTION);
-		}
-	}
-
-	private PluginResult getLocalValues(JSONArray data, String callbackId) throws JSONException {
-
-		final String sensorName = data.getString(0);
-		Log.v(TAG, "getLocalValues('" + sensorName + "')");
-
-		try {
-			Uri uri = Uri.parse("content://"
-					+ cordova.getActivity().getString(R.string.local_storage_authority)
-					+ DataPoint.CONTENT_URI_PATH);
-			JSONArray result = getValues(sensorName, null, uri);
-
-			Log.v(TAG, "Found " + result.length() + " '" + sensorName
-					+ "' data points in the local storage");
-			return new PluginResult(Status.OK, result);
-
-		} catch (JSONException e) {
-			throw e;
-		} catch (Exception e) {
-			return new PluginResult(Status.ERROR, "" + e);
-		}
-	}
-
-	private PluginResult getPreference(JSONArray data, String callbackId) throws JSONException,
-			RemoteException {
-
-		String key = data.getString(0);
-		Log.v(TAG, "getPreference('" + key + "')");
-
-        SenseServiceStub service = sensePlatform.getService();
-		if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
-				|| key.equals(Auth.LOGIN_USERNAME)) {
-			String result = service.getPrefString(key, null);
-			return new PluginResult(Status.OK, result);
-		} else {
-			boolean result = service.getPrefBool(key, false);
-			return new PluginResult(Status.OK, result);
-		}
-	}
-
-	private PluginResult getRemoteValues(JSONArray data, String callbackId) throws JSONException {
-
-		final String sensorName = data.getString(0);
-		final boolean onlyThisDevice = data.getBoolean(1);
-		Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyThisDevice + ")");
-
-		try {
-            JSONArray result = sensePlatform.getData(sensorName, onlyThisDevice);
-
-            Log.v(TAG, "Found " + result.length() + " '" + sensorName
-                    + "' data points in the CommonSense");
-            return new PluginResult(Status.OK, result);
-
-		} catch (JSONException e) {
-			throw e;
-		} catch (Exception e) {
-			return new PluginResult(Status.ERROR, "" + e);
-		}
-	}
-
-    private PluginResult getSession(JSONArray data, String callbackId) throws RemoteException,
-            IllegalAccessException {
-
-		Log.v(TAG, "getSessionId()");
-
-        SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-
-			// try the login
-            String sessionId = SenseApi.getSessionId(cordova.getActivity(), SECRET);
-
-			// check the result
-			if (null != sessionId) {
-				Log.v(TAG, "Received session ID from Sense");
-				return new PluginResult(Status.OK, sessionId);
-			} else {
-				Log.v(TAG, "No session ID");
-				return new PluginResult(Status.ERROR, "No session ID.");
-			}
-
-		} else {
-			Log.e(TAG, "No connection to the Sense Platform service.");
-			return new PluginResult(Status.ERROR, "No connection to the Sense Platform service.");
-		}
-	}
-
-	private PluginResult getStatus(JSONArray data, final String callbackId) throws RemoteException {
-
-		Log.v(TAG, "getStatus()");
-
-        SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			getStatusCallbackId = callbackId;
-			service.getStatus(callback);
-		} else {
-			Log.e(TAG, "No connection to the Sense Platform service.");
-			return new PluginResult(Status.ERROR, "No connection to the Sense Platform service.");
-		}
-
-		PluginResult r = new PluginResult(Status.NO_RESULT);
-		r.setKeepCallback(true);
-		return r;
-	}
-
-	/**
-	 * Gets array of values from the LocalStorage
-	 * 
-	 * @param sensorName
-	 * @param deviceUuid
-	 * @param uri
-	 * @return JSONArray with values for the sensor with the selected name and device
-	 * @throws JSONException
-	 */
-	private JSONArray getValues(String sensorName, String deviceUuid, Uri uri) throws JSONException {
-
-		Cursor cursor = null;
-
-		try {
-			JSONArray result = new JSONArray();
-
-			String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
-			String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
-			if (null != deviceUuid) {
-				selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
-			}
-			String[] selectionArgs = null;
-			String sortOrder = null;
-			cursor = LocalStorage.getInstance(cordova.getActivity()).query(uri, projection,
-					selection, selectionArgs, sortOrder);
-
-			if (null != cursor && cursor.moveToFirst()) {
-				while (!cursor.isAfterLast()) {
-					JSONObject val = new JSONObject();
-					val.put("timestamp",
-							cursor.getString(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
-					val.put("value", cursor.getString(cursor.getColumnIndex(DataPoint.VALUE)));
-					result.put(val);
-					cursor.moveToNext();
-				}
-			}
-
-			return result;
-
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-	}
-
-	private PluginResult giveFeedback(JSONArray data, final String callbackId) throws JSONException {
-
-		// get the parameters
-		final String name = data.getString(0);
-		final long start = data.getLong(1);
-		final long end = data.getLong(2);
-		final String label = data.getString(3);
-
-		Log.v(TAG, "giveFeedback('" + name + "', " + start + ", " + end + ", '" + label + "')");
-
-        new Thread() {
+            @Override
             public void run() {
+                sensePlatform.flushData();
+            }
+        });
+    }
+
+    private void getLocalValues(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
+
+        final String sensorName = data.getString(0);
+        Log.v(TAG, "getLocalValues('" + sensorName + "')");
+
+        Uri uri = Uri.parse("content://"
+                + cordova.getActivity().getString(R.string.local_storage_authority)
+                + DataPoint.CONTENT_URI_PATH);
+        JSONArray result = getValues(sensorName, null, uri);
+
+        Log.v(TAG, "Found " + result.length() + " '" + sensorName
+                + "' data points in the local storage");
+        callbackContext.success(result);
+    }
+
+    private void getPreference(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
+
+        String key = data.getString(0);
+        Log.v(TAG, "getPreference('" + key + "')");
+
+        SenseServiceStub service = sensePlatform.getService();
+        if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
+                || key.equals(Auth.LOGIN_USERNAME)) {
+            String result = service.getPrefString(key, null);
+            callbackContext.success(result);
+        } else {
+            boolean result = service.getPrefBool(key, false);
+            callbackContext.success("" + result);
+        }
+    }
+
+    private void getRemoteValues(CordovaArgs data, final CallbackContext callbackContext)
+            throws JSONException {
+
+        final String sensorName = data.getString(0);
+        final boolean onlyThisDevice = data.getBoolean(1);
+        Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyThisDevice + ")");
+
+        cordova.getThreadPool().execute(new Runnable() {
+
+            @Override
+            public void run() {
+                JSONArray result;
                 try {
-                    sensePlatform.giveFeedback(name, new Date(start), new Date(end), label);
+                    result = sensePlatform.getData(sensorName, onlyThisDevice);
+
+                    Log.v(TAG, "Found " + result.length() + " '" + sensorName
+                            + "' data points in the CommonSense");
+                    callbackContext.success(result);
+
                 } catch (IllegalStateException e) {
-                    Log.e(TAG, "Failed to bind to service in time!");
-                    error(new PluginResult(Status.ERROR, "Failed to bind to service in time!"),
-                            callbackId);
-                } catch (IOException e) {
-                    error(new PluginResult(Status.IO_EXCEPTION, e.getMessage()), callbackId);
+                    callbackContext.error(e.getMessage());
                 } catch (JSONException e) {
-                    error(new PluginResult(Status.IO_EXCEPTION, e.getMessage()), callbackId);
+                    callbackContext.error(e.getMessage());
                 }
             }
-        }.start();
+        });
+    }
 
-		// keep the callback ID so we can use it when the service returns
-		PluginResult r = new PluginResult(Status.NO_RESULT);
-		r.setKeepCallback(true);
-		return r;
-	}
-	private PluginResult init(JSONArray data, String callbackId) {
+    private void getSession(CordovaArgs data, CallbackContext callbackContext)
+            throws IllegalAccessException {
+
+        Log.v(TAG, "getSessionId()");
+
+        SenseServiceStub service = sensePlatform.getService();
+        if (null != service) {
+
+            // try the login
+            String sessionId = SenseApi.getSessionId(cordova.getActivity(), SECRET);
+
+            // check the result
+            if (null != sessionId) {
+                Log.v(TAG, "Received session ID from Sense");
+                callbackContext.success(sessionId);
+            } else {
+                Log.v(TAG, "No session ID");
+                callbackContext.error("no session id");
+            }
+
+        } else {
+            Log.e(TAG, "No connection to the Sense Platform service.");
+            callbackContext.error("No connection to the Sense Platform service.");
+        }
+    }
+
+    private void getStatus(CordovaArgs data, final CallbackContext callbackContext)
+            throws RemoteException {
+
+        Log.v(TAG, "getStatus()");
+
+        SenseServiceStub service = sensePlatform.getService();
+        if (null != service) {
+            getStatusCallback = callbackContext;
+            service.getStatus(callback);
+        } else {
+            Log.e(TAG, "No connection to the Sense Platform service.");
+            callbackContext.error("No connection to the Sense Platform service.");
+        }
+    }
+
+    /**
+     * Gets array of values from the LocalStorage
+     * 
+     * @param sensorName
+     * @param deviceUuid
+     * @param uri
+     * @return JSONArray with values for the sensor with the selected name and device
+     * @throws JSONException
+     */
+    private JSONArray getValues(String sensorName, String deviceUuid, Uri uri) throws JSONException {
+
+        Cursor cursor = null;
+
+        try {
+            JSONArray result = new JSONArray();
+
+            String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
+            String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
+            if (null != deviceUuid) {
+                selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
+            }
+            String[] selectionArgs = null;
+            String sortOrder = null;
+            cursor = LocalStorage.getInstance(cordova.getActivity()).query(uri, projection,
+                    selection, selectionArgs, sortOrder);
+
+            if (null != cursor && cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    JSONObject val = new JSONObject();
+                    val.put("timestamp",
+                            cursor.getString(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
+                    val.put("value", cursor.getString(cursor.getColumnIndex(DataPoint.VALUE)));
+                    result.put(val);
+                    cursor.moveToNext();
+                }
+            }
+
+            return result;
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    private void giveFeedback(CordovaArgs args, final CallbackContext callbackContext)
+            throws JSONException {
+
+        // get the parameters
+        final String name = args.getString(0);
+        final long start = args.getLong(1);
+        final long end = args.getLong(2);
+        final String label = args.getString(3);
+
+        Log.v(TAG, "giveFeedback('" + name + "', " + start + ", " + end + ", '" + label + "')");
+
+        cordova.getThreadPool().execute(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    boolean result = sensePlatform.giveFeedback(name, new Date(start),
+                            new Date(end), label);
+                    callbackContext.success("" + result);
+                } catch (IllegalStateException e) {
+                    Log.e(TAG, "Failed to bind to service in time!");
+                    callbackContext.error("Failed to bind to service in time!");
+                } catch (IOException e) {
+                    callbackContext.error(e.getMessage());
+                } catch (JSONException e) {
+                    callbackContext.error(e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void init(CordovaArgs args, CallbackContext callback) {
         sensePlatform = new SensePlatform(cordova.getActivity());
-		return new PluginResult(Status.OK);
-	}
+        callback.success();
+    }
 
-	/**
-	 * Identifies if action to be executed returns a value and should be run synchronously.
-	 * 
-	 * @param action
-	 *            The action to execute
-	 * @return true
-	 */
-	@Override
-	public boolean isSynch(String action) {
-		if (Actions.INIT.equals(action)) {
-			return true;
-		} else if (Actions.GET_STATUS.equals(action)) {
-			return true;
-		} else if (Actions.GET_PREF.equals(action)) {
-			return true;
-		} else if (Actions.GET_SESSION.equals(action)) {
-			return true;
-		} else if (Actions.SET_PREF.equals(action)) {
-			return true;
-		} else {
-			return super.isSynch(action);
-		}
-	}
-
-	private PluginResult logout(JSONArray data, String callbackId) throws RemoteException {
-		Log.v(TAG, "logout()");
+    private void logout(CordovaArgs data, CallbackContext callbackContext) throws RemoteException {
+        Log.v(TAG, "logout()");
         sensePlatform.logout();
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 
-	/**
-	 * The final call you receive before your activity is destroyed.
-	 */
-	@Override
-	public void onDestroy() {
+    /**
+     * The final call you receive before your activity is destroyed.
+     */
+    @Override
+    public void onDestroy() {
         sensePlatform.close();
-		super.onDestroy();
-	}
+        super.onDestroy();
+    }
 
     private void onLoginSuccess() {
         // special for ivitality
@@ -540,197 +509,191 @@ public class SensePlugin extends Plugin {
         }
     }
 
-	private PluginResult register(JSONArray data, String callbackId) throws JSONException,
-			RemoteException {
+    private void register(CordovaArgs data, final CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the parameters
-		final String username = data.getString(0);
-		final String password = data.getString(1);
-		final String email = data.getString(2);
-		final String address = data.getString(3);
-		final String zipCode = data.getString(4);
-		final String country = data.getString(5);
-		final String name = data.getString(6);
-		final String surname = data.getString(7);
-		final String phone = data.getString(8);
-		Log.v(TAG, "register('" + username + "', '" + password + "', '" + name + "', '" + surname
-				+ "', '" + email + "', '" + phone + "')");
+        // get the parameters
+        final String username = data.getString(0);
+        final String password = data.getString(1);
+        final String email = data.getString(2);
+        final String address = data.getString(3);
+        final String zipCode = data.getString(4);
+        final String country = data.getString(5);
+        final String name = data.getString(6);
+        final String surname = data.getString(7);
+        final String phone = data.getString(8);
+        Log.v(TAG, "register('" + username + "', '" + password + "', '" + name + "', '" + surname
+                + "', '" + email + "', '" + phone + "')");
 
         // do the registration
-        registerCallbackId = callbackId;
-        new Thread() {
+        registerCallback = callbackContext;
+        cordova.getThreadPool().execute(new Runnable() {
+
+            @Override
             public void run() {
                 try {
                     sensePlatform.registerUser(username, password, email, address, zipCode,
                             country, name, surname, phone, callback);
                 } catch (RemoteException e) {
                     Log.e(TAG, "Failed to call register()! " + e);
-                    error(new PluginResult(Status.ERROR, e.getMessage()), registerCallbackId);
+                    callbackContext.error(e.getMessage());
                 } catch (IllegalStateException e) {
-                    error(new PluginResult(Status.ERROR, "Failed to bind to service in time!"),
-                            registerCallbackId);
+                    callbackContext.error("Failed to bind to service in time!");
                 }
-            };
-        }.run();
+            }
+        });
+    }
 
-		// keep the callback ID so we can use it when the service returns
-		PluginResult r = new PluginResult(Status.NO_RESULT);
-		r.setKeepCallback(true);
-		return r;
-	}
+    private void setPreference(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
 
-	private PluginResult setPreference(JSONArray data, String callbackId) throws JSONException,
-			RemoteException {
+        // get the preference key
+        String key = data.getString(0);
 
-		// get the preference key
-		String key = data.getString(0);
-
-		// get the preference value
+        // get the preference value
         SenseServiceStub service = sensePlatform.getService();
-		if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
-				|| key.equals(Auth.LOGIN_USERNAME)) {
-			String value = data.getString(1);
-			Log.v(TAG, "setPreference('" + key + "', '" + value + "')");
-			service.setPrefString(key, value);
-			return new PluginResult(Status.OK);
-		} else {
-			boolean value = data.getBoolean(1);
-			Log.v(TAG, "setPreference('" + key + "', " + value + ")");
-			service.setPrefBool(key, value);
-			return new PluginResult(Status.OK);
-		}
-	}
+        if (key.equals(Main.SAMPLE_RATE) || key.equals(Main.SYNC_RATE)
+                || key.equals(Auth.LOGIN_USERNAME)) {
+            String value = data.getString(1);
+            Log.v(TAG, "setPreference('" + key + "', '" + value + "')");
+            service.setPrefString(key, value);
+        } else {
+            boolean value = data.getBoolean(1);
+            Log.v(TAG, "setPreference('" + key + "', " + value + ")");
+            service.setPrefBool(key, value);
+        }
+        callbackContext.success();
+    }
 
-	private PluginResult toggleAmbience(JSONArray data, String callbackId) throws RemoteException,
-			JSONException {
+    private void toggleAmbience(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the argument
-		boolean active = data.getBoolean(0);
-		Log.v(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
+        // get the argument
+        boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " ambience sensors");
 
-		// do the call
+        // do the call
         SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			service.toggleAmbience(active);
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        if (null != service) {
+            service.toggleAmbience(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            callbackContext.error("Failed to bind to service in time!");
+        }
 
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 
-	private PluginResult toggleExternal(JSONArray data, String callbackId) throws RemoteException,
-			JSONException {
+    private void toggleExternal(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the argument
-		boolean active = data.getBoolean(0);
-		Log.v(TAG, (active ? "Enable" : "Disable") + " external sensors");
+        // get the argument
+        boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " external sensors");
 
-		// do the call
+        // do the call
         SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			service.toggleExternalSensors(active);
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        if (null != service) {
+            service.toggleExternalSensors(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            callbackContext.error("Failed to bind to service in time!");
+        }
 
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 
-	private PluginResult toggleMain(JSONArray data, String callbackId) throws RemoteException,
-			JSONException {
+    private void toggleMain(CordovaArgs data, CallbackContext callbackContext) throws JSONException {
 
-		// get the argument
-		boolean active = data.getBoolean(0);
-		Log.v(TAG, (active ? "Enable" : "Disable") + " main status");
+        // get the argument
+        boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " main status");
 
-		// do the call
+        // do the call
         SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			service.toggleMain(active);
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        if (null != service) {
+            service.toggleMain(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            callbackContext.error("Failed to bind to service in time!");
+        }
 
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 
-	private PluginResult toggleMotion(JSONArray data, String callbackId) throws RemoteException,
-			JSONException {
+    private void toggleMotion(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the argument
-		boolean active = data.getBoolean(0);
-		Log.v(TAG, (active ? "Enable" : "Disable") + " motion sensors");
+        // get the argument
+        boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " motion sensors");
 
-		// do the call
+        // do the call
         SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			service.toggleMotion(active);
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        if (null != service) {
+            service.toggleMotion(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            callbackContext.error("Failed to bind to service in time!");
+        }
 
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 
-	private PluginResult toggleNeighboringDevices(JSONArray data, String callbackId)
-			throws JSONException, RemoteException {
+    private void toggleNeighboringDevices(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the argument
-		boolean active = data.getBoolean(0);
-		Log.v(TAG, (active ? "Enable" : "Disable") + " neighboring devices sensors");
+        // get the argument
+        boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " neighboring devices sensors");
 
-		// do the call
+        // do the call
         SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			service.toggleDeviceProx(active);
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        if (null != service) {
+            service.toggleDeviceProx(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            callbackContext.error("Failed to bind to service in time!");
+        }
 
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 
-	private PluginResult togglePhoneState(JSONArray data, String callbackId) throws JSONException,
-			RemoteException {
+    private void togglePhoneState(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the argument
-		boolean active = data.getBoolean(0);
-		Log.v(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
+        // get the argument
+        boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " phone state sensors");
 
-		// do the call
+        // do the call
         SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			service.togglePhoneState(active);
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        if (null != service) {
+            service.togglePhoneState(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            callbackContext.error("Failed to bind to service in time!");
+        }
 
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 
-	private PluginResult togglePosition(JSONArray data, String callbackId) throws JSONException,
-			RemoteException {
+    private void togglePosition(CordovaArgs data, CallbackContext callbackContext)
+            throws JSONException {
 
-		// get the argument
-		boolean active = data.getBoolean(0);
-		Log.v(TAG, (active ? "Enable" : "Disable") + " position sensors");
+        // get the argument
+        boolean active = data.getBoolean(0);
+        Log.v(TAG, (active ? "Enable" : "Disable") + " position sensors");
 
-		// do the call
+        // do the call
         SenseServiceStub service = sensePlatform.getService();
-		if (null != service) {
-			service.toggleLocation(active);
-		} else {
-			Log.e(TAG, "Failed to bind to service in time!");
-			return new PluginResult(Status.ERROR, "Failed to bind to service in time!");
-		}
+        if (null != service) {
+            service.toggleLocation(active);
+        } else {
+            Log.e(TAG, "Failed to bind to service in time!");
+            callbackContext.error("Failed to bind to service in time!");
+        }
 
-		return new PluginResult(Status.OK);
-	}
+        callbackContext.success();
+    }
 }
