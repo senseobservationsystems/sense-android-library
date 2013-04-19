@@ -110,16 +110,16 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
         @Override
         public void onProviderDisabled(String provider) {
-            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time,
-                    lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop,
-                    listenNwStop);
+            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps,
+                    sampleDelay, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart,
+                    listenGpsStop, listenNwStop);
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time,
-                    lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop,
-                    listenNwStop);
+            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps,
+                    sampleDelay, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart,
+                    listenGpsStop, listenNwStop);
         }
 
         @Override
@@ -156,9 +156,9 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time,
-                    lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop,
-                    listenNwStop);
+            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps,
+                    sampleDelay, lastGpsFix, listenGpsStart, lastNwFix, listenNwStart,
+                    listenGpsStop, listenNwStop);
         }
     };
 
@@ -203,7 +203,6 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     private final MyLocationListener gpsListener;
     private final MyLocationListener nwListener;
     private final MyLocationListener pasListener;
-    private long time;
     private boolean isGpsAllowed;
     private boolean isNetworkAllowed;
     private boolean isListeningGps;
@@ -235,7 +234,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
     @Override
     public void doSample() {
-        controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time,
+        controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, sampleDelay,
                 lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
     }
 
@@ -298,7 +297,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
     public void setGpsListening(boolean listen) {
         if (listen) {
-            locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, MIN_DISTANCE,
+            locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, sampleDelay, MIN_DISTANCE,
                     gpsListener);
             isListeningGps = true;
             listenGpsStart = SNTP.getInstance().getTime();
@@ -313,8 +312,8 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     public void setNetworkListening(boolean listen) {
         if (listen/* && isNetworkAllowed */) {
             try {
-                locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, MIN_DISTANCE,
-                        nwListener);
+                locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, sampleDelay,
+                        MIN_DISTANCE, nwListener);
                 isListeningNw = true;
                 listenNwStart = SNTP.getInstance().getTime();
                 lastNwFix = null;
@@ -337,8 +336,8 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     @TargetApi(Build.VERSION_CODES.FROYO)
     private void setPassiveListening(boolean listen) {
         if (listen) {
-            locMgr.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, time, MIN_DISTANCE,
-                    pasListener);
+            locMgr.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, sampleDelay,
+                    MIN_DISTANCE, pasListener);
         } else {
             locMgr.removeUpdates(pasListener);
         }
