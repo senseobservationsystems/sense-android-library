@@ -11,7 +11,6 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
-
 import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
@@ -130,7 +129,6 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     }
 
     private static final String TAG = "Sense LocationSensor";
-    private static final String ALARM_ACTION = "nl.sense_os.service.LocationAlarm";
     private static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
     public static final long MIN_SAMPLE_DELAY = 5000; // 5 sec
     private static final int DISTANCE_ALARM_ID = 70;

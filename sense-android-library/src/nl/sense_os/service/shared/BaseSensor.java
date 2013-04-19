@@ -12,7 +12,7 @@ package nl.sense_os.service.shared;
 public abstract class BaseSensor extends BaseDataProducer implements DataProducer, SenseSensor {
 
 	/** The delay value for the sample rate */
-	protected long sampleDelay = 0;
+    private long sampleDelay = 0;
 
     @Override
     public long getSampleRate() {

@@ -82,7 +82,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
                     public void run() {
                         // Unregisters the motion listener and registers it again.
                         stopSensing();
-                        startSensing(sampleDelay);
+                        startSensing(getSampleRate());
                     };
                 };
                 new Handler().postDelayed(restartSensing, 500);
@@ -220,7 +220,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         sensors.add(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
 
         // super fast sample delay
-        sampleDelay = 0;
+        setSampleRate(0);
 
         // separate service to check epilepsy (not used anymore?)
         context.startService(new Intent(context, EpiStateMonitor.class));
@@ -287,7 +287,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     	boolean unregister = isUnregisterWhenIdle;
         // only unregister when sample delay is large enough
-        unregister &= sampleDelay > DELAY_AFTER_REGISTRATION;
+        unregister &= getSampleRate() > DELAY_AFTER_REGISTRATION;
 	    unregister &= this.checkSubscribers();
 	    return unregister;
     }
@@ -358,7 +358,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     private void startPolling() {
-        Log.v(TAG, "start polling" + this.sampleDelay);
+        Log.v(TAG, "start polling" + getSampleRate());
         alarmReceiver.start(context);
     }
 
@@ -402,7 +402,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     public void stopPolling() {
-         Log.v(TAG, "stop polling" + this.sampleDelay);
+        Log.v(TAG, "stop polling " + getSampleRate());
         alarmReceiver.stop(context);
     }
 
