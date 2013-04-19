@@ -171,7 +171,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
     
     public void setSampleRate(long sampleDelay) {
         stopPolling();
-        this.sampleDelay = sampleDelay;
+        super.setSampleRate(sampleDelay);
         startPolling();
     }
 

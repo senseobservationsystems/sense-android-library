@@ -11,8 +11,9 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.scheduler.Scheduler;
+
 import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 
@@ -135,6 +136,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     private static final int DISTANCE_ALARM_ID = 70;
     private static final float MIN_DISTANCE = 0;
     private static LocationSensor instance = null;
+    private PeriodicPollAlarmReceiver alarmReceiver;
 
     /**
      * Factory method to get the singleton instance.
@@ -148,25 +150,6 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         }
         return instance;
     }
-
-    /**
-     * Receiver for periodic alarms to check on the sensor status.
-     */
-    public BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time,
-                    lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop,
-                    listenNwStop);
-        }
-    };
-
-    private final Runnable task = new Runnable() {
-        public void run() {
-            doSample();
-        }
-    };
 
     /**
      * Receiver for periodic alarms to calculate distance values.
@@ -231,6 +214,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         nwListener = new MyLocationListener();
         pasListener = new MyLocationListener();
         distanceEstimator = new TraveledDistanceEstimator();
+        alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
     @Override
@@ -238,7 +222,17 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         controller.checkSensorSettings(isGpsAllowed, isListeningNw, isListeningGps, time,
                 lastGpsFix, listenGpsStart, lastNwFix, listenNwStart, listenGpsStop, listenNwStop);
     }
-
+    
+	private void startPolling() {
+        // Log.v(TAG, "start polling");
+        alarmReceiver.start(context);
+    }
+    
+    private void stopPolling() {
+        // Log.v(TAG, "stop polling");
+        alarmReceiver.stop(context);
+    }
+    
     /**
      * Gets the last known location fixes from the location providers, and sends it to the location
      * listener as first data point.
@@ -346,15 +340,13 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
 
     @Override
     public void setSampleRate(long sampleDelay) {
+    	stopPolling();
         this.sampleDelay = sampleDelay;
-        Scheduler.getInstance(context).register(task, sampleDelay, (long) (sampleDelay * 0.1));
+        startPolling();
     }
 
     private void startAlarms() {
-
-        // register to receive the alarm
-        context.getApplicationContext().registerReceiver(alarmReceiver,
-                new IntentFilter(ALARM_ACTION));
+        
         context.getApplicationContext().registerReceiver(distanceAlarmReceiver,
                 new IntentFilter(DISTANCE_ALARM_ACTION));
 
@@ -403,16 +395,15 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
     public void startSensing(long sampleDelay) {
         setSampleRate(sampleDelay);
         active = true;
-
-        startListening();
+        
+        startListening();        
         startAlarms();
         getLastKnownLocation();
     }
 
     private void stopAlarms() {
         // unregister the receiver
-        try {
-            context.unregisterReceiver(alarmReceiver);
+        try {            
             context.unregisterReceiver(distanceAlarmReceiver);
         } catch (IllegalArgumentException e) {
             // do nothing
@@ -421,7 +412,7 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         // stop the alarm
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        Intent distanceAlarm = new Intent(ALARM_ACTION);
+        Intent distanceAlarm = new Intent(DISTANCE_ALARM_ACTION);
         PendingIntent operation2 = PendingIntent.getBroadcast(context, DISTANCE_ALARM_ID,
                 distanceAlarm, 0);
         am.cancel(operation2);
@@ -441,6 +432,6 @@ public class LocationSensor extends BaseDataProducer implements PeriodicPollingS
         active = false;
         stopListening();
         stopAlarms();
-        Scheduler.getInstance(context).unregister(task);
+        stopPolling();        
     }
 }
