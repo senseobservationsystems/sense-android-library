@@ -182,10 +182,15 @@ class SQLiteStorage {
             limitStr = "" + QUERY_RESULTS_LIMIT_EPI_MODE;
         }
 
+        String orderBy = null;
+        if (null == sortOrder) {
+            orderBy = DataPoint.TIMESTAMP + " " + sortOrder;
+        }
+
         // do query
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DbHelper.TABLE, projection, where, selectionArgs, null, null,
-                sortOrder, limitStr);
+                orderBy, limitStr);
 
         return cursor;
     }
