@@ -56,7 +56,6 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
         return instance;
     }
 
-    private long sampleDelay = 0; // in milliseconds
     private long[] lastSampleTimes = new long[50];
     private Context context;
     private List<Sensor> sensors;
@@ -114,7 +113,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
+        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
 			String sensorName = "";
@@ -168,10 +167,10 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    
+    @Override
     public void setSampleRate(long sampleDelay) {
         stopPolling();
-        this.sampleDelay = sampleDelay;
+        super.setSampleRate(sampleDelay);
         startPolling();
     }
 
