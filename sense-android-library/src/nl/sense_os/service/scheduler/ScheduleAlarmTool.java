@@ -1,5 +1,6 @@
 package nl.sense_os.service.scheduler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -38,7 +39,7 @@ public class ScheduleAlarmTool {
     private Context context;
     private long nextExecution = 0;
     private long remainedFlexibility;
-    private List<Task> tasks = null;
+    private List<Task> tasks = new ArrayList<Scheduler.Task>();
 
     /**
      * Constructor.
@@ -61,7 +62,8 @@ public class ScheduleAlarmTool {
 
         // re-create the operation that would go off
         Intent intent = new Intent(context, ExecutionAlarmReceiver.class);
-        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent, 0);
+        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         // cancel the alarm
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -81,6 +83,11 @@ public class ScheduleAlarmTool {
      */
     public void schedule() {
         Log.v(TAG, "Schedule next execution");
+
+        if (tasks.isEmpty()) {
+            // nothing to schedule
+            return;
+        }
 
         int i, j;
         final List<Runnable> tasksToExecute = new CopyOnWriteArrayList<Runnable>();
@@ -119,7 +126,6 @@ public class ScheduleAlarmTool {
             }
         }
 
-        //
         Runnable sumTask = new Runnable() {
             public void run() {
                 for (Runnable task : tasksToExecute) {
@@ -127,15 +133,19 @@ public class ScheduleAlarmTool {
                 }
             }
         };
-
         ExecutionAlarmReceiver.setSumTask(sumTask);
+
         // prepare the operation to go off
         Intent intent = new Intent(context, ExecutionAlarmReceiver.class);
-        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent, 0);
+        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         // set the alarm
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(operation);
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
+
+        // Log.d(TAG, "Next execution: " + (nextExecution - SystemClock.elapsedRealtime()) + "ms");
     }
 
     public void setTasks(List<Task> tasks) {

@@ -54,10 +54,6 @@ import android.util.Log;
  */
 public class MotionSensor extends BaseSensor implements SensorEventListener, PeriodicPollingSensor {
 
-	
-	/*public void Notifier (SchedulerCallback event) {
-	   sc = event;
-	}*/
     /**
      * BroadcastReceiver that listens for screen state changes. Re-registers the motion sensor when
      * the screen turns off.
@@ -124,7 +120,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     // TODO:
     // Should be moved to the service where all the sensors are registered
     // and added as data processor when the preference is selected
-    // or at least out of startSensing, does not need to create this coupling at startSensing 
+    // or at least out of startSensing, does not need to create this coupling at startSensing
     private EpilepsySensor epi;
     private FallDetector fall;
     private MotionEnergySensor energy;
@@ -132,7 +128,6 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     private MotionBurstSensor accelerometerBurstSensor;
     private MotionBurstSensor gyroBurstSensor;
     private MotionBurstSensor linearBurstSensor;
-
 
     /**
      * Constructor.
@@ -147,18 +142,19 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     @Override
     public void doSample() {
+        Log.v(TAG, "Do sample");
 
         // get wake lock
         if (null == wakeLock) {
             PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-		    }
+        }
         if (!wakeLock.isHeld()) {
             Log.i(TAG, "Acquire wake lock");
             wakeLock.acquire();
-	    } else {
+        } else {
             // Log.v(TAG, "Wake lock already held");
-	    }
+        }
 
         // notify all special sensors
         notifySubscribers();
@@ -171,14 +167,14 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             // Register the receiver for SCREEN OFF events
             IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
             context.registerReceiver(screenOffListener, filter);
-		} else {
-	            // Unregister the receiver for SCREEN OFF events
-	            try {
-	                context.unregisterReceiver(screenOffListener);
-	            } catch (IllegalArgumentException e) {
-	                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
-		    }
-		}
+        } else {
+            // Unregister the receiver for SCREEN OFF events
+            try {
+                context.unregisterReceiver(screenOffListener);
+            } catch (IllegalArgumentException e) {
+                // Log.v(TAG, "Ignoring exception when unregistering screen off listener");
+            }
+        }
     }
 
     /**
@@ -187,8 +183,8 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void initBurstDataProcessors() {
 
-        accelerometerBurstSensor = new MotionBurstSensor(context,
-                Sensor.TYPE_ACCELEROMETER, SensorNames.ACCELEROMETER_BURST);
+        accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER,
+                SensorNames.ACCELEROMETER_BURST);
         addSubscriber(this.accelerometerBurstSensor);
         ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST,
                 accelerometerBurstSensor);
@@ -196,12 +192,11 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE,
                 SensorNames.GYRO_BURST);
         addSubscriber(this.gyroBurstSensor);
-        ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST,
-                gyroBurstSensor);
+        ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            linearBurstSensor = new MotionBurstSensor(context,
-                    Sensor.TYPE_LINEAR_ACCELERATION, SensorNames.LINEAR_BURST);
+            linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION,
+                    SensorNames.LINEAR_BURST);
             addSubscriber(this.linearBurstSensor);
             ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST,
                     linearBurstSensor);
@@ -285,19 +280,17 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private boolean isTimeToUnregister() {
 
-    	boolean unregister = isUnregisterWhenIdle;
+        boolean unregister = isUnregisterWhenIdle;
         // only unregister when sample delay is large enough
         unregister &= getSampleRate() > DELAY_AFTER_REGISTRATION;
-	    unregister &= this.checkSubscribers();
-	    return unregister;
+        unregister &= this.checkSubscribers();
+        return unregister;
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-	// do nothing
+        // do nothing
     }
-
-    
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -308,17 +301,17 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         }
 
         SensorDataPoint dataPoint = new SensorDataPoint(event);
-		dataPoint.sensorName = SensorNames.MOTION;
-		dataPoint.sensorDescription =  SensorNames.MOTION;
-		dataPoint.timeStamp = SNTP.getInstance().getTime();        
-		this.sendToSubscribers(dataPoint);
-                
+        dataPoint.sensorName = SensorNames.MOTION;
+        dataPoint.sensorDescription = SensorNames.MOTION;
+        dataPoint.timeStamp = SNTP.getInstance().getTime();
+        this.sendToSubscribers(dataPoint);
+
         // unregister sensor listener when we can
         if (isTimeToUnregister()) {
 
-	    	// unregister the listener and start again in sampleDelay seconds
+            // unregister the listener and start again in sampleDelay seconds
             stopSample();
-	    } 
+        }
     }
 
     /**
@@ -346,11 +339,12 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     final Runnable task = new Runnable() {
-		public void run() { 
-			doSample();
-	}};
-	
-	@Override
+        public void run() {
+            doSample();
+        }
+    };
+
+    @Override
     public void setSampleRate(long sampleDelay) {
         super.setSampleRate(sampleDelay);
         stopPolling();
@@ -364,7 +358,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     @Override
     public void startSensing(long sampleDelay) {
-        // Log.v(TAG, "start sensing");
+        Log.v(TAG, "Start sensing");
 
         final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
@@ -407,12 +401,12 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     private void stopSample() {
-        // Log.v(TAG, "stop sample");
+        Log.v(TAG, "Stop sample");
 
         // release wake lock
         if (null != wakeLock && wakeLock.isHeld()) {
             wakeLock.release();
-		}
+        }
 
         unregisterSensors();
     }
@@ -423,29 +417,28 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     @Override
     public void stopSensing() {
-        // Log.v(TAG, "stop sensing");
+        Log.v(TAG, "Stop sensing");
         stopSample();
         stopPolling();
-        //sc.unRegister(task);
         enableScreenOffListener(false);
-	    motionSensingActive = false;
+        motionSensingActive = false;
 
         // only remove the DataProcessors added in the class, keep external DataProcessors
-        if(this.epi != null)        
-        	removeSubscriber(epi);
-        if(this.standard != null)
-        	removeSubscriber(standard);
-        if(this.fall != null)
-        	removeSubscriber(fall);
-        if(this.energy != null)
-        	removeSubscriber(energy);
-        if(this.accelerometerBurstSensor != null)
-        	removeSubscriber(accelerometerBurstSensor);
-        if(this.linearBurstSensor != null)
-        	removeSubscriber(linearBurstSensor);
-        if(this.gyroBurstSensor != null)
-        	removeSubscriber(gyroBurstSensor);
-        
+        if (this.epi != null)
+            removeSubscriber(epi);
+        if (this.standard != null)
+            removeSubscriber(standard);
+        if (this.fall != null)
+            removeSubscriber(fall);
+        if (this.energy != null)
+            removeSubscriber(energy);
+        if (this.accelerometerBurstSensor != null)
+            removeSubscriber(accelerometerBurstSensor);
+        if (this.linearBurstSensor != null)
+            removeSubscriber(linearBurstSensor);
+        if (this.gyroBurstSensor != null)
+            removeSubscriber(gyroBurstSensor);
+
         epi = null;
         standard = null;
         fall = null;
@@ -457,8 +450,8 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         // stop the epi state monitor service
         // TODO: remove the epi mode and epi state monitor service
         if (isEpiMode || isFallDetectMode || isBurstMode) {
-		    context.stopService(new Intent(context, EpiStateMonitor.class));
-		}
+            context.stopService(new Intent(context, EpiStateMonitor.class));
+        }
     }
 
     private synchronized void unregisterSensors() {

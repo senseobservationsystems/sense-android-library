@@ -168,11 +168,13 @@ class SQLiteStorage {
      * @param projection
      * @param where
      * @param selectionArgs
-     * @param sortOrder
+     * @param orderBy
+     *            How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY
+     *            itself). Passing null will use the default sort order, which orders by descending
+     *            timestamp.
      * @return Cursor with the result set
      */
-    public Cursor query(String[] projection, String where, String[] selectionArgs,
-            String sortOrder) {
+    public Cursor query(String[] projection, String where, String[] selectionArgs, String orderBy) {
 
         // limit parameter depends on epi mode preference
         SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -182,9 +184,9 @@ class SQLiteStorage {
             limitStr = "" + QUERY_RESULTS_LIMIT_EPI_MODE;
         }
 
-        String orderBy = null;
-        if (null != sortOrder) {
-            orderBy = DataPoint.TIMESTAMP + " " + sortOrder;
+        // set default ordering
+        if (null == orderBy) {
+            orderBy = DataPoint.TIMESTAMP + " DESC";
         }
 
         // do query

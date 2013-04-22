@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -207,8 +206,7 @@ public class GCMReceiver extends GCMBaseIntentService {
             NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             nm.notify(NOTIF_ID, builder.build());
         } catch (JSONException e) {
-            Log.d(TAG, "Error parsing notification json");
-            e.printStackTrace();
+            Log.e(TAG, "Error parsing notification json", e);
         }
 
     }
