@@ -97,6 +97,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <!--  LOGIN ACTIVITY -->
+        <activity
+            android:name="nl.sense.demo.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
 
         <!-- ACTIVITY THAT POPS UP WHEN AN NFC TAG WAS SCANNED -->
         <!-- CAN BE REMOVED IF NOT USED -->
@@ -181,7 +187,9 @@
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-        </receiver>
+        </receiver>        
+        <!-- BROADCAST RECEIVER FOR SCHEDULED SAMPLE EXECUTION ALARMS -->
+        <receiver android:name="nl.sense_os.service.scheduler.ExecutionAlarmReceiver"/>
         <!-- BROADCAST RECEIVER THAT SCHEDULES PERIODIC TRANSMITS OF BUFFERED SENSOR DATA -->
         <receiver
             android:name="nl.sense_os.service.DataTransmitter"
@@ -223,12 +231,6 @@
             android:name="nl.sense_os.service.provider.SensorDataProvider"
             android:authorities="nl.sense_os.demo.LocalStorage"
             android:exported="true" />
-
-        <activity
-            android:name="nl.sense.demo.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-        </activity>
     </application>
 
 </manifest>
