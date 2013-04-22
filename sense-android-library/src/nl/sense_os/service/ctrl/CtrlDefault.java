@@ -41,12 +41,18 @@ public class CtrlDefault extends Controller {
     }
 
     private static final String TAG = "Sense Controller";
+    private static final long DEFAULT_BURST_RATE = 10 * 1000;
+    private static final long IDLE_BURST_RATE = 30 * 1000;
+    private static double IDLE_MOTION_THRESHOLD = 0.09;
+    private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
 
+    private long firstIdleDetectedTime = 0;
     private Context context;
     private LocationManager locMgr;
 
     public CtrlDefault(Context context) {
         super();
+        Log.i(TAG, "Creating default controller");
         this.context = context;
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
@@ -68,9 +74,8 @@ public class CtrlDefault extends Controller {
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
-        Log.v(TAG, "Check location sensor settings...");
         if (selfAwareMode) {
-           // Log.v(TAG, "Check location sensor settings...");
+            Log.v(TAG, "Check location sensor settings...");
             LocationSensor locListener = LocationSensor.getInstance(context);
             if (isListeningGps) {
 
@@ -85,7 +90,7 @@ public class CtrlDefault extends Controller {
 
             } else {
 
-              if (isAccelerating()) {
+                if (isAccelerating()) {
                     // switch on
                     locListener.setGpsListening(true);
                     locListener.notifyListeningRestarted("moved");
@@ -109,7 +114,7 @@ public class CtrlDefault extends Controller {
     }
 
     private boolean isAccelerating() {
-        // Log.v(TAG, "Check if device was accelerating recently");
+        Log.v(TAG, "Check if device was accelerating recently");
 
         boolean moving = true;
 
@@ -197,7 +202,7 @@ public class CtrlDefault extends Controller {
     }
 
     private boolean isPositionChanged() {
-        // Log.v(TAG, "Check if position changed recently");
+        Log.v(TAG, "Check if position changed recently");
 
         boolean moved = true;
 
@@ -272,7 +277,7 @@ public class CtrlDefault extends Controller {
     private boolean isSwitchedOffTooLong(boolean isListeningGps, long listenGpsStop) {
 
         if (isListeningGps) {
-            // Log.d(TAG,"No use checking if GPS is switched off too long: it is still listening!");
+            // no use checking if GPS is switched off too long: it is still listening!
             return false;
         }
 
@@ -292,7 +297,57 @@ public class CtrlDefault extends Controller {
         return tooLong;
     }
 
+    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
+        // right now only the accelerometer is used
+        if (sensorType != Sensor.TYPE_ACCELEROMETER)
+            return;
+
+        // Initialize with the first vector for the algorithm in the for loop
+        double[] firstVector = dataBuffer.get(0);
+        double xLast = firstVector[0];
+        double yLast = firstVector[1];
+        double zLast = firstVector[2];
+
+        double totalMotion = 0;
+        for (double[] vector : dataBuffer) {
+            // loop over the array to calculate some magic "totalMotion" value
+            // that indicates the amount of motion during the burst
+            double x = vector[0];
+            double y = vector[1];
+            double z = vector[2];
+
+            double motion = Math.pow(
+                    (Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
+            totalMotion += motion;
+            xLast = x;
+            yLast = y;
+            zLast = z;
+        }
+
+        MotionSensor motionSensor = MotionSensor.getInstance(context);
+        double avgMotion = totalMotion / (dataBuffer.size() - 1);
+
+        // Control logic to choose the sample rate for burst motion sensors
+        if (avgMotion > IDLE_MOTION_THRESHOLD) {
+            firstIdleDetectedTime = 0;
+            if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
+                motionSensor.setSampleRate(DEFAULT_BURST_RATE);
+            }
+        } else {
+            if (firstIdleDetectedTime == 0) {
+                firstIdleDetectedTime = SystemClock.elapsedRealtime();
+            } else {
+                if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD)
+                        && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
+                    motionSensor.setSampleRate(IDLE_BURST_RATE);
+                }
+            }
+        }
+        // Log.d(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
+    }
+
     public void scheduleTransmissions() {
+        Log.v(TAG, "Schedule transmissions");
 
         Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));
         PendingIntent operation = PendingIntent.getBroadcast(context, DataTransmitter.REQ_CODE,
@@ -342,58 +397,5 @@ public class CtrlDefault extends Controller {
         am.cancel(operation);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
                 operation);
-    }
-    
-    private static final long DEFAULT_BURST_RATE = 10 * 1000;
-    private static final long IDLE_BURST_RATE = 30 * 1000;
-    private static double IDLE_MOTION_THRESHOLD = 0.09;
-    private static final double IDLE_TIME_THRESHOLD = 3*60*1000;
-    private long firstIdleDetectedTime = 0;
-	
-    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
-    	//right now only the accelerometer is used
-    	if (sensorType != Sensor.TYPE_ACCELEROMETER)
-    		return;
-
-    	//Initialize with the first vector for the algorithm in the for loop
-    	double[] firstVector = dataBuffer.get(0);
-		double xLast = firstVector[0];
-		double yLast = firstVector[1];
-		double zLast = firstVector[2];
-    	
-		double totalMotion = 0;
-    	for (double[] vector : dataBuffer) {
-			// loop over the array to calculate some magic "totalMotion" value
-			// that indicates the amount of motion during the burst
-    		double x = vector[0];
-    		double y = vector[1];
-    		double z = vector[2];
-    		
-    		double motion = Math.pow((Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
-            totalMotion += motion;
-            xLast = x;
-            yLast = y;
-            zLast = z;
-    	}
-    	
-    	MotionSensor motionSensor = MotionSensor.getInstance(context);
-    	double avgMotion = totalMotion / (dataBuffer.size() - 1);
-    	
-    	//Control logic to choose the sample rate for burst motion sensors
-    	if (avgMotion > IDLE_MOTION_THRESHOLD) {
-    		firstIdleDetectedTime = 0;
-    		if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
-    			motionSensor.setSampleRate(DEFAULT_BURST_RATE);
-    		}
-    	} else {
-    		if (firstIdleDetectedTime == 0) {
-    			firstIdleDetectedTime = SystemClock.elapsedRealtime();
-    		} else {
-    			if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD) && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
-    				motionSensor.setSampleRate(IDLE_BURST_RATE);
-    			}
-    		}
-    	}
-    	Log.v(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
     }
 }
