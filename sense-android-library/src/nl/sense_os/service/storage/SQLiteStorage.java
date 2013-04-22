@@ -183,7 +183,7 @@ class SQLiteStorage {
         }
 
         String orderBy = null;
-        if (null == sortOrder) {
+        if (null != sortOrder) {
             orderBy = DataPoint.TIMESTAMP + " " + sortOrder;
         }
 
