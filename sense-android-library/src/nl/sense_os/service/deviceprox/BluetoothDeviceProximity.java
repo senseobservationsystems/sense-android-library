@@ -12,8 +12,8 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.BaseDataProducer;
+import nl.sense_os.service.shared.SensorDataPoint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,7 +108,7 @@ public class BluetoothDeviceProximity extends BaseDataProducer{
 
 		@Override
 		public void run() {
-			Log.d(TAG, "Run Bluetooth discovery thread");
+            Log.v(TAG, "Run Bluetooth discovery thread");
 			if (scanEnabled) {
 				if (btAdapter.isEnabled()) {
 					// start discovery

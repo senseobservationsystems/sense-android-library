@@ -89,7 +89,6 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
 
             // use SNTP time
             long timestamp = SNTP.getInstance().getTime();
-
             notifySubscribers();
             SensorDataPoint dataPoint = new SensorDataPoint(json);
             dataPoint.sensorName = SensorNames.LOCATION;
@@ -134,6 +133,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
     private static final int DISTANCE_ALARM_ID = 70;
     private static final float MIN_DISTANCE = 0;
     private static LocationSensor instance = null;
+
     /**
      * Factory method to get the singleton instance.
      * 
@@ -146,8 +146,6 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
         }
         return instance;
     }
-
-    private PeriodicPollAlarmReceiver alarmReceiver;
 
     /**
      * Receiver for periodic alarms to calculate distance values.
@@ -196,6 +194,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
     private long listenNwStop;
     private boolean active;
     private TraveledDistanceEstimator distanceEstimator;
+    private PeriodicPollAlarmReceiver pollAlarmReceiver;
 
     /**
      * Constructor.
@@ -204,13 +203,13 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
      */
     protected LocationSensor(Context context) {
         this.context = context;
+        pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         controller = Controller.getController(context);
         gpsListener = new MyLocationListener();
         nwListener = new MyLocationListener();
         pasListener = new MyLocationListener();
         distanceEstimator = new TraveledDistanceEstimator();
-        alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
     @Override
@@ -220,7 +219,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
                 listenGpsStop, listenNwStop);
     }
 
-	/**
+    /**
      * Gets the last known location fixes from the location providers, and sends it to the location
      * listener as first data point.
      */
@@ -233,7 +232,6 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
         // see which provides the best recent fix
         Location bestFix = gpsFix;
         if (null != nwFix) {
-
             // see if network provider has better recent fix
             if (null == bestFix) {
                 // gps did not provide a recent fix
@@ -275,8 +273,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
     public void setGpsListening(boolean listen) {
         if (listen) {
             locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, getSampleRate(),
-                    MIN_DISTANCE,
-                    gpsListener);
+                    MIN_DISTANCE, gpsListener);
             isListeningGps = true;
             listenGpsStart = SNTP.getInstance().getTime();
             lastGpsFix = null;
@@ -324,12 +321,13 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
     @Override
     public void setSampleRate(long sampleDelay) {
         super.setSampleRate(sampleDelay);
-    	stopPolling();
+        stopPolling();
         startPolling();
     }
 
     private void startAlarms() {
 
+        // register to receive the alarm
         context.getApplicationContext().registerReceiver(distanceAlarmReceiver,
                 new IntentFilter(DISTANCE_ALARM_ACTION));
 
@@ -376,7 +374,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
 
     private void startPolling() {
         // Log.v(TAG, "start polling");
-        alarmReceiver.start(context);
+        pollAlarmReceiver.start(context);
     }
 
     @Override
@@ -417,7 +415,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
 
     private void stopPolling() {
         // Log.v(TAG, "stop polling");
-        alarmReceiver.stop(context);
+        pollAlarmReceiver.stop(context);
     }
 
     @Override
@@ -425,6 +423,6 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
         active = false;
         stopListening();
         stopAlarms();
-        stopPolling();        
+        stopPolling();
     }
 }

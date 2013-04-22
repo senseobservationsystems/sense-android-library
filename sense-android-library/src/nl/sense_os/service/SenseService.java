@@ -735,14 +735,14 @@ public class SenseService extends Service {
 				// check noise sensor presence
 				if (null != noiseSensor) {
 					Log.w(TAG, "Noise sensor is already present!");
-					noiseSensor.disable();
+                    noiseSensor.stopSensing();
 					noiseSensor = null;
 				}
 
 				// check light sensor presence
 				if (null != lightSensor) {
 					Log.w(TAG, "Light sensor is already present!");
-					lightSensor.stopLightSensing();
+                    lightSensor.stopSensing();
 					lightSensor = null;
 				}
 
@@ -825,12 +825,12 @@ public class SenseService extends Service {
                             registerDataProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
                             registerDataProducer(SensorNames.LOUDNESS, noiseSensor);
 							registerDataProducer(SensorNames.NOISE, noiseSensor.getAutoCalibratedNoiseSensor());
-							noiseSensor.enable(finalInterval);
+                            noiseSensor.startSensing(finalInterval);
 						}
 						if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
 							lightSensor = LightSensor.getInstance(SenseService.this);
                             registerDataProducer(SensorNames.LIGHT, lightSensor);
-							lightSensor.startLightSensing(finalInterval);
+                            lightSensor.startSensing(finalInterval);
 						}
 						// only available from Android 2.3 up to 4.0
 						if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD
@@ -872,7 +872,7 @@ public class SenseService extends Service {
 
 				// stop sensing
 				if (null != noiseSensor) {
-					noiseSensor.disable();
+                    noiseSensor.stopSensing();
 					// unregister is not needed for Singleton Sensors
                     unregisterDataProducer(SensorNames.NOISE, noiseSensor);
                     unregisterDataProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
@@ -881,7 +881,7 @@ public class SenseService extends Service {
 					noiseSensor = null;
 				}
 				if (null != lightSensor) {
-					lightSensor.stopLightSensing();
+                    lightSensor.stopSensing();
                     unregisterDataProducer(SensorNames.LIGHT, lightSensor);
 					lightSensor = null;
 				}

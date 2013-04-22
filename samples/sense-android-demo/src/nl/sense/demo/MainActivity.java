@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
         SenseServiceStub senseService = application.getSensePlatform().getService();
 
         // turn off some specific sensors
-        senseService.setPrefBool(Ambience.LIGHT, false);
+        senseService.setPrefBool(Ambience.LIGHT, true);
         senseService.setPrefBool(Ambience.CAMERA_LIGHT, false);
         senseService.setPrefBool(Ambience.PRESSURE, false);
 
@@ -200,14 +200,14 @@ public class MainActivity extends Activity {
         // 0 := normal (~every 5 min)
         // -1 := often (~every 10 sec)
         // -2 := real time (this setting affects power consumption considerably!)
-        senseService.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
+        senseService.setPrefString(SensePrefs.Main.SAMPLE_RATE, "-1");
 
         // set how often to upload
         // 1 := eco mode (buffer data for 30 minutes before bulk uploading)
         // 0 := normal (buffer 5 min)
         // -1 := often (buffer 1 min)
         // -2 := real time (every new data point is uploaded immediately)
-        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, "0");
+        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
 
         // show message
         showToast(R.string.msg_prefs_set);
@@ -220,6 +220,7 @@ public class MainActivity extends Activity {
 
         // enable some specific sensor modules
         senseService.togglePhoneState(true);
+        senseService.toggleAmbience(true);
         senseService.toggleMotion(true);
         senseService.toggleLocation(true);
 

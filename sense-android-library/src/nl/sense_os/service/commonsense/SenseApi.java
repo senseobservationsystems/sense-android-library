@@ -775,7 +775,7 @@ public class SenseApi {
 		authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
 		authEditor.commit();
 
-		Log.d(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
+        Log.v(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
 
 		// return the new sensor ID
 		return id;
