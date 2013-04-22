@@ -85,7 +85,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
             wakeLock.setReferenceCounted(false);
         }
         if (!wakeLock.isHeld()) {
-            wakeLock.acquire(500);
+            wakeLock.acquire();
         } else {
             // Log.v(TAG, "Wake lock already held");
         }
