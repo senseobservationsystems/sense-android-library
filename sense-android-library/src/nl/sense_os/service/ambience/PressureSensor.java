@@ -81,7 +81,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         }
         if (!wakeLock.isHeld()) {
-            wakeLock.acquire(500);
+            wakeLock.acquire();
         } else {
             // Log.v(TAG, "Wake lock already held");
         }
