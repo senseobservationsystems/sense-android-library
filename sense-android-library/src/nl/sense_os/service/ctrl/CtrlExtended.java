@@ -51,6 +51,10 @@ public class CtrlExtended extends Controller {
     private static final String IDLE = "idle";
     private static final String NETWORK = "network";
     private static final String GPS = "gps";
+    private static final long DEFAULT_BURST_RATE = 10 * 1000;
+    private static final long IDLE_BURST_RATE = 12 * 1000;
+    private static double IDLE_MOTION_THRESHOLD = 0.09;
+    private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
 
     private LocationManager locMgr;
     private Context context;
@@ -74,25 +78,27 @@ public class CtrlExtended extends Controller {
     private static double previous_dB = 0;
     private static long lastloudtime;
     private static String lastnoisemode = NOMODE;
+    private long firstIdleDetectedTime = 0;
 
     public CtrlExtended(Context context) {
         super();
+        Log.i(TAG, "Creating extended controller");
         this.context = context;
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    public String bestProvider(boolean isGpsAllowed, boolean isListeningGps, long time, long listenGpsStart,
-            boolean isListeningNw, long listenNwStart, Location lastGpsFix, Location lastNwFix) {
+    private String bestProvider(boolean isGpsAllowed, boolean isListeningGps, long time,
+            long listenGpsStart, boolean isListeningNw, long listenNwStart, Location lastGpsFix,
+            Location lastNwFix) {
         // Log.v(TAG, "BEST PROVIDER CALLED");
 
         if (isGpsAllowed == false) {
-        	gpsIndexAcc = 0;
+            gpsIndexAcc = 0;
             gpsIndexFlag = flag.READY;
             networkIndexAcc = 0;
             networkIndexFlag = flag.READY;
             return NETWORK;
-        }
-        else if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)
+        } else if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)
                 && (networkIndexAcc == 5)) {
             gpsIndexAcc = 0;
             gpsIndexFlag = flag.READY;
@@ -222,25 +228,14 @@ public class CtrlExtended extends Controller {
             boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart,
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
 
-    	
-    	Log.v(TAG, "Check location sensor settings...");
+        Log.v(TAG, "Check location sensor settings...");
         LocationSensor locListener = LocationSensor.getInstance(context);
 
         if (lastlocationmode.equals(NOMODE)) {
 
-            Log.v(TAG, "NO MODE");
-        	/*
-            for (int i = 0; i < 5; i++) {
-                // Log.d(TAG, "Table Nw" + networkTableAcc[i]);
-            }
-            for (int i = 0; i < 5; i++) {
-                //Log.d(TAG, "Table Gps" + gpsTableAcc[i]);
-            }*/
-            /*
-             * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
-             */
-            bestProvider = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart, isListeningNw,
-                    listenNwStart, lastGpsFix, lastNwFix);
+            // Log.d(TAG, "NO MODE");
+            bestProvider = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart,
+                    isListeningNw, listenNwStart, lastGpsFix, lastNwFix);
 
             if (((gpsIndexFlag == flag.NOT_READY) || (networkIndexFlag == flag.NOT_READY))) {
                 // remain in no mode
@@ -259,12 +254,8 @@ public class CtrlExtended extends Controller {
                 locListener.setGpsListening(true);
             }
         } else if ((!isAccelerating()) && (!isPositionChanged(0))) {
-            
-            //motionSampleRate(60 * 1000);
-            Log.v(TAG, "IDLE");
-            /*
-             * if (locListener.time != 60 * 1000) { locSampleRate(60 * 1000); }
-             */
+
+            // Log.d(TAG, "IDLE");
             lastlocationmode = IDLE;
             gpsIndexAcc = 0;
             networkIndexAcc = 0;
@@ -283,9 +274,11 @@ public class CtrlExtended extends Controller {
             }
 
         } else {
-            if ((isGpsAllowed == true) && (isPositionChanged(200) || NwisSwitchedOffTooLong(isListeningNw, listenNwStop)
-                    || isSwitchedOffTooLong(isListeningNw, listenNwStop)
-                    || (gpsIndexFlag == flag.RECHECK) || (networkIndexFlag == flag.RECHECK))) {
+            if ((isGpsAllowed == true)
+                    && (isPositionChanged(200)
+                            || isNwSwitchedOffTooLong(isListeningNw, listenNwStop)
+                            || isGpsSwitchedOffTooLong(isListeningNw, listenNwStop)
+                            || (gpsIndexFlag == flag.RECHECK) || (networkIndexFlag == flag.RECHECK))) {
                 /*
                  * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
                  */
@@ -297,8 +290,8 @@ public class CtrlExtended extends Controller {
                 }
                 gpsIndexFlag = flag.RECHECK;
                 networkIndexFlag = flag.RECHECK;
-                String temp = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart, isListeningNw,
-                        listenNwStart, lastGpsFix, lastNwFix);
+                String temp = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart,
+                        isListeningNw, listenNwStart, lastGpsFix, lastNwFix);
                 // Log.d(TAG, "FLAG GPS" + gpsIndexFlag + "FLAG NW" + networkIndexFlag);
                 if ((gpsIndexFlag == flag.READY) || (networkIndexFlag == flag.READY))
                     readyToGo++;
@@ -315,28 +308,26 @@ public class CtrlExtended extends Controller {
                 /*
                  * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
                  */
-                Log.v(TAG, "NETWORK MODE");
+                // Log.d(TAG, "NETWORK MODE");
                 lastlocationmode = NETWORK;
                 if (!isListeningNw) {
                     locListener.setNetworkListening(true);
                 }
                 if (isGpsAllowed == true) {
-	                if (!isNwProductive(isListeningNw, time, lastNwFix, listenNwStart)) {
-	                    locListener.setGpsListening(true);
-	                }
-	                // gpsIndexFlag == 2 means that we currently sample for the average gps accuracy
-	                else if (isListeningGps && (gpsIndexFlag != flag.RECHECK)) {
-	                    locListener.setGpsListening(false);
-	                }
+                    if (!isNwProductive(isListeningNw, time, lastNwFix, listenNwStart)) {
+                        locListener.setGpsListening(true);
+                    }
+                    // gpsIndexFlag == 2 means that we currently sample for the average gps accuracy
+                    else if (isListeningGps && (gpsIndexFlag != flag.RECHECK)) {
+                        locListener.setGpsListening(false);
+                    }
                 }
 
             } else if ((bestProvider.equals(GPS) && isGpsProductive(isListeningGps, time,
                     lastGpsFix, listenGpsStart))
-                    || isSwitchedOffTooLong(isListeningGps, listenGpsStop)) {
-                /*
-                 * if (locListener.time != 3 * 60 * 1000) { locSampleRate(3 * 60 * 1000); }
-                 */
-                Log.v(TAG, "GPS MODE");
+                    || isGpsSwitchedOffTooLong(isListeningGps, listenGpsStop)) {
+
+                // Log.d(TAG, "GPS MODE");
                 lastlocationmode = GPS;
                 if (!isListeningGps) {
                     locListener.setGpsListening(true);
@@ -349,18 +340,8 @@ public class CtrlExtended extends Controller {
                 else if (isListeningNw && (networkIndexFlag != flag.RECHECK)) {
                     locListener.setNetworkListening(false);
                 }
-
             }
         }
-        /*
-         * else {
-         * 
-         * if ("idle".equals(getLastMode())) { lastlocationmode = "noavailable";
-         * //scheduleTransmissions(); } lastlocationmode = "noavailable"; if (isListeningNw) {
-         * locListener.setNetworkListening(false); } if (isListeningGps) {
-         * locListener.setGpsListening(false); } }
-         */
-
     }
 
     /**
@@ -368,7 +349,7 @@ public class CtrlExtended extends Controller {
      * 
      * @return idle if all of the three sensors are in idle mode
      */
-    public String getLastMode() {
+    private String getLastMode() {
         if (lastlocationmode.equals("idle") && lastlightmode.equals("idle")
                 && lastnoisemode.equals("idle"))
             return "idle";
@@ -380,7 +361,7 @@ public class CtrlExtended extends Controller {
      * Uses the accelerometer instead of the linear acceleration
      */
     private boolean isAccelerating() {
-        // Log.v(TAG, "Check if device was accelerating recently");
+        Log.v(TAG, "Check if device was accelerating recently");
 
         boolean moving = true;
 
@@ -477,6 +458,31 @@ public class CtrlExtended extends Controller {
         return productive;
     }
 
+    private boolean isGpsSwitchedOffTooLong(boolean isListeningGps, long listenGpsStop) {
+
+        if (isListeningGps) {
+            // no use checking if GPS is switched off too long: it is still listening!
+            return false;
+        }
+
+        boolean tooLong = false;
+        long maxDelay = 1000 * 60 * 60; // 1 hour
+
+        if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
+            // GPS has been turned off for a long time, or was never even started
+            tooLong = true;
+            // Log.d(TAG, "GPS has been turned off for a long time, or was never even started");
+        } else if (!(locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
+            // the network provider is disabled: GPS is the only option
+            tooLong = true;
+            // Log.d(TAG, " the network provider is disabled: GPS is the only option");
+        } else {
+            tooLong = false;
+        }
+
+        return tooLong;
+    }
+
     private boolean isNwProductive(boolean isListeningNw, long time, Location lastNwFix,
             long listenNwStart) {
 
@@ -505,8 +511,33 @@ public class CtrlExtended extends Controller {
         return productive;
     }
 
+    private boolean isNwSwitchedOffTooLong(boolean isListeningNw, long listenNwStop) {
+
+        if (isListeningNw) {
+            // no use checking if Network is switched off too long: it is still listening!
+            return false;
+        }
+
+        boolean tooLong = false;
+        long maxDelay = 1000 * 60 * 60; // 1 hour
+
+        if (SNTP.getInstance().getTime() - listenNwStop > maxDelay) {
+            // Network has been turned off for a long time, or was never even started
+            tooLong = true;
+            // Log.d(TAG, "Network has been turned off for a long time, or was never even started");
+        } else if (!(locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+            // the GPS provider is disabled: Network is the only option
+            tooLong = true;
+            // Log.d(TAG, " the gps provider is disabled: NETWORK is the only option");
+        } else {
+            tooLong = false;
+        }
+
+        return tooLong;
+    }
+
     private boolean isPositionChanged(int distanceTraveled) {
-        // Log.v(TAG, "Check if position changed recently");
+        Log.v(TAG, "Check if position changed recently");
 
         boolean moved = true;
         Cursor data = null;
@@ -588,94 +619,66 @@ public class CtrlExtended extends Controller {
             }
 
             return moved;
-        }
-
-        else {
+        } else {
             // Log.d(TAG, "1C");
             return true;
         }
     }
 
-    private boolean isSwitchedOffTooLong(boolean isListeningGps, long listenGpsStop) {
+    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
+        // right now only the accelerometer is used
+        if (sensorType != Sensor.TYPE_ACCELEROMETER)
+            return;
 
-        if (isListeningGps) {
-            // Log.d(TAG,"No use checking if GPS is switched off too long: it is still listening!");
-            return false;
+        // Initialize with the first vector for the algorithm in the for loop
+        double[] firstVector = dataBuffer.get(0);
+        double xLast = firstVector[0];
+        double yLast = firstVector[1];
+        double zLast = firstVector[2];
+
+        double totalMotion = 0;
+        for (double[] vector : dataBuffer) {
+            // loop over the array to calculate some magic "totalMotion" value
+            // that indicates the amount of motion during the burst
+            double x = vector[0];
+            double y = vector[1];
+            double z = vector[2];
+
+            double motion = Math.pow(
+                    (Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
+            totalMotion += motion;
+            xLast = x;
+            yLast = y;
+            zLast = z;
         }
 
-        boolean tooLong = false;
-        long maxDelay = 1000 * 60 * 60; // 1 hour
+        MotionSensor motionSensor = MotionSensor.getInstance(context);
+        double avgMotion = totalMotion / (dataBuffer.size() - 1);
 
-        if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
-            // GPS has been turned off for a long time, or was never even started
-            tooLong = true;
-            // Log.d(TAG, "GPS has been turned off for a long time, or was never even started");
-        } else if (!(locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
-            // the network provider is disabled: GPS is the only option
-            tooLong = true;
-            // Log.d(TAG, " the network provider is disabled: GPS is the only option");
+        // Control logic to choose the sample rate for burst motion sensors
+        if (avgMotion > IDLE_MOTION_THRESHOLD) {
+            firstIdleDetectedTime = 0;
+            if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
+                motionSensor.setSampleRate(DEFAULT_BURST_RATE);
+            }
         } else {
-            tooLong = false;
+            if (firstIdleDetectedTime == 0) {
+                firstIdleDetectedTime = SystemClock.elapsedRealtime();
+            } else {
+                if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD)
+                        && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
+                    motionSensor.setSampleRate(IDLE_BURST_RATE);
+                }
+            }
         }
-
-        return tooLong;
-    }
-
-    /**
-     * Resets the location sample rate
-     * 
-     * @param time
-     *            New location sample interval
-     */
-    public void locSampleRate(long time) {
-        LocationSensor locListener = LocationSensor.getInstance(context);
-        locListener.stopSensing();
-        locListener.startSensing(time);
-    }
-
-    /**
-     * Resets the motion sample rate
-     * 
-     * @param sampleDelay
-     *            New motion sample interval
-     */
-    public void motionSampleRate(long sampleDelay) {
-        MotionSensor motion = MotionSensor.getInstance(context);
-        //motion.stopSensing();
-        if (motion.getSampleRate() != sampleDelay)
-        	motion.setSampleRate(sampleDelay);
-    }
-
-    private boolean NwisSwitchedOffTooLong(boolean isListeningNw, long listenNwStop) {
-
-        if (isListeningNw) {
-            // Log.d(TAG,
-            // "No use checking if Network is switched off too long: it is still listening!");
-            return false;
-        }
-
-        boolean tooLong = false;
-        long maxDelay = 1000 * 60 * 60; // 1 hour
-
-        if (SNTP.getInstance().getTime() - listenNwStop > maxDelay) {
-            // Network has been turned off for a long time, or was never even started
-            tooLong = true;
-            // Log.d(TAG, "Network has been turned off for a long time, or was never even started");
-        } else if (!(locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
-            // the GPS provider is disabled: Network is the only option
-            tooLong = true;
-            // Log.d(TAG, " the gps provider is disabled: NETWORK is the only option");
-        } else {
-            tooLong = false;
-        }
-
-        return tooLong;
+        // Log.d(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
     }
 
     /**
      * If the last general mode is idle, the transmission rate is rescheduled to every half hour.
      */
     public void scheduleTransmissions() {
+        Log.v(TAG, "Schedule transmissions");
 
         Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));
         PendingIntent operation = PendingIntent.getBroadcast(context, DataTransmitter.REQ_CODE,
@@ -688,7 +691,6 @@ public class CtrlExtended extends Controller {
 
         // pick interval
         long interval;
-        // if ("normal".equals(getLastMode())) {
         switch (syncRate) {
         case 1: // eco-mode
             interval = Intervals.ECO;
@@ -723,64 +725,8 @@ public class CtrlExtended extends Controller {
             Log.e(TAG, "Unexpected sync rate value: " + syncRate);
             return;
         }
-        /*
-         * } else { interval = Intervals.ECO * 3; }
-         */
         am.cancel(operation);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
                 operation);
-    }
-    
-    private static final long DEFAULT_BURST_RATE = 10 * 1000;
-    private static final long IDLE_BURST_RATE = 12 * 1000;
-    private static double IDLE_MOTION_THRESHOLD = 0.09;
-    private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
-    private long firstIdleDetectedTime = 0;
-	
-	public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
-    	//right now only the accelerometer is used
-    	if (sensorType != Sensor.TYPE_ACCELEROMETER)
-    		return;
-
-    	//Initialize with the first vector for the algorithm in the for loop
-    	double[] firstVector = dataBuffer.get(0);
-		double xLast = firstVector[0];
-		double yLast = firstVector[1];
-		double zLast = firstVector[2];
-    	
-		double totalMotion = 0;
-    	for (double[] vector : dataBuffer) {
-			// loop over the array to calculate some magic "totalMotion" value
-			// that indicates the amount of motion during the burst
-    		double x = vector[0];
-    		double y = vector[1];
-    		double z = vector[2];
-    		
-    		double motion = Math.pow((Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
-            totalMotion += motion;
-            xLast = x;
-            yLast = y;
-            zLast = z;
-    	}
-    	
-    	MotionSensor motionSensor = MotionSensor.getInstance(context);
-    	double avgMotion = totalMotion / (dataBuffer.size() - 1);
-    	
-    	//Control logic to choose the sample rate for burst motion sensors
-    	if (avgMotion > IDLE_MOTION_THRESHOLD) {
-    		firstIdleDetectedTime = 0;
-    		if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
-    			motionSensor.setSampleRate(DEFAULT_BURST_RATE);
-    		}
-    	} else {
-    		if (firstIdleDetectedTime == 0) {
-    			firstIdleDetectedTime = SystemClock.elapsedRealtime();
-    		} else {
-    			if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD) && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
-    				motionSensor.setSampleRate(IDLE_BURST_RATE);
-    			}
-    		}
-    	}
-    	Log.v(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
     }
 }
