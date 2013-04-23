@@ -51,7 +51,6 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
 	    return instance;
     }
 
-    private long sampleDelay = 0; // in milliseconds
     private long[] lastSampleTimes = new long[50];
     private Context context;
     private List<Sensor> sensors;
@@ -112,7 +111,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
+        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
             String sensorName = "";
@@ -153,10 +152,10 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    
+    @Override
     public void setSampleRate(long sampleDelay) {
+        super.setSampleRate(sampleDelay);
         stopPolling();
-        this.sampleDelay = sampleDelay;
         startPolling();
     }
 
