@@ -75,6 +75,13 @@ public class ScheduleAlarmTool {
     public long getNextExecution() {
     	return nextExecution;
     }
+    
+    /**
+     * Resets the next scheduled execution time.
+     */
+    public void resetNextExecution() {
+    	nextExecution = 0;
+    }
 
     /**
      * Schedules the next task to execute.
