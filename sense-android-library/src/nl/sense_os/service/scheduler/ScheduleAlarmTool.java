@@ -9,7 +9,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -70,12 +69,11 @@ public class ScheduleAlarmTool {
         mgr.cancel(operation);
     }
 
+    /**
+     * Returns the next scheduled execution time.
+     */
     public long getNextExecution() {
-        if (nextExecution == 0) {
-            return SystemClock.elapsedRealtime();
-        } else {
-            return nextExecution;
-        }
+    	return nextExecution;
     }
 
     /**
@@ -86,13 +84,14 @@ public class ScheduleAlarmTool {
 
         if (tasks.isEmpty()) {
             // nothing to schedule
+        	nextExecution = 0;
             return;
         }
 
         int i, j;
         final List<Runnable> tasksToExecute = new CopyOnWriteArrayList<Runnable>();
 
-        // bubble sort
+        // find the next upcoming execution time
         Task temp;
         for (i = 0; i < tasks.size(); i++) {
             for (j = 1; j < (tasks.size() - i); j++) {
@@ -103,8 +102,9 @@ public class ScheduleAlarmTool {
                 }
             }
         }
-
-        nextExecution = SystemClock.elapsedRealtime() + tasks.get(0).interval;
+        
+        // decide which tasks are to be executed at the next execution time
+        nextExecution = tasks.get(0).nextExecution;
         if (tasks.size() == 1) {
             tasksToExecute.add(tasks.get(0).runnable);
             tasks.get(0).nextExecution = nextExecution + tasks.get(0).interval;
@@ -126,6 +126,7 @@ public class ScheduleAlarmTool {
             }
         }
 
+        // create one summarized task
         Runnable sumTask = new Runnable() {
             public void run() {
                 for (Runnable task : tasksToExecute) {
@@ -148,6 +149,9 @@ public class ScheduleAlarmTool {
         // Log.d(TAG, "Next execution: " + (nextExecution - SystemClock.elapsedRealtime()) + "ms");
     }
 
+    /**
+     * Sets the task list.
+     */
     public void setTasks(List<Task> tasks) {
         this.tasks = new CopyOnWriteArrayList<Task>(tasks);
     }

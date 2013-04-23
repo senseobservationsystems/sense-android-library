@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -54,7 +55,7 @@ public class Scheduler {
      * @param sensorInterval
      * @param sensorFlexibility
      */
-    public void register(Runnable command, long sensorInterval, long sensorFlexibility) {
+    public synchronized void register(Runnable command, long sensorInterval, long sensorFlexibility) {
 
         ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(context);
 
@@ -63,7 +64,12 @@ public class Scheduler {
         newTask.runnable = command;
         newTask.interval = sensorInterval;
         newTask.flexibility = sensorFlexibility;
-        newTask.nextExecution = scheduleTool.getNextExecution() + sensorInterval;
+        if (scheduleTool.getNextExecution() == 0) {
+        	newTask.nextExecution = SystemClock.elapsedRealtime() + sensorInterval;
+        }
+        else {
+        	newTask.nextExecution = scheduleTool.getNextExecution();
+        }
         for (Task task : tasksList) {
             if (task.runnable.equals(newTask.runnable)) {
                 index = tasksList.indexOf(task);
@@ -87,7 +93,7 @@ public class Scheduler {
      * 
      * @param command
      */
-    public void unregister(Runnable command) {
+    public synchronized void unregister(Runnable command) {
         for (Task task : tasksList) {
             if (task.runnable.equals(command)) {
                 tasksList.remove(task);
@@ -99,7 +105,6 @@ public class Scheduler {
         if (!tasksList.isEmpty()) {
             Log.v(TAG, "task list size: " + tasksList.size() + ", interval: "
                     + tasksList.get(0).interval + "ms");
-            scheduleTool.schedule();
 
         } else {
             Log.v(TAG, "task list empty");
