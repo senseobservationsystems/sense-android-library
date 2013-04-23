@@ -297,6 +297,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
         if (!motionSensingActive) {
             Log.w(TAG, "Motion sensor value received when sensor is inactive!");
+            stopSample();
             return;
         }
 
@@ -337,12 +338,6 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             // Log.v(TAG, "Did not register for motion sensor updates: already registered");
         }
     }
-
-    final Runnable task = new Runnable() {
-        public void run() {
-            doSample();
-        }
-    };
 
     @Override
     public void setSampleRate(long sampleDelay) {
