@@ -1,10 +1,8 @@
 package nl.sense_os.service.scheduler;
 
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -37,7 +35,7 @@ public class Scheduler {
     }
 
     private final Context context;
-    private List<Task> tasksList = new CopyOnWriteArrayList<Task>();
+    private CopyOnWriteArrayList<Task> tasksList = new CopyOnWriteArrayList<Task>();
 
     /**
      * Constructor.
@@ -56,35 +54,32 @@ public class Scheduler {
      * @param sensorFlexibility
      */
     public synchronized void register(Runnable command, long sensorInterval, long sensorFlexibility) {
+        Log.v(TAG, "Register new sample task at " + sensorInterval + "ms interval");
 
         ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(context);
 
-        int index = -1;
+        // prepare task object
         Task newTask = new Task();
         newTask.runnable = command;
         newTask.interval = sensorInterval;
         newTask.flexibility = sensorFlexibility;
-        if (scheduleTool.getNextExecution() == 0) {
-        	newTask.nextExecution = SystemClock.elapsedRealtime() + sensorInterval;
-        }
-        else {
-        	newTask.nextExecution = scheduleTool.getNextExecution();
-        }
+
+        // add the task to the list of tasks
+        int index = -1;
         for (Task task : tasksList) {
             if (task.runnable.equals(newTask.runnable)) {
                 index = tasksList.indexOf(task);
             }
         }
         if (index != -1) {
+            // replace existing task
             tasksList.set(index, newTask);
         } else {
             tasksList.add(newTask);
         }
 
-        Log.v(TAG, "task list size: " + tasksList.size() + ", interval: "
-                + tasksList.get(0).interval + "ms");
-
         scheduleTool.setTasks(tasksList);
+        scheduleTool.resetNextExecution();
         scheduleTool.schedule();
     }
 
@@ -94,6 +89,8 @@ public class Scheduler {
      * @param command
      */
     public synchronized void unregister(Runnable command) {
+        Log.v(TAG, "Unregister sample task");
+
         for (Task task : tasksList) {
             if (task.runnable.equals(command)) {
                 tasksList.remove(task);
@@ -103,11 +100,12 @@ public class Scheduler {
         ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(context);
         scheduleTool.setTasks(tasksList);
         if (!tasksList.isEmpty()) {
-            Log.v(TAG, "task list size: " + tasksList.size() + ", interval: "
-                    + tasksList.get(0).interval + "ms");
+            // nothing to do: there are still other tasks
+            scheduleTool.resetNextExecution();
+            scheduleTool.schedule();
 
         } else {
-            Log.v(TAG, "task list empty");
+            // stop scheduling alarms
             scheduleTool.cancel(context);
         }
     }

@@ -9,6 +9,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -37,7 +38,7 @@ public class ScheduleAlarmTool {
 
     private Context context;
     private long nextExecution = 0;
-    private long remainedFlexibility;
+    private long remainingFlexibility;
     private List<Task> tasks = new ArrayList<Scheduler.Task>();
 
     /**
@@ -73,35 +74,49 @@ public class ScheduleAlarmTool {
      * Returns the next scheduled execution time.
      */
     public long getNextExecution() {
-    	return nextExecution;
+        return nextExecution;
     }
-    
+
     /**
      * Resets the next scheduled execution time.
      */
     public void resetNextExecution() {
-    	nextExecution = 0;
+
+        nextExecution = 0;
+
+        // reset the next execution time for all tasks
+        for (Task task : tasks) {
+            long now = SystemClock.elapsedRealtime();
+            if (task.nextExecution > now) {
+                // decrease execution time until it is back to the first possible time
+                while (task.nextExecution - task.interval > now) {
+                    task.nextExecution -= task.interval;
+                }
+            } else {
+                // task does not have a valid next execution time (yet)
+                task.nextExecution = now + task.interval;
+            }
+        }
     }
 
     /**
      * Schedules the next task to execute.
      */
     public void schedule() {
-        Log.v(TAG, "Schedule next execution");
+        Log.v(TAG, "Schedule next execution of sample tasks");
 
         if (tasks.isEmpty()) {
             // nothing to schedule
-        	nextExecution = 0;
+            nextExecution = 0;
             return;
         }
 
-        int i, j;
-        final List<Runnable> tasksToExecute = new CopyOnWriteArrayList<Runnable>();
-
         // find the next upcoming execution time
+        // TODO: use the normal Arrays.sort() method
+        final List<Runnable> tasksToExecute = new CopyOnWriteArrayList<Runnable>();
         Task temp;
-        for (i = 0; i < tasks.size(); i++) {
-            for (j = 1; j < (tasks.size() - i); j++) {
+        for (int i = 0; i < tasks.size(); i++) {
+            for (int j = 1; j < (tasks.size() - i); j++) {
                 if (tasks.get(j - 1).nextExecution > tasks.get(j).nextExecution) {
                     temp = tasks.get(j - 1);
                     tasks.set(j - 1, tasks.get(j));
@@ -109,26 +124,30 @@ public class ScheduleAlarmTool {
                 }
             }
         }
-        
+
         // decide which tasks are to be executed at the next execution time
         nextExecution = tasks.get(0).nextExecution;
         if (tasks.size() == 1) {
             tasksToExecute.add(tasks.get(0).runnable);
+
+            // prepare the next execution time of the task that is going to be executed
             tasks.get(0).nextExecution = nextExecution + tasks.get(0).interval;
         } else {
-            remainedFlexibility = tasks.get(0).flexibility;
+            // try to delay the execution in order to group multiple tasks together
+            remainingFlexibility = tasks.get(0).flexibility;
+            int i;
             for (i = 0; i < tasks.size() - 1; i++) {
-                if (remainedFlexibility >= 0) {
+                if (remainingFlexibility >= 0) {
                     nextExecution = tasks.get(i).nextExecution;
                     tasksToExecute.add(tasks.get(i).runnable);
-                    remainedFlexibility = remainedFlexibility
-                            - (tasks.get(i + 1).nextExecution - tasks.get(i).nextExecution);
+                    remainingFlexibility -= (tasks.get(i + 1).nextExecution - tasks.get(i).nextExecution);
                 } else {
                     break;
                 }
             }
 
-            for (j = 0; j < i; j++) {
+            // prepare the next execution time of the tasks that are going to be executed
+            for (int j = 0; j < i; j++) {
                 tasks.get(j).nextExecution = nextExecution + tasks.get(j).interval;
             }
         }
@@ -146,14 +165,14 @@ public class ScheduleAlarmTool {
         // prepare the operation to go off
         Intent intent = new Intent(context, ExecutionAlarmReceiver.class);
         PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
         // set the alarm
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.cancel(operation);
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
-
-        // Log.d(TAG, "Next execution: " + (nextExecution - SystemClock.elapsedRealtime()) + "ms");
+        
+        // Log.d(TAG, "schedule " + tasksToExecute.size() + " tasks in "
+        // + (nextExecution - SystemClock.elapsedRealtime()) + "ms");
     }
 
     /**
