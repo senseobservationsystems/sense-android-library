@@ -38,7 +38,7 @@ public class ScheduleAlarmTool {
 
     private Context context;
     private long nextExecution = 0;
-    private long remainingFlexibility;
+    private long remainingFlexibility, backwardsFlexibility;
     private List<Task> tasks = new ArrayList<Scheduler.Task>();
 
     /**
@@ -117,6 +117,15 @@ public class ScheduleAlarmTool {
         
     }
     
+    private Intent intent = new Intent(context, ExecutionAlarmReceiver.class);
+    private Intent intentCpu = new Intent(context, CpuAlarmReceiver.class);
+    public PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
+            PendingIntent.FLAG_CANCEL_CURRENT);
+    public PendingIntent operationCpu = PendingIntent.getBroadcast(context, REQ_CODE, intentCpu,
+            PendingIntent.FLAG_CANCEL_CURRENT);
+    public AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    public AlarmManager mgrCpu = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    
     /**
      * Returns the greatest common divisor of p and q
      * 
@@ -162,6 +171,8 @@ public class ScheduleAlarmTool {
 
         // try to delay the execution in order to group multiple tasks together
         remainingFlexibility = tasks.get(0).flexibility;
+        // flexibility for opportunistic execution if CPU is on
+        backwardsFlexibility = tasks.get(0).flexibility;
         int i;
         for (i = 1; i < tasks.size(); i++) {
         	remainingFlexibility -= (tasks.get(i).nextExecution - tasks.get(i - 1).nextExecution);
@@ -169,6 +180,10 @@ public class ScheduleAlarmTool {
             if (remainingFlexibility >= 0) {
             	// postpone execution time of the batch to this task
                 nextExecution = tasks.get(i).nextExecution;
+                // update the backward flexibility if the new batched task is less flexible 
+                if (tasks.get(i).flexibility < backwardsFlexibility) {
+                	backwardsFlexibility = tasks.get(i).flexibility;
+                }
                 tasksToExecute.add(tasks.get(i).runnable);                
             } else {
                 break;
@@ -190,14 +205,11 @@ public class ScheduleAlarmTool {
         };
         ExecutionAlarmReceiver.setSumTask(sumTask);
 
-        // prepare the operation to go off
-        Intent intent = new Intent(context, ExecutionAlarmReceiver.class);
-        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-
-        // set the alarm
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        // set the alarm for deterministic execution
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
+                
+        // set the alarm for opportunistic execution
+        mgrCpu.set(AlarmManager.ELAPSED_REALTIME, (nextExecution - backwardsFlexibility), operationCpu);
         
     }
 
