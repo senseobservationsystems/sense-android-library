@@ -55,7 +55,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     private Context context;
     private List<Sensor> sensors;
     private SensorManager smgr;
-    private boolean pressureSensingActive = false;
+    private boolean active = false;
     private PeriodicPollAlarmReceiver alarmReceiver;
     private WakeLock wakeLock;
     
@@ -100,7 +100,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
   
     @Override
     public boolean isActive() {
-        return pressureSensingActive;
+        return active;
     }
 
     @Override
@@ -186,8 +186,11 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
             return;
         }
 
-        pressureSensingActive = true;
+        active = true;
         setSampleRate(sampleRate);
+
+        // do the first sample immediately
+        doSample();
     }
 
     private void stopPolling() {
@@ -219,6 +222,6 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     public void stopSensing() {
         // Log.v(TAG, "stop sensor");
         stopPolling();
-        pressureSensingActive = false;
+        active = false;
     }
 }

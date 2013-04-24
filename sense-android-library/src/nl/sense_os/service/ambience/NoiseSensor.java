@@ -5,7 +5,6 @@ package nl.sense_os.service.ambience;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.Calendar;
 
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
@@ -648,25 +647,12 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                 soundStreamHandler.post(soundStreamJob);
 
             } else {
-                Calendar now = Calendar.getInstance();
-                // calculate offset of the local clock
-                int offset = (int) (System.currentTimeMillis() - SNTP.getInstance().getTime());
-                // align the start time on the minute of ntp time
-                Calendar startTime = (Calendar) now.clone();
-                startTime.set(Calendar.SECOND, 0);
-                startTime.set(Calendar.MILLISECOND, 0);
-                // correct for the difference in local time and ntp time
-                startTime.add(Calendar.MILLISECOND, offset);
 
-                // advance to the next minute until the start time is at least 100 ms in the future
-                while (startTime.getTimeInMillis() - now.getTimeInMillis() <= 100) {
-                    // use add() to make sure the hour field increments when you cross 60 minutes
-                    startTime.add(Calendar.MINUTE, 1);
-                }
-
+                // register for periodic polls at the scheduler
                 pollAlarmReceiver.start(context);
-                // Log.d(TAG, "Start at second " + startTime.get(Calendar.SECOND) + ", offset is " +
-                // offset);
+
+                // do first sample immediately
+                doSample();
             }
 
         } catch (Exception e) {

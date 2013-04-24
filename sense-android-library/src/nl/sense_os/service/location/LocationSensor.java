@@ -349,6 +349,9 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
          */
     }
 
+    /**
+     * Registers for updates from the location providers.
+     */
     private void startListening() {
 
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -372,6 +375,9 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
         }
     }
 
+    /**
+     * Registers for periodic polling using the scheduler.
+     */
     private void startPolling() {
         // Log.v(TAG, "start polling");
         pollAlarmReceiver.start(context);
