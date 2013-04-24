@@ -95,7 +95,6 @@ public class ScheduleAlarmTool {
             } else {
                 // task does not have a valid next execution time (yet)
                 Task foundTask = new Task();
-            	//task.nextExecution = now + task.interval;
             	long gcd = 1;
             	for (int i = 0; i < (tasks.size()-1); i++) {
             		long tempGcd = gcd(task.interval, tasks.get(i).interval);
