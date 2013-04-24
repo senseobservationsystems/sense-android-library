@@ -133,15 +133,25 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     public void startSensing(long sampleDelay) {
         Log.v(TAG, "Start sensing");
 
-        setSampleRate(sampleDelay);
-
+        boolean found = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             if (null != sensor) {
-                active = true;
-                pollAlarmReceiver.start(context);
+                found = true;
             }
         }
+        if (!found) {
+            Log.w(TAG, "No temperature sensor available!");
+            return;
+        }
+
+        setSampleRate(sampleDelay);
+
+        active = true;
+        pollAlarmReceiver.start(context);
+
+        // do the first sample immediately
+        doSample();
     }
 
     private void stopSample() {

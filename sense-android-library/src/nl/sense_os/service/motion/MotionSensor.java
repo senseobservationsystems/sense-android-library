@@ -113,7 +113,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     private boolean isUnregisterWhenIdle;
     private boolean firstStart = true;
     private List<Sensor> sensors;
-    private boolean motionSensingActive = false;
+    private boolean active = false;
     private WakeLock wakeLock;
     private boolean isRegistered;
     private PeriodicPollAlarmReceiver alarmReceiver;
@@ -272,7 +272,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     @Override
     public boolean isActive() {
-        return motionSensingActive;
+        return active;
     }
 
     /**
@@ -295,7 +295,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (!motionSensingActive) {
+        if (!active) {
             Log.w(TAG, "Motion sensor value received when sensor is inactive!");
             stopSample();
             return;
@@ -347,7 +347,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     private void startPolling() {
-        Log.v(TAG, "start polling" + getSampleRate());
+        Log.v(TAG, "start polling");
         alarmReceiver.start(context);
     }
 
@@ -386,12 +386,15 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             }
         }
 
-        motionSensingActive = true;
+        active = true;
         setSampleRate(sampleDelay);
+
+        // do the first sample immediately
+        doSample();
     }
 
     public void stopPolling() {
-        Log.v(TAG, "stop polling " + getSampleRate());
+        Log.v(TAG, "stop polling");
         alarmReceiver.stop(context);
     }
 
@@ -416,7 +419,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         stopSample();
         stopPolling();
         enableScreenOffListener(false);
-        motionSensingActive = false;
+        active = false;
 
         // only remove the DataProcessors added in the class, keep external DataProcessors
         if (this.epi != null)
