@@ -33,10 +33,10 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-
 public class LightSensor extends BaseSensor implements SensorEventListener, PeriodicPollingSensor {
 
     private static final String TAG = "Sense Light Sensor";
+    private static LightSensor instance = null;
 
     /**
      * Factory method to get the singleton instance.
@@ -60,7 +60,6 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
     private Controller controller;
     private boolean active;
     private boolean listening;
-    private static LightSensor instance = null;
 
     /**
      * Constructor.
@@ -162,15 +161,26 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
     public void startSensing(long sampleDelay) {
         Log.v(TAG, "Start sensing");
 
-        setSampleRate(sampleDelay);
-
-        // register at poll alarm receiver
+        // check if the sensor is physically present on this phone
+        boolean found = false;
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
-                active = true;
-                pollAlarmReceiver.start(context);
+                found = true;
+                break;
             }
         }
+        if (!found) {
+            Log.w(TAG, "No light field sensor!");
+            return;
+        }
+
+        setSampleRate(sampleDelay);
+
+        active = true;
+        pollAlarmReceiver.start(context);
+
+        // do the first sample immediately
+        doSample();
     }
 
     /**

@@ -51,12 +51,11 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
 	    return instance;
     }
 
-    private long sampleDelay = 0; // in milliseconds
     private long[] lastSampleTimes = new long[50];
     private Context context;
     private List<Sensor> sensors;
     private SensorManager smgr;
-    private boolean pressureSensingActive = false;
+    private boolean active = false;
     private PeriodicPollAlarmReceiver alarmReceiver;
     private WakeLock wakeLock;
     
@@ -101,7 +100,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
   
     @Override
     public boolean isActive() {
-        return pressureSensingActive;
+        return active;
     }
 
     @Override
@@ -112,7 +111,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + sampleDelay) {
+        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
             String sensorName = "";
@@ -153,10 +152,10 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
      * @param sampleDelay
      *            Sample delay in milliseconds
      */
-    
+    @Override
     public void setSampleRate(long sampleDelay) {
+        super.setSampleRate(sampleDelay);
         stopPolling();
-        this.sampleDelay = sampleDelay;
         startPolling();
     }
 
@@ -187,8 +186,11 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
             return;
         }
 
-        pressureSensingActive = true;
+        active = true;
         setSampleRate(sampleRate);
+
+        // do the first sample immediately
+        doSample();
     }
 
     private void stopPolling() {
@@ -220,6 +222,6 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     public void stopSensing() {
         // Log.v(TAG, "stop sensor");
         stopPolling();
-        pressureSensingActive = false;
+        active = false;
     }
 }

@@ -60,7 +60,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
     private Context context;
     private List<Sensor> sensors;
     private SensorManager smgr;
-    private boolean magneticFieldSensingActive = false;
+    private boolean active = false;
     private PeriodicPollAlarmReceiver alarmReceiver;
     private WakeLock wakeLock;
 
@@ -102,7 +102,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
 
     @Override
     public boolean isActive() {
-        return magneticFieldSensingActive;
+        return active;
     }
 
     @Override
@@ -202,8 +202,11 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
             return;
         }
 
-        magneticFieldSensingActive = true;
+        active = true;
         setSampleRate(sampleRate);
+
+        // do the first sample immediately
+        doSample();
     }
 
     private void stopPolling() {
@@ -233,7 +236,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
      */
     @Override
     public void stopSensing() {
-        magneticFieldSensingActive = false;
+        active = false;
         stopPolling();
 
     }

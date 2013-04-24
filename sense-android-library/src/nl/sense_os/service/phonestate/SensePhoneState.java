@@ -357,9 +357,6 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
     public void startSensing(final long interval) {
         Log.v(TAG, "Start sensing");
 
-        active = true;
-        setSampleRate(interval);
-
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
 
@@ -386,12 +383,20 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
             events |= PhoneStateListener.LISTEN_SIGNAL_STRENGTHS;
         }
 
+        // start if there actually are events that we are interested in
         if (0 != events) {
+
+            active = true;
+            setSampleRate(interval);
+
             // start listening to the phone state
             /* THIS TRIGGERS AN EXCEPTION WHEN STOPPING AND STARTING THE SENSOR */
             telMgr.listen(phoneStateListener, events);
 
             alarmReceiver.start(context);
+
+            // do the first sample immediately
+            doSample();
 
         } else {
             Log.w(TAG, "Phone state sensor is started but is not registered for any events");
