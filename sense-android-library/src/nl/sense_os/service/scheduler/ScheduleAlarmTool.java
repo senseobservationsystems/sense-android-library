@@ -94,9 +94,41 @@ public class ScheduleAlarmTool {
                 }
             } else {
                 // task does not have a valid next execution time (yet)
-                task.nextExecution = now + task.interval;
+                Task foundTask = new Task();
+            	//task.nextExecution = now + task.interval;
+            	long gcd = 1;
+            	for (int i = 0; i < (tasks.size()-1); i++) {
+            		long tempGcd = gcd(task.interval, tasks.get(i).interval);
+                    if (tempGcd > gcd) {
+                    	gcd = tempGcd;
+                        foundTask = tasks.get(i);
+                    }
+                }
+            	if (gcd == 1) {
+            		// schedule the next execution in 500 milliseconds
+            		task.nextExecution = now + task.interval;
+            	} else {
+            		task.nextExecution = foundTask.nextExecution;
+            		while (task.nextExecution - task.interval > now) {
+                        task.nextExecution -= task.interval;
+                    }
+            	}
             }
         }
+        
+    }
+    
+    /**
+     * Returns the greatest common divisor of p and q
+     * 
+     * @param p
+     * @param q
+     */
+    public long gcd(long p, long q) {
+    	if (q == 0) {
+    		return p;
+    	}
+    	return gcd(q, p % q);
     }
 
     /**
@@ -127,29 +159,26 @@ public class ScheduleAlarmTool {
 
         // decide which tasks are to be executed at the next execution time
         nextExecution = tasks.get(0).nextExecution;
-        if (tasks.size() == 1) {
-            tasksToExecute.add(tasks.get(0).runnable);
+        tasksToExecute.add(tasks.get(0).runnable);
 
-            // prepare the next execution time of the task that is going to be executed
-            tasks.get(0).nextExecution = nextExecution + tasks.get(0).interval;
-        } else {
-            // try to delay the execution in order to group multiple tasks together
-            remainingFlexibility = tasks.get(0).flexibility;
-            int i;
-            for (i = 0; i < tasks.size() - 1; i++) {
-                if (remainingFlexibility >= 0) {
-                    nextExecution = tasks.get(i).nextExecution;
-                    tasksToExecute.add(tasks.get(i).runnable);
-                    remainingFlexibility -= (tasks.get(i + 1).nextExecution - tasks.get(i).nextExecution);
-                } else {
-                    break;
-                }
+        // try to delay the execution in order to group multiple tasks together
+        remainingFlexibility = tasks.get(0).flexibility;
+        int i;
+        for (i = 1; i < tasks.size(); i++) {
+        	remainingFlexibility -= (tasks.get(i).nextExecution - tasks.get(i - 1).nextExecution);
+        	// see if there is enough flexibility to batch with this task
+            if (remainingFlexibility >= 0) {
+            	// postpone execution time of the batch to this task
+                nextExecution = tasks.get(i).nextExecution;
+                tasksToExecute.add(tasks.get(i).runnable);                
+            } else {
+                break;
             }
+        }
 
-            // prepare the next execution time of the tasks that are going to be executed
-            for (int j = 0; j < i; j++) {
-                tasks.get(j).nextExecution = nextExecution + tasks.get(j).interval;
-            }
+        // prepare the next execution time of the tasks that are going to be executed
+        for (int j = 0; j < i; j++) {
+            tasks.get(j).nextExecution = nextExecution + tasks.get(j).interval;
         }
 
         // create one summarized task
@@ -171,8 +200,6 @@ public class ScheduleAlarmTool {
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
         
-        // Log.d(TAG, "schedule " + tasksToExecute.size() + " tasks in "
-        // + (nextExecution - SystemClock.elapsedRealtime()) + "ms");
     }
 
     /**
