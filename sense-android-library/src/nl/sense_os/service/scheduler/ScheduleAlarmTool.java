@@ -104,7 +104,7 @@ public class ScheduleAlarmTool {
                     }
                 }
             	if (gcd == 1) {
-            		// schedule the next execution in 500 milliseconds
+            		// schedule the next execution in ¨interval¨ milliseconds from now
             		task.nextExecution = now + task.interval;
             	} else {
             		task.nextExecution = foundTask.nextExecution;
