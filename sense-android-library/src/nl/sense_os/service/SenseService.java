@@ -38,6 +38,7 @@ import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.scheduler.ScheduleAlarmTool;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.DataProducer;
 
@@ -416,6 +417,7 @@ public class SenseService extends Service {
 		Log.v(TAG, "Sample rate changed");
 		if (state.isStarted()) {
 			stopSensorModules();
+			ScheduleAlarmTool.getInstance(this).resetNextExecution();
 			startSensorModules();
 		}
 	}
