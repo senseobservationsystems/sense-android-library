@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b932a38406b8861c909b77ae268a5d440 =
+[
+    [ "OBD2CommandIntakeManifoldPressure", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b932a38406b8861c909b77ae268a5d440.html#aa62bc74dba2ed08eb89de230f5676fd3", null ],
+    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b932a38406b8861c909b77ae268a5d440.html#a98da08aade1f1c44c0425e589d258b9f", null ]
+];

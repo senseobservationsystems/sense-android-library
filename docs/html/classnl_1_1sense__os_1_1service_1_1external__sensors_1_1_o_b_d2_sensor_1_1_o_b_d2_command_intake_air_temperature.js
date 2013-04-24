@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_intake_air_temperature =
+[
+    [ "OBD2CommandIntakeAirTemperature", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_intake_air_temperature.html#a900222c461e38dff4cc863cb8bedfd41", null ],
+    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_intake_air_temperature.html#acc4f255b814221c546ab5401d6e8f236", null ]
+];
