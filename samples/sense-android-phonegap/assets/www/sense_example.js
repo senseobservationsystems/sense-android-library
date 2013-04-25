@@ -153,11 +153,11 @@ function onAddDataPointClick() {
 			});
 };
 function onGetLocalDataClick() {
-	window.plugins.sense.getLocalData('pgsensor', function(r) {
+	window.plugins.sense.getLocalData('pgsensor', 10, function(r) {
 		var output = '';
 		for ( var i = 0; i < r.length; i++) {
 			var dataPoint = r[i];
-			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['timestamp'] + ';';
+			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['date'] + ';';
 		}
 		alert('\'pgsensor\' data: ' + output);
 	}, function(e) {
@@ -165,11 +165,11 @@ function onGetLocalDataClick() {
 	});
 };
 function onGetRemoteDataClick() {
-	window.plugins.sense.getRemoteData('pgsensor', true, function(r) {
+	window.plugins.sense.getRemoteData('pgsensor', true, 10, function(r) {
 		var output = '';
 		for ( var i = 0; i < r.length; i++) {
 			var dataPoint = r[i];
-			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['timestamp'] + ';';
+			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['date'] + ';';
 		}
 		alert('\'pgsensor\' data: ' + output);
 	}, function(e) {
@@ -181,31 +181,6 @@ function onFlushBufferClick() {
 		alert('Data sent to CommonSense. Result: ' + r);
 	}, function(e) {
 		alert('flushBuffer() error: ' + e);
-	});
-};
-function onGetStatusClick() {
-	window.plugins.sense.getStatus(function(r) {
-		var isRunning = (r && SensePlatform.STATUSCODE_RUNNING > 0);
-		var isLoggedIn = (r && SensePlatform.STATUSCODE_CONNECTED > 0);
-		var isSensingMotion = (r && SensePlatform.STATUSCODE_MOTION > 0);
-		var isSensingAmbience = (r && SensePlatform.STATUSCODE_AMBIENCE > 0);
-		if (isRunning && isLoggedIn) {
-			alert('Sense Platform is active');
-		} else if (!isLoggedIn) {
-			alert('Sense Platform is not logged in');
-		} else {
-			alert('Sense Platform is not running');
-		}
-		// etc
-	}, function(e) {
-		console.log('getStatus() error: ' + e);
-	});
-};
-function onGetSessionIdClick() {
-	window.plugins.sense.getSessionId(function(r) {
-		alert('getSessionId() result: ' + r);
-	}, function(e) {
-		alert('getSessionId() error: ' + e);
 	});
 };
 function onGiveFeedbackClick() {

@@ -6,7 +6,7 @@
     <string name="action_sense_service">nl.sense_os.demo.SENSE_SERVICE</string>
     <string name="action_sense_new_data">nl.sense_os.demo.NEW_DATA</string>
     <string name="action_sense_send_data">nl.sense_os.demo.SEND_DATA</string>
-    <string name="action_sense_alive_check_alarm">nl.sense_os.CHECK_ALIVE</string>
+    <string name="action_sense_alive_check_alarm">nl.sense_os.demo.CHECK_ALIVE</string>
     <string name="action_sense_data_transmit_alarm">nl.sense_os.demo.TRANSMIT_DATA</string>
     <string name="action_sense_new_requirements">nl.sense_os.demo.NEW_REQUIREMENTS</string>
     <string name="action_widget_update">nl.sense_os.demo.UPDATE_APP_WIDGET</string>
