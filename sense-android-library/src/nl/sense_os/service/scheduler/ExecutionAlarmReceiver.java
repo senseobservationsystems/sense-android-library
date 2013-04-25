@@ -12,20 +12,11 @@ import android.util.Log;
 public class ExecutionAlarmReceiver extends BroadcastReceiver {
 
     private static final String TAG = "ExecutionAlarmReceiver";
-    private static Runnable sumTask;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v(TAG, "Received alarm to execute");
 
-        if (sumTask != null) {
-            sumTask.run();
-        }
-
-        ScheduleAlarmTool.getInstance(context).schedule();
     }
 
-    public static void setSumTask(final Runnable task) {
-        sumTask = task;
-    }
 }
