@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PhoneGap Examples</string>
+    <string name="app_name">Sense PhoneGap Demo</string>
     <string name="show_phonegap">PhoneGap Examples</string>
     <string name="show_sense">Sense Platform Examples</string>
     
      <!-- OVERRIDE INTENT ACTIONS FOR BUNDLED SENSE PLATFORM (ALSO CHANGE IN MANIFEST!!) -->
-    <string name="action_sense_app">nl.sense_os.pgtest.SenseApp</string>
-    <string name="action_sense_service">nl.sense_os.pgtest.SenseService</string>
-    <string name="action_sense_new_data">nl.sense_os.pgtest.MsgHandler.NEW_DATA</string>
-    <string name="action_sense_send_data">nl.sense_os.pgtest.MsgHandler.SEND_DATA</string>
-    <string name="action_sense_feedback_check">nl.sense_os.pgtest.FeedbackCheck</string>
-    <string name="action_sense_feedback_check_alarm">nl.sense_os.pgtest.FeedbackAlarm</string>
-    <string name="action_sense_alive_check_alarm">nl.sense_os.pgtest.AliveCheck</string>
-    <string name="action_sense_data_transmit_alarm">nl.sense_os.pgtest.DataTransmit</string> 
-    <string name="action_widget_update">nl.sense_os.pgtest.AppWidgetUpdate</string>
+    <string name="action_sense_service">nl.sense_os.pgtest.SENSE_SERVICE</string>
+    <string name="action_sense_new_data">nl.sense_os.pgtest.NEW_DATA</string>
+    <string name="action_sense_send_data">nl.sense_os.pgtest.SEND_DATA</string>
+    <string name="action_sense_alive_check_alarm">nl.sense_os.pgtest.CHECK_ALIVE</string>
+    <string name="action_sense_data_transmit_alarm">nl.sense_os.pgtest.TRANSMIT_DATA</string>
+    <string name="action_sense_new_requirements">nl.sense_os.pgtest.NEW_REQUIREMENTS</string>
+    <string name="action_widget_update">nl.sense_os.pgtest.UPDATE_APP_WIDGET</string>
+    <string name="local_storage_authority">nl.sense_os.pgtest.LocalStorage</string>
     
     <string name="stat_notify_action">nl.sense_os.pgtest.NOTIFICATION</string>
-    <string name="stat_notify_title">PhoneGap Test</string>
+    <string name="stat_notify_title">Sense PhoneGap Demo</string>
     <string name="stat_notify_content_off_loggedin">Sensors inactive, logged in as \'%s\'</string> 
     <string name="stat_notify_content_off_loggedout">Sensors inactive, no connection to CommonSense</string>  
     <string name="stat_notify_content_on_loggedin">"Sensors active, logged in as \'%s\'"</string> 
