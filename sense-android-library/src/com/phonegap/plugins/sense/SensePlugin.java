@@ -9,24 +9,18 @@ import java.util.Locale;
 
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.ISenseServiceCallback;
-import nl.sense_os.service.R;
 import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
 
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.api.CallbackContext;
 import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -277,12 +271,10 @@ public class SensePlugin extends CordovaPlugin {
             throws JSONException {
 
         final String sensorName = data.getString(0);
-        Log.v(TAG, "getLocalValues('" + sensorName + "')");
+        final int limit = data.optInt(1);
+        Log.v(TAG, "getLocalValues('" + sensorName + "', " + limit + ")");
 
-        Uri uri = Uri.parse("content://"
-                + cordova.getActivity().getString(R.string.local_storage_authority)
-                + DataPoint.CONTENT_URI_PATH);
-        JSONArray result = getValues(sensorName, null, uri);
+        JSONArray result = sensePlatform.getLocalData(sensorName, limit);
 
         Log.v(TAG, "Found " + result.length() + " '" + sensorName
                 + "' data points in the local storage");
@@ -311,7 +303,8 @@ public class SensePlugin extends CordovaPlugin {
 
         final String sensorName = data.getString(0);
         final boolean onlyThisDevice = data.getBoolean(1);
-        Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyThisDevice + ")");
+        final int limit = data.optInt(2);
+        Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyThisDevice + ", " + limit + ")");
 
         cordova.getThreadPool().execute(new Runnable() {
 
@@ -319,7 +312,7 @@ public class SensePlugin extends CordovaPlugin {
             public void run() {
                 JSONArray result;
                 try {
-                    result = sensePlatform.getData(sensorName, onlyThisDevice);
+                    result = sensePlatform.getData(sensorName, onlyThisDevice, limit);
 
                     Log.v(TAG, "Found " + result.length() + " '" + sensorName
                             + "' data points in the CommonSense");
@@ -372,52 +365,6 @@ public class SensePlugin extends CordovaPlugin {
         } else {
             Log.e(TAG, "No connection to the Sense Platform service.");
             callbackContext.error("No connection to the Sense Platform service.");
-        }
-    }
-
-    /**
-     * Gets array of values from the LocalStorage
-     * 
-     * @param sensorName
-     * @param deviceUuid
-     * @param uri
-     * @return JSONArray with values for the sensor with the selected name and device
-     * @throws JSONException
-     */
-    private JSONArray getValues(String sensorName, String deviceUuid, Uri uri) throws JSONException {
-
-        Cursor cursor = null;
-
-        try {
-            JSONArray result = new JSONArray();
-
-            String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
-            String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
-            if (null != deviceUuid) {
-                selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
-            }
-            String[] selectionArgs = null;
-            String sortOrder = null;
-            cursor = LocalStorage.getInstance(cordova.getActivity()).query(uri, projection,
-                    selection, selectionArgs, sortOrder);
-
-            if (null != cursor && cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    JSONObject val = new JSONObject();
-                    val.put("timestamp",
-                            cursor.getString(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
-                    val.put("value", cursor.getString(cursor.getColumnIndex(DataPoint.VALUE)));
-                    result.put(val);
-                    cursor.moveToNext();
-                }
-            }
-
-            return result;
-
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
     }
 

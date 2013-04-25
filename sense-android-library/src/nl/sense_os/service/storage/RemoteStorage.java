@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import nl.sense_os.service.commonsense.SenseApi;
@@ -57,6 +58,17 @@ class RemoteStorage {
 
         if (null == id) {
             throw new IllegalArgumentException("Cannot find sensor ID");
+        }
+
+        // convert sort order to commonsense format
+        if (null != sortOrder && sortOrder.length() > 0) {
+            if (sortOrder.toLowerCase(Locale.ENGLISH).contains("desc")) {
+                sortOrder = "desc";
+            } else {
+                sortOrder = "asc";
+            }
+        } else {
+            sortOrder = "desc";
         }
 
         // get the data for the sensor

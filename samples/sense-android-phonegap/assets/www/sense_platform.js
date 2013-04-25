@@ -77,6 +77,8 @@ SensePlatform.prototype.flushBuffer = function(success, failure) {
  *            String containing sensor name to lookup
  * @param onlyThisDevice
  *            Boolean to specify only to look for sensors that are connected to this specific phone
+ * @param limit 
+ *            Number for maximum number of data points to return (max 1000)
  * @param success
  *            The callback which will be called when sensor data was retrieved
  * @param failure
@@ -84,17 +86,19 @@ SensePlatform.prototype.flushBuffer = function(success, failure) {
  * 
  * @return JSONArray containing data
  */
-SensePlatform.prototype.getRemoteData = function(name, onlyThisDevice, success, failure) {
+SensePlatform.prototype.getRemoteData = function(name, onlyThisDevice, limit, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
 	return cordova.exec(success, failure, 'SensePlatform', 'get_commonsense_data', [ name,
-			onlyThisDevice ]);
+			onlyThisDevice, limit ]);
 };
 
 /**
  * @param name
  *            String containing sensor name to lookup
+ * @param limit 
+ *            Number for maximum number of data points to return (max 1000)
  * @param success
  *            The callback which will be called when sensor data was retrieved
  * @param failure
@@ -102,11 +106,11 @@ SensePlatform.prototype.getRemoteData = function(name, onlyThisDevice, success, 
  * 
  * @return JSONArray containing data
  */
-SensePlatform.prototype.getLocalData = function(name, success, failure) {
+SensePlatform.prototype.getLocalData = function(name, limit, success, failure) {
 	if (!window.plugins.sense.isInitialized) {
 		window.plugins.sense.init();
 	}
-	return cordova.exec(success, failure, 'SensePlatform', 'get_data', [ name ]);
+	return cordova.exec(success, failure, 'SensePlatform', 'get_data', [ name, limit ]);
 };
 
 /**
@@ -121,7 +125,7 @@ SensePlatform.prototype.getLocalData = function(name, success, failure) {
  * @deprecated use getLocalData instead
  */
 SensePlatform.prototype.getData = function(name, success, failure) {
-	return window.plugins.sense.getLocalData(name, success, failure);
+	return window.plugins.sense.getLocalData(name, 100, success, failure);
 };
 
 /**
