@@ -117,14 +117,12 @@ public class ScheduleAlarmTool {
         
     }
     
-    private Intent intent = new Intent(context, ExecutionAlarmReceiver.class);
-    private Intent intentCpu = new Intent(context, CpuAlarmReceiver.class);
-    public PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
-            PendingIntent.FLAG_CANCEL_CURRENT);
-    public PendingIntent operationCpu = PendingIntent.getBroadcast(context, REQ_CODE, intentCpu,
-            PendingIntent.FLAG_CANCEL_CURRENT);
-    public AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    public AlarmManager mgrCpu = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    private Intent intent;
+    private Intent intentCpu;
+    public PendingIntent operation;
+    public PendingIntent operationCpu;
+    public AlarmManager mgr;
+    public AlarmManager mgrCpu;
     
     /**
      * Returns the greatest common divisor of p and q
@@ -203,8 +201,17 @@ public class ScheduleAlarmTool {
                 }
             }
         };
-        ExecutionAlarmReceiver.setSumTask(sumTask);
+        // ExecutionAlarmReceiver.setSumTask(sumTask);
+        CpuAlarmReceiver.setSumTask(sumTask);
 
+        intent = new Intent(context, ExecutionAlarmReceiver.class);
+        intentCpu = new Intent(context, CpuAlarmReceiver.class);
+        operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        operationCpu = PendingIntent.getBroadcast(context, REQ_CODE, intentCpu,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgrCpu = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         // set the alarm for deterministic execution
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
                 
