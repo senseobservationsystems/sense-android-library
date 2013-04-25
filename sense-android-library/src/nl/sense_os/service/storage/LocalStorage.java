@@ -4,6 +4,7 @@
 package nl.sense_os.service.storage;
 
 import java.nio.BufferOverflowException;
+import java.util.Locale;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
@@ -62,11 +63,11 @@ public class LocalStorage {
      * @return Singleton instance of the LocalStorage
      */
     public static LocalStorage getInstance(Context context) {
-	// Log.v(TAG, "Get local storage instance");
-	if (null == instance) {
-	    instance = new LocalStorage(context.getApplicationContext());
-	}
-	return instance;
+        // Log.v(TAG, "Get local storage instance");
+        if (null == instance) {
+            instance = new LocalStorage(context.getApplicationContext());
+        }
+        return instance;
     }
 
     private final RemoteStorage commonSense;
@@ -76,25 +77,25 @@ public class LocalStorage {
     private Context context;
 
     private LocalStorage(Context context) {
-	Log.i(TAG, "Construct new local storage instance");
-	this.context = context;
+        Log.i(TAG, "Construct new local storage instance");
+        this.context = context;
         persisted = new SQLiteStorage(context, true);
         inMemory = new SQLiteStorage(context, false);
         commonSense = new RemoteStorage(context);
     }
 
     public int delete(Uri uri, String where, String[] selectionArgs) {
-	switch (matchUri(uri)) {
+        switch (matchUri(uri)) {
         case LOCAL_VALUES_URI:
             int nrDeleted = 0;
             nrDeleted += inMemory.delete(where, selectionArgs);
             nrDeleted += persisted.delete(where, selectionArgs);
             return nrDeleted;
-	case REMOTE_VALUES_URI:
-	    throw new IllegalArgumentException("Cannot delete values from CommonSense!");
-	default:
-	    throw new IllegalArgumentException("Unknown URI " + uri);
-	}
+        case REMOTE_VALUES_URI:
+            throw new IllegalArgumentException("Cannot delete values from CommonSense!");
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
     }
 
     /**
@@ -116,8 +117,8 @@ public class LocalStorage {
         String where = null;
         if (useCommonSense) {
             // delete data older than maximum retention time if it had been transmitted
-            where = DataPoint.TIMESTAMP + "<" + retentionLimit + " AND "
-                    + DataPoint.TRANSMIT_STATE + "==1";
+            where = DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.TRANSMIT_STATE
+                    + "==1";
         } else {
             // not using CommonSense: delete all data older than maximum retention time
             where = DataPoint.TIMESTAMP + "<" + retentionLimit;
@@ -128,27 +129,27 @@ public class LocalStorage {
     }
 
     public String getType(Uri uri) {
-	int uriType = matchUri(uri);
+        int uriType = matchUri(uri);
         if (uriType == LOCAL_VALUES_URI || uriType == REMOTE_VALUES_URI) {
-	    return DataPoint.CONTENT_TYPE;
-	} else {
-	    throw new IllegalArgumentException("Unknown URI " + uri);
-	}
+            return DataPoint.CONTENT_TYPE;
+        } else {
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
     }
 
     public Uri insert(Uri uri, ContentValues values) {
 
         // check the URI
-	switch (matchUri(uri)) {
+        switch (matchUri(uri)) {
         case LOCAL_VALUES_URI:
             // implementation below
-	    break;
-	case REMOTE_VALUES_URI:
-	    throw new IllegalArgumentException(
-		    "Cannot insert into CommonSense through this ContentProvider");
-	default:
-	    throw new IllegalArgumentException("Unknown URI " + uri);
-	}
+            break;
+        case REMOTE_VALUES_URI:
+            throw new IllegalArgumentException(
+                    "Cannot insert into CommonSense through this ContentProvider");
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
 
         // insert in the in-memory database
         long rowId = 0;
@@ -161,26 +162,25 @@ public class LocalStorage {
 
             // try again
             rowId = inMemory.insert(values);
-	}
+        }
 
-
-	// notify any listeners (does this work properly?)
-	Uri contentUri = Uri.parse("content://"
-		+ context.getString(R.string.local_storage_authority) + DataPoint.CONTENT_URI_PATH);
+        // notify any listeners (does this work properly?)
+        Uri contentUri = Uri.parse("content://"
+                + context.getString(R.string.local_storage_authority) + DataPoint.CONTENT_URI_PATH);
         Uri rowUri = ContentUris.withAppendedId(contentUri, rowId);
-	context.getContentResolver().notifyChange(rowUri, null);
+        context.getContentResolver().notifyChange(rowUri, null);
 
-	return rowUri;
+        return rowUri;
     }
 
     private int matchUri(Uri uri) {
-	if (DataPoint.CONTENT_URI_PATH.equals(uri.getPath())) {
+        if (DataPoint.CONTENT_URI_PATH.equals(uri.getPath())) {
             return LOCAL_VALUES_URI;
-	} else if (DataPoint.CONTENT_REMOTE_URI_PATH.equals(uri.getPath())) {
-	    return REMOTE_VALUES_URI;
-	} else {
-	    return -1;
-	}
+        } else if (DataPoint.CONTENT_REMOTE_URI_PATH.equals(uri.getPath())) {
+            return REMOTE_VALUES_URI;
+        } else {
+            return -1;
+        }
     }
 
     private int persistRecentData() {
@@ -188,12 +188,12 @@ public class LocalStorage {
 
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
-	try {
+        try {
             long retentionLimit = SNTP.getInstance().getTime() - RETENTION_TIME;
 
             // get unsent or very recent data from the memory
-            String selectUnsent = DataPoint.TRANSMIT_STATE + "!=1" + " OR " + DataPoint.TIMESTAMP + ">"
-                    + retentionLimit;
+            String selectUnsent = DataPoint.TRANSMIT_STATE + "!=1" + " OR " + DataPoint.TIMESTAMP
+                    + ">" + retentionLimit;
             recentPoints = inMemory.query(DEFAULT_PROJECTION, selectUnsent, null, null);
             nrRecentPoints = recentPoints.getCount();
 
@@ -207,41 +207,41 @@ public class LocalStorage {
             if (null != recentPoints) {
                 recentPoints.close();
                 recentPoints = null;
-	    }
-	}
+            }
+        }
         return nrRecentPoints;
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-	    String sortOrder) {
+            String sortOrder) {
         return query(uri, projection, where, selectionArgs, DEFAULT_LIMIT, sortOrder);
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-	    int limit, String sortOrder) {
-	// Log.v(TAG, "Query data points in local storage");
+            int limit, String sortOrder) {
+        // Log.v(TAG, "Query data points in local storage");
 
         // check URI
-	switch (matchUri(uri)) {
+        switch (matchUri(uri)) {
         case LOCAL_VALUES_URI:
             // implementation below
             break;
-	case REMOTE_VALUES_URI:
-	    try {
+        case REMOTE_VALUES_URI:
+            try {
                 return commonSense.query(uri, projection, where, selectionArgs, limit, sortOrder);
-	    } catch (Exception e) {
-		Log.e(TAG, "Failed to query the CommonSense data points", e);
-		return null;
-	    }
-	default:
-	    Log.e(TAG, "Unknown URI: " + uri);
-	    throw new IllegalArgumentException("Unknown URI " + uri);
-	}
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to query the CommonSense data points", e);
+                return null;
+            }
+        default:
+            Log.e(TAG, "Unknown URI: " + uri);
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
 
         // use default projection if needed
         if (projection == null) {
             projection = DEFAULT_PROJECTION;
-	}
+        }
 
         // query both databases
         Cursor inMemoryCursor = inMemory.query(projection, where, selectionArgs, sortOrder);
@@ -250,49 +250,55 @@ public class LocalStorage {
         if (inMemoryCursor.getCount() > 0) {
             if (persistedCursor.getCount() > 0) {
                 // merge cursors
-                return new MergeCursor(new Cursor[] { persistedCursor, inMemoryCursor });
-	} else {
+                if (sortOrder != null && sortOrder.toLowerCase(Locale.ENGLISH).contains("desc")) {
+                    // assume that data from inMemoryCursor is newer than from persistedCursor
+                    return new MergeCursor(new Cursor[] { inMemoryCursor, persistedCursor });
+                } else {
+                    // assume that data from persistedCursor is newer than from inMemoryCursor
+                    return new MergeCursor(new Cursor[] { persistedCursor, inMemoryCursor });
+                }
+            } else {
                 persistedCursor.close();
                 return inMemoryCursor;
-	}
+            }
 
-			} else {
+        } else {
             inMemoryCursor.close();
             return persistedCursor;
-			}
+        }
     }
 
     public int update(Uri uri, ContentValues newValues, String where, String[] selectionArgs) {
 
-	// check URI
-	switch (matchUri(uri)) {
+        // check URI
+        switch (matchUri(uri)) {
         case LOCAL_VALUES_URI:
             // implementation below
-	    break;
-	case REMOTE_VALUES_URI:
-	    throw new IllegalArgumentException("Cannot update data points in CommonSense");
-	default:
-	    throw new IllegalArgumentException("Unknown URI " + uri);
-	}
+            break;
+        case REMOTE_VALUES_URI:
+            throw new IllegalArgumentException("Cannot update data points in CommonSense");
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
 
-	// persist parameter is used to initiate persisting the volatile data
-	boolean persist = "true".equals(uri.getQueryParameter("persist"));
+        // persist parameter is used to initiate persisting the volatile data
+        boolean persist = "true".equals(uri.getQueryParameter("persist"));
 
-	int result = 0;
-	if (!persist) {
+        int result = 0;
+        if (!persist) {
             // Log.v(TAG, "Update data points in local storage");
             int updated = 0;
             updated += inMemory.update(newValues, where, selectionArgs);
             updated += persisted.update(newValues, where, selectionArgs);
             return updated;
-	} else {
+        } else {
             deleteOldData();
             persistRecentData();
-	}
+        }
 
-	// notify content observers
-	context.getContentResolver().notifyChange(uri, null);
+        // notify content observers
+        context.getContentResolver().notifyChange(uri, null);
 
-	return result;
+        return result;
     }
 }
