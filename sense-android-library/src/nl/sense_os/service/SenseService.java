@@ -232,6 +232,8 @@ public class SenseService extends Service {
     public boolean isDataProducerRegistered(String sensorName) {
         return registeredProducers.containsKey(sensorName);
     }
+    
+    
 
 	/**
      * @param sensorName
@@ -1493,5 +1495,14 @@ public class SenseService extends Service {
 		Log.v(TAG, "Try to verify sensor IDs");
 		startService(new Intent(this, DefaultSensorRegistrationService.class));
 	}
+
+	/**
+     * @param sensorName
+     *            The name of the DataProducer
+     * @return  The list with DataProducers which are registered under the given name
+     */
+    public List<DataProducer> getRegisteredDataProducer(String sensorName) {
+        return registeredProducers.get(sensorName);
+    }
 	
 }
