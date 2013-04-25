@@ -157,7 +157,7 @@ function onGetLocalDataClick() {
 		var output = '';
 		for ( var i = 0; i < r.length; i++) {
 			var dataPoint = r[i];
-			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['timestamp'] + ';';
+			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['date'] + ';';
 		}
 		alert('\'pgsensor\' data: ' + output);
 	}, function(e) {
@@ -169,7 +169,7 @@ function onGetRemoteDataClick() {
 		var output = '';
 		for ( var i = 0; i < r.length; i++) {
 			var dataPoint = r[i];
-			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['timestamp'] + ';';
+			output += '\n' + i + ': ' + dataPoint['value'] + ' @' + dataPoint['date'] + ';';
 		}
 		alert('\'pgsensor\' data: ' + output);
 	}, function(e) {

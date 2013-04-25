@@ -20,6 +20,7 @@ import org.apache.cordova.api.CallbackContext;
 import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.RemoteException;
 import android.util.Log;
@@ -276,6 +277,13 @@ public class SensePlugin extends CordovaPlugin {
 
         JSONArray result = sensePlatform.getLocalData(sensorName, limit);
 
+        // convert the date to seconds
+        for (int i = 0; i < result.length(); i++) {
+            JSONObject dataPoint = result.getJSONObject(i);
+            dataPoint.put("date", dataPoint.getDouble("date") / 1000d);
+            result.put(i, dataPoint);
+        }
+
         Log.v(TAG, "Found " + result.length() + " '" + sensorName
                 + "' data points in the local storage");
         callbackContext.success(result);
@@ -316,6 +324,14 @@ public class SensePlugin extends CordovaPlugin {
 
                     Log.v(TAG, "Found " + result.length() + " '" + sensorName
                             + "' data points in the CommonSense");
+
+                    // convert the date to seconds
+                    for (int i = 0; i < result.length(); i++) {
+                        JSONObject dataPoint = result.getJSONObject(i);
+                        dataPoint.put("date", dataPoint.getDouble("date") / 1000d);
+                        result.put(i, dataPoint);
+                    }
+
                     callbackContext.success(result);
 
                 } catch (IllegalStateException e) {

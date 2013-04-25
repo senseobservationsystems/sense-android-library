@@ -399,8 +399,7 @@ public class SensePlatform {
             if (null != cursor && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     JSONObject val = new JSONObject();
-                    val.put("timestamp",
-                            cursor.getString(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
+                    val.put("date", cursor.getLong(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
                     val.put("value", cursor.getString(cursor.getColumnIndex(DataPoint.VALUE)));
                     result.put(val);
                     cursor.moveToNext();
