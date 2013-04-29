@@ -1499,10 +1499,18 @@ public class SenseService extends Service {
 	/**
      * @param sensorName
      *            The name of the DataProducer
-     * @return  The list with DataProducers which are registered under the given name
+     * @return  The list with DataProducers which are registered under the given sensor name
      */
     public List<DataProducer> getRegisteredDataProducer(String sensorName) {
         return registeredProducers.get(sensorName);
     }
 	
+	/**
+     * @param sensorName
+     *            The name of the DataProcessor
+     * @return  The list with DataProcessors which are subscribed to the given sensor name
+     */
+    public List<DataProcessor> getSubscribedDataProcessor(String sensorName) {
+        return subscribedProcessors.get(sensorName);
+    }
 }
