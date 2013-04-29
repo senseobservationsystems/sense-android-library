@@ -191,16 +191,6 @@
         </receiver>
         <!-- BROADCAST RECEIVER FOR SCHEDULED SAMPLE EXECUTION ALARMS -->
         <receiver android:name="nl.sense_os.service.scheduler.ExecutionAlarmReceiver" />
-        <!-- BROADCAST RECEIVER THAT SCHEDULES PERIODIC TRANSMITS OF BUFFERED SENSOR DATA -->
-        <receiver
-            android:name="nl.sense_os.service.DataTransmitter"
-            android:exported="false" >
-            <intent-filter>
-
-                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
-                <action android:name="nl.sense_os.demo.TRANSMIT_DATA" />
-            </intent-filter>
-        </receiver>
         <!-- BROADCAST RECEIVER FOR GCM MESSAGES -->
         <!-- CAN BE REMOVED IF NOT USED -->
         <receiver

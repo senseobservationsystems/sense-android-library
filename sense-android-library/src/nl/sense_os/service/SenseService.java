@@ -124,6 +124,7 @@ public class SenseService extends Service {
     private ZephyrHxM es_HxM;
     private NewOBD2DeviceConnector es_obd2sensor;
     private MagneticFieldSensor magneticFieldSensor;
+    private DataTransmitter transmitter;
 
     /**
      * All registered DataProducers, mapped by sensor name.
@@ -424,7 +425,8 @@ public class SenseService extends Service {
         // update login status
         state.setLoggedIn(false);
 
-        DataTransmitter.stopTransmissions(this);
+        transmitter = DataTransmitter.getInstance(this);
+        transmitter.stopTransmissions();
 
         // completely stop the MsgHandler service
         stopService(new Intent(getString(R.string.action_sense_new_data)));
@@ -510,6 +512,9 @@ public class SenseService extends Service {
         Log.v(TAG, "Sync rate changed");
         if (state.isStarted()) {
             controller = Controller.getController(this);
+            transmitter = DataTransmitter.getInstance(this);
+            transmitter.stopTransmissions();
+            ScheduleAlarmTool.getInstance(this).resetNextExecution();
             controller.scheduleTransmissions();
         }
 
@@ -1435,7 +1440,7 @@ public class SenseService extends Service {
                             registerDataProducer(SensorNames.DATA_CONN, phoneStateListener);
                             registerDataProducer(SensorNames.SERVICE_STATE, phoneStateListener);
                             registerDataProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
-                            registerDataProducer(SensorNames.CONN_TYPE, phoneStateListener);                            
+                            registerDataProducer(SensorNames.CONN_TYPE, phoneStateListener);
                         } catch (Exception e) {
                             Log.e(TAG, "Phone state thread failed to start!");
                             togglePhoneState(false);
@@ -1547,4 +1552,5 @@ public class SenseService extends Service {
         Log.v(TAG, "Try to verify sensor IDs");
         startService(new Intent(this, DefaultSensorRegistrationService.class));
     }
+
 }

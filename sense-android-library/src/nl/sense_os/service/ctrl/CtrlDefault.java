@@ -17,9 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.Sensor;
@@ -49,12 +47,14 @@ public class CtrlDefault extends Controller {
     private long firstIdleDetectedTime = 0;
     private Context context;
     private LocationManager locMgr;
+    private DataTransmitter transmitter;
 
     public CtrlDefault(Context context) {
         super();
         Log.i(TAG, "Creating default controller");
         this.context = context;
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        transmitter = DataTransmitter.getInstance(context);
     }
 
     @Override
@@ -74,6 +74,7 @@ public class CtrlDefault extends Controller {
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);
+        Log.v(TAG, "Check location sensor settings...");
         if (selfAwareMode) {
             Log.v(TAG, "Check location sensor settings...");
             LocationSensor locListener = LocationSensor.getInstance(context);
@@ -349,10 +350,6 @@ public class CtrlDefault extends Controller {
     public void scheduleTransmissions() {
         Log.v(TAG, "Schedule transmissions");
 
-        Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));
-        PendingIntent operation = PendingIntent.getBroadcast(context, DataTransmitter.REQ_CODE,
-                intent, 0);
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
@@ -394,8 +391,6 @@ public class CtrlDefault extends Controller {
             Log.w(TAG, "Unexpected sync rate value: " + syncRate);
             return;
         }
-        am.cancel(operation);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
-                operation);
+        transmitter.startTransmissions(interval);
     }
 }
