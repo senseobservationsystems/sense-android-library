@@ -123,6 +123,7 @@ public class SenseService extends Service {
 	private ZephyrHxM es_HxM;
 	private NewOBD2DeviceConnector es_obd2sensor;
 	private MagneticFieldSensor magneticFieldSensor;
+    private DataTransmitter transmitter;
 
     /**
      * All registered DataProducers, mapped by sensor name.
@@ -406,7 +407,8 @@ public class SenseService extends Service {
 		// update login status
 		state.setLoggedIn(false);
 
-		DataTransmitter.stopTransmissions(this);
+        transmitter = DataTransmitter.getInstance(this);
+        transmitter.stopTransmissions();
 
 		// completely stop the MsgHandler service
 		stopService(new Intent(getString(R.string.action_sense_new_data)));
@@ -492,6 +494,9 @@ public class SenseService extends Service {
 		Log.v(TAG, "Sync rate changed");
 		if (state.isStarted()) {
 			controller = Controller.getController(this);
+            transmitter = DataTransmitter.getInstance(this);
+            transmitter.stopTransmissions();
+            ScheduleAlarmTool.getInstance(this).resetNextExecution();
 			controller.scheduleTransmissions();
 		}
 
