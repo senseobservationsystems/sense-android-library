@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import nl.sense_os.service.scheduler.Scheduler.Task;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.TrafficStats;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -140,8 +142,11 @@ public class ScheduleAlarmTool {
     /**
      * Schedules the next task to execute.
      */
+    @SuppressLint("NewApi")
     public void schedule() {
         Log.v(TAG, "Schedule next execution of sample tasks");
+        Log.v(TAG, "Bytes transmitted from Wifi:" + TrafficStats.getTotalTxBytes());
+        Log.v(TAG, "Bytes transmitted from 3G:" + TrafficStats.getMobileTxBytes());
 
         if (tasks.isEmpty()) {
             // nothing to schedule

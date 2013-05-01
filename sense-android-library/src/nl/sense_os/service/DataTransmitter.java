@@ -74,13 +74,13 @@ public class DataTransmitter implements Runnable {
 
             Intent task = new Intent(context.getString(R.string.action_sense_send_data));
             // start the transmission if we have WiFi connection
-            if (mWifi.isConnected()) {
+            //if (mWifi.isConnected()) {
                 Log.i(TAG, "Start transmission");
                 ComponentName service = context.startService(task);
                 if (null == service) {
                     Log.w(TAG, "Failed to start data sync service");
                 }   
-            } else {
+            /*} else {
                 // if there is no WiFi connection, postpone the transmission
                 if (SystemClock.elapsedRealtime() - lastTransmission >= ADAPTIVE_TRANSMISSION_INTERVAL) {
                     ComponentName service = context.startService(task);
@@ -90,7 +90,7 @@ public class DataTransmitter implements Runnable {
                         lastTransmission = SystemClock.elapsedRealtime();
                     }
                 }
-            }
+            }*/
 
 		} else {
 			// skip transmission: Sense service is not logged in
