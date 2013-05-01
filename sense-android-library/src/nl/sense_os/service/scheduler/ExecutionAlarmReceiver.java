@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.util.Log;
 
 /**
+ * This class is responsible for executing the batched tasks when the alarm for deterministic
+ * execution is received.
  * 
  * @author Kimon Tsitsikas <kimon@sense-os.nl>
  */

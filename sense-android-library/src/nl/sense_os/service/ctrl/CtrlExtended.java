@@ -17,9 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.Sensor;
@@ -57,6 +55,7 @@ public class CtrlExtended extends Controller {
     private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
 
     private LocationManager locMgr;
+    private DataTransmitter transmitter;
     private Context context;
     private String lastlocationmode = NOMODE;
     private flag networkIndexFlag;
@@ -85,6 +84,7 @@ public class CtrlExtended extends Controller {
         Log.i(TAG, "Creating extended controller");
         this.context = context;
         locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        transmitter = DataTransmitter.getInstance(context);
     }
 
     private String bestProvider(boolean isGpsAllowed, boolean isListeningGps, long time,
@@ -680,10 +680,6 @@ public class CtrlExtended extends Controller {
     public void scheduleTransmissions() {
         Log.v(TAG, "Schedule transmissions");
 
-        Intent intent = new Intent(context.getString(R.string.action_sense_data_transmit_alarm));
-        PendingIntent operation = PendingIntent.getBroadcast(context, DataTransmitter.REQ_CODE,
-                intent, 0);
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
@@ -717,16 +713,14 @@ public class CtrlExtended extends Controller {
                 interval = Intervals.OFTEN;
                 break;
             default:
-                Log.e(TAG, "Unexpected sample rate value: " + sampleRate);
+                Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
                 return;
             }
             break;
         default:
-            Log.e(TAG, "Unexpected sync rate value: " + syncRate);
+            Log.w(TAG, "Unexpected sync rate value: " + syncRate);
             return;
         }
-        am.cancel(operation);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval,
-                operation);
+        transmitter.startTransmissions(interval);
     }
 }
