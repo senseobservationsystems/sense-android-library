@@ -1457,7 +1457,10 @@ public class SenseService extends Service {
         // remove the producer from the list of registered producers for this sensor name
         List<DataProducer> dataProducers = registeredProducers.get(name);
         dataProducers.remove(dataProducer);
-        registeredProducers.put(name, dataProducers);
+        if(dataProducers.size() == 0)
+        	registeredProducers.remove(name);
+        else        	
+        	registeredProducers.put(name, dataProducers);
     }
 
     /**
@@ -1483,13 +1486,17 @@ public class SenseService extends Service {
         // remove the processor from the list of subscribed processors
         List<DataProcessor> processors = subscribedProcessors.get(name);
         processors.remove(dataProcessor);
-        subscribedProcessors.put(name, processors);
+        if(processors.size() == 0)
+        	subscribedProcessors.remove(name);
+        else
+        	subscribedProcessors.put(name, processors);
 
         // unsubscribe the processor from the producers for this sensor name
         List<DataProducer> producers = registeredProducers.get(name);
         for (DataProducer registeredProducer : producers) {
             registeredProducer.removeSubscriber(dataProcessor);
         }
+        registeredProducers.remove(name);
     }
 	private synchronized void verifySensorIds() {
 		Log.v(TAG, "Try to verify sensor IDs");
