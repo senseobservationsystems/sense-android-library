@@ -6,6 +6,9 @@ import android.content.Context;
 import android.util.Log;
 
 /**
+ * This class is responsible for scheduling the sampling tasks of the phone, as also the sensor data
+ * transmission. It applies batch scheduling and opportunistic execution algorithms in order to
+ * reduce the number of CPU wakeups and thus the energy consumption.
  * 
  * @author Kimon Tsitsikas <kimon@sense-os.nl>
  */
@@ -47,11 +50,14 @@ public class Scheduler {
     }
 
     /**
-     * Registers a new command to be scheduled with a given interval.
+     * Registers a new task to be scheduled with a given interval.
      * 
      * @param command
+     *            The runnable of the new task
      * @param sensorInterval
+     *            Execution interval of the new task
      * @param sensorFlexibility
+     *            Delay tolerance of task execution
      */
     public synchronized void register(Runnable command, long sensorInterval, long sensorFlexibility) {
         Log.v(TAG, "Register new sample task at " + sensorInterval + "ms interval");
@@ -84,7 +90,7 @@ public class Scheduler {
     }
 
     /**
-     * Unregisters a command.
+     * Unregisters a task.
      * 
      * @param command
      */

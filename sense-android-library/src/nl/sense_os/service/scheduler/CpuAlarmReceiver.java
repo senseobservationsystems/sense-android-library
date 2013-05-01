@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+/**
+ * This class is responsible for executing the batched tasks in case the CPU is awake within the
+ * backwards flexibility margin.
+ * 
+ * @author Kimon Tsitsikas <kimon@sense-os.nl>
+ */
 public class CpuAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "CpuAlarmReceiver";
     private static Runnable sumTask;

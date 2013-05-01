@@ -103,7 +103,7 @@ public class ScheduleAlarmTool {
                         foundTask = tasks.get(i);
                     }
                 }
-            	if (gcd == 1) {
+                if (gcd == 1) {
             		// schedule the next execution in ¨interval¨ milliseconds from now
             		task.nextExecution = now + task.interval;
             	} else {
@@ -201,7 +201,7 @@ public class ScheduleAlarmTool {
                 }
             }
         };
-        // ExecutionAlarmReceiver.setSumTask(sumTask);
+
         CpuAlarmReceiver.setSumTask(sumTask);
 
         intent = new Intent(context, ExecutionAlarmReceiver.class);
