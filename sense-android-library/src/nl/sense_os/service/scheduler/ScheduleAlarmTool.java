@@ -10,7 +10,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.net.TrafficStats;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -145,8 +144,6 @@ public class ScheduleAlarmTool {
     @SuppressLint("NewApi")
     public void schedule() {
         Log.v(TAG, "Schedule next execution of sample tasks");
-        Log.v(TAG, "Bytes transmitted from Wifi:" + TrafficStats.getTotalTxBytes());
-        Log.v(TAG, "Bytes transmitted from 3G:" + TrafficStats.getMobileTxBytes());
 
         if (tasks.isEmpty()) {
             // nothing to schedule

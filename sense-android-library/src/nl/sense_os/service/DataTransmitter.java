@@ -5,12 +5,14 @@ package nl.sense_os.service;
 
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.scheduler.Scheduler;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.TrafficStats;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -32,8 +34,8 @@ import android.util.Log;
 public class DataTransmitter implements Runnable {
 
     private static Context context;
+    private static long interval;
 	private static final String TAG = "Sense DataTransmitter";
-    private static long lastTransmission = 0;
     private static long ADAPTIVE_TRANSMISSION_INTERVAL = AlarmManager.INTERVAL_HOUR;
 	public static final int REQ_CODE = 0x05E2DDA7A;
 
@@ -62,8 +64,16 @@ public class DataTransmitter implements Runnable {
         DataTransmitter.context = context;
     }
 
-	@Override
+    @SuppressLint("NewApi")
+    private long transmittedBytes = TrafficStats.getMobileTxBytes();
+    private static long lastTransmissionBytes = 0;
+    private static long lastTransmissionTime = 0;
+
+    @SuppressLint("NewApi")
+    @Override
     public void run() {
+
+        // Log.v(TAG, "Bytes transmitted from Wifi:" + TrafficStats.getTotalTxBytes());
 
 		// check if the service is (supposed to be) alive before scheduling next alarm
 		if (true == ServiceStateHelper.getInstance(context).isLoggedIn()) {
@@ -72,25 +82,26 @@ public class DataTransmitter implements Runnable {
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-            Intent task = new Intent(context.getString(R.string.action_sense_send_data));
             // start the transmission if we have WiFi connection
-            //if (mWifi.isConnected()) {
-                Log.i(TAG, "Start transmission");
-                ComponentName service = context.startService(task);
-                if (null == service) {
-                    Log.w(TAG, "Failed to start data sync service");
-                }   
-            /*} else {
+            if (mWifi.isConnected()) {
+                transmissionService(); 
+            } else {
                 // if there is no WiFi connection, postpone the transmission
-                if (SystemClock.elapsedRealtime() - lastTransmission >= ADAPTIVE_TRANSMISSION_INTERVAL) {
-                    ComponentName service = context.startService(task);
-                    if (null == service) {
-                        Log.w(TAG, "Failed to start data sync service");
-                    } else {
-                        lastTransmission = SystemClock.elapsedRealtime();
-                    }
+                lastTransmissionBytes = TrafficStats.getMobileTxBytes() - transmittedBytes;
+                transmittedBytes = TrafficStats.getMobileTxBytes();
+
+                if ((SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL)) {
+                    transmissionService();
                 }
-            }*/
+                // If any transmission took place recently, transmit the sensor data
+                else if ((lastTransmissionBytes >= 500)
+                        && (SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL
+                                - (long) (ADAPTIVE_TRANSMISSION_INTERVAL * 0.1))) {
+                    transmissionService();
+                } else {
+                    // do nothing
+                }
+            }
 
 		} else {
 			// skip transmission: Sense service is not logged in
@@ -106,17 +117,28 @@ public class DataTransmitter implements Runnable {
     public void startTransmissions(long interval) {
 
         // schedule transmissions
+        this.interval = interval;
         Scheduler.getInstance(context).register(this, interval, (long) (interval * 0.1));
     }
 
     /**
      * Stops the periodic transmission of sensor data.
-     * 
-     * @param context
-     *            Context to access Scheduler
      */
     public void stopTransmissions() {
         // stop transmissions
         Scheduler.getInstance(context).unregister(this);
 	}
+
+    /**
+     * Initiates the data transmission.
+     */
+    public void transmissionService() {
+        Log.i(TAG, "Start transmission");
+        Intent task = new Intent(context.getString(R.string.action_sense_send_data));
+        lastTransmissionTime = SystemClock.elapsedRealtime();
+        ComponentName service = context.startService(task);
+        if (null == service) {
+            Log.w(TAG, "Failed to start data sync service");
+        }
+    }
 }
