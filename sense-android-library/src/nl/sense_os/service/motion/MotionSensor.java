@@ -115,7 +115,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     private List<Sensor> sensors;
     private boolean active = false;
     private WakeLock wakeLock;
-    private boolean isRegistered;
+    private boolean registered;
     private PeriodicPollAlarmReceiver alarmReceiver;
     // TODO:
     // Should be moved to the service where all the sensors are registered
@@ -295,6 +295,9 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+        if (!registered) {
+            // ignore
+        }
         if (!active) {
             Log.w(TAG, "Motion sensor value received when sensor is inactive!");
             stopSample();
@@ -320,7 +323,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private synchronized void registerSensors() {
 
-        if (!isRegistered) {
+        if (!registered) {
             // Log.v(TAG, "Register the motion sensor for updates");
 
             SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -332,7 +335,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
                 mgr.registerListener(this, sensor, delay);
             }
 
-            isRegistered = true;
+            registered = true;
 
         } else {
             // Log.v(TAG, "Did not register for motion sensor updates: already registered");
@@ -454,7 +457,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     private synchronized void unregisterSensors() {
 
-        if (isRegistered) {
+        if (registered) {
             // Log.v(TAG, "Unregister the motion sensor for updates");
             ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE))
                     .unregisterListener(this);
@@ -462,6 +465,6 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             // Log.v(TAG, "Did not unregister for motion sensor updates: already unregistered");
         }
 
-        isRegistered = false;
+        registered = false;
     }
 }
