@@ -35,8 +35,8 @@ import android.util.Log;
 public class PressureSensor extends BaseSensor implements SensorEventListener,
         PeriodicPollingSensor {
 
-    private static final String TAG = "Sense Pressure Sensor";
-    private static PressureSensor instance = null;
+    private static PressureSensor sInstance = null;
+    private static final String TAG = "PressureSensor";
 
     /**
      * Factory method to get the singleton instance.
@@ -45,51 +45,57 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
      * @return instance
      */
     public static PressureSensor getInstance(Context context) {
-	    if(instance == null) {
-	       instance = new PressureSensor(context);
-	    }
-	    return instance;
+        if (sInstance == null) {
+            sInstance = new PressureSensor(context);
+        }
+        return sInstance;
     }
 
-    private long[] lastSampleTimes = new long[50];
-    private Context context;
-    private List<Sensor> sensors;
-    private SensorManager smgr;
-    private boolean active = false;
-    private PeriodicPollAlarmReceiver alarmReceiver;
-    private WakeLock wakeLock;
-    
+    private boolean mActive = false;
+    private PeriodicPollAlarmReceiver mAlarmReceiver;
+    private Context mContext;
+    private long[] mLastSampleTimes = new long[50];
+    private SensorManager mSensorMgr;
+    private List<Sensor> mSensors;
+    private WakeLock mWakeLock;
+
+    /**
+     * Constructor.
+     * 
+     * @param context
+     * @see #getInstance(Context)
+     */
     protected PressureSensor(Context context) {
-        this.context = context;
-        smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensors = new ArrayList<Sensor>();
-        if (null != smgr.getDefaultSensor(Sensor.TYPE_PRESSURE)) {
-            sensors.add(smgr.getDefaultSensor(Sensor.TYPE_PRESSURE));
+        mContext = context;
+        mSensorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mSensors = new ArrayList<Sensor>();
+        if (null != mSensorMgr.getDefaultSensor(Sensor.TYPE_PRESSURE)) {
+            mSensors.add(mSensorMgr.getDefaultSensor(Sensor.TYPE_PRESSURE));
         }
 
-        alarmReceiver = new PeriodicPollAlarmReceiver(this);
+        mAlarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Check pressure");
+        Log.v(TAG, "Do sample");
 
         // acquire wake lock
-        if (null == wakeLock) {
-            PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        if (null == mWakeLock) {
+            PowerManager powerMgr = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         }
-        if (!wakeLock.isHeld()) {
-            wakeLock.acquire();
+        if (!mWakeLock.isHeld()) {
+            mWakeLock.acquire();
         } else {
             // Log.v(TAG, "Wake lock already held");
         }
 
         // register as sensor listener
-        for (Sensor sensor : sensors) {
+        for (Sensor sensor : mSensors) {
             if (sensor.getType() == Sensor.TYPE_PRESSURE) {
                 // Log.d(TAG, "registering for sensor " + sensor.getName());
-                smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }
     }
@@ -97,10 +103,9 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     /**
      * @return The delay between samples in milliseconds
      */
-  
     @Override
     public boolean isActive() {
-        return active;
+        return mActive;
     }
 
     @Override
@@ -111,37 +116,34 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
-            lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
+        if (System.currentTimeMillis() > mLastSampleTimes[sensor.getType()] + getSampleRate()) {
+            mLastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
-            String sensorName = "";
-            if (sensor.getType() == Sensor.TYPE_PRESSURE) {
-                sensorName = SensorNames.PRESSURE;
+            String sensorName = SensorNames.PRESSURE;
 
-                // value is millibar, convert to Pascal
-                float millibar = event.values[0];
-                float pascal = millibar * 100;
-                float value = BigDecimal.valueOf(pascal).setScale(3, 0).floatValue();
+            // value is millibar, convert to Pascal
+            float millibar = event.values[0];
+            float pascal = millibar * 100;
+            float value = BigDecimal.valueOf(pascal).setScale(3, 0).floatValue();
 
-                this.notifySubscribers();
-                SensorDataPoint dataPoint = new SensorDataPoint(value);
-                dataPoint.sensorName = sensorName;
-                dataPoint.sensorDescription = sensor.getName();
-                dataPoint.timeStamp = SNTP.getInstance().getTime();        
-                this.sendToSubscribers(dataPoint);
-                
-                // send msg to MsgHandler
-                Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-                i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-                i.putExtra(DataPoint.VALUE, value);
-                i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-                i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-                i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-                context.startService(i);
+            this.notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(value);
+            dataPoint.sensorName = sensorName;
+            dataPoint.sensorDescription = sensor.getName();
+            dataPoint.timeStamp = SNTP.getInstance().getTime();
+            this.sendToSubscribers(dataPoint);
 
-                // sample is successful: unregister the listener
-                stopSample();
-            }
+            // send msg to MsgHandler
+            Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
+            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
+            i.putExtra(DataPoint.VALUE, value);
+            i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+            i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+            mContext.startService(i);
+
+            // sample is successful: unregister the listener
+            stopSample();
         }
     }
 
@@ -160,8 +162,8 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     }
 
     private void startPolling() {
-        // Log.v(TAG, "start polling");
-        alarmReceiver.start(context);
+        Log.v(TAG, "Start polling");
+        mAlarmReceiver.start(mContext);
     }
 
     /**
@@ -173,9 +175,11 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
      */
     @Override
     public void startSensing(long sampleRate) {
+        Log.v(TAG, "Start sensing");
+
         // check if the sensor is physically present on this phone
         boolean found = false;
-        for (Sensor sensor : sensors) {
+        for (Sensor sensor : mSensors) {
             if (sensor.getType() == Sensor.TYPE_PRESSURE) {
                 found = true;
                 break;
@@ -186,7 +190,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
             return;
         }
 
-        active = true;
+        mActive = true;
         setSampleRate(sampleRate);
 
         // do the first sample immediately
@@ -194,25 +198,25 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     }
 
     private void stopPolling() {
-        // Log.v(TAG, "stop polling");
-        alarmReceiver.stop(context);
+        Log.v(TAG, "Stop polling");
+        mAlarmReceiver.stop(mContext);
+        stopSample();
     }
 
     private void stopSample() {
-        // Log.v(TAG, "stop sample");
+        Log.v(TAG, "Stop sample");
 
         // release wake lock
-        if (null != wakeLock && wakeLock.isHeld()) {
-            wakeLock.release();
+        if (null != mWakeLock && mWakeLock.isHeld()) {
+            mWakeLock.release();
         }
 
         // unregister sensor listener
         try {
-            smgr.unregisterListener(this);
+            mSensorMgr.unregisterListener(this);
         } catch (Exception e) {
-            Log.e(TAG, "Failed to stop pressure field sample!", e);
+            // ignore
         }
-
     }
 
     /**
@@ -220,8 +224,8 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
      */
     @Override
     public void stopSensing() {
-        // Log.v(TAG, "stop sensor");
+        Log.v(TAG, "Stop sensing");
         stopPolling();
-        active = false;
+        mActive = false;
     }
 }
