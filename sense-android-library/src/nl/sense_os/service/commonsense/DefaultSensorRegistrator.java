@@ -71,7 +71,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match noise sensor
 		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
 				"0.0", deviceType, deviceUuid);
-		
+
 		//match auto calibrated noise sensor
 		success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorDescriptions.AUTO_CALIBRATED,
 				"0.0", deviceType, deviceUuid);
@@ -88,18 +88,18 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match pressure sensor
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		if (null != sensor) {
-            success &= checkSensor(SensorNames.PRESSURE, SensorNames.PRESSURE,
-                    SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
+			success &= checkSensor(SensorNames.PRESSURE, SensorNames.PRESSURE,
+					SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No pressure sensor present!");
 		}
-		
+
 		// match Magnetic Field sensor
 		sensor = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 		if (null != sensor) {
-            success &= checkSensor(SensorNames.MAGNETIC_FIELD, SensorNames.MAGNETIC_FIELD,
-                    SenseDataTypes.JSON, sensor.getName(), "{\"x\":0, \"y\":0, \"z\":0}",
-                    deviceType, deviceUuid);
+			success &= checkSensor(SensorNames.MAGNETIC_FIELD, SensorNames.MAGNETIC_FIELD,
+					SenseDataTypes.JSON, sensor.getName(), "{\"x\":0, \"y\":0, \"z\":0}",
+					deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No magnetic field sensor present!");
 		}
@@ -211,18 +211,17 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		Sensor sensor;
 		boolean success = true;
+		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 
 		sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		if (null != sensor) {
+		if (null != sensor) {		
 
 			// match accelerometer
-			success &= checkSensor(SensorNames.ACCELEROMETER, "acceleration", SenseDataTypes.JSON,
-					sensor.getName(), "{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType,
-					deviceUuid);
-
-			// match accelerometer (epi)
-			SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-					Context.MODE_PRIVATE);
+			if (mainPrefs.getBoolean(Motion.ACCELEROMETER, false)) {
+				success &= checkSensor(SensorNames.ACCELEROMETER, "acceleration", SenseDataTypes.JSON,
+						sensor.getName(), "{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType,
+						deviceUuid);
+			}
 
 			if (mainPrefs.getBoolean(Motion.EPIMODE, false)) {
 				success &= checkSensor(SensorNames.ACCELEROMETER_EPI, "acceleration (epi-mode)",
@@ -230,13 +229,12 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 						deviceType, deviceUuid);
 			}
 
-			//TODO
-			//if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
+			if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
 				success &= checkSensor(SensorNames.ACCELEROMETER_BURST, "acceleration (burst-mode)",
 						SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
 						deviceType, deviceUuid);
-			//}
-			
+			}
+
 			// match motion energy
 			if (mainPrefs.getBoolean(Main.Motion.MOTION_ENERGY, false)) {
 				success &= checkSensor(SensorNames.MOTION_ENERGY, SensorNames.MOTION_ENERGY,
@@ -265,49 +263,54 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
 			sensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 			if (null != sensor) {
-				success &= checkSensor(SensorNames.LIN_ACCELERATION, SensorNames.LIN_ACCELERATION,
-						SenseDataTypes.JSON, sensor.getName(),
-						"{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType, deviceUuid);
-				//TODO
-				//if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
-					success &= checkSensor(SensorNames.LINEAR_BURST, "linear acceleration (burst-mode)",
-							SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
-							deviceType, deviceUuid);
-				//}
 
+				// match linear acceleration
+				if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, false)) {	
+					success &= checkSensor(SensorNames.LIN_ACCELERATION, SensorNames.LIN_ACCELERATION,
+							SenseDataTypes.JSON, sensor.getName(),
+							"{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType, deviceUuid);
+
+					if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
+						success &= checkSensor(SensorNames.LINEAR_BURST, "linear acceleration (burst-mode)",
+								SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
+								deviceType, deviceUuid);
+					}
+				}
 			} else {
 				// Log.v(TAG, "No linear acceleration sensor present!");
 			}
 		}
 
 		// match orientation
-		sensor = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-		if (null != sensor) {
-			success &= checkSensor(SensorNames.ORIENT, SensorNames.ORIENT, SenseDataTypes.JSON,
-					sensor.getName(), "{\"azimuth\":1.0,\"pitch\":1.0,\"roll\":1.0}", deviceType,
-					deviceUuid);
+		if (mainPrefs.getBoolean(Motion.ORIENTATION, false)) {	
+			sensor = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+			if (null != sensor) {			
+				success &= checkSensor(SensorNames.ORIENT, SensorNames.ORIENT, SenseDataTypes.JSON,
+						sensor.getName(), "{\"azimuth\":1.0,\"pitch\":1.0,\"roll\":1.0}", deviceType,
+						deviceUuid);
 
-		} else {
-			// Log.v(TAG, "No orientation sensor present!");
+			} else {
+				// Log.v(TAG, "No orientation sensor present!");
+			}
 		}
-
 		// match gyroscope
-		sensor = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-		if (null != sensor) {
-			success &= checkSensor(SensorNames.GYRO, "rotation rate", SenseDataTypes.JSON,
-					sensor.getName(),
-					"{\"azimuth rate\":1.0,\"pitch rate\":1.0,\"roll rate\":1.0}", deviceType,
-					deviceUuid);
-			//if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
-			success &= checkSensor(SensorNames.GYRO_BURST, "gyroscope (burst-mode)",
-					SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
-					deviceType, deviceUuid);
-			//}
+		if (mainPrefs.getBoolean(Motion.GYROSCOPE, false)) {	
+			sensor = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+			if (null != sensor) {
+				success &= checkSensor(SensorNames.GYRO, "rotation rate", SenseDataTypes.JSON,
+						sensor.getName(),
+						"{\"azimuth rate\":1.0,\"pitch rate\":1.0,\"roll rate\":1.0}", deviceType,
+						deviceUuid);
+				if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
+				success &= checkSensor(SensorNames.GYRO_BURST, "gyroscope (burst-mode)",
+						SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
+						deviceType, deviceUuid);
+				}
 
-		} else {
-			// Log.v(TAG, "No gyroscope present!");
+			} else {
+				// Log.v(TAG, "No gyroscope present!");
+			}
 		}
-
 		return success;
 	}
 
@@ -340,8 +343,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 		// match proximity
 		sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 		if (null != sensor) {
-            success &= checkSensor(SensorNames.PROXIMITY, SensorNames.PROXIMITY,
-                    SenseDataTypes.FLOAT, sensor.getName(), "0.0", deviceType, deviceUuid);
+			success &= checkSensor(SensorNames.PROXIMITY, SensorNames.PROXIMITY,
+					SenseDataTypes.FLOAT, sensor.getName(), "0.0", deviceType, deviceUuid);
 		} else {
 			// Log.v(TAG, "No proximity sensor present!");
 		}

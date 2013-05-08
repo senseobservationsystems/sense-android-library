@@ -364,7 +364,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         isEnergyMode = mainPrefs.getBoolean(Motion.MOTION_ENERGY, false);
         isBurstMode = mainPrefs.getBoolean(Motion.BURSTMODE, false);
         isUnregisterWhenIdle = mainPrefs.getBoolean(Motion.UNREG, true);
-
+              
         // check if the fall detector is enabled
         boolean isFallDetectDemo = mainPrefs.getBoolean(Motion.FALL_DETECT_DEMO, false);
         isFallDetectMode = isFallDetectDemo || mainPrefs.getBoolean(Motion.FALL_DETECT, false);

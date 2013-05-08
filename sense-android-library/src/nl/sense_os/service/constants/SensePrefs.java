@@ -411,6 +411,30 @@ public class SensePrefs {
 			 * @see SensePrefs#MAIN_PREFS
 			 */
 			public static final String SCREENOFF_FIX = "screenoff_fix";
+			/**
+			 * Key for preference that toggles the use of the gyroscope
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String GYROSCOPE = "gyroscope";
+			/**
+			 * Key for preference that toggles the use of the accelerometer
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String ACCELEROMETER = "accelerometer";
+			/**
+			 * Key for preference that toggles the use of the orientation sensor
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String ORIENTATION = "orientation";
+			/**
+			 * Key for preference that toggles the use of the linear acceleration sensor
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String LINEAR_ACCELERATION = "linear_acceleration";
 		}
 
 		public static class PhoneState {
