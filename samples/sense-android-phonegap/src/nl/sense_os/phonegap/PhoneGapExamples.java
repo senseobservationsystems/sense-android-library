@@ -7,14 +7,14 @@ import android.util.Log;
 
 public class PhoneGapExamples extends DroidGap {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		Log.v(TAG, "Initializing DroidGap...");
-		super.init();
+        Log.v(TAG, "Initializing DroidGap...");
+        super.init();
 
-		Log.v(TAG, "Loading URL...");
-		super.loadUrl("file:///android_asset/www/phonegap_example.html");
-	}
+        Log.v(TAG, "Loading URL...");
+        super.loadUrl("file:///android_asset/www/cordova_example.html");
+    }
 }
