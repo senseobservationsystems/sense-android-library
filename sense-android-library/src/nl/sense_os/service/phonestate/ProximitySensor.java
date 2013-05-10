@@ -120,8 +120,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         distance = BigDecimal.valueOf(distance).setScale(2, BigDecimal.ROUND_HALF_DOWN)
                 .floatValue();
 
-        try {
-        	Log.e(TAG, "new proximity:"+distance);
+        try {        	
             notifySubscribers();
             SensorDataPoint dataPoint = new SensorDataPoint(distance);
             dataPoint.sensorName = SensorNames.PROXIMITY;
