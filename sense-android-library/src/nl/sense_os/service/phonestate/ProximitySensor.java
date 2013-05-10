@@ -87,15 +87,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
             mWakeLock.acquire();
         } else {
             // Log.v(TAG, "Wake lock already held");
-        }
-
-        // register as sensor listener
-        for (Sensor sensor : mSensors) {
-            if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                // Log.d(TAG, "registering for sensor " + sensor.getName());
-                mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            }
-        }
+        }      
     }
 
     /**
@@ -129,6 +121,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
                 .floatValue();
 
         try {
+        	Log.e(TAG, "new proximity:"+distance);
             notifySubscribers();
             SensorDataPoint dataPoint = new SensorDataPoint(distance);
             dataPoint.sensorName = SensorNames.PROXIMITY;
@@ -149,7 +142,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         this.mContext.startService(i);
 
         // sample is successful: unregister the listener
-        stopSample();
+        //stopSample();
     }
 
     /**
@@ -197,7 +190,13 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
 
         mActive = true;
         setSampleRate(sampleRate);
-
+        // register as sensor listener
+        for (Sensor sensor : mSensors) {
+            if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
+                // Log.d(TAG, "registering for sensor " + sensor.getName());
+                mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            }
+        }
         // do the first sample immediately
         doSample();
     }
@@ -206,6 +205,12 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         Log.v(TAG, "Stop polling");
         mAlarmReceiver.stop(mContext);
         stopSample();
+        // unregister sensor listener
+      try {
+          mSensorMgr.unregisterListener(this);
+      } catch (Exception e) {
+          Log.e(TAG, "Failed to stop proximity field sample!", e);
+      }
     }
 
     private void stopSample() {
@@ -214,13 +219,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         // release wake lock
         if (null != mWakeLock && mWakeLock.isHeld()) {
             mWakeLock.release();
-        }
-
-        // unregister sensor listener
-        try {
-            mSensorMgr.unregisterListener(this);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to stop proximity field sample!", e);
         }
     }
 
