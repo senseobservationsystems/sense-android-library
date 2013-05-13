@@ -182,24 +182,30 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void initBurstDataProcessors() {
+        final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
 
-        accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER,
-                SensorNames.ACCELEROMETER_BURST);
-        addSubscriber(this.accelerometerBurstSensor);
-        ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST,
-                accelerometerBurstSensor);
-
-        gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE,
-                SensorNames.GYRO_BURST);
-        addSubscriber(this.gyroBurstSensor);
-        ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION,
-                    SensorNames.LINEAR_BURST);
-            addSubscriber(this.linearBurstSensor);
-            ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST,
-                    linearBurstSensor);
+        if (mainPrefs.getBoolean(Motion.ACCELEROMETER, true)) {
+            accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER,
+                    SensorNames.ACCELEROMETER_BURST);
+            addSubscriber(this.accelerometerBurstSensor);
+            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST,
+                    accelerometerBurstSensor);
+        }
+        if (mainPrefs.getBoolean(Motion.GYROSCOPE, true)) {
+            gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE,
+                    SensorNames.GYRO_BURST);
+            addSubscriber(this.gyroBurstSensor);
+            ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
+        }
+        if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION,
+                        SensorNames.LINEAR_BURST);
+                addSubscriber(this.linearBurstSensor);
+                ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST,
+                        linearBurstSensor);
+            }
         }
     }
 
