@@ -4,6 +4,7 @@ import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -162,7 +163,7 @@ public class SenseServiceStub extends Binder {
     }
 
     public void setPrefBool(String key, final boolean value) {
-        // Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
+        Log.v(TAG, "Set preference: '" + key + "': '" + value + "'");
 
         SharedPreferences prefs;
         if (key.equals(Status.AMBIENCE) || key.equals(Status.DEV_PROX)
@@ -174,34 +175,51 @@ public class SenseServiceStub extends Binder {
             prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        // store value
+        // compare with original preference value
         boolean oldValue = prefs.getBoolean(key, !value);
-        if (value != oldValue) {
-            boolean stored = prefs.edit().putBoolean(key, value).commit();
-            if (stored == false) {
-                Log.w(TAG, "Preference '" + key + "' not stored!");
-            } else if (key.equals(Advanced.DEV_MODE)
-                    && ServiceStateHelper.getInstance(service).isLoggedIn()) {
-                logout();
-                // reset GCM id
-                SharedPreferences authPrefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS,
-                        Context.MODE_PRIVATE);
-                authPrefs.edit().putString(Auth.GCM_REGISTRATION_ID, "").commit();
-            } else if (key.equals(Advanced.USE_COMMONSENSE)) {
-                // login on a separate thread
-                new Thread() {
+        if (value == oldValue) {
+            // value unchanged
+            return;
+        }
 
-                    @Override
-                    public void run() {
-                        if (value) {
-                            Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
-                            service.login();
-                        } else {
-                            Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
-                            service.logout();
-                        }
+        // store value
+        boolean stored = prefs.edit().putBoolean(key, value).commit();
+        if (stored == false) {
+            Log.w(TAG, "Preference '" + key + "' not stored!");
+
+        } else if (key.equals(Advanced.DEV_MODE)
+                && ServiceStateHelper.getInstance(service).isLoggedIn()) {
+            logout();
+            // reset GCM id
+            SharedPreferences authPrefs = service.getSharedPreferences(SensePrefs.AUTH_PREFS,
+                    Context.MODE_PRIVATE);
+            authPrefs.edit().putString(Auth.GCM_REGISTRATION_ID, "").commit();
+
+        } else if (key.equals(Advanced.USE_COMMONSENSE)) {
+            // login on a separate thread
+            new Thread() {
+
+                @Override
+                public void run() {
+                    if (value) {
+                        Log.w(TAG, "USE_COMMONSENSE setting changed: try to log in");
+                        service.login();
+                    } else {
+                        Log.w(TAG, "USE_COMMONSENSE setting changed: logging out");
+                        service.logout();
                     }
-                }.start();
+                }
+            }.start();
+
+        } else if (key.equals(Motion.ACCELEROMETER) || key.equals(Motion.LINEAR_ACCELERATION)
+                || key.equals(Motion.GYROSCOPE) || key.equals(Motion.ORIENTATION)
+                || key.equals(Motion.MOTION_ENERGY) || key.equals(Motion.BURSTMODE)
+                || key.equals(Motion.FALL_DETECT) || key.equals(Motion.FALL_DETECT_DEMO)) {
+            ServiceStateHelper ssh = ServiceStateHelper.getInstance(service);
+            if (ssh.isMotionActive()) {
+                // restart motion
+                service.toggleMotion(false);
+                service.toggleMotion(true);
             }
         }
     }
