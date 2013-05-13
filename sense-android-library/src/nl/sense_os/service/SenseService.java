@@ -1431,6 +1431,11 @@ public class SenseService extends Service {
                             }
                             phoneStateListener = SensePhoneState.getInstance(SenseService.this);
                             phoneStateListener.startSensing(finalInterval);
+                            registerDataProducer(SensorNames.CALL_STATE, phoneStateListener);
+                            registerDataProducer(SensorNames.DATA_CONN, phoneStateListener);
+                            registerDataProducer(SensorNames.SERVICE_STATE, phoneStateListener);
+                            registerDataProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
+                            registerDataProducer(SensorNames.CONN_TYPE, phoneStateListener);                            
                         } catch (Exception e) {
                             Log.e(TAG, "Phone state thread failed to start!");
                             togglePhoneState(false);
@@ -1443,6 +1448,11 @@ public class SenseService extends Service {
                 // stop sensing
                 if (null != phoneStateListener) {
                     phoneStateListener.stopSensing();
+                    unregisterDataProducer(SensorNames.CALL_STATE, phoneStateListener);
+                    unregisterDataProducer(SensorNames.DATA_CONN, phoneStateListener);
+                    unregisterDataProducer(SensorNames.SERVICE_STATE, phoneStateListener);
+                    unregisterDataProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
+                    unregisterDataProducer(SensorNames.CONN_TYPE, phoneStateListener);
                     phoneStateListener = null;
                 }
                 if (null != proximitySensor) {
