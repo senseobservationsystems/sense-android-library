@@ -39,9 +39,9 @@ import android.util.Log;
 public class MagneticFieldSensor extends BaseSensor implements SensorEventListener,
         PeriodicPollingSensor {
 
-    private static final String TAG = "Sense Magnetic Field Sensor";
     private static final String SENSOR_DISPLAY_NAME = "magnetic field";
-    private static MagneticFieldSensor instance;
+    private static MagneticFieldSensor sInstance;
+    private static final String TAG = "MagneticFieldSensor";
 
     /**
      * Factory method to get the singleton instance.
@@ -50,27 +50,33 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
      * @return instance
      */
     public static MagneticFieldSensor getInstance(Context context) {
-        if (null == instance) {
-            instance = new MagneticFieldSensor(context);
+        if (null == sInstance) {
+            sInstance = new MagneticFieldSensor(context);
         }
-        return instance;
+        return sInstance;
     }
 
-    private Context context;
-    private List<Sensor> sensors;
-    private SensorManager smgr;
-    private boolean active = false;
-    private PeriodicPollAlarmReceiver alarmReceiver;
-    private WakeLock wakeLock;
+    private boolean mActive;
+    private Context mContext;
+    private PeriodicPollAlarmReceiver mSampleAlarmReceiver;
+    private SensorManager mSensorMgr;
+    private List<Sensor> mSensors;
+    private WakeLock mWakeLock;
 
+    /**
+     * Constructor.
+     * 
+     * @param context
+     * @see #getInstance(Context)
+     */
     protected MagneticFieldSensor(Context context) {
-        this.context = context;
-        smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensors = new ArrayList<Sensor>();
-        if (null != smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)) {
-            sensors.add(smgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
+        mContext = context;
+        mSensorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mSensors = new ArrayList<Sensor>();
+        if (null != mSensorMgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)) {
+            mSensors.add(mSensorMgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
         }
-        alarmReceiver = new PeriodicPollAlarmReceiver(this);
+        mSampleAlarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
     @Override
@@ -78,30 +84,29 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
         Log.v(TAG, "Do sample");
 
         // acquire wake lock
-        if (null == wakeLock) {
-            PowerManager powerMgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-            wakeLock.setReferenceCounted(false);
+        if (null == mWakeLock) {
+            PowerManager powerMgr = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+            mWakeLock.setReferenceCounted(false);
         }
-        if (!wakeLock.isHeld()) {
-            wakeLock.acquire();
+        if (!mWakeLock.isHeld()) {
+            mWakeLock.acquire();
         } else {
-            // Log.v(TAG, "Wake lock already held");
+            // wake lock already held
         }
 
         // register as sensor listener
-        for (Sensor sensor : sensors) {
+        for (Sensor sensor : mSensors) {
             if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                // Log.d(TAG, "registering for sensor " + sensor.getName());
-                smgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                // Log.v(TAG, "registering for sensor " + sensor.getName());
+                mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }
     }
 
-
     @Override
     public boolean isActive() {
-        return active;
+        return mActive;
     }
 
     @Override
@@ -142,14 +147,14 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
             this.sendToSubscribers(dataPoint);
 
             // send msg to MsgHandler
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+            Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.VALUE, jsonString);
             i.putExtra(DataPoint.SENSOR_NAME, sensorName);
             i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            context.startService(i);
+            mContext.startService(i);
 
             // sample is successful: unregister the listener
             stopSample();
@@ -171,8 +176,8 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
     }
 
     private void startPolling() {
-        // Log.v(TAG, "start polling");
-        alarmReceiver.start(context);
+        Log.v(TAG, "Start polling");
+        mSampleAlarmReceiver.start(mContext);
     }
 
     /**
@@ -184,10 +189,11 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
      */
     @Override
     public void startSensing(long sampleRate) {
+        Log.v(TAG, "Start sensing");
 
         // check if the sensor is physically present on this phone
         boolean found = false;
-        for (Sensor sensor : sensors) {
+        for (Sensor sensor : mSensors) {
             if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
                 found = true;
                 break;
@@ -198,7 +204,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
             return;
         }
 
-        active = true;
+        mActive = true;
         setSampleRate(sampleRate);
 
         // do the first sample immediately
@@ -206,21 +212,21 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
     }
 
     private void stopPolling() {
-        // Log.v(TAG, "stop polling");
-        alarmReceiver.stop(context);
+        Log.v(TAG, "Stop polling");
+        mSampleAlarmReceiver.stop(mContext);
     }
 
     private void stopSample() {
-        // Log.v(TAG, "stop sample");
+        Log.v(TAG, "Stop sample");
 
         // release wake lock
-        if (null != wakeLock && wakeLock.isHeld()) {
-            wakeLock.release();
+        if (null != mWakeLock && mWakeLock.isHeld()) {
+            mWakeLock.release();
         }
 
         // unregister sensor listener
         try {
-            smgr.unregisterListener(this);
+            mSensorMgr.unregisterListener(this);
         } catch (Exception e) {
             Log.e(TAG, "Failed to stop magnetic field sample!", e);
         }
@@ -232,8 +238,8 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
      */
     @Override
     public void stopSensing() {
-        active = false;
+        Log.v(TAG, "Stop sensing");
+        mActive = false;
         stopPolling();
-
     }
 }
