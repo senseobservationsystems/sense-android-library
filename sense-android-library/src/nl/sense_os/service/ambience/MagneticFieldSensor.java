@@ -214,6 +214,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
     private void stopPolling() {
         Log.v(TAG, "Stop polling");
         mSampleAlarmReceiver.stop(mContext);
+        stopSample();
     }
 
     private void stopSample() {
