@@ -16,14 +16,19 @@ import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -37,6 +42,8 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
 
     private static ProximitySensor sInstance = null;
     private static final String TAG = "ProximitySensor";
+    private static final int REQ_CODE = 1;
+    private static final String ACTION_STOP_SAMPLE = ProximitySensor.class.getName() + ".STOP";
 
     /**
      * Factory method to get the singleton instance.
@@ -52,11 +59,20 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     }
 
     private boolean mActive;
-    private PeriodicPollAlarmReceiver mAlarmReceiver;
     private Context mContext;
     private SensorManager mSensorMgr;
     private List<Sensor> mSensors;
     private WakeLock mWakeLock;
+    private PeriodicPollAlarmReceiver mStartSampleReceiver;
+    private BroadcastReceiver mStopSampleReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            acceptValue();
+            stopSample();
+        }
+    };
+    private float mLastValue;
 
     /**
      * Constructor.
@@ -71,7 +87,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         if (null != mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY)) {
             mSensors.add(mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY));
         }
-        mAlarmReceiver = new PeriodicPollAlarmReceiver(this);
+        mStartSampleReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
     @Override
@@ -86,8 +102,25 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         if (!mWakeLock.isHeld()) {
             mWakeLock.acquire();
         } else {
-            // Log.v(TAG, "Wake lock already held");
-        }      
+            // wake lock already held
+        }
+
+        // register as sensor listener
+        for (Sensor sensor : mSensors) {
+            if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
+                // Log.d(TAG, "registering for sensor " + sensor.getName());
+                mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            }
+        }
+
+        // set alarm for stop the sample
+        mContext.registerReceiver(mStopSampleReceiver, new IntentFilter(ACTION_STOP_SAMPLE));
+        Intent intent = new Intent(ACTION_STOP_SAMPLE);
+        PendingIntent operation = PendingIntent.getBroadcast(mContext, REQ_CODE, intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmMgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 500,
+                operation);
     }
 
     /**
@@ -117,12 +150,19 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         float distance = event.values[0] / 100f;
 
         // limit two decimal precision
-        distance = BigDecimal.valueOf(distance).setScale(2, BigDecimal.ROUND_HALF_DOWN)
+        mLastValue = BigDecimal.valueOf(distance).setScale(2, BigDecimal.ROUND_HALF_DOWN)
                 .floatValue();
 
-        try {        	
+        Log.d(TAG, "Sensor changed: " + mLastValue);
+    }
+
+    private void acceptValue() {
+
+        Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        try {
             notifySubscribers();
-            SensorDataPoint dataPoint = new SensorDataPoint(distance);
+            SensorDataPoint dataPoint = new SensorDataPoint(mLastValue);
             dataPoint.sensorName = SensorNames.PROXIMITY;
             dataPoint.sensorDescription = sensor.getName();
             dataPoint.timeStamp = SNTP.getInstance().getTime();
@@ -135,13 +175,10 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, distance);
+        i.putExtra(DataPoint.VALUE, mLastValue);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
         i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
         this.mContext.startService(i);
-
-        // sample is successful: unregister the listener
-        //stopSample();
     }
 
     /**
@@ -160,7 +197,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
 
     private void startPolling() {
         Log.v(TAG, "Start polling");
-        mAlarmReceiver.start(mContext);
+        mStartSampleReceiver.start(mContext);
     }
 
     /**
@@ -189,27 +226,15 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
 
         mActive = true;
         setSampleRate(sampleRate);
-        // register as sensor listener
-        for (Sensor sensor : mSensors) {
-            if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                // Log.d(TAG, "registering for sensor " + sensor.getName());
-                mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            }
-        }
+
         // do the first sample immediately
         doSample();
     }
 
     private void stopPolling() {
         Log.v(TAG, "Stop polling");
-        mAlarmReceiver.stop(mContext);
+        mStartSampleReceiver.stop(mContext);
         stopSample();
-        // unregister sensor listener
-      try {
-          mSensorMgr.unregisterListener(this);
-      } catch (Exception e) {
-          Log.e(TAG, "Failed to stop proximity field sample!", e);
-      }
     }
 
     private void stopSample() {
@@ -218,6 +243,20 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         // release wake lock
         if (null != mWakeLock && mWakeLock.isHeld()) {
             mWakeLock.release();
+        }
+
+        // unregister sensor listener
+        try {
+            mSensorMgr.unregisterListener(this);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to stop proximity field sample!", e);
+        }
+
+        // unregister broadcast receiver
+        try {
+            mContext.unregisterReceiver(mStopSampleReceiver);
+        } catch (IllegalArgumentException e) {
+            // ignore
         }
     }
 
