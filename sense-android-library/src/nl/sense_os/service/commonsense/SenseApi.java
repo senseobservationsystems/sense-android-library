@@ -56,17 +56,6 @@ import android.util.Log;
  */
 public class SenseApi {
 
-    /**
-     * Application secrets that give an app access to the current CommonSense session ID.
-     * 
-     * @see ISenseService#getSessionId(String)
-     */
-    private static class AppSecrets {
-        static final String SENSE = "]C@+[G1be,f)@3mz|2cj4gq~Jz(8WE&_$7g:,-KOI;v:iQt<r;1OQ@=mr}jmE8>!";
-        static final String ASK = "3$2Sp16096H*Rg!n*<G<411&8QlMvg!pMyN]q?m[5c|<N+$=/~Su{quv$/j5s`+6";
-        static final String RDAM_CS = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
-    }
-
     private static final String TAG = "SenseApi";
     private static final long CACHE_REFRESH = 1000l * 60 * 60; // 1 hour
     private static SharedPreferences mainPrefs;
@@ -488,30 +477,15 @@ public class SenseApi {
     /**
      * @param context
      *            Context for getting preferences
-     * @param appId
-     *            Identifier for the app that requests the session ID
      * @return The current CommonSense session ID
      * @throws IllegalAccessException
      *             if the app ID is not valid
      */
-    public static String getSessionId(Context context, String appId) throws IllegalAccessException {
+    public static String getSessionId(Context context) throws IllegalAccessException {
         if (null == authPrefs) {
             authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (AppSecrets.ASK.equals(appId)) {
-            // Log.v(TAG, "An ASK app accessed the CommonSense session ID");
-            return authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        } else if (AppSecrets.RDAM_CS.equals(appId)) {
-            // Log.v(TAG, "A Rotterdam CS app accessed the CommonSense session ID");
-            return authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        } else if (AppSecrets.SENSE.equals(appId)) {
-            // Log.v(TAG, "A Sense app accessed the CommonSense session ID");
-            return authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        } else {
-            Log.e(TAG, "App is not allowed access to the CommonSense session!");
-            throw new IllegalAccessException(
-                    "App is not allowed access to the CommonSense session!");
-        }
+        return authPrefs.getString(Auth.LOGIN_COOKIE, null);
     }
 
     /**
