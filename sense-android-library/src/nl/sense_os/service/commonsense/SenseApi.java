@@ -93,7 +93,7 @@ public class SenseApi {
 
         } catch (Exception e) {
             // unlikely to ever happen. Just get the list from CommonSense instead
-            Log.e(TAG, "Failed to get list of sensors from cache!", e);
+            Log.w(TAG, "Failed to get list of sensors from cache!", e);
         }
 
         // if we make it here, the list was not in the cache
@@ -111,7 +111,7 @@ public class SenseApi {
             }
             boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
             if (devMode) {
-                Log.i(TAG, "Using development server to get registered sensors");
+                Log.v(TAG, "Using development server to get registered sensors");
             }
             String url = devMode ? SenseUrls.DEV_ALL_SENSORS : SenseUrls.ALL_SENSORS;
             url += "&page=" + page;
@@ -173,7 +173,7 @@ public class SenseApi {
         String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
         boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
         if (devMode) {
-            Log.i(TAG, "Using development server to get connected sensors");
+            Log.v(TAG, "Using development server to get connected sensors");
         }
         String url = devMode ? SenseUrls.DEV_CONNECTED_SENSORS : SenseUrls.CONNECTED_SENSORS;
         url = url.replace("<id>", sensorId);
@@ -371,7 +371,7 @@ public class SenseApi {
                     || name.equals(SensorNames.GYRO_BURST) || name.equals(SensorNames.LINEAR_BURST)) {
                 // special case to take care of changed motion sensor descriptions since Gingerbread
                 if (name.equals(sensor.getString("name"))) {
-                    // Log.d(TAG, "Using inexact match for '" + name + "' sensor ID...");
+                    // use inexact match
                     result.add(sensor);
                 }
             }
@@ -403,8 +403,6 @@ public class SenseApi {
      */
     public static String getSensorId(Context context, String name, String description,
             String dataType, String deviceUuid) throws IOException, JSONException {
-
-        // Log.d(TAG, "Get sensor ID. name: '" + name + "', deviceUuid: '" + deviceUuid + "'");
 
         // get list of sensors with matching description
         List<JSONObject> sensors = getMatchingSensors(context, name, description, dataType);
@@ -455,7 +453,7 @@ public class SenseApi {
         String id = getSensorId(context, name, description, dataType, deviceUuid);
 
         if (id == null) {
-            Log.e(TAG, "Failed to get URL for sensor '" + name + "': sensor ID is not available");
+            Log.w(TAG, "Failed to get URL for sensor '" + name + "': sensor ID is not available");
             return null;
         }
 
@@ -642,7 +640,7 @@ public class SenseApi {
 
         boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
         if (devMode) {
-            Log.i(TAG, "Using development server to log in");
+            Log.v(TAG, "Using development server to log in");
         }
         final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
         final JSONObject user = new JSONObject();
@@ -836,7 +834,7 @@ public class SenseApi {
         // check response code
         String code = response.get("http response code");
         if (!"201".equals(code)) {
-            Log.e(TAG, "Failed to register sensor at CommonSense! Response code: " + code);
+            Log.w(TAG, "Failed to register sensor at CommonSense! Response code: " + code);
             throw new IOException("Incorrect response from CommonSense: " + code);
         }
 
@@ -865,7 +863,7 @@ public class SenseApi {
         // check response code
         code = response.get("http response code");
         if (!"201".equals(code)) {
-            Log.e(TAG, "Failed to add sensor to device at CommonSense! Response code: " + code);
+            Log.w(TAG, "Failed to add sensor to device at CommonSense! Response code: " + code);
             throw new IOException("Incorrect response from CommonSense: " + code);
         }
 
@@ -939,10 +937,10 @@ public class SenseApi {
         if ("201".equalsIgnoreCase(responseCode)) {
             result = 0;
         } else if ("409".equalsIgnoreCase(responseCode)) {
-            Log.w(TAG, "Error registering new user! User already exists");
+            Log.w(TAG, "Failed to register new user! User already exists");
             result = -2;
         } else {
-            Log.w(TAG, "Error registering new user! Response code: " + responseCode);
+            Log.w(TAG, "Failed to register new user! Response code: " + responseCode);
             result = -1;
         }
 
@@ -971,8 +969,6 @@ public class SenseApi {
         HttpURLConnection urlConnection = null;
         HashMap<String, String> result = new HashMap<String, String>();
         try {
-            // Log.d(TAG, "API request: " + (content == null ? "GET" : "POST") + " " + urlString
-            // + " cookie:" + cookie);
 
             // get compression preference
             if (null == mainPrefs) {
@@ -1072,10 +1068,7 @@ public class SenseApi {
                     key = key.toLowerCase(Locale.ENGLISH);
                     valueString = value.toString();
                     valueString = valueString.substring(1, valueString.length() - 1);
-                    // Log.d(TAG, "Header field '" + key + "': '" + valueString + "'");
                     result.put(key, valueString);
-                } else {
-                    // Log.d(TAG, "Skipped header field '" + key + "': '" + value + "'");
                 }
             }
 
