@@ -112,6 +112,9 @@ public class MainActivity extends Activity {
         case R.id.buttonLogin:
             startActivity(new Intent(this, LoginActivity.class));
             break;
+        case R.id.buttonRegister:
+            startActivity(new Intent(this, RegistrationActivity.class));
+            break;
         case R.id.buttonPrefs:
             setPreferences();
             break;

@@ -103,6 +103,12 @@
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
+        <!--  REGISTRATION ACTIVITY -->
+        <activity
+            android:name="nl.sense.demo.RegistrationActivity"
+            android:label="@string/title_activity_register"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
 
         <!-- ACTIVITY THAT POPS UP WHEN AN NFC TAG WAS SCANNED -->
         <!-- CAN BE REMOVED IF NOT USED -->
