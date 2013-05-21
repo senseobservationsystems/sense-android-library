@@ -33,7 +33,7 @@ public class PeriodicPollAlarmReceiver implements Runnable {
 
         // schedule alarm broadcasts
         long interval = sensor.getSampleRate();
-        Scheduler.getInstance(context).register(this, interval, (long) (interval * 0.1));
+        Scheduler.getInstance(context).register(this, interval, (long) (interval * 0.2));
     }
 
     /**

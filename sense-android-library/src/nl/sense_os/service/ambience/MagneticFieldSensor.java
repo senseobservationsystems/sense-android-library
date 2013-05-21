@@ -242,5 +242,6 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
         Log.v(TAG, "Stop sensing");
         mActive = false;
         stopPolling();
+
     }
 }

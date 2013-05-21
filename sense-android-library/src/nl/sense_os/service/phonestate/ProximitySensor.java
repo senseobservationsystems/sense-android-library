@@ -253,7 +253,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         } catch (Exception e) {
             Log.e(TAG, "Failed to stop proximity field sample!", e);
         }
-
         // unregister broadcast receiver
         try {
             mContext.unregisterReceiver(mStopSampleReceiver);

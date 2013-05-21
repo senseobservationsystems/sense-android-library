@@ -684,33 +684,33 @@ public class CtrlExtended extends Controller {
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         int syncRate = Integer.parseInt(mainPrefs.getString(Main.SYNC_RATE, "0"));
+        int sampleRate = Integer.parseInt(mainPrefs.getString(Main.SAMPLE_RATE, "0"));
 
-        // pick interval
-        long interval;
+        // pick transmission interval
+        long transmissionInterval, taskTransmitterInterval;
         switch (syncRate) {
         case 1: // eco-mode
-            interval = Intervals.ECO;
+            transmissionInterval = Intervals.ECO;
             break;
         case 0: // 5 minute
-            interval = Intervals.NORMAL;
+            transmissionInterval = Intervals.NORMAL;
             break;
         case -1: // 60 seconds
-            interval = Intervals.OFTEN;
+            transmissionInterval = Intervals.OFTEN;
             break;
         case -2: // real-time: schedule transmission based on sample time
-            int sampleRate = Integer.parseInt(mainPrefs.getString(Main.SAMPLE_RATE, "0"));
             switch (sampleRate) {
             case 1: // rarely
-                interval = Intervals.ECO * 3;
+                transmissionInterval = Intervals.ECO * 3;
                 break;
             case 0: // normal
-                interval = Intervals.NORMAL * 3;
+                transmissionInterval = Intervals.NORMAL * 3;
                 break;
             case -1: // often
-                interval = Intervals.OFTEN * 3;
+                transmissionInterval = Intervals.OFTEN * 3;
                 break;
             case -2: // real time
-                interval = Intervals.OFTEN;
+                transmissionInterval = Intervals.OFTEN;
                 break;
             default:
                 Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
@@ -721,6 +721,25 @@ public class CtrlExtended extends Controller {
             Log.w(TAG, "Unexpected sync rate value: " + syncRate);
             return;
         }
-        transmitter.startTransmissions(interval);
+
+        // pick transmitter task interval
+        switch (sampleRate) {
+        case -2: // real time
+            taskTransmitterInterval = 0;
+            break;
+        case -1: // often
+            taskTransmitterInterval = 10 * 1000;
+            break;
+        case 0: // normal
+            taskTransmitterInterval = 60 * 1000;
+            break;
+        case 1: // rarely (15 minutes)
+            taskTransmitterInterval = 15 * 60 * 1000;
+            break;
+        default:
+            Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
+            return;
+        }
+        transmitter.startTransmissions(transmissionInterval, taskTransmitterInterval);
     }
 }
