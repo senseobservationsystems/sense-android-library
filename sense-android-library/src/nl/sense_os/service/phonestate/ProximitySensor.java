@@ -63,16 +63,16 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     private SensorManager mSensorMgr;
     private List<Sensor> mSensors;
     private WakeLock mWakeLock;
+    private float mLatestValue;
     private PeriodicPollAlarmReceiver mStartSampleReceiver;
     private BroadcastReceiver mStopSampleReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            acceptValue();
+            handleLatestValue();
             stopSample();
         }
     };
-    private float mLastValue;
 
     /**
      * Constructor.
@@ -88,6 +88,37 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
             mSensors.add(mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY));
         }
         mStartSampleReceiver = new PeriodicPollAlarmReceiver(this);
+    }
+
+    /**
+     * Accepts the latest sensor value and send it to the MsgHandler.
+     */
+    private void handleLatestValue() {
+
+        // if the value is NaN, no sample was collected: assume nothing in proximity
+        float value = Float.isNaN(mLatestValue) || mLatestValue > 0 ? 1 : 0;
+
+        Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        try {
+            notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(value);
+            dataPoint.sensorName = SensorNames.PROXIMITY;
+            dataPoint.sensorDescription = sensor.getName();
+            dataPoint.timeStamp = SNTP.getInstance().getTime();
+            sendToSubscribers(dataPoint);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
+        }
+
+        // pass message to the MsgHandler
+        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
+        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
+        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+        i.putExtra(DataPoint.VALUE, value);
+        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        this.mContext.startService(i);
     }
 
     @Override
@@ -112,6 +143,9 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
                 mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }
+
+        // reset sample state
+        mLatestValue = Float.NaN;
 
         // set alarm for stop the sample
         mContext.registerReceiver(mStopSampleReceiver, new IntentFilter(ACTION_STOP_SAMPLE));
@@ -150,35 +184,10 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         float distance = event.values[0] / 100f;
 
         // limit two decimal precision
-        mLastValue = BigDecimal.valueOf(distance).setScale(2, BigDecimal.ROUND_HALF_DOWN)
+        mLatestValue = BigDecimal.valueOf(distance).setScale(2, BigDecimal.ROUND_HALF_DOWN)
                 .floatValue();
 
-        Log.d(TAG, "Sensor changed: " + mLastValue);
-    }
-
-    private void acceptValue() {
-
-        Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-
-        try {
-            notifySubscribers();
-            SensorDataPoint dataPoint = new SensorDataPoint(mLastValue);
-            dataPoint.sensorName = SensorNames.PROXIMITY;
-            dataPoint.sensorDescription = sensor.getName();
-            dataPoint.timeStamp = SNTP.getInstance().getTime();
-            sendToSubscribers(dataPoint);
-        } catch (Exception e) {
-            Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
-        }
-
-        // pass message to the MsgHandler
-        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, mLastValue);
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        this.mContext.startService(i);
+        Log.d(TAG, "Sensor changed: " + mLatestValue);
     }
 
     /**
