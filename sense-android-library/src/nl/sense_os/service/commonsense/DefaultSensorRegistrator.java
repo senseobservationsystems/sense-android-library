@@ -112,6 +112,14 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
             } else {
                 // Log.v(TAG, "No ambient temperature sensor present!");
             }
+
+            sensor = sm.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+            if (null != sensor) {
+                success &= checkSensor(SensorNames.RELATIVE_HUMIDITY, "relative humidity",
+                        SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
+            } else {
+                // Log.v(TAG, "No relative humidity sensor present!");
+            }
         }
 
         // match loudness sensor

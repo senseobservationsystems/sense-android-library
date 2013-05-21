@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import nl.sense_os.service.ambience.CameraLightSensor;
+import nl.sense_os.service.ambience.HumiditySensor;
 import nl.sense_os.service.ambience.LightSensor;
 import nl.sense_os.service.ambience.MagneticFieldSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
@@ -112,6 +113,7 @@ public class SenseService extends Service {
     private LightSensor lightSensor;
     private CameraLightSensor cameraLightSensor;
     private TemperatureSensor temperatureSensor;
+    private HumiditySensor humiditySensor;
     private LocationSensor locListener;
     private Controller controller;
     private MotionSensor motionSensor;
@@ -788,6 +790,13 @@ public class SenseService extends Service {
                     temperatureSensor = null;
                 }
 
+                // check humidity sensor presence
+                if (humiditySensor != null) {
+                    Log.w(TAG, "humidity sensor is already present!");
+                    humiditySensor.stopSensing();
+                    humiditySensor = null;
+                }
+
                 // check magnetic field sensor presence
                 if (magneticFieldSensor != null) {
                     Log.w(TAG, "magnetic field  sensor is already present!");
@@ -878,7 +887,7 @@ public class SenseService extends Service {
                             registerDataProducer(SensorNames.PRESSURE, pressureSensor);
                             pressureSensor.startSensing(finalInterval);
                         }
-                        // only available from Android 2.3 up to 4.0
+                        // temperature & humidity only available from Android 2.3 up to 4.0
                         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
                                 temperatureSensor = TemperatureSensor
@@ -886,9 +895,12 @@ public class SenseService extends Service {
                                 registerDataProducer(SensorNames.TEMPERATURE, temperatureSensor);
                                 temperatureSensor.startSensing(finalInterval);
                             }
-                        } else {
-                            // Log.v(TAG,
-                            // "Temperature sensor is not supported in this version of Android");
+                            if (mainPrefs.getBoolean(Ambience.HUMIDITY, true)) {
+                                humiditySensor = HumiditySensor
+                                        .getInstance(SenseService.this);
+                                registerDataProducer(SensorNames.RELATIVE_HUMIDITY, humiditySensor);
+                                humiditySensor.startSensing(finalInterval);
+                            }
                         }
                     }
                 });
@@ -924,6 +936,11 @@ public class SenseService extends Service {
                     temperatureSensor.stopSensing();
                     unregisterDataProducer(SensorNames.TEMPERATURE, temperatureSensor);
                     temperatureSensor = null;
+                }
+                if (null != humiditySensor) {
+                    humiditySensor.stopSensing();
+                    unregisterDataProducer(SensorNames.RELATIVE_HUMIDITY, humiditySensor);
+                    humiditySensor = null;
                 }
                 if (null != magneticFieldSensor) {
                     magneticFieldSensor.stopSensing();
