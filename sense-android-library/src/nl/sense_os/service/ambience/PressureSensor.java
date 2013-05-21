@@ -72,7 +72,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Check pressure");
+        Log.v(TAG, "Do sample");
 
         // acquire wake lock
         if (null == wakeLock) {

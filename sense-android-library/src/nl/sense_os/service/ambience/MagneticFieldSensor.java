@@ -76,7 +76,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Check magnetic field");
+        Log.v(TAG, "Do sample");
 
         // acquire wake lock
         if (null == wakeLock) {
@@ -112,8 +112,9 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        Log.v(TAG, "Do sample");
         Sensor sensor = event.sensor;
-        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
+        // if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
             lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
 			String sensorName = "";
@@ -157,7 +158,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
                 // sample is successful: unregister the listener
                 stopSample();
 			}
-        }
+        // }
     }
 
     /**

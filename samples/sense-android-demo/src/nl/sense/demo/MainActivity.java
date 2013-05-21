@@ -2,7 +2,6 @@ package nl.sense.demo;
 
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.SenseServiceStub;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 
@@ -40,14 +39,9 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
     private static final String TAG = "Sense Demo";
-    private static final String DEMO_SENSOR_NAME = "demo";
-    private SenseApplication application;
+    public static final String DEMO_SENSOR_NAME = "demo";
+    public static SenseApplication application;
 
-    private void flushData() {
-        Log.v(TAG, "Flush buffers");
-        application.getSensePlatform().flushData();
-        showToast(R.string.msg_flush_data);
-    }
 
     private void getLocalData() {
         Log.v(TAG, "Get data from CommonSense");
@@ -122,10 +116,10 @@ public class MainActivity extends Activity {
             stopSense();
             break;
         case R.id.buttonDataPoint:
-            insertData();
+            // insertData();
             break;
         case R.id.buttonFlush:
-            flushData();
+            // flushData();
             break;
         case R.id.buttonLocalData:
             getLocalData();
@@ -148,34 +142,7 @@ public class MainActivity extends Activity {
         application = (SenseApplication) getApplication();
     }
 
-    /**
-     * An example of how to upload data for a custom sensor.
-     */
-    private void insertData() {
-        Log.v(TAG, "Insert data point");
 
-        // Description of the sensor
-        final String name = DEMO_SENSOR_NAME;
-        final String displayName = "demo data";
-        final String dataType = SenseDataTypes.JSON;
-        final String description = name;
-        // the value to be sent, in json format
-        final String value = "{\"foo\":\"bar\",\"baz\":\"quux\"}";
-        final long timestamp = System.currentTimeMillis();
-
-        // start new Thread to prevent NetworkOnMainThreadException
-        new Thread() {
-
-            @Override
-            public void run() {
-                application.getSensePlatform().addDataPoint(name, displayName, description,
-                        dataType, value, timestamp);
-            }
-        }.start();
-
-        // show message
-        showToast(R.string.msg_sent_data, name);
-    }
 
     /**
      * Sets up the Sense service preferences
@@ -226,6 +193,7 @@ public class MainActivity extends Activity {
 
         // enable main state
         senseService.toggleMain(true);
+        DemoAlarmTool.schedule(this, 5000);
     }
 
     private void stopSense() {

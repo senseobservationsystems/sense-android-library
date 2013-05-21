@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -34,9 +35,9 @@ import android.util.Log;
 public class DataTransmitter implements Runnable {
 
     private static Context context;
-    private static long interval;
+    private long transmissionInterval;
 	private static final String TAG = "Sense DataTransmitter";
-    private static long ADAPTIVE_TRANSMISSION_INTERVAL = AlarmManager.INTERVAL_HOUR;
+    private static long ADAPTIVE_TRANSMISSION_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 	public static final int REQ_CODE = 0x05E2DDA7A;
 
     private static DataTransmitter instance = null;
@@ -73,6 +74,7 @@ public class DataTransmitter implements Runnable {
     @Override
     public void run() {
 
+        Log.v(TAG, "Do sample");
         // Log.v(TAG, "Bytes transmitted from Wifi:" + TrafficStats.getTotalTxBytes());
 
 		// check if the service is (supposed to be) alive before scheduling next alarm
@@ -83,20 +85,24 @@ public class DataTransmitter implements Runnable {
             NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
             // start the transmission if we have WiFi connection
-            if (mWifi.isConnected()) {
-                transmissionService(); 
+            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) || mWifi.isConnected()) {
+                if ((SystemClock.elapsedRealtime() - lastTransmissionTime >= transmissionInterval)) {
+                    transmissionService();
+                }
             } else {
                 // if there is no WiFi connection, postpone the transmission
                 lastTransmissionBytes = TrafficStats.getMobileTxBytes() - transmittedBytes;
                 transmittedBytes = TrafficStats.getMobileTxBytes();
-
+                Log.i(TAG, "3G!!! " + lastTransmissionTime);
+                Log.i(TAG, "3G!!! " + lastTransmissionBytes);
                 if ((SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL)) {
                     transmissionService();
                 }
                 // If any transmission took place recently, transmit the sensor data
                 else if ((lastTransmissionBytes >= 500)
                         && (SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL
-                                - (long) (ADAPTIVE_TRANSMISSION_INTERVAL * 0.1))) {
+                                - (long) (ADAPTIVE_TRANSMISSION_INTERVAL * 0.2))) {
+                    Log.i(TAG, "flexibility matters");
                     transmissionService();
                 } else {
                     // do nothing
@@ -114,11 +120,12 @@ public class DataTransmitter implements Runnable {
      * @param context
      *            Context to access Scheduler
      */
-    public void startTransmissions(long interval) {
+    public void startTransmissions(long transmissionInterval, long taskTransmitterInterval) {
 
         // schedule transmissions
-        this.interval = interval;
-        Scheduler.getInstance(context).register(this, interval, (long) (interval * 0.1));
+        this.transmissionInterval = transmissionInterval;
+        Scheduler.getInstance(context).register(this, taskTransmitterInterval,
+                (long) (taskTransmitterInterval * 0.2));
     }
 
     /**

@@ -223,6 +223,8 @@
                 <action android:name="nl.sense_os.demo.NEW_REQUIREMENTS" />
             </intent-filter>
         </receiver>
+        
+        <receiver android:name=".DemoAlarmReceiver" />
 
         <!-- CONTENT PROVIDER THAT GIVES OTHER APPS ACCESS TO THE SENSOR DATA -->
         <!-- MAKE SURE YOU USE A UNIQUE AUTHORITY FOR YOUR OWN APP (SEE res/strings.xml) -->
