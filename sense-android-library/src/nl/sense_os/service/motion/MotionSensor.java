@@ -115,7 +115,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     private List<Sensor> sensors;
     private boolean active = false;
     private WakeLock wakeLock;
-    private boolean isRegistered;
+    private boolean registered;
     private PeriodicPollAlarmReceiver alarmReceiver;
     // TODO:
     // Should be moved to the service where all the sensors are registered
@@ -182,24 +182,30 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void initBurstDataProcessors() {
+        final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
 
-        accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER,
-                SensorNames.ACCELEROMETER_BURST);
-        addSubscriber(this.accelerometerBurstSensor);
-        ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST,
-                accelerometerBurstSensor);
-
-        gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE,
-                SensorNames.GYRO_BURST);
-        addSubscriber(this.gyroBurstSensor);
-        ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION,
-                    SensorNames.LINEAR_BURST);
-            addSubscriber(this.linearBurstSensor);
-            ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST,
-                    linearBurstSensor);
+        if (mainPrefs.getBoolean(Motion.ACCELEROMETER, true)) {
+            accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER,
+                    SensorNames.ACCELEROMETER_BURST);
+            addSubscriber(this.accelerometerBurstSensor);
+            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST,
+                    accelerometerBurstSensor);
+        }
+        if (mainPrefs.getBoolean(Motion.GYROSCOPE, true)) {
+            gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE,
+                    SensorNames.GYRO_BURST);
+            addSubscriber(this.gyroBurstSensor);
+            ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
+        }
+        if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION,
+                        SensorNames.LINEAR_BURST);
+                addSubscriber(this.linearBurstSensor);
+                ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST,
+                        linearBurstSensor);
+            }
         }
     }
 
@@ -295,6 +301,9 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+        if (!registered) {
+            // ignore
+        }
         if (!active) {
             Log.w(TAG, "Motion sensor value received when sensor is inactive!");
             stopSample();
@@ -320,7 +329,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private synchronized void registerSensors() {
 
-        if (!isRegistered) {
+        if (!registered) {
             // Log.v(TAG, "Register the motion sensor for updates");
 
             SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -332,7 +341,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
                 mgr.registerListener(this, sensor, delay);
             }
 
-            isRegistered = true;
+            registered = true;
 
         } else {
             // Log.v(TAG, "Did not register for motion sensor updates: already registered");
@@ -454,7 +463,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     private synchronized void unregisterSensors() {
 
-        if (isRegistered) {
+        if (registered) {
             // Log.v(TAG, "Unregister the motion sensor for updates");
             ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE))
                     .unregisterListener(this);
@@ -462,6 +471,6 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             // Log.v(TAG, "Did not unregister for motion sensor updates: already unregistered");
         }
 
-        isRegistered = false;
+        registered = false;
     }
 }
