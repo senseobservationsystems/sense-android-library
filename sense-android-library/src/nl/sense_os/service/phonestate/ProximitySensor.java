@@ -3,7 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.phonestate;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,37 +89,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         mStartSampleReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
-    /**
-     * Accepts the latest sensor value and send it to the MsgHandler.
-     */
-    private void handleLatestValue() {
-
-        // if the value is NaN, no sample was collected: assume nothing in proximity
-        float value = Float.isNaN(mLatestValue) || mLatestValue > 0 ? 1 : 0;
-
-        Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-
-        try {
-            notifySubscribers();
-            SensorDataPoint dataPoint = new SensorDataPoint(value);
-            dataPoint.sensorName = SensorNames.PROXIMITY;
-            dataPoint.sensorDescription = sensor.getName();
-            dataPoint.timeStamp = SNTP.getInstance().getTime();
-            sendToSubscribers(dataPoint);
-        } catch (Exception e) {
-            Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
-        }
-
-        // pass message to the MsgHandler
-        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, value);
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        this.mContext.startService(i);
-    }
-
     @Override
     public void doSample() {
         Log.v(TAG, "Do sample");
@@ -158,6 +126,37 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     }
 
     /**
+     * Accepts the latest sensor value and send it to the MsgHandler.
+     */
+    private void handleLatestValue() {
+
+        // if the value is NaN, no sample was collected: assume nothing in proximity
+        float value = Float.isNaN(mLatestValue) || mLatestValue > 0 ? 1 : 0;
+
+        Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        try {
+            notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(value);
+            dataPoint.sensorName = SensorNames.PROXIMITY;
+            dataPoint.sensorDescription = sensor.getName();
+            dataPoint.timeStamp = SNTP.getInstance().getTime();
+            sendToSubscribers(dataPoint);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
+        }
+
+        // pass message to the MsgHandler
+        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
+        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
+        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+        i.putExtra(DataPoint.VALUE, value);
+        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
+        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        mContext.startService(i);
+    }
+
+    /**
      * @return The delay between samples in milliseconds
      */
     @Override
@@ -181,13 +180,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         }
 
         // scale to meters
-        float distance = event.values[0] / 100f;
-
-        // limit two decimal precision
-        mLatestValue = BigDecimal.valueOf(distance).setScale(2, BigDecimal.ROUND_HALF_DOWN)
-                .floatValue();
-
-        Log.d(TAG, "Sensor changed: " + mLatestValue);
+        mLatestValue = event.values[0];
     }
 
     /**
