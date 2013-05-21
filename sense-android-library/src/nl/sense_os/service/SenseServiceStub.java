@@ -129,8 +129,8 @@ public class SenseServiceStub extends Binder {
         }
     }
 
-    public String getSessionId(String appSecret) throws IllegalAccessException {
-        return SenseApi.getSessionId(service, appSecret);
+    public String getSessionId() throws IllegalAccessException {
+        return SenseApi.getSessionId(service);
     }
 
     public void getStatus(ISenseServiceCallback callback) throws RemoteException {

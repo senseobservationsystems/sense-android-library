@@ -116,8 +116,6 @@ public class SensePlugin extends CordovaPlugin {
 
     private static final String TAG = "PhoneGap Sense";
 
-    private static final String SECRET = "0$HTLi8e_}9^s7r#[_L~-ndz=t5z)e}I-ai#L22-?0+i7jfF2,~)oyi|H)q*GL$Y";
-
     private ISenseServiceCallback callback = new SenseServiceCallback();
     private CallbackContext getStatusCallback;
     private CallbackContext changeLoginCallback;
@@ -352,7 +350,7 @@ public class SensePlugin extends CordovaPlugin {
         if (null != service) {
 
             // try the login
-            String sessionId = SenseApi.getSessionId(cordova.getActivity(), SECRET);
+            String sessionId = SenseApi.getSessionId(cordova.getActivity());
 
             // check the result
             if (null != sessionId) {
