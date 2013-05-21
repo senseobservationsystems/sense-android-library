@@ -75,7 +75,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Check magnetic field");
+        Log.v(TAG, "Do sample");
 
         // acquire wake lock
         if (null == wakeLock) {
