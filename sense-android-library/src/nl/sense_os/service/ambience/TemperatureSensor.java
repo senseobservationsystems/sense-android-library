@@ -3,8 +3,7 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -15,9 +14,6 @@ import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
-
-import org.json.JSONObject;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -37,7 +33,8 @@ import android.util.Log;
 public class TemperatureSensor extends BaseSensor implements SensorEventListener,
         PeriodicPollingSensor {
 
-    private static final String TAG = "Sense Temperature Sensor";
+    private static TemperatureSensor sInstance = null;
+    private static final String TAG = "TemperatureSensor";
 
     /**
      * Factory method to get the singleton instance.
@@ -46,18 +43,16 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
      * @return instance
      */
     public static TemperatureSensor getInstance(Context context) {
-        if (instance == null) {
-            instance = new TemperatureSensor(context);
+        if (sInstance == null) {
+            sInstance = new TemperatureSensor(context);
         }
-        return instance;
+        return sInstance;
     }
 
-    private Context context;
-    private SensorManager sensorManager;
-    private long lastSampleTime;
-    private PeriodicPollAlarmReceiver pollAlarmReceiver;
-    private boolean active;
-    private static TemperatureSensor instance = null;
+    private boolean mActive;
+    private Context mContext;
+    private PeriodicPollAlarmReceiver mSampleAlarmReceiver;
+    private SensorManager mSensorMgr;
 
     /**
      * Constructor.
@@ -66,9 +61,9 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
      * @see #getInstance(Context)
      */
     protected TemperatureSensor(Context context) {
-        this.context = context;
-        pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.mContext = context;
+        mSampleAlarmReceiver = new PeriodicPollAlarmReceiver(this);
+        mSensorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -76,16 +71,16 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     public void doSample() {
         Log.v(TAG, "Do sample");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             if (null != sensor) {
-                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }
     }
 
     @Override
     public boolean isActive() {
-        return active;
+        return mActive;
     }
 
     @Override
@@ -96,36 +91,30 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        if (event.timestamp > lastSampleTime + getSampleRate()) {
-            Log.v(TAG, "Check temperature");
-            lastSampleTime = event.timestamp;
 
-            String sensorName = SensorNames.AMBIENT_TEMPERATURE;
+        String sensorName = SensorNames.AMBIENT_TEMPERATURE;
 
-            Map<String, Object> jsonFields = new HashMap<String, Object>();
-            jsonFields.put("celsius", event.values[0]);
-            JSONObject jsonObj = new JSONObject(jsonFields);
-            String value = jsonObj.toString();
+        // temperature in degrees Celsius
+        float value = BigDecimal.valueOf(event.values[0]).setScale(2, 0).floatValue();
 
-            this.notifySubscribers();
-            SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
-            dataPoint.sensorName = sensorName;
-            dataPoint.sensorDescription = sensor.getName();
-            dataPoint.timeStamp = SNTP.getInstance().getTime();
-            this.sendToSubscribers(dataPoint);
+        this.notifySubscribers();
+        SensorDataPoint dataPoint = new SensorDataPoint(value);
+        dataPoint.sensorName = sensorName;
+        dataPoint.sensorDescription = sensor.getName();
+        dataPoint.timeStamp = SNTP.getInstance().getTime();
+        this.sendToSubscribers(dataPoint);
 
-            // send msg to MsgHandler
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.VALUE, value);
-            i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-            i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            context.startService(i);
+        // send msg to MsgHandler
+        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
+        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
+        i.putExtra(DataPoint.VALUE, value);
+        i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+        i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+        mContext.startService(i);
 
-            // done with sample
-            stopSample();
-        }
+        // done with sample
+        stopSample();
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -135,7 +124,7 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
 
         boolean found = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             if (null != sensor) {
                 found = true;
             }
@@ -147,8 +136,9 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
 
         setSampleRate(sampleDelay);
 
-        active = true;
-        pollAlarmReceiver.start(context);
+        // start polling
+        mActive = true;
+        mSampleAlarmReceiver.start(mContext);
 
         // do the first sample immediately
         doSample();
@@ -157,7 +147,7 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     private void stopSample() {
         Log.v(TAG, "Stop sample");
         try {
-            sensorManager.unregisterListener(this);
+            mSensorMgr.unregisterListener(this);
         } catch (Exception e) {
             Log.e(TAG, "Error stopping temperature sensor: " + e);
         }
@@ -166,8 +156,12 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     @Override
     public void stopSensing() {
         Log.v(TAG, "Stop sensing");
-        pollAlarmReceiver.stop(context);
+
+        // stop polling
+        mSampleAlarmReceiver.stop(mContext);
+        mActive = false;
+
+        // stop sample
         stopSample();
-        active = false;
     }
 }

@@ -108,8 +108,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
             sensor = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             if (null != sensor) {
                 success &= checkSensor(SensorNames.AMBIENT_TEMPERATURE, "ambient temperature",
-                        SenseDataTypes.JSON, sensor.getName(), "{\"celsius\":0}", deviceType,
-                        deviceUuid);
+                        SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
             } else {
                 // Log.v(TAG, "No ambient temperature sensor present!");
             }
