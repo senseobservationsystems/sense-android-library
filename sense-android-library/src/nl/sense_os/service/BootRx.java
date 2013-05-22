@@ -21,32 +21,32 @@ import android.util.Log;
  */
 public class BootRx extends BroadcastReceiver {
 
-	private static final String TAG = "Sense Boot Receiver";
+    private static final String TAG = "BootRx";
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		// Log.v(TAG, "Received broadcast");
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.v(TAG, "Received broadcast");
 
-		SharedPreferences statusPrefs;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
-					Context.MODE_MULTI_PROCESS);
-		} else {
-			statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
-					Context.MODE_PRIVATE);
-		}
-		boolean autostart = statusPrefs.getBoolean(Status.AUTOSTART, false);
+        SharedPreferences statusPrefs;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                    Context.MODE_PRIVATE);
+        } else {
+            statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
+                    Context.MODE_PRIVATE);
+        }
+        boolean autostart = statusPrefs.getBoolean(Status.AUTOSTART, false);
 
-		// automatically start the Sense service if this is set in the preferences
-		if (true == autostart) {
-			Log.i(TAG, "Autostart Sense Platform service");
-			Intent startService = new Intent(context.getString(R.string.action_sense_service));
-			ComponentName service = context.startService(startService);
-			if (null == service) {
-				Log.w(TAG, "Failed to start Sense Platform service");
-			}
-		} else {
-			// Log.d(TAG, "Sense Platform service should not be started at boot");
-		}
-	}
+        // automatically start the Sense service if this is set in the preferences
+        if (true == autostart) {
+            Log.v(TAG, "Autostart Sense Platform service");
+            Intent startService = new Intent(context.getString(R.string.action_sense_service));
+            ComponentName service = context.startService(startService);
+            if (null == service) {
+                Log.w(TAG, "Failed to start Sense Platform service");
+            }
+        } else {
+            // Log.d(TAG, "Sense Platform service should not be started at boot");
+        }
+    }
 }
