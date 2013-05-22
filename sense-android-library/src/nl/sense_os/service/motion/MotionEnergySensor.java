@@ -11,11 +11,13 @@ import nl.sense_os.service.shared.BaseDataProducer;
 import nl.sense_os.service.shared.DataProcessor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.FloatMath;
 import android.util.Log;
@@ -58,9 +60,12 @@ public class MotionEnergySensor extends BaseDataProducer implements DataProcesso
         return new float[] { values[0] - gravity[0], values[1] - gravity[1], values[2] - gravity[2] };
     }
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void checkLinAccSensor() {
-        SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        hasLinAccSensor = (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            hasLinAccSensor = (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+        }
     }
 
     private boolean isEnoughDatapoints() {
@@ -78,20 +83,24 @@ public class MotionEnergySensor extends BaseDataProducer implements DataProcesso
      * @param event
      *            The sensor change event with accelerometer or linear acceleration data.
      */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onNewData(SensorDataPoint dataPoint) {
 
         float[] linAcc = null;
 
-        if(dataPoint.getDataType() != DataType.SENSOREVENT)
-        	return;
-        
-        SensorEvent event = dataPoint.getSensorEventValue(); 
-        	
+        if (dataPoint.getDataType() != DataType.SENSOREVENT)
+            return;
+
+        SensorEvent event = dataPoint.getSensorEventValue();
+
         // check if this is a useful data point
-        Sensor sensor = event.sensor;
-        boolean isEnergySample = !hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == sensor.getType()
-                || hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == sensor.getType();
+        boolean isEnergySample = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            Sensor sensor = event.sensor;
+            isEnergySample = !hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == sensor.getType()
+                    || hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == sensor.getType();
+        }
         if (!isEnergySample) {
             return;
         }
@@ -138,26 +147,26 @@ public class MotionEnergySensor extends BaseDataProducer implements DataProcesso
      * Sends message with average motion energy to the MsgHandler.
      */
     private void sendData() {
-    	
+
         // round to three decimals
         float value = BigDecimal.valueOf(avgSpeedChange).setScale(3, 0).floatValue();
-        
+
         this.notifySubscribers();
         SensorDataPoint dataPoint = new SensorDataPoint(value);
         dataPoint.sensorName = SensorNames.MOTION_ENERGY;
         dataPoint.sensorDescription = SensorNames.MOTION_ENERGY;
-        dataPoint.timeStamp = SNTP.getInstance().getTime();        
+        dataPoint.timeStamp = SNTP.getInstance().getTime();
         this.sendToSubscribers(dataPoint);
-        
-        //TODO: add the MsgHandler as data processor
-        
+
+        // TODO: add the MsgHandler as data processor
+
         // prepare intent to send to MsgHandler
         Intent i = new Intent(context.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MOTION_ENERGY);
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
         i.putExtra(DataPoint.VALUE, value);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP,  dataPoint.timeStamp);
+        i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
         context.startService(i);
     }
 
