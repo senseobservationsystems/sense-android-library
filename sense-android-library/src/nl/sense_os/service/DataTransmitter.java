@@ -74,7 +74,6 @@ public class DataTransmitter implements Runnable {
     @Override
     public void run() {
 
-        Log.v(TAG, "Do sample");
         // Log.v(TAG, "Bytes transmitted from Wifi:" + TrafficStats.getTotalTxBytes());
 
 		// check if the service is (supposed to be) alive before scheduling next alarm
@@ -93,8 +92,6 @@ public class DataTransmitter implements Runnable {
                 // if there is no WiFi connection, postpone the transmission
                 lastTransmissionBytes = TrafficStats.getMobileTxBytes() - transmittedBytes;
                 transmittedBytes = TrafficStats.getMobileTxBytes();
-                Log.i(TAG, "3G!!! " + lastTransmissionTime);
-                Log.i(TAG, "3G!!! " + lastTransmissionBytes);
                 if ((SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL)) {
                     transmissionService();
                 }
