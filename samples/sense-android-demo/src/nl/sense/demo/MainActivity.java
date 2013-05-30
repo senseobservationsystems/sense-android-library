@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "Sense Demo";
     private static final String DEMO_SENSOR_NAME = "demo";
     private SenseApplication application;
+    private NerdsData realtimeData;
 
     private void flushData() {
         Log.v(TAG, "Flush buffers");
@@ -175,6 +176,17 @@ public class MainActivity extends Activity {
 
         // show message
         showToast(R.string.msg_sent_data, name);
+        
+        Log.v(TAG, "group audio: "+realtimeData.getGroupAudioVolumeData());
+        Log.v(TAG, "group motion: "+realtimeData.getGroupMotionData());
+        Log.v(TAG, "group heatmap: "+realtimeData.getGroupPositionHeatmap());
+        Log.v(TAG, "group sit/stand: "+realtimeData.getGroupSitStandData());
+        Log.v(TAG, "group steps: "+realtimeData.getGroupStepsData());
+        Log.v(TAG, "my audio: "+realtimeData.getMyAudioVolumeData());
+        Log.v(TAG, "my motion: "+realtimeData.getMyMotionData());
+        Log.v(TAG, "my heatmap: "+realtimeData.getMyPositionHeatmap());
+        Log.v(TAG, "my sit/stand: "+realtimeData.getMySitStandData());
+        Log.v(TAG, "my steps: "+realtimeData.getMyStepsData());
     }
 
     /**
@@ -226,6 +238,10 @@ public class MainActivity extends Activity {
 
         // enable main state
         senseService.toggleMain(true);
+        
+        realtimeData = new NerdsData(application.getSensePlatform());
+		realtimeData.joinNerdsGroup();
+
     }
 
     private void stopSense() {
