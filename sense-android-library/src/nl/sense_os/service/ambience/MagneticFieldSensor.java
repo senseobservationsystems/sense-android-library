@@ -112,53 +112,49 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.v(TAG, "Do sample");
         Sensor sensor = event.sensor;
-        // if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
-            lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
 
-			String sensorName = "";
-			if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-				sensorName = SensorNames.MAGNETIC_FIELD;
+        String sensorName = "";
+        if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            sensorName = SensorNames.MAGNETIC_FIELD;
 
-				double x = event.values[0];
-				// scale to three decimal precision
-				x = BigDecimal.valueOf(x).setScale(3, 0).doubleValue();
-				double y = event.values[1];
-				// scale to three decimal precision
-				y = BigDecimal.valueOf(y).setScale(3, 0).doubleValue();
-				double z = event.values[2];
-				// scale to three decimal precision
-				z = BigDecimal.valueOf(z).setScale(3, 0).doubleValue();
+            double x = event.values[0];
+            // scale to three decimal precision
+            x = BigDecimal.valueOf(x).setScale(3, 0).doubleValue();
+            double y = event.values[1];
+            // scale to three decimal precision
+            y = BigDecimal.valueOf(y).setScale(3, 0).doubleValue();
+            double z = event.values[2];
+            // scale to three decimal precision
+            z = BigDecimal.valueOf(z).setScale(3, 0).doubleValue();
 
-				HashMap<String, Object> dataFields = new HashMap<String, Object>();
-				dataFields.put("x", x);
-				dataFields.put("y", y);
-				dataFields.put("z", z);
-				JSONObject jsonObj = new JSONObject(dataFields);
-				String jsonString = jsonObj.toString();
-				
-				this.notifySubscribers();
-				SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
-				dataPoint.sensorName = sensorName;
-				dataPoint.sensorDescription = sensor.getName();
-				dataPoint.timeStamp = SNTP.getInstance().getTime();        
-				this.sendToSubscribers(dataPoint);
+            HashMap<String, Object> dataFields = new HashMap<String, Object>();
+            dataFields.put("x", x);
+            dataFields.put("y", y);
+            dataFields.put("z", z);
+            JSONObject jsonObj = new JSONObject(dataFields);
+            String jsonString = jsonObj.toString();
 
-				// send msg to MsgHandler
-				Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-				i.putExtra(DataPoint.VALUE, jsonString);
-				i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-				i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
-				i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-				context.startService(i);
+            this.notifySubscribers();
+            SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
+            dataPoint.sensorName = sensorName;
+            dataPoint.sensorDescription = sensor.getName();
+            dataPoint.timeStamp = SNTP.getInstance().getTime();
+            this.sendToSubscribers(dataPoint);
 
-                // sample is successful: unregister the listener
-                stopSample();
-			}
-        // }
+            // send msg to MsgHandler
+            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+            i.putExtra(DataPoint.VALUE, jsonString);
+            i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+            i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
+            i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+            context.startService(i);
+
+            // sample is successful: unregister the listener
+            stopSample();
+        }
     }
 
     /**

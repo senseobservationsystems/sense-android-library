@@ -108,7 +108,7 @@ public class ScheduleAlarmTool {
             		// schedule the next execution in ¨interval¨ milliseconds from now
                     task.nextExecution = now + task.interval;
             	} else {
-                    task.nextExecution = foundTask.nextExecution;
+                    task.nextExecution = foundTask.nextExecution/* + (tasks.size() * 6000) */;
             		while (task.nextExecution - task.interval > now) {
                         task.nextExecution -= task.interval;
                     }
@@ -218,7 +218,8 @@ public class ScheduleAlarmTool {
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
                 
         // set the alarm for opportunistic execution
-        mgrCpu.set(AlarmManager.ELAPSED_REALTIME, (nextExecution - backwardsFlexibility), operationCpu);
+        mgrCpu.set(AlarmManager.ELAPSED_REALTIME, (nextExecution - backwardsFlexibility),
+                operationCpu);
         
     }
 
