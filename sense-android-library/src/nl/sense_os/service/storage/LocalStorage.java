@@ -70,7 +70,7 @@ public class LocalStorage {
         return instance;
     }
 
-    private final RemoteStorage commonSense;
+    public final RemoteStorage commonSense;
     private final SQLiteStorage inMemory;
     private final SQLiteStorage persisted;
 

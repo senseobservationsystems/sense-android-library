@@ -159,6 +159,7 @@ public class SenseApi {
 
 		return result;
 	}
+	
 
 	/**
 	 * @param context
@@ -279,6 +280,7 @@ public class SenseApi {
 		}
 		return id;
 	}
+
 
 	/**
 	 * Gets the sensors that are connected to another sensor. Typically used

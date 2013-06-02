@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.Uri;
 import android.util.Log;
 
 import nl.sense_os.cortex.dataprocessor.SitStand;
@@ -107,7 +109,7 @@ public class NerdsData {
 			@Override
 			public void aggregateSensorDataPoint(JSONObject dataPoint) {
 				try {
-					String bin = dataPoint.getJSONObject("value").getString("value");
+					String bin = dataPoint.getString("value");
 					long timestamp = dataPoint.getLong("date");
 					
 					//add data point to the sensor
@@ -153,13 +155,13 @@ public class NerdsData {
 	 * @return json object containing mean steps per minute and total steps taken
 	 */
 	public JSONObject getGroupStepsData() {
-		String dummy = "{\"total\":80000, \"mean\":50}";
 		try {
-			return new JSONObject(dummy);
+			return new JSONObject(sensePlatform.getLastDataForSensor("337193").getString("value"));
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/* Motion */
@@ -190,13 +192,13 @@ public class NerdsData {
 	 * @return json object containing percentage of motion in "low", "medium" and "high"
 	 */
 	public JSONObject getGroupMotionData() {
-		String dummy = "{\"low\":20, \"high\":20, \"medium\":60}";
 		try {
-			return new JSONObject(dummy);
+			return new JSONObject(sensePlatform.getLastDataForSensor("337194").getString("value"));
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/* Audio volume */
@@ -227,13 +229,13 @@ public class NerdsData {
 	 * @return json object containing percentage of audio in "low", "medium" and "high"
 	 */
 	public JSONObject getGroupAudioVolumeData() {
-		String dummy = "{\"low\":20, \"high\":30, \"medium\":50}";
 		try {
-			return new JSONObject(dummy);
+			return new JSONObject(sensePlatform.getLastDataForSensor("337195").getString("value"));
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/* Sit/Stand */
@@ -258,13 +260,13 @@ public class NerdsData {
 	 * @return json object containing seconds sitting and seconds standing
 	 */
 	public JSONObject getGroupSitStandData() {
-		String dummy = "{\"mean sit\":100.0, \"mean stand\":4200.0}";
 		try {
-			return new JSONObject(dummy);
+			return new JSONObject(sensePlatform.getLastDataForSensor("337196").getString("value"));
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/* Heatmap */
@@ -288,13 +290,13 @@ public class NerdsData {
 	 * @return json object containing seconds spend at each zone
 	 */
 	public JSONObject getGroupPositionHeatmap() {
-		String dummy = "{\"zone 1\":600, \"zone 2\":2000, \"zone 15\":1800}";
 		try {
-			return new JSONObject(dummy);
+			return new JSONObject(sensePlatform.getLastDataForSensor("337197").getString("value"));
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/**

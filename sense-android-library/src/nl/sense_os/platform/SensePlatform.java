@@ -1,6 +1,7 @@
 package nl.sense_os.platform;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Date;
 
 import nl.sense_os.service.ISenseServiceCallback;
@@ -520,5 +521,21 @@ public class SensePlatform {
         }
         service = null;
         isServiceBound = false;
+    }
+    
+    public JSONObject getLastDataForSensor(String sensorId) {
+    	try {
+			return LocalStorage.getInstance(context).commonSense.getLastDataForSensor(sensorId);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
     }
 }

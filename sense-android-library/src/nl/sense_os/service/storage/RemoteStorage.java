@@ -29,7 +29,7 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-class RemoteStorage {
+public class RemoteStorage {
 
     private static final String TAG = "RemoteStorage";
     private Context context;
@@ -111,5 +111,27 @@ class RemoteStorage {
         }
 
         return result;
+    }
+    
+    
+    public JSONObject getLastDataForSensor(String sensorId) throws JSONException, URISyntaxException, IOException {
+    	// get the data for the sensor
+        String url = SenseUrls.SENSOR_DATA.replace("<id>", sensorId) + "?last=1";
+
+        String cookie = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE)
+                .getString(Auth.LOGIN_COOKIE, null);
+        Map<String, String> response = SenseApi.request(context, url, null, cookie);
+
+        // parse response
+        JSONArray data;
+        if (response.get("http response code").equals("200")) {
+            String content = response.get("content");
+            JSONObject json = new JSONObject(content);
+            data = json.getJSONArray("data");
+            return data.getJSONObject(0);
+        } else {
+            Log.w(TAG, "Error retrieving sensor data: " + response.get("http response code"));
+            return null;
+        }
     }
 }
