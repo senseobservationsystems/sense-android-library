@@ -51,6 +51,7 @@ public class Locator {
 		LinkedHashMap<String, Integer> observationCount = new LinkedHashMap<String, Integer>();
 
 		for (int i = 0; i < scanResult.length(); i++) {
+			Log.v(TAG, "Item: "+scanResult.get(i).toString());
 			Datapoint dp = new Gson().fromJson(scanResult.get(i).toString(), Datapoint.class);
 			WiFiDatapoint wdp = new Gson().fromJson(dp.getValue(), WiFiDatapoint.class);
 
@@ -143,7 +144,8 @@ public class Locator {
 			// deviceLocation = cl.computeLocation(distances);
 
 		} catch (Exception e) {
-			Log.e(TAG, "Error parsing scanResult. Did we receive any data? Datapoints should be received within the last 60 seconds. Older datapoints are discarded.", e);
+			Log.e(TAG, "Error parsing scanResult: " + scanResult);
+			e.printStackTrace();
 		}
 
 		// return deviceLocation;

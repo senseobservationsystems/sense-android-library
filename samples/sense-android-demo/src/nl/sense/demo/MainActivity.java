@@ -5,6 +5,7 @@ import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -206,6 +207,8 @@ public class MainActivity extends Activity {
         senseService.setPrefBool(Ambience.MIC, true);
         // NOTE: spectrum might be too heavy for the phone or consume too much energy
         senseService.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
+        
+        senseService.setPrefBool(DevProx.WIFI, true);
 
         // set how often to sample
         // 1 := rarely (~every 15 min)
@@ -235,6 +238,7 @@ public class MainActivity extends Activity {
         senseService.toggleAmbience(true);
         senseService.toggleMotion(true);
         senseService.toggleLocation(true);
+        senseService.toggleDeviceProx(true);
 
         // enable main state
         senseService.toggleMain(true);

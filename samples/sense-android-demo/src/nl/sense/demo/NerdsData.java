@@ -161,7 +161,10 @@ public class NerdsData {
 					dataPoints.remove(dataPoints.size() -1);
 				
 				//use the list to find a location
-				double[] deviceLocation = locator.computeLocation(new JSONArray(dataPoints));
+				JSONArray array = new JSONArray();
+				for (JSONObject o : dataPoints)
+					array.put(o);
+				double[] deviceLocation = locator.computeLocation(array);
 				//transform location into a zone
 				String zone = "zone " + Math.round(deviceLocation[0]);
 				if (deviceLocation[0] < 0)
