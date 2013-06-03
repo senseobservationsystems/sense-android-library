@@ -20,11 +20,18 @@ public class NerdsData {
 	private AggregateData<String> sitStandTime;
 	
 	private SitStand sitStand;
+	
+	protected static NerdsData instance;
+	
+	public static NerdsData getInstance(SensePlatform platform) {
+		if (instance == null)
+			instance = new NerdsData(platform);
+		return instance;
+	}
 
-	public NerdsData(SensePlatform platform) {
+	private NerdsData(SensePlatform platform) {
 		sensePlatform = platform;
 
-		//instantiate sit/stand AI Module to produce data for the sit/stand sitStandTime aggregator
 		sitStand = new SitStand("activity", sensePlatform.getService().getSenseService());
 		sitStand.enable();
 
@@ -102,7 +109,7 @@ public class NerdsData {
 			@Override
 			public void aggregateSensorDataPoint(JSONObject dataPoint) {
 				try {
-					String bin = dataPoint.getString("value");
+					String bin = new JSONObject(dataPoint.getString("value")).getString("value");
 					long timestamp = dataPoint.getLong("date");
 					
 					//add data point to the sensor
