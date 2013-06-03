@@ -4,22 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.net.Uri;
-import android.util.Log;
 
 import nl.sense_os.cortex.dataprocessor.SitStand;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.shared.DataProcessor;
-import nl.sense_os.service.shared.SensorDataPoint;
 
 public class NerdsData {
-	private String TAG = "Realtime data";
 	private SensePlatform sensePlatform;
 
 	private AggregateData<String> motion;
