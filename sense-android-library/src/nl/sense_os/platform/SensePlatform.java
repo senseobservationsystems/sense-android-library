@@ -354,7 +354,7 @@ public class SensePlatform {
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, int limit, Uri uri)
             throws JSONException {
-        String orderBy = DataPoint.TIMESTAMP + " DESC";
+        String orderBy = DataPoint.TIMESTAMP + " ASC";
         return getValues(sensorName, onlyFromDevice, limit, uri, orderBy);
     }
 
