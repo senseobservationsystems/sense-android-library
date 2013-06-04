@@ -1,5 +1,6 @@
 package nl.sense.demo;
 
+import nl.sense_os.platform.SenseApplication;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.commonsense.SenseApi;
 import android.animation.Animator;
@@ -30,20 +31,20 @@ public class LoginActivity extends Activity {
 
     private static final String TAG = "LoginActivity";
 
-    // Values for email and password at the time of the login attempt.
+    // Values for email and password at the time of the login attempt
     private String mEmail;
     private String mPassword;
 
-    // UI references.
+    // UI references
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mLoginFormView;
     private View mLoginStatusView;
     private TextView mLoginStatusMessageView;
 
-    private SenseApplication application;
-
-    private ISenseServiceCallback callback = new ISenseServiceCallback.Stub() {
+    // Sense specific members
+    private SenseApplication mApplication;
+    private ISenseServiceCallback mServiceCallback = new ISenseServiceCallback.Stub() {
 
         @Override
         public void onChangeLoginResult(int result) throws RemoteException {
@@ -81,7 +82,7 @@ public class LoginActivity extends Activity {
      * errors (invalid email, missing fields, etc.), the errors are presented and no actual login
      * attempt is made.
      */
-    public void attemptLogin() {
+    private void attemptLogin() {
         if (busy) {
             return;
         }
@@ -123,8 +124,8 @@ public class LoginActivity extends Activity {
 
             // log in (you only need to do this once, Sense will remember the login)
             try {
-                application.getSensePlatform().login(mEmail, SenseApi.hashPassword(mPassword),
-                        callback);
+                mApplication.getSensePlatform().login(mEmail, SenseApi.hashPassword(mPassword),
+                        mServiceCallback);
                 // this is an asynchronous call, we get a callback when the login is complete
                 busy = true;
             } catch (IllegalStateException e) {
@@ -144,7 +145,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         // the activity needs to be part of a SenseApplication so it can talk to the SensePlatform
-        application = (SenseApplication) getApplication();
+        mApplication = (SenseApplication) getApplication();
 
         // Set up the login form.
         mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
