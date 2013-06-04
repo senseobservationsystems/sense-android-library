@@ -27,25 +27,8 @@ public class Parameters {
 	private HashMap<String, int[]> landmarks; // = new HashMap<String, int[]>();
 
 	public Parameters() {
-		// // something that should be fixed @Eindhoven.
-		// int[] SENSE_AP1 = { 0, 3 };
-		// int[] SENSE_AP2 = { 7, 7 };
-		// int[] SENSE_AP3 = { 20, 7 };
-		// int[] SENSE_AP4 = { 20, 1 };
-		// int[] SENSE_AP5 = { 28, 1 };
-		//
-		// landmarks.put("SENSE_AP1", SENSE_AP1);
-		// landmarks.put("SENSE_AP2", SENSE_AP2);
-		// landmarks.put("SENSE_AP3", SENSE_AP3);
-		// landmarks.put("SENSE_AP4", SENSE_AP4);
-		// landmarks.put("SENSE_AP5", SENSE_AP5);
-		//
-		// Log.i(TAG, "size of landmarks list: " + landmarks.size());
-
-		// some testing going on here..
 		String jsonString = generateJson();
 		parseJson(jsonString);
-
 	}
 
 	/** This method returns a set of landmarks */
@@ -112,13 +95,34 @@ public class Parameters {
 		l5.addProperty("x", 5);
 		l5.addProperty("y", 1);
 
+		JsonObject l6 = new JsonObject();
+		l6.addProperty("bssid", "A0:F3:C1:D4:16:50");
+		l6.addProperty("ssid", "SENSE_AP6");
+		l6.addProperty("x", 6);
+		l6.addProperty("y", 1);
+
+		JsonObject l7 = new JsonObject();
+		l7.addProperty("bssid", "A0:F3:C1:D4:16:24");
+		l7.addProperty("ssid", "SENSE_AP7");
+		l7.addProperty("x", 7);
+		l7.addProperty("y", 1);
+
+		JsonObject l8 = new JsonObject();
+		l8.addProperty("bssid", "64:70:02:EB:2E:14");
+		l8.addProperty("ssid", "SENSE_AP8");
+		l8.addProperty("x", 8);
+		l8.addProperty("y", 1);
+
 		JsonArray landmarks = new JsonArray();
 		landmarks.add(l1);
 		landmarks.add(l2);
 		landmarks.add(l3);
 		landmarks.add(l4);
 		landmarks.add(l5);
-
+		landmarks.add(l6);
+		landmarks.add(l7);
+		landmarks.add(l8);
+		
 		JsonObject prefs = new JsonObject();
 		prefs.addProperty("numDatapoints", 100);
 		prefs.addProperty("timeWindow", 30 * 1); // in sec.
