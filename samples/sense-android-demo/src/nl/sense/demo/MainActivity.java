@@ -1,5 +1,6 @@
 package nl.sense.demo;
 
+import nl.sense_os.platform.SenseApplication;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -41,11 +42,11 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "Sense Demo";
     private static final String DEMO_SENSOR_NAME = "demo";
-    private SenseApplication application;
+    private SenseApplication mApplication;
 
     private void flushData() {
         Log.v(TAG, "Flush buffers");
-        application.getSensePlatform().flushData();
+        mApplication.getSensePlatform().flushData();
         showToast(R.string.msg_flush_data);
     }
 
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
 
                 JSONArray data;
                 try {
-                    data = application.getSensePlatform().getLocalData(DEMO_SENSOR_NAME, 10);
+                    data = mApplication.getSensePlatform().getLocalData(DEMO_SENSOR_NAME, 10);
 
                     // show message
                     showToast(R.string.msg_query_local, data.length());
@@ -86,7 +87,7 @@ public class MainActivity extends Activity {
 
                 JSONArray data;
                 try {
-                    data = application.getSensePlatform().getData(DEMO_SENSOR_NAME, true, 10);
+                    data = mApplication.getSensePlatform().getData(DEMO_SENSOR_NAME, true, 10);
 
                     // show message
                     showToast(R.string.msg_query_remote, data.length());
@@ -145,7 +146,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // the activity needs to be part of a SenseApplication so it can talk to the SensePlatform
-        application = (SenseApplication) getApplication();
+        mApplication = (SenseApplication) getApplication();
     }
 
     /**
@@ -168,7 +169,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void run() {
-                application.getSensePlatform().addDataPoint(name, displayName, description,
+                mApplication.getSensePlatform().addDataPoint(name, displayName, description,
                         dataType, value, timestamp);
             }
         }.start();
@@ -183,7 +184,7 @@ public class MainActivity extends Activity {
     private void setPreferences() {
         Log.v(TAG, "Set preferences");
 
-        SenseServiceStub senseService = application.getSensePlatform().getService();
+        SenseServiceStub senseService = mApplication.getSenseService();
 
         // turn off some specific sensors
         senseService.setPrefBool(Ambience.LIGHT, true);
@@ -216,7 +217,7 @@ public class MainActivity extends Activity {
     private void startSense() {
         Log.v(TAG, "Start Sense");
 
-        SenseServiceStub senseService = application.getSensePlatform().getService();
+        SenseServiceStub senseService = mApplication.getSenseService();
 
         // enable some specific sensor modules
         senseService.togglePhoneState(true);
@@ -230,7 +231,7 @@ public class MainActivity extends Activity {
 
     private void stopSense() {
         Log.v(TAG, "Stop Sense");
-        application.getSensePlatform().getService().toggleMain(false);
+        mApplication.getSenseService().toggleMain(false);
     }
 
     private void showToast(final int resId, final Object... formatArgs) {
