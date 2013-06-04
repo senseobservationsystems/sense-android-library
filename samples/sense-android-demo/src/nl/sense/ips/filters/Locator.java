@@ -8,6 +8,7 @@ import nl.sense.ips.data.Parameters;
 import nl.sense.ips.data.WiFiDatapoint;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
@@ -51,8 +52,9 @@ public class Locator {
 		LinkedHashMap<String, Integer> observationCount = new LinkedHashMap<String, Integer>();
 
 		for (int i = 0; i < scanResult.length(); i++) {
-			Log.v(TAG, "Item: "+scanResult.get(i).toString());
-			Datapoint dp = new Gson().fromJson(scanResult.get(i).toString(), Datapoint.class);
+			JSONObject json = scanResult.getJSONObject(i);
+			Datapoint dp = new Datapoint(json.getString("value"), json.getDouble("date"));
+			//Datapoint dp = new Gson().fromJson(scanResult.get(i).toString(), Datapoint.class);
 			WiFiDatapoint wdp = new Gson().fromJson(dp.getValue(), WiFiDatapoint.class);
 
 			// time of observation
