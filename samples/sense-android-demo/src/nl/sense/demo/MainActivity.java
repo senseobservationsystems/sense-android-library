@@ -206,8 +206,9 @@ public class MainActivity extends Activity {
         // turn on specific sensors
         senseService.setPrefBool(Ambience.MIC, true);
         // NOTE: spectrum might be too heavy for the phone or consume too much energy
-        senseService.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
+        senseService.setPrefBool(Ambience.AUDIO_SPECTRUM, false);
         
+        senseService.setPrefBool(DevProx.BLUETOOTH, false);
         senseService.setPrefBool(DevProx.WIFI, true);
 
         // set how often to sample
@@ -237,7 +238,7 @@ public class MainActivity extends Activity {
         senseService.togglePhoneState(true);
         senseService.toggleAmbience(true);
         senseService.toggleMotion(true);
-        senseService.toggleLocation(true);
+        senseService.toggleLocation(false);
         senseService.toggleDeviceProx(true);
 
         // enable main state
