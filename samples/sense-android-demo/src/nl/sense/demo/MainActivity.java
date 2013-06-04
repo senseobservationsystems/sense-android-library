@@ -183,6 +183,9 @@ public class MainActivity extends Activity {
                 Log.v(TAG, "my heatmap: "+realtimeData.getMyPositionHeatmap());
                 Log.v(TAG, "my sit/stand: "+realtimeData.getMySitStandData());
                 Log.v(TAG, "my steps: "+realtimeData.getMyStepsData());
+                Log.v(TAG, "rt motion: "+realtimeData.getRTMotion());
+                Log.v(TAG, "rt audio: "+realtimeData.getRTAudioVolume());
+                Log.v(TAG, "rt position: "+realtimeData.getRTIndoorPosition());
             }
         }.start();
 

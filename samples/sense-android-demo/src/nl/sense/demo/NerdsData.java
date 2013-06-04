@@ -12,20 +12,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 import nl.sense_os.cortex.dataprocessor.SitStand;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 
 public class NerdsData {
+	static final long historySize = 100;
+	
 	private SensePlatform sensePlatform;
 
 	private AggregateData<String> motion;
 	private AggregateData<String> audioVolume;
 	private AggregateData<String> sitStandTime;
 	private AggregateData<String> indoorPosition;
+	
+	//some real time data
+	private DataTimeSeries motionSeries;
+	private DataTimeSeries audioSeries;
+	private DataTimeSeries indoorPositionSeries;
 	
 	private SitStand sitStand;
 	
@@ -188,6 +193,12 @@ public class NerdsData {
 		};
 		
 		indoorPosition.importData();
+		
+		
+		//for real time data tracking
+		audioSeries = new DataTimeSeries(sensePlatform, "noise_sensor", "noise_sensor", historySize);
+		motionSeries = new DataTimeSeries(sensePlatform, SensorNames.ACCELEROMETER, null, historySize);
+		indoorPositionSeries = new DataTimeSeries(sensePlatform, "indoor position", null, historySize);
 	}
 
 	/* Steps */
@@ -380,5 +391,66 @@ public class NerdsData {
 				}
 			}
 		}.start();
+	}
+	
+	/* Some getters for real time data */
+	
+	/**
+	 * Return the last motion data point (x,y,z and magnitude)
+	 */
+	public JSONObject getRTMotion() {
+		JSONObject motion = motionSeries.getLastDataPoint();
+		try {
+			JSONObject value;
+			value = new JSONObject(motion.getString("value"));
+
+			double x = value.getDouble("x-axis");
+			double y = value.getDouble("y-axis");
+			double z = value.getDouble("z-axis");
+			double magnitude = Math.sqrt(x * x + y * y + z * z);
+			final double G = 9.81;
+			double linAccMagnitude = magnitude - G;
+
+			value.put("magnitude", linAccMagnitude);
+			return value;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/** 
+	 * Return the last audio volume data point
+	 */
+	public JSONObject getRTAudioVolume() {
+		return audioSeries.getLastDataPoint();
+	}
+	
+	/** 
+	 * Return the last indoor position ("zone 1", "zone 2", "unknown")
+	 */
+	public JSONObject getRTIndoorPosition() {
+		try {
+			return sensePlatform.getLocalData("indoor position", 1).getJSONObject(0);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/** 
+	 * Return an indoor position trace
+	 */
+	public JSONArray getIndoorPositionTrace() {
+		try {
+			return sensePlatform.getLocalData("indoor position", 1000);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
