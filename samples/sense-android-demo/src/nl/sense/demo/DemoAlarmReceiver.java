@@ -18,11 +18,12 @@ public class DemoAlarmReceiver extends BroadcastReceiver {
         Log.v(TAG, "Received alarm to finish the test");
 
         insertData();
-        // flushData();
+        // MotionSensor.getInstance(context).doSample();
+        flushData();
         Random random = new Random();
-        long range = (long) (60000) - (long) 10000 + 1;
+        long range = (long) (7 * 60000) - (long) (2 * 60000) + 1;
         long fraction = (long) (range * random.nextDouble());
-        int randomNumber = (int) (fraction + 10000);
+        int randomNumber = (int) (fraction + (2 * 60000));
         DemoAlarmTool.schedule(context, randomNumber);
     }
 

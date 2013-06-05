@@ -37,7 +37,7 @@ public class DataTransmitter implements Runnable {
     private static Context context;
     private long transmissionInterval;
 	private static final String TAG = "Sense DataTransmitter";
-    private static long ADAPTIVE_TRANSMISSION_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    private static long ADAPTIVE_TRANSMISSION_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
 	public static final int REQ_CODE = 0x05E2DDA7A;
 
     private static DataTransmitter instance = null;
