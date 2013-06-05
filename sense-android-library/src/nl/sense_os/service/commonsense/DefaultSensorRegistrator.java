@@ -323,7 +323,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
                         "{\"azimuth rate\":1.0,\"pitch rate\":1.0,\"roll rate\":1.0}", deviceType,
                         deviceUuid);
                 if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
-                    success &= checkSensor(SensorNames.GYRO_BURST, "gyroscope (burst-mode)",
+                    success &= checkSensor(SensorNames.GYRO_BURST, "rotation rate (burst-mode)",
                             SenseDataTypes.JSON, sensor.getName(), "{\"interval\":0,\"data\":[]}",
                             deviceType, deviceUuid);
                 }
