@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import nl.sense_os.cortex.dataprocessor.SitStand;
+//import nl.sense_os.cortex.dataprocessor.StepCounter;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensorData.SensorNames;
@@ -28,11 +29,12 @@ public class NerdsData {
 	private AggregateData<String> indoorPosition;
 	
 	//some real time data
-	private DataTimeSeries motionSeries;
-	private DataTimeSeries audioSeries;
-	private DataTimeSeries indoorPositionSeries;
+	private double lastMotion;
+	private double lastAudio;
+	private String lastIndoorPosition;
 	
 	private SitStand sitStand;
+	//private StepCounter stepCounter;
 	
 	protected static NerdsData instance;
 	
@@ -47,6 +49,10 @@ public class NerdsData {
 
 		sitStand = new SitStand("activity", sensePlatform.getService().getSenseService());
 		sitStand.enable();
+		
+		//stepCounter = new StepCounter("step counter", sensePlatform.getService().getSenseService());
+		//stepCounter.loadTotalSteps();
+		
 
 		// motion, in categories "low", "medium", "high". Use accelerometer as
 		// some devices lack linear acceleration
@@ -67,6 +73,8 @@ public class NerdsData {
 					double magnitude = Math.sqrt(x * x + y * y + z * z);
 					final double G = 9.81;
 					double linAccMagnitude = magnitude - G;
+					
+					lastMotion = linAccMagnitude;
 
 					String bin = linAccMagnitude < 2 ? "low"
 							: linAccMagnitude < 5 ? "medium" : "high";
@@ -96,6 +104,7 @@ public class NerdsData {
 				try {
 					long timestamp = dataPoint.getLong("date");
 					double db = dataPoint.getDouble("value");
+					lastAudio = db;
 					String bin = db < 40 ? "low" : db < 60 ? "medium" : "high";
 					long dt = 0;
 					if (previousTimestamp != null) {
@@ -122,7 +131,12 @@ public class NerdsData {
 			@Override
 			public void aggregateSensorDataPoint(JSONObject dataPoint) {
 				try {
-					String bin = new JSONObject(dataPoint.getString("value")).getString("value");
+					String bin = dataPoint.getString("value");
+					//try to parse as json
+					try {		
+					 bin = new JSONObject(bin).getString("value");
+					} catch (JSONException e) {
+					}
 					long timestamp = dataPoint.getLong("date");
 					
 					//add data point to the sensor
@@ -149,6 +163,7 @@ public class NerdsData {
 			private ArrayList<JSONObject> dataPoints = new ArrayList<JSONObject>();
 			private Parameters params = new Parameters();
 			private Locator locator = new Locator(params);
+			private long previousUpdate=0; 
 			
 			@Override
 			public void aggregateSensorDataPoint(JSONObject dataPoint)   {
@@ -162,8 +177,13 @@ public class NerdsData {
 
 				//keep a list of the last maxWifiPoints data points
 				dataPoints.add(dataPoint);
-				while (dataPoints.size() > params.getNumDatapoints())
-					dataPoints.remove(dataPoints.size() -1);
+				while (dataPoints.size() > 100)//params.getNumDatapoints())
+					dataPoints.remove(0);
+				
+				//don't update too often
+				if (timestamp - previousUpdate < 10*1000l)
+					return;
+				previousUpdate = timestamp;
 				
 				//use the list to find a location
 				JSONArray array = new JSONArray();
@@ -177,6 +197,8 @@ public class NerdsData {
 				
 				//store the location as a sensor data point
 				sensePlatform.addDataPoint("indoor position", "indoor position", "indoor position", "string", zone, timestamp);
+				lastIndoorPosition = zone;
+				
 				
 				//update the heatmap
 				long dt = 0;
@@ -196,9 +218,9 @@ public class NerdsData {
 		
 		
 		//for real time data tracking
-		audioSeries = new DataTimeSeries(sensePlatform, "noise_sensor", "noise_sensor", historySize);
-		motionSeries = new DataTimeSeries(sensePlatform, SensorNames.ACCELEROMETER, null, historySize);
-		indoorPositionSeries = new DataTimeSeries(sensePlatform, "indoor position", null, historySize);
+		//audioSeries = new DataTimeSeries(sensePlatform, "noise_sensor", "noise_sensor", historySize);
+		//motionSeries = new DataTimeSeries(sensePlatform, SensorNames.ACCELEROMETER, null, historySize);
+		//indoorPositionSeries = new DataTimeSeries(sensePlatform, "indoor position", null, 10);
 	}
 
 	/* Steps */
@@ -396,61 +418,23 @@ public class NerdsData {
 	/* Some getters for real time data */
 	
 	/**
-	 * Return the last motion data point (x,y,z and magnitude)
+	 * Return the last motion
 	 */
-	public JSONObject getRTMotion() {
-		JSONObject motion = motionSeries.getLastDataPoint();
-		try {
-			JSONObject value;
-			value = new JSONObject(motion.getString("value"));
-
-			double x = value.getDouble("x-axis");
-			double y = value.getDouble("y-axis");
-			double z = value.getDouble("z-axis");
-			double magnitude = Math.sqrt(x * x + y * y + z * z);
-			final double G = 9.81;
-			double linAccMagnitude = magnitude - G;
-
-			value.put("magnitude", linAccMagnitude);
-			return value;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public double getRTMotion() {
+		return lastMotion;
 	}
 	
 	/** 
-	 * Return the last audio volume data point
+	 * Return the last audio volume
 	 */
-	public JSONObject getRTAudioVolume() {
-		return audioSeries.getLastDataPoint();
+	public double getRTAudioVolume() {
+		return lastAudio;
 	}
 	
 	/** 
-	 * Return the last indoor position ("zone 1", "zone 2", "unknown")
+	 * Return the last indoor position "zone 1" etc. and "unknown"
 	 */
-	public JSONObject getRTIndoorPosition() {
-		try {
-			return sensePlatform.getLocalData("indoor position", 1).getJSONObject(0);
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	/** 
-	 * Return an indoor position trace
-	 */
-	public JSONArray getIndoorPositionTrace() {
-		try {
-			return sensePlatform.getLocalData("indoor position", 1000);
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public String getRTIndoorPosition() {
+		return lastIndoorPosition;
 	}
 }

@@ -172,7 +172,7 @@ public class Locator {
 		String key = "";
 
 		for (Entry<String, Double> entry : observation.entrySet()) {
-			Log.i(TAG, "value: " + entry.getValue());
+			Log.i(TAG, "ap " + entry.getKey() + "value: " + entry.getValue());
 			if (entry.getValue() > best) {
 				best = entry.getValue();
 				key = entry.getKey();

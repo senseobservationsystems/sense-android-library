@@ -96,22 +96,64 @@ public class Parameters {
 		l5.addProperty("y", 1);
 
 		JsonObject l6 = new JsonObject();
-		l6.addProperty("bssid", "A0:F3:C1:D4:16:50");
+		l6.addProperty("bssid", "a0:f3:c1:d4:16:50");
 		l6.addProperty("ssid", "SENSE_AP6");
 		l6.addProperty("x", 6);
 		l6.addProperty("y", 1);
 
 		JsonObject l7 = new JsonObject();
-		l7.addProperty("bssid", "A0:F3:C1:D4:16:24");
+		l7.addProperty("bssid", "a0:f3:c1:d4:16:24");
 		l7.addProperty("ssid", "SENSE_AP7");
 		l7.addProperty("x", 7);
 		l7.addProperty("y", 1);
 
 		JsonObject l8 = new JsonObject();
-		l8.addProperty("bssid", "64:70:02:EB:2E:14");
+		l8.addProperty("bssid", "64:70:02:eb:2e:14");
 		l8.addProperty("ssid", "SENSE_AP8");
 		l8.addProperty("x", 8);
 		l8.addProperty("y", 1);
+		
+		JsonObject l9 = new JsonObject();
+		l9.addProperty("bssid", "a0:f3:c1:d4:30:62");
+		l9.addProperty("ssid", "SENSE_AP9");
+		l9.addProperty("x", 9);
+		l9.addProperty("y", 1);
+		
+		JsonObject l10 = new JsonObject();
+		l10.addProperty("bssid", "a0:f3:c1:d4:28:b0");
+		l10.addProperty("ssid", "SENSE_AP10");
+		l10.addProperty("x", 10);
+		l10.addProperty("y", 1);
+		
+		JsonObject l11 = new JsonObject();
+		l11.addProperty("bssid", "a0:f3:c1:d3:fd:5a");
+		l11.addProperty("ssid", "SENSE_AP11");
+		l11.addProperty("x", 11);
+		l11.addProperty("y", 1);
+		
+		JsonObject l12 = new JsonObject();
+		l12.addProperty("bssid", "64:70:02:dc:29:92");
+		l12.addProperty("ssid", "SENSE_AP12");
+		l12.addProperty("x", 12);
+		l12.addProperty("y", 1);
+		
+		JsonObject l13 = new JsonObject();
+		l13.addProperty("bssid", "64:70:02:df:6a:6a");
+		l13.addProperty("ssid", "SENSE_AP13");
+		l13.addProperty("x", 13);
+		l13.addProperty("y", 1);
+		
+		JsonObject l14 = new JsonObject();
+		l14.addProperty("bssid", "64:70:02:df:66:a6");
+		l14.addProperty("ssid", "SENSE_AP14");
+		l14.addProperty("x", 14);
+		l14.addProperty("y", 1);
+		
+		JsonObject l15 = new JsonObject();
+		l15.addProperty("bssid", "a0:f3:c1:d4:33:24");
+		l15.addProperty("ssid", "SENSE_AP15");
+		l15.addProperty("x", 15);
+		l15.addProperty("y", 1);
 
 		JsonArray landmarks = new JsonArray();
 		landmarks.add(l1);
@@ -122,11 +164,18 @@ public class Parameters {
 		landmarks.add(l6);
 		landmarks.add(l7);
 		landmarks.add(l8);
+		landmarks.add(l9);
+		landmarks.add(l10);
+		landmarks.add(l11);
+		landmarks.add(l12);
+		landmarks.add(l13);
+		landmarks.add(l14);
+		landmarks.add(l15);
 		
 		JsonObject prefs = new JsonObject();
 		prefs.addProperty("numDatapoints", 100);
-		prefs.addProperty("timeWindow", 30 * 1); // in sec.
-		prefs.addProperty("minRSSI", -70); // in dB.
+		prefs.addProperty("timeWindow", 40 * 1); // in sec.
+		prefs.addProperty("minRSSI", -90); // in dB.
 		prefs.addProperty("landmarks", landmarks.toString());
 
 		return prefs.toString();

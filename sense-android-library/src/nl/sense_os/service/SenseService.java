@@ -961,7 +961,7 @@ public class SenseService extends Service {
                     break;
                 case -1:
                     // often
-                    interval = 10 * 1000;
+                    interval = 30 * 1000;
                     break;
                 case 0:
                     // normal

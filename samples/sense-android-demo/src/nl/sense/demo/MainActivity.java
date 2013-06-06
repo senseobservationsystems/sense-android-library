@@ -169,10 +169,12 @@ public class MainActivity extends Activity {
 
             @Override
             public void run() {
+            	try {
                 application.getSensePlatform().addDataPoint(name, displayName, description,
                         dataType, value, timestamp);
                 
                 NerdsData realtimeData = NerdsData.getInstance(application.getSensePlatform());
+
                 Log.v(TAG, "group audio: "+realtimeData.getGroupAudioVolumeData());
                 Log.v(TAG, "group motion: "+realtimeData.getGroupMotionData());
                 Log.v(TAG, "group heatmap: "+realtimeData.getGroupPositionHeatmap());
@@ -183,14 +185,23 @@ public class MainActivity extends Activity {
                 Log.v(TAG, "my heatmap: "+realtimeData.getMyPositionHeatmap());
                 Log.v(TAG, "my sit/stand: "+realtimeData.getMySitStandData());
                 Log.v(TAG, "my steps: "+realtimeData.getMyStepsData());
-                Log.v(TAG, "rt motion: "+realtimeData.getRTMotion());
-                Log.v(TAG, "rt audio: "+realtimeData.getRTAudioVolume());
+                //Log.v(TAG, "rt motion: "+realtimeData.getRTMotion());
+                //Log.v(TAG, "rt audio: "+realtimeData.getRTAudioVolume());
                 Log.v(TAG, "rt position: "+realtimeData.getRTIndoorPosition());
+
+                
+                //makeToast(""+realtimeData.getGroupSitStandData());
+                makeToast(""+realtimeData.getRTIndoorPosition());
+            	} catch (Exception e) {
+            		e.printStackTrace();
+            		makeToast("Exception: " + e);
+            	}
+                
             }
         }.start();
 
         // show message
-        showToast(R.string.msg_sent_data, name);
+        //showToast(R.string.msg_sent_data, name);
     }
 
     /**
@@ -262,6 +273,17 @@ public class MainActivity extends Activity {
             public void run() {
                 CharSequence msg = getString(resId, formatArgs);
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    
+    private void makeToast(final String toast) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                //CharSequence msg = getString(resId, formatArgs);
+                Toast.makeText(MainActivity.this, toast, Toast.LENGTH_LONG).show();
             }
         });
     }
