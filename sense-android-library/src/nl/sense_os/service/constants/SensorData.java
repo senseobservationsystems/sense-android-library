@@ -140,7 +140,7 @@ public class SensorData {
         /**
          * Light sensor. Part of the Ambience sensors.
          */
-        public static final String LIGHT = "light";
+        public static final String LIGHT = "light_d";
 
         /**
          * Camera Light sensor. Part of the Ambience sensors.
@@ -278,7 +278,7 @@ public class SensorData {
         /**
          * Location sensor.
          */
-        public static final String LOCATION = "position";
+        public static final String LOCATION = "position_d";
 
         /**
          * Battery sensor. Part of the Phone State sensors.
@@ -303,7 +303,7 @@ public class SensorData {
         /**
          * Call state sensor. Part of the Phone State sensors.
          */
-        public static final String CALL_STATE = "call state";
+        public static final String CALL_STATE = "call state_d";
 
         /**
          * Data connection state sensor. Part of the Phone State sensors.

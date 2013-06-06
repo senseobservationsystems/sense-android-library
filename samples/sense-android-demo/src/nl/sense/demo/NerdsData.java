@@ -13,7 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import nl.sense_os.cortex.dataprocessor.SitStand;
-//import nl.sense_os.cortex.dataprocessor.StepCounter;
+import nl.sense_os.cortex.dataprocessor.StepCounter;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensorData.SensorNames;
@@ -27,15 +27,19 @@ public class NerdsData {
 	private AggregateData<String> audioVolume;
 	private AggregateData<String> sitStandTime;
 	private AggregateData<String> indoorPosition;
+	private AggregateData<String> steps;
 	
 	//some real time data
 	private double lastMotion;
 	private double lastAudio;
 	private double highestAudio = 0;
 	private String lastIndoorPosition;
+	private double totalSteps;
+	private double stepsTime;
+	private double lastStepsPerMinute;
 	
 	private SitStand sitStand;
-	//private StepCounter stepCounter;
+	private StepCounter stepCounter;
 	
 	protected static NerdsData instance;
 	
@@ -51,8 +55,8 @@ public class NerdsData {
 		sitStand = new SitStand("activity", sensePlatform.getService().getSenseService());
 		sitStand.enable();
 		
-		//stepCounter = new StepCounter("step counter", sensePlatform.getService().getSenseService());
-		//stepCounter.loadTotalSteps();
+		stepCounter = new StepCounter("step counter", sensePlatform.getService().getSenseService());
+		stepCounter.loadTotalSteps();
 		
 
 		// motion, in categories "low", "medium", "high". Use accelerometer as
@@ -160,6 +164,46 @@ public class NerdsData {
 		};
 		sitStandTime.importData();
 		
+		steps = new AggregateData<String>(sensePlatform,
+				"step counter", null) {
+			private Long previousTimestamp;
+
+			@Override
+			public void aggregateSensorDataPoint(JSONObject dataPoint) {
+				try {
+					String bin = dataPoint.getString("value");
+					long timestamp = dataPoint.getLong("date");
+
+					//add data point to the sensor
+					sensePlatform.addDataPoint("step counter", "step counter", "step counter", "json", bin, timestamp);
+					
+					JSONObject value;
+					//try to parse as json		
+					value = new JSONObject(bin);
+					
+					double total = value.getLong("total");
+					long spm = value.getLong("steps");
+
+					long dt = 10;
+					if (previousTimestamp != null) {
+						dt = Math.abs(timestamp - previousTimestamp);
+						// longer than 1 minutes means missing data
+						if (dt > 1 * 60 * 1000)
+							dt = 10;
+					}
+					previousTimestamp = timestamp;
+					stepsTime += dt;
+					totalSteps = total;
+					lastStepsPerMinute = spm;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		steps.importData();
+		
+		
+		
 		indoorPosition = new AggregateData<String>(sensePlatform, SensorNames.WIFI_SCAN, null) {
 			private Long previousTimestamp;
 			private ArrayList<JSONObject> dataPoints = new ArrayList<JSONObject>();
@@ -234,7 +278,10 @@ public class NerdsData {
 	 */
 	public JSONObject getMyStepsData() {
 
-		String dummy = "{\"mean\":60, \"total\":500}";
+		double mean = 0;
+		if (stepsTime > 0)
+			mean = totalSteps / stepsTime;
+		String dummy = "{\"mean\":"+mean+",\"total\":"+totalSteps+"}";
 		try {
 			return new JSONObject(dummy);
 		} catch (JSONException e) {
