@@ -105,7 +105,7 @@ public class NerdsData {
 					long timestamp = dataPoint.getLong("date");
 					double db = dataPoint.getDouble("value");
 					lastAudio = db;
-					String bin = db < 40 ? "low" : db < 60 ? "medium" : "high";
+					String bin = db < 50 ? "low" : db < 70 ? "medium" : "high";
 					long dt = 0;
 					if (previousTimestamp != null) {
 						dt = Math.abs(timestamp - previousTimestamp);
