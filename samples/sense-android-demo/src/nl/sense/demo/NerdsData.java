@@ -31,6 +31,7 @@ public class NerdsData {
 	//some real time data
 	private double lastMotion;
 	private double lastAudio;
+	private double highestAudio = 0;
 	private String lastIndoorPosition;
 	
 	private SitStand sitStand;
@@ -105,6 +106,7 @@ public class NerdsData {
 					long timestamp = dataPoint.getLong("date");
 					double db = dataPoint.getDouble("value");
 					lastAudio = db;
+					if (db > highestAudio) highestAudio = db;
 					String bin = db < 50 ? "low" : db < 70 ? "medium" : "high";
 					long dt = 0;
 					if (previousTimestamp != null) {
@@ -432,9 +434,17 @@ public class NerdsData {
 	}
 	
 	/** 
+	 * Return the highest audio volume
+	 */
+	public double getHighestAudioVolume() {
+		return highestAudio;
+	}
+	
+	/** 
 	 * Return the last indoor position "zone 1" etc. and "unknown"
 	 */
 	public String getRTIndoorPosition() {
 		return lastIndoorPosition;
 	}
+	
 }
