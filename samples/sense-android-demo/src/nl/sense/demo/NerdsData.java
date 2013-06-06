@@ -12,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import nl.sense_os.cortex.dataprocessor.SitStand;
 import nl.sense_os.cortex.dataprocessor.StepCounter;
 import nl.sense_os.platform.SensePlatform;
@@ -56,9 +58,7 @@ public class NerdsData {
 		sitStand.enable();
 		
 		stepCounter = new StepCounter("step counter", sensePlatform.getService().getSenseService());
-		stepCounter.loadTotalSteps();
 		
-
 		// motion, in categories "low", "medium", "high". Use accelerometer as
 		// some devices lack linear acceleration
 		motion = new AggregateData<String>(sensePlatform,
@@ -143,10 +143,20 @@ public class NerdsData {
 					 bin = new JSONObject(bin).getString("value");
 					} catch (JSONException e) {
 					}
-					long timestamp = dataPoint.getLong("date");
+					final long timestamp = dataPoint.getLong("date");
 					
+					final String binValue = bin;
 					//add data point to the sensor
-					sensePlatform.addDataPoint("activity", "activity", "sit/stand", "string", bin, timestamp);
+					try {
+						Thread sendData =  new Thread() { public void run() {
+							sensePlatform.addDataPoint("activity", "activity", "sit/stand", "string", binValue, timestamp);
+							
+						}};
+						sendData.start();
+					} catch (Exception e) {
+						Log.e(TAG, "Failed to add activity data point!", e);
+					}
+					
 
 					long dt = 0;
 					if (previousTimestamp != null) {
@@ -171,17 +181,30 @@ public class NerdsData {
 			@Override
 			public void aggregateSensorDataPoint(JSONObject dataPoint) {
 				try {
-					String bin = dataPoint.getString("value");
-					long timestamp = dataPoint.getLong("date");
-
-					//add data point to the sensor
-					sensePlatform.addDataPoint("step counter", "step counter", "step counter", "json", bin, timestamp);
+					 String bin = dataPoint.getString("value");
+					final long timestamp = dataPoint.getLong("date");
+					try {		
+						 bin = new JSONObject(bin).getString("value");
+						} catch (JSONException e) {
+						}
+					//add data point to the sensor	
+					final String binValue = bin;					
+					try {
+						Thread sendData =  new Thread() { public void run() {
+							sensePlatform.addDataPoint("step counter", "step counter", "step counter", "json", binValue, timestamp);
+							
+						}};
+						sendData.start();
+					} catch (Exception e) {
+						Log.e(TAG, "Failed to add step counter data point!", e);
+					}
+					
 					
 					JSONObject value;
 					//try to parse as json		
 					value = new JSONObject(bin);
 					
-					double total = value.getLong("total");
+					double total = value.getLong("total steps");
 					long spm = value.getLong("steps");
 
 					long dt = 10;
@@ -241,8 +264,18 @@ public class NerdsData {
 				if (deviceLocation[0] < 0)
 					zone = "unknown";
 				
+				final String zoneValue = zone;
+				final long timeStampValue = timestamp;
 				//store the location as a sensor data point
-				sensePlatform.addDataPoint("indoor position", "indoor position", "indoor position", "string", zone, timestamp);
+				try {
+					Thread sendData =  new Thread() { public void run() {
+						sensePlatform.addDataPoint("indoor position", "indoor position", "indoor position", "string", zoneValue, timeStampValue);						
+					}};
+					sendData.start();
+				} catch (Exception e) {
+					Log.e(TAG, "Failed to add indoor position data point!", e);
+				}
+				
 				lastIndoorPosition = zone;
 				
 				

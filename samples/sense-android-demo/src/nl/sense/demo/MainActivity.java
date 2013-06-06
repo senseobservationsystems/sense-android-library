@@ -6,6 +6,7 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -224,6 +225,7 @@ public class MainActivity extends Activity {
         
         senseService.setPrefBool(DevProx.BLUETOOTH, false);
         senseService.setPrefBool(DevProx.WIFI, true);
+        senseService.setPrefBool(Motion.BURSTMODE, true);
 
         // set how often to sample
         // 1 := rarely (~every 15 min)
