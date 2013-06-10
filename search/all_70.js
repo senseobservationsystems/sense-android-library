@@ -1,15 +1,10 @@
 var searchData=
 [
+  ['page_5fsize',['PAGE_SIZE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7',1,'nl::sense_os::service::constants::SenseUrls']]],
   ['parserutils',['ParserUtils',['../classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html',1,'nl::sense_os::service::storage']]],
-  ['parserutils_2ejava',['ParserUtils.java',['../_parser_utils_8java.html',1,'']]],
-  ['persistedbuffertransmithandler',['PersistedBufferTransmitHandler',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_persisted_buffer_transmit_handler.html',1,'nl::sense_os::service::commonsense::senddata']]],
-  ['persistedbuffertransmithandler',['PersistedBufferTransmitHandler',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_persisted_buffer_transmit_handler.html#a37c774218ac3533dfb850b15791da0ac',1,'nl::sense_os::service::commonsense::senddata::PersistedBufferTransmitHandler']]],
-  ['persistedbuffertransmithandler_2ejava',['PersistedBufferTransmitHandler.java',['../_persisted_buffer_transmit_handler_8java.html',1,'']]],
-  ['phoneactivitysensor',['PhoneActivitySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#aed8deb82d6c28d4034c646355229fc13',1,'nl::sense_os::service::phonestate::PhoneActivitySensor']]],
+  ['periodicpollalarmreceiver',['PeriodicPollAlarmReceiver',['../classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html',1,'nl::sense_os::service::shared']]],
+  ['periodicpollingsensor',['PeriodicPollingSensor',['../interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html',1,'nl::sense_os::service::shared']]],
   ['phoneactivitysensor',['PhoneActivitySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html',1,'nl::sense_os::service::phonestate']]],
-  ['phoneactivitysensor_2ejava',['PhoneActivitySensor.java',['../_phone_activity_sensor_8java.html',1,'']]],
-  ['phonestate',['PHONESTATE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html#a2c707ca6a2a802f46d07fe12eea8f27e',1,'nl::sense_os::service::constants::SenseStatusCodes']]],
-  ['pid',['PID',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#ad4857983cf43efb59f8e6b39ef63fa01',1,'nl::sense_os::service::external_sensors::OBD2Dongle::UpdateThread::OBD2Command']]],
   ['pollsensor',['pollSensor',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#ab886c0f287701da248ab51a8a588c2ff',1,'nl.sense_os.service.external_sensors.ExternalSensor.pollSensor()'],['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor.html#a46976c4b6581275ccf1efa560ae3deda',1,'nl.sense_os.service.external_sensors.OBD2Sensor.pollSensor()']]],
   ['pref_5falive',['PREF_ALIVE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a419f248cce7c350cabb8337168a9d96a',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5fambience_5flight',['PREF_AMBIENCE_LIGHT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#ae27f3116b3ea9c06473358bbdb25304b',1,'nl::sense_os::service::constants::Constants']]],
@@ -74,9 +69,6 @@ var searchData=
   ['pref_5fwakelock',['PREF_WAKELOCK',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#abb9536d85f0101b76d42a08b8c6333a6',1,'nl::sense_os::service::constants::Constants']]],
   ['pressuresensor',['PressureSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#a8f85632d66fb0812366f2e68306db9a0',1,'nl::sense_os::service::ambience::PressureSensor']]],
   ['pressuresensor',['PressureSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html',1,'nl::sense_os::service::ambience']]],
-  ['pressuresensor_2ejava',['PressureSensor.java',['../_pressure_sensor_8java.html',1,'']]],
-  ['previousstate',['previousState',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#a69c66e92a4333fba3e02da6582d0c429',1,'nl::sense_os::service::external_sensors::NewOBD2DeviceConnector']]],
   ['proximitysensor',['ProximitySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html#a1ed3801fb3d0c208c74a6bfc1d64887c',1,'nl::sense_os::service::phonestate::ProximitySensor']]],
-  ['proximitysensor',['ProximitySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html',1,'nl::sense_os::service::phonestate']]],
-  ['proximitysensor_2ejava',['ProximitySensor.java',['../_proximity_sensor_8java.html',1,'']]]
+  ['proximitysensor',['ProximitySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html',1,'nl::sense_os::service::phonestate']]]
 ];

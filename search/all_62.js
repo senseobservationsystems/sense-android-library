@@ -1,19 +1,10 @@
 var searchData=
 [
-  ['bandwidth',['bandWidth',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884',1,'nl::sense_os::service::ambience::FourierTransform']]],
-  ['base',['BASE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#aff49c2012a860330642bf2ed6b52220e',1,'nl::sense_os::service::constants::SenseUrls']]],
+  ['basedataproducer',['BaseDataProducer',['../classnl_1_1sense__os_1_1service_1_1shared_1_1_base_data_producer.html',1,'nl::sense_os::service::shared']]],
+  ['basesensor',['BaseSensor',['../classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor.html',1,'nl::sense_os::service::shared']]],
   ['batterysensor',['BatterySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html',1,'nl::sense_os::service::phonestate']]],
-  ['batterysensor',['BatterySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a3c6449f7ef023e25a9489149308a2ad6',1,'nl::sense_os::service::phonestate::BatterySensor']]],
-  ['batterysensor_2ejava',['BatterySensor.java',['../_battery_sensor_8java.html',1,'']]],
   ['bluetoothdeviceproximity',['BluetoothDeviceProximity',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity.html',1,'nl::sense_os::service::deviceprox']]],
-  ['bluetoothdeviceproximity',['BluetoothDeviceProximity',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity.html#a233eb60cd89f7e6881789b574f1c0414',1,'nl::sense_os::service::deviceprox::BluetoothDeviceProximity']]],
-  ['bluetoothdeviceproximity_2ejava',['BluetoothDeviceProximity.java',['../_bluetooth_device_proximity_8java.html',1,'']]],
-  ['bool',['BOOL',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#a3ecffaea4846e87966ed5bf1b68cbe18',1,'nl::sense_os::service::constants::SenseDataTypes']]],
   ['bootrx',['BootRx',['../classnl_1_1sense__os_1_1service_1_1_boot_rx.html',1,'nl::sense_os::service']]],
-  ['bootrx_2ejava',['BootRx.java',['../_boot_rx_8java.html',1,'']]],
   ['btreceiver',['BTReceiver',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver.html',1,'nl::sense_os::service::external_sensors::NewOBD2DeviceConnector::StateMachine']]],
-  ['btreceiver',['btReceiver',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a23a39c6bc71b679f7e4f7aad33d92631',1,'nl::sense_os::service::external_sensors::NewOBD2DeviceConnector::StateMachine']]],
-  ['buffertransmithandler',['BufferTransmitHandler',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html#a2c8b8a73d631f39894297e01f423b72a',1,'nl::sense_os::service::commonsense::senddata::BufferTransmitHandler']]],
-  ['buffertransmithandler',['BufferTransmitHandler',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html',1,'nl::sense_os::service::commonsense::senddata']]],
-  ['buffertransmithandler_2ejava',['BufferTransmitHandler.java',['../_buffer_transmit_handler_8java.html',1,'']]]
+  ['buffertransmithandler',['BufferTransmitHandler',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html',1,'nl::sense_os::service::commonsense::senddata']]]
 ];

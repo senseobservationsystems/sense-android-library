@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['phonestate',['PHONESTATE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html#a2c707ca6a2a802f46d07fe12eea8f27e',1,'nl::sense_os::service::constants::SenseStatusCodes']]],
-  ['pid',['PID',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#ad4857983cf43efb59f8e6b39ef63fa01',1,'nl::sense_os::service::external_sensors::OBD2Dongle::UpdateThread::OBD2Command']]],
+  ['page_5fsize',['PAGE_SIZE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7',1,'nl::sense_os::service::constants::SenseUrls']]],
   ['pref_5falive',['PREF_ALIVE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a419f248cce7c350cabb8337168a9d96a',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5fambience_5flight',['PREF_AMBIENCE_LIGHT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#ae27f3116b3ea9c06473358bbdb25304b',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5fambience_5fmic',['PREF_AMBIENCE_MIC',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#aa397aab69bd0d0f067118382987e389e',1,'nl::sense_os::service::constants::Constants']]],
@@ -62,6 +61,5 @@ var searchData=
   ['pref_5fstatus_5fpopquiz',['PREF_STATUS_POPQUIZ',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a0e8aa419e725ee16a4aecf1ea3b8becf',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5fsync_5frate',['PREF_SYNC_RATE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a7c2a4a326b1dc839633432018bc5fdd4',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5ftanita_5fscale',['PREF_TANITA_SCALE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a8bd192733b2b522e078ae4f276a2552b',1,'nl::sense_os::service::constants::Constants']]],
-  ['pref_5fwakelock',['PREF_WAKELOCK',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#abb9536d85f0101b76d42a08b8c6333a6',1,'nl::sense_os::service::constants::Constants']]],
-  ['previousstate',['previousState',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#a69c66e92a4333fba3e02da6582d0c429',1,'nl::sense_os::service::external_sensors::NewOBD2DeviceConnector']]]
+  ['pref_5fwakelock',['PREF_WAKELOCK',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#abb9536d85f0101b76d42a08b8c6333a6',1,'nl::sense_os::service::constants::Constants']]]
 ];

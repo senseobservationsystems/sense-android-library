@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['updatehandler',['updateHandler',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a35458572f29a9d22a2b79824b63f651b',1,'nl::sense_os::service::external_sensors::ExternalSensor']]],
-  ['updatehandlerthread',['updateHandlerThread',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a233818e7d71e771db744d476b3f959eb',1,'nl::sense_os::service::external_sensors::ExternalSensor']]],
-  ['updatethread',['updateThread',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268',1,'nl::sense_os::service::external_sensors::ExternalSensor']]],
   ['url_5fadd_5fsensor_5fto_5fdevice',['URL_ADD_SENSOR_TO_DEVICE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#aa315e80da583f88004ffcc8cd4a2fc76',1,'nl::sense_os::service::constants::Constants']]],
   ['url_5fbase',['URL_BASE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a1f024ac5c4136771d420e57677294e9a',1,'nl::sense_os::service::constants::Constants']]],
   ['url_5fcreate_5fsensor',['URL_CREATE_SENSOR',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a1359610c731b63d03ec849ed7d0ff338',1,'nl::sense_os::service::constants::Constants']]],

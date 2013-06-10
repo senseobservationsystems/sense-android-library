@@ -1,7 +1,9 @@
 var classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor =
 [
     [ "NoiseSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a51a8475a7efcd514b1925ae489be1c38", null ],
-    [ "disable", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a76eda4e118ffc221bcf1169cbb89d393", null ],
-    [ "enable", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#aae99e45dfdfcd212a30be320f77f9abd", null ],
-    [ "onCallStateChanged", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#af0b36d9e4cb74041a0c6312d56d7a289", null ]
+    [ "doSample", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a59a095df74d5c2c748f456b9f78fa717", null ],
+    [ "getAutoCalibratedNoiseSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a2c3ced2541d7498238d2afd194ac021d", null ],
+    [ "isActive", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a91fc133a0dae408b779ee2659b535aef", null ],
+    [ "startSensing", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a148917f94dcbcd214509f85e97eccd29", null ],
+    [ "stopSensing", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#aeb51335861dbe7a5d82d4a33adb293ef", null ]
 ];

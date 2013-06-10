@@ -1,9 +1,0 @@
-var searchData=
-[
-  ['command',['command',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command.html#a42b5adead7a5558445ec0e2c637566c5',1,'nl::sense_os::service::external_sensors::OBD2Sensor::OBD2Command']]],
-  ['configuration',['CONFIGURATION',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae560f10767a035185d73c9da1ea0156e',1,'nl::sense_os::service::constants::SenseUrls']]],
-  ['connected',['CONNECTED',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html#a9cb67acb6f161929b05616dccb2da56f',1,'nl.sense_os.service.constants.SenseStatusCodes.CONNECTED()'],['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6',1,'nl.sense_os.service.external_sensors.ExternalSensor.connected()']]],
-  ['connected_5fsensors',['CONNECTED_SENSORS',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a75f7f2cab3ba5a564d565748acfe86dc',1,'nl::sense_os::service::constants::SenseUrls']]],
-  ['context',['context',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#ae6c7125d85d1d306ad98005658763bac',1,'nl.sense_os.service.commonsense.SensorRegistrator.context()'],['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa439af22c9649880e2d4042953d2fc27',1,'nl.sense_os.service.external_sensors.ExternalSensor.context()'],['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#a5aa2a2e9080a3fc2b0c693d616f31e63',1,'nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.context()']]],
-  ['create_5fsensor',['CREATE_SENSOR',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#afb346d55f0a01b10b03437a933993bc2',1,'nl::sense_os::service::constants::SenseUrls']]]
-];

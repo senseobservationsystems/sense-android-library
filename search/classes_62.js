@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['basedataproducer',['BaseDataProducer',['../classnl_1_1sense__os_1_1service_1_1shared_1_1_base_data_producer.html',1,'nl::sense_os::service::shared']]],
+  ['basesensor',['BaseSensor',['../classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor.html',1,'nl::sense_os::service::shared']]],
   ['batterysensor',['BatterySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html',1,'nl::sense_os::service::phonestate']]],
   ['bluetoothdeviceproximity',['BluetoothDeviceProximity',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity.html',1,'nl::sense_os::service::deviceprox']]],
   ['bootrx',['BootRx',['../classnl_1_1sense__os_1_1service_1_1_boot_rx.html',1,'nl::sense_os::service']]],
