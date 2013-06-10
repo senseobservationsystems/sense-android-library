@@ -26,6 +26,14 @@
             android:text="@string/button_login" />
 
         <Button
+            android:id="@+id/buttonRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:onClick="onClick"
+            android:text="@string/button_register" />
+
+        <Button
             android:id="@+id/buttonPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
