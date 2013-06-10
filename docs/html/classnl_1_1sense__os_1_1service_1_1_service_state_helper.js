@@ -1,6 +1,5 @@
 var classnl_1_1sense__os_1_1service_1_1_service_state_helper =
 [
-    [ "getInstance", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a759e7b0d58ea1559327f952c58ec6dea", null ],
     [ "getStateNotification", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a1522ff1c53c6790b6bda268359fd4714", null ],
     [ "getStatusCode", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6e23a4356af63802a9531dd8d336f104", null ],
     [ "isAmbienceActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#af49d216bd90bc8999ff76f7eac9d79f3", null ],
@@ -22,6 +21,5 @@ var classnl_1_1sense__os_1_1service_1_1_service_state_helper =
     [ "setMotionActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a9c371eaa7fbbb47f538cbf008f9e42bf", null ],
     [ "setPhoneStateActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a8ac3910051be3af066410bb12d2f4004", null ],
     [ "setQuizActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a3c5f5effb30099461b8c7c218cfafbd8", null ],
-    [ "setStarted", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a26b6dd933b5a301cf8a593e466004622", null ],
-    [ "NOTIF_ID", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#adaa399f5611edb10441e05a5d196db0c", null ]
+    [ "setStarted", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a26b6dd933b5a301cf8a593e466004622", null ]
 ];

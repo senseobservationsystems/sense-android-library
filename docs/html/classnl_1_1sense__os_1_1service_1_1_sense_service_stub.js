@@ -8,7 +8,7 @@ var classnl_1_1sense__os_1_1service_1_1_sense_service_stub =
     [ "getPrefLong", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a5200c940015e3fe5143494dd400d353f", null ],
     [ "getPrefString", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a226df4425720d89694faada6e43ebad2", null ],
     [ "getSenseService", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a1f06958acc090ca1e253951a462efed5", null ],
-    [ "getSessionId", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a03291f567c6a399ae736613e105f00f4", null ],
+    [ "getSessionId", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a9ba38e161678331e8e328c8b1b2353e9", null ],
     [ "getStatus", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a75d99a285234f5e1356930dc0b2f46ee", null ],
     [ "logout", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a4271347ea50a9ddc8b004ef329a282f5", null ],
     [ "register", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a799312f0fefb1942fe383f343d169f33", null ],
