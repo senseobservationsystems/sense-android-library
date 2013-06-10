@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="nl.sense_os.phonegap"
+    android:versionCode="1"
+    android:versionName="1.0.0" >
+
+    <!-- REQUEST GENERAL PERMISSIONS FOR MAIN APP FUNCTIONALITY -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- REQUEST ACCESS TO LOCATION SENSORS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- DEFINE REQUIRED FEATURES FOR LOCATION SENSORS -->
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
+
+    <!-- REQUEST ACCESS TO AUDIO AND VIDEO FOR AMBIENCE SENSORS -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- DEFINE REQUIRED FEATURES FOR AMBIENCE SENSORS -->
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="true" />
+    <!-- IMPLIED BY PERMISSION CAMERA, BUT NOT REQUIRED -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <!-- REQUEST ACCESS TO GENERAL PHONE STATE INFORMATION FOR PHONE STATE SENSORS -->
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- DEFINE REQUIRED FEATURES FOR PHONE STATE SENSORS -->
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="true" />
+    <!-- IMPLIED BY PERMISSION PROCESS OUTGOING_CALLS, BUT NOT REQUIRED -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <!-- REQUEST ACCESS TO NETWORKING FEATURES FOR NETWORK SCAN SENSORS -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.NFC" />
+    <!-- DEFINE REQUIRED FEATURES FOR NETWORK SCAN SENSORS -->
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="true" />
+    <!-- IMPLIED BY PERMISSION NFC, BUT NOT REQUIRED -->
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="false" />
+
+    <!-- REQUEST PERMISSION TO RECEIVE PUSHED (GCM) MESSAGES -->
+    <uses-permission android:name="nl.sense_os.pgtest.permission.GCM_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!-- DEFINE OUR OWN GCM PERMISSION -->
+    <permission
+        android:name="nl.sense_os.pgtest.permission.GCM_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <!-- WE SUPPORT ANDROID 2.1 (ECLAIR) AND UP -->
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity android:name="ExampleApp" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="PhoneGapExamples"
+            android:configChanges="orientation|screenSize|keyboardHidden" >
+        </activity>
+        <activity
+            android:name="SenseExamples"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="nl.sense_os.pgtest.NOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- ACTIVITY THAT POPS UP WHEN AN NFC TAG WAS SCANNED -->
+        <!-- CAN BE REMOVED IF NOT USED -->
+        <activity
+            android:name="nl.sense_os.service.deviceprox.NfcScan"
+            android:configChanges="orientation"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc" />
+        </activity>
+
+        <!-- MAIN SERVICE THAT MANAGES SENSING -->
+        <service
+            android:name="nl.sense_os.service.SenseService"
+            android:exported="false" >
+            <intent-filter>
+
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.pgtest.SENSE_SERVICE" />
+            </intent-filter>
+        </service>
+        <!-- SERVICE TO BUFFER AND SEND DATA TO COMMONSENSE -->
+        <service
+            android:name="nl.sense_os.service.MsgHandler"
+            android:exported="false" >
+            <intent-filter>
+
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.pgtest.NEW_DATA" />
+                <action android:name="nl.sense_os.pgtest.SEND_DATA" />
+            </intent-filter>
+        </service>
+        <!-- SERVICE THAT CHECKS SENSOR REGISTRATION WITH COMMONSENSE -->
+        <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
+        <!-- SERVICE THAT HANDLES GCM MESSAGES FROM COMMONSENSE -->
+        <!-- CAN BE REMOVED IF NOT USED -->
+        <service android:name="nl.sense_os.service.push.GCMReceiver" />
+        <!-- SERVICE THAT UPDATES THE SENSOR CONFIGURATION WHEN REQUIREMENTS CHANGE -->
+        <!-- CAN BE REMOVED IF NOT USED -->
+        <service android:name="nl.sense_os.service.configuration.ConfigurationService" />
+        <!-- DUMMY SERVICE TO HANDLE CHANGES IN THE SENSE STATE (DOES NOTHING BY DEFAULT) -->
+        <!-- REPLACE THIS SERVICE IF YOU WANT TO IMPLEMENT YOUR OWN APP WIDGET -->
+        <service
+            android:name="nl.sense_os.service.appwidget.DummyAppWidgetService"
+            android:exported="false" >
+            <intent-filter>
+
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.pgtest.UPDATE_APP_WIDGET" />
+            </intent-filter>
+        </service>
+
+        <!-- BROADCAST RECEIVER THAT WAKES UP THE APP AGAIN WHEN THE PHONE REBOOTS -->
+        <receiver
+            android:name="nl.sense_os.service.BootRx"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+        <!-- BROADCAST RECEIVER THAT MAKES SURE THE SENSE SERVICE IS RESTARTED IF IT IS KILLED -->
+        <receiver
+            android:name="nl.sense_os.service.AliveChecker"
+            android:exported="false" >
+            <intent-filter>
+
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.pgtest.CHECK_ALIVE" />
+            </intent-filter>
+        </receiver>
+        <!-- BROADCAST RECEIVER FOR CHANGES IN THE NETWORK STATE -->
+        <receiver
+            android:name="nl.sense_os.service.NetworkMonitor"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <!-- BROADCAST RECEIVER FOR SCHEDULED SAMPLE EXECUTION ALARMS -->
+        <receiver android:name="nl.sense_os.service.scheduler.ExecutionAlarmReceiver" />
+        <!-- BROADCAST RECEIVER THAT SCHEDULES PERIODIC TRANSMITS OF BUFFERED SENSOR DATA -->
+        <receiver
+            android:name="nl.sense_os.service.DataTransmitter"
+            android:exported="false" >
+            <intent-filter>
+
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.pgtest.TRANSMIT_DATA" />
+            </intent-filter>
+        </receiver>
+        <!-- BROADCAST RECEIVER FOR GCM MESSAGES -->
+        <!-- CAN BE REMOVED IF NOT USED -->
+        <receiver
+            android:name="nl.sense_os.service.push.GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <category android:name="nl.sense_os.pgtest" />
+            </intent-filter>
+        </receiver>
+        <!-- BROADCAST RECEIVER FOR PUSHED REQUIREMENT CHANGES -->
+        <!-- CAN BE REMOVED IF NOT USED -->
+        <receiver
+            android:name="nl.sense_os.service.configuration.RequirementReceiver"
+            android:exported="false" >
+            <intent-filter>
+
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.pgtest.NEW_REQUIREMENTS" />
+            </intent-filter>
+        </receiver>
+
+        <!-- CONTENT PROVIDER THAT GIVES OTHER APPS ACCESS TO THE SENSOR DATA -->
+        <!-- MAKE SURE YOU USE A UNIQUE AUTHORITY FOR YOUR OWN APP (SEE res/strings.xml) -->
+        <!-- CAN BE REMOVED IF NOT USED -->
+        <provider
+            android:name="nl.sense_os.service.provider.SensorDataProvider"
+            android:authorities="nl.sense_os.pgtest.LocalStorage"
+            android:exported="true" />
+    </application>
+
+</manifest>
