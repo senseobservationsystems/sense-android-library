@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['sampledelay',['sampleDelay',['../classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor.html#a1f2d3616d0c545142381b29edb28edb9',1,'nl::sense_os::service::shared::BaseSensor']]],
   ['sensor_5fdata_5ftype_5fbool',['SENSOR_DATA_TYPE_BOOL',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a047494cc72fda99d8ba635a6d2cb41f0',1,'nl::sense_os::service::constants::Constants']]],
   ['sensor_5fdata_5ftype_5ffile',['SENSOR_DATA_TYPE_FILE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a6c55ddc82d6078949e4cbdfd80d9a026',1,'nl::sense_os::service::constants::Constants']]],
   ['sensor_5fdata_5ftype_5ffloat',['SENSOR_DATA_TYPE_FLOAT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a548e692708d7779fdc4efda0798804ea',1,'nl::sense_os::service::constants::Constants']]],

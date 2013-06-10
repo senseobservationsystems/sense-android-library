@@ -4,6 +4,7 @@ var searchData=
   ['scheduler',['Scheduler',['../classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler.html',1,'nl::sense_os::service::scheduler']]],
   ['schedulerprefs',['SchedulerPrefs',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_scheduler_prefs.html',1,'nl::sense_os::service::constants']]],
   ['senseapi',['SenseApi',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html',1,'nl::sense_os::service::commonsense']]],
+  ['senseapplication',['SenseApplication',['../classnl_1_1sense__os_1_1platform_1_1_sense_application.html',1,'nl::sense_os::platform']]],
   ['sensebinder',['SenseBinder',['../classnl_1_1sense__os_1_1service_1_1_sense_service_1_1_sense_binder.html',1,'nl::sense_os::service::SenseService']]],
   ['sensedatatypes',['SenseDataTypes',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html',1,'nl::sense_os::service::constants']]],
   ['sensephonestate',['SensePhoneState',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html',1,'nl::sense_os::service::phonestate']]],

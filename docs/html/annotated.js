@@ -12,6 +12,7 @@ var annotated =
     [ "nl", null, [
       [ "sense_os", null, [
         [ "platform", null, [
+          [ "SenseApplication", "classnl_1_1sense__os_1_1platform_1_1_sense_application.html", "classnl_1_1sense__os_1_1platform_1_1_sense_application" ],
           [ "SensePlatform", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html", "classnl_1_1sense__os_1_1platform_1_1_sense_platform" ],
           [ "TrivialSensorRegistrator", "classnl_1_1sense__os_1_1platform_1_1_trivial_sensor_registrator.html", "classnl_1_1sense__os_1_1platform_1_1_trivial_sensor_registrator" ]
         ] ],
@@ -40,7 +41,7 @@ var annotated =
             ] ],
             [ "DefaultSensorRegistrationService", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_default_sensor_registration_service.html", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_default_sensor_registration_service" ],
             [ "DefaultSensorRegistrator", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_default_sensor_registrator.html", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_default_sensor_registrator" ],
-            [ "SenseApi", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api" ],
+            [ "SenseApi", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html", null ],
             [ "SensorRegistrator", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator" ]
           ] ],
           [ "configuration", null, [
@@ -48,14 +49,14 @@ var annotated =
             [ "RequirementReceiver", "classnl_1_1sense__os_1_1service_1_1configuration_1_1_requirement_receiver.html", "classnl_1_1sense__os_1_1service_1_1configuration_1_1_requirement_receiver" ]
           ] ],
           [ "constants", null, [
-            [ "Constants", "classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html", "classnl_1_1sense__os_1_1service_1_1constants_1_1_constants" ],
-            [ "SchedulerPrefs", "classnl_1_1sense__os_1_1service_1_1constants_1_1_scheduler_prefs.html", "classnl_1_1sense__os_1_1service_1_1constants_1_1_scheduler_prefs" ],
-            [ "SenseDataTypes", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types" ],
-            [ "SensePrefs", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs" ],
-            [ "SenseStatusCodes", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes" ],
-            [ "SenseUrls", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls" ],
+            [ "Constants", "classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html", null ],
+            [ "SchedulerPrefs", "classnl_1_1sense__os_1_1service_1_1constants_1_1_scheduler_prefs.html", null ],
+            [ "SenseDataTypes", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html", null ],
+            [ "SensePrefs", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html", null ],
+            [ "SenseStatusCodes", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html", null ],
+            [ "SenseUrls", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html", null ],
             [ "SensorData", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data.html", null ],
-            [ "Util", "classnl_1_1sense__os_1_1service_1_1constants_1_1_util.html", "classnl_1_1sense__os_1_1service_1_1constants_1_1_util" ]
+            [ "Util", "classnl_1_1sense__os_1_1service_1_1constants_1_1_util.html", null ]
           ] ],
           [ "ctrl", null, [
             [ "Controller", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller" ],
@@ -69,7 +70,7 @@ var annotated =
             [ "WIFIDeviceProximity", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity" ]
           ] ],
           [ "external_sensors", null, [
-            [ "CRC8", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_c_r_c8.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_c_r_c8" ],
+            [ "CRC8", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_c_r_c8.html", null ],
             [ "ExternalSensor", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor" ],
             [ "NewOBD2DeviceConnector", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector" ],
             [ "OBD2Dongle", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle" ],
@@ -94,7 +95,7 @@ var annotated =
             [ "MotionEnergySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor" ],
             [ "MotionSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor" ],
             [ "MotionSensorInterface", "interfacenl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_interface.html", "interfacenl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_interface" ],
-            [ "MotionSensorUtils", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils" ],
+            [ "MotionSensorUtils", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html", null ],
             [ "StandardMotionSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor" ]
           ] ],
           [ "phonestate", null, [
@@ -134,7 +135,7 @@ var annotated =
           [ "storage", null, [
             [ "DbHelper", "classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html", "classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper" ],
             [ "LocalStorage", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage" ],
-            [ "ParserUtils", "classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html", "classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils" ]
+            [ "ParserUtils", "classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html", null ]
           ] ],
           [ "AliveChecker", "classnl_1_1sense__os_1_1service_1_1_alive_checker.html", "classnl_1_1sense__os_1_1service_1_1_alive_checker" ],
           [ "BootRx", "classnl_1_1sense__os_1_1service_1_1_boot_rx.html", "classnl_1_1sense__os_1_1service_1_1_boot_rx" ],

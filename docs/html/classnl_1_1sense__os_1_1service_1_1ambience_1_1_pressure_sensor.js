@@ -2,7 +2,6 @@ var classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor =
 [
     [ "PressureSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#a8f85632d66fb0812366f2e68306db9a0", null ],
     [ "doSample", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#a793c2a19e6d3ab3c287fbddfffda15d8", null ],
-    [ "getInstance", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#a648a1a89e1e0b3dc56cce3c77c60cd3b", null ],
     [ "isActive", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#a8fdb3b506db27eaede7f8ec0a5bcb514", null ],
     [ "onAccuracyChanged", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#ad896c7511d35758ca915374c3bac2e3b", null ],
     [ "onSensorChanged", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#ab6bf6d3080886ec1a73a232aa81cdfba", null ],

@@ -21,8 +21,6 @@ var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor =
     [ "mmInStream", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a3ae3c168e27a12a30caf23bb8033b278", null ],
     [ "mmOutStream", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#ae9f277e9e7cc6e5663974cd1dc177428", null ],
     [ "runningThreads", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a3ca14f0abd5a3ee4ce321d4a8104035d", null ],
-    [ "serial_uuid", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a37489671bd5b905f6a6cb74d986a3aca", null ],
-    [ "TAG", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce", null ],
     [ "updateHandler", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a35458572f29a9d22a2b79824b63f651b", null ],
     [ "updateHandlerThread", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a233818e7d71e771db744d476b3f959eb", null ],
     [ "updateThread", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268", null ]

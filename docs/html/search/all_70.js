@@ -67,6 +67,8 @@ var searchData=
   ['pref_5fsync_5frate',['PREF_SYNC_RATE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a7c2a4a326b1dc839633432018bc5fdd4',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5ftanita_5fscale',['PREF_TANITA_SCALE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#a8bd192733b2b522e078ae4f276a2552b',1,'nl::sense_os::service::constants::Constants']]],
   ['pref_5fwakelock',['PREF_WAKELOCK',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html#abb9536d85f0101b76d42a08b8c6333a6',1,'nl::sense_os::service::constants::Constants']]],
+  ['pressuresensor',['PressureSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#a8f85632d66fb0812366f2e68306db9a0',1,'nl::sense_os::service::ambience::PressureSensor']]],
   ['pressuresensor',['PressureSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html',1,'nl::sense_os::service::ambience']]],
+  ['proximitysensor',['ProximitySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html#a1ed3801fb3d0c208c74a6bfc1d64887c',1,'nl::sense_os::service::phonestate::ProximitySensor']]],
   ['proximitysensor',['ProximitySensor',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html',1,'nl::sense_os::service::phonestate']]]
 ];
