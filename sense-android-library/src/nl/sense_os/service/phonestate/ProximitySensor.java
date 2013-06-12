@@ -145,7 +145,8 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         } catch (Exception e) {
             Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
         }
-
+        
+        Log.e(TAG, "Proximity:"+value);
         // pass message to the MsgHandler
         Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);

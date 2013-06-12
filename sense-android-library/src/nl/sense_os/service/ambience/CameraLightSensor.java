@@ -39,6 +39,7 @@ public class CameraLightSensor extends BaseDataProducer{
 
 		@Override
 		public void lightValueCallback(float lightValue, int camera_id) {
+			Log.e(TAG, "Camera "+ camera_id+" Light value: "+ lightValue);
 			// send the light value to commonSense
 			String sensorDisplayName = "Camera Light";
 			String sensorName = SensorNames.CAMERA_LIGHT;
@@ -64,7 +65,7 @@ public class CameraLightSensor extends BaseDataProducer{
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
 			context.startService(i);
-			// Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
+			// Log.e(TAG, "Sent new camera light values, camera: "+camera_id+" value: "+lightValue);
 			nextUpdate(camera_id);
 		}
 	}

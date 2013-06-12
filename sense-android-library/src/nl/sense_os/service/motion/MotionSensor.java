@@ -356,13 +356,13 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     private void startPolling() {
-        Log.v(TAG, "start polling");
+        //Log.v(TAG, "start polling");
         alarmReceiver.start(context);
     }
 
     @Override
     public void startSensing(long sampleDelay) {
-        Log.v(TAG, "Start sensing");
+        //Log.v(TAG, "Start sensing");
 
         final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
@@ -403,12 +403,12 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     public void stopPolling() {
-        Log.v(TAG, "stop polling");
+      //  Log.v(TAG, "stop polling");
         alarmReceiver.stop(context);
     }
 
     private void stopSample() {
-        Log.v(TAG, "Stop sample");
+     //   Log.v(TAG, "Stop sample");
 
         // release wake lock
         if (null != wakeLock && wakeLock.isHeld()) {
@@ -424,7 +424,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     @Override
     public void stopSensing() {
-        Log.v(TAG, "Stop sensing");
+        //Log.v(TAG, "Stop sensing");
         stopSample();
         stopPolling();
         enableScreenOffListener(false);

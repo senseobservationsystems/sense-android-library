@@ -3,7 +3,9 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.os.Build;
@@ -81,15 +83,15 @@ public class CameraLightValue {
 
 	private String TAG = "Camera Light Value";
 	private Camera[] cameraDevices;
-
-	public CameraLightValue() {
+		
+	public CameraLightValue() {	
 		cameraDevices = new Camera[getNumberOfCameras()];
 	}
 
+	@SuppressLint("NewApi")
 	@TargetApi(9)
 	public boolean getLightValue(final int camera_id,
-			final CameraLightValueCallback camlightCallback) {
-
+			final CameraLightValueCallback camlightCallback) {		
 		// this camera code only works for API > 9 and API < 14
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
 			try {
@@ -101,10 +103,13 @@ public class CameraLightValue {
 					cameraDevices[camera_id] = Camera.open(camera_id);
 					Camera.Parameters parameters = cameraDevices[camera_id].getParameters();
 					parameters.setExposureCompensation(0);
-					parameters.setWhiteBalance("daylight");
+					parameters.setWhiteBalance("daylight");					
 					cameraDevices[camera_id].setPreviewCallback(new CameraPreviewCallback(
 							camera_id, camlightCallback));
+					cameraDevices[camera_id].setPreviewDisplay(null);
+					cameraDevices[camera_id].setPreviewTexture(new SurfaceTexture(10));
 					cameraDevices[camera_id].startPreview();
+					
 				}
 				return true;
 			} catch (Exception e) {
@@ -129,8 +134,9 @@ public class CameraLightValue {
 	public int getNumberOfCameras() {
 		try {
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
-
-				return Camera.getNumberOfCameras();
+				
+				return 2;
+			
 			} else {
 				return 1;
 			}

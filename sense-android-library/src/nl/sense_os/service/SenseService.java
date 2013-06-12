@@ -803,7 +803,7 @@ public class SenseService extends Service {
                 int interval = -1;
                 switch (rate) {
                 case -2: // real time
-                    interval = -1;
+                    interval = 10 * 1000;
                     break;
                 case -1: // often
                     interval = 10 * 1000;
@@ -855,8 +855,7 @@ public class SenseService extends Service {
                             lightSensor.startSensing(finalInterval);
                         }
                         // only available from Android 2.3 up to 4.0
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD
-                                && Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
                             if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
                                 cameraLightSensor = CameraLightSensor
                                         .getInstance(SenseService.this);
