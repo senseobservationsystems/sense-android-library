@@ -41,8 +41,8 @@ public class CtrlDefault extends Controller {
     }
 
     private static final String TAG = "Sense Controller";
-    private static final long DEFAULT_BURST_RATE = 10 * 1000;
-    private static final long IDLE_BURST_RATE = 30 * 1000;
+    private static final long DEFAULT_BURST_RATE = 1 * 1000;
+    private static final long IDLE_BURST_RATE = 1 * 1000;
     private static double IDLE_MOTION_THRESHOLD = 0.09;
     private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
 

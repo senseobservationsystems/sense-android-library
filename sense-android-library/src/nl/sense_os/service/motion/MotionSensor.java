@@ -390,7 +390,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
             // add burst mode
             if (isBurstMode) {
-                sampleDelay = 10 * 1000;
+                sampleDelay = 5 * 1000;
                 initBurstDataProcessors();
             }
         }
