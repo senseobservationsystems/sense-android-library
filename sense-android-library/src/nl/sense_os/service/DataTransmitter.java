@@ -134,7 +134,7 @@ public class DataTransmitter implements Runnable {
      * Initiates the data transmission.
      */
     public void transmissionService() {
-        Log.i(TAG, "Start transmission");
+        Log.v(TAG, "Start transmission");
         Intent task = new Intent(context.getString(R.string.action_sense_send_data));
         lastTransmissionTime = SystemClock.elapsedRealtime();
         ComponentName service = context.startService(task);
