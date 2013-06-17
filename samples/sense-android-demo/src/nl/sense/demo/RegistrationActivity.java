@@ -1,5 +1,6 @@
 package nl.sense.demo;
 
+import nl.sense_os.platform.SenseApplication;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.commonsense.SenseApi;
 import android.animation.Animator;
