@@ -1,30 +1,20 @@
 package nl.sense_os.service.ctrl;
 
-import java.util.List;
-
-import nl.sense_os.service.DataTransmitter;
 import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.location.LocationSensor;
-import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.AlarmManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.hardware.Sensor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -34,57 +24,42 @@ import android.util.Log;
  */
 public class CtrlExtended extends Controller {
 
-    private enum flag {
+    private enum Flag {
         NOT_READY, READY, RECHECK;
     }
 
-    private class Intervals {
-        static final long ECO = AlarmManager.INTERVAL_HALF_HOUR;
-        static final long NORMAL = 1000 * 60 * 5;
-        static final long OFTEN = 1000 * 60 * 1;
-    }
-
-    private static final String TAG = "Sense Controller";
-    private static final String NOMODE = "nomode";
+    private static final String GPS = "gps";
     private static final String IDLE = "idle";
     private static final String NETWORK = "network";
-    private static final String GPS = "gps";
-    private static final long DEFAULT_BURST_RATE = 10 * 1000;
-    private static final long IDLE_BURST_RATE = 12 * 1000;
-    private static double IDLE_MOTION_THRESHOLD = 0.09;
-    private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
+    private static final String NOMODE = "nomode";
+    private static final String TAG = "CtrlExtended";
 
-    private LocationManager locMgr;
-    private DataTransmitter transmitter;
-    private Context context;
-    private String lastlocationmode = NOMODE;
-    private flag networkIndexFlag;
-    private flag gpsIndexFlag;
-    private flag positionFlag;
-    private float[] networkTableAcc = { 0, 0, 0, 0, 0 };
-    private float networkAvgAcc = 25;
-    private int networkIndexAcc = 0;
-    private float[] gpsTableAcc = { 0, 0, 0, 0, 0 };
-    private float gpsAvgAcc = 35;
-    private int gpsIndexAcc = 0;
-    private float accuracyPref = 0;
-    private String bestProvider;
-    private int readyToGo = 0;
-    private long startTime;
-    private static float previous_lux = 0;
-    private static long lastchangedtime;
-    private static String lastlightmode = NOMODE;
-    private static double previous_dB = 0;
-    private static long lastloudtime;
-    private static String lastnoisemode = NOMODE;
-    private long firstIdleDetectedTime = 0;
+    private float mAccuracyPref = 0;
+    private String mBestProvider;
+    private Context mContext;
+    private float mGpsAvgAcc = 35;
+    private int mGpsIndexAcc = 0;
+    private Flag mGpsIndexFlag;
+    private float[] mGpsTableAcc = { 0, 0, 0, 0, 0 };
+    private long mLastChangedTime;
+    private String mLastLightMode = NOMODE;
+    private String mLastLocationMode = NOMODE;
+    private long mLastLoudTime;
+    private String mLastNoiseMode = NOMODE;
+    private float mNetworkAvgAcc = 25;
+    private int mNetworkIndexAcc = 0;
+    private Flag mNetworkIndexFlag;
+    private float[] mNetworkTableAcc = { 0, 0, 0, 0, 0 };
+    private Flag mPositionFlag;
+    private double mPreviousDecibel = 0;
+    private float mPreviousLux = 0;
+    private int mReadyToGo = 0;
+    private long mStartTime;
 
     public CtrlExtended(Context context) {
-        super();
+        super(context);
         Log.i(TAG, "Creating extended controller");
-        this.context = context;
-        locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        transmitter = DataTransmitter.getInstance(context);
+        mContext = context;
     }
 
     private String bestProvider(boolean isGpsAllowed, boolean isListeningGps, long time,
@@ -93,53 +68,53 @@ public class CtrlExtended extends Controller {
         // Log.v(TAG, "BEST PROVIDER CALLED");
 
         if (isGpsAllowed == false) {
-            gpsIndexAcc = 0;
-            gpsIndexFlag = flag.READY;
-            networkIndexAcc = 0;
-            networkIndexFlag = flag.READY;
+            mGpsIndexAcc = 0;
+            mGpsIndexFlag = Flag.READY;
+            mNetworkIndexAcc = 0;
+            mNetworkIndexFlag = Flag.READY;
             return NETWORK;
         } else if (!isGpsProductive(isListeningGps, time, lastGpsFix, listenGpsStart)
-                && (networkIndexAcc == 5)) {
-            gpsIndexAcc = 0;
-            gpsIndexFlag = flag.READY;
-            networkIndexAcc = 0;
-            networkIndexFlag = flag.READY;
+                && (mNetworkIndexAcc == 5)) {
+            mGpsIndexAcc = 0;
+            mGpsIndexFlag = Flag.READY;
+            mNetworkIndexAcc = 0;
+            mNetworkIndexFlag = Flag.READY;
             return NETWORK;
         } else if (!isNwProductive(isListeningNw, time, lastNwFix, listenNwStart)
-                && (gpsIndexAcc == 5)) {
-            gpsIndexAcc = 0;
-            gpsIndexFlag = flag.READY;
-            networkIndexAcc = 0;
-            networkIndexFlag = flag.READY;
+                && (mGpsIndexAcc == 5)) {
+            mGpsIndexAcc = 0;
+            mGpsIndexFlag = Flag.READY;
+            mNetworkIndexAcc = 0;
+            mNetworkIndexFlag = Flag.READY;
             return GPS;
         } else {
             if (lastGpsFix != null) {
-                gpsTableAcc[gpsIndexAcc] = lastGpsFix.getAccuracy();
-                gpsIndexAcc++;
-                if (gpsIndexAcc == 5) {
-                    gpsIndexAcc = 0;
-                    gpsIndexFlag = flag.READY;
+                mGpsTableAcc[mGpsIndexAcc] = lastGpsFix.getAccuracy();
+                mGpsIndexAcc++;
+                if (mGpsIndexAcc == 5) {
+                    mGpsIndexAcc = 0;
+                    mGpsIndexFlag = Flag.READY;
                 }
                 float tempSum = 0;
                 for (int i = 0; i < 5; i++)
-                    tempSum = tempSum + gpsTableAcc[i];
-                gpsAvgAcc = tempSum / 5;
+                    tempSum = tempSum + mGpsTableAcc[i];
+                mGpsAvgAcc = tempSum / 5;
             }
             if (lastNwFix != null) {
-                networkTableAcc[networkIndexAcc] = lastNwFix.getAccuracy();
-                networkIndexAcc++;
-                if (networkIndexAcc == 5) {
-                    networkIndexAcc = 0;
-                    networkIndexFlag = flag.READY;
+                mNetworkTableAcc[mNetworkIndexAcc] = lastNwFix.getAccuracy();
+                mNetworkIndexAcc++;
+                if (mNetworkIndexAcc == 5) {
+                    mNetworkIndexAcc = 0;
+                    mNetworkIndexFlag = Flag.READY;
                 }
                 float tempSum = 0;
                 for (int i = 0; i < 5; i++)
-                    tempSum = tempSum + networkTableAcc[i];
-                networkAvgAcc = tempSum / 5;
+                    tempSum = tempSum + mNetworkTableAcc[i];
+                mNetworkAvgAcc = tempSum / 5;
             }
 
-            float gpsPrefDiff = gpsAvgAcc - accuracyPref;
-            float networkPrefDiff = networkAvgAcc - accuracyPref;
+            float gpsPrefDiff = mGpsAvgAcc - mAccuracyPref;
+            float networkPrefDiff = mNetworkAvgAcc - mAccuracyPref;
             // Use abs()
             if ((gpsPrefDiff < 0) && (networkPrefDiff > 0))
                 return GPS;
@@ -159,63 +134,63 @@ public class CtrlExtended extends Controller {
 
     public void checkLightSensor(float value) {
 
-        if (((value - previous_lux) > 10) || ((value - previous_lux) < -10)) {
-            lastlightmode = "changed";
-            lastchangedtime = SNTP.getInstance().getTime();
+        if (((value - mPreviousLux) > 10) || ((value - mPreviousLux) < -10)) {
+            mLastLightMode = "changed";
+            mLastChangedTime = SNTP.getInstance().getTime();
             // scheduleTransmissions();
         } else {
-            if ("changed".equals(lastlightmode)) {
-                double timetowait = SNTP.getInstance().getTime() - lastchangedtime;
+            if ("changed".equals(mLastLightMode)) {
+                double timetowait = SNTP.getInstance().getTime() - mLastChangedTime;
                 if (timetowait > 5 * 60 * 1000) {
-                    lastlightmode = "idle";
+                    mLastLightMode = "idle";
                     // Data-Transmitter to idle?
                     if ("idle".equals(getLastMode())) {
                         // scheduleTransmissions();
                     }
                 } else {
-                    lastlightmode = "changed";
+                    mLastLightMode = "changed";
                 }
 
             } else {
-                lastlightmode = "idle";
+                mLastLightMode = "idle";
                 // Data-Transmitter to idle?
                 if ("idle".equals(getLastMode())) {
                     // scheduleTransmissions();
                 }
             }
         }
-        previous_lux = value;
+        mPreviousLux = value;
 
     }
 
     public void checkNoiseSensor(double dB) {
 
-        if (((dB - previous_dB) > 10) || ((dB - previous_dB) < -10) || (dB > 63)) {
-            lastnoisemode = "loud";
-            lastloudtime = SNTP.getInstance().getTime();
+        if (((dB - mPreviousDecibel) > 10) || ((dB - mPreviousDecibel) < -10) || (dB > 63)) {
+            mLastNoiseMode = "loud";
+            mLastLoudTime = SNTP.getInstance().getTime();
             // scheduleTransmissions();
         } else {
-            if ("loud".equals(lastnoisemode)) {
-                double timetowait = SNTP.getInstance().getTime() - lastloudtime;
+            if ("loud".equals(mLastNoiseMode)) {
+                double timetowait = SNTP.getInstance().getTime() - mLastLoudTime;
                 if (timetowait > 5 * 60 * 1000) {
-                    lastnoisemode = "idle";
+                    mLastNoiseMode = "idle";
                     // Data-Transmitter to idle?
                     if ("idle".equals(getLastMode())) {
                         // scheduleTransmissions();
                     }
                 } else {
-                    lastnoisemode = "loud";
+                    mLastNoiseMode = "loud";
                 }
 
             } else {
-                lastnoisemode = "idle";
+                mLastNoiseMode = "idle";
                 // Data-Transmitter to idle?
                 if ("idle".equals(getLastMode())) {
                     // scheduleTransmissions();
                 }
             }
         }
-        previous_dB = dB;
+        mPreviousDecibel = dB;
 
     }
 
@@ -229,22 +204,22 @@ public class CtrlExtended extends Controller {
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
 
         Log.v(TAG, "Check location sensor settings...");
-        LocationSensor locListener = LocationSensor.getInstance(context);
+        LocationSensor locListener = LocationSensor.getInstance(mContext);
 
-        if (lastlocationmode.equals(NOMODE)) {
+        if (mLastLocationMode.equals(NOMODE)) {
 
             // Log.d(TAG, "NO MODE");
-            bestProvider = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart,
+            mBestProvider = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart,
                     isListeningNw, listenNwStart, lastGpsFix, lastNwFix);
 
-            if (((gpsIndexFlag == flag.NOT_READY) || (networkIndexFlag == flag.NOT_READY))) {
+            if (((mGpsIndexFlag == Flag.NOT_READY) || (mNetworkIndexFlag == Flag.NOT_READY))) {
                 // remain in no mode
             } else {
-                lastlocationmode = IDLE;
-                gpsIndexAcc = 0;
-                networkIndexAcc = 0;
-                gpsIndexFlag = flag.NOT_READY;
-                networkIndexFlag = flag.NOT_READY;
+                mLastLocationMode = IDLE;
+                mGpsIndexAcc = 0;
+                mNetworkIndexAcc = 0;
+                mGpsIndexFlag = Flag.NOT_READY;
+                mNetworkIndexFlag = Flag.NOT_READY;
             }
 
             if (!isListeningNw) {
@@ -256,12 +231,12 @@ public class CtrlExtended extends Controller {
         } else if ((!isAccelerating()) && (!isPositionChanged(0))) {
 
             // Log.d(TAG, "IDLE");
-            lastlocationmode = IDLE;
-            gpsIndexAcc = 0;
-            networkIndexAcc = 0;
-            gpsIndexFlag = flag.NOT_READY;
-            networkIndexFlag = flag.NOT_READY;
-            readyToGo = 0;
+            mLastLocationMode = IDLE;
+            mGpsIndexAcc = 0;
+            mNetworkIndexAcc = 0;
+            mGpsIndexFlag = Flag.NOT_READY;
+            mNetworkIndexFlag = Flag.NOT_READY;
+            mReadyToGo = 0;
             if (isListeningNw) {
                 locListener.setNetworkListening(false);
             }
@@ -278,7 +253,7 @@ public class CtrlExtended extends Controller {
                     && (isPositionChanged(200)
                             || isNwSwitchedOffTooLong(isListeningNw, listenNwStop)
                             || isGpsSwitchedOffTooLong(isListeningNw, listenNwStop)
-                            || (gpsIndexFlag == flag.RECHECK) || (networkIndexFlag == flag.RECHECK))) {
+                            || (mGpsIndexFlag == Flag.RECHECK) || (mNetworkIndexFlag == Flag.RECHECK))) {
                 /*
                  * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
                  */
@@ -288,28 +263,28 @@ public class CtrlExtended extends Controller {
                 if (!isListeningGps) {
                     locListener.setGpsListening(true);
                 }
-                gpsIndexFlag = flag.RECHECK;
-                networkIndexFlag = flag.RECHECK;
+                mGpsIndexFlag = Flag.RECHECK;
+                mNetworkIndexFlag = Flag.RECHECK;
                 String temp = bestProvider(isGpsAllowed, isListeningGps, time, listenGpsStart,
                         isListeningNw, listenNwStart, lastGpsFix, lastNwFix);
                 // Log.d(TAG, "FLAG GPS" + gpsIndexFlag + "FLAG NW" + networkIndexFlag);
-                if ((gpsIndexFlag == flag.READY) || (networkIndexFlag == flag.READY))
-                    readyToGo++;
-                if (readyToGo == 2) {
-                    bestProvider = temp;
-                    gpsIndexAcc = 0;
-                    networkIndexAcc = 0;
-                    gpsIndexFlag = flag.NOT_READY;
-                    networkIndexFlag = flag.NOT_READY;
-                    readyToGo = 0;
+                if ((mGpsIndexFlag == Flag.READY) || (mNetworkIndexFlag == Flag.READY))
+                    mReadyToGo++;
+                if (mReadyToGo == 2) {
+                    mBestProvider = temp;
+                    mGpsIndexAcc = 0;
+                    mNetworkIndexAcc = 0;
+                    mGpsIndexFlag = Flag.NOT_READY;
+                    mNetworkIndexFlag = Flag.NOT_READY;
+                    mReadyToGo = 0;
                 }
             }
-            if (bestProvider.equals(NETWORK)) {
+            if (mBestProvider.equals(NETWORK)) {
                 /*
                  * if (locListener.time != 30 * 1000) { locSampleRate(30 * 1000); }
                  */
                 // Log.d(TAG, "NETWORK MODE");
-                lastlocationmode = NETWORK;
+                mLastLocationMode = NETWORK;
                 if (!isListeningNw) {
                     locListener.setNetworkListening(true);
                 }
@@ -318,17 +293,17 @@ public class CtrlExtended extends Controller {
                         locListener.setGpsListening(true);
                     }
                     // gpsIndexFlag == 2 means that we currently sample for the average gps accuracy
-                    else if (isListeningGps && (gpsIndexFlag != flag.RECHECK)) {
+                    else if (isListeningGps && (mGpsIndexFlag != Flag.RECHECK)) {
                         locListener.setGpsListening(false);
                     }
                 }
 
-            } else if ((bestProvider.equals(GPS) && isGpsProductive(isListeningGps, time,
+            } else if ((mBestProvider.equals(GPS) && isGpsProductive(isListeningGps, time,
                     lastGpsFix, listenGpsStart))
                     || isGpsSwitchedOffTooLong(isListeningGps, listenGpsStop)) {
 
                 // Log.d(TAG, "GPS MODE");
-                lastlocationmode = GPS;
+                mLastLocationMode = GPS;
                 if (!isListeningGps) {
                     locListener.setGpsListening(true);
                 }
@@ -337,7 +312,7 @@ public class CtrlExtended extends Controller {
                 }
                 // networkIndexFlag == 2 means that we currently sample for the average network
                 // accuracy
-                else if (isListeningNw && (networkIndexFlag != flag.RECHECK)) {
+                else if (isListeningNw && (mNetworkIndexFlag != Flag.RECHECK)) {
                     locListener.setNetworkListening(false);
                 }
             }
@@ -350,8 +325,8 @@ public class CtrlExtended extends Controller {
      * @return idle if all of the three sensors are in idle mode
      */
     private String getLastMode() {
-        if (lastlocationmode.equals("idle") && lastlightmode.equals("idle")
-                && lastnoisemode.equals("idle"))
+        if (mLastLocationMode.equals("idle") && mLastLightMode.equals("idle")
+                && mLastNoiseMode.equals("idle"))
             return "idle";
         else
             return "normal";
@@ -369,7 +344,7 @@ public class CtrlExtended extends Controller {
         try {
             // get linear acceleration data
             long timerange = 1000 * 60 * 15; // 15 minutes
-            Uri uri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
+            Uri uri = Uri.parse("content://" + mContext.getString(R.string.local_storage_authority)
                     + DataPoint.CONTENT_URI_PATH);
             String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
                     DataPoint.VALUE };
@@ -378,7 +353,7 @@ public class CtrlExtended extends Controller {
                     + " AND " + DataPoint.TIMESTAMP + ">"
                     + (SNTP.getInstance().getTime() - timerange);
 
-            data = LocalStorage.getInstance(context).query(uri, projection, selection, null, null);
+            data = LocalStorage.getInstance(mContext).query(uri, projection, selection, null, null);
 
             if (null == data || data.getCount() == 0) {
                 // no movement measurements: assume the device is moving
@@ -411,7 +386,7 @@ public class CtrlExtended extends Controller {
 
             if (avgMotion > 1.2) {
                 // device is moving
-                positionFlag = flag.NOT_READY;
+                mPositionFlag = Flag.NOT_READY;
                 moving = true;
             } else {
                 // device is not moving
@@ -449,7 +424,7 @@ public class CtrlExtended extends Controller {
                 // GPS is productive
             }
 
-        } else if (lastlocationmode.equals(NETWORK)) {
+        } else if (mLastLocationMode.equals(NETWORK)) {
             productive = true;
         } else {
             // not enabled
@@ -468,11 +443,13 @@ public class CtrlExtended extends Controller {
         boolean tooLong = false;
         long maxDelay = 1000 * 60 * 60; // 1 hour
 
+        LocationManager locationMgr = (LocationManager) mContext
+                .getSystemService(Context.LOCATION_SERVICE);
         if (SNTP.getInstance().getTime() - listenGpsStop > maxDelay) {
             // GPS has been turned off for a long time, or was never even started
             tooLong = true;
             // Log.d(TAG, "GPS has been turned off for a long time, or was never even started");
-        } else if (!(locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
+        } else if (!(locationMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER))) {
             // the network provider is disabled: GPS is the only option
             tooLong = true;
             // Log.d(TAG, " the network provider is disabled: GPS is the only option");
@@ -502,7 +479,7 @@ public class CtrlExtended extends Controller {
                 // Network is productive
             }
 
-        } else if (lastlocationmode.equals("idle") || lastlocationmode.equals("noavailable")) {
+        } else if (mLastLocationMode.equals("idle") || mLastLocationMode.equals("noavailable")) {
             productive = true;
         } else {
             // not enabled
@@ -521,11 +498,13 @@ public class CtrlExtended extends Controller {
         boolean tooLong = false;
         long maxDelay = 1000 * 60 * 60; // 1 hour
 
+        LocationManager locationMgr = (LocationManager) mContext
+                .getSystemService(Context.LOCATION_SERVICE);
         if (SNTP.getInstance().getTime() - listenNwStop > maxDelay) {
             // Network has been turned off for a long time, or was never even started
             tooLong = true;
             // Log.d(TAG, "Network has been turned off for a long time, or was never even started");
-        } else if (!(locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+        } else if (!(locationMgr.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
             // the GPS provider is disabled: Network is the only option
             tooLong = true;
             // Log.d(TAG, " the gps provider is disabled: NETWORK is the only option");
@@ -541,12 +520,12 @@ public class CtrlExtended extends Controller {
 
         boolean moved = true;
         Cursor data = null;
-        if (positionFlag == flag.NOT_READY && (distanceTraveled == 0)) {
+        if (mPositionFlag == Flag.NOT_READY && (distanceTraveled == 0)) {
             // Log.d(TAG, "1A");
-            startTime = System.currentTimeMillis();
-            positionFlag = flag.READY;
+            mStartTime = System.currentTimeMillis();
+            mPositionFlag = Flag.READY;
             return moved;
-        } else if ((System.currentTimeMillis() - startTime) >= 4 * 60 * 1000
+        } else if ((System.currentTimeMillis() - mStartTime) >= 4 * 60 * 1000
                 || (distanceTraveled != 0)) {
 
             try {
@@ -554,14 +533,14 @@ public class CtrlExtended extends Controller {
                 // get location data from time since the last check
                 long timerange = 1000 * 60 * 15; // 15 minutes
                 Uri uri = Uri.parse("content://"
-                        + context.getString(R.string.local_storage_authority)
+                        + mContext.getString(R.string.local_storage_authority)
                         + DataPoint.CONTENT_URI_PATH);
                 String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
                         DataPoint.VALUE };
                 String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LOCATION + "'"
                         + " AND " + DataPoint.TIMESTAMP + ">"
                         + (SNTP.getInstance().getTime() - timerange);
-                data = LocalStorage.getInstance(context).query(uri, projection, selection, null,
+                data = LocalStorage.getInstance(mContext).query(uri, projection, selection, null,
                         null);
 
                 if (null == data || data.getCount() < 2) {
@@ -623,123 +602,5 @@ public class CtrlExtended extends Controller {
             // Log.d(TAG, "1C");
             return true;
         }
-    }
-
-    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
-        // right now only the accelerometer is used
-        if (sensorType != Sensor.TYPE_ACCELEROMETER)
-            return;
-
-        // Initialize with the first vector for the algorithm in the for loop
-        double[] firstVector = dataBuffer.get(0);
-        double xLast = firstVector[0];
-        double yLast = firstVector[1];
-        double zLast = firstVector[2];
-
-        double totalMotion = 0;
-        for (double[] vector : dataBuffer) {
-            // loop over the array to calculate some magic "totalMotion" value
-            // that indicates the amount of motion during the burst
-            double x = vector[0];
-            double y = vector[1];
-            double z = vector[2];
-
-            double motion = Math.pow(
-                    (Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
-            totalMotion += motion;
-            xLast = x;
-            yLast = y;
-            zLast = z;
-        }
-
-        MotionSensor motionSensor = MotionSensor.getInstance(context);
-        double avgMotion = totalMotion / (dataBuffer.size() - 1);
-
-        // Control logic to choose the sample rate for burst motion sensors
-        if (avgMotion > IDLE_MOTION_THRESHOLD) {
-            firstIdleDetectedTime = 0;
-            if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
-                motionSensor.setSampleRate(DEFAULT_BURST_RATE);
-            }
-        } else {
-            if (firstIdleDetectedTime == 0) {
-                firstIdleDetectedTime = SystemClock.elapsedRealtime();
-            } else {
-                if ((SystemClock.elapsedRealtime() > firstIdleDetectedTime + IDLE_TIME_THRESHOLD)
-                        && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
-                    motionSensor.setSampleRate(IDLE_BURST_RATE);
-                }
-            }
-        }
-        // Log.d(TAG, "AVG " + avgMotion + " INTERVAL " + motionSensor.getSampleRate());
-    }
-
-    /**
-     * If the last general mode is idle, the transmission rate is rescheduled to every half hour.
-     */
-    public void scheduleTransmissions() {
-        Log.v(TAG, "Schedule transmissions");
-
-
-        SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                Context.MODE_PRIVATE);
-        int syncRate = Integer.parseInt(mainPrefs.getString(Main.SYNC_RATE, "0"));
-        int sampleRate = Integer.parseInt(mainPrefs.getString(Main.SAMPLE_RATE, "0"));
-
-        // pick transmission interval
-        long transmissionInterval, taskTransmitterInterval;
-        switch (syncRate) {
-        case 1: // eco-mode
-            transmissionInterval = Intervals.ECO;
-            break;
-        case 0: // 5 minute
-            transmissionInterval = Intervals.NORMAL;
-            break;
-        case -1: // 60 seconds
-            transmissionInterval = Intervals.OFTEN;
-            break;
-        case -2: // real-time: schedule transmission based on sample time
-            switch (sampleRate) {
-            case 1: // rarely
-                transmissionInterval = Intervals.ECO * 3;
-                break;
-            case 0: // normal
-                transmissionInterval = Intervals.NORMAL * 3;
-                break;
-            case -1: // often
-                transmissionInterval = Intervals.OFTEN * 3;
-                break;
-            case -2: // real time
-                transmissionInterval = Intervals.OFTEN;
-                break;
-            default:
-                Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
-                return;
-            }
-            break;
-        default:
-            Log.w(TAG, "Unexpected sync rate value: " + syncRate);
-            return;
-        }
-
-        // pick transmitter task interval
-        switch (sampleRate) {
-        case -2: // real time
-            taskTransmitterInterval = 0;
-            break;
-        case -1: // often
-            taskTransmitterInterval = 10 * 1000;
-            break;
-        case 0: // normal
-            taskTransmitterInterval = 60 * 1000;
-            break;
-        case 1: // rarely (15 minutes)
-            taskTransmitterInterval = 15 * 60 * 1000;
-            break;
-        default:
-            Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
-            return;
-        }
-        transmitter.startTransmissions(transmissionInterval, taskTransmitterInterval);
     }
 }
