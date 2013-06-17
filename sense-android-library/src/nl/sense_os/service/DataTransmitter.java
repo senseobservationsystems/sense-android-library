@@ -5,7 +5,7 @@ package nl.sense_os.service;
 
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.scheduler.Scheduler;
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,13 +34,9 @@ import android.util.Log;
  */
 public class DataTransmitter implements Runnable {
 
-    private static Context context;
-    private long transmissionInterval;
-	private static final String TAG = "Sense DataTransmitter";
-    private static long ADAPTIVE_TRANSMISSION_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
-	public static final int REQ_CODE = 0x05E2DDA7A;
-
-    private static DataTransmitter instance = null;
+    private static final long ADAPTIVE_TX_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
+    private static final String TAG = "DataTransmitter";
+    private static DataTransmitter sInstance;
 
     /**
      * Factory method to get the singleton instance.
@@ -49,11 +45,17 @@ public class DataTransmitter implements Runnable {
      * @return instance
      */
     public static DataTransmitter getInstance(Context context) {
-        if (instance == null) {
-            instance = new DataTransmitter(context);
+        if (sInstance == null) {
+            sInstance = new DataTransmitter(context);
         }
-        return instance;
+        return sInstance;
     }
+
+    private Context mContext;
+    private long mLastTxBytes = 0;
+    private long mLastTxTime = 0;
+    private long mTxInterval;
+    private long mTxBytes;
 
     /**
      * Constructor.
@@ -61,64 +63,64 @@ public class DataTransmitter implements Runnable {
      * @param context
      * @see #getInstance(Context)
      */
+    @TargetApi(Build.VERSION_CODES.FROYO)
     protected DataTransmitter(Context context) {
-        DataTransmitter.context = context;
+        mContext = context;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            mTxBytes = TrafficStats.getMobileTxBytes();
+        }
     }
 
-    @SuppressLint("NewApi")
-    private long transmittedBytes = TrafficStats.getMobileTxBytes();
-    private long lastTransmissionBytes = 0;
-    private long lastTransmissionTime = 0;
-
-    @SuppressLint("NewApi")
+    @TargetApi(Build.VERSION_CODES.FROYO)
     @Override
     public void run() {
 
-		// check if the service is (supposed to be) alive before scheduling next alarm
-		if (true == ServiceStateHelper.getInstance(context).isLoggedIn()) {
+        // check if the service is (supposed to be) alive before scheduling next alarm
+        if (true == ServiceStateHelper.getInstance(mContext).isLoggedIn()) {
             // check if transmission should be started
-            ConnectivityManager connManager = (ConnectivityManager) context
+            ConnectivityManager connManager = (ConnectivityManager) mContext
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
             // start the transmission if we have WiFi connection
-            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) || mWifi.isConnected()) {
-                if ((SystemClock.elapsedRealtime() - lastTransmissionTime >= transmissionInterval)) {
+            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) || wifi.isConnected()) {
+                if ((SystemClock.elapsedRealtime() - mLastTxTime >= mTxInterval)) {
                     transmissionService();
                 }
             } else {
                 // if there is no WiFi connection, postpone the transmission
-                lastTransmissionBytes = TrafficStats.getMobileTxBytes() - transmittedBytes;
-                transmittedBytes = TrafficStats.getMobileTxBytes();
-                if ((SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL)) {
+                mLastTxBytes = TrafficStats.getMobileTxBytes() - mTxBytes;
+                mTxBytes = TrafficStats.getMobileTxBytes();
+                if ((SystemClock.elapsedRealtime() - mLastTxTime >= ADAPTIVE_TX_INTERVAL)) {
                     transmissionService();
                 }
-                // If any transmission took place recently, transmit the sensor data
-                else if ((lastTransmissionBytes >= 500)
-                        && (SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL
-                                - (long) (ADAPTIVE_TRANSMISSION_INTERVAL * 0.2))) {
+                // if any transmission took place recently, use the tail to transmit the sensor data
+                else if ((mLastTxBytes >= 500)
+                        && (SystemClock.elapsedRealtime() - mLastTxTime >= ADAPTIVE_TX_INTERVAL
+                                - (long) (ADAPTIVE_TX_INTERVAL * 0.2))) {
                     transmissionService();
                 } else {
                     // do nothing
                 }
             }
 
-		} else {
-			// skip transmission: Sense service is not logged in
-		}
-	}
+        } else {
+            // skip transmission: Sense service is not logged in
+        }
+    }
 
     /**
      * Starts the periodic transmission of sensor data.
      * 
-     * @param context
+     * @param mContext
      *            Context to access Scheduler
      */
     public void startTransmissions(long transmissionInterval, long taskTransmitterInterval) {
 
         // schedule transmissions
-        this.transmissionInterval = transmissionInterval;
-        Scheduler.getInstance(context).register(this, taskTransmitterInterval,
+        mTxInterval = transmissionInterval;
+        Scheduler.getInstance(mContext).register(this, taskTransmitterInterval,
                 (long) (taskTransmitterInterval * 0.2));
     }
 
@@ -127,17 +129,17 @@ public class DataTransmitter implements Runnable {
      */
     public void stopTransmissions() {
         // stop transmissions
-        Scheduler.getInstance(context).unregister(this);
-	}
+        Scheduler.getInstance(mContext).unregister(this);
+    }
 
     /**
      * Initiates the data transmission.
      */
     public void transmissionService() {
         Log.v(TAG, "Start transmission");
-        Intent task = new Intent(context.getString(R.string.action_sense_send_data));
-        lastTransmissionTime = SystemClock.elapsedRealtime();
-        ComponentName service = context.startService(task);
+        Intent task = new Intent(mContext.getString(R.string.action_sense_send_data));
+        mLastTxTime = SystemClock.elapsedRealtime();
+        ComponentName service = mContext.startService(task);
         if (null == service) {
             Log.w(TAG, "Failed to start data sync service");
         }
