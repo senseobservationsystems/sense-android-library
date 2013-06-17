@@ -3,7 +3,6 @@ package nl.sense_os.service.scheduler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 /**
  * This class is responsible for executing the batched tasks in case the CPU is awake within the
@@ -17,7 +16,6 @@ public class CpuAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v(TAG, "CPU on, opportunity to execute!");
 
         if (sumTask != null) {
             sumTask.run();
