@@ -108,7 +108,7 @@ public class ScheduleAlarmTool {
             		// schedule the next execution in ¨interval¨ milliseconds from now
                     task.nextExecution = now + task.interval;
             	} else {
-                    task.nextExecution = foundTask.nextExecution/* + (tasks.size() * 6000) */;
+                    task.nextExecution = foundTask.nextExecution;
             		while (task.nextExecution - task.interval > now) {
                         task.nextExecution -= task.interval;
                     }
@@ -138,13 +138,13 @@ public class ScheduleAlarmTool {
     	return gcd(q, p % q);
     }
 
+    static long cpuWakeups = 0;
+
     /**
      * Schedules the next task to execute.
      */
     @SuppressLint("NewApi")
     public void schedule() {
-        Log.v(TAG, "Schedule next execution of sample tasks");
-
         if (tasks.isEmpty()) {
             // nothing to schedule
             nextExecution = 0;
@@ -216,7 +216,7 @@ public class ScheduleAlarmTool {
         mgrCpu = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         // set the alarm for deterministic execution
         mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextExecution, operation);
-                
+
         // set the alarm for opportunistic execution
         mgrCpu.set(AlarmManager.ELAPSED_REALTIME, (nextExecution - backwardsFlexibility),
                 operationCpu);

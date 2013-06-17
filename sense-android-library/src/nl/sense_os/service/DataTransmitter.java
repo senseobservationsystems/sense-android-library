@@ -67,14 +67,12 @@ public class DataTransmitter implements Runnable {
 
     @SuppressLint("NewApi")
     private long transmittedBytes = TrafficStats.getMobileTxBytes();
-    private static long lastTransmissionBytes = 0;
-    private static long lastTransmissionTime = 0;
+    private long lastTransmissionBytes = 0;
+    private long lastTransmissionTime = 0;
 
     @SuppressLint("NewApi")
     @Override
     public void run() {
-
-        // Log.v(TAG, "Bytes transmitted from Wifi:" + TrafficStats.getTotalTxBytes());
 
 		// check if the service is (supposed to be) alive before scheduling next alarm
 		if (true == ServiceStateHelper.getInstance(context).isLoggedIn()) {
@@ -99,7 +97,6 @@ public class DataTransmitter implements Runnable {
                 else if ((lastTransmissionBytes >= 500)
                         && (SystemClock.elapsedRealtime() - lastTransmissionTime >= ADAPTIVE_TRANSMISSION_INTERVAL
                                 - (long) (ADAPTIVE_TRANSMISSION_INTERVAL * 0.2))) {
-                    Log.i(TAG, "flexibility matters");
                     transmissionService();
                 } else {
                     // do nothing
