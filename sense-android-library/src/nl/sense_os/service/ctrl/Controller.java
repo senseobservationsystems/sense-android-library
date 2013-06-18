@@ -31,7 +31,6 @@ public abstract class Controller {
     private static final long IDLE_BURST_RATE = 12 * 1000;
     private static final double IDLE_MOTION_THRESHOLD = 0.09;
     private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
-    private long mFirstIdleDetectedTime = 0;
     private static final String TAG = "Controller";
     private static Controller sInstance;
 
@@ -50,6 +49,7 @@ public abstract class Controller {
     }
 
     private Context mContext;
+    private long mFirstIdleDetectedTime = 0;
 
     protected Controller(Context context) {
         mContext = context;
@@ -105,7 +105,68 @@ public abstract class Controller {
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
     }
 
+    /**
+     * Checks to see if burst is completed and resets the motion sample rate in case of idle mode
+     * 
+     * @param json
+     *            The data point.
+     * @param dataBuffer
+     *            Buffer that contains the data points captured during the burst.
+     * @param sensorType
+     *            The type of motion sensor.
+     * @param localBufferTime
+     *            Burst duration.
+     * 
+     * @see #alarmReceiver
+     */
+    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
+        // right now only the accelerometer is used
+        if (sensorType != Sensor.TYPE_ACCELEROMETER) {
+            return;
+        }
 
+        // Initialize with the first vector for the algorithm in the for loop
+        double[] firstVector = dataBuffer.get(0);
+        double xLast = firstVector[0];
+        double yLast = firstVector[1];
+        double zLast = firstVector[2];
+
+        double totalMotion = 0;
+        for (double[] vector : dataBuffer) {
+            // loop over the array to calculate some magic "totalMotion" value that indicates the
+            // amount of motion during the burst
+            double x = vector[0];
+            double y = vector[1];
+            double z = vector[2];
+
+            double motion = Math.pow(
+                    (Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
+            totalMotion += motion;
+            xLast = x;
+            yLast = y;
+            zLast = z;
+        }
+
+        MotionSensor motionSensor = MotionSensor.getInstance(mContext);
+        double avgMotion = totalMotion / (dataBuffer.size() - 1);
+
+        // Control logic to choose the sample rate for burst motion sensors
+        if (avgMotion > IDLE_MOTION_THRESHOLD) {
+            mFirstIdleDetectedTime = 0;
+            if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
+                motionSensor.setSampleRate(DEFAULT_BURST_RATE);
+            }
+        } else {
+            if (mFirstIdleDetectedTime == 0) {
+                mFirstIdleDetectedTime = SystemClock.elapsedRealtime();
+            } else {
+                if ((SystemClock.elapsedRealtime() > mFirstIdleDetectedTime + IDLE_TIME_THRESHOLD)
+                        && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
+                    motionSensor.setSampleRate(IDLE_BURST_RATE);
+                }
+            }
+        }
+    }
 
     /**
      * Starts periodic transmission of the buffered sensor data.
@@ -176,68 +237,5 @@ public abstract class Controller {
 
         DataTransmitter transmitter = DataTransmitter.getInstance(mContext);
         transmitter.startTransmissions(txInterval, txTaskInterval);
-    }
-
-    /**
-     * Checks to see if burst is completed and resets the motion sample rate in case of idle mode
-     * 
-     * @param json
-     *            The data point.
-     * @param dataBuffer
-     *            Buffer that contains the data points captured during the burst.
-     * @param sensorType
-     *            The type of motion sensor.
-     * @param localBufferTime
-     *            Burst duration.
-     * 
-     * @see #alarmReceiver
-     */
-    public void onMotionBurst(List<double[]> dataBuffer, int sensorType) {
-        // right now only the accelerometer is used
-        if (sensorType != Sensor.TYPE_ACCELEROMETER) {
-            return;
-        }
-
-        // Initialize with the first vector for the algorithm in the for loop
-        double[] firstVector = dataBuffer.get(0);
-        double xLast = firstVector[0];
-        double yLast = firstVector[1];
-        double zLast = firstVector[2];
-
-        double totalMotion = 0;
-        for (double[] vector : dataBuffer) {
-            // loop over the array to calculate some magic "totalMotion" value that indicates the
-            // amount of motion during the burst
-            double x = vector[0];
-            double y = vector[1];
-            double z = vector[2];
-
-            double motion = Math.pow(
-                    (Math.abs(x - xLast) + Math.abs(y - yLast) + Math.abs(z - zLast)), 2);
-            totalMotion += motion;
-            xLast = x;
-            yLast = y;
-            zLast = z;
-        }
-
-        MotionSensor motionSensor = MotionSensor.getInstance(mContext);
-        double avgMotion = totalMotion / (dataBuffer.size() - 1);
-
-        // Control logic to choose the sample rate for burst motion sensors
-        if (avgMotion > IDLE_MOTION_THRESHOLD) {
-            mFirstIdleDetectedTime = 0;
-            if (motionSensor.getSampleRate() != DEFAULT_BURST_RATE) {
-                motionSensor.setSampleRate(DEFAULT_BURST_RATE);
-            }
-        } else {
-            if (mFirstIdleDetectedTime == 0) {
-                mFirstIdleDetectedTime = SystemClock.elapsedRealtime();
-            } else {
-                if ((SystemClock.elapsedRealtime() > mFirstIdleDetectedTime + IDLE_TIME_THRESHOLD)
-                        && (motionSensor.getSampleRate() == DEFAULT_BURST_RATE)) {
-                    motionSensor.setSampleRate(IDLE_BURST_RATE);
-                }
-            }
-        }
     }
 }

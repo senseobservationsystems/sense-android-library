@@ -214,11 +214,6 @@
                 <action android:name="nl.sense_os.demo.NEW_REQUIREMENTS" />
             </intent-filter>
         </receiver>
-        <!-- BROADCAST RECEIVER THAT LISTENS FOR CPU WAKEUP EVENTS -->
-        <receiver
-            android:name="nl.sense_os.service.scheduler.CpuAlarmReceiver"
-            android:exported="false" >
-        </receiver>
 
         <!-- CONTENT PROVIDER THAT GIVES OTHER APPS ACCESS TO THE SENSOR DATA -->
         <!-- MAKE SURE YOU USE A UNIQUE AUTHORITY FOR YOUR OWN APP (SEE res/strings.xml) -->

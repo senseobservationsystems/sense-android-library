@@ -22,7 +22,7 @@ public class Scheduler {
     }
 
     private static final String TAG = "Scheduler";
-    private static Scheduler instance = null;
+    private static Scheduler sInstance;
 
     /**
      * Factory method to get the singleton instance.
@@ -31,14 +31,14 @@ public class Scheduler {
      * @return instance
      */
     public static Scheduler getInstance(Context context) {
-        if (instance == null) {
-            instance = new Scheduler(context);
+        if (sInstance == null) {
+            sInstance = new Scheduler(context);
         }
-        return instance;
+        return sInstance;
     }
 
-    private final Context context;
-    private CopyOnWriteArrayList<Task> tasksList = new CopyOnWriteArrayList<Task>();
+    private final Context mContext;
+    private CopyOnWriteArrayList<Task> mTasks = new CopyOnWriteArrayList<Task>();
 
     /**
      * Constructor.
@@ -46,7 +46,7 @@ public class Scheduler {
      * @param context
      */
     protected Scheduler(Context context) {
-        this.context = context;
+        mContext = context;
     }
 
     /**
@@ -62,7 +62,7 @@ public class Scheduler {
     public synchronized void register(Runnable command, long sensorInterval, long sensorFlexibility) {
         Log.v(TAG, "Register new sample task at " + sensorInterval + "ms interval");
 
-        ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(context);
+        ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(mContext);
 
         // prepare task object
         Task newTask = new Task();
@@ -72,20 +72,22 @@ public class Scheduler {
 
         // add the task to the list of tasks
         int index = -1;
-        for (Task task : tasksList) {
+        for (Task task : mTasks) {
             if (task.runnable.equals(newTask.runnable)) {
-                index = tasksList.indexOf(task);
+                index = mTasks.indexOf(task);
             }
         }
         if (index != -1) {
-            // replace existing task
-            tasksList.set(index, newTask);
-        } else {
-            tasksList.add(newTask);
+            // remove existing task (probably interval changed)
+            mTasks.remove(index);
         }
+        // add new task to the end of the list
+        mTasks.add(newTask);
 
-        scheduleTool.setTasks(tasksList);
+        scheduleTool.setTasks(mTasks);
         scheduleTool.resetNextExecution();
+        scheduleTool.cancelDeterministicAlarm();
+        scheduleTool.cancelOpportunisticAlarm();
         scheduleTool.schedule();
     }
 
@@ -97,22 +99,28 @@ public class Scheduler {
     public synchronized void unregister(Runnable command) {
         Log.v(TAG, "Unregister sample task");
 
-        for (Task task : tasksList) {
+        for (Task task : mTasks) {
             if (task.runnable.equals(command)) {
-                tasksList.remove(task);
+                mTasks.remove(task);
             }
         }
 
-        ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(context);
-        scheduleTool.setTasks(tasksList);
-        if (!tasksList.isEmpty()) {
-            // nothing to do: there are still other tasks
+        // stop scheduling alarms
+        ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(mContext);
+        scheduleTool.cancelDeterministicAlarm();
+        scheduleTool.cancelOpportunisticAlarm();
+
+        // update reschedule alarms
+        scheduleTool.setTasks(mTasks);
+        if (!mTasks.isEmpty()) {
+            // reschedule! there are still other tasks
             scheduleTool.resetNextExecution();
+            scheduleTool.cancelDeterministicAlarm();
+            scheduleTool.cancelOpportunisticAlarm();
             scheduleTool.schedule();
 
         } else {
-            // stop scheduling alarms
-            scheduleTool.cancel(context);
+            // nothing to do
         }
     }
 }
