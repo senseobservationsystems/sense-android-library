@@ -92,8 +92,9 @@ public class MotionEnergySensor extends BaseDataProducer implements DataProcesso
         SensorEvent event = dataPoint.getSensorEventValue();
 
         // check if this is a useful data point
+        boolean isEnergySample = false;
         Sensor sensor = event.sensor;
-        boolean isEnergySample = !hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == sensor.getType()
+        isEnergySample = !hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == sensor.getType()
                 || hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == sensor.getType();
         if (!isEnergySample) {
             return;

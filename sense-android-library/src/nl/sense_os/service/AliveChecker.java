@@ -23,20 +23,20 @@ import android.util.Log;
  */
 public class AliveChecker extends BroadcastReceiver {
 
-    private static final String TAG = "Sense AliveChecker";
-    private static final int REQ_CODE = 0x0C471FE1;
+    private static final String TAG = "AliveChecker";
+    private static final int REQ_CODE_NORMAL = 0x0C471FE1;
     private static final int REQ_CODE_WAKEUP = 0x0C471FE2;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Log.v(TAG, "Received broadcast");
+        Log.v(TAG, "Received broadcast");
 
-        /* check if the Sense service should be alive */
+        // check if the Sense service should be alive
         SharedPreferences statusPrefs = context.getSharedPreferences(SensePrefs.STATUS_PREFS,
                 Context.MODE_PRIVATE);
         boolean alive = statusPrefs.getBoolean(Status.MAIN, false);
 
-        /* if it should be alive, check if it really is still alive */
+        // if it should be alive, check if it really is still alive
         if (true == alive) {
             Log.v(TAG, "Sense should be alive: poke it");
             final Intent serviceIntent = new Intent(
@@ -45,7 +45,7 @@ public class AliveChecker extends BroadcastReceiver {
                 Log.w(TAG, "Could not start Sense service!");
             }
         } else {
-            // Log.v(TAG, "Sense service should NOT be alive: doing nothing");
+            // Sense service should NOT be alive: do nothing
         }
     }
 
@@ -61,7 +61,8 @@ public class AliveChecker extends BroadcastReceiver {
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         // try to check pretty often when the phone is awake
-        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent, 0);
+
+        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE_NORMAL, intent, 0);
         long interval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
         long triggerAt = SystemClock.elapsedRealtime() + interval;
         mgr.cancel(operation);
@@ -85,7 +86,7 @@ public class AliveChecker extends BroadcastReceiver {
     public static void stopChecks(Context context) {
         Intent intent = new Intent(context.getString(R.string.action_sense_alive_check_alarm));
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.cancel(PendingIntent.getBroadcast(context, REQ_CODE, intent, 0));
+        mgr.cancel(PendingIntent.getBroadcast(context, REQ_CODE_NORMAL, intent, 0));
         mgr.cancel(PendingIntent.getBroadcast(context, REQ_CODE_WAKEUP, intent, 0));
     }
 }
