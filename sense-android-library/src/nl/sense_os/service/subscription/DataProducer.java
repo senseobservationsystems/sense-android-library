@@ -1,6 +1,5 @@
 package nl.sense_os.service.subscription;
 
-
 /**
  * Interface for sensor data producing components that support subscriptions. Implementing classes
  * should provide the ability to have subscribers for the produced data.
@@ -11,13 +10,12 @@ package nl.sense_os.service.subscription;
 public interface DataProducer {
 
     /**
-     * Adds a DataProcessor as sensor data subscriber for this SenseSensor. If an instance of the
-     * DataProcessor is already subscribed then it should be ignored.
+     * Adds a data consumer as subscriber for data from this producer. If an instance of the
+     * DataConsumer is already subscribed, then it should be ignored.
      * 
      * @param subscriber
-     *            The DataProcessor that wants the sensor data as input
-     * @return True if the DataProcessor could subscribe to the service, false if the DataProcessor
-     *         was already subscribed
+     *            The DataConsumer that wants the sensor data as input
+     * @return <code>true</code> if the DataConsumer was successfully subscribed.
      */
     public abstract boolean addSubscriber(DataConsumer subscriber);
 
@@ -25,12 +23,12 @@ public interface DataProducer {
      * Checks if a DataProcessor has been added as a subscriber.
      * 
      * @param subscriber
-     * @return True if the DataProcessor is listed as a subscriber
+     * @return <code>true</code> if the DataConsumer is listed as a subscriber
      */
     public abstract boolean hasSubscriber(DataConsumer subscriber);
 
     /**
-     * @return True if there are subscribers
+     * @return <code>true</code> if there are subscribers
      */
     public abstract boolean hasSubscribers();
 
@@ -38,8 +36,9 @@ public interface DataProducer {
      * Removes a data subscriber if present.
      * 
      * @param subscriber
-     *            The DataProcessor needs to be unsubscribed
+     *            The DataConsumer that should be unsubscribed
+     * @return <code>true</code> if the subscriber was removed
      */
-    public abstract void removeSubscriber(DataConsumer subscriber);
+    public abstract boolean removeSubscriber(DataConsumer subscriber);
 
 }

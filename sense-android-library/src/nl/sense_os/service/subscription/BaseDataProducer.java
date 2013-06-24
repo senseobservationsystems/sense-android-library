@@ -8,15 +8,14 @@ import nl.sense_os.service.shared.SensorDataPoint;
 /**
  * <p>
  * Base implementation for the DataProducer interface. This class gives the ability to have
- * DataProcessors subscribed for the produced data.
+ * {@link DataConsumer} objects subscribed for the produced data.
  * </p>
  * <p>
- * Subscribers are notified when there are new samples via the DataProcessor method
- * {@link DataConsumer#startNewSample()}
+ * Subscribers are notified when there are new samples via {@link DataConsumer#startNewSample()}.
  * </p>
  * <p>
- * Via the DataProcessor method isSampleComplete() the status of the data processors is checked. If
- * all subscribers return true on this function, then the DataProducer will wait until a new sample
+ * Via the {@link DataConsumer#isSampleComplete()}, the status of the data consumers is checked. If
+ * all subscribers return true on this function, then the data producer will wait until a new sample
  * interval starts.
  * </p>
  * <p>
@@ -31,8 +30,16 @@ public abstract class BaseDataProducer implements DataProducer {
     /** The DataProcessors which are subscribed to this sensor for sensor data */
     protected List<DataConsumer> mSubscribers = new ArrayList<DataConsumer>();
 
+    /**
+     * Adds a data consumer as subscriber to this data producer. This method is synchronized to
+     * prevent concurrent modifications to the list of subscribers.
+     * 
+     * @param consumer
+     *            The DataProcessor that wants the sensor data as input
+     * @return <code>true</code> if the DataConsumer was successfully subscribed
+     */
     @Override
-    public boolean addSubscriber(DataConsumer consumer) {
+    public synchronized boolean addSubscriber(DataConsumer consumer) {
         if (!hasSubscriber(consumer)) {
             return mSubscribers.add(consumer);
         } else {
@@ -47,7 +54,7 @@ public abstract class BaseDataProducer implements DataProducer {
      * 
      * @return true when all the subscribers have complete samples
      */
-    protected boolean checkSubscribers() {
+    protected synchronized boolean checkSubscribers() {
         boolean complete = true;
         for (DataConsumer subscriber : mSubscribers) {
             if (subscriber != null) {
@@ -58,7 +65,7 @@ public abstract class BaseDataProducer implements DataProducer {
     }
 
     @Override
-    public boolean hasSubscriber(DataConsumer consumer) {
+    public synchronized boolean hasSubscriber(DataConsumer consumer) {
         for (DataConsumer subscriber : mSubscribers) {
             if (subscriber.equals(consumer)) {
                 return true;
@@ -76,7 +83,7 @@ public abstract class BaseDataProducer implements DataProducer {
      * Notifies subscribers that a new sample is starting. This method calls
      * {@link DataConsumer#startNewSample()} on each subscriber.
      */
-    protected void notifySubscribers() {
+    protected synchronized void notifySubscribers() {
         for (DataConsumer subscriber : mSubscribers) {
             if (subscriber != null) {
                 subscriber.startNewSample();
@@ -84,21 +91,29 @@ public abstract class BaseDataProducer implements DataProducer {
         }
     }
 
+    /**
+     * Removes a data subscriber if present. This method is synchronized to prevent concurrent
+     * modifications.
+     * 
+     * @param subscriber
+     *            The DataConsumer that should be unsubscribed
+     */
     @Override
-    public void removeSubscriber(DataConsumer consumer) {
+    public synchronized boolean removeSubscriber(DataConsumer consumer) {
         if (mSubscribers.contains(consumer)) {
-            mSubscribers.remove(consumer);
+            return mSubscribers.remove(consumer);
         }
+        return true;
     }
 
     /**
-     * Sends data to all subscribed DataProcessors.
+     * Sends data to all subscribed data consumers.
      * 
      * @param dataPoint
      *            The SensorDataPoint to send
      */
-    protected void sendToSubscribers(SensorDataPoint dataPoint) {
-        // TODO: do a-sync
+    // TODO: do a-sync
+    protected synchronized void sendToSubscribers(SensorDataPoint dataPoint) {
         for (DataConsumer subscriber : mSubscribers) {
             if (subscriber != null && !subscriber.isSampleComplete()) {
                 subscriber.onNewData(dataPoint);

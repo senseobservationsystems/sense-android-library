@@ -181,7 +181,7 @@ public class SubscriptionManager {
 
         if (isConsumerSubscribed(name, consumer)) {
             // consumer is already subscribed
-            return false;
+            return true;
         }
 
         // add the consumer to the list of subscribed consumers
