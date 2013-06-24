@@ -49,7 +49,7 @@ public class SubscriptionManager {
     /**
      * @param name
      *            The name of the DataProducer
-     * @return A List of DataProducer that are registered under the given sensor name
+     * @return A List of data producers that are registered under the given sensor name
      */
     public List<DataProducer> getRegisteredProducers(String name) {
         return mProducers.get(name);
@@ -58,7 +58,7 @@ public class SubscriptionManager {
     /**
      * @param name
      *            The name of the DataProcessor
-     * @return A List of DataConsumer that are subscribed to the given sensor name
+     * @return A List of data consumers that are subscribed to the given sensor name
      */
     public List<DataConsumer> getSubscribedConsumers(String name) {
         return mConsumers.get(name);
@@ -144,31 +144,32 @@ public class SubscriptionManager {
         }
 
         // add the producer to the list of registered producers
-        List<DataProducer> producers = mProducers.get(name);
+        List<DataProducer> producers = getRegisteredProducers(name);
         if (null == producers) {
             producers = new ArrayList<DataProducer>();
         }
         producers.add(producer);
         mProducers.put(name, producers);
 
-        // see if there are any data processors subscribed to this sensor name
-        if (!mConsumers.containsKey(name)) {
-            return;
-        }
-
-        // subscribe existing DataProcessors to the new DataProducer
-        List<DataConsumer> subscribers = mConsumers.get(name);
-        for (DataConsumer subscriber : subscribers) {
-            producer.addSubscriber(subscriber);
+        // see if there are any data consumers subscribed to this sensor name
+        List<DataConsumer> subscribers = getSubscribedConsumers(name);
+        if (null != subscribers) {
+            // subscribe existing DataProcessors to the new DataProducer
+            for (DataConsumer subscriber : subscribers) {
+                producer.addSubscriber(subscriber);
+            }
         }
     }
 
     /**
-     * Subscribe to a DataProducer<br/>
-     * <br/>
+     * <p>
+     * Subscribes a DataConsumer to a DataProducer
+     * </p>
+     * <p>
      * This method subscribes a DataProcessor to receive SensorDataPoints from a DataProducer. If
      * the DataProducer with name to subscribe to is not registered yet then the data processor will
      * be put in the queue and will be subscribed to the DataProducer when it is registered.
+     * </p>
      * 
      * @param name
      *            The name of the registered DataProducer
@@ -184,25 +185,26 @@ public class SubscriptionManager {
         }
 
         // add the consumer to the list of subscribed consumers
-        List<DataConsumer> processors = mConsumers.get(name);
-        if (null == processors) {
-            processors = new ArrayList<DataConsumer>();
+        List<DataConsumer> consumers = getSubscribedConsumers(name);
+        if (null == consumers) {
+            consumers = new ArrayList<DataConsumer>();
         }
-        processors.add(consumer);
-        mConsumers.put(name, processors);
+        consumers.add(consumer);
+        mConsumers.put(name, consumers);
 
         // see if there are any producers for this sensor name
-        List<DataProducer> producers = mProducers.get(name);
+        List<DataProducer> producers = getRegisteredProducers(name);
         if (producers == null) {
-            return false;
+            // nothing to subscribe to (yet)
+            return true;
+        } else {
+            // subscribe the new processor to the existing producers
+            boolean subscribed = false;
+            for (DataProducer producer : producers) {
+                subscribed |= producer.addSubscriber(consumer);
+            }
+            return subscribed;
         }
-
-        // subscribe the new processor to the existing producers
-        boolean subscribed = false;
-        for (DataProducer producer : producers) {
-            subscribed |= producer.addSubscriber(consumer);
-        }
-        return subscribed;
     }
 
     /**
@@ -224,8 +226,10 @@ public class SubscriptionManager {
         }
 
         // remove the producer from the list of registered producers for this sensor name
-        List<DataProducer> dataProducers = mProducers.get(name);
+        List<DataProducer> dataProducers = getRegisteredProducers(name);
         dataProducers.remove(producer);
+
+        // update the map of registered producers
         if (dataProducers.size() == 0) {
             mProducers.remove(name);
         } else {
@@ -243,30 +247,26 @@ public class SubscriptionManager {
      */
     public synchronized void unsubscribeConsumer(String name, DataConsumer consumer) {
 
-        if (!mProducers.containsKey(name)) {
-            // there are no data producers to unsubscribe from
-            return;
-        }
-
         if (!mConsumers.containsKey(name)) {
-            // this processor is not registered (?)
+            // there are no consumers registered for this name (?)
             return;
         }
 
         // remove the processor from the list of subscribed processors
-        List<DataConsumer> processors = mConsumers.get(name);
-        processors.remove(consumer);
-        if (processors.size() == 0) {
+        List<DataConsumer> consumers = getSubscribedConsumers(name);
+        consumers.remove(consumer);
+
+        // update the map of consumers
+        if (consumers.size() == 0) {
             mConsumers.remove(name);
         } else {
-            mConsumers.put(name, processors);
+            mConsumers.put(name, consumers);
         }
 
-        // unsubscribe the processor from the producers for this sensor name
-        List<DataProducer> producers = mProducers.get(name);
+        // unsubscribe the consumer from the producers for this sensor name
+        List<DataProducer> producers = getRegisteredProducers(name);
         for (DataProducer registeredProducer : producers) {
             registeredProducer.removeSubscriber(consumer);
         }
-        mProducers.remove(name);
     }
 }
