@@ -1,7 +1,7 @@
 package nl.sense_os.service.subscription;
 
-import java.util.Vector;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import nl.sense_os.service.shared.SensorDataPoint;
 
@@ -29,54 +29,47 @@ import nl.sense_os.service.shared.SensorDataPoint;
 public abstract class BaseDataProducer implements DataProducer {
 
     /** The DataProcessors which are subscribed to this sensor for sensor data */
-    protected Vector<AtomicReference<DataConsumer>> subscribers = new Vector<AtomicReference<DataConsumer>>();
+    protected List<DataConsumer> mSubscribers = new ArrayList<DataConsumer>();
 
     @Override
-    public boolean addSubscriber(DataConsumer dataConsumer) {
-        if (!hasSubscriber(dataConsumer)) {
-            AtomicReference<DataConsumer> subscriber = new AtomicReference<DataConsumer>(
-                    dataConsumer);
-            subscribers.add(subscriber);
+    public boolean addSubscriber(DataConsumer consumer) {
+        if (!hasSubscriber(consumer)) {
+            return mSubscribers.add(consumer);
         } else {
             return false;
         }
-        return true;
     }
 
     /**
      * Checks subscribers if the sample is complete. This method uses
-     * {@link DataConsumer#startNewSample()} to see if the sample is completed, or if the data
+     * {@link DataConsumer#isSampleComplete()} to see if the sample is completed, or if the data
      * processors need more data.
      * 
      * @return true when all the subscribers have complete samples
      */
     protected boolean checkSubscribers() {
-        boolean isComplete = true;
-        for (int i = 0; i < subscribers.size(); i++) {
-            DataConsumer dp = subscribers.get(i).get();
-            if (dp != null) {
-                isComplete &= dp.isSampleComplete();
+        boolean complete = true;
+        for (DataConsumer subscriber : mSubscribers) {
+            if (subscriber != null) {
+                complete &= subscriber.isSampleComplete();
             }
         }
-        return isComplete;
+        return complete;
     }
 
     @Override
-    public boolean hasSubscriber(DataConsumer dataConsumer) {
-        AtomicReference<DataConsumer> subscriber = new AtomicReference<DataConsumer>(
-                dataConsumer);
-
-        for (int i = 0; i < subscribers.size(); i++) {
-            AtomicReference<DataConsumer> item = subscribers.elementAt(i);
-            if (item.get() == subscriber.get())
+    public boolean hasSubscriber(DataConsumer consumer) {
+        for (DataConsumer subscriber : mSubscribers) {
+            if (subscriber.equals(consumer)) {
                 return true;
+            }
         }
         return false;
     }
 
     @Override
     public boolean hasSubscribers() {
-        return !subscribers.isEmpty();
+        return !mSubscribers.isEmpty();
     }
 
     /**
@@ -84,28 +77,17 @@ public abstract class BaseDataProducer implements DataProducer {
      * {@link DataConsumer#startNewSample()} on each subscriber.
      */
     protected void notifySubscribers() {
-        for (int i = 0; i < subscribers.size(); i++) {
-            DataConsumer dp = subscribers.get(i).get();
-            if (dp != null) {
-                dp.startNewSample();
+        for (DataConsumer subscriber : mSubscribers) {
+            if (subscriber != null) {
+                subscriber.startNewSample();
             }
         }
     }
 
     @Override
-    public void removeSubscriber(DataConsumer dataConsumer) {
-        AtomicReference<DataConsumer> subscriber = new AtomicReference<DataConsumer>(
-                dataConsumer);
-
-        for (int i = 0; i < subscribers.size(); i++) {
-            AtomicReference<DataConsumer> item = subscribers.elementAt(i);
-            if (item.get() == subscriber.get()) {
-                subscribers.removeElementAt(i);
-                --i;
-            }
-        }
-        if (subscribers.contains(subscriber)) {
-            subscribers.remove(subscriber);
+    public void removeSubscriber(DataConsumer consumer) {
+        if (mSubscribers.contains(consumer)) {
+            mSubscribers.remove(consumer);
         }
     }
 
@@ -117,10 +99,9 @@ public abstract class BaseDataProducer implements DataProducer {
      */
     protected void sendToSubscribers(SensorDataPoint dataPoint) {
         // TODO: do a-sync
-        for (int i = 0; i < subscribers.size(); i++) {
-            DataConsumer dp = subscribers.get(i).get();
-            if (dp != null && !dp.isSampleComplete()) {
-                dp.onNewData(dataPoint);
+        for (DataConsumer subscriber : mSubscribers) {
+            if (subscriber != null && !subscriber.isSampleComplete()) {
+                subscriber.onNewData(dataPoint);
             }
         }
     }
