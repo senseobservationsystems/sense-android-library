@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class SubscriptionManager {
 
+    /** Singleton instance */
     private static SubscriptionManager sInstance;
 
     /**
@@ -28,14 +29,10 @@ public class SubscriptionManager {
         return sInstance;
     }
 
-    /**
-     * All subscribed DataConsumers, mapped by the name of the producer they are subscribed to.
-     */
+    /** All DataConsumers, mapped by the name of the producer they are subscribed to. */
     private Map<String, List<DataConsumer>> mConsumers;
 
-    /**
-     * All registered DataProducers, mapped by their name.
-     */
+    /** All registered DataProducers, mapped by their name. */
     private Map<String, List<DataProducer>> mProducers;
 
     /**
@@ -139,7 +136,7 @@ public class SubscriptionManager {
      * @param producer
      *            The data producer
      */
-    public void registerProducer(String name, DataProducer producer) {
+    public synchronized void registerProducer(String name, DataProducer producer) {
 
         if (isProducerRegistered(name, producer)) {
             // data producer is already registered
@@ -179,7 +176,7 @@ public class SubscriptionManager {
      *            The DataConsumer that receives the sensor data
      * @return true if the DataConsumer successfully subscribed to the DataProducer.
      */
-    public boolean subscribeConsumer(String name, DataConsumer consumer) {
+    public synchronized boolean subscribeConsumer(String name, DataConsumer consumer) {
 
         if (isConsumerSubscribed(name, consumer)) {
             // consumer is already subscribed
@@ -219,7 +216,7 @@ public class SubscriptionManager {
      * @param producer
      *            The DataProducer to unregister
      */
-    public void unregisterProducer(String name, DataProducer producer) {
+    public synchronized void unregisterProducer(String name, DataProducer producer) {
 
         if (!mProducers.containsKey(name)) {
             // this producer is not registered under this name
@@ -244,7 +241,7 @@ public class SubscriptionManager {
      * @param consumer
      *            The DataConsumer that receives the sensor data
      */
-    public void unsubscribeConsumer(String name, DataConsumer consumer) {
+    public synchronized void unsubscribeConsumer(String name, DataConsumer consumer) {
 
         if (!mProducers.containsKey(name)) {
             // there are no data producers to unsubscribe from
