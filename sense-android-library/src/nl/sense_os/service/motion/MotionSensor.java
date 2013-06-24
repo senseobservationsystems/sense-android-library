@@ -6,16 +6,16 @@ package nl.sense_os.service.motion;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.sense_os.service.SenseService;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.states.EpiStateMonitor;
+import nl.sense_os.service.subscription.BaseSensor;
+import nl.sense_os.service.subscription.SubscriptionManager;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -128,6 +128,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     private MotionBurstSensor accelerometerBurstSensor;
     private MotionBurstSensor gyroBurstSensor;
     private MotionBurstSensor linearBurstSensor;
+    private SubscriptionManager mSubscrMgr;
 
     /**
      * Constructor.
@@ -138,6 +139,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     protected MotionSensor(Context context) {
         this.context = context;
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
+        mSubscrMgr = SubscriptionManager.getInstance();
     }
 
     @Override
@@ -189,21 +191,22 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER,
                     SensorNames.ACCELEROMETER_BURST);
             addSubscriber(this.accelerometerBurstSensor);
-            ((SenseService) context).registerProducer(SensorNames.ACCELEROMETER_BURST,
+            mSubscrMgr.registerProducer(SensorNames.ACCELEROMETER_BURST,
                     accelerometerBurstSensor);
         }
         if (mainPrefs.getBoolean(Motion.GYROSCOPE, true)) {
             gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE,
                     SensorNames.GYRO_BURST);
             addSubscriber(this.gyroBurstSensor);
-            ((SenseService) context).registerProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
+            mSubscrMgr.registerProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
         }
         if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION,
+                linearBurstSensor = new MotionBurstSensor(context,
+                        Sensor.TYPE_LINEAR_ACCELERATION,
                         SensorNames.LINEAR_BURST);
                 addSubscriber(this.linearBurstSensor);
-                ((SenseService) context).registerProducer(SensorNames.LINEAR_BURST,
+                mSubscrMgr.registerProducer(SensorNames.LINEAR_BURST,
                         linearBurstSensor);
             }
         }
@@ -230,7 +233,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         this.epi = new EpilepsySensor(context);
         // register the sensor at the sense Service
         // TODO: connect to the service in a different manner
-        ((SenseService) context).registerProducer(SensorNames.ACCELEROMETER_EPI, epi);
+        mSubscrMgr.registerProducer(SensorNames.ACCELEROMETER_EPI, epi);
         addSubscriber(this.epi);
     }
 
@@ -248,8 +251,8 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
         // Example how to subscribe via the service
         // Context should not be used for this
-        ((SenseService) context).subscribeConsumer(SensorNames.MOTION, fall);
-        ((SenseService) context).registerProducer(SensorNames.FALL_DETECTOR, fall);
+        mSubscrMgr.subscribeConsumer(SensorNames.MOTION, fall);
+        mSubscrMgr.registerProducer(SensorNames.FALL_DETECTOR, fall);
 
         fall.sendFallMessage(false);
         firstStart = false;
@@ -261,17 +264,17 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private void initStandardDataProcessors() {
         standard = new StandardMotionSensor(context);
-        ((SenseService) context).registerProducer(SensorNames.ACCELEROMETER, standard);
-        ((SenseService) context).registerProducer(SensorNames.ORIENT, standard);
-        ((SenseService) context).registerProducer(SensorNames.MAGNETIC_FIELD, standard);
-        ((SenseService) context).registerProducer(SensorNames.GYRO, standard);
-        ((SenseService) context).registerProducer(SensorNames.LIN_ACCELERATION, standard);
+        mSubscrMgr.registerProducer(SensorNames.ACCELEROMETER, standard);
+        mSubscrMgr.registerProducer(SensorNames.ORIENT, standard);
+        mSubscrMgr.registerProducer(SensorNames.MAGNETIC_FIELD, standard);
+        mSubscrMgr.registerProducer(SensorNames.GYRO, standard);
+        mSubscrMgr.registerProducer(SensorNames.LIN_ACCELERATION, standard);
         addSubscriber(this.standard);
 
         // optional motion energy data processor
         if (isEnergyMode) {
             energy = new MotionEnergySensor(context);
-            ((SenseService) context).registerProducer(SensorNames.MOTION_ENERGY, energy);
+            mSubscrMgr.registerProducer(SensorNames.MOTION_ENERGY, energy);
             addSubscriber(this.energy);
         }
     }

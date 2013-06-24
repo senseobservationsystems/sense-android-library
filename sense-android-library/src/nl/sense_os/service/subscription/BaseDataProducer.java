@@ -1,7 +1,9 @@
-package nl.sense_os.service.shared;
+package nl.sense_os.service.subscription;
 
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
+
+import nl.sense_os.service.shared.SensorDataPoint;
 
 /**
  * <p>

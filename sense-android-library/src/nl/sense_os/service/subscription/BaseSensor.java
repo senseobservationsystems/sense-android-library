@@ -1,4 +1,6 @@
-package nl.sense_os.service.shared;
+package nl.sense_os.service.subscription;
+
+import nl.sense_os.service.shared.SenseSensor;
 
 /**
  * This is the base class for all the Sense sensors. This class extends the DataProducer interface.

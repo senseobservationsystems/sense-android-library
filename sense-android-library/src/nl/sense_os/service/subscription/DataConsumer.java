@@ -1,4 +1,6 @@
-package nl.sense_os.service.shared;
+package nl.sense_os.service.subscription;
+
+import nl.sense_os.service.shared.SensorDataPoint;
 
 /**
  * Interface for data consumer. These consumers can register directly at a DataProducer, or

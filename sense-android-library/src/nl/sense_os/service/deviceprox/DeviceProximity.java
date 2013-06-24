@@ -5,7 +5,7 @@ package nl.sense_os.service.deviceprox;
 
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.DevProx;
-import nl.sense_os.service.shared.DataProducer;
+import nl.sense_os.service.subscription.DataProducer;
 import android.content.Context;
 import android.content.SharedPreferences;
 

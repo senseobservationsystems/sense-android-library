@@ -1,4 +1,4 @@
-package nl.sense_os.service.shared;
+package nl.sense_os.service.subscription;
 
 
 /**

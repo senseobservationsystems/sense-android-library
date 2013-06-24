@@ -8,9 +8,9 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.BaseDataProducer;
-import nl.sense_os.service.shared.DataConsumer;
 import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.subscription.BaseDataProducer;
+import nl.sense_os.service.subscription.DataConsumer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
