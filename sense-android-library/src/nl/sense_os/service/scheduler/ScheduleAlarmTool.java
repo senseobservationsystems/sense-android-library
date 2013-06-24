@@ -74,7 +74,6 @@ public class ScheduleAlarmTool {
      *            Context to access AlarmManager
      */
     public void cancelDeterministicAlarm() {
-        Log.v(TAG, "Cancel deterministic alarm");
 
         // re-create the operation that would go off
         Intent intent = new Intent(mContext, ExecutionAlarmReceiver.class);
@@ -89,7 +88,6 @@ public class ScheduleAlarmTool {
     }
 
     public void cancelOpportunisticAlarm() {
-        Log.v(TAG, "Cancel opportunistic alarm");
 
         // re-create the operation that would go off
         Intent intent = new Intent(mContext, ExecutionAlarmReceiver.class);
@@ -217,7 +215,6 @@ public class ScheduleAlarmTool {
      * 
      */
     public void schedule() {
-        Log.v(TAG, "Schedule next execution");
 
         // check if there is anything to schedule
         if (mTasks.isEmpty()) {

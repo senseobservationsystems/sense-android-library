@@ -27,11 +27,9 @@ public class ExecutionAlarmReceiver extends BroadcastReceiver {
         switch (type) {
         case DETERMINISTIC_TYPE:
             // do nothing but wake up
-            Log.d(TAG, "deterministic type: do nothing but wake up");
             break;
 
         case OPPORTUNISTIC_TYPE:
-            Log.d(TAG, "opportunistic type: execute the batch");
 
             // run the batch of tasks
             if (sBatchTask != null) {
