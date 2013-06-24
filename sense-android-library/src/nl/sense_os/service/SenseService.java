@@ -39,7 +39,7 @@ import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.scheduler.ScheduleAlarmTool;
-import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.DataConsumer;
 import nl.sense_os.service.shared.DataProducer;
 
 import org.json.JSONObject;
@@ -127,13 +127,13 @@ public class SenseService extends Service {
     private DataTransmitter transmitter;
 
     /**
-     * All registered DataProducers, mapped by sensor name.
+     * All registered DataProducers, mapped by their name.
      */
-    private Map<String, List<DataProducer>> registeredProducers = new HashMap<String, List<DataProducer>>();
+    private Map<String, List<DataProducer>> mProducers = new HashMap<String, List<DataProducer>>();
     /**
-     * All subscribed DataProcessors, mapped by the sensor name they are subscribed to.
+     * All subscribed DataConsumers, mapped by the name of the producer they are subscribed to.
      */
-    private Map<String, List<DataProcessor>> subscribedProcessors = new HashMap<String, List<DataProcessor>>();
+    private Map<String, List<DataConsumer>> mConsumers = new HashMap<String, List<DataConsumer>>();
     /**
      * Handler on main application thread to display toasts to the user.
      */
@@ -203,41 +203,41 @@ public class SenseService extends Service {
     }
 
     /**
-     * @param sensorName
+     * @param name
      *            The name of the DataProducer
-     * @return The list with DataProducers which are registered under the given sensor name
+     * @return The list with DataProducer which are registered under the given sensor name
      */
-    public List<DataProducer> getRegisteredDataProducers(String sensorName) {
-        return registeredProducers.get(sensorName);
+    public List<DataProducer> getRegisteredProducers(String name) {
+        return mProducers.get(name);
     }
 
     /**
-     * @param sensorName
+     * @param name
      *            The name of the DataProcessor
-     * @return The list with DataProcessors which are subscribed to the given sensor name
+     * @return The list with DataConsumer which are subscribed to the given sensor name
      */
-    public List<DataProcessor> getSubscribedDataProcessors(String sensorName) {
-        return subscribedProcessors.get(sensorName);
+    public List<DataConsumer> getSubscribedConsumers(String name) {
+        return mConsumers.get(name);
     }
 
     /**
-     * @param sensorName
+     * @param name
      *            The name of the DataProducer (SenseSensor/DataProcessor)
      * @param sensor
      *            The AtomicReference of the DataProducer object
      * @return true if this DataProducer is already registered under this sensor name
      */
-    public boolean isDataProcessorSubscribed(String sensorName, DataProcessor dataProcessor) {
+    public boolean isConsumerSubscribed(String name, DataConsumer consumer) {
 
-        if (!subscribedProcessors.containsKey(sensorName)) {
+        if (!mConsumers.containsKey(name)) {
             // nothing is subscribed to this sensor name
             return false;
         }
 
         // check if dataProcessor is in the list of subscribed processors
-        List<DataProcessor> processors = subscribedProcessors.get(sensorName);
-        for (DataProcessor registeredProcessor : processors) {
-            if (registeredProcessor.equals(dataProcessor)) {
+        List<DataConsumer> processors = mConsumers.get(name);
+        for (DataConsumer registeredProcessor : processors) {
+            if (registeredProcessor.equals(consumer)) {
                 return true;
             }
         }
@@ -245,12 +245,12 @@ public class SenseService extends Service {
     }
 
     /**
-     * @param sensorName
+     * @param name
      *            The name of the DataProducer
      * @return true if a data producer is already registered under this sensor name
      */
-    public boolean isDataProducerRegistered(String sensorName) {
-        return registeredProducers.containsKey(sensorName);
+    public boolean isProducerRegistered(String name) {
+        return mProducers.containsKey(name);
     }
 
     /**
@@ -260,17 +260,17 @@ public class SenseService extends Service {
      *            The AtomicReference of the DataProducer object
      * @return true if the data producer is already registered under this sensor name
      */
-    public boolean isDataProducerRegistered(String sensorName, DataProducer dataProducer) {
+    public boolean isProducerRegistered(String sensorName, DataProducer producer) {
 
-        if (!registeredProducers.containsKey(sensorName)) {
+        if (!mProducers.containsKey(sensorName)) {
             // nothing is registered under this sensor name
             return false;
         }
 
         // check if dataProducer is already in the list of registered producers
-        List<DataProducer> producers = registeredProducers.get(sensorName);
+        List<DataProducer> producers = mProducers.get(sensorName);
         for (DataProducer registeredProducer : producers) {
-            if (registeredProducer.equals(dataProducer)) {
+            if (registeredProducer.equals(producer)) {
                 return true;
             }
         }
@@ -600,7 +600,7 @@ public class SenseService extends Service {
      * Registers a DataProducer with the given name at the SenseService.
      * </p>
      * <p>
-     * When a data producer is registered, data processors can subscribe to its sensor data.
+     * When a data producer is registered, data consumers can subscribe to its sensor data.
      * Registering a data producer with an existing name will add the new data producer only if this
      * data producer is a different instance from the other data producer.
      * </p>
@@ -610,29 +610,29 @@ public class SenseService extends Service {
      * @param producer
      *            The data producer
      */
-    public void registerDataProducer(String name, DataProducer producer) {
+    public void registerProducer(String name, DataProducer producer) {
 
-        if (isDataProducerRegistered(name, producer)) {
+        if (isProducerRegistered(name, producer)) {
             // data producer is already registered
             return;
         }
 
         // add the producer to the list of registered producers
-        List<DataProducer> producers = registeredProducers.get(name);
+        List<DataProducer> producers = mProducers.get(name);
         if (null == producers) {
             producers = new ArrayList<DataProducer>();
         }
         producers.add(producer);
-        registeredProducers.put(name, producers);
+        mProducers.put(name, producers);
 
         // see if there are any data processors subscribed to this sensor name
-        if (!subscribedProcessors.containsKey(name)) {
+        if (!mConsumers.containsKey(name)) {
             return;
         }
 
         // subscribe existing DataProcessors to the new DataProducer
-        List<DataProcessor> subscribers = subscribedProcessors.get(name);
-        for (DataProcessor subscriber : subscribers) {
+        List<DataConsumer> subscribers = mConsumers.get(name);
+        for (DataConsumer subscriber : subscribers) {
             producer.addSubscriber(subscriber);
         }
     }
@@ -717,27 +717,27 @@ public class SenseService extends Service {
      * 
      * @param name
      *            The name of the registered DataProducer
-     * @param processor
-     *            The DataProcessor that receives the sensor data
-     * @return true if the DataProcessor is successfully subscribed to the DataProducer.
+     * @param consumer
+     *            The DataConsumer that receives the sensor data
+     * @return true if the DataConsumer successfully subscribed to the DataProducer.
      */
-    public boolean subscribeDataProcessor(String name, DataProcessor processor) {
+    public boolean subscribeConsumer(String name, DataConsumer consumer) {
 
-        if (isDataProcessorSubscribed(name, processor)) {
-            // processor is already subscribed
+        if (isConsumerSubscribed(name, consumer)) {
+            // consumer is already subscribed
             return false;
         }
 
-        // add the processor to the list of subscribed processors
-        List<DataProcessor> processors = subscribedProcessors.get(name);
+        // add the consumer to the list of subscribed consumers
+        List<DataConsumer> processors = mConsumers.get(name);
         if (null == processors) {
-            processors = new ArrayList<DataProcessor>();
+            processors = new ArrayList<DataConsumer>();
         }
-        processors.add(processor);
-        subscribedProcessors.put(name, processors);
+        processors.add(consumer);
+        mConsumers.put(name, processors);
 
         // see if there are any producers for this sensor name
-        List<DataProducer> producers = registeredProducers.get(name);
+        List<DataProducer> producers = mProducers.get(name);
         if (producers == null) {
             return false;
         }
@@ -745,7 +745,7 @@ public class SenseService extends Service {
         // subscribe the new processor to the existing producers
         boolean subscribed = false;
         for (DataProducer producer : producers) {
-            subscribed |= producer.addSubscriber(processor);
+            subscribed |= producer.addSubscriber(consumer);
         }
         return subscribed;
     }
@@ -847,16 +847,16 @@ public class SenseService extends Service {
                              * startForeground(1337, note);
                              */
                             noiseSensor = NoiseSensor.getInstance(SenseService.this);
-                            registerDataProducer(SensorNames.NOISE, noiseSensor);
-                            registerDataProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
-                            registerDataProducer(SensorNames.LOUDNESS, noiseSensor);
-                            registerDataProducer(SensorNames.NOISE,
+                            registerProducer(SensorNames.NOISE, noiseSensor);
+                            registerProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
+                            registerProducer(SensorNames.LOUDNESS, noiseSensor);
+                            registerProducer(SensorNames.NOISE,
                                     noiseSensor.getAutoCalibratedNoiseSensor());
                             noiseSensor.startSensing(finalInterval);
                         }
                         if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
                             lightSensor = LightSensor.getInstance(SenseService.this);
-                            registerDataProducer(SensorNames.LIGHT, lightSensor);
+                            registerProducer(SensorNames.LIGHT, lightSensor);
                             lightSensor.startSensing(finalInterval);
                         }
                         // only available from Android 2.3 up to 4.0
@@ -865,7 +865,7 @@ public class SenseService extends Service {
                             if (mainPrefs.getBoolean(Ambience.CAMERA_LIGHT, true)) {
                                 cameraLightSensor = CameraLightSensor
                                         .getInstance(SenseService.this);
-                                registerDataProducer(SensorNames.CAMERA_LIGHT, cameraLightSensor);
+                                registerProducer(SensorNames.CAMERA_LIGHT, cameraLightSensor);
                                 cameraLightSensor.startLightSensing(finalInterval);
                             }
                         } else {
@@ -874,13 +874,13 @@ public class SenseService extends Service {
                         if (mainPrefs.getBoolean(Ambience.MAGNETIC_FIELD, true)) {
                             magneticFieldSensor = MagneticFieldSensor
                                     .getInstance(SenseService.this);
-                            registerDataProducer(SensorNames.MAGNETIC_FIELD, magneticFieldSensor);
+                            registerProducer(SensorNames.MAGNETIC_FIELD, magneticFieldSensor);
                             magneticFieldSensor.startSensing(finalInterval);
                         }
 
                         if (mainPrefs.getBoolean(Ambience.PRESSURE, true)) {
                             pressureSensor = PressureSensor.getInstance(SenseService.this);
-                            registerDataProducer(SensorNames.PRESSURE, pressureSensor);
+                            registerProducer(SensorNames.PRESSURE, pressureSensor);
                             pressureSensor.startSensing(finalInterval);
                         }
                         // only available from Android 2.3 up to 4.0
@@ -888,7 +888,7 @@ public class SenseService extends Service {
                             if (mainPrefs.getBoolean(Ambience.TEMPERATURE, true)) {
                                 temperatureSensor = TemperatureSensor
                                         .getInstance(SenseService.this);
-                                registerDataProducer(SensorNames.TEMPERATURE, temperatureSensor);
+                                registerProducer(SensorNames.TEMPERATURE, temperatureSensor);
                                 temperatureSensor.startSensing(finalInterval);
                             }
                         } else {
@@ -904,35 +904,35 @@ public class SenseService extends Service {
                 if (null != noiseSensor) {
                     noiseSensor.stopSensing();
                     // unregister is not needed for Singleton Sensors
-                    unregisterDataProducer(SensorNames.NOISE, noiseSensor);
-                    unregisterDataProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
-                    unregisterDataProducer(SensorNames.LOUDNESS, noiseSensor);
-                    unregisterDataProducer(SensorNames.NOISE, noiseSensor);
+                    unregisterProducer(SensorNames.NOISE, noiseSensor);
+                    unregisterProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
+                    unregisterProducer(SensorNames.LOUDNESS, noiseSensor);
+                    unregisterProducer(SensorNames.NOISE, noiseSensor);
                     noiseSensor = null;
                 }
                 if (null != lightSensor) {
                     lightSensor.stopSensing();
-                    unregisterDataProducer(SensorNames.LIGHT, lightSensor);
+                    unregisterProducer(SensorNames.LIGHT, lightSensor);
                     lightSensor = null;
                 }
                 if (null != cameraLightSensor) {
                     cameraLightSensor.stopLightSensing();
-                    unregisterDataProducer(SensorNames.CAMERA_LIGHT, cameraLightSensor);
+                    unregisterProducer(SensorNames.CAMERA_LIGHT, cameraLightSensor);
                     cameraLightSensor = null;
                 }
                 if (null != pressureSensor) {
                     pressureSensor.stopSensing();
-                    unregisterDataProducer(SensorNames.PRESSURE, pressureSensor);
+                    unregisterProducer(SensorNames.PRESSURE, pressureSensor);
                     pressureSensor = null;
                 }
                 if (null != temperatureSensor) {
                     temperatureSensor.stopSensing();
-                    unregisterDataProducer(SensorNames.TEMPERATURE, temperatureSensor);
+                    unregisterProducer(SensorNames.TEMPERATURE, temperatureSensor);
                     temperatureSensor = null;
                 }
                 if (null != magneticFieldSensor) {
                     magneticFieldSensor.stopSensing();
-                    unregisterDataProducer(SensorNames.MAGNETIC_FIELD, magneticFieldSensor);
+                    unregisterProducer(SensorNames.MAGNETIC_FIELD, magneticFieldSensor);
                     magneticFieldSensor = null;
                 }
             }
@@ -992,11 +992,11 @@ public class SenseService extends Service {
                     public void run() {
                         deviceProximity = new DeviceProximity(SenseService.this);
 
-                        registerDataProducer(SensorNames.WIFI_SCAN,
+                        registerProducer(SensorNames.WIFI_SCAN,
                                 deviceProximity.getWIFIDeviceProximity());
-                        registerDataProducer(SensorNames.BLUETOOTH_DISCOVERY,
+                        registerProducer(SensorNames.BLUETOOTH_DISCOVERY,
                                 deviceProximity.getBluetoothDeviceProximity());
-                        registerDataProducer(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,
+                        registerProducer(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,
                                 deviceProximity.getBluetoothDeviceProximity());
                         // start sensing
                         deviceProximity.startEnvironmentScanning(finalInterval);
@@ -1008,11 +1008,11 @@ public class SenseService extends Service {
                 // stop sensing
                 if (null != deviceProximity) {
                     deviceProximity.stopEnvironmentScanning();
-                    unregisterDataProducer(SensorNames.WIFI_SCAN,
+                    unregisterProducer(SensorNames.WIFI_SCAN,
                             deviceProximity.getWIFIDeviceProximity());
-                    unregisterDataProducer(SensorNames.BLUETOOTH_DISCOVERY,
+                    unregisterProducer(SensorNames.BLUETOOTH_DISCOVERY,
                             deviceProximity.getBluetoothDeviceProximity());
-                    unregisterDataProducer(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,
+                    unregisterProducer(SensorNames.BLUETOOTH_NEIGHBOURS_COUNT,
                             deviceProximity.getBluetoothDeviceProximity());
                     deviceProximity = null;
                 }
@@ -1093,27 +1093,27 @@ public class SenseService extends Service {
                     public void run() {
                         if (mainPrefs.getBoolean(External.ZephyrBioHarness.MAIN, false)) {
                             es_bioHarness = new ZephyrBioHarness(SenseService.this);
-                            registerDataProducer(SensorNames.ACCELEROMETER, es_bioHarness);
-                            registerDataProducer(SensorNames.HEART_RATE, es_bioHarness);
-                            registerDataProducer(SensorNames.RESPIRATION, es_bioHarness);
-                            registerDataProducer(SensorNames.TEMPERATURE, es_bioHarness);
-                            registerDataProducer(SensorNames.BATTERY_LEVEL, es_bioHarness);
-                            registerDataProducer(SensorNames.WORN_STATUS, es_bioHarness);
+                            registerProducer(SensorNames.ACCELEROMETER, es_bioHarness);
+                            registerProducer(SensorNames.HEART_RATE, es_bioHarness);
+                            registerProducer(SensorNames.RESPIRATION, es_bioHarness);
+                            registerProducer(SensorNames.TEMPERATURE, es_bioHarness);
+                            registerProducer(SensorNames.BATTERY_LEVEL, es_bioHarness);
+                            registerProducer(SensorNames.WORN_STATUS, es_bioHarness);
                             es_bioHarness.startBioHarness(finalInterval);
                         }
                         if (mainPrefs.getBoolean(External.ZephyrHxM.MAIN, false)) {
                             es_HxM = new ZephyrHxM(SenseService.this);
-                            registerDataProducer(SensorNames.HEART_RATE, es_HxM);
-                            registerDataProducer(SensorNames.SPEED, es_HxM);
-                            registerDataProducer(SensorNames.DISTANCE, es_HxM);
-                            registerDataProducer(SensorNames.BATTERY_CHARGE, es_HxM);
-                            registerDataProducer(SensorNames.STRIDES, es_HxM);
+                            registerProducer(SensorNames.HEART_RATE, es_HxM);
+                            registerProducer(SensorNames.SPEED, es_HxM);
+                            registerProducer(SensorNames.DISTANCE, es_HxM);
+                            registerProducer(SensorNames.BATTERY_CHARGE, es_HxM);
+                            registerProducer(SensorNames.STRIDES, es_HxM);
                             es_HxM.startHxM(finalInterval);
                         }
                         if (mainPrefs.getBoolean(External.OBD2Sensor.MAIN, false)) {
                             es_obd2sensor = new NewOBD2DeviceConnector(SenseService.this,
                                     finalInterval);
-                            registerDataProducer(SensorNames.OBD_STANDARDS, es_obd2sensor);
+                            registerProducer(SensorNames.OBD_STANDARDS, es_obd2sensor);
                             es_obd2sensor.run();
                         }
                     }
@@ -1125,12 +1125,12 @@ public class SenseService extends Service {
                 if (null != es_bioHarness) {
                     // Log.w(TAG, "Bioharness sensor is already present!");
                     es_bioHarness.stopBioHarness();
-                    unregisterDataProducer(SensorNames.ACCELEROMETER, es_bioHarness);
-                    unregisterDataProducer(SensorNames.HEART_RATE, es_bioHarness);
-                    unregisterDataProducer(SensorNames.RESPIRATION, es_bioHarness);
-                    unregisterDataProducer(SensorNames.TEMPERATURE, es_bioHarness);
-                    unregisterDataProducer(SensorNames.BATTERY_LEVEL, es_bioHarness);
-                    unregisterDataProducer(SensorNames.WORN_STATUS, es_bioHarness);
+                    unregisterProducer(SensorNames.ACCELEROMETER, es_bioHarness);
+                    unregisterProducer(SensorNames.HEART_RATE, es_bioHarness);
+                    unregisterProducer(SensorNames.RESPIRATION, es_bioHarness);
+                    unregisterProducer(SensorNames.TEMPERATURE, es_bioHarness);
+                    unregisterProducer(SensorNames.BATTERY_LEVEL, es_bioHarness);
+                    unregisterProducer(SensorNames.WORN_STATUS, es_bioHarness);
                     es_bioHarness = null;
                 }
 
@@ -1138,11 +1138,11 @@ public class SenseService extends Service {
                 if (null != es_HxM) {
                     // Log.w(TAG, "HxM sensor is already present!");
                     es_HxM.stopHxM();
-                    unregisterDataProducer(SensorNames.HEART_RATE, es_HxM);
-                    unregisterDataProducer(SensorNames.SPEED, es_HxM);
-                    unregisterDataProducer(SensorNames.DISTANCE, es_HxM);
-                    unregisterDataProducer(SensorNames.BATTERY_CHARGE, es_HxM);
-                    unregisterDataProducer(SensorNames.STRIDES, es_HxM);
+                    unregisterProducer(SensorNames.HEART_RATE, es_HxM);
+                    unregisterProducer(SensorNames.SPEED, es_HxM);
+                    unregisterProducer(SensorNames.DISTANCE, es_HxM);
+                    unregisterProducer(SensorNames.BATTERY_CHARGE, es_HxM);
+                    unregisterProducer(SensorNames.STRIDES, es_HxM);
                     es_HxM = null;
                 }
 
@@ -1150,7 +1150,7 @@ public class SenseService extends Service {
                 if (null != es_obd2sensor) {
                     // Log.w(TAG, "OBD-II sensor is already present!");
                     es_obd2sensor.stop();
-                    unregisterDataProducer(SensorNames.OBD_STANDARDS, es_obd2sensor);
+                    unregisterProducer(SensorNames.OBD_STANDARDS, es_obd2sensor);
                     es_obd2sensor = null;
                 }
 
@@ -1218,9 +1218,9 @@ public class SenseService extends Service {
                     @Override
                     public void run() {
                         locListener = LocationSensor.getInstance(SenseService.this);
-                        registerDataProducer(SensorNames.LOCATION, locListener);
-                        registerDataProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
-                        registerDataProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
+                        registerProducer(SensorNames.LOCATION, locListener);
+                        registerProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
+                        registerProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
                         locListener.startSensing(time);
                     }
                 });
@@ -1231,9 +1231,9 @@ public class SenseService extends Service {
                 if (null != locListener) {
                     locListener.stopSensing();
                     // unregister is not needed for Singleton Sensors
-                    unregisterDataProducer(SensorNames.LOCATION, locListener);
-                    unregisterDataProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
-                    unregisterDataProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
+                    unregisterProducer(SensorNames.LOCATION, locListener);
+                    unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
+                    unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
                     locListener = null;
                 }
 
@@ -1321,7 +1321,7 @@ public class SenseService extends Service {
                     @Override
                     public void run() {
                         motionSensor = MotionSensor.getInstance(SenseService.this);
-                        registerDataProducer(SensorNames.MOTION, motionSensor);
+                        registerProducer(SensorNames.MOTION, motionSensor);
                         motionSensor.startSensing(finalInterval);
                     }
                 });
@@ -1329,7 +1329,7 @@ public class SenseService extends Service {
             } else {
 
                 // unregister is not needed for Singleton Sensors
-                unregisterDataProducer(SensorNames.MOTION, motionSensor);
+                unregisterProducer(SensorNames.MOTION, motionSensor);
                 // stop sensing
                 if (null != motionSensor) {
                     motionSensor.stopSensing();
@@ -1420,27 +1420,26 @@ public class SenseService extends Service {
                             if (mainPrefs.getBoolean(PhoneState.BATTERY, true)) {
                                 batterySensor = BatterySensor.getInstance(SenseService.this);
                                 batterySensor.startBatterySensing(finalInterval);
-                                registerDataProducer(SensorNames.BATTERY_SENSOR, batterySensor);
+                                registerProducer(SensorNames.BATTERY_SENSOR, batterySensor);
                             }
                             if (mainPrefs.getBoolean(PhoneState.SCREEN_ACTIVITY, true)) {
                                 phoneActivitySensor = PhoneActivitySensor
                                         .getInstance(SenseService.this);
                                 phoneActivitySensor.startPhoneActivitySensing(finalInterval);
-                                registerDataProducer(SensorNames.SCREEN_ACTIVITY,
-                                        phoneActivitySensor);
+                                registerProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
                             }
                             if (mainPrefs.getBoolean(PhoneState.PROXIMITY, true)) {
                                 proximitySensor = ProximitySensor.getInstance(SenseService.this);
                                 proximitySensor.startSensing(finalInterval);
-                                registerDataProducer(SensorNames.PROXIMITY, proximitySensor);
+                                registerProducer(SensorNames.PROXIMITY, proximitySensor);
                             }
                             phoneStateListener = SensePhoneState.getInstance(SenseService.this);
                             phoneStateListener.startSensing(finalInterval);
-                            registerDataProducer(SensorNames.CALL_STATE, phoneStateListener);
-                            registerDataProducer(SensorNames.DATA_CONN, phoneStateListener);
-                            registerDataProducer(SensorNames.SERVICE_STATE, phoneStateListener);
-                            registerDataProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
-                            registerDataProducer(SensorNames.CONN_TYPE, phoneStateListener);
+                            registerProducer(SensorNames.CALL_STATE, phoneStateListener);
+                            registerProducer(SensorNames.DATA_CONN, phoneStateListener);
+                            registerProducer(SensorNames.SERVICE_STATE, phoneStateListener);
+                            registerProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
+                            registerProducer(SensorNames.CONN_TYPE, phoneStateListener);
                         } catch (Exception e) {
                             Log.e(TAG, "Phone state thread failed to start!");
                             togglePhoneState(false);
@@ -1453,26 +1452,26 @@ public class SenseService extends Service {
                 // stop sensing
                 if (null != phoneStateListener) {
                     phoneStateListener.stopSensing();
-                    unregisterDataProducer(SensorNames.CALL_STATE, phoneStateListener);
-                    unregisterDataProducer(SensorNames.DATA_CONN, phoneStateListener);
-                    unregisterDataProducer(SensorNames.SERVICE_STATE, phoneStateListener);
-                    unregisterDataProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
-                    unregisterDataProducer(SensorNames.CONN_TYPE, phoneStateListener);
+                    unregisterProducer(SensorNames.CALL_STATE, phoneStateListener);
+                    unregisterProducer(SensorNames.DATA_CONN, phoneStateListener);
+                    unregisterProducer(SensorNames.SERVICE_STATE, phoneStateListener);
+                    unregisterProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
+                    unregisterProducer(SensorNames.CONN_TYPE, phoneStateListener);
                     phoneStateListener = null;
                 }
                 if (null != proximitySensor) {
                     proximitySensor.stopSensing();
-                    unregisterDataProducer(SensorNames.PROXIMITY, proximitySensor);
+                    unregisterProducer(SensorNames.PROXIMITY, proximitySensor);
                     proximitySensor = null;
                 }
                 if (null != batterySensor) {
                     batterySensor.stopBatterySensing();
-                    unregisterDataProducer(SensorNames.BATTERY_SENSOR, batterySensor);
+                    unregisterProducer(SensorNames.BATTERY_SENSOR, batterySensor);
                     batterySensor = null;
                 }
                 if (null != phoneActivitySensor) {
                     phoneActivitySensor.stopPhoneActivitySensing();
-                    unregisterDataProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
+                    unregisterProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
                     phoneActivitySensor = null;
                 }
                 // if (null != phoneStateHandler) {
@@ -1486,66 +1485,66 @@ public class SenseService extends Service {
     /**
      * Unregisters a DataProducer.<br/>
      * <br/>
-     * No new data processors can subscribe to the DataProducer anymore, but DataProcessors which
-     * have already subscribed to the DataProducer will remain subscribed.
+     * No new data consumers can subscribe to the DataProducer anymore, but DataConsumer which have
+     * already subscribed to the DataProducer will remain subscribed.
      * 
      * @param name
      *            The name that the DataProducer is registered under
-     * @param dataProducer
+     * @param producer
      *            The DataProducer to unregister
      */
-    public void unregisterDataProducer(String name, DataProducer dataProducer) {
+    public void unregisterProducer(String name, DataProducer producer) {
 
-        if (!registeredProducers.containsKey(name)) {
+        if (!mProducers.containsKey(name)) {
             // this producer is not registered under this name
             return;
         }
 
         // remove the producer from the list of registered producers for this sensor name
-        List<DataProducer> dataProducers = registeredProducers.get(name);
-        dataProducers.remove(dataProducer);
+        List<DataProducer> dataProducers = mProducers.get(name);
+        dataProducers.remove(producer);
         if (dataProducers.size() == 0) {
-            registeredProducers.remove(name);
+            mProducers.remove(name);
         } else {
-            registeredProducers.put(name, dataProducers);
+            mProducers.put(name, dataProducers);
         }
     }
 
     /**
-     * Unsubscribes a DataProcessor from a DataProducer.
+     * Unsubscribes a data consumer from a data producer.
      * 
      * @param name
-     *            The name of the DataProducer that the processor registered for
-     * @param dataProcessor
-     *            The DataProcessor that receives the sensor data
+     *            The name of the DataProducer that the consumer registered for
+     * @param consumer
+     *            The DataConsumer that receives the sensor data
      */
-    public void unsubscribeProcessor(String name, DataProcessor dataProcessor) {
+    public void unsubscribeConsumer(String name, DataConsumer consumer) {
 
-        if (!registeredProducers.containsKey(name)) {
+        if (!mProducers.containsKey(name)) {
             // there are no data producers to unsubscribe from
             return;
         }
 
-        if (!subscribedProcessors.containsKey(name)) {
+        if (!mConsumers.containsKey(name)) {
             // this processor is not registered (?)
             return;
         }
 
         // remove the processor from the list of subscribed processors
-        List<DataProcessor> processors = subscribedProcessors.get(name);
-        processors.remove(dataProcessor);
+        List<DataConsumer> processors = mConsumers.get(name);
+        processors.remove(consumer);
         if (processors.size() == 0) {
-            subscribedProcessors.remove(name);
+            mConsumers.remove(name);
         } else {
-            subscribedProcessors.put(name, processors);
+            mConsumers.put(name, processors);
         }
 
         // unsubscribe the processor from the producers for this sensor name
-        List<DataProducer> producers = registeredProducers.get(name);
+        List<DataProducer> producers = mProducers.get(name);
         for (DataProducer registeredProducer : producers) {
-            registeredProducer.removeSubscriber(dataProcessor);
+            registeredProducer.removeSubscriber(consumer);
         }
-        registeredProducers.remove(name);
+        mProducers.remove(name);
     }
 
     private synchronized void verifySensorIds() {

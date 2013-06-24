@@ -189,21 +189,21 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             accelerometerBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_ACCELEROMETER,
                     SensorNames.ACCELEROMETER_BURST);
             addSubscriber(this.accelerometerBurstSensor);
-            ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_BURST,
+            ((SenseService) context).registerProducer(SensorNames.ACCELEROMETER_BURST,
                     accelerometerBurstSensor);
         }
         if (mainPrefs.getBoolean(Motion.GYROSCOPE, true)) {
             gyroBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_GYROSCOPE,
                     SensorNames.GYRO_BURST);
             addSubscriber(this.gyroBurstSensor);
-            ((SenseService) context).registerDataProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
+            ((SenseService) context).registerProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
         }
         if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                 linearBurstSensor = new MotionBurstSensor(context, Sensor.TYPE_LINEAR_ACCELERATION,
                         SensorNames.LINEAR_BURST);
                 addSubscriber(this.linearBurstSensor);
-                ((SenseService) context).registerDataProducer(SensorNames.LINEAR_BURST,
+                ((SenseService) context).registerProducer(SensorNames.LINEAR_BURST,
                         linearBurstSensor);
             }
         }
@@ -230,7 +230,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         this.epi = new EpilepsySensor(context);
         // register the sensor at the sense Service
         // TODO: connect to the service in a different manner
-        ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER_EPI, epi);
+        ((SenseService) context).registerProducer(SensorNames.ACCELEROMETER_EPI, epi);
         addSubscriber(this.epi);
     }
 
@@ -248,8 +248,8 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
         // Example how to subscribe via the service
         // Context should not be used for this
-        ((SenseService) context).subscribeDataProcessor(SensorNames.MOTION, fall);
-        ((SenseService) context).registerDataProducer(SensorNames.FALL_DETECTOR, fall);
+        ((SenseService) context).subscribeConsumer(SensorNames.MOTION, fall);
+        ((SenseService) context).registerProducer(SensorNames.FALL_DETECTOR, fall);
 
         fall.sendFallMessage(false);
         firstStart = false;
@@ -261,17 +261,17 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     private void initStandardDataProcessors() {
         standard = new StandardMotionSensor(context);
-        ((SenseService) context).registerDataProducer(SensorNames.ACCELEROMETER, standard);
-        ((SenseService) context).registerDataProducer(SensorNames.ORIENT, standard);
-        ((SenseService) context).registerDataProducer(SensorNames.MAGNETIC_FIELD, standard);
-        ((SenseService) context).registerDataProducer(SensorNames.GYRO, standard);
-        ((SenseService) context).registerDataProducer(SensorNames.LIN_ACCELERATION, standard);
+        ((SenseService) context).registerProducer(SensorNames.ACCELEROMETER, standard);
+        ((SenseService) context).registerProducer(SensorNames.ORIENT, standard);
+        ((SenseService) context).registerProducer(SensorNames.MAGNETIC_FIELD, standard);
+        ((SenseService) context).registerProducer(SensorNames.GYRO, standard);
+        ((SenseService) context).registerProducer(SensorNames.LIN_ACCELERATION, standard);
         addSubscriber(this.standard);
 
         // optional motion energy data processor
         if (isEnergyMode) {
             energy = new MotionEnergySensor(context);
-            ((SenseService) context).registerDataProducer(SensorNames.MOTION_ENERGY, energy);
+            ((SenseService) context).registerProducer(SensorNames.MOTION_ENERGY, energy);
             addSubscriber(this.energy);
         }
     }

@@ -19,7 +19,7 @@ public interface DataProducer {
      * @return True if the DataProcessor could subscribe to the service, false if the DataProcessor
      *         was already subscribed
      */
-    public abstract boolean addSubscriber(DataProcessor subscriber);
+    public abstract boolean addSubscriber(DataConsumer subscriber);
 
     /**
      * Checks if a DataProcessor has been added as a subscriber.
@@ -27,7 +27,7 @@ public interface DataProducer {
      * @param subscriber
      * @return True if the DataProcessor is listed as a subscriber
      */
-    public abstract boolean hasSubscriber(DataProcessor subscriber);
+    public abstract boolean hasSubscriber(DataConsumer subscriber);
 
     /**
      * @return True if there are subscribers
@@ -40,6 +40,6 @@ public interface DataProducer {
      * @param subscriber
      *            The DataProcessor needs to be unsubscribed
      */
-    public abstract void removeSubscriber(DataProcessor subscriber);
+    public abstract void removeSubscriber(DataConsumer subscriber);
 
 }

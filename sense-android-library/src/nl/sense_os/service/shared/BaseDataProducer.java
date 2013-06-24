@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  * <p>
  * Subscribers are notified when there are new samples via the DataProcessor method
- * {@link DataProcessor#startNewSample()}
+ * {@link DataConsumer#startNewSample()}
  * </p>
  * <p>
  * Via the DataProcessor method isSampleComplete() the status of the data processors is checked. If
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  * <p>
  * Sensor data is passed to the subscribers via their
- * {@link DataProcessor#onNewData(SensorDataPoint)} method.
+ * {@link DataConsumer#onNewData(SensorDataPoint)} method.
  * </p>
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
@@ -27,13 +27,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class BaseDataProducer implements DataProducer {
 
     /** The DataProcessors which are subscribed to this sensor for sensor data */
-    protected Vector<AtomicReference<DataProcessor>> subscribers = new Vector<AtomicReference<DataProcessor>>();
+    protected Vector<AtomicReference<DataConsumer>> subscribers = new Vector<AtomicReference<DataConsumer>>();
 
     @Override
-    public boolean addSubscriber(DataProcessor dataProcessor) {
-        if (!hasSubscriber(dataProcessor)) {
-            AtomicReference<DataProcessor> subscriber = new AtomicReference<DataProcessor>(
-                    dataProcessor);
+    public boolean addSubscriber(DataConsumer dataConsumer) {
+        if (!hasSubscriber(dataConsumer)) {
+            AtomicReference<DataConsumer> subscriber = new AtomicReference<DataConsumer>(
+                    dataConsumer);
             subscribers.add(subscriber);
         } else {
             return false;
@@ -43,7 +43,7 @@ public abstract class BaseDataProducer implements DataProducer {
 
     /**
      * Checks subscribers if the sample is complete. This method uses
-     * {@link DataProcessor#startNewSample()} to see if the sample is completed, or if the data
+     * {@link DataConsumer#startNewSample()} to see if the sample is completed, or if the data
      * processors need more data.
      * 
      * @return true when all the subscribers have complete samples
@@ -51,7 +51,7 @@ public abstract class BaseDataProducer implements DataProducer {
     protected boolean checkSubscribers() {
         boolean isComplete = true;
         for (int i = 0; i < subscribers.size(); i++) {
-            DataProcessor dp = subscribers.get(i).get();
+            DataConsumer dp = subscribers.get(i).get();
             if (dp != null) {
                 isComplete &= dp.isSampleComplete();
             }
@@ -60,12 +60,12 @@ public abstract class BaseDataProducer implements DataProducer {
     }
 
     @Override
-    public boolean hasSubscriber(DataProcessor dataProcessor) {
-        AtomicReference<DataProcessor> subscriber = new AtomicReference<DataProcessor>(
-                dataProcessor);
+    public boolean hasSubscriber(DataConsumer dataConsumer) {
+        AtomicReference<DataConsumer> subscriber = new AtomicReference<DataConsumer>(
+                dataConsumer);
 
         for (int i = 0; i < subscribers.size(); i++) {
-            AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+            AtomicReference<DataConsumer> item = subscribers.elementAt(i);
             if (item.get() == subscriber.get())
                 return true;
         }
@@ -79,11 +79,11 @@ public abstract class BaseDataProducer implements DataProducer {
 
     /**
      * Notifies subscribers that a new sample is starting. This method calls
-     * {@link DataProcessor#startNewSample()} on each subscriber.
+     * {@link DataConsumer#startNewSample()} on each subscriber.
      */
     protected void notifySubscribers() {
         for (int i = 0; i < subscribers.size(); i++) {
-            DataProcessor dp = subscribers.get(i).get();
+            DataConsumer dp = subscribers.get(i).get();
             if (dp != null) {
                 dp.startNewSample();
             }
@@ -91,12 +91,12 @@ public abstract class BaseDataProducer implements DataProducer {
     }
 
     @Override
-    public void removeSubscriber(DataProcessor dataProcessor) {
-        AtomicReference<DataProcessor> subscriber = new AtomicReference<DataProcessor>(
-                dataProcessor);
+    public void removeSubscriber(DataConsumer dataConsumer) {
+        AtomicReference<DataConsumer> subscriber = new AtomicReference<DataConsumer>(
+                dataConsumer);
 
         for (int i = 0; i < subscribers.size(); i++) {
-            AtomicReference<DataProcessor> item = subscribers.elementAt(i);
+            AtomicReference<DataConsumer> item = subscribers.elementAt(i);
             if (item.get() == subscriber.get()) {
                 subscribers.removeElementAt(i);
                 --i;
@@ -116,7 +116,7 @@ public abstract class BaseDataProducer implements DataProducer {
     protected void sendToSubscribers(SensorDataPoint dataPoint) {
         // TODO: do a-sync
         for (int i = 0; i < subscribers.size(); i++) {
-            DataProcessor dp = subscribers.get(i).get();
+            DataConsumer dp = subscribers.get(i).get();
             if (dp != null && !dp.isSampleComplete()) {
                 dp.onNewData(dataPoint);
             }

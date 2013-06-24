@@ -8,7 +8,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.BaseDataProducer;
-import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.DataConsumer;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import android.annotation.SuppressLint;
@@ -21,7 +21,7 @@ import android.os.SystemClock;
 import android.util.FloatMath;
 import android.util.Log;
 
-public class MotionEnergySensor extends BaseDataProducer implements DataProcessor {
+public class MotionEnergySensor extends BaseDataProducer implements DataConsumer {
 
     private static final long ENERGY_SAMPLE_LENGTH = 500;
     private static final String TAG = "MotionEnergySensor";

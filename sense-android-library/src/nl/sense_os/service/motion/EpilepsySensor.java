@@ -6,7 +6,7 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import nl.sense_os.service.shared.BaseDataProducer;
-import nl.sense_os.service.shared.DataProcessor;
+import nl.sense_os.service.shared.DataConsumer;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import nl.sense_os.service.provider.SNTP;
@@ -22,7 +22,7 @@ import android.hardware.SensorEvent;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class EpilepsySensor extends BaseDataProducer implements DataProcessor {
+public class EpilepsySensor extends BaseDataProducer implements DataConsumer {
 
     private static final String TAG = "EpilepsySensor";
     private static final long LOCAL_BUFFER_TIME = 15 * 1000;
