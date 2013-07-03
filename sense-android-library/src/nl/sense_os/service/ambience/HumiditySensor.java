@@ -30,11 +30,11 @@ import android.util.Log;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class TemperatureSensor extends BaseSensor implements SensorEventListener,
+public class HumiditySensor extends BaseSensor implements SensorEventListener,
         PeriodicPollingSensor {
 
-    private static TemperatureSensor sInstance = null;
-    private static final String TAG = "TemperatureSensor";
+    private static HumiditySensor sInstance = null;
+    private static final String TAG = "HumiditySensor";
 
     /**
      * Factory method to get the singleton instance.
@@ -42,9 +42,9 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
      * @param context
      * @return instance
      */
-    public static TemperatureSensor getInstance(Context context) {
+    public static HumiditySensor getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new TemperatureSensor(context);
+            sInstance = new HumiditySensor(context);
         }
         return sInstance;
     }
@@ -60,7 +60,7 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
      * @param context
      * @see #getInstance(Context)
      */
-    protected TemperatureSensor(Context context) {
+    protected HumiditySensor(Context context) {
         this.mContext = context;
         mSampleAlarmReceiver = new PeriodicPollAlarmReceiver(this);
         mSensorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -71,7 +71,7 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     public void doSample() {
         Log.v(TAG, "Do sample");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
             if (null != sensor) {
                 mSensorMgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
@@ -92,9 +92,9 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
 
-        String sensorName = SensorNames.AMBIENT_TEMPERATURE;
+        String sensorName = SensorNames.RELATIVE_HUMIDITY;
 
-        // temperature in degrees Celsius
+        // relative humidity in percent
         float value = BigDecimal.valueOf(event.values[0]).setScale(2, 0).floatValue();
 
         this.notifySubscribers();
@@ -124,13 +124,13 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
 
         boolean found = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
             if (null != sensor) {
                 found = true;
             }
         }
         if (!found) {
-            Log.w(TAG, "No temperature sensor available!");
+            Log.w(TAG, "No humidity sensor available!");
             return;
         }
 
@@ -149,7 +149,7 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
         try {
             mSensorMgr.unregisterListener(this);
         } catch (Exception e) {
-            Log.e(TAG, "Error stopping temperature sensor: " + e);
+            Log.e(TAG, "Error stopping humidity sensor: " + e);
         }
     }
 
