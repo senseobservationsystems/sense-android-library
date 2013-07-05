@@ -8,17 +8,22 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.BaseSensor;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.shared.BaseDataProducer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -27,12 +32,60 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class PhoneActivitySensor extends BaseDataProducer{
+public class PhoneActivitySensor extends BaseSensor implements PeriodicPollingSensor{
 
     private static final String TAG = "Sense Screen Activity";
     private final Context context;
-        
+    private String last_screen_value;
+    private boolean mActive;
+    private static final String ACTION_STOP_SAMPLE = PhoneActivitySensor.class.getName() + ".STOP";
+    private static final int REQ_CODE = 1;
+    
     private static PhoneActivitySensor instance = null;
+    private PeriodicPollAlarmReceiver mStartSampleReceiver;
+    private BroadcastReceiver mStopSampleReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            handleLatestValue();
+            stopSample();
+        }
+    };
+    
+    /**
+     * Sets the delay between samples. The sensor registers itself for periodic sampling bursts, and
+     * unregisters after it received a sample.
+     * 
+     * @param sampleDelay
+     *            Sample delay in milliseconds
+     */
+    @Override
+    public void setSampleRate(long sampleDelay) {
+        super.setSampleRate(sampleDelay);
+        stopPolling();
+        startPolling();
+    }
+
+    private void startPolling() {
+        Log.v(TAG, "Start polling");
+        mStartSampleReceiver.start(context);
+    }
+    
+    private void stopPolling() {
+        Log.v(TAG, "Stop polling");
+        mStartSampleReceiver.stop(context);
+        stopSample();
+    }
+
+    private void stopSample() {
+        Log.v(TAG, "Stop sample");  
+        // unregister broadcast receiver
+        try {
+            context.unregisterReceiver(mStopSampleReceiver);
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
+    }
     
     public static PhoneActivitySensor getInstance(Context context) {
 	    if(instance == null) {
@@ -56,17 +109,16 @@ public class PhoneActivitySensor extends BaseDataProducer{
                 Log.w(TAG, "Unexpected broadcast action: " + intent.getAction());
                 return;
             }
-
-            sendData(screen);
+            last_screen_value = screen;           
         }
     };
     
-    private void sendData(String screen)
-    {
+    private void handleLatestValue()    
+    {   
     	 // create new data point
         JSONObject json = new JSONObject();
         try {
-            json.put("screen", screen);
+            json.put("screen", last_screen_value);
 
         } catch (JSONException e) {
             Log.e(TAG, "JSONException preparing screen activity data");
@@ -90,21 +142,48 @@ public class PhoneActivitySensor extends BaseDataProducer{
 
     protected PhoneActivitySensor(Context context) {
         this.context = context;
+        mStartSampleReceiver = new PeriodicPollAlarmReceiver(this);
     }
-
-    public void startPhoneActivitySensing(long sampleDelay) {
+    
+    @Override
+    public void startSensing(long sampleDelay) {
+    	mActive = true;
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);        
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(screenActivityReceiver, filter);
+        setSampleRate(sampleDelay);        
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);  
-        sendData(pm.isScreenOn()?"on":"off");
+        last_screen_value = pm.isScreenOn()?"on":"off";
+        doSample();
     }
-
-    public void stopPhoneActivitySensing() {
+    
+    @Override
+    public void doSample() {
+        Log.v(TAG, "Do sample");
+      
+        // set alarm for stop the sample
+        context.registerReceiver(mStopSampleReceiver, new IntentFilter(ACTION_STOP_SAMPLE));
+        Intent intent = new Intent(ACTION_STOP_SAMPLE);
+        PendingIntent operation = PendingIntent.getBroadcast(context, REQ_CODE, intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 500,
+                operation);
+    }
+    
+    @Override
+    public void stopSensing() {
         try {
+        	mActive = false;
             context.unregisterReceiver(screenActivityReceiver);
         } catch (IllegalArgumentException e) {
             // probably was not registered
         }
     }
+
+	@Override
+	public boolean isActive() {
+		return mActive;
+	}
+	
 }
