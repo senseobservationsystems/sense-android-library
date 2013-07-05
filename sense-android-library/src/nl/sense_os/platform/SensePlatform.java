@@ -9,6 +9,7 @@ import nl.sense_os.service.SenseService.SenseBinder;
 import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.commonsense.SensorRegistrator;
+import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.feedback.FeedbackManager;
 import nl.sense_os.service.storage.LocalStorage;
@@ -39,22 +40,22 @@ public class SensePlatform {
      * <code>service</code> field when the service is connected or disconnected.
      */
     private class SenseServiceConn implements ServiceConnection {
-        private final ServiceConnection serviceConnection;
+        private final ServiceConnection mServiceConnection;
 
         public SenseServiceConn(ServiceConnection serviceConnection) {
-            this.serviceConnection = serviceConnection;
+            mServiceConnection = serviceConnection;
         }
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
             Log.v(TAG, "Bound to Sense Platform service...");
 
-            service = ((SenseBinder) binder).getService();
-            isServiceBound = true;
+            mSenseService = ((SenseBinder) binder).getService();
+            mServiceBound = true;
 
             // notify the external service connection
-            if (serviceConnection != null) {
-                serviceConnection.onServiceConnected(className, binder);
+            if (mServiceConnection != null) {
+                mServiceConnection.onServiceConnected(className, binder);
             }
         }
 
@@ -62,40 +63,31 @@ public class SensePlatform {
         public void onServiceDisconnected(ComponentName className) {
             Log.v(TAG, "Sense Platform service disconnected...");
 
-            /*
-             * this is not called when the service is stopped, only when it is suddenly killed!
-             */
-            service = null;
-            isServiceBound = false;
+            // this is not called when the service is stopped, only when it is suddenly killed!
+
+            mSenseService = null;
+            mServiceBound = false;
 
             // notify the external service connection
-            if (serviceConnection != null) {
-                serviceConnection.onServiceDisconnected(className);
+            if (mServiceConnection != null) {
+                mServiceConnection.onServiceDisconnected(className);
             }
         }
     }
 
     private static final String TAG = "SensePlatform";
 
-    /**
-     * Context of the enclosing application.
-     */
-    private final Context context;
+    /** Context of the enclosing application */
+    private final Context mContext;
 
-    /**
-     * Keeps track of the service binding state.
-     */
-    private boolean isServiceBound = false;
+    /** Interface for the SenseService. Gets instantiated by {@link #mServiceConnection}. */
+    private SenseServiceStub mSenseService;
 
-    /**
-     * Interface for the SenseService. Gets instantiated by {@link #serviceConn}.
-     */
-    private SenseServiceStub service;
+    /** Keeps track of the service binding state */
+    private boolean mServiceBound = false;
 
-    /**
-     * Callback for events for the binding with the Sense service
-     */
-    private final ServiceConnection serviceConn;
+    /** Callback for events for the binding with the Sense service */
+    private final ServiceConnection mServiceConnection;
 
     /**
      * @param context
@@ -112,36 +104,97 @@ public class SensePlatform {
      *            ServiceConnection to receive callbacks about the binding with the service.
      */
     public SensePlatform(Context context, ServiceConnection serviceConnection) {
-        this.serviceConn = new SenseServiceConn(serviceConnection);
-        this.context = context;
+        mServiceConnection = new SenseServiceConn(serviceConnection);
+        mContext = context;
         bindToSenseService();
     }
 
     /**
-     * Add a data point for a sensor, if the sensor doesn't exist it will be created
+     * Convenience method to add a data point without specifying the device UUID
      * 
+     * @param sensorName
+     *            Name of the sensor
+     * @param displayName
+     *            Display name of the sensor
+     * @param description
+     *            Description of the sensor, i.e. CommonSense "device_type"
+     * @param dataType
+     *            Data type, e.g. json, string, float, bool
+     * @param value
+     *            Data point value
+     * @param timestamp
+     *            Data point time stamp
+     * @return true if the data point was sent to the Sense service
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @see #addDataPoint(String, String, String, String, String, String, long)
+     */
+    public boolean addDataPoint(String sensorName, String displayName, String description,
+            String dataType, Object value, long timestamp) throws IllegalStateException {
+        return addDataPoint(sensorName, displayName, description, dataType, null, value, timestamp);
+    }
+
+    /**
+     * Adds a data point for a sensor at CommonSense. If the sensor does not exist yet, it will be
+     * created.
+     * 
+     * @param sensorName
+     *            Name of the sensor
+     * @param displayName
+     *            Display name of the sensor
+     * @param description
+     *            Description of the sensor, i.e. CommonSense "device_type"
+     * @param dataType
+     *            Data type, e.g. json, string, float, bool
+     * @param deviceUuid
+     *            (Optional) Device UUID, set null to make sure the sensor is connected to the
+     *            current device
+     * @param value
+     *            Data point value
+     * @param timestamp
+     *            Data point time stamp
      * @return true if the data point was sent to the Sense service
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
      */
     public boolean addDataPoint(String sensorName, String displayName, String description,
-            String dataType, String value, long timestamp) throws IllegalStateException {
+            String dataType, String deviceUuid, Object value, long timestamp)
+            throws IllegalStateException {
         checkSenseService();
 
+        if (null == deviceUuid) {
+            deviceUuid = SenseApi.getDefaultDeviceUuid(mContext);
+        }
+
         // register the sensor
-        SensorRegistrator registrator = new TrivialSensorRegistrator(context);
-        registrator.checkSensor(sensorName, displayName, dataType, description, value, null, null);
+        SensorRegistrator registrator = new TrivialSensorRegistrator(mContext);
+        registrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null,
+                deviceUuid);
 
         // send data point
-        String action = context.getString(nl.sense_os.service.R.string.action_sense_new_data);
+        String action = mContext.getString(nl.sense_os.service.R.string.action_sense_new_data);
         Intent intent = new Intent(action);
         intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
         intent.putExtra(DataPoint.DISPLAY_NAME, displayName);
         intent.putExtra(DataPoint.SENSOR_DESCRIPTION, description);
         intent.putExtra(DataPoint.DATA_TYPE, dataType);
-        intent.putExtra(DataPoint.VALUE, value);
+        intent.putExtra(DataPoint.DEVICE_UUID, deviceUuid);
+        if (dataType.equals(SenseDataTypes.JSON)
+                || dataType.equals(SenseDataTypes.JSON_TIME_SERIES)) {
+            intent.putExtra(DataPoint.VALUE, value.toString());
+        } else if (dataType.equals(SenseDataTypes.BOOL)) {
+            intent.putExtra(DataPoint.VALUE, (Boolean) value);
+        } else if (dataType.equals(SenseDataTypes.FLOAT)) {
+            intent.putExtra(DataPoint.VALUE, (Float) value);
+        } else if (dataType.equals(SenseDataTypes.INT)) {
+            intent.putExtra(DataPoint.VALUE, (Integer) value);
+        } else if (dataType.equals(SenseDataTypes.STRING)) {
+            intent.putExtra(DataPoint.VALUE, (String) value);
+        } else {
+            intent.putExtra(DataPoint.VALUE, (String) value);
+        }
         intent.putExtra(DataPoint.TIMESTAMP, timestamp);
-        ComponentName serviceName = context.startService(intent);
+        ComponentName serviceName = mContext.startService(intent);
 
         if (null != serviceName) {
             return true;
@@ -156,12 +209,12 @@ public class SensePlatform {
      */
     private void bindToSenseService() {
         // start the service if it was not running already
-        if (!isServiceBound) {
+        if (!mServiceBound) {
             Log.v(TAG, "Try to bind to Sense Platform service");
 
             final Intent serviceIntent = new Intent(
-                    context.getString(R.string.action_sense_service));
-            boolean bindResult = context.bindService(serviceIntent, serviceConn,
+                    mContext.getString(R.string.action_sense_service));
+            boolean bindResult = mContext.bindService(serviceIntent, mServiceConnection,
                     Context.BIND_AUTO_CREATE);
 
             Log.v(TAG, "Result: " + bindResult);
@@ -178,7 +231,7 @@ public class SensePlatform {
      *             If the Sense service is not bound yet
      */
     private void checkSenseService() throws IllegalStateException {
-        if (service == null) {
+        if (mSenseService == null) {
             throw new IllegalStateException("Sense service not bound");
         }
     }
@@ -199,8 +252,8 @@ public class SensePlatform {
      */
     public boolean flushData() throws IllegalStateException {
         checkSenseService();
-        Intent flush = new Intent(context.getString(R.string.action_sense_send_data));
-        ComponentName started = context.startService(flush);
+        Intent flush = new Intent(mContext.getString(R.string.action_sense_send_data));
+        ComponentName started = mContext.startService(flush);
         return null != started;
     }
 
@@ -217,7 +270,7 @@ public class SensePlatform {
     }
 
     public Context getContext() {
-        return context;
+        return mContext;
     }
 
     /**
@@ -262,7 +315,7 @@ public class SensePlatform {
         JSONArray result = new JSONArray();
 
         // select remote path in local storage
-        String localStorage = context.getString(R.string.local_storage_authority);
+        String localStorage = mContext.getString(R.string.local_storage_authority);
         Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_REMOTE_URI_PATH);
 
         // get the data
@@ -312,7 +365,7 @@ public class SensePlatform {
         JSONArray result = new JSONArray();
 
         // select remote path in local storage
-        String localStorage = context.getString(R.string.local_storage_authority);
+        String localStorage = mContext.getString(R.string.local_storage_authority);
         Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_URI_PATH);
 
         // get the data
@@ -325,7 +378,7 @@ public class SensePlatform {
      * @return The intent action for new sensor data. This can be used to subscribe to new data.
      */
     public String getNewDataAction() {
-        return context.getString(R.string.action_sense_new_data);
+        return mContext.getString(R.string.action_sense_new_data);
     }
 
     /**
@@ -333,7 +386,7 @@ public class SensePlatform {
      */
     public SenseServiceStub getService() {
         checkSenseService();
-        return service;
+        return mSenseService;
     }
 
     /**
@@ -378,7 +431,7 @@ public class SensePlatform {
         Cursor cursor = null;
         JSONArray result = new JSONArray();
 
-        String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(context) : null;
+        String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(mContext) : null;
 
         String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
         String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
@@ -393,7 +446,7 @@ public class SensePlatform {
         }
 
         try {
-            cursor = LocalStorage.getInstance(context).query(uri, projection, selection,
+            cursor = LocalStorage.getInstance(mContext).query(uri, projection, selection,
                     selectionArgs, limit, sortOrder);
 
             if (null != cursor && cursor.moveToFirst()) {
@@ -442,7 +495,7 @@ public class SensePlatform {
         flushData();
 
         // use feedback manager
-        FeedbackManager fm = new FeedbackManager(context);
+        FeedbackManager fm = new FeedbackManager(mContext);
         boolean result = fm.giveFeedback(state, from.getTime(), to.getTime(), label);
 
         return result;
@@ -465,7 +518,7 @@ public class SensePlatform {
     public void login(String user, String password, ISenseServiceCallback callback)
             throws IllegalStateException, RemoteException {
         checkSenseService();
-        service.changeLogin(user, password, callback);
+        mSenseService.changeLogin(user, password, callback);
     }
 
     /**
@@ -473,7 +526,7 @@ public class SensePlatform {
      */
     public void logout() throws IllegalStateException, RemoteException {
         checkSenseService();
-        service.logout();
+        mSenseService.logout();
     }
 
     /**
@@ -504,21 +557,21 @@ public class SensePlatform {
             String zipCode, String country, String firstName, String surname, String mobileNumber,
             ISenseServiceCallback callback) throws IllegalStateException, RemoteException {
         checkSenseService();
-        service.register(username, password, email, address, zipCode, country, firstName, surname,
-                mobileNumber, callback);
+        mSenseService.register(username, password, email, address, zipCode, country, firstName,
+                surname, mobileNumber, callback);
     }
 
     /**
-     * Unbinds from the Sense service, resets {@link #service} and {@link #isServiceBound}.
+     * Unbinds from the Sense service, resets {@link #mSenseService} and {@link #mServiceBound}.
      */
     private void unbindFromSenseService() {
-        if (true == isServiceBound && null != serviceConn) {
+        if (true == mServiceBound && null != mServiceConnection) {
             Log.v(TAG, "Unbind from Sense Platform service");
-            context.unbindService(serviceConn);
+            mContext.unbindService(mServiceConnection);
         } else {
             // already unbound
         }
-        service = null;
-        isServiceBound = false;
+        mSenseService = null;
+        mServiceBound = false;
     }
 }
