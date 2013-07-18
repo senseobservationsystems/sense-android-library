@@ -52,16 +52,28 @@ public class SubscriptionManager {
      * @return A List of data producers that are registered under the given sensor name
      */
     public List<DataProducer> getRegisteredProducers(String name) {
-        return mProducers.get(name);
+        List<DataProducer> original = mProducers.get(name);
+        if (null != original) {
+            // return a copy of the list
+            return new ArrayList<DataProducer>(original);
+        } else {
+            return null;
+        }
     }
 
     /**
      * @param name
-     *            The name of the DataProcessor
+     *            The name of the DataConsumer
      * @return A List of data consumers that are subscribed to the given sensor name
      */
     public List<DataConsumer> getSubscribedConsumers(String name) {
-        return mConsumers.get(name);
+        List<DataConsumer> original = mConsumers.get(name);
+        if (null != original) {
+            // return a copy of the list
+            return new ArrayList<DataConsumer>(original);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -73,16 +85,13 @@ public class SubscriptionManager {
      */
     public boolean isConsumerSubscribed(String name, DataConsumer consumer) {
 
-        if (!mConsumers.containsKey(name)) {
-            // nothing is subscribed to this sensor name
-            return false;
-        }
-
-        // check if dataProcessor is in the list of subscribed processors
-        List<DataConsumer> processors = mConsumers.get(name);
-        for (DataConsumer registeredProcessor : processors) {
-            if (registeredProcessor.equals(consumer)) {
-                return true;
+        // check if data consumer is in the list of subscribed consumers
+        List<DataConsumer> consumers = getSubscribedConsumers(name);
+        if (null != consumers) {
+            for (DataConsumer registeredConsumer : consumers) {
+                if (registeredConsumer.equals(consumer)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -106,16 +115,13 @@ public class SubscriptionManager {
      */
     public boolean isProducerRegistered(String name, DataProducer producer) {
 
-        if (!isProducerRegistered(name)) {
-            // nothing is registered under this sensor name
-            return false;
-        }
-
         // check if producer is already in the list of registered producers
-        List<DataProducer> producers = mProducers.get(name);
-        for (DataProducer registeredProducer : producers) {
-            if (registeredProducer.equals(producer)) {
-                return true;
+        List<DataProducer> producers = getRegisteredProducers(name);
+        if (null != producers) {
+            for (DataProducer registeredProducer : producers) {
+                if (registeredProducer.equals(producer)) {
+                    return true;
+                }
             }
         }
         return false;
