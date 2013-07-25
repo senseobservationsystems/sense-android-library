@@ -233,6 +233,10 @@ public class SubscriptionManager {
 
         // remove the producer from the list of registered producers for this sensor name
         List<DataProducer> dataProducers = getRegisteredProducers(name);
+        if (null == dataProducers) {
+            // apparently the list is already gone
+            return;
+        }
         dataProducers.remove(producer);
 
         // update the map of registered producers
@@ -258,8 +262,12 @@ public class SubscriptionManager {
             return;
         }
 
-        // remove the processor from the list of subscribed processors
+        // remove the consumer from the list of subscribed consumer
         List<DataConsumer> consumers = getSubscribedConsumers(name);
+        if (null == consumers) {
+            // apparently the list is already gone
+            return;
+        }
         consumers.remove(consumer);
 
         // update the map of consumers
@@ -271,8 +279,10 @@ public class SubscriptionManager {
 
         // unsubscribe the consumer from the producers for this sensor name
         List<DataProducer> producers = getRegisteredProducers(name);
-        for (DataProducer registeredProducer : producers) {
-            registeredProducer.removeSubscriber(consumer);
+        if (null != producers) {
+            for (DataProducer registeredProducer : producers) {
+                registeredProducer.removeSubscriber(consumer);
+            }
         }
     }
 }
