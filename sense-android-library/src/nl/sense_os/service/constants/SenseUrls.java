@@ -11,76 +11,56 @@ import nl.sense_os.service.commonsense.SenseApi;
  */
 public class SenseUrls {
 
-	public static final String BASE = "https://api.sense-os.nl/";
-	public static final String DEV_BASE = "http://api.dev.sense-os.nl/";
-	public static final String VERSION = "http://data.sense-os.nl/senseapp/version.php";
-
-	public static final String FORMAT = ".json";
-    /**
-     * Default page size for getting lists at CommonSense
-     */
+    /** Host name of CommonSense API */
+    public static final String API = "https://api.sense-os.nl/";
+    /** Host name of CommonSense dev API */
+    public static final String API_DEV = "http://api.dev.sense-os.nl/";
+    /** Default page size for getting lists at CommonSense */
     public static final int PAGE_SIZE = 1000;
 
-	public static final String DEVICES = BASE + "devices" + FORMAT;
-	public static final String DEV_DEVICES = DEV_BASE + "devices" + FORMAT;
-
-	public static final String SENSORS = BASE + "devices/<id>/sensors" + FORMAT;
-	public static final String DEV_SENSORS = DEV_BASE + "devices/<id>/sensors" + FORMAT;
-
-    public static final String ALL_SENSORS = BASE + "sensors" + FORMAT + "?per_page=" + PAGE_SIZE
+    public static final String ALL_SENSORS = API + "sensors" + "?per_page=" + PAGE_SIZE
             + "&details=full";
-    public static final String DEV_ALL_SENSORS = DEV_BASE + "sensors" + FORMAT + "?per_page="
+    public static final String ALL_SENSORS_DEV = API_DEV + "sensors" + "?per_page=" + PAGE_SIZE
+            + "&details=full";
+    public static final String CONFIGURATION = API + "configurations/%1";
+    public static final String CONFIGURATION_DEV = API_DEV + "configurations/%1";
+    public static final String CONNECTED_SENSORS = API + "sensors/%1/sensors" + "?per_page="
             + PAGE_SIZE + "&details=full";
-
-	public static final String REGISTER_GCM_ID = BASE + "devices/<id>/push/register" + FORMAT;
-	public static final String DEV_REGISTER_GCM_ID = DEV_BASE + "devices/<id>/push/register"
-			+ FORMAT;
-
-	public static final String DEVICE_UPDATE_CONFIGURATION = BASE + "devices/<id>/configuration"
-			+ FORMAT;
-	public static final String DEV_DEVICE_UPDATE_CONFIGURATION = DEV_BASE
-			+ "devices/<id>/configuration" + FORMAT;
-
-	public static final String CONFIGURATION = BASE + "configurations/<id>" + FORMAT;
-	public static final String DEV_CONFIGURATION = DEV_BASE + "configurations/<id>" + FORMAT;
-
-	public static final String SENSOR_DATA = BASE + "sensors/<id>/data" + FORMAT;
-	public static final String DEV_SENSOR_DATA = DEV_BASE + "sensors/<id>/data" + FORMAT;
-
-	public static final String SENSOR_FILE = BASE + "sensors/<id>/file" + FORMAT;
-	public static final String DEV_SENSOR_FILE = DEV_BASE + "sensors/<id>/file" + FORMAT;
-
-	public static final String CREATE_SENSOR = BASE + "sensors" + FORMAT;
-	public static final String DEV_CREATE_SENSOR = DEV_BASE + "sensors" + FORMAT;
-
-	public static final String ADD_SENSOR_TO_DEVICE = BASE + "sensors/<id>/device" + FORMAT;
-	public static final String DEV_ADD_SENSOR_TO_DEVICE = DEV_BASE + "sensors/<id>/device" + FORMAT;
-
-	public static final String GET_CURRENT_USER = BASE + "users/current" + FORMAT;
-	public static final String DEV_GET_CURRENT_USER = DEV_BASE + "users/current" + FORMAT;
-	
-	public static final String JOIN_GROUP = BASE + "groups/<id>/users" + FORMAT;
-	public static final String DEV_JOIN_GROUP = DEV_BASE + "groups/<id>/users" + FORMAT;
-	
-	public static final String SHARE_SENSOR = BASE + "sensors/<id>/users" + FORMAT;
-	public static final String DEV_SHARE_SENSOR = DEV_BASE + "sensors/<id>/users" + FORMAT;
-
-	public static final String LOGIN = BASE + "login" + FORMAT;
-	public static final String DEV_LOGIN = DEV_BASE + "login" + FORMAT;
-
-    public static final String CONNECTED_SENSORS = BASE + "sensors/<id>/sensors" + FORMAT
+    public static final String CONNECTED_SENSORS_DEV = API_DEV + "sensors/%1/sensors"
             + "?per_page=" + PAGE_SIZE + "&details=full";
-    public static final String DEV_CONNECTED_SENSORS = DEV_BASE + "sensors/<id>/sensors" + FORMAT
-            + "?per_page=" + PAGE_SIZE + "&details=full";
+    public static final String CREATE_SENSOR_DEV = API_DEV + "sensors";
+    public static final String CURRENT_USER = API + "users/current";
+    public static final String CURRENT_USER_DEV = API_DEV + "users/current";
+    public static final String DEVICE_CONFIGURATION = API + "devices/%1/configuration";
+    public static final String DEVICE_CONFIGURATION_DEV = API_DEV + "devices/%1/configuration";
+    public static final String DEVICE_SENSORS = API + "devices/%1/sensors";
+    public static final String DEVICE_SENSORS_DEV = API_DEV + "devices/%1/sensors";
+    public static final String DEVICES = API + "devices";
+    public static final String DEVICES_DEV = API_DEV + "devices";
+    public static final String FORGOT_PASSWORD = API + "requestPasswordReset";
+    public static final String FORGOT_PASSWORD_DEV = API_DEV + "requestPasswordReset";
+    public static final String GROUP_USERS = API + "groups/%1/users";
+    public static final String GROUP_USERS_DEV = API_DEV + "groups/%1/users";
+    public static final String LOGIN = API + "login";
+    public static final String LOGIN_DEV = API_DEV + "login";
+    public static final String MANUAL_LEARN = API + "sensors/%1/services/%2/manualLearn";
+    public static final String MANUAL_LEARN_DEV = API_DEV + "sensors/%1/services/%2/manualLearn";
+    public static final String REGISTER = API + "users";
+    public static final String REGISTER_DEV = API_DEV + "users";
+    public static final String REGISTER_GCM_ID = API + "devices/%1/push/register";
+    public static final String REGISTER_GCM_ID_DEV = API_DEV + "devices/%1/push/register";
+    public static final String SENSOR_DATA = API + "sensors/%1/data";
+    public static final String SENSOR_DATA_DEV = API_DEV + "sensors/%1/data";
+    public static final String SENSOR_DEVICE = API + "sensors/%1/device";
+    public static final String SENSOR_DEVICE_DEV = API_DEV + "sensors/%1/device";
+    public static final String SENSOR_FILE = API + "sensors/%1/file";
+    public static final String SENSOR_FILE_DEV = API_DEV + "sensors/%1/file";
+    public static final String SENSOR_USERS = API + "sensors/%1/users";
+    public static final String SENSOR_USERS_DEV = API_DEV + "sensors/%1/users";
+    public static final String SENSORS = API + "sensors";
+    public static final String VERSION = "http://data.sense-os.nl/senseapp/version.php";
 
-	public static final String MANUAL_LEARN = BASE + "sensors/%1/services/%2/manualLearn" + FORMAT;
-	public static final String DEV_MANUAL_LEARN = DEV_BASE + "sensors/%1/services/%2/manualLearn"
-			+ FORMAT;
-
-	public static final String REG = BASE + "users" + FORMAT;
-	public static final String DEV_REG = DEV_BASE + "users" + FORMAT;
-
-	private SenseUrls() {
-		// private constructor to prevent instantiation
-	}
+    private SenseUrls() {
+        // private constructor to prevent instantiation
+    }
 }
