@@ -51,6 +51,8 @@ public class SenseUrls {
     public static final String REGISTER_GCM_ID_DEV = API_DEV + "devices/%1/push/register";
     public static final String SENSOR_DATA = API + "sensors/%1/data";
     public static final String SENSOR_DATA_DEV = API_DEV + "sensors/%1/data";
+    public static final String SENSOR_DATA_MULTIPLE = API + "sensors/data";
+    public static final String SENSOR_DATA_MULTIPLE_DEV = API_DEV + "sensors/data";
     public static final String SENSOR_DEVICE = API + "sensors/%1/device";
     public static final String SENSOR_DEVICE_DEV = API_DEV + "sensors/%1/device";
     public static final String SENSOR_FILE = API + "sensors/%1/file";
