@@ -77,8 +77,7 @@ public class BufferTransmitHandler extends Handler {
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
 		boolean devMode = mainPrefs.getBoolean(Main.Advanced.DEV_MODE, false);
-		url = devMode ? SenseUrls.SENSOR_DATA_DEV.replace("/<id>/", "/") : SenseUrls.SENSOR_DATA
-				.replace("/<id>/", "/");
+		url = devMode ? SenseUrls.SENSOR_DATA_MULTIPLE_DEV : SenseUrls.SENSOR_DATA_MULTIPLE;
 	}
 
 	/**
