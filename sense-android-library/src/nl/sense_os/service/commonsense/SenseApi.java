@@ -3,29 +3,13 @@
  *************************************************************************************************/
 package nl.sense_os.service.commonsense;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.zip.GZIPOutputStream;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Build;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -41,13 +25,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Build;
-import android.telephony.TelephonyManager;
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.zip.GZIPOutputStream;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Main interface for communicating with the CommonSense API.
@@ -56,13 +51,24 @@ import android.util.Log;
  */
 public class SenseApi {
 
-    private static final String TAG = "SenseApi";
     private static final long CACHE_REFRESH = 1000l * 60 * 60; // 1 hour
+    private static final String TAG = "SenseApi";
     /** Device UUID for sensors that are not physical sensors, i.e. not connected to any device */
     public static final String NO_DEVICE_UUID = "no_device_uuid";
-    private static SharedPreferences mainPrefs;
-    private static SharedPreferences authPrefs;
-    private static TelephonyManager telManager;
+    /**
+     * Key for getting the http response code from the Map object that is returned by
+     * {@link SenseApi#request(Context, String, JSONObject, String)}
+     */
+    public static final String RESPONSE_CODE = "http response code";
+    /**
+     * Key for getting the response content from the Map object that is returned by
+     * {@link SenseApi#request(Context, String, JSONObject, String)}
+     */
+    public static final String RESPONSE_CONTENT = "content";
+
+    private static SharedPreferences sAuthPrefs;
+    private static SharedPreferences sMainPrefs;
+    private static TelephonyManager sTelManager;
 
     /**
      * Gets a list of all registered sensors for a user at the CommonSense API. Uses caching for
@@ -78,14 +84,14 @@ public class SenseApi {
      */
     public static JSONArray getAllSensors(Context context) throws IOException, JSONException {
 
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
 
         // try to get list of sensors from the cache
         try {
-            String cachedSensors = authPrefs.getString(Auth.SENSOR_LIST_COMPLETE, null);
-            long cacheTime = authPrefs.getLong(Auth.SENSOR_LIST_COMPLETE_TIME, 0);
+            String cachedSensors = sAuthPrefs.getString(Auth.SENSOR_LIST_COMPLETE, null);
+            long cacheTime = sAuthPrefs.getLong(Auth.SENSOR_LIST_COMPLETE_TIME, 0);
             boolean isOutdated = System.currentTimeMillis() - cacheTime > CACHE_REFRESH;
 
             // return cached list of it is still valid
@@ -106,27 +112,27 @@ public class SenseApi {
         int page = 0;
         while (!done) {
             // request fresh list of sensors for this device from CommonSense
-            String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-            if (null == mainPrefs) {
-                mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+            String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+            if (null == sMainPrefs) {
+                sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                         Context.MODE_PRIVATE);
             }
-            boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+            boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
             if (devMode) {
                 Log.v(TAG, "Using development server to get registered sensors");
             }
-            String url = devMode ? SenseUrls.DEV_ALL_SENSORS : SenseUrls.ALL_SENSORS;
+            String url = devMode ? SenseUrls.ALL_SENSORS_DEV : SenseUrls.ALL_SENSORS;
             url += "&page=" + page;
             Map<String, String> response = SenseApi.request(context, url, null, cookie);
 
-            String responseCode = response.get("http response code");
+            String responseCode = response.get(RESPONSE_CODE);
             if (!"200".equals(responseCode)) {
                 Log.w(TAG, "Failed to get list of sensors! Response code: " + responseCode);
                 throw new IOException("Incorrect response from CommonSense: " + responseCode);
             }
 
             // parse response and store the list
-            JSONObject content = new JSONObject(response.get("content"));
+            JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));
             JSONArray sensorList = content.getJSONArray("sensors");
 
             // put the sensor list in the result array
@@ -144,7 +150,7 @@ public class SenseApi {
         }
 
         // store the new sensor list
-        Editor authEditor = authPrefs.edit();
+        Editor authEditor = sAuthPrefs.edit();
         authEditor.putString(Auth.SENSOR_LIST_COMPLETE, result.toString());
         authEditor.putLong(Auth.SENSOR_LIST_COMPLETE_TIME, System.currentTimeMillis());
         authEditor.commit();
@@ -164,31 +170,31 @@ public class SenseApi {
     public static List<String> getConnectedSensors(Context context, String sensorId)
             throws IOException, JSONException {
 
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
         // request fresh list of sensors for this device from CommonSense
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         if (devMode) {
             Log.v(TAG, "Using development server to get connected sensors");
         }
-        String url = devMode ? SenseUrls.DEV_CONNECTED_SENSORS : SenseUrls.CONNECTED_SENSORS;
-        url = url.replace("<id>", sensorId);
+        String url = devMode ? SenseUrls.CONNECTED_SENSORS_DEV : SenseUrls.CONNECTED_SENSORS;
+        url = url.replace("%1", sensorId);
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
 
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to get list of connected sensors! Response code: " + responseCode);
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
         }
 
         // parse response and store the list
-        JSONObject content = new JSONObject(response.get("content"));
+        JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));
         JSONArray sensorList = content.getJSONArray("sensors");
 
         List<String> result = new ArrayList<String>();
@@ -205,10 +211,10 @@ public class SenseApi {
      * @return The default device type, i.e. the phone's model String
      */
     public static String getDefaultDeviceType(Context context) {
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        return authPrefs.getString(Auth.DEVICE_TYPE, Build.MODEL);
+        return sAuthPrefs.getString(Auth.DEVICE_TYPE, Build.MODEL);
     }
 
     /**
@@ -218,10 +224,10 @@ public class SenseApi {
      */
     @TargetApi(9)
     public static String getDefaultDeviceUuid(Context context) {
-        if (null == telManager) {
-            telManager = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE));
+        if (null == sTelManager) {
+            sTelManager = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE));
         }
-        String uuid = telManager.getDeviceId();
+        String uuid = sTelManager.getDeviceId();
         if (null == uuid) {
             // device has no IMEI, try using the Android serial code
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
@@ -240,31 +246,30 @@ public class SenseApi {
      * @throws IOException
      */
     public static String getDeviceConfiguration(Context context) throws IOException, JSONException {
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-        String url = devMode ? SenseUrls.DEV_DEVICE_UPDATE_CONFIGURATION
-                : SenseUrls.DEVICE_UPDATE_CONFIGURATION;
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String url = devMode ? SenseUrls.DEVICE_CONFIGURATION_DEV : SenseUrls.DEVICE_CONFIGURATION;
 
         // Get the device ID
         String device_id = getDeviceId(context);
 
-        url = url.replaceFirst("<id>", device_id);
+        url = url.replaceFirst("%1", device_id);
 
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to get device configuration! Response code: " + responseCode);
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
         }
 
-        return response.get("content");
+        return response.get(RESPONSE_CONTENT);
     }
 
     /**
@@ -283,18 +288,18 @@ public class SenseApi {
 
         String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
         boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
-        String url = devMode ? SenseUrls.DEV_CONFIGURATION : SenseUrls.CONFIGURATION;
+        String url = devMode ? SenseUrls.CONFIGURATION_DEV : SenseUrls.CONFIGURATION;
 
-        url = url.replaceFirst("<id>", configuration_id);
+        url = url.replaceFirst("%1", configuration_id);
 
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to get Requirement! Response code: " + responseCode);
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
         }
 
-        return response.get("content");
+        return response.get(RESPONSE_CONTENT);
     }
 
     /**
@@ -307,26 +312,26 @@ public class SenseApi {
     public static String getDeviceId(Context context) throws IOException, JSONException {
         String device_id = null;
 
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-        String url = devMode ? SenseUrls.DEV_DEVICES : SenseUrls.DEVICES;
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String url = devMode ? SenseUrls.DEVICES_DEV : SenseUrls.DEVICES;
 
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to get devices data: " + responseCode);
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
         }
 
         // check registration result
-        JSONObject res = new JSONObject(response.get("content"));
+        JSONObject res = new JSONObject(response.get(RESPONSE_CONTENT));
         JSONArray arr = res.getJSONArray("devices");
 
         String deviceType = getDefaultDeviceType(context);
@@ -462,18 +467,18 @@ public class SenseApi {
             return null;
         }
 
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         // found the right sensor
         if (dataType.equals(SenseDataTypes.FILE)) {
-            String url = devMode ? SenseUrls.DEV_SENSOR_FILE : SenseUrls.SENSOR_FILE;
-            return url.replaceFirst("<id>", id);
+            String url = devMode ? SenseUrls.SENSOR_FILE_DEV : SenseUrls.SENSOR_FILE;
+            return url.replaceFirst("%1", id);
         } else {
-            String url = devMode ? SenseUrls.DEV_SENSOR_DATA : SenseUrls.SENSOR_DATA;
-            return url.replaceFirst("<id>", id);
+            String url = devMode ? SenseUrls.SENSOR_DATA_DEV : SenseUrls.SENSOR_DATA;
+            return url.replaceFirst("%1", id);
         }
     }
 
@@ -485,10 +490,10 @@ public class SenseApi {
      *             if the app ID is not valid
      */
     public static String getSessionId(Context context) throws IllegalAccessException {
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        return authPrefs.getString(Auth.LOGIN_COOKIE, null);
+        return sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
     }
 
     /**
@@ -503,25 +508,25 @@ public class SenseApi {
      *             In case of communication failure to CommonSense
      */
     public static JSONObject getUser(Context context) throws IOException, JSONException {
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
-        String url = devMode ? SenseUrls.DEV_GET_CURRENT_USER : SenseUrls.GET_CURRENT_USER;
+        String url = devMode ? SenseUrls.CURRENT_USER_DEV : SenseUrls.CURRENT_USER;
 
         // perform actual request
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
 
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         JSONObject result = null;
         if ("200".equalsIgnoreCase(responseCode)) {
-            result = new JSONObject(response.get("content")).getJSONObject("user");
+            result = new JSONObject(response.get(RESPONSE_CONTENT)).getJSONObject("user");
         } else {
             Log.w(TAG, "Failed to get user! Response code: " + responseCode);
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
@@ -572,21 +577,21 @@ public class SenseApi {
      */
     public static boolean joinGroup(Context context, String groupId) throws JSONException,
             IOException {
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         // get userId
         String userId = getUser(context).getString("id");
 
-        String url = devMode ? SenseUrls.DEV_JOIN_GROUP : SenseUrls.JOIN_GROUP;
-        url = url.replaceFirst("<id>", groupId);
+        String url = devMode ? SenseUrls.GROUP_USERS_DEV : SenseUrls.GROUP_USERS;
+        url = url.replaceFirst("%1", groupId);
 
         // create JSON object to POST
         final JSONObject data = new JSONObject();
@@ -601,7 +606,7 @@ public class SenseApi {
         // perform actual request
         Map<String, String> response = SenseApi.request(context, url, data, cookie);
 
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         boolean result = false;
         if ("201".equalsIgnoreCase(responseCode)) {
             result = true;
@@ -636,18 +641,18 @@ public class SenseApi {
             throws JSONException, IOException {
 
         // preferences
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         if (devMode) {
             Log.v(TAG, "Using development server to log in");
         }
-        final String url = devMode ? SenseUrls.DEV_LOGIN : SenseUrls.LOGIN;
+        final String url = devMode ? SenseUrls.LOGIN_DEV : SenseUrls.LOGIN;
         final JSONObject user = new JSONObject();
         user.put("username", username);
         user.put("password", password);
@@ -656,7 +661,7 @@ public class SenseApi {
         Map<String, String> response = request(context, url, user, null);
 
         // if response code is not 200 (OK), the login was incorrect
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         int result = -1;
         if ("403".equalsIgnoreCase(responseCode)) {
             Log.w(TAG, "CommonSense login refused! Response: forbidden!");
@@ -678,7 +683,7 @@ public class SenseApi {
         }
 
         // handle result
-        Editor authEditor = authPrefs.edit();
+        Editor authEditor = sAuthPrefs.edit();
         switch (result) {
         case 0: // logged in
             authEditor.putString(Auth.LOGIN_COOKIE, cookie);
@@ -711,24 +716,24 @@ public class SenseApi {
     public static void registerGCMId(Context context, String registrationId) throws IOException,
             JSONException {
 
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
         // Check if already synced with common sense
-        String pref_registration_id = authPrefs.getString(Auth.GCM_REGISTRATION_ID, "");
+        String pref_registration_id = sAuthPrefs.getString(Auth.GCM_REGISTRATION_ID, "");
 
         if (registrationId.equals(pref_registration_id)) {
             // GCM registration id is already sync with commonSense
             return;
         }
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-        String url = devMode ? SenseUrls.DEV_REGISTER_GCM_ID : SenseUrls.REGISTER_GCM_ID;
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String url = devMode ? SenseUrls.REGISTER_GCM_ID_DEV : SenseUrls.REGISTER_GCM_ID;
 
         // Get the device ID
         String device_id = getDeviceId(context);
@@ -738,24 +743,24 @@ public class SenseApi {
             return;
         }
 
-        url = url.replaceFirst("<id>", device_id);
+        url = url.replaceFirst("%1", device_id);
 
         final JSONObject data = new JSONObject();
         data.put("registration_id", registrationId);
 
         Map<String, String> response = SenseApi.request(context, url, data, cookie);
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
         }
 
         // check registration result
-        JSONObject res = new JSONObject(response.get("content"));
+        JSONObject res = new JSONObject(response.get(RESPONSE_CONTENT));
         if (!registrationId.equals(res.getJSONObject("device").getString(GCMReceiver.KEY_GCM_ID))) {
             throw new IllegalStateException("GCM registration_id not match with response");
         }
 
-        Editor authEditor = authPrefs.edit();
+        Editor authEditor = sAuthPrefs.edit();
         authEditor.putString(Auth.GCM_REGISTRATION_ID, registrationId);
         authEditor.commit();
     }
@@ -794,18 +799,18 @@ public class SenseApi {
             String description, String dataType, String value, String deviceType, String deviceUuid)
             throws JSONException, IOException {
 
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         // prepare request to create new sensor
-        String url = devMode ? SenseUrls.DEV_CREATE_SENSOR : SenseUrls.CREATE_SENSOR;
+        String url = devMode ? SenseUrls.CREATE_SENSOR_DEV : SenseUrls.SENSORS;
         JSONObject postData = new JSONObject();
         JSONObject sensor = new JSONObject();
         sensor.put("name", name);
@@ -837,7 +842,7 @@ public class SenseApi {
         Map<String, String> response = request(context, url, postData, cookie);
 
         // check response code
-        String code = response.get("http response code");
+        String code = response.get(RESPONSE_CODE);
         if (!"201".equals(code)) {
             Log.w(TAG, "Failed to register sensor at CommonSense! Response code: " + code);
             throw new IOException("Incorrect response from CommonSense: " + code);
@@ -860,8 +865,8 @@ public class SenseApi {
         }
 
         // add sensor to this device at CommonSense
-        url = devMode ? SenseUrls.DEV_ADD_SENSOR_TO_DEVICE : SenseUrls.ADD_SENSOR_TO_DEVICE;
-        url = url.replaceFirst("<id>", id);
+        url = devMode ? SenseUrls.SENSOR_DEVICE_DEV : SenseUrls.SENSOR_DEVICE;
+        url = url.replaceFirst("%1", id);
         postData = new JSONObject();
         JSONObject device = new JSONObject();
         device.put("type", deviceType);
@@ -871,7 +876,7 @@ public class SenseApi {
         response = request(context, url, postData, cookie);
 
         // check response code
-        code = response.get("http response code");
+        code = response.get(RESPONSE_CODE);
         if (!"201".equals(code)) {
             Log.w(TAG, "Failed to add sensor to device at CommonSense! Response code: " + code);
             throw new IOException("Incorrect response from CommonSense: " + code);
@@ -882,7 +887,7 @@ public class SenseApi {
         sensor.put("device", device);
         JSONArray sensors = getAllSensors(context);
         sensors.put(sensor);
-        Editor authEditor = authPrefs.edit();
+        Editor authEditor = sAuthPrefs.edit();
         authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
         authEditor.commit();
 
@@ -913,12 +918,12 @@ public class SenseApi {
     public static int registerUser(Context context, String username, String password, String name,
             String surname, String email, String mobile) throws JSONException, IOException {
 
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
-        final String url = devMode ? SenseUrls.DEV_REG : SenseUrls.REG;
+        final String url = devMode ? SenseUrls.REGISTER_DEV : SenseUrls.REGISTER;
 
         // create JSON object to POST
         final JSONObject data = new JSONObject();
@@ -942,7 +947,7 @@ public class SenseApi {
         // perform actual request
         Map<String, String> response = SenseApi.request(context, url, data, null);
 
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         int result = -1;
         if ("201".equalsIgnoreCase(responseCode)) {
             result = 0;
@@ -969,8 +974,8 @@ public class SenseApi {
      *            is automatically POST. The default method is GET.
      * @param cookie
      *            (Optional) Cookie header for the request.
-     * @return Map with "content" and "http response code" fields, plus fields for all response
-     *         headers.
+     * @return Map with SenseApi.KEY_CONTENT and SenseApi.KEY_RESPONSE_CODE fields, plus fields for
+     *         all response headers.
      * @throws IOException
      */
     public static Map<String, String> request(Context context, String urlString,
@@ -981,16 +986,15 @@ public class SenseApi {
         try {
 
             // get compression preference
-            if (null == mainPrefs) {
-                mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+            if (null == sMainPrefs) {
+                sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                         Context.MODE_PRIVATE);
             }
-            final boolean compress = mainPrefs.getBoolean(Advanced.COMPRESS, true);
+            final boolean compress = sMainPrefs.getBoolean(Advanced.COMPRESS, true);
 
             // open new URL connection channel.
             URL url = new URL(urlString);
             if ("https".equals(url.getProtocol().toLowerCase(Locale.ENGLISH))) {
-                trustAllHosts();
                 HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
                 https.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
                 urlConnection = https;
@@ -1001,6 +1005,7 @@ public class SenseApi {
             // some parameters
             urlConnection.setUseCaches(false);
             urlConnection.setInstanceFollowRedirects(false);
+            urlConnection.setRequestProperty("Accept", "application/json");
 
             // set cookie (if available)
             if (null != cookie) {
@@ -1058,8 +1063,8 @@ public class SenseApi {
                 responseContent.append(line);
                 responseContent.append('\r');
             }
-            result.put("content", responseContent.toString());
-            result.put("http response code", "" + urlConnection.getResponseCode());
+            result.put(RESPONSE_CONTENT, responseContent.toString());
+            result.put(RESPONSE_CODE, Integer.toString(urlConnection.getResponseCode()));
 
             // clean up
             reader.close();
@@ -1092,6 +1097,45 @@ public class SenseApi {
     }
 
     /**
+     * Request a password reset for the given email address.
+     * 
+     * @param context
+     *            Application context, used for getting preferences.
+     * @param email
+     *            Email address for the account that you want to regain access to.
+     * @return <code>true</code> if the request wasw accepted
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     */
+    public static boolean resetPassword(Context context, String email) throws IOException,
+            JSONException {
+
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+
+        // prepare request
+        String url = devMode ? SenseUrls.FORGOT_PASSWORD_DEV : SenseUrls.FORGOT_PASSWORD;
+        JSONObject content = new JSONObject();
+        content.put("email", email);
+
+        // perform request
+        Map<String, String> result = request(context, url, content, null);
+
+        // check response code
+        String responseCode = result.get(RESPONSE_CODE);
+        if ("200".equals(responseCode)) {
+            return true;
+        } else {
+            Log.w(TAG, "Failed to request password reset! Response code " + responseCode);
+            return false;
+        }
+    }
+
+    /**
      * Shares a sensor with a user or group
      * 
      * @param context
@@ -1108,17 +1152,17 @@ public class SenseApi {
      */
     public static boolean shareSensor(Context context, String sensorId, String userId)
             throws JSONException, IOException {
-        if (null == authPrefs) {
-            authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        if (null == mainPrefs) {
-            mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean devMode = mainPrefs.getBoolean(Advanced.DEV_MODE, false);
-        String url = devMode ? SenseUrls.DEV_SHARE_SENSOR : SenseUrls.SHARE_SENSOR;
-        url = url.replaceFirst("<id>", sensorId);
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String url = devMode ? SenseUrls.SENSOR_USERS_DEV : SenseUrls.SENSOR_USERS;
+        url = url.replaceFirst("%1", sensorId);
 
         // create JSON object to POST
         final JSONObject data = new JSONObject();
@@ -1129,7 +1173,7 @@ public class SenseApi {
         // perform actual request
         Map<String, String> response = SenseApi.request(context, url, data, cookie);
 
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(RESPONSE_CODE);
         boolean result = false;
         if ("201".equalsIgnoreCase(responseCode)) {
             result = true;
@@ -1139,38 +1183,5 @@ public class SenseApi {
         }
 
         return result;
-    }
-
-    /**
-     * Trust every server - do not check for any certificate
-     */
-    // TODO Solve issue with security certificate for HTTPS.
-    private static void trustAllHosts() {
-        // Create a trust manager that does not validate certificate chains
-        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType)
-                    throws CertificateException {
-            }
-
-            @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType)
-                    throws CertificateException {
-            }
-
-            @Override
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return new java.security.cert.X509Certificate[] {};
-            }
-        } };
-
-        // Install the all-trusting trust manager
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

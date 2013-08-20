@@ -87,10 +87,10 @@ public class DataTransmitHandler extends Handler {
             Map<String, String> response = SenseApi.request(ctxRef.get(), url, json, cookie);
 
             // Error when sending
-            if ((response == null) || !response.get("http response code").equals("201")) {
+            if ((response == null) || !response.get(SenseApi.RESPONSE_CODE).equals("201")) {
 
                 // if un-authorized: relogin
-                if ((response != null) && response.get("http response code").equals("403")) {
+                if ((response != null) && response.get(SenseApi.RESPONSE_CODE).equals("403")) {
                     final Intent serviceIntent = new Intent(ctxRef.get().getString(
                             R.string.action_sense_service));
                     serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
@@ -101,8 +101,8 @@ public class DataTransmitHandler extends Handler {
                 if (response != null) {
                     Log.w(TAG,
                             "Failed to send '" + name + "' data. Response code:"
-                                    + response.get("http response code") + ", Response content: '"
-                                    + response.get("content") + "'\nData will be retried");
+                                    + response.get(SenseApi.RESPONSE_CODE) + ", Response content: '"
+                                    + response.get(SenseApi.RESPONSE_CONTENT) + "'\nData will be retried");
                 } else {
                     Log.w(TAG, "Failed to send '" + name + "' data.\nData will be retried.");
                 }

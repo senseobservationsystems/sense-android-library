@@ -97,18 +97,18 @@ public class FeedbackManager {
         if (devMode) {
             Log.i(TAG, "Using development server to get connected sensors");
         }
-        String url = devMode ? SenseUrls.DEV_MANUAL_LEARN : SenseUrls.MANUAL_LEARN;
+        String url = devMode ? SenseUrls.MANUAL_LEARN_DEV : SenseUrls.MANUAL_LEARN;
         url = url.replace("%1", sourceSensorId).replace("%2", stateSensorId);
         Map<String, String> response = SenseApi.request(context, url, json, cookie);
 
-        String responseCode = response.get("http response code");
+        String responseCode = response.get(SenseApi.RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to perform manual learn method! Response code: " + responseCode);
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
         }
 
         // parse response and store the list
-        JSONObject content = new JSONObject(response.get("content"));
+        JSONObject content = new JSONObject(response.get(SenseApi.RESPONSE_CONTENT));
         String msg = content.getString("msg");
 
         return msg;

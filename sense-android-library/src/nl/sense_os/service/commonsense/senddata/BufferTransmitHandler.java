@@ -77,8 +77,7 @@ public class BufferTransmitHandler extends Handler {
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
 		boolean devMode = mainPrefs.getBoolean(Main.Advanced.DEV_MODE, false);
-		url = devMode ? SenseUrls.DEV_SENSOR_DATA.replace("/<id>/", "/") : SenseUrls.SENSOR_DATA
-				.replace("/<id>/", "/");
+		url = devMode ? SenseUrls.SENSOR_DATA_MULTIPLE_DEV : SenseUrls.SENSOR_DATA_MULTIPLE;
 	}
 
 	/**
@@ -321,9 +320,9 @@ public class BufferTransmitHandler extends Handler {
             Log.w(TAG, "Failed to send buffered data points.\nData will be retried later.");
             result = false;
 
-        } else if (response.get("http response code").compareToIgnoreCase("201") != 0) {
+        } else if (response.get(SenseApi.RESPONSE_CODE).compareToIgnoreCase("201") != 0) {
             // incorrect status code
-            String statusCode = response.get("http response code");
+            String statusCode = response.get(SenseApi.RESPONSE_CODE);
 
             // if un-authorized: relogin
             if (statusCode.compareToIgnoreCase("403") == 0) {
@@ -335,7 +334,7 @@ public class BufferTransmitHandler extends Handler {
 
             // Show the HTTP response Code
             Log.w(TAG, "Failed to send buffered data points: " + statusCode
-                    + ", Response content: '" + response.get("content") + "'\n"
+                    + ", Response content: '" + response.get(SenseApi.RESPONSE_CONTENT) + "'\n"
                     + "Data will be retried later");
 
             result = false;
