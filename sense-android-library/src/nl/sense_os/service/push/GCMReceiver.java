@@ -96,7 +96,7 @@ public class GCMReceiver extends GCMBaseIntentService {
      * "update_configuration", "use_configuration")</li>
      * <li>content: the content of the message according to the type</li>
      * <li>toast: the message of the toast</li>
-     * <li>notification: {"title": "title of notification", "content": "content of notification"}</li>
+     * <li>notification: {"title": "title of notification", SenseApi.KEY_CONTENT: "content of notification"}</li>
      * <li>service: "1" for start and "0" for stop</li>
      * <li>update_configuration: null</li>
      * <li>use_configuration: "configuration_id" from commonSense</li>
@@ -116,7 +116,7 @@ public class GCMReceiver extends GCMBaseIntentService {
         // check if I am the intended recipient or else ignore the message
         if (recipient.equals(username)) {
             String type = extras.getString("type");
-            String content = extras.getString("content");
+            String content = extras.getString(SenseApi.RESPONSE_CONTENT);
 
             // switch using
             if (type.equals(TYPE_TOAST)) {
@@ -194,7 +194,7 @@ public class GCMReceiver extends GCMBaseIntentService {
         try {
             content_json = new JSONObject(jsonContent);
             title = content_json.getString("title");
-            text = content_json.getString("content");
+            text = content_json.getString(SenseApi.RESPONSE_CONTENT);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
             builder.setDefaults(Notification.DEFAULT_SOUND)

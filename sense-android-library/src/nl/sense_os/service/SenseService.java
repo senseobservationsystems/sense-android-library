@@ -178,7 +178,7 @@ public class SenseService extends Service {
 
                 String url = SenseUrls.VERSION + "?version=" + versionName;
                 Map<String, String> response = SenseApi.request(this, url, null, null);
-                JSONObject content = new JSONObject(response.get("content"));
+                JSONObject content = new JSONObject(response.get(SenseApi.RESPONSE_CONTENT));
 
                 if (content.getString("message").length() > 0) {
                     Log.i(TAG, "Newer Sense App version available: " + content.toString());
