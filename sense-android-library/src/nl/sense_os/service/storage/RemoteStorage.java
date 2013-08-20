@@ -72,7 +72,7 @@ class RemoteStorage {
         }
 
         // get the data for the sensor
-        String url = SenseUrls.SENSOR_DATA.replace("<id>", id) + "?start_date="
+        String url = SenseUrls.SENSOR_DATA.replace("%1", id) + "?start_date="
                 + timeRangeSelect[0] / 1000d + "&end_date=" + timeRangeSelect[1] / 1000d;
         url += "&per_page=" + limit;
         url += sortOrder != null ? "&sort=" + sortOrder : "";
@@ -83,12 +83,12 @@ class RemoteStorage {
 
         // parse response
         JSONArray data;
-        if (response.get("http response code").equals("200")) {
-            String content = response.get("content");
+        if (response.get(SenseApi.RESPONSE_CODE).equals("200")) {
+            String content = response.get(SenseApi.RESPONSE_CONTENT);
             JSONObject json = new JSONObject(content);
             data = json.getJSONArray("data");
         } else {
-            Log.w(TAG, "Error retrieving sensor data: " + response.get("http response code"));
+            Log.w(TAG, "Error retrieving sensor data: " + response.get(SenseApi.RESPONSE_CODE));
             return null;
         }
 
