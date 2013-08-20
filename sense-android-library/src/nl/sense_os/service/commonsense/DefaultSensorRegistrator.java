@@ -43,7 +43,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
     private boolean checkAmbienceSensors(String deviceType, String deviceUuid) {
 
         // preallocate objects
-        SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        SensorManager sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
         boolean success = true;
 
@@ -108,10 +108,17 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
             sensor = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             if (null != sensor) {
                 success &= checkSensor(SensorNames.AMBIENT_TEMPERATURE, "ambient temperature",
-                        SenseDataTypes.JSON, sensor.getName(), "{\"celsius\":0}", deviceType,
-                        deviceUuid);
+                        SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
             } else {
                 // Log.v(TAG, "No ambient temperature sensor present!");
+            }
+
+            sensor = sm.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+            if (null != sensor) {
+                success &= checkSensor(SensorNames.RELATIVE_HUMIDITY, "relative humidity",
+                        SenseDataTypes.FLOAT, sensor.getName(), "1.0", deviceType, deviceUuid);
+            } else {
+                // Log.v(TAG, "No relative humidity sensor present!");
             }
         }
 
@@ -127,7 +134,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         boolean success = true;
 
         // match myrianode sensor
-        SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+        SharedPreferences mainPrefs = getContext().getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         if (mainPrefs.getBoolean(Main.Advanced.LOCATION_FEEDBACK, false)) {
             success &= checkSensor(SensorNames.ATTACHED_TO_MYRIANODE,
@@ -173,7 +180,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
         // match NFC scan
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            NfcManager nm = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
+            NfcManager nm = (NfcManager) getContext().getSystemService(Context.NFC_SERVICE);
             if (null != nm.getDefaultAdapter()) {
                 success &= checkSensor(SensorNames.NFC_SCAN, "nfc scan", SenseDataTypes.JSON,
                         SensorNames.NFC_SCAN,
@@ -226,10 +233,10 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
     private boolean checkMotionSensors(String deviceType, String deviceUuid) {
 
         // preallocate objects
-        SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        SensorManager sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
         boolean success = true;
-        SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+        SharedPreferences mainPrefs = getContext().getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
 
         sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -347,7 +354,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
     private boolean checkPhoneStateSensors(String deviceType, String deviceUuid) {
 
         // preallocate objects
-        SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        SensorManager sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor;
         boolean success = true;
 
@@ -370,7 +377,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
             // Log.v(TAG, "No proximity sensor present!");
         }
 
-        TelephonyManager tm = (TelephonyManager) context
+        TelephonyManager tm = (TelephonyManager) getContext()
                 .getSystemService(Context.TELEPHONY_SERVICE);
         if (null != tm.getDeviceId()) {
             // match call state

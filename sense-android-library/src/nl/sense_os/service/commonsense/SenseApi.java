@@ -58,6 +58,8 @@ public class SenseApi {
 
     private static final String TAG = "SenseApi";
     private static final long CACHE_REFRESH = 1000l * 60 * 60; // 1 hour
+    /** Device UUID for sensors that are not physical sensors, i.e. not connected to any device */
+    public static final String NO_DEVICE_UUID = "no_device_uuid";
     private static SharedPreferences mainPrefs;
     private static SharedPreferences authPrefs;
     private static TelephonyManager telManager;
@@ -411,7 +413,7 @@ public class SenseApi {
         String id = null;
         JSONObject device;
         for (JSONObject sensor : sensors) {
-            if (null != deviceUuid) {
+            if (null != deviceUuid && !NO_DEVICE_UUID.equals(deviceUuid)) {
                 // check if the device UUID matches
                 device = sensor.optJSONObject("device");
                 if (null != device && deviceUuid.equals(device.optString("uuid"))) {
@@ -423,6 +425,9 @@ public class SenseApi {
                 id = sensor.getString("id");
                 break;
             }
+        }
+        if (null == id) {
+            Log.d(TAG, "missing id for " + name + " (" + description + ") @ " + deviceUuid);
         }
         return id;
     }
@@ -843,13 +848,18 @@ public class SenseApi {
         String[] split = locationHeader.split("/");
         String id = split[split.length - 1];
 
+        // see if sensor should also be connected to a device at CommonSense
+        if (NO_DEVICE_UUID.equals(deviceUuid)) {
+            return id;
+        }
+
         // get device properties from preferences, so it matches the properties in CommonSense
         if (null == deviceUuid) {
             deviceUuid = getDefaultDeviceUuid(context);
             deviceType = getDefaultDeviceType(context);
         }
 
-        // Add sensor to this device at CommonSense
+        // add sensor to this device at CommonSense
         url = devMode ? SenseUrls.DEV_ADD_SENSOR_TO_DEVICE : SenseUrls.ADD_SENSOR_TO_DEVICE;
         url = url.replaceFirst("<id>", id);
         postData = new JSONObject();

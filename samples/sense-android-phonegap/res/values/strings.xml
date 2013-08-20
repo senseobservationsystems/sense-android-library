@@ -9,7 +9,6 @@
     <string name="action_sense_new_data">nl.sense_os.pgtest.NEW_DATA</string>
     <string name="action_sense_send_data">nl.sense_os.pgtest.SEND_DATA</string>
     <string name="action_sense_alive_check_alarm">nl.sense_os.pgtest.CHECK_ALIVE</string>
-    <string name="action_sense_data_transmit_alarm">nl.sense_os.pgtest.TRANSMIT_DATA</string>
     <string name="action_sense_new_requirements">nl.sense_os.pgtest.NEW_REQUIREMENTS</string>
     <string name="action_widget_update">nl.sense_os.pgtest.UPDATE_APP_WIDGET</string>
     <string name="local_storage_authority">nl.sense_os.pgtest.LocalStorage</string>

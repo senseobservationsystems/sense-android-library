@@ -11,17 +11,12 @@
 # generated files
 bin/
 gen/
-target/
 
 # Eclipse-specific stuff
 .settings/
 .project
 .classpath
 .buildpath
-
-# IntelliJ specific stuff
-.idea/
-*.iml
 
 # Local configuration file (sdk path, etc)
 local.properties
