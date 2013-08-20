@@ -11,10 +11,10 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.BaseSensor;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.subscription.BaseSensor;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -253,7 +253,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         } catch (Exception e) {
             Log.e(TAG, "Failed to stop proximity field sample!", e);
         }
-
         // unregister broadcast receiver
         try {
             mContext.unregisterReceiver(mStopSampleReceiver);

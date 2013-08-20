@@ -15,12 +15,12 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.BaseSensor;
-import nl.sense_os.service.shared.DataProducer;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
+import nl.sense_os.service.subscription.BaseSensor;
+import nl.sense_os.service.subscription.DataProducer;
 
 import org.json.JSONObject;
 

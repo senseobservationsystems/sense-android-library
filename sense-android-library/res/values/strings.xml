@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>    
+<resources>
+
     <!-- status bar notification -->
-    <string name="stat_notify_action">nl.sense_os.platform.SenseApp</string>
+    <string name="stat_notify_action" translatable="false">nl.sense_os.platform.SenseApp</string>
     <string name="stat_notify_title">Sense Platform</string>
-    <string name="stat_notify_content_off_loggedin">Sensors inactive, logged in as \'%s\'</string> 
-    <string name="stat_notify_content_off_loggedout">Sensors inactive, no connection to CommonSense</string>  
-    <string name="stat_notify_content_on_loggedin">"Sensors active, logged in as \'%s\'"</string> 
+    <string name="stat_notify_content_off_loggedin">Sensors inactive, logged in as \'%s\'</string>
+    <string name="stat_notify_content_off_loggedout">Sensors inactive, no connection to CommonSense</string>
+    <string name="stat_notify_content_on_loggedin">"Sensors active, logged in as \'%s\'"</string>
     <string name="stat_notify_content_on_loggedout">Sensors active, no connection to CommonSense</string>
-    
+
     <!-- resources for NFC popup dialog -->
     <string name="nfc_dialog_title">NFC tag discovered</string>
     <string name="nfc_dialog_msg">Tag ID: \'%s\'\n\nSave tag in CommonSense?"</string>
-       
+
     <!-- actions for generic Sense Platform, overwrite when bundling Sense into another app -->
-    <string name="action_sense_app">nl.sense_os.platform.SenseApp</string>
-    <string name="action_sense_service">nl.sense_os.platform.SenseService</string>
-    <string name="action_sense_new_data">nl.sense_os.platform.MsgHandler.NEW_DATA</string>
-    <string name="action_sense_send_data">nl.sense_os.platform.MsgHandler.SEND_DATA</string>
-    <string name="action_sense_alive_check_alarm">nl.sense_os.platform.AliveCheck</string>
-    <string name="action_sense_data_transmit_alarm">nl.sense_os.platform.DataTransmit</string>
-    <string name="action_sense_gcm_intent_service">nl.sense_os.service.push.GCMReceiver</string>    
-    
+    <string name="action_sense_app" translatable="false">nl.sense_os.platform.SenseApp</string>
+    <string name="action_sense_service" translatable="false">nl.sense_os.platform.SenseService</string>
+    <string name="action_sense_new_data" translatable="false">nl.sense_os.platform.MsgHandler.NEW_DATA</string>
+    <string name="action_sense_send_data" translatable="false">nl.sense_os.platform.MsgHandler.SEND_DATA</string>
+    <string name="action_sense_alive_check_alarm" translatable="false">nl.sense_os.platform.AliveCheck</string>
+    <string name="action_sense_gcm_intent_service" translatable="false">nl.sense_os.service.push.GCMReceiver</string>
+
     <!-- actions for the app widget -->
-    <string name="action_widget_update">nl.sense_os.platform.AppWidgetUpdate</string>  
+    <string name="action_widget_update" translatable="false">nl.sense_os.platform.AppWidgetUpdate</string>
 
     <!-- LocalStorage authority, overwrite when bundling Sense into another app -->
-    <string name="local_storage_authority">nl.sense_os.platform.provider.LocalStorage</string>
-    
+    <string name="local_storage_authority" translatable="false">nl.sense_os.platform.provider.LocalStorage</string>
+
 </resources>
