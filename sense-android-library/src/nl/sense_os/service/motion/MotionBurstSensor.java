@@ -99,7 +99,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 		String value = "{\"interval\":"
 				+ Math.round((double) LOCAL_BUFFER_TIME / (double) dataBuffer.size())
 				+ ",\"header\":\"" + MotionSensorUtils.getSensorHeader(sensor).toString()
-				+ "\",\"values\":\"" + dataBufferString + "\"}";
+				+ "\",\"values\":" + dataBufferString + "}";
 
 		try {
 			this.notifySubscribers();
