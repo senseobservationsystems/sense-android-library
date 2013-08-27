@@ -689,7 +689,7 @@ public class SenseService extends Service {
                             noiseSensor = NoiseSensor.getInstance(SenseService.this);
                             mSubscrMgr.registerProducer(SensorNames.NOISE, noiseSensor);
                             mSubscrMgr.registerProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
-                            mSubscrMgr.registerProducer(SensorNames.LOUDNESS, noiseSensor);
+                            mSubscrMgr.registerProducer(SensorNames.LOUDNESS, noiseSensor.getLoudnessSensor());
                             mSubscrMgr.registerProducer(SensorNames.NOISE,
                                     noiseSensor.getAutoCalibratedNoiseSensor());
                             noiseSensor.startSensing(finalInterval);
