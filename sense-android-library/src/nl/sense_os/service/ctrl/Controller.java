@@ -27,8 +27,8 @@ public abstract class Controller {
         static final long OFTEN = 1000 * 60 * 1;
     }
 
-    private static final long DEFAULT_BURST_RATE = 10 * 1000;
-    private static final long IDLE_BURST_RATE = 12 * 1000;
+    private static final long DEFAULT_BURST_RATE = 30 * 1000;
+    private static final long IDLE_BURST_RATE = 60 * 1000;
     private static final double IDLE_MOTION_THRESHOLD = 0.09;
     private static final double IDLE_TIME_THRESHOLD = 3 * 60 * 1000;
     private static final String TAG = "Controller";
