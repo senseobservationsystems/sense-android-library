@@ -92,7 +92,7 @@ public class DataTransmitter implements Runnable {
                 // if there is no WiFi connection, postpone the transmission
                 mLastTxBytes = TrafficStats.getMobileTxBytes() - mTxBytes;
                 mTxBytes = TrafficStats.getMobileTxBytes();
-                if ((SystemClock.elapsedRealtime() - mLastTxTime >= ADAPTIVE_TX_INTERVAL)) {
+                if ((SystemClock.elapsedRealtime() - mLastTxTime >= mTxInterval)) {
                     transmissionService();
                 }
                 // if any transmission took place recently, use the tail to transmit the sensor data
