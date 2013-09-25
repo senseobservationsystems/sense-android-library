@@ -55,11 +55,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
 		public void onLocationChanged(Location fix) {
 
 			if (null != lastGpsFix) {
-				if (SNTP.getInstance().getTime() - lastGpsFix.getTime() < MIN_SAMPLE_DELAY) {
-					// Log.v(TAG, "New location fix is too fast after last one");
-					return;
-				}
-				else if (fix.getProvider().equals(LocationManager.NETWORK_PROVIDER) 
+				if (fix.getProvider().equals(LocationManager.NETWORK_PROVIDER) 
 						&& (SNTP.getInstance().getTime() - lastGpsFix.getTime() <= getSampleRate()))
 				{
 					Log.d(TAG, "New network fix is too fast after the GPS fix");
@@ -135,7 +131,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
 
 	private static final String TAG = "Sense LocationSensor";
 	private static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
-	public static final long MIN_SAMPLE_DELAY = 5000; // 5 sec
+	public static final long MIN_SAMPLE_DELAY = 500; // 0.5 sec
 	private static final int DISTANCE_ALARM_ID = 70;
 	private static final float MIN_DISTANCE = 0;
 	private static LocationSensor instance = null;
