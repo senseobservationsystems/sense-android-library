@@ -1107,7 +1107,7 @@ public class SenseService extends Service {
         } else {
             Log.i(TAG, "Stop service");
 
-            onLogOut();
+			//            onLogOut();
             stopSensorModules();
 
             AliveChecker.stopChecks(this);
