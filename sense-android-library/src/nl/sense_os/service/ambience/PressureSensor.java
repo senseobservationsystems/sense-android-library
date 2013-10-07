@@ -78,7 +78,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+//        Log.v(TAG, "Do sample");
 
         // acquire wake lock
         if (null == mWakeLock) {
@@ -204,7 +204,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     }
 
     private void stopSample() {
-        Log.v(TAG, "Stop sample");
+//        Log.v(TAG, "Stop sample");
 
         // release wake lock
         if (null != mWakeLock && mWakeLock.isHeld()) {

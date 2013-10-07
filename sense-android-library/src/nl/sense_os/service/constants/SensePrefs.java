@@ -455,6 +455,13 @@ public class SensePrefs {
 			 * @see SensePrefs#MAIN_PREFS
 			 */
 			public static final String DONT_UPLOAD_BURSTS = "don't upload bursts";
+			
+			/**
+			 * Key for preference that determines the burst duration. Duration is in milliseconds.
+			 * 
+			 * @see SensePrefs#MAIN_PREFS
+			 */
+			public static final String BURST_DURATION = "burst_duration";
 
 			public static final String UNREG = "motion_unregister";
 			/**

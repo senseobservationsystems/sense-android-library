@@ -604,7 +604,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+//        Log.v(TAG, "Do sample");
 
         // clear old sample jobs
         if (noiseSampleJob != null) {

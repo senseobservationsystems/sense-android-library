@@ -144,7 +144,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+//        Log.v(TAG, "Do sample");
 
         // get wake lock
         if (null == wakeLock) {
@@ -411,7 +411,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     private void stopSample() {
-        Log.v(TAG, "Stop sample");
+//        Log.v(TAG, "Stop sample");
 
         // release wake lock
         if (null != wakeLock && wakeLock.isHeld()) {

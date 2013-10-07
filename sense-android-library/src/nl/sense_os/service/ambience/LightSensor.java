@@ -80,7 +80,7 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+//        Log.v(TAG, "Do sample");
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
                 // Log.d(TAG, "Register for sensor " + sensor.getName());
@@ -187,7 +187,7 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
      * Unregisters the listener
      */
     private void stopSample() {
-        Log.v(TAG, "Stop sample");
+//        Log.v(TAG, "Stop sample");
         try {
             smgr.unregisterListener(this);
             listening = false;
