@@ -71,6 +71,10 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         // match noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
                 "0.0", deviceType, deviceUuid);
+        
+        // match audio sensor
+        success &= checkSensor(SensorNames.AUDIO, "audio", SenseDataTypes.JSON, SensorNames.AUDIO,
+                "{\"sample rate\":44100, \"values\":[213.213, 1231.2, 0.0, 0.1]}", deviceType, deviceUuid);
 
         // match auto calibrated noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT,

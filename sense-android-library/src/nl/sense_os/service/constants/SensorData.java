@@ -127,6 +127,9 @@ public class SensorData {
 
         /** Audio spectrum sensor. Part of the Ambience sensors. */
         public static final String AUDIO_SPECTRUM = "audio_spectrum";
+        
+        /** Audio sensor. Part of the Ambience sensors. */
+        public static final String AUDIO = "audio";
 
         /** Microphone output. Part of the Ambience sensors (real-time mode only). */
         public static final String MIC = "microphone";

@@ -57,7 +57,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
      */
     private class NoiseSampleJob implements Runnable {
 
-        private static final int DEFAULT_SAMPLE_RATE = 44100;
+        private static final int DEFAULT_SAMPLE_RATE = 16000;
         /*
          * samples per second * 2 seconds, 2 bytes
          */
@@ -286,6 +286,8 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                             }
                             if (mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true))
                                 spectrum = calculateSpectrum(samples);
+                            if (mainPrefs.getBoolean(Ambience.AUDIO, false))
+                                audioSensor.onNewData(startTimestamp, samples, DEFAULT_SAMPLE_RATE);
                         }
 
                         if (dB != -1 && !Double.valueOf(dB).isNaN()) {
@@ -556,6 +558,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
     private Handler noiseSampleHandler = new Handler();
     private NoiseSampleJob noiseSampleJob = null;
     private LoudnessSensor loudnessSensor;
+    private AudioSensor audioSensor;
     private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
     private Controller controller;
     private PeriodicPollAlarmReceiver pollAlarmReceiver;
@@ -600,6 +603,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         controller = Controller.getController(context);
         loudnessSensor = LoudnessSensor.getInstance(context);
         autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
+        audioSensor = AudioSensor.getInstance(context);
     }
 
     @Override
@@ -626,6 +630,10 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
     }
     public DataProducer getAutoCalibratedNoiseSensor() {
         return autoCalibratedNoiseSensor;
+    }
+    
+    public DataProducer getAudioSensor() {
+        return audioSensor;
     }
 
     @Override

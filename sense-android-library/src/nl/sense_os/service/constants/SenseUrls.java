@@ -12,7 +12,7 @@ import nl.sense_os.service.commonsense.SenseApi;
 public class SenseUrls {
 
     /** Host name of CommonSense API */
-    public static final String API = "https://api.sense-os.nl/";
+    public static final String API = "http://api.sense-os.nl/";
     /** Host name of CommonSense dev API */
     public static final String API_DEV = "http://api.dev.sense-os.nl/";
     /** Default page size for getting lists at CommonSense */

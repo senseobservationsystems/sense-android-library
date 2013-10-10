@@ -680,7 +680,7 @@ public class SenseService extends Service {
                     public void run() {
 
                         if (mainPrefs.getBoolean(Ambience.MIC, true)
-                                || mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true)) {
+                                || mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true) || mainPrefs.getBoolean(Ambience.AUDIO, false)) {
                             /*
                              * Notification note=new Notification();
                              * note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
@@ -690,8 +690,8 @@ public class SenseService extends Service {
                             mSubscrMgr.registerProducer(SensorNames.NOISE, noiseSensor);
                             mSubscrMgr.registerProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
                             mSubscrMgr.registerProducer(SensorNames.LOUDNESS, noiseSensor.getLoudnessSensor());
-                            mSubscrMgr.registerProducer(SensorNames.NOISE,
-                                    noiseSensor.getAutoCalibratedNoiseSensor());
+                            mSubscrMgr.registerProducer(SensorNames.NOISE, noiseSensor.getAutoCalibratedNoiseSensor());
+                            mSubscrMgr.registerProducer(SensorNames.AUDIO, noiseSensor.getAudioSensor());
                             noiseSensor.startSensing(finalInterval);
                         }
                         if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
