@@ -101,9 +101,14 @@ public class ZephyrBioHarness extends BaseDataProducer {
 									btSocket = device.createRfcommSocketToServiceRecord(serial_uid);
 									btSocket.connect();
 
+									final String deviceType = device.getName();
+									final String deviceUuid = device.getAddress();
+
 									// check sensor IDs
-									new ZephyrBioHarnessRegistrator(context).verifySensorIds(
-											device.getName(), device.getAddress());
+									new Thread(){public void run(){
+										new ZephyrBioHarnessRegistrator(context).verifySensorIds(
+												deviceType,deviceUuid);
+									}}.start();
 
 									processZBHMessage = new ProcessZephyrBioHarnessMessage(
 											device.getName(), device.getAddress());
