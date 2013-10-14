@@ -120,10 +120,15 @@ public class ZephyrHxM extends BaseDataProducer {
                                         device.getAddress());
                                 updateHandler.post(updateThread = new UpdateThread());
 
-                                // check the sensor IDs
-                                new ZephyrHxmRegistrator(context).verifySensorIds(device.getName(),
-                                        device.getAddress());
-
+                                final String deviceType = device.getName();
+								final String deviceUuid = device.getAddress();
+										
+								// check sensor IDs
+								new Thread(){public void run(){
+									new ZephyrHxmRegistrator(context).verifySensorIds(
+											deviceType,deviceUuid);
+								}}.start();
+                              
                                 connected = true;
 
                             } catch (Exception e) {
