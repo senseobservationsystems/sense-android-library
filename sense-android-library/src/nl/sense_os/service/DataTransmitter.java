@@ -4,7 +4,6 @@
 package nl.sense_os.service;
 
 import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.scheduler.Scheduler;
