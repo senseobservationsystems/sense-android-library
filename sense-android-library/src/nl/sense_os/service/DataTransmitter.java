@@ -95,8 +95,8 @@ public class DataTransmitter implements Runnable {
             } else {
             	long interval = mTxInterval;
             	
-            	SharedPreferences authPrefs = mContext.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-                if(authPrefs.getBoolean(Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE, true))
+            	SharedPreferences mainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+                if(mainPrefs.getBoolean(Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE, true))
                 	interval = ADAPTIVE_TX_INTERVAL; //if there is no WiFi connection, postpone the transmission
             	               
                 mLastTxBytes = TrafficStats.getMobileTxBytes() - mTxBytes;

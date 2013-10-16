@@ -163,7 +163,8 @@ public class SensePrefs {
             /**
              * Key for preference that enables energy saving mode when using mobile Internet. 
              * When energy saving mode is on data will be uploaded every half an hour.
-             */
+             * @see SensePrefs#MAIN_PREFS
+             */            
             public static final String  MOBILE_INTERNET_ENERGY_SAVING_MODE = "mobile_internet_energy_saving_mode";
         }
 
