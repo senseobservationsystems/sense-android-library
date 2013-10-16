@@ -175,7 +175,13 @@ public class SensePrefs {
 			 * Key for preference that enables Agostino mode. Enable this to
 			 * participate in Agostino's saliency test. Default is false.
 			 */
-			public static final String AGOSTINO = "agostino_mode";
+			public static final String AGOSTINO = "agostino_mode";            
+			/**
+			 * Key for preference that enables energy saving mode when using mobile Internet. 
+			 * When energy saving mode is on data will be uploaded every half an hour.
+			 * @see SensePrefs#MAIN_PREFS
+			 */            
+			public static final String  MOBILE_INTERNET_ENERGY_SAVING_MODE = "mobile_internet_energy_saving_mode";
 		}
 
 		public static class Ambience {
@@ -455,7 +461,7 @@ public class SensePrefs {
 			 * @see SensePrefs#MAIN_PREFS
 			 */
 			public static final String DONT_UPLOAD_BURSTS = "don't upload bursts";
-			
+
 			/**
 			 * Key for preference that determines the burst duration. Duration is in milliseconds.
 			 * 
