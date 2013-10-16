@@ -95,7 +95,8 @@ public class DataTransmitter implements Runnable {
             	long interval = mTxInterval;
             	
             	SharedPreferences mainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-                if(mainPrefs.getBoolean(Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE, true))
+            	boolean energy_saving = mainPrefs.getBoolean(Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE, true);
+                if(energy_saving)
                 	interval = ADAPTIVE_TX_INTERVAL; //if there is no WiFi connection, postpone the transmission
             	               
                 mLastTxBytes = TrafficStats.getMobileTxBytes() - mTxBytes;
@@ -104,9 +105,9 @@ public class DataTransmitter implements Runnable {
                     transmissionService();
                 }
                 // if any transmission took place recently, use the tail to transmit the sensor data
-                else if (ADAPTIVE_TX_INTERVAL == interval && (mLastTxBytes >= 500)
-                        && (SystemClock.elapsedRealtime() - mLastTxTime >= interval
-                                - (long) (interval * 0.2))) {
+                else if (energy_saving && (mLastTxBytes >= 500)
+                        && (SystemClock.elapsedRealtime() - mLastTxTime >= ADAPTIVE_TX_INTERVAL
+                                - (long) (ADAPTIVE_TX_INTERVAL * 0.2))) {
                     transmissionService();
                 } else {
                     // do nothing
