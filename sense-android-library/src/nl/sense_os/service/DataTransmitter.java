@@ -3,13 +3,17 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.scheduler.Scheduler;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
@@ -89,16 +93,21 @@ public class DataTransmitter implements Runnable {
                     transmissionService();
                 }
             } else {
-                // if there is no WiFi connection, postpone the transmission
+            	long interval = mTxInterval;
+            	
+            	SharedPreferences authPrefs = mContext.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+                if(authPrefs.getBoolean(Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE, true))
+                	interval = ADAPTIVE_TX_INTERVAL; //if there is no WiFi connection, postpone the transmission
+            	               
                 mLastTxBytes = TrafficStats.getMobileTxBytes() - mTxBytes;
                 mTxBytes = TrafficStats.getMobileTxBytes();
-                if ((SystemClock.elapsedRealtime() - mLastTxTime >= ADAPTIVE_TX_INTERVAL)) {
+                if ((SystemClock.elapsedRealtime() - mLastTxTime >= interval)) {
                     transmissionService();
                 }
                 // if any transmission took place recently, use the tail to transmit the sensor data
-                else if ((mLastTxBytes >= 500)
-                        && (SystemClock.elapsedRealtime() - mLastTxTime >= ADAPTIVE_TX_INTERVAL
-                                - (long) (ADAPTIVE_TX_INTERVAL * 0.2))) {
+                else if (ADAPTIVE_TX_INTERVAL == interval && (mLastTxBytes >= 500)
+                        && (SystemClock.elapsedRealtime() - mLastTxTime >= interval
+                                - (long) (interval * 0.2))) {
                     transmissionService();
                 } else {
                     // do nothing
