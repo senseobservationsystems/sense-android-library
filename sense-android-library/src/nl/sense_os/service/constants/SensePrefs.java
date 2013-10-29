@@ -160,6 +160,12 @@ public class SensePrefs {
              * Agostino's saliency test. Default is false.
              */
             public static final String AGOSTINO = "agostino_mode";
+            /**
+             * Key for preference that enables energy saving mode when using mobile Internet. 
+             * When energy saving mode is on data will be uploaded every half an hour.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  MOBILE_INTERNET_ENERGY_SAVING_MODE = "mobile_internet_energy_saving_mode";
         }
 
         public static class Ambience {
@@ -403,6 +409,15 @@ public class SensePrefs {
              * 
              * @see SensePrefs#MAIN_PREFS
              */
+            
+            /**
+             * Key for preference that toggles whether to upload and store burst samples.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String DONT_UPLOAD_BURSTS = "don't upload bursts";
+            
+            
             public static final String UNREG = "motion_unregister";
             /**
              * Key for preference that toggles motion energy sensing, which measures average kinetic
