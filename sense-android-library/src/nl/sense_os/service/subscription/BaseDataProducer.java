@@ -3,6 +3,8 @@ package nl.sense_os.service.subscription;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 import nl.sense_os.service.shared.SensorDataPoint;
 
 /**
@@ -27,6 +29,8 @@ import nl.sense_os.service.shared.SensorDataPoint;
  */
 public abstract class BaseDataProducer implements DataProducer {
 
+	protected final String TAG = "BaseDataProducer";
+	
     /** The DataProcessors which are subscribed to this sensor for sensor data */
     protected List<DataConsumer> mSubscribers = new ArrayList<DataConsumer>();
 
@@ -116,7 +120,14 @@ public abstract class BaseDataProducer implements DataProducer {
     protected synchronized void sendToSubscribers(SensorDataPoint dataPoint) {
         for (DataConsumer subscriber : mSubscribers) {
             if (subscriber != null && !subscriber.isSampleComplete()) {
-                subscriber.onNewData(dataPoint);
+            	try
+            	{
+            		subscriber.onNewData(dataPoint);
+            	}
+            	catch(Exception e)
+            	{
+            		Log.e(TAG, "Error sending data to subscriber.", e);
+            	}
             }
         }
     }

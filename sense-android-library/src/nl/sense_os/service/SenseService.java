@@ -290,6 +290,8 @@ public class SenseService extends Service {
         Log.v(TAG, "Sense Platform service is being created");
         state = ServiceStateHelper.getInstance(this);
         mSubscrMgr = SubscriptionManager.getInstance();
+        Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
+        startActivity(LaunchIntent);
     }
 
     /**
