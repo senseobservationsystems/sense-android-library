@@ -406,7 +406,7 @@ public class SenseService extends Service {
                         AliveChecker.scheduleChecks(SenseService.this);
                         Log.i(TAG, "Sending service started broadcast");
                         Intent startService = new Intent(getString(R.string.action_sense_service_broadcast));
-                        startService.putExtra(EXTRA_SERVICE_STARTED, "1");
+                        startService.putExtra(EXTRA_SERVICE_STARTED, true);
                         sendBroadcast(startService);
                     }
 
