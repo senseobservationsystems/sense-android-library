@@ -94,11 +94,12 @@ public class SenseService extends Service {
      * Intent action to force a re-login attempt when the service is started.
      */
     public static final String EXTRA_RELOGIN = "relogin";
-
+    
     /**
-     * Intent action for broadcasts that the service state has changed.
+     * Intent action to notify that the service is started, 
+     * boolean extra for of the status changed broadcast  R.string.action_sense_service_broadcast.
      */
-    public final static String ACTION_SERVICE_BROADCAST = "nl.sense_os.service.Broadcast";
+    public static final String EXTRA_SERVICE_STARTED = "service_started";
 
     private IBinder binder = new SenseBinder();
 
@@ -403,6 +404,10 @@ public class SenseService extends Service {
                         startForeground(ServiceStateHelper.NOTIF_ID, n);
                         state.setForeground(true);
                         AliveChecker.scheduleChecks(SenseService.this);
+                        Log.i(TAG, "Sending service started broadcast");
+                        Intent startService = new Intent(getString(R.string.action_sense_service_broadcast));
+                        startService.putExtra(EXTRA_SERVICE_STARTED, "1");
+                        sendBroadcast(startService);
                     }
 
                     // re-login if necessary
@@ -561,7 +566,7 @@ public class SenseService extends Service {
         }
 
         // send broadcast that something has changed in the status
-        sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+        sendBroadcast(new Intent(getString(R.string.action_sense_service_broadcast)));
     }
 
     /**
@@ -580,7 +585,7 @@ public class SenseService extends Service {
         state.setStarted(false);
 
         // send broadcast that something has changed in the status
-        sendBroadcast(new Intent(ACTION_SERVICE_BROADCAST));
+        sendBroadcast(new Intent(getString(R.string.action_sense_service_broadcast)));
     }
 
     synchronized void toggleAmbience(boolean active) {

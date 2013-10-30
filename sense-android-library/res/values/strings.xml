@@ -20,7 +20,8 @@
     <string name="action_sense_send_data" translatable="false">nl.sense_os.platform.MsgHandler.SEND_DATA</string>
     <string name="action_sense_alive_check_alarm" translatable="false">nl.sense_os.platform.AliveCheck</string>
     <string name="action_sense_gcm_intent_service" translatable="false">nl.sense_os.service.push.GCMReceiver</string>
-
+    <string name="action_sense_service_broadcast" translatable="false">nl.sense_os.service.Broadcast</string>
+    
     <!-- actions for the app widget -->
     <string name="action_widget_update" translatable="false">nl.sense_os.platform.AppWidgetUpdate</string>
 
