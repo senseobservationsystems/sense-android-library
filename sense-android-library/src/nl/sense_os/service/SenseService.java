@@ -1039,7 +1039,7 @@ public class SenseService extends Service {
                     minTime = 1000;
                     break;
                 case -1: // often
-                    minTime = 30 * 1000;
+                    minTime = 180 * 1000;
                     break;
                 case 0: // normal
                     minTime = 5 * 60 * 1000;

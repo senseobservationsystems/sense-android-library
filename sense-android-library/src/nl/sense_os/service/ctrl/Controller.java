@@ -225,7 +225,7 @@ public abstract class Controller {
             txTaskInterval = 10 * 1000;
             break;
         case 0: // normal
-            txTaskInterval = 60 * 1000;
+            txTaskInterval = 300 * 1000;
             break;
         case 1: // rarely (15 minutes)
             txTaskInterval = 15 * 60 * 1000;
