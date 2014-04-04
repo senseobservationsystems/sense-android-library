@@ -496,6 +496,14 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String CALL_STATE = "phonestate_call_state";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             *              */
+            public static final String FOREGROUND_APP = "foreground_app";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String INSTALLED_APPS = "installed_apps";
         }
 
         public static class Quiz {

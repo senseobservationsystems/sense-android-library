@@ -321,6 +321,10 @@ public class SensorData {
 
         public static final String ATTACHED_TO_MYRIANODE = "attachedToMyriaNode";
 
+        public static final String APP_INSTALLED = "installed_apps";
+        
+        public static final String APP_FOREGROUND = "foreground_app";
+        
         private SensorNames() {
             // class should not be instantiated
         }
