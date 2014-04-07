@@ -5,8 +5,9 @@ import java.util.List;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseDataProducer;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
@@ -24,9 +26,9 @@ import android.util.Log;
 
 public class MotionBurstSensor extends BaseDataProducer implements DataConsumer {
 
-	private Controller controller;
 	private static final String TAG = "MotionBurstSensor";
-	private static final long LOCAL_BUFFER_TIME = 3 * 1000;
+	 private static final long DEFAULT_BURST_DURATION = 3 * 1000;
+	 private long burstDuration = 3 * 1000;
 	private int SENSOR_TYPE = 0;
 	private String SENSOR_NAME;
 
@@ -36,8 +38,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 	private long timeAtStartOfBurst = -1;
 
 	public MotionBurstSensor(Context context, int sensorType, String sensorName) {
-		this.context = context;
-		controller = Controller.getController(context);
+		this.context = context;	
 		SENSOR_TYPE = sensorType;
 		SENSOR_NAME = sensorName;
 	}
@@ -83,7 +84,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 		if (timeAtStartOfBurst == -1) {
 			timeAtStartOfBurst = SystemClock.elapsedRealtime();
 		}
-		sampleComplete = SystemClock.elapsedRealtime() > timeAtStartOfBurst + LOCAL_BUFFER_TIME;
+		sampleComplete = SystemClock.elapsedRealtime() > timeAtStartOfBurst + burstDuration;
 		if (sampleComplete == true) {
 			sendData(sensor);
 
@@ -97,9 +98,9 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 
 		String dataBufferString = listToString(dataBuffer);
 		String value = "{\"interval\":"
-				+ Math.round((double) LOCAL_BUFFER_TIME / (double) dataBuffer.size())
+				+ Math.round((double) burstDuration / (double) dataBuffer.size())
 				+ ",\"header\":\"" + MotionSensorUtils.getSensorHeader(sensor).toString()
-				+ "\",\"values\":\"" + dataBufferString + "\"}";
+				+ "\",\"values\":" + dataBufferString + "}";
 
 		try {
 			this.notifySubscribers();
@@ -109,7 +110,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 
 			dataPoint.sensorName = SENSOR_NAME;
 			dataPoint.sensorDescription = sensor.getName();
-            dataPoint.timeStamp = SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME;
+            dataPoint.timeStamp = SNTP.getInstance().getTime() - burstDuration;
 			this.sendToSubscribers(dataPoint);
 
 		} catch (JSONException e) {
@@ -120,19 +121,26 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 		// pass message to the MsgHandler
 		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
 
-		i.putExtra(DataPoint.SENSOR_NAME, SENSOR_NAME);
-		i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-		i.putExtra(DataPoint.VALUE, value);
-		i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
-		i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME);
-		context.startService(i);
+		
+		
+		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
 
-        // TODO: Let controller get the values instead of the sensor notifying the controller
-		controller.onMotionBurst(dataBuffer, SENSOR_TYPE);
+        if (mainPrefs.getBoolean(Motion.DONT_UPLOAD_BURSTS, false) == false) {
+			i.putExtra(DataPoint.SENSOR_NAME, SENSOR_NAME);
+			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+			i.putExtra(DataPoint.VALUE, value);
+			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
+			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime()
+					- burstDuration);
+			context.startService(i);
+        }
 	}
 
 	@Override
 	public void startNewSample() {
+		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		this.burstDuration = mainPrefs.getLong(Motion.BURST_DURATION, DEFAULT_BURST_DURATION);
 		sampleComplete = false;
 	}
 }

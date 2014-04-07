@@ -620,6 +620,10 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         }
     }
 
+    public DataProducer getLoudnessSensor()
+    {
+    	return loudnessSensor;
+    }
     public DataProducer getAutoCalibratedNoiseSensor() {
         return autoCalibratedNoiseSensor;
     }
