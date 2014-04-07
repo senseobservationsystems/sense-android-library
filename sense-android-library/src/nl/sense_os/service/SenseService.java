@@ -697,7 +697,7 @@ public class SenseService extends Service {
                             mSubscrMgr.registerProducer(SensorNames.LOUDNESS, noiseSensor.getLoudnessSensor());
                             mSubscrMgr.registerProducer(SensorNames.NOISE,
                                     noiseSensor.getAutoCalibratedNoiseSensor());
-                            noiseSensor.startSensing(finalInterval);
+                            noiseSensor.startSensing(-1);
                         }
                         if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
                             lightSensor = LightSensor.getInstance(SenseService.this);

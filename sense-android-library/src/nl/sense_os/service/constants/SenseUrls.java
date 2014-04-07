@@ -61,6 +61,8 @@ public class SenseUrls {
     public static final String SENSOR_USERS_DEV = API_DEV + "sensors/%1/users";
     public static final String SENSORS = API + "sensors";
     public static final String VERSION = "http://data.sense-os.nl/senseapp/version.php";
+    public static final String DATAPROCESSOR_FILE = API + "dataprocessors/files";
+    public static final String DATAPROCESSOR_FILE_DEV = API_DEV + "dataprocessors/files";
 
     private SenseUrls() {
         // private constructor to prevent instantiation
