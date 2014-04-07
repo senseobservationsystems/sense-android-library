@@ -481,7 +481,21 @@ public class SenseApi {
             return url.replaceFirst("%1", id);
         }
     }
-
+    
+    /**
+    * @param context
+    *            Context for getting preferences
+    * @return The current CommonSense session ID
+    * @throws IllegalAccessException
+    *             if the app ID is not valid
+    */
+    public static String getCookie(Context context) throws IllegalAccessException {
+    	if (null == sAuthPrefs) {
+    		sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+    	}
+    	return sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+    }
+    
     /**
      * @param context
      *            Context for getting preferences
@@ -493,7 +507,7 @@ public class SenseApi {
         if (null == sAuthPrefs) {
             sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
-        return sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        return sAuthPrefs.getString(Auth.LOGIN_SESSION_ID, null);
     }
 
     /**
@@ -676,6 +690,7 @@ public class SenseApi {
 
         // get the cookie from the response
         String cookie = response.get("set-cookie");
+        String session_id = response.get("x-session_id");
         if (result == 0 && response.get("set-cookie") == null) {
             // something went horribly wrong
             Log.w(TAG, "CommonSense login failed: no cookie received?!");
@@ -687,12 +702,14 @@ public class SenseApi {
         switch (result) {
         case 0: // logged in
             authEditor.putString(Auth.LOGIN_COOKIE, cookie);
+            authEditor.putString(Auth.LOGIN_SESSION_ID, session_id);
             authEditor.commit();
             break;
         case -1: // error
             break;
         case -2: // unauthorized
             authEditor.remove(Auth.LOGIN_COOKIE);
+            authEditor.remove(Auth.LOGIN_SESSION_ID);
             authEditor.commit();
             break;
         default:

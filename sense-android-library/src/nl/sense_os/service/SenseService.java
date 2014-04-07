@@ -1110,9 +1110,7 @@ public class SenseService extends Service {
             startService(new Intent(getString(R.string.action_sense_service)));
 
         } else {
-            Log.i(TAG, "Stop service");
-
-            onLogOut();
+            Log.i(TAG, "Stop service");          
             stopSensorModules();
 
             AliveChecker.stopChecks(this);
