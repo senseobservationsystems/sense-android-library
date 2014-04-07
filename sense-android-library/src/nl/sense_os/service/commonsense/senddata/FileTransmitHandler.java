@@ -12,8 +12,6 @@ import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.HttpsURLConnection;
 
 import nl.sense_os.service.R;
-import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;

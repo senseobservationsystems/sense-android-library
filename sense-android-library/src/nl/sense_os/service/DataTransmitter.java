@@ -96,6 +96,9 @@ public class DataTransmitter implements Runnable {
             	
             	SharedPreferences mainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
             	boolean energy_saving = mainPrefs.getBoolean(Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE, true);
+            	boolean wifiUploadOnly = mainPrefs.getBoolean(Advanced.WIFI_UPLOAD_ONLY, false);
+            	if(wifiUploadOnly)
+            		return;
                 if(energy_saving)
                 	interval = ADAPTIVE_TX_INTERVAL; //if there is no WiFi connection, postpone the transmission
             	               

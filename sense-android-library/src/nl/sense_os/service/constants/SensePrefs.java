@@ -169,9 +169,18 @@ public class SensePrefs {
             /**
              * Key for preference that enables energy saving mode when using mobile Internet. 
              * When energy saving mode is on data will be uploaded every half an hour.
+             * Default is true.
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  MOBILE_INTERNET_ENERGY_SAVING_MODE = "mobile_internet_energy_saving_mode";
+            /**
+             * Key for preference that enables data upload on wifi only.
+             * Default is false.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  WIFI_UPLOAD_ONLY = "wifi_upload_only";
+            
+            
         }
 
         public static class Ambience {
