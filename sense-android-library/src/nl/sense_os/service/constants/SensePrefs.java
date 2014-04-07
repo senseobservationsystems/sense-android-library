@@ -40,6 +40,12 @@ public class SensePrefs {
          */
         public static final String LOGIN_COOKIE = "login_cookie";
         /**
+         *Key for login preference for session id.
+         *  
+         * @see SensePrefs#AUTH_PREFS
+         */
+        public static final String LOGIN_SESSION_ID = "session_id";
+        /**
          * Key for login preference for email address.
          * 
          * @see SensePrefs#AUTH_PREFS
@@ -417,6 +423,12 @@ public class SensePrefs {
              */
             public static final String DONT_UPLOAD_BURSTS = "don't upload bursts";
             
+            /**
+             * Key for preference that determines the burst duration. Duration is in milliseconds.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String BURST_DURATION = "burst_duration";
             
             public static final String UNREG = "motion_unregister";
             /**
@@ -525,7 +537,7 @@ public class SensePrefs {
              */
             public static final String SYNC_TIME = "popquiz_sync_time";
         }
-
+                
         /**
          * Key for preference that controls sample frequency of the sensors.
          * 
@@ -622,6 +634,12 @@ public class SensePrefs {
          * @see SensePrefs#STATUS_PREFS
          */
         public static final String AUTOSTART = "autostart";
+        /**
+        * Key for preference to pause sensing until the next charge.
+        * 
+        * @see SensePrefs#STATUS_PREFS
+        */
+        public static final String PAUSED_UNTIL_NEXT_CHARGE = "paused until next charge status";
     }
 
     public static class SensorSpecifics {

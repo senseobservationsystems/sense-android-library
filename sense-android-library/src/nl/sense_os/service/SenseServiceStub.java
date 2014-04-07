@@ -128,6 +128,10 @@ public class SenseServiceStub extends Binder {
             return defValue;
         }
     }
+    
+    public String getCookie() throws IllegalAccessException {
+    	return SenseApi.getCookie(service);
+    }
 
     public String getSessionId() throws IllegalAccessException {
         return SenseApi.getSessionId(service);
