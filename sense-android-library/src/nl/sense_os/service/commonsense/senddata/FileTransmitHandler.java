@@ -101,7 +101,8 @@ public class FileTransmitHandler extends Handler {
 
 				// ------------------ CLIENT REQUEST
 
-				FileInputStream fileInputStream = new FileInputStream(new File(fileName));
+				File file = new File(fileName);
+				FileInputStream fileInputStream = new FileInputStream(file);
 
 				// get the filename without the directory
 				String strippedFile = fileName.substring(fileName.lastIndexOf("/"));
@@ -167,6 +168,19 @@ public class FileTransmitHandler extends Handler {
 					Log.i(TAG, "Sent '" + name + "' sensor value file OK!");
 					String date = (String) object.get("date");
 					onTransmitSuccess(name, date);
+					// remove temp file
+					if(file.exists())
+					{
+						try
+						{
+							Log.d(TAG, "Removing File: "+fileName);
+							file.delete();
+						}
+						catch(Exception e)
+						{
+							Log.e(TAG,  "Error removing temporary file", e);
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
