@@ -5,5 +5,5 @@
     android:versionName="2.9.0">
 
     <!-- <uses-sdk -->
-    <uses-sdk android:minSdkVersion="7"/>
+    <uses-sdk android:minSdkVersion="10"/>
 </manifest>

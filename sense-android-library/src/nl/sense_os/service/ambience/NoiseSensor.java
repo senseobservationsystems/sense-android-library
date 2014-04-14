@@ -422,11 +422,12 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 	 * {@link MsgHandler}. Also schedules the next sample job.
 	 */
 	private class SoundStreamJob implements Runnable {
-		private static final int RECORDING_TIME_STREAM = 15* 60 * 1000; // 15 minutes audio
+		private static final int RECORDING_TIME_STREAM = 5 * 60 * 1000; // 5 minutes audio
 		private MediaRecorder recorder = null;
-		private String recordFileName = Environment.getExternalStorageDirectory().getAbsolutePath()
+		private String recordFileNamePrefix = Environment.getExternalStorageDirectory().getAbsolutePath()
 				+ "/sense/audio";
-
+		public String fileName;
+		
 		public SoundStreamJob() {           
 			// create directory to put the sound recording
 			new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/sense")
@@ -438,70 +439,38 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 		public void run() {
 
 			try {
-				Log.d(TAG, "Start sound sample job");
-				// cameraDevice = android.hardware.Camera.open();
-				// Parameters params = cameraDevice.getParameters();
-				// String effect = "mono";
-				// params.set("effect", effect);
-				// cameraDevice.setParameters(params);
-				// recorder.setCamera(cameraDevice);
+				Log.d(TAG, "Start sound sample job");			
 				if (calling) {
-					recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_UPLINK);
+					recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
 				} else {
 					recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 				}
-				// recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-				// recorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
-				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-				DateFormat df = new SimpleDateFormat("_dd-MM-yyyy_HH:mm", new Locale("nl"));				
+
+				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+
+				DateFormat df = new SimpleDateFormat("_dd-MM-yyyy_HH:mm:ss", new Locale("nl"));				
 				Date now = Calendar.getInstance().getTime();   
 				String date = df.format(now);
-				final String fileName = recordFileName + date + ".3gp";
+				if(calling)
+					fileName = recordFileNamePrefix + "_call"+ date + ".3gp";
+				else
+					fileName = recordFileNamePrefix + date + ".3gp";
 				Log.d(TAG, "writing to file: "+fileName);
-				new File(recordFileName).createNewFile();
-				String command = "chmod 666 " + fileName;
-				Runtime.getRuntime().exec(command);
 				recorder.setOutputFile(fileName);
 				recorder.setMaxDuration(RECORDING_TIME_STREAM);
 				recorder.setOnInfoListener(new OnInfoListener() {
 
 					@Override
 					public void onInfo(MediaRecorder mr, int what, int extra) {
-
-						if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-							try {
-								// recording is done, upload file
-								recorder.stop();
-								recorder.reset();
-								// wait until finished otherwise it will be overwritten
-								SoundStreamJob tmp = soundStreamJob;
-
-								notifySubscribers();
-								SensorDataPoint dataPoint = new SensorDataPoint(fileName);
-								dataPoint.sensorName = SensorNames.MIC;
-								dataPoint.sensorDescription = SensorNames.MIC;
-								dataPoint.setDataType(DataType.FILE);
-								dataPoint.timeStamp = SNTP.getInstance().getTime();
-								sendToSubscribers(dataPoint);
-
-								// pass message to the MsgHandler
-								Intent i = new Intent(context
-										.getString(R.string.action_sense_new_data));
-								i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MIC);
-								i.putExtra(DataPoint.VALUE, fileName);
-								i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
-								i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-								context.startService(i);
-
-								if (isActive() && getSampleRate() == -1
-										&& tmp.equals(soundStreamJob)) {							
-									soundStreamJob = new SoundStreamJob();
-									soundStreamHandler.post(soundStreamJob);
-								}
-
-							} catch (Exception e) {
-								e.printStackTrace();
+						if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) 
+						{
+							sendAudio();
+							// wait until finished otherwise it will be overwritten
+							SoundStreamJob tmp = soundStreamJob;
+							if (isActive() && getSampleRate() == -1 && tmp.equals(soundStreamJob)) {							
+								soundStreamJob = new SoundStreamJob();
+								soundStreamHandler.post(soundStreamJob);
 							}
 						}
 
@@ -524,13 +493,40 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 			// clean up the MediaRecorder if the mic sensor was using it
 			if (recorder != null) {
 				try {
-					recorder.stop();
+					sendAudio();
 				} catch (IllegalStateException e) {
 					// probably already stopped
-				}
-
-				// if we reset, we can reuse the object by going back to setAudioSource() step
+					Log.e(TAG, "Error stopping audio", e);
+				}				
+			}
+		}
+		
+		public void sendAudio()
+		{
+			try {
+				// recording is done, upload file
+				recorder.stop();
 				recorder.reset();
+
+				notifySubscribers();
+				SensorDataPoint dataPoint = new SensorDataPoint(fileName);
+				dataPoint.sensorName = SensorNames.MIC;
+				dataPoint.sensorDescription = SensorNames.MIC;
+				dataPoint.setDataType(DataType.FILE);
+				dataPoint.timeStamp = SNTP.getInstance().getTime();
+				sendToSubscribers(dataPoint);
+
+				// pass message to the MsgHandler
+				Intent i = new Intent(context
+						.getString(R.string.action_sense_new_data));
+				i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MIC);
+				i.putExtra(DataPoint.VALUE, fileName);
+				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
+				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+				context.startService(i);				
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -572,17 +568,16 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 		public void onCallStateChanged(int state, String incomingNumber) {
 			// Log.d(TAG, "Call state changed");
 			try {
-				if (state == TelephonyManager.CALL_STATE_OFFHOOK
-						|| state == TelephonyManager.CALL_STATE_RINGING) {
+				if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
 					calling = true;
 				} else {
 					calling = false;
 				}
-
+				
 				stopSampling();
-
-				// recording while calling is disabled
-				if (isActive() && state == TelephonyManager.CALL_STATE_IDLE && !calling) {
+				
+				// restart with the VOICE_CALL as mic
+				if (isActive()) {					
 					startSampling();
 				}
 
@@ -698,6 +693,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				soundStreamJob.stopRecording();
 				soundStreamHandler.removeCallbacks(soundStreamJob);
 				soundStreamJob = null;
+				
 			}
 			if (noiseSampleJob != null) {
 				noiseSampleJob.stopRecording();
