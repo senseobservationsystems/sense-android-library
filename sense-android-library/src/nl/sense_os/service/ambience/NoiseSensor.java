@@ -6,6 +6,7 @@ package nl.sense_os.service.ambience;
 import java.io.File;
 import java.math.BigDecimal;
 
+import nl.sense_os.service.ambience.FFT;
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -22,6 +23,7 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import nl.sense_os.service.subscription.BaseSensor;
 import nl.sense_os.service.subscription.DataProducer;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -125,57 +127,28 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         }
 
         private double[] calculateSpectrum(float[] samples) {
-            if (samples == null || samples.length == 0)
-                return null;
-            // nr of bands for the fft
-            int nrBands = (int) Math.ceil(1.0 * DEFAULT_SAMPLE_RATE / 2 / FFT_BANDWITH_RESOLUTION);
-            // nr bins that we're actually interested in (discard high
-            // frequencies)
-            int nrBins = (int) Math.ceil(1.0 * FFT_MAX_HZ / FFT_BANDWITH_RESOLUTION);
+        	if (samples == null || samples.length == 0)
+        		return null;
+        	int nrSamples = (int) Math.pow(2, (int) (Math.log(samples.length) / Math.log(2)));
+        	int nrBands = (int) Math.ceil((float)DEFAULT_SAMPLE_RATE/2f / (float)FFT_BANDWITH_RESOLUTION);
+        	if(nrBands > (int) Math.ceil((float)FFT_MAX_HZ/(float)FFT_BANDWITH_RESOLUTION))
+        		nrBands = (int) Math.ceil((float)FFT_MAX_HZ/(float)FFT_BANDWITH_RESOLUTION);
+        	
+        	FFT fft = new FFT(nrSamples, DEFAULT_SAMPLE_RATE);	                        
+        	fft.forward(copyOfRange(samples, 0, nrSamples));
 
-            // create bins
-            double[] bins = new double[nrBins];
-            for (int i = 0; i < bins.length; i++) {
-                bins[i] = 0;
-            }
-
-            // // /window the samples, and sum the fft over all windows
-            // int start = 0;
-            // // number of samples per window should be a power of 2
-            // int nrSamplesPerWindow = (int) Math .pow(2, (int)
-            // (Math.log(FFT_WINDOW_LENGTH
-            // * DEFAULT_SAMPLE_RATE) / Math.log(2)));
-            // int iterations = 0;
-            // while (start + nrSamplesPerWindow < samples.length) {
-            // FFT fft = new FFT(nrSamplesPerWindow, DEFAULT_SAMPLE_RATE);
-            // fft.linAverages(nrBands);
-            // fft.forward(copyOfRange(samples, start, start
-            // + nrSamplesPerWindow));
-            // // add to bins
-            // for (int i = 0; i < bins.length; i++) {
-            // bins[i] += fft.getAvg(i);
-            // }
-            // iterations++;
-            // start += nrSamplesPerWindow / 2; // 50% overlapping windows
-            // }
-            // if (iterations > 0) {
-            // for (int i = 0; i < bins.length; i++) {
-            // bins[i] /= iterations; // TODO: normalise?
-            // bins[i] = 10.0 * Math.log10(bins[i]);
-            // }
-            // }
-
-            // don't window
-            int nrSamples = (int) Math.pow(2, (int) (Math.log(samples.length) / Math.log(2)));
-            FFT fft = new FFT(nrSamples, DEFAULT_SAMPLE_RATE);
-            fft.linAverages(nrBands);
-            fft.forward(copyOfRange(samples, 0, nrSamples));
-            // add to bins
-            for (int i = 0; i < bins.length; i++) {
-                bins[i] = 10.0 * Math.log10(fft.getAvg(i));
-            }
-
-            return bins;
+        	double[] bins = new double[nrBands];	            	           
+        	// computing averages does not work with small sample sizes, compute our own
+        	for (int i = 0; i < nrBands; i++)
+        	{	            	
+        		float avg = 0;
+        		for (int j = 0; j < FFT_BANDWITH_RESOLUTION; j++) {
+        			avg += fft.getFreq(i*FFT_BANDWITH_RESOLUTION+j);					
+        		}
+        		avg /= FFT_BANDWITH_RESOLUTION;	            	
+        		bins[i] = 10.0 * Math.log10(avg);           	
+        	}
+        	return bins;
         }
 
         // java versions before 6 don't have Arrays.copyOfRange, so make our own
@@ -311,21 +284,19 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
                         if (spectrum != null) {
                             JSONObject jsonSpectrum = new JSONObject();
-
-                            for (int i = 0; i < spectrum.length; i++) {
-                                String bandString = ((i + 1) * FFT_BANDWITH_RESOLUTION) + "Hz";
-                                if (spectrum[i] == Double.POSITIVE_INFINITY) {
-                                    jsonSpectrum.put(bandString, 140); // max db
-                                } else if (spectrum[i] != Double.NaN
-                                        && spectrum[i] != Double.NEGATIVE_INFINITY) {
-                                    // normal case
-                                    jsonSpectrum.put(bandString, spectrum[i]);
-                                } else {
-                                    // NaN or too low value
-                                    jsonSpectrum.put(bandString, 0);
-                                }
+                            jsonSpectrum.put("bandwidth", FFT_BANDWITH_RESOLUTION);                            
+                            JSONArray jsonSpectrumArray = new JSONArray();
+                            for (int i = 0; i < spectrum.length; i++)
+                            {
+                            	if (spectrum[i] == Double.POSITIVE_INFINITY)
+                                	jsonSpectrumArray.put(140);
+                                 else if (spectrum[i] != Double.NaN && spectrum[i] != Double.NEGATIVE_INFINITY) // normal case
+                                	 jsonSpectrumArray.put(Math.round(spectrum[i]));
+                                 else	
+                                	jsonSpectrumArray.put(0);                                
                             }
-
+                            
+                            jsonSpectrum.put("spectrum", jsonSpectrumArray);
                             notifySubscribers();
                             SensorDataPoint dataPoint = new SensorDataPoint(jsonSpectrum);
                             dataPoint.sensorName = SensorNames.AUDIO_SPECTRUM;

@@ -82,7 +82,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
                 "audio spectrum",
                 SenseDataTypes.JSON,
                 "audio spectrum (dB)",
-                "{\"1 kHz\":0,\"2 kHz\":0,\"3 kHz\":0,\"4 kHz\":0,\"5 kHz\":0,\"6 kHz\":0,\"7 kHz\":0,\"8 kHz\":0,\"9 kHz\":0,\"10 kHz\":0,\"11 kHz\":0,\"12 kHz\":0,\"13 kHz\":0,\"14 kHz\":0,\"15 kHz\":0,\"16 kHz\":0,\"17 kHz\":0,\"18 kHz\":0,\"19 kHz\":0,\"20 kHz\":0,\"21 kHz\":0,\"22 kHz\":0}",
+                "{\"bandwidth\":10, \"spectrum\":[40, 50, 40 , 20, 40, 60, 43, 12, 34, 56]}",
                 deviceType, deviceUuid);
 
         // match pressure sensor
