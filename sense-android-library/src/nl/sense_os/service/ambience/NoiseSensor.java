@@ -68,8 +68,8 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         private static final int BUFFER_SIZE = (int) ((float) DEFAULT_SAMPLE_RATE
                 * (float) BYTES_PER_SAMPLE * ((float) RECORDING_TIME_NOISE / 1000f));
         private AudioRecord audioRecord;
-        private int FFT_BANDWITH_RESOLUTION = 10;
-        private int FFT_MAX_HZ = 1000;
+        private int FFT_BANDWITH_RESOLUTION = 50;
+        private int FFT_MAX_HZ = 8000;
 
         // power of 2
 
@@ -134,8 +134,14 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         	if(nrBands > (int) Math.ceil((float)FFT_MAX_HZ/(float)FFT_BANDWITH_RESOLUTION))
         		nrBands = (int) Math.ceil((float)FFT_MAX_HZ/(float)FFT_BANDWITH_RESOLUTION);
         	
+        	 //remove the dc-component
+            double mean = 0;
+            for (int i = 0; i < samples.length; i++)
+				mean += samples[i];									
+            mean /= samples.length;
+        	
         	FFT fft = new FFT(nrSamples, DEFAULT_SAMPLE_RATE);	                        
-        	fft.forward(copyOfRange(samples, 0, nrSamples));
+        	fft.forward(copyOfRange(samples, 0, nrSamples,(float)mean));
 
         	double[] bins = new double[nrBands];	            	           
         	// computing averages does not work with small sample sizes, compute our own
@@ -152,7 +158,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         }
 
         // java versions before 6 don't have Arrays.copyOfRange, so make our own
-        private float[] copyOfRange(float[] array, int start, int end) {
+        private float[] copyOfRange(float[] array, int start, int end, float mean) {
             if (end < start || start < 0)
                 throw new IndexOutOfBoundsException(); // isn't there a
             // RangeException??
@@ -160,7 +166,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                 throw new IndexOutOfBoundsException();
             float[] copy = new float[end - start];
             for (int i = start, j = 0; i < end; i++, j++)
-                copy[j] = array[i];
+                copy[j] = array[i]-mean;
 
             return copy;
         }
