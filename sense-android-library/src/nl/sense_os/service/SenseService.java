@@ -697,6 +697,9 @@ public class SenseService extends Service {
                             mSubscrMgr.registerProducer(SensorNames.LOUDNESS, noiseSensor.getLoudnessSensor());
                             mSubscrMgr.registerProducer(SensorNames.NOISE,
                                     noiseSensor.getAutoCalibratedNoiseSensor());
+                            if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
+                            	 mSubscrMgr.registerProducer(SensorNames.NOISE_BURST, noiseSensor.getNoiseBurstSensor());
+                            }
                             noiseSensor.startSensing(finalInterval);
                         }
                         if (mainPrefs.getBoolean(Ambience.LIGHT, true)) {
@@ -759,6 +762,8 @@ public class SenseService extends Service {
                     mSubscrMgr.unregisterProducer(SensorNames.AUDIO_SPECTRUM, noiseSensor);
                     mSubscrMgr.unregisterProducer(SensorNames.LOUDNESS, noiseSensor);
                     mSubscrMgr.unregisterProducer(SensorNames.NOISE, noiseSensor);
+                   	mSubscrMgr.unregisterProducer(SensorNames.NOISE_BURST, noiseSensor.getNoiseBurstSensor());
+                   
                     noiseSensor = null;
                 }
                 if (null != lightSensor) {

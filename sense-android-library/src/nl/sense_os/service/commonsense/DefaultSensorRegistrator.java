@@ -3,6 +3,7 @@ package nl.sense_os.service.commonsense;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
@@ -71,7 +72,14 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         // match noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
                 "0.0", deviceType, deviceUuid);
-
+        
+        // match noise sensor (burst-mode)
+        SharedPreferences mainPrefs = getContext().getSharedPreferences(SensePrefs.MAIN_PREFS,
+        		Context.MODE_PRIVATE);
+        if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
+        	success &= checkSensor(SensorNames.NOISE_BURST, "noise (burst-mode)", SenseDataTypes.JSON, "noise (dB)",
+        			"{\"interval:\":0,\"data\":[2.23, 19.45, 20.2]}", deviceType, deviceUuid);
+        }
         // match auto calibrated noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT,
                 SensorDescriptions.AUTO_CALIBRATED, "0.0", deviceType, deviceUuid);

@@ -20,10 +20,12 @@ import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
+import nl.sense_os.service.subscription.BaseDataProducer;
 import nl.sense_os.service.subscription.BaseSensor;
 import nl.sense_os.service.subscription.DataProducer;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -260,8 +262,11 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                             SharedPreferences mainPrefs = context.getSharedPreferences(
                                     SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
                             if (mainPrefs.getBoolean(Ambience.MIC, true)) {
-                                dB = calculateDb(samples);
+                                dB = calculateDb(samples);                                
                                 controller.checkNoiseSensor(dB);
+                                if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
+                                	noiseBurstSensor.addData(samples, RECORDING_TIME_NOISE, startTimestamp);                                	
+                                }
                             }
                             if (mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true))
                                 spectrum = calculateSpectrum(samples);
@@ -508,6 +513,84 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         }
     }
 
+   public class NoiseBurstSensor extends BaseDataProducer {
+       private int INTERVAL = 100; // ms 
+	   public NoiseBurstSensor() {
+        	
+        }
+	   public void addData(float [] samples, int recording_time, long start_time)
+	   {
+		   if(samples.length <= 0)
+			   return;
+		   JSONObject burst = new JSONObject();
+
+		   try {
+			   burst.put("interval", INTERVAL);
+			   burst.put("data", calculateDb(samples, (int)(((double)samples.length/(double)recording_time)*(double)INTERVAL)));
+			   sendData(burst, start_time);
+		   } catch (JSONException e) {
+			   Log.e(TAG,"Error in computing burst data" ,e);
+		   }    		
+	   }
+    	
+    	private JSONArray calculateDb(float[] samples, int step_size) 
+    	{
+    		JSONArray noise_burst = new JSONArray();    	
+    		try
+    		{
+    			for (int i = 0; i < samples.length; i+=step_size) {
+
+    				double dB = 0;
+    				double ldb = 0;
+
+    				for (int x = 0; x < step_size ; ++x) {
+    					ldb += ((double) samples[i+x] * (double) samples[i+x]);
+    				}
+
+    				ldb /= (double) step_size;
+    				dB = 10.0 * Math.log10(ldb);
+
+    				if (dB == Double.POSITIVE_INFINITY)
+    					noise_burst.put(140);
+                     else if (dB != Double.NaN && dB != Double.NEGATIVE_INFINITY) // normal case
+                    	 noise_burst.put(Math.round(dB));
+                     else	
+                    	 noise_burst.put(0);  
+    						
+    			}
+    		}
+    		catch(Exception e)
+    		{
+    			Log.e(TAG, "Error in calculating burst noise", e);
+    		}
+    		return  noise_burst;
+    	}
+    	
+    	public void sendData(JSONObject data, long startTimestamp)
+    	{
+    		  notifySubscribers();
+              SensorDataPoint dataPoint = new SensorDataPoint(data);
+              dataPoint.sensorName = SensorNames.NOISE_BURST;
+              dataPoint.sensorDescription =  "noise (dB)";
+              dataPoint.timeStamp = startTimestamp;
+              sendToSubscribers(dataPoint);
+
+              // pass message to the MsgHandler
+              // get sample rate from preferences
+              SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+              if(!mainPrefs.getBoolean(Ambience.DONT_UPLOAD_BURSTS, true))
+              {
+            	  Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
+            	  sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE_BURST);
+            	  sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION, "noise (dB)");
+            	  sensorData.putExtra(DataPoint.VALUE, data.toString());
+            	  sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+            	  sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
+            	  context.startService(sensorData);
+              }
+    	}
+    };
+    
     private static NoiseSensor instance = null;
 
     private static final String TAG = "Sense NoiseSensor";
@@ -533,11 +616,12 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
     private Handler noiseSampleHandler = new Handler();
     private NoiseSampleJob noiseSampleJob = null;
     private LoudnessSensor loudnessSensor;
+    private NoiseBurstSensor noiseBurstSensor = new NoiseBurstSensor();
     private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
     private Controller controller;
     private PeriodicPollAlarmReceiver pollAlarmReceiver;
     private PhoneStateListener phoneStateListener = new PhoneStateListener() {
-
+    
         /**
          * Pauses sensing when the phone is used for calling, and starts it again after the call.
          */
@@ -564,7 +648,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
             }
         }
     };
-
+	
     /**
      * Constructor.
      * 
@@ -596,7 +680,12 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
             noiseSampleHandler.post(noiseSampleJob);
         }
     }
-
+    
+	public DataProducer getNoiseBurstSensor()
+	{
+		return noiseBurstSensor;
+	}
+	
     public DataProducer getLoudnessSensor()
     {
     	return loudnessSensor;
