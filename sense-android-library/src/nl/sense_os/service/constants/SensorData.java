@@ -124,6 +124,9 @@ public class SensorData {
 
         /** Noise level sensor. Part of the Ambience sensors. */
         public static final String NOISE = "noise_sensor";
+        
+        /** Noise level sensor (Burst-mode). Part of the Ambience sensors. */
+        public static final String NOISE_BURST = "noise_sensor (burst-mode)";
 
         /** Audio spectrum sensor. Part of the Ambience sensors. */
         public static final String AUDIO_SPECTRUM = "audio_spectrum";
