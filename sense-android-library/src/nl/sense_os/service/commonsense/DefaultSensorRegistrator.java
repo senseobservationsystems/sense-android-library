@@ -3,6 +3,7 @@ package nl.sense_os.service.commonsense;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
@@ -71,7 +72,14 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         // match noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
                 "0.0", deviceType, deviceUuid);
-
+        
+        // match noise sensor (burst-mode)
+        SharedPreferences mainPrefs = getContext().getSharedPreferences(SensePrefs.MAIN_PREFS,
+        		Context.MODE_PRIVATE);
+        if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
+        	success &= checkSensor(SensorNames.NOISE_BURST, "noise (burst-mode)", SenseDataTypes.JSON, "noise (dB)",
+        			"{\"interval:\":0,\"data\":[2.23, 19.45, 20.2]}", deviceType, deviceUuid);
+        }
         // match auto calibrated noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT,
                 SensorDescriptions.AUTO_CALIBRATED, "0.0", deviceType, deviceUuid);
@@ -82,7 +90,7 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
                 "audio spectrum",
                 SenseDataTypes.JSON,
                 "audio spectrum (dB)",
-                "{\"1 kHz\":0,\"2 kHz\":0,\"3 kHz\":0,\"4 kHz\":0,\"5 kHz\":0,\"6 kHz\":0,\"7 kHz\":0,\"8 kHz\":0,\"9 kHz\":0,\"10 kHz\":0,\"11 kHz\":0,\"12 kHz\":0,\"13 kHz\":0,\"14 kHz\":0,\"15 kHz\":0,\"16 kHz\":0,\"17 kHz\":0,\"18 kHz\":0,\"19 kHz\":0,\"20 kHz\":0,\"21 kHz\":0,\"22 kHz\":0}",
+                "{\"bandwidth\":10, \"spectrum\":[40, 50, 40 , 20, 40, 60, 43, 12, 34, 56]}",
                 deviceType, deviceUuid);
 
         // match pressure sensor
@@ -413,8 +421,19 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
         // match data connection
         success &= checkSensor(SensorNames.DATA_CONN, SensorNames.DATA_CONN, SenseDataTypes.STRING,
-                SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
+        		SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
+        // match data connection
+        success &= checkSensor(SensorNames.DATA_CONN, SensorNames.DATA_CONN, SenseDataTypes.STRING,
+        		SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
 
+        // match installed apps sensor
+        success &= checkSensor(SensorNames.APP_INSTALLED, "installed apps", SenseDataTypes.JSON,
+        		SensorNames.APP_INSTALLED, "{\"installed\":[]}", deviceType, deviceUuid);
+        // TODO figure out a better way to send an array of objects
+
+        // match foreground app sensor
+        success &= checkSensor(SensorNames.APP_FOREGROUND, "foreground app", SenseDataTypes.JSON,
+        		SensorNames.APP_FOREGROUND, "{\"label\":\"Sense app\",\"process\":\"nl.sense_os.app\",\"activity\":\"SenseMainActivity\"}", deviceType, deviceUuid);
         return success;
     }
 

@@ -124,6 +124,9 @@ public class SensorData {
 
         /** Noise level sensor. Part of the Ambience sensors. */
         public static final String NOISE = "noise_sensor";
+        
+        /** Noise level sensor (Burst-mode). Part of the Ambience sensors. */
+        public static final String NOISE_BURST = "noise_sensor (burst-mode)";
 
         /** Audio spectrum sensor. Part of the Ambience sensors. */
         public static final String AUDIO_SPECTRUM = "audio_spectrum";
@@ -321,6 +324,10 @@ public class SensorData {
 
         public static final String ATTACHED_TO_MYRIANODE = "attachedToMyriaNode";
 
+        public static final String APP_INSTALLED = "installed_apps";
+        
+        public static final String APP_FOREGROUND = "foreground_app";
+        
         private SensorNames() {
             // class should not be instantiated
         }
