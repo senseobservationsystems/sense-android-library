@@ -224,6 +224,18 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String HUMIDITY = "ambience_humidity";
+            /**
+             * Key for preference that toggles "burst-mode" for the noise sensor
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String BURSTMODE = "burstmode";
+            /**
+             * Key for preference that toggles whether to upload and store burst samples.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String DONT_UPLOAD_BURSTS = "don't upload bursts";
         }
 
         public static class DevProx {

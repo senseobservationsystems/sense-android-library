@@ -6,6 +6,7 @@ package nl.sense_os.service.ambience;
 import java.io.File;
 import java.math.BigDecimal;
 
+import nl.sense_os.service.ambience.FFT;
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -19,9 +20,12 @@ import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
+import nl.sense_os.service.subscription.BaseDataProducer;
 import nl.sense_os.service.subscription.BaseSensor;
 import nl.sense_os.service.subscription.DataProducer;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -66,8 +70,8 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         private static final int BUFFER_SIZE = (int) ((float) DEFAULT_SAMPLE_RATE
                 * (float) BYTES_PER_SAMPLE * ((float) RECORDING_TIME_NOISE / 1000f));
         private AudioRecord audioRecord;
-        private int FFT_BANDWITH_RESOLUTION = 10;
-        private int FFT_MAX_HZ = 1000;
+        private int FFT_BANDWITH_RESOLUTION = 50;
+        private int FFT_MAX_HZ = 8000;
 
         // power of 2
 
@@ -125,61 +129,38 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         }
 
         private double[] calculateSpectrum(float[] samples) {
-            if (samples == null || samples.length == 0)
-                return null;
-            // nr of bands for the fft
-            int nrBands = (int) Math.ceil(1.0 * DEFAULT_SAMPLE_RATE / 2 / FFT_BANDWITH_RESOLUTION);
-            // nr bins that we're actually interested in (discard high
-            // frequencies)
-            int nrBins = (int) Math.ceil(1.0 * FFT_MAX_HZ / FFT_BANDWITH_RESOLUTION);
+        	if (samples == null || samples.length == 0)
+        		return null;
+        	int nrSamples = (int) Math.pow(2, (int) (Math.log(samples.length) / Math.log(2)));
+        	int nrBands = (int) Math.ceil((float)DEFAULT_SAMPLE_RATE/2f / (float)FFT_BANDWITH_RESOLUTION);
+        	if(nrBands > (int) Math.ceil((float)FFT_MAX_HZ/(float)FFT_BANDWITH_RESOLUTION))
+        		nrBands = (int) Math.ceil((float)FFT_MAX_HZ/(float)FFT_BANDWITH_RESOLUTION);
+        	
+        	 //remove the dc-component
+            double mean = 0;
+            for (int i = 0; i < samples.length; i++)
+				mean += samples[i];									
+            mean /= samples.length;
+        	
+        	FFT fft = new FFT(nrSamples, DEFAULT_SAMPLE_RATE);	                        
+        	fft.forward(copyOfRange(samples, 0, nrSamples,(float)mean));
 
-            // create bins
-            double[] bins = new double[nrBins];
-            for (int i = 0; i < bins.length; i++) {
-                bins[i] = 0;
-            }
-
-            // // /window the samples, and sum the fft over all windows
-            // int start = 0;
-            // // number of samples per window should be a power of 2
-            // int nrSamplesPerWindow = (int) Math .pow(2, (int)
-            // (Math.log(FFT_WINDOW_LENGTH
-            // * DEFAULT_SAMPLE_RATE) / Math.log(2)));
-            // int iterations = 0;
-            // while (start + nrSamplesPerWindow < samples.length) {
-            // FFT fft = new FFT(nrSamplesPerWindow, DEFAULT_SAMPLE_RATE);
-            // fft.linAverages(nrBands);
-            // fft.forward(copyOfRange(samples, start, start
-            // + nrSamplesPerWindow));
-            // // add to bins
-            // for (int i = 0; i < bins.length; i++) {
-            // bins[i] += fft.getAvg(i);
-            // }
-            // iterations++;
-            // start += nrSamplesPerWindow / 2; // 50% overlapping windows
-            // }
-            // if (iterations > 0) {
-            // for (int i = 0; i < bins.length; i++) {
-            // bins[i] /= iterations; // TODO: normalise?
-            // bins[i] = 10.0 * Math.log10(bins[i]);
-            // }
-            // }
-
-            // don't window
-            int nrSamples = (int) Math.pow(2, (int) (Math.log(samples.length) / Math.log(2)));
-            FFT fft = new FFT(nrSamples, DEFAULT_SAMPLE_RATE);
-            fft.linAverages(nrBands);
-            fft.forward(copyOfRange(samples, 0, nrSamples));
-            // add to bins
-            for (int i = 0; i < bins.length; i++) {
-                bins[i] = 10.0 * Math.log10(fft.getAvg(i));
-            }
-
-            return bins;
+        	double[] bins = new double[nrBands];	            	           
+        	// computing averages does not work with small sample sizes, compute our own
+        	for (int i = 0; i < nrBands; i++)
+        	{	            	
+        		float avg = 0;
+        		for (int j = 0; j < FFT_BANDWITH_RESOLUTION; j++) {
+        			avg += fft.getFreq(i*FFT_BANDWITH_RESOLUTION+j);					
+        		}
+        		avg /= FFT_BANDWITH_RESOLUTION;	            	
+        		bins[i] = 10.0 * Math.log10(avg);           	
+        	}
+        	return bins;
         }
 
         // java versions before 6 don't have Arrays.copyOfRange, so make our own
-        private float[] copyOfRange(float[] array, int start, int end) {
+        private float[] copyOfRange(float[] array, int start, int end, float mean) {
             if (end < start || start < 0)
                 throw new IndexOutOfBoundsException(); // isn't there a
             // RangeException??
@@ -187,7 +168,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                 throw new IndexOutOfBoundsException();
             float[] copy = new float[end - start];
             for (int i = start, j = 0; i < end; i++, j++)
-                copy[j] = array[i];
+                copy[j] = array[i]-mean;
 
             return copy;
         }
@@ -281,8 +262,11 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                             SharedPreferences mainPrefs = context.getSharedPreferences(
                                     SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
                             if (mainPrefs.getBoolean(Ambience.MIC, true)) {
-                                dB = calculateDb(samples);
+                                dB = calculateDb(samples);                                
                                 controller.checkNoiseSensor(dB);
+                                if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
+                                	noiseBurstSensor.addData(samples, RECORDING_TIME_NOISE, startTimestamp);                                	
+                                }
                             }
                             if (mainPrefs.getBoolean(Ambience.AUDIO_SPECTRUM, true))
                                 spectrum = calculateSpectrum(samples);
@@ -311,21 +295,19 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
                         if (spectrum != null) {
                             JSONObject jsonSpectrum = new JSONObject();
-
-                            for (int i = 0; i < spectrum.length; i++) {
-                                String bandString = ((i + 1) * FFT_BANDWITH_RESOLUTION) + "Hz";
-                                if (spectrum[i] == Double.POSITIVE_INFINITY) {
-                                    jsonSpectrum.put(bandString, 140); // max db
-                                } else if (spectrum[i] != Double.NaN
-                                        && spectrum[i] != Double.NEGATIVE_INFINITY) {
-                                    // normal case
-                                    jsonSpectrum.put(bandString, spectrum[i]);
-                                } else {
-                                    // NaN or too low value
-                                    jsonSpectrum.put(bandString, 0);
-                                }
+                            jsonSpectrum.put("bandwidth", FFT_BANDWITH_RESOLUTION);                            
+                            JSONArray jsonSpectrumArray = new JSONArray();
+                            for (int i = 0; i < spectrum.length; i++)
+                            {
+                            	if (spectrum[i] == Double.POSITIVE_INFINITY)
+                                	jsonSpectrumArray.put(140);
+                                 else if (spectrum[i] != Double.NaN && spectrum[i] != Double.NEGATIVE_INFINITY) // normal case
+                                	 jsonSpectrumArray.put(Math.round(spectrum[i]));
+                                 else	
+                                	jsonSpectrumArray.put(0);                                
                             }
-
+                            
+                            jsonSpectrum.put("spectrum", jsonSpectrumArray);
                             notifySubscribers();
                             SensorDataPoint dataPoint = new SensorDataPoint(jsonSpectrum);
                             dataPoint.sensorName = SensorNames.AUDIO_SPECTRUM;
@@ -531,6 +513,84 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
         }
     }
 
+   public class NoiseBurstSensor extends BaseDataProducer {
+       private int INTERVAL = 100; // ms 
+	   public NoiseBurstSensor() {
+        	
+        }
+	   public void addData(float [] samples, int recording_time, long start_time)
+	   {
+		   if(samples.length <= 0)
+			   return;
+		   JSONObject burst = new JSONObject();
+
+		   try {
+			   burst.put("interval", INTERVAL);
+			   burst.put("data", calculateDb(samples, (int)(((double)samples.length/(double)recording_time)*(double)INTERVAL)));
+			   sendData(burst, start_time);
+		   } catch (JSONException e) {
+			   Log.e(TAG,"Error in computing burst data" ,e);
+		   }    		
+	   }
+    	
+    	private JSONArray calculateDb(float[] samples, int step_size) 
+    	{
+    		JSONArray noise_burst = new JSONArray();    	
+    		try
+    		{
+    			for (int i = 0; i < samples.length; i+=step_size) {
+
+    				double dB = 0;
+    				double ldb = 0;
+
+    				for (int x = 0; x < step_size ; ++x) {
+    					ldb += ((double) samples[i+x] * (double) samples[i+x]);
+    				}
+
+    				ldb /= (double) step_size;
+    				dB = 10.0 * Math.log10(ldb);
+
+    				if (dB == Double.POSITIVE_INFINITY)
+    					noise_burst.put(140);
+                     else if (dB != Double.NaN && dB != Double.NEGATIVE_INFINITY) // normal case
+                    	 noise_burst.put(Math.round(dB));
+                     else	
+                    	 noise_burst.put(0);  
+    						
+    			}
+    		}
+    		catch(Exception e)
+    		{
+    			Log.e(TAG, "Error in calculating burst noise", e);
+    		}
+    		return  noise_burst;
+    	}
+    	
+    	public void sendData(JSONObject data, long startTimestamp)
+    	{
+    		  notifySubscribers();
+              SensorDataPoint dataPoint = new SensorDataPoint(data);
+              dataPoint.sensorName = SensorNames.NOISE_BURST;
+              dataPoint.sensorDescription =  "noise (dB)";
+              dataPoint.timeStamp = startTimestamp;
+              sendToSubscribers(dataPoint);
+
+              // pass message to the MsgHandler
+              // get sample rate from preferences
+              SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+              if(!mainPrefs.getBoolean(Ambience.DONT_UPLOAD_BURSTS, true))
+              {
+            	  Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
+            	  sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE_BURST);
+            	  sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION, "noise (dB)");
+            	  sensorData.putExtra(DataPoint.VALUE, data.toString());
+            	  sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+            	  sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
+            	  context.startService(sensorData);
+              }
+    	}
+    };
+    
     private static NoiseSensor instance = null;
 
     private static final String TAG = "Sense NoiseSensor";
@@ -556,11 +616,12 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
     private Handler noiseSampleHandler = new Handler();
     private NoiseSampleJob noiseSampleJob = null;
     private LoudnessSensor loudnessSensor;
+    private NoiseBurstSensor noiseBurstSensor = new NoiseBurstSensor();
     private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
     private Controller controller;
     private PeriodicPollAlarmReceiver pollAlarmReceiver;
     private PhoneStateListener phoneStateListener = new PhoneStateListener() {
-
+    
         /**
          * Pauses sensing when the phone is used for calling, and starts it again after the call.
          */
@@ -587,7 +648,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
             }
         }
     };
-
+	
     /**
      * Constructor.
      * 
@@ -619,7 +680,12 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
             noiseSampleHandler.post(noiseSampleJob);
         }
     }
-
+    
+	public DataProducer getNoiseBurstSensor()
+	{
+		return noiseBurstSensor;
+	}
+	
     public DataProducer getLoudnessSensor()
     {
     	return loudnessSensor;
