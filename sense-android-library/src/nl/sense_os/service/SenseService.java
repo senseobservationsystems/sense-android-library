@@ -1304,6 +1304,14 @@ public class SenseService extends Service {
                                 proximitySensor.startSensing(finalInterval);
                                 mSubscrMgr.registerProducer(SensorNames.PROXIMITY, proximitySensor);
                             }
+                            if (mainPrefs.getBoolean(PhoneState.FOREGROUND_APP, true) || mainPrefs.getBoolean(PhoneState.INSTALLED_APPS, false) ) {
+                            	appsSensor = AppsSensor.getInstance(SenseService.this);
+                            	if (mainPrefs.getBoolean(PhoneState.FOREGROUND_APP, true))
+                            		mSubscrMgr.registerProducer(SensorNames.APP_FOREGROUND, appsSensor);
+                            	if (mainPrefs.getBoolean(PhoneState.INSTALLED_APPS, false))
+                            		mSubscrMgr.registerProducer(SensorNames.APP_INSTALLED, appsSensor);
+                            	appsSensor.startSensing(finalInterval);                               
+                            }
                             phoneStateListener = SensePhoneState.getInstance(SenseService.this);
                             phoneStateListener.startSensing(finalInterval);
                             mSubscrMgr.registerProducer(SensorNames.CALL_STATE, phoneStateListener);
@@ -1346,6 +1354,12 @@ public class SenseService extends Service {
                     phoneActivitySensor.stopPhoneActivitySensing();
                     mSubscrMgr.unregisterProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
                     phoneActivitySensor = null;
+                }
+                if (null != appsSensor) {
+                	appsSensor.stopSensing();
+                	mSubscrMgr.unregisterProducer(SensorNames.APP_FOREGROUND, appsSensor);
+                	mSubscrMgr.unregisterProducer(SensorNames.APP_INSTALLED, appsSensor);
+                	appsSensor = null;
                 }
                 // if (null != phoneStateHandler) {
                 // phoneStateHandler.getLooper().quit();
