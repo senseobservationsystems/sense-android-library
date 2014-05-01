@@ -307,7 +307,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 								if (spectrum[i] == Double.POSITIVE_INFINITY)
 									jsonSpectrumArray.put(140);
 								else if (spectrum[i] != Double.NaN && spectrum[i] != Double.NEGATIVE_INFINITY) // normal case
-								jsonSpectrumArray.put(Math.round(spectrum[i]));
+									jsonSpectrumArray.put(Math.round(spectrum[i]));
 								else	
 									jsonSpectrumArray.put(0);                                
 							}
@@ -553,7 +553,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 					if (dB == Double.POSITIVE_INFINITY)
 						noise_burst.put(140);
 					else if (dB != Double.NaN && dB != Double.NEGATIVE_INFINITY) // normal case
-					noise_burst.put(Math.round(dB));
+						noise_burst.put(Math.round(dB));
 					else	
 						noise_burst.put(0);  
 
