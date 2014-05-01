@@ -31,6 +31,7 @@ import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
 import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.motion.MotionSensor;
+import nl.sense_os.service.phonestate.AppsSensor;
 import nl.sense_os.service.phonestate.BatterySensor;
 import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
@@ -125,6 +126,7 @@ public class SenseService extends Service {
     private MagneticFieldSensor magneticFieldSensor;
     private DataTransmitter transmitter;
     private SubscriptionManager mSubscrMgr;
+    private AppsSensor appsSensor;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -1239,6 +1241,14 @@ public class SenseService extends Service {
                     phoneActivitySensor.stopPhoneActivitySensing();
                     phoneActivitySensor = null;
                 }
+                
+                // check apps sensor presence
+                if (appsSensor != null) {
+                	Log.w(TAG, "apps sensor is already present!");
+                	appsSensor.stopSensing();
+                	appsSensor = null;
+                }
+
 
                 // get sample rate
                 final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -1294,6 +1304,14 @@ public class SenseService extends Service {
                                 proximitySensor.startSensing(finalInterval);
                                 mSubscrMgr.registerProducer(SensorNames.PROXIMITY, proximitySensor);
                             }
+                            if (mainPrefs.getBoolean(PhoneState.FOREGROUND_APP, true) || mainPrefs.getBoolean(PhoneState.INSTALLED_APPS, false) ) {
+                            	appsSensor = AppsSensor.getInstance(SenseService.this);
+                            	if (mainPrefs.getBoolean(PhoneState.FOREGROUND_APP, true))
+                            		mSubscrMgr.registerProducer(SensorNames.APP_FOREGROUND, appsSensor);
+                            	if (mainPrefs.getBoolean(PhoneState.INSTALLED_APPS, false))
+                            		mSubscrMgr.registerProducer(SensorNames.APP_INSTALLED, appsSensor);
+                            	appsSensor.startSensing(finalInterval);                               
+                            }
                             phoneStateListener = SensePhoneState.getInstance(SenseService.this);
                             phoneStateListener.startSensing(finalInterval);
                             mSubscrMgr.registerProducer(SensorNames.CALL_STATE, phoneStateListener);
@@ -1336,6 +1354,12 @@ public class SenseService extends Service {
                     phoneActivitySensor.stopPhoneActivitySensing();
                     mSubscrMgr.unregisterProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
                     phoneActivitySensor = null;
+                }
+                if (null != appsSensor) {
+                	appsSensor.stopSensing();
+                	mSubscrMgr.unregisterProducer(SensorNames.APP_FOREGROUND, appsSensor);
+                	mSubscrMgr.unregisterProducer(SensorNames.APP_INSTALLED, appsSensor);
+                	appsSensor = null;
                 }
                 // if (null != phoneStateHandler) {
                 // phoneStateHandler.getLooper().quit();
