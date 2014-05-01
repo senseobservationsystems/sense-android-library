@@ -350,7 +350,7 @@ public class SensePlugin extends CordovaPlugin {
         if (null != service) {
 
             // try the login
-            String sessionId = SenseApi.getSessionId(cordova.getActivity());
+            String sessionId = SenseApi.getCookie(cordova.getActivity());
 
             // check the result
             if (null != sessionId) {
