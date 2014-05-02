@@ -238,13 +238,13 @@ public class SensePrefs {
              * 
              * @see SensePrefs#MAIN_PREFS
              */
-            public static final String BURSTMODE = "burstmode";
+            public static final String BURSTMODE = "ambience_burstmode";
             /**
              * Key for preference that toggles whether to upload and store burst samples.
              * 
              * @see SensePrefs#MAIN_PREFS
              */
-            public static final String DONT_UPLOAD_BURSTS = "don't upload bursts";
+            public static final String DONT_UPLOAD_BURSTS = "dont upload bursts";
         }
 
         public static class DevProx {
@@ -442,7 +442,7 @@ public class SensePrefs {
              * 
              * @see SensePrefs#MAIN_PREFS
              */
-            public static final String DONT_UPLOAD_BURSTS = "don't upload bursts";
+            public static final String DONT_UPLOAD_BURSTS = "dont upload bursts";
             
             /**
              * Key for preference that determines the burst duration. Duration is in milliseconds.
