@@ -421,8 +421,19 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
         // match data connection
         success &= checkSensor(SensorNames.DATA_CONN, SensorNames.DATA_CONN, SenseDataTypes.STRING,
-                SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
+        		SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
+        // match data connection
+        success &= checkSensor(SensorNames.DATA_CONN, SensorNames.DATA_CONN, SenseDataTypes.STRING,
+        		SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
 
+        // match installed apps sensor
+        success &= checkSensor(SensorNames.APP_INSTALLED, "installed apps", SenseDataTypes.JSON,
+        		SensorNames.APP_INSTALLED, "{\"installed\":[]}", deviceType, deviceUuid);
+        // TODO figure out a better way to send an array of objects
+
+        // match foreground app sensor
+        success &= checkSensor(SensorNames.APP_FOREGROUND, "foreground app", SenseDataTypes.JSON,
+        		SensorNames.APP_FOREGROUND, "{\"label\":\"Sense app\",\"process\":\"nl.sense_os.app\",\"activity\":\"SenseMainActivity\"}", deviceType, deviceUuid);
         return success;
     }
 
