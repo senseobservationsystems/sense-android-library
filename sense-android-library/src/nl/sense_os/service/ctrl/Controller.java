@@ -18,6 +18,7 @@ public abstract class Controller {
 
     private class Intervals {
         static final long ECO = AlarmManager.INTERVAL_HALF_HOUR;
+        static final long RARELY = 1000 * 60 * 15; 
         static final long NORMAL = 1000 * 60 * 5;
         static final long OFTEN = 1000 * 60 * 1;
     }
@@ -109,6 +110,9 @@ public abstract class Controller {
         // pick transmission interval
         long txInterval;
         switch (syncRate) {
+        case 2: // rarely, every 15 minutes
+        	txInterval = Intervals.RARELY;
+        	break;
         case 1: // eco-mode
             txInterval = Intervals.ECO;
             break;
