@@ -51,7 +51,7 @@ public class MotionEnergySensor extends BaseDataProducer implements DataConsumer
     private float[] calcLinAcc(float[] values) {
 
         // low-pass filter raw accelerometer data to approximate the gravity
-        final float alpha = 0.8f; // filter constants should depend on sample rate
+        final float alpha = 0.85f; // filter constants should depend on sample rate
         gravity[0] = alpha * gravity[0] + (1 - alpha) * values[0];
         gravity[1] = alpha * gravity[1] + (1 - alpha) * values[1];
         gravity[2] = alpha * gravity[2] + (1 - alpha) * values[2];

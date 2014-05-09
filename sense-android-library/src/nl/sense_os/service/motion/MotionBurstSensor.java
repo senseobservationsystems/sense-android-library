@@ -7,6 +7,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -36,6 +37,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 	private Context context;
 	private boolean sampleComplete = false;
 	private long timeAtStartOfBurst = -1;
+	private AccelerationFilter accelFilter = new AccelerationFilter();
 
 	public MotionBurstSensor(Context context, int sensorType, String sensorName) {
 		this.context = context;	
@@ -79,7 +81,13 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 		if (dataBuffer == null) {
 			dataBuffer = new ArrayList<double[]>();
 		}
-		dataBuffer.add(MotionSensorUtils.getVector(event));
+		if(SENSOR_NAME == SensorData.SensorNames.LINEAR_BURST && SENSOR_TYPE == Sensor.TYPE_ACCELEROMETER){ 
+		  //fakeLinearBurstSensor
+		  float[] filteredValues = accelFilter.calcLinAcc( event.values );
+		  dataBuffer.add(MotionSensorUtils.getVector(filteredValues));
+		}else{
+		  dataBuffer.add(MotionSensorUtils.getVector(event));
+		}
 
 		if (timeAtStartOfBurst == -1) {
 			timeAtStartOfBurst = SystemClock.elapsedRealtime();
@@ -110,7 +118,10 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 
 			dataPoint.sensorName = SENSOR_NAME;
 			dataPoint.sensorDescription = sensor.getName();
-            dataPoint.timeStamp = SNTP.getInstance().getTime() - burstDuration;
+			if(SENSOR_NAME == SensorData.SensorNames.LINEAR_BURST && SENSOR_TYPE == Sensor.TYPE_ACCELEROMETER){ 
+			  dataPoint.sensorDescription += "(processed)";
+			}
+			dataPoint.timeStamp = SNTP.getInstance().getTime() - burstDuration;
 			this.sendToSubscribers(dataPoint);
 
 		} catch (JSONException e) {

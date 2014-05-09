@@ -201,13 +201,20 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             mSubscrMgr.registerProducer(SensorNames.GYRO_BURST, gyroBurstSensor);
         }
         if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            if (!MotionSensorUtils.isFakeLinearRequired( context )) {
                 linearBurstSensor = new MotionBurstSensor(context,
                         Sensor.TYPE_LINEAR_ACCELERATION,
                         SensorNames.LINEAR_BURST);
                 addSubscriber(this.linearBurstSensor);
                 mSubscrMgr.registerProducer(SensorNames.LINEAR_BURST,
                         linearBurstSensor);
+            }else{
+                  linearBurstSensor = new MotionBurstSensor(context,
+                  Sensor.TYPE_ACCELEROMETER, SensorNames.LINEAR_BURST);
+                  addSubscriber(this.linearBurstSensor);
+                  mSubscrMgr.registerProducer(SensorNames.LINEAR_BURST,
+                        linearBurstSensor);
+                  Log.d( TAG, "Fake linearBurst is registered" );
             }
         }
     }
