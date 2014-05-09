@@ -162,9 +162,7 @@ public class MotionSensorUtils {
                 // only devices with gingerbread+ have linear acceleration sensors
                 if (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
                     sensors.add(mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-                }/*TODO:else if (null != mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) {
-                    sensors.add(mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-                }*/
+                }
             }
         }
         return sensors;
@@ -230,23 +228,11 @@ public class MotionSensorUtils {
         return sensorName;
     }
 
-    public static double[] getVector(SensorEvent event) { //TODO:process values IF linear is required and it does not exist And the sensor is accel
-
-        final double[] values = new double[3];
-
-        int axis = 0;
-
-        for (double value : event.values) {
-            // scale to three decimal precision
-            value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
-            values[axis] = value;
-            axis++;
-        }
-
-        return values;
+    public static double[] getVector(SensorEvent event) { 
+      return getVector(event.values);
     }
     
-    public static double[] getVector(float[] eventVals) { //TODO:process values IF linear is required and it does not exist And the sensor is accel
+    public static double[] getVector(float[] eventVals) { 
 
       final double[] values = new double[3];
 
@@ -264,5 +250,3 @@ public class MotionSensorUtils {
     
 
 }
-
-
