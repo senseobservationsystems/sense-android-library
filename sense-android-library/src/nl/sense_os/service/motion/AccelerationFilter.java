@@ -1,8 +1,10 @@
 package nl.sense_os.service.motion;
 
+import android.util.Log;
+
 
 public class AccelerationFilter {
-  
+  private static final String TAG = "AccelerationFilter";
   private float[] gravity = { 0, 0, 0 };
   
   /**
