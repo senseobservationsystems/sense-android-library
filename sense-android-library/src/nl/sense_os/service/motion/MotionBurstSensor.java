@@ -37,12 +37,17 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 	private Context context;
 	private boolean sampleComplete = false;
 	private long timeAtStartOfBurst = -1;
-	private AccelerationFilter accelFilter = new AccelerationFilter();
+	private boolean isFakeLinear = false;
+	private AccelerationFilter accelFilter;
 
 	public MotionBurstSensor(Context context, int sensorType, String sensorName) {
 		this.context = context;	
 		SENSOR_TYPE = sensorType;
 		SENSOR_NAME = sensorName;
+		isFakeLinear = ((SENSOR_NAME == SensorData.SensorNames.LINEAR_BURST) && (SENSOR_TYPE == Sensor.TYPE_ACCELEROMETER));
+		if(isFakeLinear){
+		  accelFilter = new AccelerationFilter();
+		}
 	}
 
 	@Override
@@ -81,7 +86,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 		if (dataBuffer == null) {
 			dataBuffer = new ArrayList<double[]>();
 		}
-		if(SENSOR_NAME == SensorData.SensorNames.LINEAR_BURST && SENSOR_TYPE == Sensor.TYPE_ACCELEROMETER){ 
+		if(isFakeLinear){ 
 		  //fakeLinearBurstSensor
 		  float[] filteredValues = accelFilter.calcLinAcc( event.values );
 		  dataBuffer.add(MotionSensorUtils.getVector(filteredValues));
@@ -109,6 +114,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 				+ Math.round((double) burstDuration / (double) dataBuffer.size())
 				+ ",\"header\":\"" + MotionSensorUtils.getSensorHeader(sensor).toString()
 				+ "\",\"values\":" + dataBufferString + "}";
+		String processed = (SENSOR_NAME == SensorData.SensorNames.LINEAR_BURST && SENSOR_TYPE == Sensor.TYPE_ACCELEROMETER)? "(processed)":"";
 
 		try {
 			this.notifySubscribers();
@@ -139,7 +145,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 
         if (mainPrefs.getBoolean(Motion.DONT_UPLOAD_BURSTS, false) == false) {
 			i.putExtra(DataPoint.SENSOR_NAME, SENSOR_NAME);
-			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
+			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName()+processed);
 			i.putExtra(DataPoint.VALUE, value);
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
 			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime()
