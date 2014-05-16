@@ -31,11 +31,13 @@ public class StandardMotionSensor extends BaseDataProducer implements DataConsum
     private Context context;
     private long[] lastSampleTimes = new long[50];
     private final List<Sensor> sensors;
-    private AccelerationFilter accelFilter;
+    //private AccelerationFilter accelFilter;
+    //private boolean isFakeLinearRequired ;
 
     public StandardMotionSensor(Context context) {
         this.context = context;
         sensors = MotionSensorUtils.getAvailableMotionSensors(context);
+        //isFakeLinearRequired = MotionSensorUtils.isFakeLinearRequired( context );
     }
 
     @Override
@@ -75,7 +77,7 @@ public class StandardMotionSensor extends BaseDataProducer implements DataConsum
         lastSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
         /*
         //check IF (linear is required) && (linear does not exist) && (sensor.getType() IS accelerometer)
-        if(MotionSensorUtils.isFakeLinearRequired( context )&&sensor.getType()==Sensor.TYPE_ACCELEROMETER){
+        if(isFakeLinearRequired && sensor.getType()==Sensor.TYPE_ACCELEROMETER){
            lastSampleTimes[Sensor.TYPE_LINEAR_ACCELERATION] = SystemClock.elapsedRealtime();
            String fakeSensorName = SensorData.SensorNames.LIN_ACCELERATION;
            float[] filteredValues = accelFilter.calcLinAcc( event.values);
