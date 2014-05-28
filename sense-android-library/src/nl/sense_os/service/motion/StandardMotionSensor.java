@@ -4,6 +4,9 @@ import java.util.List;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -15,6 +18,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
@@ -27,10 +31,13 @@ public class StandardMotionSensor extends BaseDataProducer implements DataConsum
     private Context context;
     private long[] lastSampleTimes = new long[50];
     private final List<Sensor> sensors;
+    //private AccelerationFilter accelFilter;
+    //private boolean isFakeLinearRequired ;
 
     public StandardMotionSensor(Context context) {
         this.context = context;
         sensors = MotionSensorUtils.getAvailableMotionSensors(context);
+        //isFakeLinearRequired = MotionSensorUtils.isFakeLinearRequired( context );
     }
 
     @Override
@@ -68,40 +75,57 @@ public class StandardMotionSensor extends BaseDataProducer implements DataConsum
 
         // store the sample time
         lastSampleTimes[sensor.getType()] = SystemClock.elapsedRealtime();
-
+        /*
+        //check IF (linear is required) && (linear does not exist) && (sensor.getType() IS accelerometer)
+        if(isFakeLinearRequired && sensor.getType()==Sensor.TYPE_ACCELEROMETER){
+           lastSampleTimes[Sensor.TYPE_LINEAR_ACCELERATION] = SystemClock.elapsedRealtime();
+           String fakeSensorName = SensorData.SensorNames.LIN_ACCELERATION;
+           float[] filteredValues = accelFilter.calcLinAcc( event.values);
+           JSONObject filteredJson = MotionSensorUtils.createJsonValue( filteredValues );
+           sendData(sensor, fakeSensorName, filteredJson);
+        }
+        */
+        
         // send data point
         String sensorName = MotionSensorUtils.getSensorName(sensor);
         JSONObject json = MotionSensorUtils.createJsonValue(event);
         sendData(sensor, sensorName, json);
+
     }
 
     private void sendData(Sensor sensor, String sensorName, JSONObject json) {
-		try
-		{
-			this.notifySubscribers();
-			SensorDataPoint dataPoint = new SensorDataPoint(json);
-			dataPoint.sensorName = sensorName;
-			dataPoint.sensorDescription = sensor.getName();
-			dataPoint.timeStamp = SNTP.getInstance().getTime();        
-			this.sendToSubscribers(dataPoint);
-
-			// TODO: implement MsgHandler as data processor
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, json.toString());
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-        context.startService(i);
+  		sendData(sensor.getName(), sensorName, json);
     }
-		catch(Exception e)
-		{
-			Log.e(TAG, "Error sending data from StandardMotionSensor");
-		}
+		
+		private void sendData(String description, String sensorName, JSONObject json) {
+	    try
+	    {
+	      this.notifySubscribers();
+	      SensorDataPoint dataPoint = new SensorDataPoint(json);
+	      dataPoint.sensorName = sensorName;
+	      dataPoint.sensorDescription = description;
+	      dataPoint.timeStamp = SNTP.getInstance().getTime();        
+	      this.sendToSubscribers(dataPoint);
+
+	      // TODO: implement MsgHandler as data processor
+	        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
+	        i.putExtra(DataPoint.SENSOR_NAME, sensorName);
+	        i.putExtra(DataPoint.SENSOR_DESCRIPTION, description);
+	        i.putExtra(DataPoint.VALUE, json.toString());
+	        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
+	      i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+	        context.startService(i);
+	    }
+	    catch(Exception e)
+	    {
+	      Log.e(TAG, "Error sending data from StandardMotionSensor");
+	    }
 	}
 
     @Override
     public void startNewSample() {
         lastSampleTimes = new long[50];
     }
+    
+
 }

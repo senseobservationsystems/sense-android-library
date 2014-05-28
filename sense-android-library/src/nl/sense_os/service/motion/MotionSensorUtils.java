@@ -35,7 +35,7 @@ public class MotionSensorUtils {
                 // scale to three decimal precision
                 if (Double.isNaN(value))
                     continue;
-                value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
+                value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue(); 
 
                 switch (axis) {
                 case 0:
@@ -89,6 +89,43 @@ public class MotionSensorUtils {
 
         return json;
     }
+    
+    //used only for fake linear accelerometer.
+    public static JSONObject createJsonValue(float[] vals) {
+
+      float[] values = vals;
+      final JSONObject json = new JSONObject();
+
+      int axis = 0;
+      try {
+          for (double value : values) {
+              // scale to three decimal precision
+              if (Double.isNaN(value))
+                  continue;
+              value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue(); 
+
+              switch (axis) {
+              case 0:
+                    json.put("x-axis", value);
+                  break;
+              case 1:
+                  json.put("y-axis", value);
+                  break;
+              case 2:
+                  json.put("z-axis", value);
+                  break;
+              default:
+                  Log.w(TAG, "Unexpected sensor value! More than three axes?!");
+              }
+              axis++;
+          }
+      } catch (Exception e) {
+          Log.e(TAG, "Exception creating motion JSON value", e);
+          return null;
+      }
+
+      return json;
+  }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @SuppressWarnings("deprecation")
@@ -130,6 +167,21 @@ public class MotionSensorUtils {
         }
         return sensors;
     }
+    
+    public static boolean isFakeLinearRequired(Context context){
+      boolean isRequired=false;
+      SensorManager mgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+      final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+          Context.MODE_PRIVATE);
+      
+      if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
+          //check if linear does not exist
+          if (null == mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
+              isRequired = true;
+          }
+      }
+      return isRequired;
+  }
 
     public static String getSensorHeader(Sensor sensor) {
         String header = "";
@@ -176,19 +228,25 @@ public class MotionSensorUtils {
         return sensorName;
     }
 
-    public static double[] getVector(SensorEvent event) {
-
-        final double[] values = new double[3];
-
-        int axis = 0;
-
-        for (double value : event.values) {
-            // scale to three decimal precision
-            value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
-            values[axis] = value;
-            axis++;
-        }
-
-        return values;
+    public static double[] getVector(SensorEvent event) { 
+      return getVector(event.values);
     }
+    
+    public static double[] getVector(float[] eventVals) { 
+
+      final double[] values = new double[3];
+
+      int axis = 0;
+
+      for (double value : eventVals) {
+          // scale to three decimal precision
+          value = BigDecimal.valueOf(value).setScale(3, 0).doubleValue();
+          values[axis] = value;
+          axis++;
+      }
+
+      return values;
+  }
+    
+
 }
