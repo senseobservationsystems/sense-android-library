@@ -287,35 +287,37 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
                 success &= checkSensor(SensorNames.FALL_DETECTOR, "fall (demo)",
                         SenseDataTypes.BOOL, "demo fall", "true", deviceType, deviceUuid);
             }
+            
+            
+
+            // match linear acceleration
+            if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
+                //check if actual linear accelerometer exists,
+                //if not we set burst-mode only
+                String processed ="";
+
+                if (null != sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
+                  success &= checkSensor(SensorNames.LIN_ACCELERATION,
+                          SensorNames.LIN_ACCELERATION, SenseDataTypes.JSON, sensor.getName(),
+                          "{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType,
+                          deviceUuid);
+                }else {
+                  processed = "processed ";
+                }
+
+                if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
+                    success &= checkSensor(SensorNames.LINEAR_BURST,
+                            "linear acceleration " + processed + "(burst-mode)", SenseDataTypes.JSON,
+                            sensor.getName(), "{\"interval\":0,\"data\":[]}", deviceType,
+                            deviceUuid);
+                }
+            }
 
         } else {
             // Log.v(TAG, "No accelerometer present!");
         }
 
-        // match linear acceleration sensor
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 
-            sensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-            if (null != sensor) {
-
-                // match linear acceleration
-                if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
-                    success &= checkSensor(SensorNames.LIN_ACCELERATION,
-                            SensorNames.LIN_ACCELERATION, SenseDataTypes.JSON, sensor.getName(),
-                            "{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType,
-                            deviceUuid);
-
-                    if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
-                        success &= checkSensor(SensorNames.LINEAR_BURST,
-                                "linear acceleration (burst-mode)", SenseDataTypes.JSON,
-                                sensor.getName(), "{\"interval\":0,\"data\":[]}", deviceType,
-                                deviceUuid);
-                    }
-                }
-            } else {
-                // Log.v(TAG, "No linear acceleration sensor present!");
-            }
-        }
 
         // match orientation
         if (mainPrefs.getBoolean(Motion.ORIENTATION, true)) {

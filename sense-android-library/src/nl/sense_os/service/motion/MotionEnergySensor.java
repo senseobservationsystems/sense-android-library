@@ -29,34 +29,18 @@ public class MotionEnergySensor extends BaseDataProducer implements DataConsumer
     private long prevSampleTime;
     private double avgSpeedChange;
     private int avgSpeedCount;
-    private float[] gravity = { 0, 0, SensorManager.GRAVITY_EARTH };
     private Context context;
     private boolean hasLinAccSensor;
     private long sampleStartTime = 0;
     private boolean sampleComplete;
+    private AccelerationFilter accelFilter;
 
     public MotionEnergySensor(Context context) {
         this.context = context;
         checkLinAccSensor();
-    }
-
-    /**
-     * Calculates the linear acceleration of a raw accelerometer sample. Tries to determine the
-     * gravity component by putting the signal through a first-order low-pass filter.
-     * 
-     * @param values
-     *            Array with accelerometer values for the three axes.
-     * @return The approximate linear acceleration of the sample.
-     */
-    private float[] calcLinAcc(float[] values) {
-
-        // low-pass filter raw accelerometer data to approximate the gravity
-        final float alpha = 0.8f; // filter constants should depend on sample rate
-        gravity[0] = alpha * gravity[0] + (1 - alpha) * values[0];
-        gravity[1] = alpha * gravity[1] + (1 - alpha) * values[1];
-        gravity[2] = alpha * gravity[2] + (1 - alpha) * values[2];
-
-        return new float[] { values[0] - gravity[0], values[1] - gravity[1], values[2] - gravity[2] };
+        if(!hasLinAccSensor){
+          accelFilter = new AccelerationFilter();
+        }
     }
 
     @SuppressLint("InlinedApi")
@@ -102,7 +86,7 @@ public class MotionEnergySensor extends BaseDataProducer implements DataConsumer
 
         // approximate linear acceleration if we have no special sensor for it
         if (!hasLinAccSensor && Sensor.TYPE_ACCELEROMETER == event.sensor.getType()) {
-            linAcc = calcLinAcc(event.values);
+            linAcc = accelFilter.calcLinAcc(event.values);
         } else if (hasLinAccSensor && Sensor.TYPE_LINEAR_ACCELERATION == event.sensor.getType()) {
             linAcc = event.values;
         } else {
