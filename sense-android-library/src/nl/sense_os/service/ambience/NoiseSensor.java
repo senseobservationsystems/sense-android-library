@@ -697,6 +697,15 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 		return active;
 	}
 
+	@Override
+	public long getSampleRate() {
+		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+		if (mainPrefs.getBoolean(Ambience.RECORD_AUDIO, false))		
+			return -1;
+	
+		return super.getSampleRate();
+	}
+	
 	/**
 	 * Starts the sound sensing jobs.
 	 */
