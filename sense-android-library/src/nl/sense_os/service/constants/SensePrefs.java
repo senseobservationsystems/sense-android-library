@@ -203,6 +203,12 @@ public class SensePrefs {
              */
             public static final String MIC = "ambience_mic";
             /**
+             * Key for preference that toggles audio recording ambience sensing.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String RECORD_AUDIO = "ambience_record_audio";
+            /**
              * Key for preference that toggles use of the audio spectrum in ambience sensing.
              * 
              * @see SensePrefs#MAIN_PREFS
