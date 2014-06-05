@@ -28,8 +28,8 @@ import android.util.Log;
 public class MotionBurstSensor extends BaseDataProducer implements DataConsumer {
 
 	private static final String TAG = "MotionBurstSensor";
-	 private static final long DEFAULT_BURST_DURATION = 3 * 1000;
-	 private long burstDuration = 3 * 1000;
+	private static final long DEFAULT_BURST_DURATION = 3 * 1000;
+	private long burstDuration = 3 * 1000;
 	private int SENSOR_TYPE = 0;
 	private String SENSOR_NAME;
 
@@ -39,6 +39,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 	private long timeAtStartOfBurst = -1;
 	private boolean isFakeLinear = false;
 	private AccelerationFilter accelFilter;
+	private MotionSensor motionSensor = null;
 
 	public MotionBurstSensor(Context context, int sensorType, String sensorName) {
 		this.context = context;	
@@ -48,6 +49,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 		if(isFakeLinear){
 		  accelFilter = new AccelerationFilter();
 		}
+		motionSensor = MotionSensor.getInstance(context);
 	}
 
 	@Override
@@ -97,8 +99,14 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 		if (timeAtStartOfBurst == -1) {
 			timeAtStartOfBurst = SystemClock.elapsedRealtime();
 		}
-		sampleComplete = SystemClock.elapsedRealtime() > timeAtStartOfBurst + burstDuration;
-		if (sampleComplete == true) {
+		
+		boolean buffer_time_reached = SystemClock.elapsedRealtime() > timeAtStartOfBurst + burstDuration;
+		
+		// check if the interval between samples is larger than the local buffer time
+		if(motionSensor.getSampleRate() > burstDuration)		
+			sampleComplete = buffer_time_reached;				
+			
+		if (buffer_time_reached) {
 			sendData(sensor);
 
 			// reset data buffer
