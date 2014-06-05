@@ -77,8 +77,6 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 
 	@Override
 	public void onNewData(SensorDataPoint dataPoint) {
-
-		sampleComplete = false;
 		SensorEvent event =  dataPoint.getSensorEventValue();
 		Sensor sensor = event.sensor;
 		if (sensor.getType() != SENSOR_TYPE) {
