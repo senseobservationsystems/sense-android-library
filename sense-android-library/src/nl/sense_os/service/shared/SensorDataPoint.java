@@ -36,6 +36,13 @@ public class SensorDataPoint {
     /**
      * @see #SensorDataPoint(int)
      */
+    public SensorDataPoint(Object value) {       
+        this.value = value;
+    }
+    
+    /**
+     * @see #SensorDataPoint(int)
+     */
     public SensorDataPoint(ArrayList<SensorDataPoint> value) {
         dataType = DataType.ARRAYLIST;
         this.value = value;
