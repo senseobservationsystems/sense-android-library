@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,6 +41,7 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -417,19 +419,27 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 			recorder = new MediaRecorder();
 		}
 
+		@SuppressLint("InlinedApi")
 		@Override
 		public void run() {
 
 			try {
 				Log.d(TAG, "Start sound sample job");			
 				if (calling) {
-					recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+					SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+					if(mainPrefs.getBoolean(Ambience.RECORD_TWO_SIDED_VOICE_CALL, true))					
+						recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+					else
+						recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 				} else {
 					recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 				}
 				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
-				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+				if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)
+					recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+				else
+					recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
 
 				DateFormat df = new SimpleDateFormat("_dd-MM-yyyy_HH:mm:ss", new Locale("nl"));				
 				Date now = Calendar.getInstance().getTime();   

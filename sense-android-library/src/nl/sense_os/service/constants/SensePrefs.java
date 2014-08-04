@@ -251,6 +251,12 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String DONT_UPLOAD_BURSTS = "dont upload bursts";
+            /**
+             * Key for preference that toggles whether to record one sided or two sided voice calls 
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String RECORD_TWO_SIDED_VOICE_CALL = "record_two_sided_voice_call";
         }
 
         public static class DevProx {
