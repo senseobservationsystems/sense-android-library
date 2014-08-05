@@ -179,8 +179,6 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  WIFI_UPLOAD_ONLY = "wifi_upload_only";
-            
-            
         }
 
         public static class Ambience {
@@ -414,6 +412,12 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String AUTO_GPS = "automatic_gps";
+            /**
+             * Key for preference that toggles use of the time zone sensor
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String TIME_ZONE = "time_zone";
         }
 
         public static class Motion {

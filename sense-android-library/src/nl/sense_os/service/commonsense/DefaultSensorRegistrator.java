@@ -224,6 +224,11 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
                 SenseDataTypes.FLOAT, SensorNames.TRAVELED_DISTANCE_1H, "0.0", deviceType,
                 deviceUuid);
 
+        // time zone sensor
+        succes &= checkSensor(SensorNames.TIME_ZONE,"Time Zone",
+                SenseDataTypes.JSON, "Current time zone", "{\"id\":\"Europe/Amsterdam\", \"offset\":\"7200\"}", deviceType,
+                deviceUuid);
+
         return succes;
     }
 
