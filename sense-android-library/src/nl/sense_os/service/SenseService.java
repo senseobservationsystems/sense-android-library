@@ -20,6 +20,7 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.External;
+import nl.sense_os.service.constants.SensePrefs.Main.Location;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
@@ -30,6 +31,7 @@ import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
 import nl.sense_os.service.location.LocationSensor;
+import nl.sense_os.service.location.TimeZoneSensor;
 import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.phonestate.AppsSensor;
 import nl.sense_os.service.phonestate.BatterySensor;
@@ -127,6 +129,7 @@ public class SenseService extends Service {
     private DataTransmitter transmitter;
     private SubscriptionManager mSubscrMgr;
     private AppsSensor appsSensor;
+    private TimeZoneSensor timeZoneSensor;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -1034,10 +1037,17 @@ public class SenseService extends Service {
             if (true == active) {
 
                 // check location sensor presence
-                if (locListener != null) {
+                if (locListener != null)
+                {
                     Log.w(TAG, "location sensor is already present!");
                     locListener.stopSensing();
                     locListener = null;
+                }
+
+                if (timeZoneSensor != null)
+                {
+                    timeZoneSensor.stopSensing();
+                    timeZoneSensor = null;
                 }
 
                 // get sample rate
@@ -1071,7 +1081,8 @@ public class SenseService extends Service {
 
                 final long time = minTime;
 
-                if (null == locationHandler) {
+                if (null == locationHandler)
+                {
                     HandlerThread handlerThread = new HandlerThread("Location thread");
                     handlerThread.start();
                     locationHandler = new Handler(handlerThread.getLooper());
@@ -1080,24 +1091,42 @@ public class SenseService extends Service {
 
                     @Override
                     public void run() {
-                        locListener = LocationSensor.getInstance(SenseService.this);
-                        mSubscrMgr.registerProducer(SensorNames.LOCATION, locListener);
-                        mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
-                        mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
-                        locListener.startSensing(time);
+                        if (mainPrefs.getBoolean(Location.GPS, false) || mainPrefs.getBoolean(Location.NETWORK, false))
+                        {
+                            locListener = LocationSensor.getInstance(SenseService.this);
+                            mSubscrMgr.registerProducer(SensorNames.LOCATION, locListener);
+                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
+                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
+                            mSubscrMgr.registerProducer(SensorNames.TIME_ZONE, timeZoneSensor);
+                            locListener.startSensing(time);
+                        }
+
+                        if (mainPrefs.getBoolean(Location.TIME_ZONE, true))
+                        {
+                            timeZoneSensor = TimeZoneSensor.getInstance(SenseService.this);
+                            timeZoneSensor.startSensing();
+                        }
                     }
                 });
 
             } else {
 
                 // stop location listener
-                if (null != locListener) {
+                if (null != locListener)
+                {
                     locListener.stopSensing();
                     // unregister is not needed for Singleton Sensors
                     mSubscrMgr.unregisterProducer(SensorNames.LOCATION, locListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
                     locListener = null;
+                }
+
+                if(timeZoneSensor != null)
+                {
+                    mSubscrMgr.unregisterProducer(SensorNames.TIME_ZONE, timeZoneSensor);
+                    timeZoneSensor.stopSensing();
+                    timeZoneSensor = null;
                 }
 
                 if (locationHandler != null) {
@@ -1117,7 +1146,7 @@ public class SenseService extends Service {
             startService(new Intent(getString(R.string.action_sense_service)));
 
         } else {
-            Log.i(TAG, "Stop service");          
+            Log.i(TAG, "Stop service");
             stopSensorModules();
 
             AliveChecker.stopChecks(this);

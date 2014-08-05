@@ -124,7 +124,7 @@ public class SensorData {
 
         /** Noise level sensor. Part of the Ambience sensors. */
         public static final String NOISE = "noise_sensor";
-        
+
         /** Noise level sensor (Burst-mode). Part of the Ambience sensors. */
         public static final String NOISE_BURST = "noise_sensor (burst-mode)";
 
@@ -217,6 +217,9 @@ public class SensorData {
 
         /** Location sensor. */
         public static final String LOCATION = "position";
+
+        /** TimeZone sensor. */
+        public static final String TIME_ZONE = "time_zone";
 
         /** Battery sensor. Part of the Phone State sensors. */
         public static final String BATTERY_SENSOR = "battery sensor";
@@ -325,9 +328,9 @@ public class SensorData {
         public static final String ATTACHED_TO_MYRIANODE = "attachedToMyriaNode";
 
         public static final String APP_INSTALLED = "installed_apps";
-        
+
         public static final String APP_FOREGROUND = "foreground_app";
-        
+
         private SensorNames() {
             // class should not be instantiated
         }
