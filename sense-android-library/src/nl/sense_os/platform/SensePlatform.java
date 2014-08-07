@@ -212,10 +212,8 @@ public class SensePlatform {
         if (!mServiceBound) {
             Log.v(TAG, "Try to bind to Sense Platform service");
 
-            final Intent serviceIntent = new Intent(
-                    mContext.getString(R.string.action_sense_service));
-            boolean bindResult = mContext.bindService(serviceIntent, mServiceConnection,
-                    Context.BIND_AUTO_CREATE);
+            final Intent serviceIntent = new Intent(getContext(), nl.sense_os.service.SenseService.class);
+            boolean bindResult = mContext.bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
             Log.v(TAG, "Result: " + bindResult);
         } else {
