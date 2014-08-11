@@ -71,7 +71,7 @@ public abstract class BaseDataProducer implements DataProducer {
     @Override
     public synchronized boolean hasSubscriber(DataConsumer consumer) {
         for (DataConsumer subscriber : mSubscribers) {
-            if (subscriber.equals(consumer)) {
+            if (subscriber != null && subscriber.equals(consumer)) {
                 return true;
             }
         }
