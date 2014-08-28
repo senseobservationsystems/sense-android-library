@@ -3,15 +3,15 @@
 
     <!-- status bar notification -->
     <string name="stat_notify_action" translatable="false">nl.sense_os.platform.SenseApp</string>
-    <string name="stat_notify_title">Sense Platform</string>
-    <string name="stat_notify_content_off_loggedin">Sensors inactive, logged in as \'%s\'</string>
-    <string name="stat_notify_content_off_loggedout">Sensors inactive, no connection to CommonSense</string>
-    <string name="stat_notify_content_on_loggedin">"Sensors active, logged in as \'%s\'"</string>
-    <string name="stat_notify_content_on_loggedout">Sensors active, no connection to CommonSense</string>
+    <string name="stat_notify_title" translatable="false">Sense Platform</string>
+    <string name="stat_notify_content_off_loggedin" translatable="false">Sensors inactive, logged in as \'%s\'</string>
+    <string name="stat_notify_content_off_loggedout" translatable="false">Sensors inactive, no connection to CommonSense</string>
+    <string name="stat_notify_content_on_loggedin" translatable="false">"Sensors active, logged in as \'%s\'"</string>
+    <string name="stat_notify_content_on_loggedout" translatable="false">Sensors active, no connection to CommonSense</string>
 
     <!-- resources for NFC popup dialog -->
-    <string name="nfc_dialog_title">NFC tag discovered</string>
-    <string name="nfc_dialog_msg">Tag ID: \'%s\'\n\nSave tag in CommonSense?"</string>
+    <string name="nfc_dialog_title" translatable="false">NFC tag discovered</string>
+    <string name="nfc_dialog_msg" translatable="false">Tag ID: \'%s\'\n\nSave tag in CommonSense?"</string>
 
     <!-- actions for generic Sense Platform, overwrite when bundling Sense into another app -->
     <string name="action_sense_app" translatable="false">nl.sense_os.platform.SenseApp</string>

@@ -85,11 +85,14 @@ public class SubscriptionManager {
      */
     public boolean isConsumerSubscribed(String name, DataConsumer consumer) {
 
+        if(consumer == null)
+            return false;
+
         // check if data consumer is in the list of subscribed consumers
         List<DataConsumer> consumers = getSubscribedConsumers(name);
         if (null != consumers) {
             for (DataConsumer registeredConsumer : consumers) {
-                if (registeredConsumer.equals(consumer)) {
+                if (registeredConsumer != null && registeredConsumer.equals(consumer)) {
                     return true;
                 }
             }
@@ -115,11 +118,14 @@ public class SubscriptionManager {
      */
     public boolean isProducerRegistered(String name, DataProducer producer) {
 
+        if(producer == null)
+            return false;
+
         // check if producer is already in the list of registered producers
         List<DataProducer> producers = getRegisteredProducers(name);
         if (null != producers) {
             for (DataProducer registeredProducer : producers) {
-                if (registeredProducer.equals(producer)) {
+                if (registeredProducer!= null && registeredProducer.equals(producer)) {
                     return true;
                 }
             }
@@ -149,6 +155,9 @@ public class SubscriptionManager {
             return;
         }
 
+        if(producer == null)
+            return;
+
         // add the producer to the list of registered producers
         List<DataProducer> producers = getRegisteredProducers(name);
         if (null == producers) {
@@ -162,7 +171,8 @@ public class SubscriptionManager {
         if (null != subscribers) {
             // subscribe existing DataProcessors to the new DataProducer
             for (DataConsumer subscriber : subscribers) {
-                producer.addSubscriber(subscriber);
+                if(subscriber != null)
+                    producer.addSubscriber(subscriber);
             }
         }
     }
@@ -190,6 +200,9 @@ public class SubscriptionManager {
             return true;
         }
 
+        if(consumer == null)
+            return false;
+
         // add the consumer to the list of subscribed consumers
         List<DataConsumer> consumers = getSubscribedConsumers(name);
         if (null == consumers) {
@@ -207,7 +220,8 @@ public class SubscriptionManager {
             // subscribe the new processor to the existing producers
             boolean subscribed = false;
             for (DataProducer producer : producers) {
-                subscribed |= producer.addSubscriber(consumer);
+                if(producer != null)
+                    subscribed |= producer.addSubscriber(consumer);
             }
             return subscribed;
         }
@@ -281,7 +295,8 @@ public class SubscriptionManager {
         List<DataProducer> producers = getRegisteredProducers(name);
         if (null != producers) {
             for (DataProducer registeredProducer : producers) {
-                registeredProducer.removeSubscriber(consumer);
+                if(registeredProducer != null)
+                    registeredProducer.removeSubscriber(consumer);
             }
         }
     }
