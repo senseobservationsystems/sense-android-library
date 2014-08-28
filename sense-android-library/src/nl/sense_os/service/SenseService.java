@@ -1097,13 +1097,13 @@ public class SenseService extends Service {
                             mSubscrMgr.registerProducer(SensorNames.LOCATION, locListener);
                             mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
                             mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
-                            mSubscrMgr.registerProducer(SensorNames.TIME_ZONE, timeZoneSensor);
                             locListener.startSensing(time);
                         }
 
                         if (mainPrefs.getBoolean(Location.TIME_ZONE, true))
                         {
                             timeZoneSensor = TimeZoneSensor.getInstance(SenseService.this);
+                            mSubscrMgr.registerProducer(SensorNames.TIME_ZONE, timeZoneSensor);
                             timeZoneSensor.startSensing();
                         }
                     }
