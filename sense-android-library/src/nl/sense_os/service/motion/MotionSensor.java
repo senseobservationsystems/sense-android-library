@@ -315,7 +315,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             // ignore
         }
         if (!active) {
-            Log.w(TAG, "Motion sensor value received when sensor is inactive!");
+           // Log.w(TAG, "Motion sensor value received when sensor is inactive!");
             stopSample();
             return;
         }
