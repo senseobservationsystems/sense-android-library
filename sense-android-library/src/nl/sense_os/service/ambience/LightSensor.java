@@ -80,13 +80,12 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+       //Log.v(TAG, "Do sample");
         for (Sensor sensor : sensors) {
             if (sensor.getType() == Sensor.TYPE_LIGHT) {
                 // Log.d(TAG, "Register for sensor " + sensor.getName());
 
                 if (listening) {
-                    Log.w(TAG, "Already registered for light sensor!");
                     stopSample();
                 }
 
@@ -159,7 +158,7 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
 
     @Override
     public void startSensing(long sampleDelay) {
-        Log.v(TAG, "Start sensing");
+        //Log.v(TAG, "Start sensing");
 
         // check if the sensor is physically present on this phone
         boolean found = false;
@@ -187,7 +186,7 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
      * Unregisters the listener
      */
     private void stopSample() {
-        Log.v(TAG, "Stop sample");
+        //Log.v(TAG, "Stop sample");
         try {
             smgr.unregisterListener(this);
             listening = false;
@@ -198,7 +197,7 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
 
     @Override
     public void stopSensing() {
-        Log.v(TAG, "Stop sensing");
+        //Log.v(TAG, "Stop sensing");
         pollAlarmReceiver.stop(context);
         stopSample();
         active = false;

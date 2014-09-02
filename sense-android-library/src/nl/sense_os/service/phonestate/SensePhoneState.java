@@ -294,7 +294,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+       //Log.v(TAG, "Do sample");
         transmitLatestState();
     }
 

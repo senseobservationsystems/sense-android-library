@@ -69,7 +69,7 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+       //Log.v(TAG, "Do sample");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             if (null != sensor) {

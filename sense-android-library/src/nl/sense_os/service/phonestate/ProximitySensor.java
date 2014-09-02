@@ -91,7 +91,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+       //Log.v(TAG, "Do sample");
 
         // acquire wake lock
         if (null == mWakeLock) {
@@ -198,7 +198,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     }
 
     private void startPolling() {
-        Log.v(TAG, "Start polling");
+        //Log.v(TAG, "Start polling");
         mStartSampleReceiver.start(mContext);
     }
 
@@ -211,7 +211,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
      */
     @Override
     public void startSensing(long sampleRate) {
-        Log.v(TAG, "Start sensing");
+        //Log.v(TAG, "Start sensing");
 
         // check if the sensor is physically present on this phone
         boolean found = false;
@@ -234,13 +234,13 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     }
 
     private void stopPolling() {
-        Log.v(TAG, "Stop polling");
+        //Log.v(TAG, "Stop polling");
         mStartSampleReceiver.stop(mContext);
         stopSample();
     }
 
     private void stopSample() {
-        Log.v(TAG, "Stop sample");
+        //Log.v(TAG, "Stop sample");
 
         // release wake lock
         if (null != mWakeLock && mWakeLock.isHeld()) {
@@ -263,7 +263,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
 
     @Override
     public void stopSensing() {
-        Log.v(TAG, "Stop sensing");
+        //Log.v(TAG, "Stop sensing");
         stopPolling();
         mActive = false;
     }
