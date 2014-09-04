@@ -69,6 +69,7 @@ public class SenseApi {
     private static SharedPreferences sAuthPrefs;
     private static SharedPreferences sMainPrefs;
     private static TelephonyManager sTelManager;
+    private static String APPLICATION_KEY;
 
     /**
      * Gets a list of all registered sensors for a user at the CommonSense API. Uses caching for
@@ -671,8 +672,16 @@ public class SenseApi {
         user.put("username", username);
         user.put("password", password);
 
+        // TODO disable compressed login
+        Boolean useCompressed = sMainPrefs.getBoolean(SensePrefs.Main.Advanced.COMPRESS, false);
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, false).commit();
         // perform actual request
+        // set the application id for the login call
+        APPLICATION_KEY = sMainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
         Map<String, String> response = request(context, url, user, null);
+        APPLICATION_KEY = null;
+        // set previous value
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, useCompressed).commit();
 
         // if response code is not 200 (OK), the login was incorrect
         String responseCode = response.get(RESPONSE_CODE);
@@ -688,14 +697,16 @@ public class SenseApi {
             result = 0;
         }
 
-        // get the cookie from the response
-        String cookie = response.get("set-cookie");
-        String session_id = response.get("x-session_id");
-        if (result == 0 && response.get("set-cookie") == null) {
+        // create a cookie from the session_id
+        String session_id = response.get("session-id");
+        String cookie = "";
+        if (result == 0 && session_id == null) {
             // something went horribly wrong
             Log.w(TAG, "CommonSense login failed: no cookie received?!");
             result = -1;
         }
+        else
+            cookie = "session_id="+session_id+"; domain=.sense-os.nl";
 
         // handle result
         Editor authEditor = sAuthPrefs.edit();
@@ -1028,6 +1039,10 @@ public class SenseApi {
             if (null != cookie) {
                 urlConnection.setRequestProperty("Cookie", cookie);
             }
+
+            // set the application id
+            if(null != APPLICATION_KEY)
+                urlConnection.setRequestProperty("APPLICATION-KEY", APPLICATION_KEY);
 
             // send content (if available)
             if (null != content) {

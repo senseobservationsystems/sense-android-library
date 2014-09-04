@@ -123,6 +123,7 @@ public class SensePrefs {
          * @see SensePrefs#AUTH_PREFS
          */
         public static final String GCM_REGISTRATION_ID = "gcm_registration_id";
+
     }
 
     /**
@@ -248,7 +249,7 @@ public class SensePrefs {
              * 
              * @see SensePrefs#MAIN_PREFS
              */
-            public static final String DONT_UPLOAD_BURSTS = "dont upload bursts";
+            public static final String DONT_UPLOAD_BURSTS = "ambience_dont_upload_bursts";
             /**
              * Key for preference that toggles whether to record one sided or two sided voice calls 
              * 
@@ -614,6 +615,12 @@ public class SensePrefs {
          * @see SensePrefs#MAIN_PREFS
          */
         public static final String LAST_VERIFIED_SENSORS = "verified_sensors";
+        /**
+         * Key for storing the application key
+         * 
+         * @see SensePrefs#AUTH_PREFS
+         */
+        public static final String APPLICATION_KEY = "application_key";
     }
 
     /**

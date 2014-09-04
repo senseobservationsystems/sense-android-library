@@ -10,7 +10,10 @@ import nl.sense_os.service.commonsense.SenseApi;
  * @see SenseApi
  */
 public class SenseUrls {
-
+    /** Host name of CommonSense Authentication API */
+    public static final String AUTH_API = "https://auth.sense-os.nl/v1/";
+    /** Host name of CommonSense Staging Authentication API */
+    public static final String AUTH_STAGING_API = "http://auth.staging.sense-os.nl/";
     /** Host name of CommonSense API */
     public static final String API = "https://api.sense-os.nl/";
     /** Host name of CommonSense dev API */
@@ -41,8 +44,8 @@ public class SenseUrls {
     public static final String FORGOT_PASSWORD_DEV = API_DEV + "requestPasswordReset";
     public static final String GROUP_USERS = API + "groups/%1/users";
     public static final String GROUP_USERS_DEV = API_DEV + "groups/%1/users";
-    public static final String LOGIN = API + "login";
-    public static final String LOGIN_DEV = API_DEV + "login";
+    public static final String LOGIN = AUTH_API + "login";
+    public static final String LOGIN_DEV = AUTH_STAGING_API + "login";
     public static final String MANUAL_LEARN = API + "sensors/%1/services/%2/manualLearn";
     public static final String MANUAL_LEARN_DEV = API_DEV + "sensors/%1/services/%2/manualLearn";
     public static final String REGISTER = API + "users";
