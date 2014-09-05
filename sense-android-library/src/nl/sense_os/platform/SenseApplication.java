@@ -20,12 +20,23 @@ public class SenseApplication extends Application implements ServiceConnection {
 
     private static final String TAG = "SenseApplication";
     private SensePlatform mSensePlatform;
+    private boolean binded = false;
 
     /**
+     * This functions is deprecated, getBindedSensePlatform
      * @return The Sense Platform interface object
      */
     public SensePlatform getSensePlatform() {
         return mSensePlatform;
+    }
+
+    /**
+     * Check whether the SensePlatform is bounded and ready to use.
+     * @return True if the SensePlatform is bounded, false otherwise.
+     */
+    public boolean isSensePlatformReady()
+    {
+        return binded;
     }
 
     /**
@@ -50,6 +61,7 @@ public class SenseApplication extends Application implements ServiceConnection {
 
             @Override
             public void run() {
+                binded = true;
                 startSense();
             }
         }.start();
