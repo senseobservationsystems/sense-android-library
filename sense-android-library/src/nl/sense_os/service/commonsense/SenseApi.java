@@ -1167,6 +1167,50 @@ public class SenseApi {
         }
     }
 
+
+    /**
+     * Change the password of the current user.
+     *
+     * @param context
+     *            Application context, used for getting preferences.
+     * @param current_password
+     *            The current (hashed) password of the user
+     * @param new_password
+     *            The new (hashed) password of the user
+     * @return <code>true</code> if the password was changed
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     */
+    public static boolean changePassword(Context context, String current_password, String new_password) throws IOException,
+    JSONException
+    {
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+
+        // prepare request
+        String url = devMode ? SenseUrls.CHANGE_PASSWORD_DEV : SenseUrls.CHANGE_PASSWORD;
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        JSONObject content = new JSONObject();
+        content.put("current_password", current_password);
+        content.put("new_password", new_password);
+
+        // perform request
+        Map<String, String> result = request(context, url, content, cookie);
+
+        // check response code
+        String responseCode = result.get(RESPONSE_CODE);
+        if ("200".equals(responseCode)) {
+            return true;
+        } else {
+            Log.w(TAG, "Failed to change the password! Response code " + responseCode);
+            return false;
+        }
+    }
+
     /**
      * Shares a sensor with a user or group
      * 
