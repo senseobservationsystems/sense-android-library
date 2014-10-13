@@ -168,8 +168,10 @@ public class SensePlatform {
 
         // register the sensor
         SensorRegistrator registrator = new TrivialSensorRegistrator(mContext);
-        registrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null,
-                deviceUuid);
+        synchronized (mContext)
+        {
+            registrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null, deviceUuid);
+        }
 
         // send data point
         String action = mContext.getString(nl.sense_os.service.R.string.action_sense_new_data);
