@@ -89,6 +89,8 @@ public class SensePlatform {
     /** Callback for events for the binding with the Sense service */
     private final ServiceConnection mServiceConnection;
 
+    private SensorRegistrator trivialSensorRegistrator;
+
     /**
      * @param context
      *            Context that the Sense service will bind to
@@ -106,6 +108,7 @@ public class SensePlatform {
     public SensePlatform(Context context, ServiceConnection serviceConnection) {
         mServiceConnection = new SenseServiceConn(serviceConnection);
         mContext = context;
+        trivialSensorRegistrator = new TrivialSensorRegistrator(mContext);
         bindToSenseService();
     }
 
@@ -167,10 +170,9 @@ public class SensePlatform {
         }
 
         // register the sensor
-        SensorRegistrator registrator = new TrivialSensorRegistrator(mContext);
-        synchronized (mContext)
+        synchronized (trivialSensorRegistrator)
         {
-            registrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null, deviceUuid);
+            trivialSensorRegistrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null, deviceUuid);
         }
 
         // send data point
