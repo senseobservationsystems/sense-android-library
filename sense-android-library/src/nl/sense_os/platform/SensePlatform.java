@@ -170,7 +170,7 @@ public class SensePlatform {
         }
 
         // register the sensor
-        synchronized (trivialSensorRegistrator)
+        synchronized (this)
         {
             trivialSensorRegistrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null, deviceUuid);
         }

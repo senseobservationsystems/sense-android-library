@@ -883,6 +883,18 @@ public class SenseApi {
 
         // see if sensor should also be connected to a device at CommonSense
         if (NO_DEVICE_UUID.equals(deviceUuid)) {
+            JSONObject device = new JSONObject();
+            device.put("type", deviceType);
+            device.put("uuid", deviceUuid);
+            postData.put("device", device);
+            // store the new sensor in the preferences
+            sensor.put("id", id);
+            sensor.put("device", device);
+            JSONArray sensors = getAllSensors(context);
+            sensors.put(sensor);
+            Editor authEditor = sAuthPrefs.edit();
+            authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
+            authEditor.commit();
             return id;
         }
 
