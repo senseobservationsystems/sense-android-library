@@ -68,6 +68,8 @@ public class SenseUrls {
     public static final String DATAPROCESSOR_FILE_DEV = API_DEV + "dataprocessors/files";
     public static final String CHANGE_PASSWORD = API + "change_password";
     public static final String CHANGE_PASSWORD_DEV = API_DEV + "change_password";
+    public static final String RESET_PASSWORD_REQUEST = AUTH_API + "reset_password/request";
+    public static final String RESET_PASSWORD_REQUEST_DEV = AUTH_STAGING_API + "reset_password/request";
 
     private SenseUrls() {
         // private constructor to prevent instantiation

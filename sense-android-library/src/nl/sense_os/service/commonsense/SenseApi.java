@@ -1131,6 +1131,8 @@ public class SenseApi {
     /**
      * Request a password reset for the given email address.
      * 
+     * This function does not use the authentication API and is therefore deprecated
+     * 
      * @param context
      *            Application context, used for getting preferences.
      * @param email
@@ -1141,6 +1143,7 @@ public class SenseApi {
      * @throws JSONException
      *             In case of unparseable response from CommonSense
      */
+    @Deprecated
     public static boolean resetPassword(Context context, String email) throws IOException,
             JSONException {
 
@@ -1160,6 +1163,54 @@ public class SenseApi {
         // check response code
         String responseCode = result.get(RESPONSE_CODE);
         if ("200".equals(responseCode)) {
+            return true;
+        } else {
+            Log.w(TAG, "Failed to request password reset! Response code " + responseCode);
+            return false;
+        }
+    }
+
+    /**
+     * Request a password reset for the given username.
+     * 
+     * @param context
+     *            Application context, used for getting preferences.
+     * @param email
+     *            Email address for the account that you want to regain access to.
+     * @return <code>true</code> if the request wasw accepted
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     */
+    public static boolean resetPasswordRequest(Context context, String username) throws IOException,
+            JSONException {
+
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+
+        // prepare request
+        String url = devMode ? SenseUrls.RESET_PASSWORD_REQUEST_DEV : SenseUrls.RESET_PASSWORD_REQUEST;
+        JSONObject content = new JSONObject();
+        content.put("username", username);
+
+        // TODO disable compressed 
+        Boolean useCompressed = sMainPrefs.getBoolean(SensePrefs.Main.Advanced.COMPRESS, false);
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, false).commit();
+        // perform actual request
+        // set the application id for the login call
+        APPLICATION_KEY = sMainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
+        // perform request
+        Map<String, String> result = request(context, url, content, null);
+        APPLICATION_KEY = null;
+        // set previous value
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, useCompressed).commit();
+
+        // check response code
+        String responseCode = result.get(RESPONSE_CODE);
+        if ("202".equals(responseCode)) {
             return true;
         } else {
             Log.w(TAG, "Failed to request password reset! Response code " + responseCode);
