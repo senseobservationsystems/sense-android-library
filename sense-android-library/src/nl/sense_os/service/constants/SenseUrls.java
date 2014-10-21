@@ -11,13 +11,13 @@ import nl.sense_os.service.commonsense.SenseApi;
  */
 public class SenseUrls {
     /** Host name of CommonSense Authentication API */
-    public static final String AUTH_API = "https://auth.sense-os.nl/v1/";
+    public static final String AUTH_API = "https://auth-api.sense-os.nl/v1/";
     /** Host name of CommonSense Staging Authentication API */
-    public static final String AUTH_STAGING_API = "http://auth.staging.sense-os.nl/";
+    public static final String AUTH_STAGING_API = "http://auth-api.staging.sense-os.nl/v1/";
     /** Host name of CommonSense API */
     public static final String API = "https://api.sense-os.nl/";
     /** Host name of CommonSense dev API */
-    public static final String API_DEV = "http://api.dev.sense-os.nl/";
+    public static final String API_DEV = "http://api.staging.sense-os.nl/";
     /** Default page size for getting lists at CommonSense */
     public static final int PAGE_SIZE = 1000;
 
