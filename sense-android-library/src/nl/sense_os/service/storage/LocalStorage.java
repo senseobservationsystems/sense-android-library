@@ -190,9 +190,9 @@ public class LocalStorage {
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
         try {
-          SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-          int retentionHours = prefs.getInt( Main.Advanced.RETENTION_HOURS, DEFAULT_RETENTION_HOURS );
-          long retentionLimit = SNTP.getInstance().getTime() - getMilliSencondsOfHours( retentionHours );
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+            int retentionHours = prefs.getInt( Main.Advanced.RETENTION_HOURS, DEFAULT_RETENTION_HOURS );
+            long retentionLimit = SNTP.getInstance().getTime() - getMilliSencondsOfHours( retentionHours );
 
             // get unsent or very recent data from the memory
             String selectUnsent = DataPoint.TRANSMIT_STATE + "!=1" + " OR " + DataPoint.TIMESTAMP
