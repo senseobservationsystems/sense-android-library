@@ -454,6 +454,7 @@ public class SensePlugin extends CordovaPlugin {
             service.toggleMotion(true);
 
             service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
+            service.setPrefBool(SensePrefs.Main.PhoneState.APP_INFO, true);
             service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
             service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
             service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);

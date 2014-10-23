@@ -173,7 +173,9 @@ public class SNTP {
      * @return time value computed from NTP server response.
      */
     public long getNtpTime() {
-	return mNtpTime;
+    	//Log.d(TAG,"SNTP time requested");
+    	//return 1412175540000l;
+    	return mNtpTime;
     }
 
     /**

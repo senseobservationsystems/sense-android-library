@@ -38,6 +38,7 @@ import nl.sense_os.service.phonestate.BatterySensor;
 import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
+import nl.sense_os.service.phonestate.AppInfoSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.scheduler.ScheduleAlarmTool;
 import nl.sense_os.service.subscription.SubscriptionManager;
@@ -130,6 +131,7 @@ public class SenseService extends Service {
     private SubscriptionManager mSubscrMgr;
     private AppsSensor appsSensor;
     private TimeZoneSensor timeZoneSensor;
+    private AppInfoSensor appInfoSensor;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -1263,6 +1265,13 @@ public class SenseService extends Service {
                     batterySensor.stopBatterySensing();
                     batterySensor = null;
                 }
+                
+                // check app info sensor presence
+                if (appInfoSensor != null) {
+                	Log.w(TAG, "app info sensor is already present!");
+                	appInfoSensor.stopAppInfoSensing();
+                	appInfoSensor = null;
+                }
 
                 // check phone activity sensor presence
                 if (phoneActivitySensor != null) {
@@ -1321,6 +1330,13 @@ public class SenseService extends Service {
                                 mSubscrMgr.registerProducer(SensorNames.BATTERY_SENSOR,
                                         batterySensor);
                             }
+                            if (mainPrefs.getBoolean(PhoneState.APP_INFO, true)) {
+                            	appInfoSensor = AppInfoSensor.getInstance(SenseService.this);
+                            	appInfoSensor.startAppInfoSensing();
+                            	mSubscrMgr.registerProducer(SensorNames.APP_INFO_SENSOR,
+                            			appInfoSensor);
+                            	
+                            }
                             if (mainPrefs.getBoolean(PhoneState.SCREEN_ACTIVITY, true)) {
                                 phoneActivitySensor = PhoneActivitySensor
                                         .getInstance(SenseService.this);
@@ -1378,6 +1394,11 @@ public class SenseService extends Service {
                     batterySensor.stopBatterySensing();
                     mSubscrMgr.unregisterProducer(SensorNames.BATTERY_SENSOR, batterySensor);
                     batterySensor = null;
+                }
+                if (null != appInfoSensor) {
+                	appInfoSensor.stopAppInfoSensing();
+                	mSubscrMgr.unregisterProducer(SensorNames.APP_INFO_SENSOR, appInfoSensor);
+                	appInfoSensor = null;
                 }
                 if (null != phoneActivitySensor) {
                     phoneActivitySensor.stopPhoneActivitySensing();
