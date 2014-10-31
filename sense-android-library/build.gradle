@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:13.0.0'
-    compile files('libs/gcm.jar', 'libs/cordova-2.7.0.jar')
+    compile files('libs/gcm.jar', 'libs/cordova-3.6.4.jar')
 }
 
 android {
