@@ -180,7 +180,14 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  WIFI_UPLOAD_ONLY = "wifi_upload_only";
+            /**
+             * Key for value of cache duration for local data in hours.
+             * Default is 24.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  RETENTION_HOURS = "retention_hours";
         }
+        
 
         public static class Ambience {
             /**
