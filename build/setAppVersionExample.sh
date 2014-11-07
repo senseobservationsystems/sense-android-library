@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/bin/dash
 # This script creates the AppInfoVersion.java for the sense-android-library AppInfoSensor
 # If the Sense Cortex source is used then specify the git aim root directory
 #specify the cortex lib dir if used, else comment out
-cortex_dir=/Users/yfkedulek/documents/android/aim
+#cortex_dir=../../Cworkspace/aim
 # Specify the version of the cortex binary used
 cortex_version=""
 #specify the sense lib git root dir
-sense_lib_dir=/Users/yfkedulek/documents/android/workspace-cortex/sense-android-library
+sense_lib_dir=$(pwd)
 #sense lib version file
 sense_lib_version_file=$sense_lib_dir/sense-android-library/src/nl/sense_os/service/phonestate/AppInfoVersion.java
 
