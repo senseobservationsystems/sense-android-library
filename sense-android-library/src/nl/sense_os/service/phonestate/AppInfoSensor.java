@@ -98,8 +98,8 @@ public class AppInfoSensor extends BaseDataProducer {
 			String os                    = "Android";
 			String os_version            = android.os.Build.VERSION.RELEASE;
 			String device_model          = android.os.Build.MODEL;
-			String sense_library_version = ""; //TODO how to get this?
-			String sense_cortex_version  = ""; //TODO how to get this?
+			String sense_library_version = AppInfoVersion.SENSE_LIBRARY_VERSION;
+			String sense_cortex_version  = AppInfoVersion.CORTEX_VERSION;
 			
 			try{
 				PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
