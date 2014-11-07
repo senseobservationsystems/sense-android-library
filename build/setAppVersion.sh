@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/dash
 # This script creates the AppInfoVersion.java for the sense-android-library AppInfoSensor
 # If the Sense Cortex source is used then specify the git aim root directory
 #specify the cortex lib dir if used, else comment out
