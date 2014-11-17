@@ -225,7 +225,7 @@ public class SensorData {
         public static final String BATTERY_SENSOR = "battery sensor";
         
         /** App info sensor. Part of the Phone State sensors. */
-        public static final String APP_INFO_SENSOR = "app_info_sensor";
+        public static final String APP_INFO_SENSOR = "app_info";
 
         /** Screen activity sensor. Part of the Phone State sensors. */
         public static final String SCREEN_ACTIVITY = "screen activity";
