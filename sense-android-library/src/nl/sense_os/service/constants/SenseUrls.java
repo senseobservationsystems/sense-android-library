@@ -10,11 +10,14 @@ import nl.sense_os.service.commonsense.SenseApi;
  * @see SenseApi
  */
 public class SenseUrls {
-
+    /** Host name of CommonSense Authentication API */
+    public static final String AUTH_API = "https://auth-api.sense-os.nl/v1/";
+    /** Host name of CommonSense Staging Authentication API */
+    public static final String AUTH_STAGING_API = "http://auth-api.staging.sense-os.nl/v1/";
     /** Host name of CommonSense API */
     public static final String API = "https://api.sense-os.nl/";
     /** Host name of CommonSense dev API */
-    public static final String API_DEV = "http://api.dev.sense-os.nl/";
+    public static final String API_DEV = "http://api.staging.sense-os.nl/";
     /** Default page size for getting lists at CommonSense */
     public static final int PAGE_SIZE = 1000;
 
@@ -41,8 +44,8 @@ public class SenseUrls {
     public static final String FORGOT_PASSWORD_DEV = API_DEV + "requestPasswordReset";
     public static final String GROUP_USERS = API + "groups/%1/users";
     public static final String GROUP_USERS_DEV = API_DEV + "groups/%1/users";
-    public static final String LOGIN = API + "login";
-    public static final String LOGIN_DEV = API_DEV + "login";
+    public static final String LOGIN = AUTH_API + "login";
+    public static final String LOGIN_DEV = AUTH_STAGING_API + "login";
     public static final String MANUAL_LEARN = API + "sensors/%1/services/%2/manualLearn";
     public static final String MANUAL_LEARN_DEV = API_DEV + "sensors/%1/services/%2/manualLearn";
     public static final String REGISTER = API + "users";
@@ -63,6 +66,10 @@ public class SenseUrls {
     public static final String VERSION = "http://data.sense-os.nl/senseapp/version.php";
     public static final String DATAPROCESSOR_FILE = API + "dataprocessors/files";
     public static final String DATAPROCESSOR_FILE_DEV = API_DEV + "dataprocessors/files";
+    public static final String CHANGE_PASSWORD = API + "change_password";
+    public static final String CHANGE_PASSWORD_DEV = API_DEV + "change_password";
+    public static final String RESET_PASSWORD_REQUEST = AUTH_API + "reset_password/request";
+    public static final String RESET_PASSWORD_REQUEST_DEV = AUTH_STAGING_API + "reset_password/request";
 
     private SenseUrls() {
         // private constructor to prevent instantiation

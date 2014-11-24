@@ -339,7 +339,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 						}
 
 					} catch (Exception e) {
-						Log.e(TAG, "Exception starting noise recording! " + e, e);
+						Log.e(TAG, "Exception starting noise recording! " + e);
 					} finally {
 						stopRecording();
 						// if real time, post, since alarm won't repeat
@@ -396,7 +396,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
 				}
 			} catch (Exception e) {
-				Log.e(TAG, "Exception while stopping noise sample recording", e);
+				Log.e(TAG, "Exception while stopping noise sample recording. "+ e);
 			}
 		}
 	}

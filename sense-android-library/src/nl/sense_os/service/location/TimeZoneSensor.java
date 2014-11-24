@@ -81,6 +81,7 @@ public class TimeZoneSensor extends BaseDataProducer
             dataPoint.sensorName = SensorNames.TIME_ZONE;
             dataPoint.sensorDescription = "Current time zone";
             dataPoint.timeStamp = SNTP.getInstance().getTime();
+            //Log.d(TAG,"time zone subscribers: " + this.);
             this.sendToSubscribers(dataPoint);
 
             // pass message to the MsgHandler

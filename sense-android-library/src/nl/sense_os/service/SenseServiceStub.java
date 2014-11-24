@@ -283,7 +283,7 @@ public class SenseServiceStub extends Binder {
 
         // store value
         String oldValue = prefs.getString(key, null);
-        if (!value.equals(oldValue)) {
+        if (value == null || !value.equals(oldValue)) {
             boolean stored = prefs.edit().putString(key, value).commit();
             if (stored == false) {
                 Log.w(TAG, "Preference " + key + " not stored!");

@@ -308,6 +308,28 @@ public class ConfigurationService extends IntentService {
             e.printStackTrace();
         }
     }
+    /**
+     * Handles App Info Sensor requirements.
+     * <ol>
+     * <li>update sampling_rate if necessary</li>
+     * <li>enable Battery State sensing</li>
+     * <li>turn on Phone State sensing</li>
+     * </ol>
+     * 
+     * @param req
+     *            App info sensor requirement
+     */
+    private void handleAppInfoSensorReq(JSONObject req) {
+        try {
+            if (req.has("sync_rate"))
+                updateSyncRate(req.getInt("sync_rate"));
+
+            mainPrefs.edit().putBoolean(PhoneState.APP_INFO, true).commit();
+            statusPrefs.edit().putBoolean(Status.PHONESTATE, true).commit();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Handles Bluetooth Discovery requirements.
@@ -942,6 +964,8 @@ public class ConfigurationService extends IntentService {
                 handleServiceStateReq(requirements.getJSONObject("service state"));
             if (requirements.has("battery sensor"))
                 handleBatterySensorReq(requirements.getJSONObject("battery sensor"));
+            if (requirements.has("app info sensor"))
+            	handleAppInfoSensorReq(requirements.getJSONObject("app info sensor"));
             if (requirements.has("data connection"))
                 handleDataConnectionReq(requirements.getJSONObject("data connection"));
             if (requirements.has("connection type"))

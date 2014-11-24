@@ -2,6 +2,7 @@ package nl.sense_os.service.storage;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -10,6 +11,7 @@ import java.util.Map;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 
@@ -18,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -72,8 +75,12 @@ class RemoteStorage {
         }
 
         // get the data for the sensor
-        String url = SenseUrls.SENSOR_DATA.replace("%1", id) + "?start_date="
-                + timeRangeSelect[0] / 1000d + "&end_date=" + timeRangeSelect[1] / 1000d;
+        DecimalFormat df = new DecimalFormat("#.###");
+        SharedPreferences sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        String url = devMode ?  SenseUrls.SENSOR_DATA_DEV : SenseUrls.SENSOR_DATA;
+        url = url.replace("%1", id) + "?start_date="
+                + df.format(timeRangeSelect[0] / 1000d) + "&end_date=" + df.format(timeRangeSelect[1] / 1000d);
         url += "&per_page=" + limit;
         url += sortOrder != null ? "&sort=" + sortOrder : "";
 

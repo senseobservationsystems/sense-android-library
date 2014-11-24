@@ -38,7 +38,7 @@ public class LocalStorage {
      * Minimum time to retain data points. If data is not sent to CommonSense, it will be retained
      * longer.
      */
-    private static final long RETENTION_TIME = 1000l * 60 * 60 * 24;
+  private static final int DEFAULT_RETENTION_HOURS = 24;
 
     /**
      * Default projection for rows of data points
@@ -106,12 +106,13 @@ public class LocalStorage {
     private int deleteOldData() {
         Log.i(TAG, "Delete old data points from persistent storage");
 
-        // set max retention time
-        long retentionLimit = SNTP.getInstance().getTime() - RETENTION_TIME;
 
-        // check preferences to see if the data needs to be sent to CommonSense
         SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
+        // set max retention time
+        int retentionHours = prefs.getInt( Main.Advanced.RETENTION_HOURS, DEFAULT_RETENTION_HOURS );
+        long retentionLimit = SNTP.getInstance().getTime() - getMilliSencondsOfHours( retentionHours );
+        // check preferences to see if the data needs to be sent to CommonSense
         boolean useCommonSense = prefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true);
 
         String where = null;
@@ -189,7 +190,9 @@ public class LocalStorage {
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
         try {
-            long retentionLimit = SNTP.getInstance().getTime() - RETENTION_TIME;
+            SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+            int retentionHours = prefs.getInt( Main.Advanced.RETENTION_HOURS, DEFAULT_RETENTION_HOURS );
+            long retentionLimit = SNTP.getInstance().getTime() - getMilliSencondsOfHours( retentionHours );
 
             // get unsent or very recent data from the memory
             String selectUnsent = DataPoint.TRANSMIT_STATE + "!=1" + " OR " + DataPoint.TIMESTAMP
@@ -301,4 +304,9 @@ public class LocalStorage {
 
         return result;
     }
+    
+    public static long getMilliSencondsOfHours(int hours){
+        return 1000l* 60 * 60 * hours;
+    }
+
 }

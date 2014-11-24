@@ -123,6 +123,7 @@ public class SensePrefs {
          * @see SensePrefs#AUTH_PREFS
          */
         public static final String GCM_REGISTRATION_ID = "gcm_registration_id";
+
     }
 
     /**
@@ -179,7 +180,14 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  WIFI_UPLOAD_ONLY = "wifi_upload_only";
+            /**
+             * Key for value of cache duration for local data in hours.
+             * Default is 24.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  RETENTION_HOURS = "retention_hours";
         }
+        
 
         public static class Ambience {
             /**
@@ -248,7 +256,7 @@ public class SensePrefs {
              * 
              * @see SensePrefs#MAIN_PREFS
              */
-            public static final String DONT_UPLOAD_BURSTS = "dont upload bursts";
+            public static final String DONT_UPLOAD_BURSTS = "ambience_dont_upload_bursts";
             /**
              * Key for preference that toggles whether to record one sided or two sided voice calls 
              * 
@@ -553,6 +561,11 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String INSTALLED_APPS = "installed_apps";
+            
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+			public static final String APP_INFO = "app_info";
         }
 
         public static class Quiz {
@@ -614,6 +627,12 @@ public class SensePrefs {
          * @see SensePrefs#MAIN_PREFS
          */
         public static final String LAST_VERIFIED_SENSORS = "verified_sensors";
+        /**
+         * Key for storing the application key
+         * 
+         * @see SensePrefs#AUTH_PREFS
+         */
+        public static final String APPLICATION_KEY = "application_key";
     }
 
     /**
