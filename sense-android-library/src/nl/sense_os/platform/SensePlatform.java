@@ -89,6 +89,8 @@ public class SensePlatform {
     /** Callback for events for the binding with the Sense service */
     private final ServiceConnection mServiceConnection;
 
+    private SensorRegistrator trivialSensorRegistrator;
+
     /**
      * @param context
      *            Context that the Sense service will bind to
@@ -106,6 +108,7 @@ public class SensePlatform {
     public SensePlatform(Context context, ServiceConnection serviceConnection) {
         mServiceConnection = new SenseServiceConn(serviceConnection);
         mContext = context;
+        trivialSensorRegistrator = new TrivialSensorRegistrator(mContext);
         bindToSenseService();
     }
 
@@ -167,9 +170,10 @@ public class SensePlatform {
         }
 
         // register the sensor
-        SensorRegistrator registrator = new TrivialSensorRegistrator(mContext);
-        registrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null,
-                deviceUuid);
+        synchronized (trivialSensorRegistrator)
+        {
+            trivialSensorRegistrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null, deviceUuid);
+        }
 
         // send data point
         String action = mContext.getString(nl.sense_os.service.R.string.action_sense_new_data);
@@ -285,6 +289,7 @@ public class SensePlatform {
      * @throws JSONException
      *             If the response from CommonSense could not be parsed
      */
+    @Deprecated
     public JSONArray getData(String sensorName, boolean onlyFromDevice)
             throws IllegalStateException, JSONException {
         return getData(sensorName, onlyFromDevice, 100);
@@ -298,14 +303,39 @@ public class SensePlatform {
      * @param onlyFromDevice
      *            Whether or not to only look through sensors that are part of this device. Searches
      *            all sensors, including those of this device, if set to NO
-     * @param limit
-     *            Maximum amount of data points.
+     * @param startDate
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate
+     *            The epoch end date in milliseconds of the period to get the sensor data from
      * @return JSONArray of data points
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
      * @throws JSONException
      *             If the response from CommonSense could not be parsed
      */
+    public JSONArray getData(String sensorName, boolean onlyFromDevice, long startDate, long endDate)
+            throws IllegalStateException, JSONException {
+        return getData(sensorName, onlyFromDevice, 100, startDate, endDate);
+    }
+
+    /**
+     * Retrieve a number of values of a sensor from CommonSense.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @param limit
+     *            Maximum amount of data points.
+     * @return JSONArray of data points
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    @Deprecated
     public JSONArray getData(String sensorName, boolean onlyFromDevice, int limit)
             throws IllegalStateException, JSONException {
         checkSenseService();
@@ -318,6 +348,42 @@ public class SensePlatform {
 
         // get the data
         result = getValues(sensorName, onlyFromDevice, limit, uri);
+
+        return result;
+    }
+
+    /**
+     * Retrieve a number of values of a sensor from CommonSense.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @param limit
+     *            Maximum amount of data points.
+     * @param startDate 
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate 
+     *            The epoch end date in milliseconds of the period to get the sensor data from
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getData(String sensorName, boolean onlyFromDevice, int limit, long startDate, long endDate)
+            throws IllegalStateException, JSONException {
+        checkSenseService();
+
+        JSONArray result = new JSONArray();
+
+        // select remote path in local storage
+        String localStorage = mContext.getString(R.string.local_storage_authority);
+        Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_REMOTE_URI_PATH);
+
+        // get the data
+        result = getValues(sensorName, onlyFromDevice, limit, uri, startDate, endDate);
 
         return result;
     }
@@ -348,6 +414,28 @@ public class SensePlatform {
      * @param onlyFromDevice
      *            Whether or not to only look through sensors that are part of this device. Searches
      *            all sensors, including those of this device, if set to NO
+     * @param startDate 
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate 
+     *            The epoch end date in milliseconds of the period to get the sensor data from
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getLocalData(String sensorName, long startDate, long endDate) throws IllegalStateException, JSONException {
+        return getLocalData(sensorName, 100, startDate, endDate);
+    }
+
+    /**
+     * Retrieve a number of values of a sensor from the local storage.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
      * @param limit
      *            Maximum amount of data points.
      * @return JSONArray of data points
@@ -368,6 +456,42 @@ public class SensePlatform {
 
         // get the data
         result = getValues(sensorName, true, limit, uri);
+
+        return result;
+    }
+
+    /**
+     * Retrieve a number of values of a sensor from the local storage.
+     * 
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @param startDate 
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate 
+     *            The epoch end date in milliseconds of the period to get the sensor data from
+     * @param limit
+     *            Maximum amount of data points.
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getLocalData(String sensorName, int limit, long startDate, long endDate) throws IllegalStateException,
+            JSONException {
+        checkSenseService();
+
+        JSONArray result = new JSONArray();
+
+        // select remote path in local storage
+        String localStorage = mContext.getString(R.string.local_storage_authority);
+        Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_URI_PATH);
+
+        // get the data
+        result = getValues(sensorName, true, limit, uri, startDate, endDate);
 
         return result;
     }
@@ -409,6 +533,31 @@ public class SensePlatform {
     }
 
     /**
+     * Gets array of values from the LocalStorage in <code>DESC</code> order.
+     * 
+     * @param sensorName
+     *            Name of the sensor to get values from.
+     * @param onlyFromDevice
+     *            If true this function only looks for sensors attached to this device.
+     * @param limit
+     *            Maximum amount of data points. Optional, use null to set the default limit (100).
+     * @param startDate 
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate 
+     *            The epoch end date in milliseconds of the period to get the sensor data from
+     * @param uri
+     *            The uri to get data from, can be either local or remote.
+     * @return JSONArray with values for the sensor with the selected name and device
+     * @throws JSONException
+     * @see #getValues(String, boolean, Integer, android.net.Uri, String)
+     */
+    private JSONArray getValues(String sensorName, boolean onlyFromDevice, int limit, Uri uri, long startDate, long endDate)
+            throws JSONException {
+        String orderBy = DataPoint.TIMESTAMP + " DESC";
+        return getValues(sensorName, onlyFromDevice, limit, uri, orderBy, startDate, endDate);
+    }
+
+    /**
      * Gets array of values from the LocalStorage
      * 
      * @param sensorName
@@ -436,6 +585,69 @@ public class SensePlatform {
         if (null != deviceUuid) {
             selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
         }
+        String[] selectionArgs = null;
+
+        // make sure the limit is feasible
+        if (limit < 1) {
+            limit = 100;
+        }
+
+        try {
+            cursor = LocalStorage.getInstance(mContext).query(uri, projection, selection,
+                    selectionArgs, limit, sortOrder);
+
+            if (null != cursor && cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    JSONObject val = new JSONObject();
+                    val.put("date", cursor.getLong(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
+                    val.put("value", cursor.getString(cursor.getColumnIndex(DataPoint.VALUE)));
+                    result.put(val);
+                    cursor.moveToNext();
+                }
+            }
+        } catch (JSONException je) {
+            throw je;
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets array of values from the LocalStorage
+     * 
+     * @param sensorName
+     *            Name of the sensor to get values from.
+     * @param onlyFromDevice
+     *            If true this function only looks for sensors attached to this device.
+     * @param limit
+     *            Maximum amount of data points. Optional, use null to set the default limit (100).
+     * @param uri
+     *            The uri to get data from, can be either local or remote.
+     * @param startDate 
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate 
+     *            The epoch end date in milliseconds of the period to get the sensor data from
+     * @param sortOrder
+     *            The sort order, one of <code>DESC</code> or <code>ASC</code>.
+     * @return JSONArray with values for the sensor with the selected name and device
+     * @throws JSONException
+     */
+    private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri,
+            String sortOrder, long startDate, long endDate) throws JSONException {
+        Cursor cursor = null;
+        JSONArray result = new JSONArray();
+
+        String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(mContext) : null;
+
+        String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
+        String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
+        if (null != deviceUuid) {
+            selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
+        }
+        selection += " AND " + DataPoint.TIMESTAMP + ">=" + startDate + " AND " + DataPoint.TIMESTAMP + "<=" + endDate;
         String[] selectionArgs = null;
 
         // make sure the limit is feasible

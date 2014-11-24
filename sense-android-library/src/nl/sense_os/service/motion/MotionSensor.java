@@ -144,7 +144,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
     @Override
     public void doSample() {
-        Log.v(TAG, "Do sample");
+        //Log.v(TAG, "Do sample");
 
         // get wake lock
         if (null == wakeLock) {
@@ -152,7 +152,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         }
         if (!wakeLock.isHeld()) {
-            Log.i(TAG, "Acquire wake lock");
+            //Log.i(TAG, "Acquire wake lock");
             wakeLock.acquire();
         } else {
             // Log.v(TAG, "Wake lock already held");
@@ -315,7 +315,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
             // ignore
         }
         if (!active) {
-            Log.w(TAG, "Motion sensor value received when sensor is inactive!");
+           // Log.w(TAG, "Motion sensor value received when sensor is inactive!");
             stopSample();
             return;
         }
@@ -366,13 +366,13 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     private void startPolling() {
-        Log.v(TAG, "start polling");
+        //Log.v(TAG, "start polling");
         alarmReceiver.start(context);
     }
 
     @Override
     public void startSensing(long sampleDelay) {
-        Log.v(TAG, "Start sensing");
+        //Log.v(TAG, "Start sensing");
 
         final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
@@ -412,12 +412,12 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
     }
 
     public void stopPolling() {
-        Log.v(TAG, "stop polling");
+        //Log.v(TAG, "stop polling");
         alarmReceiver.stop(context);
     }
 
     private void stopSample() {
-        Log.v(TAG, "Stop sample");
+        //Log.v(TAG, "Stop sample");
 
         // release wake lock
         if (null != wakeLock && wakeLock.isHeld()) {
@@ -433,7 +433,7 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
      */
     @Override
     public void stopSensing() {
-        Log.v(TAG, "Stop sensing");
+        //Log.v(TAG, "Stop sensing");
         stopSample();
         stopPolling();
         enableScreenOffListener(false);

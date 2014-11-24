@@ -52,7 +52,7 @@ public class AppsSensor extends BaseDataProducer implements PeriodicPollingSenso
 
 	@Override
 	public void doSample() {
-		Log.v(TAG, "do sample");
+		//Log.v(TAG, "do sample");
 		List<ResolveInfo> installedApps = getInstalledApps();
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 		if (mainPrefs.getBoolean(PhoneState.FOREGROUND_APP, true)) {

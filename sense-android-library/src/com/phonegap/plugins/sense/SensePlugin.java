@@ -16,8 +16,8 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main;
 
 import org.apache.cordova.CordovaArgs;
-import org.apache.cordova.api.CallbackContext;
-import org.apache.cordova.api.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -454,6 +454,7 @@ public class SensePlugin extends CordovaPlugin {
             service.toggleMotion(true);
 
             service.setPrefBool(SensePrefs.Main.PhoneState.BATTERY, true);
+            service.setPrefBool(SensePrefs.Main.PhoneState.APP_INFO, true);
             service.setPrefBool(SensePrefs.Main.PhoneState.PROXIMITY, true);
             service.setPrefBool(SensePrefs.Main.PhoneState.SCREEN_ACTIVITY, true);
             service.setPrefBool(SensePrefs.Main.PhoneState.CALL_STATE, false);

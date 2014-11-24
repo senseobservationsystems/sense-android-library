@@ -69,6 +69,7 @@ public class SenseApi {
     private static SharedPreferences sAuthPrefs;
     private static SharedPreferences sMainPrefs;
     private static TelephonyManager sTelManager;
+    private static String APPLICATION_KEY;
 
     /**
      * Gets a list of all registered sensors for a user at the CommonSense API. Uses caching for
@@ -671,8 +672,16 @@ public class SenseApi {
         user.put("username", username);
         user.put("password", password);
 
+        // TODO disable compressed login
+        Boolean useCompressed = sMainPrefs.getBoolean(SensePrefs.Main.Advanced.COMPRESS, false);
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, false).commit();
         // perform actual request
+        // set the application id for the login call
+        APPLICATION_KEY = sMainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
         Map<String, String> response = request(context, url, user, null);
+        APPLICATION_KEY = null;
+        // set previous value
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, useCompressed).commit();
 
         // if response code is not 200 (OK), the login was incorrect
         String responseCode = response.get(RESPONSE_CODE);
@@ -688,14 +697,16 @@ public class SenseApi {
             result = 0;
         }
 
-        // get the cookie from the response
-        String cookie = response.get("set-cookie");
-        String session_id = response.get("x-session_id");
-        if (result == 0 && response.get("set-cookie") == null) {
+        // create a cookie from the session_id
+        String session_id = response.get("session-id");
+        String cookie = "";
+        if (result == 0 && session_id == null) {
             // something went horribly wrong
             Log.w(TAG, "CommonSense login failed: no cookie received?!");
             result = -1;
         }
+        else
+            cookie = "session_id="+session_id+"; domain=.sense-os.nl";
 
         // handle result
         Editor authEditor = sAuthPrefs.edit();
@@ -872,6 +883,18 @@ public class SenseApi {
 
         // see if sensor should also be connected to a device at CommonSense
         if (NO_DEVICE_UUID.equals(deviceUuid)) {
+            JSONObject device = new JSONObject();
+            device.put("type", deviceType);
+            device.put("uuid", deviceUuid);
+            postData.put("device", device);
+            // store the new sensor in the preferences
+            sensor.put("id", id);
+            sensor.put("device", device);
+            JSONArray sensors = getAllSensors(context);
+            sensors.put(sensor);
+            Editor authEditor = sAuthPrefs.edit();
+            authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
+            authEditor.commit();
             return id;
         }
 
@@ -1029,6 +1052,10 @@ public class SenseApi {
                 urlConnection.setRequestProperty("Cookie", cookie);
             }
 
+            // set the application id
+            if(null != APPLICATION_KEY)
+                urlConnection.setRequestProperty("APPLICATION-KEY", APPLICATION_KEY);
+
             // send content (if available)
             if (null != content) {
                 urlConnection.setDoOutput(true);
@@ -1116,6 +1143,8 @@ public class SenseApi {
     /**
      * Request a password reset for the given email address.
      * 
+     * This function does not use the authentication API and is therefore deprecated
+     * 
      * @param context
      *            Application context, used for getting preferences.
      * @param email
@@ -1126,6 +1155,7 @@ public class SenseApi {
      * @throws JSONException
      *             In case of unparseable response from CommonSense
      */
+    @Deprecated
     public static boolean resetPassword(Context context, String email) throws IOException,
             JSONException {
 
@@ -1148,6 +1178,98 @@ public class SenseApi {
             return true;
         } else {
             Log.w(TAG, "Failed to request password reset! Response code " + responseCode);
+            return false;
+        }
+    }
+
+    /**
+     * Request a password reset for the given username.
+     * 
+     * @param context
+     *            Application context, used for getting preferences.
+     * @param email
+     *            Email address for the account that you want to regain access to.
+     * @return <code>true</code> if the request wasw accepted
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     */
+    public static boolean resetPasswordRequest(Context context, String username) throws IOException,
+            JSONException {
+
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+
+        // prepare request
+        String url = devMode ? SenseUrls.RESET_PASSWORD_REQUEST_DEV : SenseUrls.RESET_PASSWORD_REQUEST;
+        JSONObject content = new JSONObject();
+        content.put("username", username);
+
+        // TODO disable compressed 
+        Boolean useCompressed = sMainPrefs.getBoolean(SensePrefs.Main.Advanced.COMPRESS, false);
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, false).commit();
+        // perform actual request
+        // set the application id for the login call
+        APPLICATION_KEY = sMainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
+        // perform request
+        Map<String, String> result = request(context, url, content, null);
+        APPLICATION_KEY = null;
+        // set previous value
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, useCompressed).commit();
+
+        // check response code
+        String responseCode = result.get(RESPONSE_CODE);
+        if ("202".equals(responseCode)) {
+            return true;
+        } else {
+            Log.w(TAG, "Failed to request password reset! Response code " + responseCode);
+            return false;
+        }
+    }
+
+
+    /**
+     * Change the password of the current user.
+     *
+     * @param context
+     *            Application context, used for getting preferences.
+     * @param current_password
+     *            The current (hashed) password of the user
+     * @param new_password
+     *            The new (hashed) password of the user
+     * @return <code>true</code> if the password was changed
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     */
+    public static boolean changePassword(Context context, String current_password, String new_password) throws IOException,
+    JSONException
+    {
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+
+        // prepare request
+        String url = devMode ? SenseUrls.CHANGE_PASSWORD_DEV : SenseUrls.CHANGE_PASSWORD;
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        JSONObject content = new JSONObject();
+        content.put("current_password", current_password);
+        content.put("new_password", new_password);
+
+        // perform request
+        Map<String, String> result = request(context, url, content, cookie);
+
+        // check response code
+        String responseCode = result.get(RESPONSE_CODE);
+        if ("200".equals(responseCode)) {
+            return true;
+        } else {
+            Log.w(TAG, "Failed to change the password! Response code " + responseCode);
             return false;
         }
     }

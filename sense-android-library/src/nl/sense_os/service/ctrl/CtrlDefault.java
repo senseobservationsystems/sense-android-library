@@ -50,7 +50,7 @@ public class CtrlDefault extends Controller {
             boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart,
             Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop) {
 
-        Log.v(TAG, "Do sample");
+       //Log.v(TAG, "Do sample");
         SharedPreferences mainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         boolean selfAwareMode = isGpsAllowed && mainPrefs.getBoolean(Main.Location.AUTO_GPS, true);

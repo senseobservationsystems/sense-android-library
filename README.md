@@ -59,3 +59,15 @@ by adding the following dependency to your POM:
     <type>apklib</type>
 </dependency>
 ```
+
+## Pre-build commands
+
+The `build/` folder contains scripts that need to be executed right before every build.
+In Eclipse, they can be added by going to Properties > Builders > New... and selecting the script in the "Location" field.
+
+#### setAppVersion.sh
+Copy the contents of `setAppVerionExample.sh` into this file, and update the paths for your own system. (Do not modify the example file!)
+If it does not work, try the following solutions:
+- Change the first line to `#!/bin/sh` if using `sh` instead of `dash`.
+- Use only absolute paths (so no `$(pwd)`).
+
