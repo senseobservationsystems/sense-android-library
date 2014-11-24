@@ -377,6 +377,11 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         success &= checkSensor(SensorNames.BATTERY_SENSOR, "battery state", SenseDataTypes.JSON,
                 SensorNames.BATTERY_SENSOR, "{\"status\":\"string\",\"level\":\"string\"}",
                 deviceType, deviceUuid);
+        
+        // match app info sensor
+        success &= checkSensor(SensorNames.APP_INFO_SENSOR, "app_info", SenseDataTypes.JSON,
+        		SensorNames.APP_INFO_SENSOR, "{\"app_build\":\"string\",\"app_name\":\"string\",\"app_version\":\"string\",\"locale\":\"string\",\"os\":\"string\",\"os_version\":\"string\",\"device_model\":\"string\",\"sense_library_version\":\"string\",\"sense_cortex_version\":\"string\"}",
+        		deviceType, deviceUuid);
 
         // match screen activity
         success &= checkSensor(SensorNames.SCREEN_ACTIVITY, SensorNames.SCREEN_ACTIVITY,
