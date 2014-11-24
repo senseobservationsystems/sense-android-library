@@ -968,6 +968,9 @@ public class SenseApi {
         // create JSON object to POST
         final JSONObject data = new JSONObject();
         final JSONObject user = new JSONObject();
+        // disable welcome email
+        data.put("disable_mail", 1);
+        
         user.put("username", username);
         user.put("password", password);
         if (null != name) {
