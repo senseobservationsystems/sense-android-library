@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 /**
@@ -528,7 +529,7 @@ public class SensePlatform {
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, int limit, Uri uri)
             throws JSONException {
-        String orderBy = DataPoint.TIMESTAMP + " DESC";
+        String orderBy = DataPoint.TIMESTAMP + " DESC, " + BaseColumns._ID + " DESC";
         return getValues(sensorName, onlyFromDevice, limit, uri, orderBy);
     }
 
@@ -553,7 +554,7 @@ public class SensePlatform {
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, int limit, Uri uri, long startDate, long endDate)
             throws JSONException {
-        String orderBy = DataPoint.TIMESTAMP + " DESC";
+        String orderBy = DataPoint.TIMESTAMP + " DESC, " + BaseColumns._ID + " DESC";
         return getValues(sensorName, onlyFromDevice, limit, uri, orderBy, startDate, endDate);
     }
 
