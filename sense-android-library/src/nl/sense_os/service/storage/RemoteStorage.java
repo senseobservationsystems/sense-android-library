@@ -86,7 +86,7 @@ class RemoteStorage {
 
         String cookie = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE)
                 .getString(Auth.LOGIN_COOKIE, null);
-        Map<String, String> response = SenseApi.request(context, url, null, cookie);
+        Map<String, String> response = SenseApi.request(context, url, null, cookie, null);
 
         // parse response
         JSONArray data;

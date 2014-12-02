@@ -124,7 +124,7 @@ public class SenseApi {
             }
             String url = devMode ? SenseUrls.ALL_SENSORS_DEV : SenseUrls.ALL_SENSORS;
             url += "&page=" + page;
-            Map<String, String> response = SenseApi.request(context, url, null, cookie);
+            Map<String, String> response = SenseApi.request(context, url, null, cookie, null);
 
             String responseCode = response.get(RESPONSE_CODE);
             if (!"200".equals(responseCode)) {
@@ -186,7 +186,7 @@ public class SenseApi {
         }
         String url = devMode ? SenseUrls.CONNECTED_SENSORS_DEV : SenseUrls.CONNECTED_SENSORS;
         url = url.replace("%1", sensorId);
-        Map<String, String> response = SenseApi.request(context, url, null, cookie);
+        Map<String, String> response = SenseApi.request(context, url, null, cookie, null);
 
         String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
@@ -263,7 +263,7 @@ public class SenseApi {
 
         url = url.replaceFirst("%1", device_id);
 
-        Map<String, String> response = SenseApi.request(context, url, null, cookie);
+        Map<String, String> response = SenseApi.request(context, url, null, cookie, null);
         String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to get device configuration! Response code: " + responseCode);
@@ -293,7 +293,7 @@ public class SenseApi {
 
         url = url.replaceFirst("%1", configuration_id);
 
-        Map<String, String> response = SenseApi.request(context, url, null, cookie);
+        Map<String, String> response = SenseApi.request(context, url, null, cookie, null);
         String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to get Requirement! Response code: " + responseCode);
@@ -324,7 +324,7 @@ public class SenseApi {
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.DEVICES_DEV : SenseUrls.DEVICES;
 
-        Map<String, String> response = SenseApi.request(context, url, null, cookie);
+        Map<String, String> response = SenseApi.request(context, url, null, cookie, null);
         String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             Log.w(TAG, "Failed to get devices data: " + responseCode);
@@ -536,7 +536,7 @@ public class SenseApi {
         String url = devMode ? SenseUrls.CURRENT_USER_DEV : SenseUrls.CURRENT_USER;
 
         // perform actual request
-        Map<String, String> response = SenseApi.request(context, url, null, cookie);
+        Map<String, String> response = SenseApi.request(context, url, null, cookie, null);
 
         String responseCode = response.get(RESPONSE_CODE);
         JSONObject result = null;
@@ -619,7 +619,7 @@ public class SenseApi {
         data.put("users", users);
 
         // perform actual request
-        Map<String, String> response = SenseApi.request(context, url, data, cookie);
+        Map<String, String> response = SenseApi.request(context, url, data, cookie, null);
 
         String responseCode = response.get(RESPONSE_CODE);
         boolean result = false;
@@ -678,7 +678,7 @@ public class SenseApi {
         // perform actual request
         // set the application id for the login call
         APPLICATION_KEY = sMainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
-        Map<String, String> response = request(context, url, user, null);
+        Map<String, String> response = request(context, url, user, null, null);
         APPLICATION_KEY = null;
         // set previous value
         sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, useCompressed).commit();
@@ -725,6 +725,83 @@ public class SenseApi {
             break;
         default:
             Log.e(TAG, "Unexpected login result: " + result);
+        }
+
+        return result;
+    }
+    
+    /**
+     * Tries to log out of CommonSense. After logout, the
+     * cookie containing the session ID is removed.
+     * 
+     * @param context
+     *            Context for getting preferences
+     * @return 0 if logout completed successfully, -2 if logout was forbidden, and -1 for any other
+     *         errors.
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @see SenseServiceStub#changeLogin(String, String, nl.sense_os.service.ISenseServiceCallback)
+     */
+    public static int logout(Context context)
+            throws JSONException, IOException {
+
+    	
+        // preferences
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        }
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+        if (devMode) {
+            Log.v(TAG, "Using development server to log out");
+        }
+        final String url = devMode ? SenseUrls.LOGOUT_DEV : SenseUrls.LOGOUT;
+        final JSONObject content = new JSONObject();
+        final String session_id = sAuthPrefs.getString(Auth.LOGIN_SESSION_ID, "0");
+
+        // TODO disable compressed login
+        Boolean useCompressed = sMainPrefs.getBoolean(SensePrefs.Main.Advanced.COMPRESS, false);
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, false).commit();
+        // perform actual request
+        // set the application id for the logout call
+        APPLICATION_KEY = sMainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
+        Map<String, String> response = request(context, url, content, null, session_id);
+        APPLICATION_KEY = null;
+        // set previous value
+        sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, useCompressed).commit();
+
+        // if response code is not 200 (OK), the login was incorrect
+        String responseCode = response.get(RESPONSE_CODE);
+        int result = -1;
+        if ("403".equalsIgnoreCase(responseCode)) {
+            Log.w(TAG, "CommonSense logout refused! Response: forbidden!");
+            result = -2;
+        } else if (!"200".equalsIgnoreCase(responseCode)) {
+            Log.w(TAG, "CommonSense logout failed! Response: " + responseCode);
+            result = -1;
+        } else {
+            // received 200 response
+            result = 0;
+        }
+
+        // handle result
+        Editor authEditor = sAuthPrefs.edit();
+        switch (result) {
+        case 0: // logged out
+        	authEditor.clear();
+            authEditor.commit();
+            break;
+        case -1: // error
+            break;
+        case -2: // unauthorized
+            break;
+        default:
+            Log.e(TAG, "Unexpected logout result: " + result);
         }
 
         return result;
@@ -776,7 +853,7 @@ public class SenseApi {
         final JSONObject data = new JSONObject();
         data.put("registration_id", registrationId);
 
-        Map<String, String> response = SenseApi.request(context, url, data, cookie);
+        Map<String, String> response = SenseApi.request(context, url, data, cookie, null);
         String responseCode = response.get(RESPONSE_CODE);
         if (!"200".equals(responseCode)) {
             throw new IOException("Incorrect response from CommonSense: " + responseCode);
@@ -867,7 +944,7 @@ public class SenseApi {
         postData.put("sensor", sensor);
 
         // perform actual request
-        Map<String, String> response = request(context, url, postData, cookie);
+        Map<String, String> response = request(context, url, postData, cookie, null);
 
         // check response code
         String code = response.get(RESPONSE_CODE);
@@ -913,7 +990,7 @@ public class SenseApi {
         device.put("uuid", deviceUuid);
         postData.put("device", device);
 
-        response = request(context, url, postData, cookie);
+        response = request(context, url, postData, cookie, null);
 
         // check response code
         code = response.get(RESPONSE_CODE);
@@ -985,7 +1062,7 @@ public class SenseApi {
         data.put("user", user);
 
         // perform actual request
-        Map<String, String> response = SenseApi.request(context, url, data, null);
+        Map<String, String> response = SenseApi.request(context, url, data, null, null);
 
         String responseCode = response.get(RESPONSE_CODE);
         int result = -1;
@@ -1013,13 +1090,16 @@ public class SenseApi {
      *            (Optional) Content for the request. If the content is not null, the request method
      *            is automatically POST. The default method is GET.
      * @param cookie
-     *            (Optional) Cookie header for the request.
+     * 			  (Optional) Cookie for the request (cannot be used for authentication api)
+     * @param session_id
+     *            (Optional) session_id for the request (mandatory for calls to the authentication api!)
+     * 
      * @return Map with SenseApi.KEY_CONTENT and SenseApi.KEY_RESPONSE_CODE fields, plus fields for
      *         all response headers.
      * @throws IOException
      */
     public static Map<String, String> request(Context context, String urlString,
-            JSONObject content, String cookie) throws IOException {
+            JSONObject content, String cookie, String session_id) throws IOException {
 
         HttpURLConnection urlConnection = null;
         HashMap<String, String> result = new HashMap<String, String>();
@@ -1046,10 +1126,15 @@ public class SenseApi {
             urlConnection.setUseCaches(false);
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setRequestProperty("Accept", "application/json");
-
+            
             // set cookie (if available)
             if (null != cookie) {
                 urlConnection.setRequestProperty("Cookie", cookie);
+            }
+
+            // set session_id (if available)
+            if (null != session_id) {
+                urlConnection.setRequestProperty("SESSION-ID", session_id);
             }
 
             // set the application id
@@ -1170,7 +1255,7 @@ public class SenseApi {
         content.put("email", email);
 
         // perform request
-        Map<String, String> result = request(context, url, content, null);
+        Map<String, String> result = request(context, url, content, null, null);
 
         // check response code
         String responseCode = result.get(RESPONSE_CODE);
@@ -1215,7 +1300,7 @@ public class SenseApi {
         // set the application id for the login call
         APPLICATION_KEY = sMainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
         // perform request
-        Map<String, String> result = request(context, url, content, null);
+        Map<String, String> result = request(context, url, content, null, null);
         APPLICATION_KEY = null;
         // set previous value
         sMainPrefs.edit().putBoolean(SensePrefs.Main.Advanced.COMPRESS, useCompressed).commit();
@@ -1262,7 +1347,7 @@ public class SenseApi {
         content.put("new_password", new_password);
 
         // perform request
-        Map<String, String> result = request(context, url, content, cookie);
+        Map<String, String> result = request(context, url, content, cookie, null);
 
         // check response code
         String responseCode = result.get(RESPONSE_CODE);
@@ -1310,7 +1395,7 @@ public class SenseApi {
         data.put("user", user);
 
         // perform actual request
-        Map<String, String> response = SenseApi.request(context, url, data, cookie);
+        Map<String, String> response = SenseApi.request(context, url, data, cookie, null);
 
         String responseCode = response.get(RESPONSE_CODE);
         boolean result = false;

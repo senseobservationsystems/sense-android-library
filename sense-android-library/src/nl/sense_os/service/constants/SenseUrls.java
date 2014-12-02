@@ -46,6 +46,8 @@ public class SenseUrls {
     public static final String GROUP_USERS_DEV = API_DEV + "groups/%1/users";
     public static final String LOGIN = AUTH_API + "login";
     public static final String LOGIN_DEV = AUTH_STAGING_API + "login";
+    public static final String LOGOUT = AUTH_API + "logout";
+    public static final String LOGOUT_DEV = AUTH_STAGING_API + "logout";
     public static final String MANUAL_LEARN = API + "sensors/%1/services/%2/manualLearn";
     public static final String MANUAL_LEARN_DEV = API_DEV + "sensors/%1/services/%2/manualLearn";
     public static final String REGISTER = API + "users";

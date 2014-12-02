@@ -308,7 +308,7 @@ public class BufferTransmitHandler extends Handler {
 
         Map<String, String> response = null;
         try {
-            response = SenseApi.request(ctxRef.get(), url, transmission, cookie);
+            response = SenseApi.request(ctxRef.get(), url, transmission, cookie, null);
         } catch (IOException e) {
             // handle failure later
         }

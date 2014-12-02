@@ -99,7 +99,7 @@ public class FeedbackManager {
         }
         String url = devMode ? SenseUrls.MANUAL_LEARN_DEV : SenseUrls.MANUAL_LEARN;
         url = url.replace("%1", sourceSensorId).replace("%2", stateSensorId);
-        Map<String, String> response = SenseApi.request(context, url, json, cookie);
+        Map<String, String> response = SenseApi.request(context, url, json, cookie, null);
 
         String responseCode = response.get(SenseApi.RESPONSE_CODE);
         if (!"200".equals(responseCode)) {

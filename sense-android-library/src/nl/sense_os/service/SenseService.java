@@ -185,7 +185,7 @@ public class SenseService extends Service {
                 }
 
                 String url = SenseUrls.VERSION + "?version=" + versionName;
-                Map<String, String> response = SenseApi.request(this, url, null, null);
+                Map<String, String> response = SenseApi.request(this, url, null, null, null);
                 JSONObject content = new JSONObject(response.get(SenseApi.RESPONSE_CONTENT));
 
                 if (content.getString("message").length() > 0) {
@@ -272,13 +272,29 @@ public class SenseService extends Service {
         // stop active sensing components
         stopSensorModules();
 
-        // clear cached settings of the previous user (e.g. device id)
-        Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
-        authEditor.clear();
-        authEditor.commit();
+        //try to log out
+        int result = -1;
+        try {
+        	result = SenseApi.logout(this);
+        } catch (Exception e) {
+        	Log.w(TAG, "Exception during logout! " + e + ": '" + e.getMessage() + "'");
+        	// handle result below
+        }
 
-        // log out before changing to a new user
-        onLogOut();
+        // handle the result
+        switch (result) {
+        case 0: // logged out successfully
+            onLogOut();
+            break;
+        case -1: // error
+            Log.w(TAG, "Logout failed!");
+            break;
+        case -2: // forbidden
+            Log.w(TAG, "Logout forbidden!");
+            break;
+        default:
+            Log.e(TAG, "Unexpected logout result: " + result);
+        }
     }
 
     @Override
