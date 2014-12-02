@@ -84,7 +84,7 @@ public class DataTransmitHandler extends Handler {
                 return;
             }
 
-            Map<String, String> response = SenseApi.request(ctxRef.get(), url, json, cookie, null);
+            Map<String, String> response = SenseApi.request(ctxRef.get(), url, json, cookie);
 
             // Error when sending
             if ((response == null) || !response.get(SenseApi.RESPONSE_CODE).equals("201")) {
