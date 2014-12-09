@@ -1031,8 +1031,12 @@ public class SenseService extends Service {
     }
 
     synchronized void toggleLocation(boolean active) {
+    	final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
+                MODE_PRIVATE);
+    	boolean gpsActive = mainPrefs.getBoolean(Location.GPS, false);
+    	boolean networkActive = mainPrefs.getBoolean(Location.NETWORK, false);;
 
-        if (active != state.isLocationActive()) {
+        if (active != state.isLocationActive() || gpsActive != state.isGpsActive() || networkActive != state.isNetworkActive()) {
             Log.i(TAG, (active ? "Enable" : "Disable") + " position sensor");
             state.setLocationActive(active);
 
@@ -1053,8 +1057,6 @@ public class SenseService extends Service {
                 }
 
                 // get sample rate
-                final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
-                        MODE_PRIVATE);
                 final int rate = Integer.parseInt(mainPrefs.getString(SensePrefs.Main.SAMPLE_RATE,
                         "0"));
                 long minTime = -1;

@@ -49,7 +49,7 @@ public class ServiceStateHelper {
 	private final Context context;
 
 	private boolean started, foreground, loggedIn, ambienceActive, devProxActive, externalActive,
-			locationActive, motionActive, phoneStateActive, quizActive;
+			locationActive, gpsActive, networkActive, motionActive, phoneStateActive, quizActive;
 
 	/**
 	 * Private constructor to enforce singleton pattern.
@@ -144,6 +144,14 @@ public class ServiceStateHelper {
 	public boolean isLocationActive() {
 		return locationActive;
 	}
+	
+	public boolean isGpsActive() {
+		return gpsActive;
+	}
+	
+	public boolean isNetworkActive() {
+		return networkActive;
+	}
 
 	public boolean isLoggedIn() {
 		return loggedIn;
@@ -192,6 +200,16 @@ public class ServiceStateHelper {
 
 	public void setLocationActive(boolean active) {
 		locationActive = active;
+		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+	}
+	
+	public void setGpsActive(boolean active) {
+		gpsActive = active;
+		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+	}
+	
+	public void setNetworkActive(boolean active) {
+		networkActive = active;
 		context.startService(new Intent(context.getString(R.string.action_widget_update)));
 	}
 
