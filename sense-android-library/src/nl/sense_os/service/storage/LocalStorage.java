@@ -246,9 +246,10 @@ public class LocalStorage {
             projection = DEFAULT_PROJECTION;
         }
 
+        String limitStr = "" + limit;
         // query both databases
-        Cursor inMemoryCursor = inMemory.query(projection, where, selectionArgs, sortOrder);
-        Cursor persistedCursor = persisted.query(projection, where, selectionArgs, sortOrder);
+        Cursor inMemoryCursor = inMemory.query(projection, where, selectionArgs, sortOrder, limitStr);
+        Cursor persistedCursor = persisted.query(projection, where, selectionArgs, sortOrder, limitStr);
 
         if (inMemoryCursor.getCount() > 0) {
             if (persistedCursor.getCount() > 0) {
