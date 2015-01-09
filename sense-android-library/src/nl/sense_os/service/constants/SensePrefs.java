@@ -186,7 +186,14 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  RETENTION_HOURS = "retention_hours";
-        }
+            
+            /**
+             * key for preference that enable data preservertion for the last datapoints of each sensors in Local Storage.
+             * Default is false.
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String  PRESERVE_LAST_DATAPOINTS = "preserve_last_datapoints";
+            }
         
 
         public static class Ambience {

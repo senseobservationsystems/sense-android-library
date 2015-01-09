@@ -10,6 +10,7 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.debug.OutputUtils;
 import nl.sense_os.service.provider.SNTP;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -106,6 +107,8 @@ public class LocalStorage {
     private int deleteOldData() {
         Log.i(TAG, "Delete old data points from persistent storage");
 
+        //TODO
+        OutputUtils.appendLog( "Delete old data points from persistent storage" );
 
         SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
@@ -113,8 +116,10 @@ public class LocalStorage {
         int retentionHours = prefs.getInt( Main.Advanced.RETENTION_HOURS, DEFAULT_RETENTION_HOURS );
         long retentionLimit = SNTP.getInstance().getTime() - getMilliSencondsOfHours( retentionHours );
         // check preferences to see if the data needs to be sent to CommonSense
-        boolean useCommonSense = prefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true);
-
+        boolean useCommonSense = prefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true );
+        boolean preserveLastDatapoints = prefs.getBoolean( Main.Advanced.PRESERVE_LAST_DATAPOINTS, false );
+        
+        
         String where = null;
         if (useCommonSense) {
             // delete data older than maximum retention time if it had been transmitted
@@ -124,6 +129,14 @@ public class LocalStorage {
             // not using CommonSense: delete all data older than maximum retention time
             where = DataPoint.TIMESTAMP + "<" + retentionLimit;
         }
+        
+        if(preserveLastDatapoints){
+            where += " AND " + BaseColumns._ID + " IN (SELECT " + BaseColumns._ID + " FROM (SELECT * FROM "+ DbHelper.TABLE + " AS A WHERE NOT EXISTS ( SELECT * FROM " + DbHelper.TABLE + " AS B WHERE "
+                    + DataPoint.TIMESTAMP + " == (SELECT MAX(" + DataPoint.TIMESTAMP + ") FROM "+ DbHelper.TABLE + " AS C WHERE " + DataPoint.TIMESTAMP +" < " + retentionLimit 
+                    + " AND C." + DataPoint.SENSOR_NAME +" == B." + DataPoint.SENSOR_NAME + " GROUP BY " + DataPoint.SENSOR_NAME + " HAVING A." + BaseColumns._ID + " == Max(" + BaseColumns._ID + ") ))) as target)" ; 
+        }
+        //TODO : remove this
+        OutputUtils.appendLog( "Generated where clause:" + where );
         int deleted = persisted.delete(where, null);
 
         return deleted;
@@ -186,6 +199,8 @@ public class LocalStorage {
 
     private int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
+        
+        OutputUtils.appendLog( "Persist recent data points from in-memory storage" );
 
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
