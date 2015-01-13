@@ -9,8 +9,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteStatement;
 
 /**
  * Class that manages a store for sensor data points in a persistent SQLite database. Helper class
@@ -50,10 +50,11 @@ class SQLiteStorage {
         this.context = context;
         this.persistent = persistent;
         dbHelper = new DbHelper(context, persistent);
+        SQLiteDatabase.loadLibs(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // set maximum size for in-memory database
         if (!persistent) {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.setMaximumSize(MAX_INMEMORY_SIZE);
         }
     }

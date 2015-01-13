@@ -2,10 +2,14 @@ package nl.sense_os.service.storage;
 
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
+import android.telephony.TelephonyManager;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Helper class that assist in creating, opening and managing the SQLite3 database for data points.
@@ -15,7 +19,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Name of the database on the disk
      */
-    private static final String DATABASE_NAME = "persitent_storage.sqlite3";
+    private static final String DATABASE_NAME = "persistent_storage.sqlite3";
 
     /**
      * Version of the database. Increment this when the database structure is changed.
@@ -26,6 +30,10 @@ public class DbHelper extends SQLiteOpenHelper {
      * Name of the table with the data points.
      */
     static final String TABLE = "persisted_values";
+
+    private static final String PASSPHRASE_SALT = "tUI@IBhf3J6o^G*&dno3yH!yC*E5#3qy";
+
+    private static String passphrase = "";
 
     private static final String TAG = "DbHelper";
 
@@ -41,6 +49,13 @@ public class DbHelper extends SQLiteOpenHelper {
     public DbHelper(Context context, boolean persistent) {
         // if the database name is null, it will be created in-memory
         super(context, persistent ? DATABASE_NAME : null, null, DATABASE_VERSION);
+
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = telephonyManager.getDeviceId(); 
+
+        setPassphrase(imei);
+        SQLiteDatabase.loadLibs(context);
+        getWritableDatabase();
     }
 
     @Override
@@ -67,4 +82,35 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DbHelper.TABLE);
         onCreate(db);
     }
+
+    public SQLiteDatabase getWritableDatabase(){
+      return getWritableDatabase("password");
+    }
+
+    public SQLiteDatabase getReadableDatabase(){
+      return getReadableDatabase("password");
+    }
+
+  private void setPassphrase(String imei) {
+
+    byte[] passphrase_string = imei.getBytes();
+    byte[] passphrase_salt = PASSPHRASE_SALT.getBytes();
+
+    byte[] input = new byte[passphrase_string.length + passphrase_salt.length];
+    System.arraycopy(passphrase_string, 0, input, 0, passphrase_string.length);
+    System.arraycopy(passphrase_salt, 0, input, passphrase_string.length, passphrase_salt.length);
+
+    MessageDigest md = null;
+    try {
+      md = MessageDigest.getInstance("SHA-1");
+    } catch (NoSuchAlgorithmException e1) {
+      Log.e(TAG, "Error initializing SHA1 message digest");
+    }
+
+    byte[] result_byte = md.digest(input);
+
+    passphrase = new String(result_byte);
+  }
+
 }
+
