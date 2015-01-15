@@ -129,12 +129,14 @@ public class LocalStorage {
             // not using CommonSense: delete all data older than maximum retention time
             where = DataPoint.TIMESTAMP + "<" + retentionLimit;
         }
-        
+        //TODO: revive this when delete works
+        /*
         if(preserveLastDatapoints){
             where += " AND EXISTS (SELECT * FROM "+ DbHelper.TABLE + " AS A WHERE NOT EXISTS ( SELECT * FROM " + DbHelper.TABLE + " AS B WHERE "
                     + DataPoint.TIMESTAMP + " == (SELECT MAX(" + DataPoint.TIMESTAMP + ") FROM "+ DbHelper.TABLE + " AS C WHERE " + DataPoint.TIMESTAMP +" < " + retentionLimit 
                     + " AND C." + DataPoint.SENSOR_NAME +" == B." + DataPoint.SENSOR_NAME + " GROUP BY " + DataPoint.SENSOR_NAME + " HAVING A." + BaseColumns._ID + " == Max(" + BaseColumns._ID + ") )))" ; 
         }
+        */
         //TODO : remove this
         OutputUtils.appendLog( "Generated where clause:" + where );
         int deleted = persisted.delete(where, null);
