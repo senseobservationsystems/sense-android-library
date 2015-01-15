@@ -201,7 +201,7 @@ public class BufferTransmitHandler extends Handler {
 
 	@Override
 	public void handleMessage(Message msg) {
-
+	  
 		String cookie = msg.getData().getString("cookie");
 
 		// check if our references are still valid

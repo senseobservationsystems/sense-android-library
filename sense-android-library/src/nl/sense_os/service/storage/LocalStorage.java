@@ -131,9 +131,9 @@ public class LocalStorage {
         }
         
         if(preserveLastDatapoints){
-            where += " AND " + BaseColumns._ID + " IN (SELECT " + BaseColumns._ID + " FROM (SELECT * FROM "+ DbHelper.TABLE + " AS A WHERE NOT EXISTS ( SELECT * FROM " + DbHelper.TABLE + " AS B WHERE "
+            where += " AND EXISTS (SELECT * FROM "+ DbHelper.TABLE + " AS A WHERE NOT EXISTS ( SELECT * FROM " + DbHelper.TABLE + " AS B WHERE "
                     + DataPoint.TIMESTAMP + " == (SELECT MAX(" + DataPoint.TIMESTAMP + ") FROM "+ DbHelper.TABLE + " AS C WHERE " + DataPoint.TIMESTAMP +" < " + retentionLimit 
-                    + " AND C." + DataPoint.SENSOR_NAME +" == B." + DataPoint.SENSOR_NAME + " GROUP BY " + DataPoint.SENSOR_NAME + " HAVING A." + BaseColumns._ID + " == Max(" + BaseColumns._ID + ") ))) as target)" ; 
+                    + " AND C." + DataPoint.SENSOR_NAME +" == B." + DataPoint.SENSOR_NAME + " GROUP BY " + DataPoint.SENSOR_NAME + " HAVING A." + BaseColumns._ID + " == Max(" + BaseColumns._ID + ") )))" ; 
         }
         //TODO : remove this
         OutputUtils.appendLog( "Generated where clause:" + where );
@@ -171,6 +171,9 @@ public class LocalStorage {
             rowId = inMemory.insert(values);
         } catch (BufferOverflowException e) {
             // in-memory storage is full!
+            //TODO: remove this before merge
+            OutputUtils.appendLog( "BufferOverflowException!" );
+          
             deleteOldData();
             persistRecentData();
 
@@ -197,7 +200,7 @@ public class LocalStorage {
         }
     }
 
-    private int persistRecentData() {
+    public int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
         
         OutputUtils.appendLog( "Persist recent data points from in-memory storage" );

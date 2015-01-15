@@ -44,7 +44,7 @@ public class OutputUtils {
   
   public static String getFormattedDateMonthYearHourMinutes( long stamp ){
     Calendar c = getCalendar( stamp );
-    SimpleDateFormat dateformat = new SimpleDateFormat("dd-MMM-yyyy hh:mm");
+    SimpleDateFormat dateformat = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
     
     return dateformat.format(c.getTime());
   }

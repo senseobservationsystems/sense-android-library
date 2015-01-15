@@ -40,6 +40,7 @@ import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.scheduler.ScheduleAlarmTool;
+import nl.sense_os.service.storage.LocalStorage;
 import nl.sense_os.service.subscription.SubscriptionManager;
 
 import org.json.JSONObject;
@@ -315,6 +316,9 @@ public class SenseService extends Service {
 
         // stop the main service
         stopForeground(true);
+        
+        // save datapoints in in-memory database into persisted Database
+        LocalStorage.getInstance( this ).persistRecentData();
 
         super.onDestroy();
     }

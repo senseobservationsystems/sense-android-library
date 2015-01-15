@@ -568,6 +568,10 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String INSTALLED_APPS = "installed_apps";
+            /**
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String APP_INFO = "app_info";
         }
 
         public static class Quiz {

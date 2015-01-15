@@ -7,6 +7,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.scheduler.Scheduler;
+import nl.sense_os.service.storage.LocalStorage;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.content.ComponentName;
@@ -81,6 +82,9 @@ public class DataTransmitter implements Runnable {
 
         // check if the service is (supposed to be) alive before scheduling next alarm
         if (true == ServiceStateHelper.getInstance(mContext).isLoggedIn()) {
+            
+            LocalStorage.getInstance( mContext ).persistRecentData();
+            
             // check if transmission should be started
             ConnectivityManager connManager = (ConnectivityManager) mContext
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
