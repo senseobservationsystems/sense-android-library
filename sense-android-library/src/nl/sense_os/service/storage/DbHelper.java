@@ -54,8 +54,6 @@ public class DbHelper extends SQLiteOpenHelper {
         String imei = telephonyManager.getDeviceId(); 
 
         setPassphrase(imei);
-        SQLiteDatabase.loadLibs(context);
-        getWritableDatabase();
     }
 
     @Override
@@ -84,11 +82,11 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getWritableDatabase(){
-      return getWritableDatabase("password");
+      return getWritableDatabase(passphrase);
     }
 
     public SQLiteDatabase getReadableDatabase(){
-      return getReadableDatabase("password");
+      return getReadableDatabase(passphrase);
     }
 
   private void setPassphrase(String imei) {
