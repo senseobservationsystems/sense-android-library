@@ -9,8 +9,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 /**
  * Class that manages a store for sensor data points in a persistent SQLite database. Helper class
@@ -128,14 +130,35 @@ class SQLiteStorage {
      */
     public int delete(String where, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int result = db.delete(DbHelper.TABLE, where, selectionArgs);
-
+        //int result = db.delete(DbHelper.TABLE, where, selectionArgs);
+        long result = DatabaseUtils.queryNumEntries( db, DbHelper.TABLE );
+        String sql = "DELETE FROM "+ DbHelper.TABLE + " WHERE "+ where;
+        db.execSQL( sql );
+        
         // update the row count
         if (!persistent) {
-            rowCount -= result;
+            rowCount =  DatabaseUtils.queryNumEntries( db, DbHelper.TABLE );
         }
 
-        return result;
+        return (int) (result - rowCount);
+    }
+    
+    public void runExampleQuery(){
+      SQLiteDatabase db = dbHelper.getReadableDatabase();
+      String sql = "SELECT * FROM persisted_values AS b WHERE timestamp==(SELECT MAX(timestamp) FROM persisted_values AS c WHERE timestamp<1421005576235 AND b.sensor_name==c.sensor_name GROUP BY sensor_name)";
+      //"SELECT * FROM persisted_values AS A WHERE NOT EXISTS (SELECT * FROM persisted_values AS B WHERE timestamp==(SELECT MAX(timestamp) FROM persisted_values AS C WHERE timestamp<1421005576235 AND C.sensor_name==B.sensor_name GROUP BY sensor_name HAVING A._id==Max(_id))) ";
+      Cursor c = db.rawQuery( sql, null );
+      try{
+        if(c.moveToFirst()){
+          Log.d("DBTest", DatabaseUtils.dumpCursorToString( c ));
+        }else{
+          Log.d("DBTest", "Nothing found");
+        }
+      }finally{
+        if(c != null)
+           c.close();
+      }
+      
     }
 
     /**

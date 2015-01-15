@@ -99,12 +99,13 @@ public class LocalStorage {
         }
     }
 
+    //TODO: make this method private before merge
     /**
      * Removes old data from the persistent storage.
      * 
      * @return The number of data points deleted
      */
-    private int deleteOldData() {
+    public int deleteOldData() {
         Log.i(TAG, "Delete old data points from persistent storage");
 
         //TODO
@@ -131,7 +132,7 @@ public class LocalStorage {
         }
         
         if(preserveLastDatapoints){
-            where += " AND EXISTS (SELECT * FROM "+ DbHelper.TABLE + " AS A WHERE NOT EXISTS ( SELECT * FROM " + DbHelper.TABLE + " AS B WHERE "
+            where += " AND EXISTS (SELECT * FROM "+ DbHelper.TABLE + " AS A WHERE NOT EXISTS (SELECT * FROM " + DbHelper.TABLE + " AS B WHERE "
                     + DataPoint.TIMESTAMP + " == (SELECT MAX(" + DataPoint.TIMESTAMP + ") FROM "+ DbHelper.TABLE + " AS C WHERE " + DataPoint.TIMESTAMP +" < " + retentionLimit 
                     + " AND C." + DataPoint.SENSOR_NAME +" == B." + DataPoint.SENSOR_NAME + " GROUP BY " + DataPoint.SENSOR_NAME + " HAVING A." + BaseColumns._ID + " == Max(" + BaseColumns._ID + ") )))" ; 
         }
@@ -140,6 +141,11 @@ public class LocalStorage {
         int deleted = persisted.delete(where, null);
 
         return deleted;
+    }
+    
+    //TODO: remove this
+    public void runExampleQuery(){
+       persisted.runExampleQuery();
     }
 
     public String getType(Uri uri) {
