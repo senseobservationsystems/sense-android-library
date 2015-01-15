@@ -4,9 +4,11 @@ import nl.sense_os.service.constants.SensorData.DataPoint;
 import android.content.Context;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
+import net.sqlcipher.database.SQLiteException;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.telephony.TelephonyManager;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -54,6 +56,31 @@ public class DbHelper extends SQLiteOpenHelper {
         String imei = telephonyManager.getDeviceId(); 
 
         setPassphrase(imei);
+
+        SQLiteDatabase.loadLibs(context);
+
+        // check for old plain database
+        if (persistent) {
+            // try to open the database with the password from the user.
+            // The only possible error now must be a wrong password or using plain database.
+            try {
+                getWritableDatabase(passphrase);
+            } catch (SQLiteException e) {
+                File plain = context.getDatabasePath(DATABASE_NAME);
+                File encrypted = context.getDatabasePath("tmp.db");
+    
+                // try to open the database without password
+                SQLiteDatabase migrate_db = SQLiteDatabase.openOrCreateDatabase(plain, "", null);
+                migrate_db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",
+                                                    encrypted.getAbsolutePath(), passphrase));
+                migrate_db.rawExecSQL("SELECT sqlcipher_export('encrypted');");
+                migrate_db.execSQL("DETACH DATABASE encrypted;");
+                migrate_db.close();
+    
+                // rename the encrypted file name back
+                encrypted.renameTo(new File(plain.getAbsolutePath()));
+            }
+        }
     }
 
     @Override

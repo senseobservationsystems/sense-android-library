@@ -50,11 +50,10 @@ class SQLiteStorage {
         this.context = context;
         this.persistent = persistent;
         dbHelper = new DbHelper(context, persistent);
-        SQLiteDatabase.loadLibs(context);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // set maximum size for in-memory database
         if (!persistent) {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.setMaximumSize(MAX_INMEMORY_SIZE);
         }
     }
