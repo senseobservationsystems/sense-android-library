@@ -83,16 +83,20 @@ public class DataTransmitter implements Runnable {
         // check if the service is (supposed to be) alive before scheduling next alarm
         if (true == ServiceStateHelper.getInstance(mContext).isLoggedIn()) {
             
-            LocalStorage.getInstance( mContext ).persistRecentData();
-            
             // check if transmission should be started
             ConnectivityManager connManager = (ConnectivityManager) mContext
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            boolean passed_interval = SystemClock.elapsedRealtime() - mLastTxTime >= mTxInterval;
+            
+            //If it has not saved data in-memory storage more than the interval, save data into persisted storage
+            if(passed_interval){
+              LocalStorage.getInstance( mContext ).persistRecentData();
+            }
 
             // start the transmission if we have WiFi connection
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) || wifi.isConnected()) {
-                if ((SystemClock.elapsedRealtime() - mLastTxTime >= mTxInterval)) {
+                if ((passed_interval)) {
                     transmissionService();
                 }
             } else {
