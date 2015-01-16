@@ -193,6 +193,18 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String  PRESERVE_LAST_DATAPOINTS = "preserve_last_datapoints";
+            /**
+             * key for preference that specifies the sensors whose last data point after retention limit is preserved.
+             * Default is null.
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String  PRESERVED_SENSOR_PREFIX = "preserved_sensor_";
+            /**
+             * key for preference that specifies the sensors whose last data point after retention limit is preserved.
+             * Default is null.
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String  PRESERVED_SENSORS_SIZE = "preserved_sensors_size";
             }
         
 

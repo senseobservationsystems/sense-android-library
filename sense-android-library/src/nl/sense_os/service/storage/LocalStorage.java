@@ -4,6 +4,9 @@
 package nl.sense_os.service.storage;
 
 import java.nio.BufferOverflowException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import nl.sense_os.service.R;
@@ -12,6 +15,7 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.debug.OutputUtils;
 import nl.sense_os.service.provider.SNTP;
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -99,15 +103,17 @@ public class LocalStorage {
         }
     }
 
+    //TODO: make this method private before merge
     /**
      * Removes old data from the persistent storage.
      * 
      * @return The number of data points deleted
      */
-    private int deleteOldData() {
+    @SuppressLint( "NewApi" )
+    public int deleteOldData() {
         Log.i(TAG, "Delete old data points from persistent storage");
 
-        //TODO
+        //TODO: remove this
         OutputUtils.appendLog( "Delete old data points from persistent storage" );
 
         SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -120,29 +126,71 @@ public class LocalStorage {
         boolean preserveLastDatapoints = prefs.getBoolean( Main.Advanced.PRESERVE_LAST_DATAPOINTS, false );
         
         
-        String where = null;
+        String where = "";
+        
+        //TODO: This is probably not a optimized solution. This runs delete query per cumulative sensors.
+        //      There is a query that should do the job in one go, but somehow subqueries do not return what it should.
+        //      The documentation is available at https://docs.google.com/a/sense-os.nl/document/d/1WEobs3ZlX5qnlct0n3N6jnwURPjhcMOIQMvclJCVwdY/edit?usp=sharing
+        if(preserveLastDatapoints){
+             where = deleteOldDataForCumulativeSensors( prefs, retentionLimit, where );
+        }
+        
         if (useCommonSense) {
             // delete data older than maximum retention time if it had been transmitted
-            where = DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.TRANSMIT_STATE
+            where += DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.TRANSMIT_STATE
                     + "==1";
         } else {
             // not using CommonSense: delete all data older than maximum retention time
-            where = DataPoint.TIMESTAMP + "<" + retentionLimit;
+            where += DataPoint.TIMESTAMP + "<" + retentionLimit;
         }
-        //TODO: revive this when delete works
-        /*
-        if(preserveLastDatapoints){
-            where += " AND EXISTS(SELECT * FROM "+ DbHelper.TABLE + " AS A WHERE NOT EXISTS(SELECT * FROM " + DbHelper.TABLE + " AS B WHERE "
-                    + DataPoint.TIMESTAMP + "==(SELECT MAX(" + DataPoint.TIMESTAMP + ") FROM "+ DbHelper.TABLE + " AS C WHERE " + DataPoint.TIMESTAMP +"<" + retentionLimit 
-                    + " AND C." + DataPoint.SENSOR_NAME +"==B." + DataPoint.SENSOR_NAME + " GROUP BY " + DataPoint.SENSOR_NAME + " HAVING A." + BaseColumns._ID + "==MAX(" + BaseColumns._ID + ") )))" ; 
-        }
-        */
+
         //TODO : remove this
         OutputUtils.appendLog( "Generated where clause:" + where );
         int deleted = persisted.delete(where, null);
 
         return deleted;
     }
+
+    public String deleteOldDataForCumulativeSensors( SharedPreferences prefs,
+        long retentionLimit, String where ) {
+      List<String> list = makeListOfPreservedSensors( prefs );
+
+       Iterator<String> iter = list.iterator();
+       
+       if(list!=null && list.size()>0){
+         where = DataPoint.SENSOR_NAME + " NOT IN (";
+         
+         while(iter.hasNext()){
+             String sensor = iter.next();
+             if(sensor != null){
+               String wherePerSensor = DataPoint.SENSOR_NAME +"=='"+ sensor+ "' AND " + DataPoint.TRANSMIT_STATE +"==1 AND " + DataPoint.TIMESTAMP +"<(SELECT MAX("+DataPoint.TIMESTAMP +") FROM "
+                               + DbHelper.TABLE + " WHERE " + DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.SENSOR_NAME + "=='" + sensor + "' GROUP BY " + DataPoint.SENSOR_NAME +")";
+               //TODO: remove this
+               OutputUtils.appendLog( "Generated where clause per sensor:" + wherePerSensor );
+               persisted.delete(wherePerSensor, null);
+               
+               //exculde those sensors from normal delete query
+               where += "'"+sensor+"'";
+               where += (iter.hasNext())?",":"";
+               //TODO: remove this
+               Log.d("DBTest", sensor);
+             }
+         }
+         where += ") AND ";
+       }
+      return where;
+    }
+
+    public List<String> makeListOfPreservedSensors( SharedPreferences prefs ) {
+      int size = prefs.getInt( SensePrefs.Main.Advanced.PRESERVED_SENSORS_SIZE, 0 );
+       List<String> list= new ArrayList<String>();
+       for(int i = 0; i < size ; i++){
+         list.add(prefs.getString( SensePrefs.Main.Advanced.PRESERVED_SENSOR_PREFIX + i, null ));
+       }
+      return list;
+    }
+    
+
 
     public String getType(Uri uri) {
         int uriType = matchUri(uri);
@@ -204,8 +252,6 @@ public class LocalStorage {
 
     public int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
-        
-        OutputUtils.appendLog( "Persist recent data points from in-memory storage" );
 
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
