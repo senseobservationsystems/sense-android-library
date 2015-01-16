@@ -211,8 +211,8 @@ public class SensePlatform {
     
     //TODO: remove this before merge
     public void deleteOldData(){
-      //LocalStorage.getInstance( mContext ).deleteOldData();
-      LocalStorage.getInstance( mContext ).runExampleQuery();
+      LocalStorage.getInstance( mContext ).deleteOldData();
+      //LocalStorage.getInstance( mContext ).runExampleQuery();
     }
 
     /**
