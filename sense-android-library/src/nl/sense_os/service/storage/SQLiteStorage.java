@@ -143,24 +143,6 @@ class SQLiteStorage {
         return result;
     }
     
-    public void runExampleQuery(){
-      SQLiteDatabase db = dbHelper.getReadableDatabase();
-      String sql = "SELECT * FROM persisted_values AS b WHERE timestamp==(SELECT MAX(timestamp) FROM persisted_values AS c WHERE timestamp<1421005576235 AND b.sensor_name==c.sensor_name GROUP BY sensor_name)";
-      //"SELECT * FROM persisted_values AS A WHERE NOT EXISTS (SELECT * FROM persisted_values AS B WHERE timestamp==(SELECT MAX(timestamp) FROM persisted_values AS C WHERE timestamp<1421005576235 AND C.sensor_name==B.sensor_name GROUP BY sensor_name HAVING A._id==Max(_id))) ";
-      Cursor c = db.rawQuery( sql, null );
-      try{
-        if(c.moveToFirst()){
-          Log.d("DBTest", DatabaseUtils.dumpCursorToString( c ));
-        }else{
-          Log.d("DBTest", "Nothing found");
-        }
-      }finally{
-        if(c != null)
-           c.close();
-      }
-      
-    }
-
     /**
      * Inserts a row into the database.
      * 

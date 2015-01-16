@@ -208,12 +208,6 @@ public class SensePlatform {
             return false;
         }
     }
-    
-    //TODO: remove this before merge
-    public void deleteOldData(){
-      LocalStorage.getInstance( mContext ).deleteOldData();
-      //LocalStorage.getInstance( mContext ).runExampleQuery();
-    }
 
     /**
      * Binds to the Sense service, creating it if necessary.

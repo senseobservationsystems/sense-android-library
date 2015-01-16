@@ -128,36 +128,11 @@ public class LocalStorage {
         
         String where = "";
         
-        //TODO: This is not a optimized solution. This runs delete query per cumulative sensors.
+        //TODO: This is probably not a optimized solution. This runs delete query per cumulative sensors.
         //      There is a query that should do the job in one go, but somehow subqueries do not return what it should.
         //      The documentation is available at https://docs.google.com/a/sense-os.nl/document/d/1WEobs3ZlX5qnlct0n3N6jnwURPjhcMOIQMvclJCVwdY/edit?usp=sharing
         if(preserveLastDatapoints){
-             int size = prefs.getInt( SensePrefs.Main.Advanced.PRESERVED_SENSORS_SIZE, 0 );
-             List<String> list= new ArrayList<String>();
-             for(int i = 0; i < size ; i++){
-               list.add(prefs.getString( SensePrefs.Main.Advanced.PRESERVED_SENSOR_PREFIX + i, null ));
-             }
-             Iterator<String> iter = list.iterator();
-             
-             if(list!=null && list.size()>0){
-               where = DataPoint.SENSOR_NAME + " NOT IN (";
-               
-               while(iter.hasNext()){
-                   String sensor = iter.next();
-                   if(sensor != null){
-                     String cWhere = DataPoint.SENSOR_NAME +"=='"+ sensor+ "' AND " + DataPoint.TRANSMIT_STATE +"==1 AND " + DataPoint.TIMESTAMP +"<(SELECT MAX("+DataPoint.TIMESTAMP +") FROM "
-                                     + DbHelper.TABLE + " WHERE " + DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.SENSOR_NAME + "=='" + sensor + "' GROUP BY " + DataPoint.SENSOR_NAME +")";
-                     persisted.delete(cWhere, null);
-                     
-                     //exculde those sensors from normal delete query
-                     where += "'"+sensor+"'";
-                     where += (iter.hasNext())?",":"";
-                     //TODO: remove this
-                     Log.d("DBTest", sensor);
-                   }
-               }
-               where += ") AND ";
-             }
+             where = deleteOldDataForCumulativeSensors( prefs, retentionLimit, where );
         }
         
         if (useCommonSense) {
@@ -175,11 +150,47 @@ public class LocalStorage {
 
         return deleted;
     }
-    
-    //TODO: remove this
-    public void runExampleQuery(){
-       persisted.runExampleQuery();
+
+    public String deleteOldDataForCumulativeSensors( SharedPreferences prefs,
+        long retentionLimit, String where ) {
+      List<String> list = makeListOfPreservedSensors( prefs );
+
+       Iterator<String> iter = list.iterator();
+       
+       if(list!=null && list.size()>0){
+         where = DataPoint.SENSOR_NAME + " NOT IN (";
+         
+         while(iter.hasNext()){
+             String sensor = iter.next();
+             if(sensor != null){
+               String wherePerSensor = DataPoint.SENSOR_NAME +"=='"+ sensor+ "' AND " + DataPoint.TRANSMIT_STATE +"==1 AND " + DataPoint.TIMESTAMP +"<(SELECT MAX("+DataPoint.TIMESTAMP +") FROM "
+                               + DbHelper.TABLE + " WHERE " + DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.SENSOR_NAME + "=='" + sensor + "' GROUP BY " + DataPoint.SENSOR_NAME +")";
+               //TODO: remove this
+               OutputUtils.appendLog( "Generated where clause per sensor:" + wherePerSensor );
+               persisted.delete(wherePerSensor, null);
+               
+               //exculde those sensors from normal delete query
+               where += "'"+sensor+"'";
+               where += (iter.hasNext())?",":"";
+               //TODO: remove this
+               Log.d("DBTest", sensor);
+             }
+         }
+         where += ") AND ";
+       }
+      return where;
     }
+
+    public List<String> makeListOfPreservedSensors( SharedPreferences prefs ) {
+      int size = prefs.getInt( SensePrefs.Main.Advanced.PRESERVED_SENSORS_SIZE, 0 );
+       List<String> list= new ArrayList<String>();
+       for(int i = 0; i < size ; i++){
+         list.add(prefs.getString( SensePrefs.Main.Advanced.PRESERVED_SENSOR_PREFIX + i, null ));
+       }
+      return list;
+    }
+    
+
 
     public String getType(Uri uri) {
         int uriType = matchUri(uri);
@@ -241,8 +252,6 @@ public class LocalStorage {
 
     public int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
-        
-        OutputUtils.appendLog( "Persist recent data points from in-memory storage" );
 
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
