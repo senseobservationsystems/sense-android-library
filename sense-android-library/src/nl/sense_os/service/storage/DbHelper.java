@@ -1,7 +1,10 @@
 package nl.sense_os.service.storage;
 
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import android.content.Context;
+import android.content.SharedPreferences;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 import net.sqlcipher.database.SQLiteException;
@@ -21,7 +24,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Name of the database on the disk
      */
-    private static final String DATABASE_NAME = "persistent_storage.sqlite3";
+    private static final String DATABASE_NAME = "persitent_storage.sqlite3";
 
     /**
      * Version of the database. Increment this when the database structure is changed.
@@ -52,23 +55,30 @@ public class DbHelper extends SQLiteOpenHelper {
         // if the database name is null, it will be created in-memory
         super(context, persistent ? DATABASE_NAME : null, null, DATABASE_VERSION);
 
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String imei = telephonyManager.getDeviceId(); 
+        SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        boolean encrypt = pref.getBoolean(Advanced.ENCRYPT_SENSOR_DATA, false);
 
-        setPassphrase(imei);
+        if (encrypt) {
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            String imei = telephonyManager.getDeviceId();
+
+            setPassphrase(imei);
+        }
 
         SQLiteDatabase.loadLibs(context);
 
         // check for old plain database
-        if (persistent) {
+        if (persistent && encrypt) {
             // try to open the database with the password from the user.
             // The only possible error now must be a wrong password or using plain database.
             try {
                 getWritableDatabase(passphrase);
             } catch (SQLiteException e) {
+                Log.v(TAG, "Encrypting old database with passphrase "+passphrase);
                 File plain = context.getDatabasePath(DATABASE_NAME);
                 File encrypted = context.getDatabasePath("tmp.db");
-    
+
                 // try to open the database without password
                 SQLiteDatabase migrate_db = SQLiteDatabase.openOrCreateDatabase(plain, "", null);
                 migrate_db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",
@@ -76,7 +86,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 migrate_db.rawExecSQL("SELECT sqlcipher_export('encrypted');");
                 migrate_db.execSQL("DETACH DATABASE encrypted;");
                 migrate_db.close();
-    
+
                 // rename the encrypted file name back
                 encrypted.renameTo(new File(plain.getAbsolutePath()));
             }
@@ -85,18 +95,22 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final StringBuilder sb = new StringBuilder("CREATE TABLE " + DbHelper.TABLE + "(");
-        sb.append(BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT");
-        sb.append(", " + DataPoint.SENSOR_NAME + " TEXT");
-        sb.append(", " + DataPoint.DISPLAY_NAME + " TEXT");
-        sb.append(", " + DataPoint.SENSOR_DESCRIPTION + " TEXT");
-        sb.append(", " + DataPoint.DATA_TYPE + " TEXT");
-        sb.append(", " + DataPoint.TIMESTAMP + " INTEGER");
-        sb.append(", " + DataPoint.VALUE + " TEXT");
-        sb.append(", " + DataPoint.DEVICE_UUID + " TEXT");
-        sb.append(", " + DataPoint.TRANSMIT_STATE + " INTEGER");
-        sb.append(");");
-        db.execSQL(sb.toString());
+        try {
+            final StringBuilder sb = new StringBuilder("CREATE TABLE " + DbHelper.TABLE + "(");
+            sb.append(BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT");
+            sb.append(", " + DataPoint.SENSOR_NAME + " TEXT");
+            sb.append(", " + DataPoint.DISPLAY_NAME + " TEXT");
+            sb.append(", " + DataPoint.SENSOR_DESCRIPTION + " TEXT");
+            sb.append(", " + DataPoint.DATA_TYPE + " TEXT");
+            sb.append(", " + DataPoint.TIMESTAMP + " INTEGER");
+            sb.append(", " + DataPoint.VALUE + " TEXT");
+            sb.append(", " + DataPoint.DEVICE_UUID + " TEXT");
+            sb.append(", " + DataPoint.TRANSMIT_STATE + " INTEGER");
+            sb.append(");");
+            db.execSQL(sb.toString());
+        } catch (SQLiteException e) {
+            Log.w(TAG, "Error creating database. Maybe the table is already there", e);
+        }
     }
 
     @Override
