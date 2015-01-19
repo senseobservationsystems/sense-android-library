@@ -5,6 +5,7 @@ package nl.sense_os.service;
 
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseStatusCodes;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -92,6 +93,15 @@ public class ServiceStateHelper {
 				Context.MODE_PRIVATE);
 		String username = authPrefs.getString(Auth.LOGIN_USERNAME,
 				context.getString(android.R.string.unknownName));
+
+		boolean encrypt_credential = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
+                                                 .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+
+		if (encrypt_credential) {
+                        EncryptionHelper encryptor = new EncryptionHelper(context);
+                        username = encryptor.decrypt(username);
+		}
+
 		builder.setContentText(context.getString(contentText, username));
 		builder.setContentTitle(context.getString(R.string.stat_notify_title));
 
