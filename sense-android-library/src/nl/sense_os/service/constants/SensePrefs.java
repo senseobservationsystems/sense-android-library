@@ -186,6 +186,12 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  RETENTION_HOURS = "retention_hours";
+            /**
+             * Key for preference that enables encryption for credential data.
+             * Default is false.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  ENCRYPT_CREDENTIAL = "encrypt_credential";
         }
         
 
