@@ -186,6 +186,13 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  RETENTION_HOURS = "retention_hours";
+
+            /**
+             * Key for preference that enable database encryption.
+             * Default is false.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  ENCRYPT_SENSOR_DATA = "encrypt_sensor_data";
         }
         
 
