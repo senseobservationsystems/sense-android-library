@@ -192,7 +192,14 @@ public class SensePrefs {
              * Default is false.
              * @see SensePrefs#MAIN_PREFS
              */            
-            public static final String  ENCRYPT_SENSOR_DATA = "encrypt_sensor_data";
+            public static final String  ENCRYPT_DATABASE = "encrypt_database";
+
+            /**
+             * Key for value of salt for database encryption
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String  ENCRYPT_DATABASE_SALT = "encrypt_database_salt";
+
         }
         
 

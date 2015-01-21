@@ -16,9 +16,9 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
-import net.sqlcipher.database.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -64,14 +64,6 @@ public class LocalStorageSql extends ContentProvider {
 
             db.execSQL("DROP TABLE IF EXISTS " + VALUES_TABLE_NAME);
             onCreate(db);
-        }
-
-        public SQLiteDatabase getWritableDatabase(){
-          return getWritableDatabase("password");
-        }
-
-        public SQLiteDatabase getReadableDatabase(){
-          return getReadableDatabase("password");
         }
     }
 
@@ -166,9 +158,6 @@ public class LocalStorageSql extends ContentProvider {
     public boolean onCreate() {
         Log.v(TAG, "Create local storage...");
         dbHelper = new DbHelper(getContext());
-        SQLiteDatabase.loadLibs(getContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
         return true;
     }
 

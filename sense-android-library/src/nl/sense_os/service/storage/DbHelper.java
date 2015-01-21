@@ -12,7 +12,6 @@ import android.provider.BaseColumns;
 import android.util.Log;
 import android.telephony.TelephonyManager;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -36,7 +35,9 @@ public class DbHelper extends SQLiteOpenHelper {
      */
     static final String TABLE = "persisted_values";
 
-    private static final String PASSPHRASE_SALT = "tUI@IBhf3J6o^G*&dno3yH!yC*E5#3qy";
+    private static SharedPreferences sMainPrefs;
+
+    private static final String DEFAULT_PASSPHRASE_SALT = "tUI@IBhf3J6o^G*&dno3yH!yC*E5#3qy";
 
     private static String passphrase = "";
 
@@ -55,9 +56,12 @@ public class DbHelper extends SQLiteOpenHelper {
         // if the database name is null, it will be created in-memory
         super(context, persistent ? DATABASE_NAME : null, null, DATABASE_VERSION);
 
-        SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                Context.MODE_PRIVATE);
-        boolean encrypt = pref.getBoolean(Advanced.ENCRYPT_SENSOR_DATA, false);
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                                                      Context.MODE_PRIVATE);
+        }
+
+        boolean encrypt = sMainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
 
         if (encrypt) {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -75,7 +79,7 @@ public class DbHelper extends SQLiteOpenHelper {
             try {
                 getWritableDatabase(passphrase);
             } catch (SQLiteException e) {
-                Log.v(TAG, "Encrypting old database with passphrase "+passphrase);
+                Log.v(TAG, "Trying to encrypte old plain database");
                 File plain = context.getDatabasePath(DATABASE_NAME);
                 File encrypted = context.getDatabasePath("tmp.db");
 
@@ -132,21 +136,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
   private void setPassphrase(String imei) {
 
-    byte[] passphrase_string = imei.getBytes();
-    byte[] passphrase_salt = PASSPHRASE_SALT.getBytes();
-
-    byte[] input = new byte[passphrase_string.length + passphrase_salt.length];
-    System.arraycopy(passphrase_string, 0, input, 0, passphrase_string.length);
-    System.arraycopy(passphrase_salt, 0, input, passphrase_string.length, passphrase_salt.length);
+    String salt = sMainPrefs.getString(Advanced.ENCRYPT_DATABASE_SALT, DEFAULT_PASSPHRASE_SALT);
 
     MessageDigest md = null;
     try {
       md = MessageDigest.getInstance("SHA-1");
     } catch (NoSuchAlgorithmException e1) {
-      Log.e(TAG, "Error initializing SHA1 message digest");
+      Log.e(TAG, "Error initializing SHA-1 message digest");
     }
 
-    byte[] result_byte = md.digest(input);
+    byte[] result_byte = md.digest((imei+salt).getBytes());
 
     passphrase = new String(result_byte);
   }
