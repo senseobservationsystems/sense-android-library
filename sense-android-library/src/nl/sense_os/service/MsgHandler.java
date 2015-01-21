@@ -76,7 +76,7 @@ public class MsgHandler extends Service {
 
 	private static FileTransmitHandler fileHandler;
 	private static DataTransmitHandler dataTransmitHandler;
-    private static BufferTransmitHandler bufferHandler;
+	private static BufferTransmitHandler bufferHandler;
 	private static LocalStorage storage;
 
 	/**
