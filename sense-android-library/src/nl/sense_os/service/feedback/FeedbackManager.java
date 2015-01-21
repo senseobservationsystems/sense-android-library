@@ -13,6 +13,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.EncryptionHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,6 +94,13 @@ public class FeedbackManager {
         String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
         SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
+
+        boolean encrypt_credential = prefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        if (encrypt_credential) {
+            EncryptionHelper decryptor = new EncryptionHelper(context);
+            cookie = decryptor.decrypt(cookie);
+        }
+
         boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
         if (devMode) {
             Log.i(TAG, "Using development server to get connected sensors");

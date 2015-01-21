@@ -125,7 +125,8 @@ public class SenseServiceStub extends Binder {
         try {
             String value = prefs.getString(key, defValue);
 
-            if ((key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS)) && !value.equals(defValue)) {
+            if ((key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_COOKIE))
+                    && !value.equals(defValue)) {
 		boolean encrypt_credential = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
                                                  .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
                 if (encrypt_credential) {
@@ -293,7 +294,7 @@ public class SenseServiceStub extends Binder {
         }
 
         boolean encrypt_credential = false;
-        if ((key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS))) {
+        if (key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_COOKIE)) {
             encrypt_credential = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
                                      .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
         }
