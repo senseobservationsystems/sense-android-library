@@ -203,6 +203,11 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  ENCRYPT_CREDENTIAL = "encrypt_credential";
+            /**
+             * Key for value of salt for credential encryption.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  ENCRYPT_CREDENTIAL_SALT = "encrypt_credential_salt";
         }
         
 

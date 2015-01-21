@@ -1,5 +1,8 @@
 package nl.sense_os.service;
 
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -31,7 +34,9 @@ public class EncryptionHelper {
 	private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
 	private static final String SECRET_KEY_HASH_TRANSFORMATION = "SHA-256";
 	private static final String CHARSET = "UTF-8";
-	private static final String KEY_SALT = "3XnMxOy3E&jsdSSHWM941D89yK!RlRVH";
+	private static final String DEFAULT_KEY_SALT = "3XnMxOy3E&jsdSSHWM941D89yK!RlRVH";
+
+	private static SharedPreferences sMainPrefs;
 
 	private final Cipher writer;
 	private final Cipher reader;
@@ -68,8 +73,15 @@ public class EncryptionHelper {
 			secureKey = imei;
 		}
 
+		if (null == sMainPrefs) {
+			sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+						Context.MODE_PRIVATE);
+		}
+
+		String salt = sMainPrefs.getString(Advanced.ENCRYPT_CREDENTIAL_SALT, DEFAULT_KEY_SALT);
+
 		IvParameterSpec ivSpec = getIv();
-		SecretKeySpec secretKey = getSecretKey(secureKey+KEY_SALT);
+		SecretKeySpec secretKey = getSecretKey(secureKey+salt);
 
 		writer.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
 		reader.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
