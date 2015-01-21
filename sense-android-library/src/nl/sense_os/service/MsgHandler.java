@@ -20,6 +20,7 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
+import nl.sense_os.service.EncryptionHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,6 +104,16 @@ public class MsgHandler extends Service {
 			SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
 					MODE_PRIVATE);
 			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+
+			SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+					MODE_PRIVATE);
+
+			boolean encrypt_credential = mainPrefs.getBoolean(Main.Advanced.ENCRYPT_CREDENTIAL, false);
+
+			if (encrypt_credential) {
+				EncryptionHelper decryptor = new EncryptionHelper(context);
+				cookie = decryptor.decrypt(cookie);
+			}
 
 			if (cookie.length() > 0) {
 
@@ -231,6 +242,15 @@ public class MsgHandler extends Service {
 			// get the cookie
 			SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
 			String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+
+			SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
+			boolean encrypt_credential = mainPrefs.getBoolean(Main.Advanced.ENCRYPT_CREDENTIAL, false);
+
+			if (encrypt_credential) {
+				EncryptionHelper decryptor = new EncryptionHelper(this);
+				cookie = decryptor.decrypt(cookie);
+			}
+
 
             // send the message to the handler
             Message msg = Message.obtain();

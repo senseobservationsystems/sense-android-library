@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import nl.sense_os.service.SenseServiceStub;
+import nl.sense_os.service.EncryptionHelper;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
@@ -113,10 +114,11 @@ public class SenseApi {
         int page = 0;
         while (!done) {
             // request fresh list of sensors for this device from CommonSense
-            String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-            if (null == sMainPrefs) {
-                sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                        Context.MODE_PRIVATE);
+            String cookie;
+            try {
+                cookie = getCookie(context);
+            } catch (IllegalAccessException e) {
+                cookie = null;
             }
             boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
             if (devMode) {
@@ -179,7 +181,12 @@ public class SenseApi {
         }
 
         // request fresh list of sensors for this device from CommonSense
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         if (devMode) {
             Log.v(TAG, "Using development server to get connected sensors");
@@ -254,7 +261,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.DEVICE_CONFIGURATION_DEV : SenseUrls.DEVICE_CONFIGURATION;
 
@@ -287,7 +299,12 @@ public class SenseApi {
         final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.CONFIGURATION_DEV : SenseUrls.CONFIGURATION;
 
@@ -320,7 +337,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.DEVICES_DEV : SenseUrls.DEVICES;
 
@@ -494,6 +516,16 @@ public class SenseApi {
     	if (null == sAuthPrefs) {
     		sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
     	}
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+
+        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        if (encrypt_credential) {
+            EncryptionHelper decryptor = new EncryptionHelper(context);
+            return decryptor.decrypt(sAuthPrefs.getString(Auth.LOGIN_COOKIE, null));
+        }
+
     	return sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
     }
     
@@ -508,6 +540,16 @@ public class SenseApi {
         if (null == sAuthPrefs) {
             sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
         }
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+
+        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        if (encrypt_credential) {
+            EncryptionHelper decryptor = new EncryptionHelper(context);
+            return decryptor.decrypt(sAuthPrefs.getString(Auth.LOGIN_SESSION_ID, null));
+        }
+
         return sAuthPrefs.getString(Auth.LOGIN_SESSION_ID, null);
     }
 
@@ -530,7 +572,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         String url = devMode ? SenseUrls.CURRENT_USER_DEV : SenseUrls.CURRENT_USER;
@@ -599,7 +646,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         // get userId
@@ -712,6 +764,12 @@ public class SenseApi {
         Editor authEditor = sAuthPrefs.edit();
         switch (result) {
         case 0: // logged in
+            boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+            if (encrypt_credential) {
+                EncryptionHelper encryptor = new EncryptionHelper(context);
+                cookie = encryptor.encrypt(cookie);
+                session_id = encryptor.encrypt(session_id);
+            }
             authEditor.putString(Auth.LOGIN_COOKIE, cookie);
             authEditor.putString(Auth.LOGIN_SESSION_ID, session_id);
             authEditor.commit();
@@ -759,7 +817,12 @@ public class SenseApi {
             return;
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.REGISTER_GCM_ID_DEV : SenseUrls.REGISTER_GCM_ID;
 
@@ -834,7 +897,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         // prepare request to create new sensor
@@ -1256,7 +1324,12 @@ public class SenseApi {
 
         // prepare request
         String url = devMode ? SenseUrls.CHANGE_PASSWORD_DEV : SenseUrls.CHANGE_PASSWORD;
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         JSONObject content = new JSONObject();
         content.put("current_password", current_password);
         content.put("new_password", new_password);
@@ -1298,7 +1371,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.SENSOR_USERS_DEV : SenseUrls.SENSOR_USERS;
         url = url.replaceFirst("%1", sensorId);

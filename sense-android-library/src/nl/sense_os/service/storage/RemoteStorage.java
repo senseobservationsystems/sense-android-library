@@ -14,6 +14,7 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.EncryptionHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,6 +87,13 @@ class RemoteStorage {
 
         String cookie = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE)
                 .getString(Auth.LOGIN_COOKIE, null);
+        boolean encrypt_credential = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
+                .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        if (encrypt_credential) {
+            EncryptionHelper decryptor = new EncryptionHelper(context);
+            cookie = decryptor.decrypt(cookie);
+        }
+
         Map<String, String> response = SenseApi.request(context, url, null, cookie);
 
         // parse response

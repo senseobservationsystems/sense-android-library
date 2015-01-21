@@ -123,7 +123,19 @@ public class SenseServiceStub extends Binder {
 
         // return the preference value
         try {
-            return prefs.getString(key, defValue);
+            String value = prefs.getString(key, defValue);
+
+            if ((key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_COOKIE))
+                    && !value.equals(defValue)) {
+		boolean encrypt_credential = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
+                                                 .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+                if (encrypt_credential) {
+                    EncryptionHelper encryptor = new EncryptionHelper(service);
+                    value = encryptor.decrypt(value);
+                }
+            }
+
+            return value;
         } catch (ClassCastException e) {
             return defValue;
         }
@@ -281,10 +293,28 @@ public class SenseServiceStub extends Binder {
             prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
+        boolean encrypt_credential = false;
+        if (key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_COOKIE)) {
+            encrypt_credential = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
+                                     .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        }
+
         // store value
         String oldValue = prefs.getString(key, null);
+
+        if (encrypt_credential && oldValue != null) {
+            EncryptionHelper decryptor = new EncryptionHelper(service);
+            oldValue = decryptor.decrypt(oldValue);
+        }
+
         if (value == null || !value.equals(oldValue)) {
+            if (encrypt_credential && value != null) {
+                EncryptionHelper encryptor = new EncryptionHelper(service);
+                value = encryptor.encrypt(value);
+            }
+
             boolean stored = prefs.edit().putString(key, value).commit();
+
             if (stored == false) {
                 Log.w(TAG, "Preference " + key + " not stored!");
             }
