@@ -114,15 +114,11 @@ public class SenseApi {
         int page = 0;
         while (!done) {
             // request fresh list of sensors for this device from CommonSense
-            String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-            if (null == sMainPrefs) {
-                sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                        Context.MODE_PRIVATE);
-            }
-            boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-            if (encrypt_credential) {
-                EncryptionHelper decryptor = new EncryptionHelper(context);
-                cookie = decryptor.decrypt(cookie);
+            String cookie;
+            try {
+                cookie = getCookie(context);
+            } catch (IllegalAccessException e) {
+                cookie = null;
             }
             boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
             if (devMode) {
@@ -185,11 +181,11 @@ public class SenseApi {
         }
 
         // request fresh list of sensors for this device from CommonSense
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         if (devMode) {
@@ -265,11 +261,11 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.DEVICE_CONFIGURATION_DEV : SenseUrls.DEVICE_CONFIGURATION;
@@ -303,11 +299,11 @@ public class SenseApi {
         final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
 
-        String cookie = authPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
         boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.CONFIGURATION_DEV : SenseUrls.CONFIGURATION;
@@ -341,11 +337,11 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.DEVICES_DEV : SenseUrls.DEVICES;
@@ -576,13 +572,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
-
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         String url = devMode ? SenseUrls.CURRENT_USER_DEV : SenseUrls.CURRENT_USER;
@@ -651,13 +646,12 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
-
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
         // get userId
@@ -823,13 +817,12 @@ public class SenseApi {
             return;
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
-
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.REGISTER_GCM_ID_DEV : SenseUrls.REGISTER_GCM_ID;
 
@@ -904,11 +897,11 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
 
@@ -1331,11 +1324,11 @@ public class SenseApi {
 
         // prepare request
         String url = devMode ? SenseUrls.CHANGE_PASSWORD_DEV : SenseUrls.CHANGE_PASSWORD;
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
         JSONObject content = new JSONObject();
         content.put("current_password", current_password);
@@ -1378,11 +1371,11 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
-        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
-        boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
         }
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ? SenseUrls.SENSOR_USERS_DEV : SenseUrls.SENSOR_USERS;
