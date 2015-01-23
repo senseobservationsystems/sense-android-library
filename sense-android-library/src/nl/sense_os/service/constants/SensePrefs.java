@@ -200,7 +200,7 @@ public class SensePrefs {
              */
             public static final String  PRESERVED_SENSOR_PREFIX = "preserved_sensor_";
             /**
-             * key for preference that specifies the sensors whose last data point after retention limit is preserved.
+             * key for preference that specifies the number of the sensors whose last data point after retention limit is preserved.
              * Default is null.
              * @see SensePrefs#MAIN_PREFS
              */

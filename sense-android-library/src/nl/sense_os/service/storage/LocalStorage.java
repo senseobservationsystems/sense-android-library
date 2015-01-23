@@ -153,7 +153,7 @@ public class LocalStorage {
 
     public String deleteOldDataForCumulativeSensors( SharedPreferences prefs,
         long retentionLimit, String where ) {
-      List<String> list = makeListOfPreservedSensors( prefs );
+      List<String> list = getListOfPreservedSensors( prefs );
 
        Iterator<String> iter = list.iterator();
        
@@ -181,7 +181,7 @@ public class LocalStorage {
       return where;
     }
 
-    public List<String> makeListOfPreservedSensors( SharedPreferences prefs ) {
+    public List<String> getListOfPreservedSensors( SharedPreferences prefs ) {
       int size = prefs.getInt( SensePrefs.Main.Advanced.PRESERVED_SENSORS_SIZE, 0 );
        List<String> list= new ArrayList<String>();
        for(int i = 0; i < size ; i++){

@@ -21,6 +21,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.debug.OutputUtils;
 import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONArray;
@@ -184,10 +185,12 @@ public class BufferTransmitHandler extends Handler {
 	 */
     private Cursor getUnsentData() {
         try {
-            String where = DataPoint.TRANSMIT_STATE + "=0";
+            String where = DataPoint.TRANSMIT_STATE + "==0";
             String sortOrder = DataPoint.TIMESTAMP + " ASC";
             Cursor unsent = storageRef.get().query(contentUri, null, where, null, sortOrder);
             if (null != unsent) {
+                //TODO: remove this
+                OutputUtils.appendLog( "Found " + unsent.getCount() + " unsent data points in local storage" );
                 Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
             } else {
                 Log.w(TAG, "Failed to get unsent recent data points from local storage");
@@ -201,6 +204,8 @@ public class BufferTransmitHandler extends Handler {
 
 	@Override
 	public void handleMessage(Message msg) {
+	  //TODO:remove this
+	  OutputUtils.appendLog( "BufferTransmitHandler is triggered." );
 	  
 		String cookie = msg.getData().getString("cookie");
 
@@ -218,7 +223,7 @@ public class BufferTransmitHandler extends Handler {
 					Context.POWER_SERVICE);
 			wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 			wakeLock.acquire();
-
+      
 			cursor = getUnsentData();
             if (null != cursor && cursor.moveToFirst()) {
 				transmit(cursor, cookie);
