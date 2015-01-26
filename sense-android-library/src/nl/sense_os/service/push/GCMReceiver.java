@@ -119,8 +119,12 @@ public class GCMReceiver extends GCMBaseIntentService {
                                          .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
 
         if (encrypt_credential) {
-            EncryptionHelper encryptor = new EncryptionHelper(this);
-            username = encryptor.decrypt(username);
+            EncryptionHelper decryptor = new EncryptionHelper(this);
+            try {
+                username = decryptor.decrypt(username);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting username. Assume data is not encrypted");
+            }
         }
 
         // check if I am the intended recipient or else ignore the message

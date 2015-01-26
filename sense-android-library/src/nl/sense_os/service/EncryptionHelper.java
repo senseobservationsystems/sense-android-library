@@ -112,14 +112,20 @@ public class EncryptionHelper {
 		return secureValueEncoded;
 	}
 
-	public String decrypt(String securedEncodedValue) {
+	public String decrypt(String securedEncodedValue) throws EncryptionHelperException {
 		if (securedEncodedValue == null || securedEncodedValue == "") {
                   return "";
 		}
-
-		byte[] securedValue = Base64.decode(securedEncodedValue, Base64.NO_WRAP);
-		byte[] value = convert(reader, securedValue);
-		return new String(value);
+		try {
+			byte[] securedValue = Base64.decode(securedEncodedValue, Base64.NO_WRAP);
+			byte[] value = convert(reader, securedValue);
+			return new String(value);
+		} catch (IllegalArgumentException e) {
+			// maybe data is not encrypted
+                	throw new EncryptionHelperException(e);
+		} catch (EncryptionHelperException e) {
+                        throw e;
+                }
 	}
 
 	private static byte[] convert(Cipher cipher, byte[] bs) throws EncryptionHelperException {

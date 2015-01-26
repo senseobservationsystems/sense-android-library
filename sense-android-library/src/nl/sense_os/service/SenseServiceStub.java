@@ -130,8 +130,12 @@ public class SenseServiceStub extends Binder {
 		boolean encrypt_credential = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
                                                  .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
                 if (encrypt_credential) {
-                    EncryptionHelper encryptor = new EncryptionHelper(service);
-                    value = encryptor.decrypt(value);
+                    EncryptionHelper decryptor = new EncryptionHelper(service);
+                    try {
+                      value = decryptor.decrypt(value);
+                    } catch (EncryptionHelper.EncryptionHelperException e) {
+                        Log.w(TAG, "Error decrypting" + key + ". Assume data is not encrypted");
+                    }
                 }
             }
 
@@ -304,7 +308,11 @@ public class SenseServiceStub extends Binder {
 
         if (encrypt_credential && oldValue != null) {
             EncryptionHelper decryptor = new EncryptionHelper(service);
-            oldValue = decryptor.decrypt(oldValue);
+            try {
+                oldValue = decryptor.decrypt(oldValue);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting " + key + ". Assume data is not encrypted");
+            }
         }
 
         if (value == null || !value.equals(oldValue)) {

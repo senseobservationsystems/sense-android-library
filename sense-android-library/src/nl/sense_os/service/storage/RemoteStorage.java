@@ -91,7 +91,11 @@ class RemoteStorage {
                 .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
         if (encrypt_credential) {
             EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+            try {
+                cookie = decryptor.decrypt(cookie);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting cookie. Assume data is not encrypted");
+            }
         }
 
         Map<String, String> response = SenseApi.request(context, url, null, cookie);

@@ -6,6 +6,7 @@ import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -188,6 +189,8 @@ public class MainActivity extends Activity {
         Log.v(TAG, "Set preferences");
 
         SenseServiceStub senseService = mApplication.getSenseService();
+
+        senseService.setPrefBool(Advanced.ENCRYPT_CREDENTIAL, true);
 
         // turn off some specific sensors
         senseService.setPrefBool(Ambience.LIGHT, true);

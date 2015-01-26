@@ -112,7 +112,11 @@ public class MsgHandler extends Service {
 
 			if (encrypt_credential) {
 				EncryptionHelper decryptor = new EncryptionHelper(context);
-				cookie = decryptor.decrypt(cookie);
+                                try {
+                                    cookie = decryptor.decrypt(cookie);
+                                } catch (EncryptionHelper.EncryptionHelperException e) {
+                                    Log.w(TAG, "Error decrypting cookie. Assume data is not encrypted");
+                                }
 			}
 
 			if (cookie.length() > 0) {
@@ -248,7 +252,11 @@ public class MsgHandler extends Service {
 
 			if (encrypt_credential) {
 				EncryptionHelper decryptor = new EncryptionHelper(this);
-				cookie = decryptor.decrypt(cookie);
+                                try {
+                                    cookie = decryptor.decrypt(cookie);
+                                } catch (EncryptionHelper.EncryptionHelperException e) {
+                                    Log.w(TAG, "Error decrypting cookie. Assume data is not encrypted");
+                                }
 			}
 
 

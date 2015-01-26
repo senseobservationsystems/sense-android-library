@@ -15,6 +15,7 @@ import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.EncryptionHelper;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,7 +99,11 @@ public class FeedbackManager {
         boolean encrypt_credential = prefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
         if (encrypt_credential) {
             EncryptionHelper decryptor = new EncryptionHelper(context);
-            cookie = decryptor.decrypt(cookie);
+            try {
+                cookie = decryptor.decrypt(cookie);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting cookie. Assume data is not encrypted");
+            }
         }
 
         boolean devMode = prefs.getBoolean(Advanced.DEV_MODE, false);
