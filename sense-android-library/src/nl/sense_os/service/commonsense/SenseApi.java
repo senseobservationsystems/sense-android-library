@@ -520,13 +520,19 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
+        String cookie = sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+
         boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
         if (encrypt_credential) {
             EncryptionHelper decryptor = new EncryptionHelper(context);
-            return decryptor.decrypt(sAuthPrefs.getString(Auth.LOGIN_COOKIE, null));
+            try {
+                cookie = decryptor.decrypt(cookie);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting cookie. Assume data is not encrypted");
+            }
         }
 
-    	return sAuthPrefs.getString(Auth.LOGIN_COOKIE, null);
+    	return cookie;
     }
     
     /**
@@ -544,13 +550,19 @@ public class SenseApi {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
 
+        String session_id = sAuthPrefs.getString(Auth.LOGIN_SESSION_ID, null);
+
         boolean encrypt_credential = sMainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
         if (encrypt_credential) {
             EncryptionHelper decryptor = new EncryptionHelper(context);
-            return decryptor.decrypt(sAuthPrefs.getString(Auth.LOGIN_SESSION_ID, null));
+            try {
+                session_id = decryptor.decrypt(session_id);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting session id. Assume data is not encrypted");
+            }
         }
 
-        return sAuthPrefs.getString(Auth.LOGIN_SESSION_ID, null);
+        return session_id;
     }
 
     /**

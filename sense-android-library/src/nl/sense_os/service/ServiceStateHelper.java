@@ -99,7 +99,11 @@ public class ServiceStateHelper {
 
 		if (encrypt_credential && username != context.getString(android.R.string.unknownName)) {
                         EncryptionHelper encryptor = new EncryptionHelper(context);
-                        username = encryptor.decrypt(username);
+                        try {
+                            username = encryptor.decrypt(username);
+                        } catch (EncryptionHelper.EncryptionHelperException e) {
+                            // Log.w(TAG, "Error decrypting username. Assume data is not encrypted");
+                        }
 		}
 
 		builder.setContentText(context.getString(contentText, username));

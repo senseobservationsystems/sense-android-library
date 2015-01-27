@@ -111,7 +111,7 @@ public class SenseServiceStub extends Binder {
     public String getPrefString(String key, String defValue) {
         // Log.v(TAG, "Get preference: " + key);
         SharedPreferences prefs;
-        if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
+        if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_SESSION_ID)
                 || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
                 || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
                 || key.equals(Auth.PHONE_TYPE)) {
@@ -125,13 +125,18 @@ public class SenseServiceStub extends Binder {
         try {
             String value = prefs.getString(key, defValue);
 
-            if ((key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_COOKIE))
-                    && !value.equals(defValue)) {
+            if ((key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) 
+                    || key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_SESSION_ID))
+                    && value != defValue) {
 		boolean encrypt_credential = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
                                                  .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
                 if (encrypt_credential) {
-                    EncryptionHelper encryptor = new EncryptionHelper(service);
-                    value = encryptor.decrypt(value);
+                    EncryptionHelper decryptor = new EncryptionHelper(service);
+                    try {
+                      value = decryptor.decrypt(value);
+                    } catch (EncryptionHelper.EncryptionHelperException e) {
+                        Log.w(TAG, "Error decrypting" + key + ". Assume data is not encrypted");
+                    }
                 }
             }
 
@@ -283,7 +288,7 @@ public class SenseServiceStub extends Binder {
     public void setPrefString(String key, String value) {
         Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
         SharedPreferences prefs;
-        if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS)
+        if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_SESSION_ID)
                 || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
                 || key.equals(Auth.DEVICE_ID) || key.equals(Auth.PHONE_IMEI)
                 || key.equals(Auth.PHONE_TYPE)) {
@@ -294,7 +299,8 @@ public class SenseServiceStub extends Binder {
         }
 
         boolean encrypt_credential = false;
-        if (key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_COOKIE)) {
+        if (key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.LOGIN_PASS) 
+            || key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_SESSION_ID)) {
             encrypt_credential = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE)
                                      .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
         }
@@ -304,10 +310,14 @@ public class SenseServiceStub extends Binder {
 
         if (encrypt_credential && oldValue != null) {
             EncryptionHelper decryptor = new EncryptionHelper(service);
-            oldValue = decryptor.decrypt(oldValue);
+            try {
+                oldValue = decryptor.decrypt(oldValue);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting " + key + ". Assume data is not encrypted");
+            }
         }
 
-        if (value == null || !value.equals(oldValue)) {
+        if (value == null || value != oldValue) {
             if (encrypt_credential && value != null) {
                 EncryptionHelper encryptor = new EncryptionHelper(service);
                 value = encryptor.encrypt(value);

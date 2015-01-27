@@ -242,12 +242,25 @@ public class SenseService extends Service {
         final String pass;
 
         boolean encrypt_credential = mainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-
         // get login parameters from the preferences
         if (encrypt_credential) {
             EncryptionHelper decryptor = new EncryptionHelper(this);
-            username = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_USERNAME, null));
-            pass = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_PASS, null));
+            String decrypted_username;
+            String decrypted_pass;
+            try {
+                decrypted_username = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_USERNAME, null));
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting username. Assume data is not encrypted");
+                decrypted_username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
+            }
+            username = decrypted_username;
+            try {
+                decrypted_pass = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_PASS, null));
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting password. Assume data is not encrypted");
+                decrypted_pass = authPrefs.getString(Auth.LOGIN_PASS, null);
+            }
+            pass = decrypted_pass;
         } else {
             username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
             pass = authPrefs.getString(Auth.LOGIN_PASS, null);
