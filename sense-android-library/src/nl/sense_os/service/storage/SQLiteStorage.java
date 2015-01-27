@@ -2,6 +2,8 @@ package nl.sense_os.service.storage;
 
 import java.nio.BufferOverflowException;
 
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteStatement;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -9,11 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
-
 /**
  * Class that manages a store for sensor data points in a persistent SQLite database. Helper class
  * for {@link LocalStorage}.

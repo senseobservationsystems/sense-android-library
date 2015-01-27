@@ -38,6 +38,7 @@ import nl.sense_os.service.phonestate.BatterySensor;
 import nl.sense_os.service.phonestate.PhoneActivitySensor;
 import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
+import nl.sense_os.service.phonestate.AppInfoSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.scheduler.ScheduleAlarmTool;
 import nl.sense_os.service.storage.LocalStorage;
@@ -131,6 +132,7 @@ public class SenseService extends Service {
     private SubscriptionManager mSubscrMgr;
     private AppsSensor appsSensor;
     private TimeZoneSensor timeZoneSensor;
+    private AppInfoSensor appInfoSensor;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -158,8 +160,18 @@ public class SenseService extends Service {
 
         logout();
 
-        // save new username and password in the preferences
         Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+
+        boolean encrypt_credential = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE)
+                                         .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+
+        // save new username and password in the preferences
+        if (encrypt_credential) {
+            EncryptionHelper encryptor = new EncryptionHelper(this);
+            username = encryptor.encrypt(username);
+            password = encryptor.encrypt(password);
+        }
+
         authEditor.putString(Auth.LOGIN_USERNAME, username);
         authEditor.putString(Auth.LOGIN_PASS, password);
         authEditor.commit();
@@ -226,10 +238,34 @@ public class SenseService extends Service {
 
         Log.v(TAG, "Try to log in");
 
-        // get login parameters from the preferences
         SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-        final String username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
-        final String pass = authPrefs.getString(Auth.LOGIN_PASS, null);
+        final String username;
+        final String pass;
+
+        boolean encrypt_credential = mainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        // get login parameters from the preferences
+        if (encrypt_credential) {
+            EncryptionHelper decryptor = new EncryptionHelper(this);
+            String decrypted_username;
+            String decrypted_pass;
+            try {
+                decrypted_username = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_USERNAME, null));
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting username. Assume data is not encrypted");
+                decrypted_username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
+            }
+            username = decrypted_username;
+            try {
+                decrypted_pass = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_PASS, null));
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting password. Assume data is not encrypted");
+                decrypted_pass = authPrefs.getString(Auth.LOGIN_PASS, null);
+            }
+            pass = decrypted_pass;
+        } else {
+            username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
+            pass = authPrefs.getString(Auth.LOGIN_PASS, null);
+        }
 
         // try to log in
         int result = -1;
@@ -481,8 +517,18 @@ public class SenseService extends Service {
         // stop active sensing components
         stopSensorModules();
 
-        // save username and password in preferences
         Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+
+        boolean encrypt_credential = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE)
+                                         .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+
+        if (encrypt_credential) {
+            EncryptionHelper encryptor = new EncryptionHelper(this);
+            username = encryptor.encrypt(username);
+            password = encryptor.encrypt(password);
+        }
+
+        // save new username and password in the preferences
         authEditor.putString(Auth.LOGIN_USERNAME, username);
         authEditor.putString(Auth.LOGIN_PASS, password);
         authEditor.commit();
@@ -1267,6 +1313,13 @@ public class SenseService extends Service {
                     batterySensor.stopBatterySensing();
                     batterySensor = null;
                 }
+                
+                // check app info sensor presence
+                if (appInfoSensor != null) {
+                	Log.w(TAG, "app info sensor is already present!");
+                	appInfoSensor.stopAppInfoSensing();
+                	appInfoSensor = null;
+                }
 
                 // check phone activity sensor presence
                 if (phoneActivitySensor != null) {
@@ -1325,6 +1378,13 @@ public class SenseService extends Service {
                                 mSubscrMgr.registerProducer(SensorNames.BATTERY_SENSOR,
                                         batterySensor);
                             }
+                            if (mainPrefs.getBoolean(PhoneState.APP_INFO, true)) {
+                            	appInfoSensor = AppInfoSensor.getInstance(SenseService.this);
+                            	appInfoSensor.startAppInfoSensing();
+                            	mSubscrMgr.registerProducer(SensorNames.APP_INFO_SENSOR,
+                            			appInfoSensor);
+                            	
+                            }
                             if (mainPrefs.getBoolean(PhoneState.SCREEN_ACTIVITY, true)) {
                                 phoneActivitySensor = PhoneActivitySensor
                                         .getInstance(SenseService.this);
@@ -1382,6 +1442,11 @@ public class SenseService extends Service {
                     batterySensor.stopBatterySensing();
                     mSubscrMgr.unregisterProducer(SensorNames.BATTERY_SENSOR, batterySensor);
                     batterySensor = null;
+                }
+                if (null != appInfoSensor) {
+                	appInfoSensor.stopAppInfoSensing();
+                	mSubscrMgr.unregisterProducer(SensorNames.APP_INFO_SENSOR, appInfoSensor);
+                	appInfoSensor = null;
                 }
                 if (null != phoneActivitySensor) {
                     phoneActivitySensor.stopPhoneActivitySensing();
