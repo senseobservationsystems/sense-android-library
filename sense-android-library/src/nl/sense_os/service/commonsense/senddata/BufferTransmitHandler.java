@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -50,6 +51,8 @@ import android.util.Log;
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class BufferTransmitHandler extends Handler {
+
+    private static final int LIMIT_UNSENT_DATA = 500;
 
     class SensorDataEntry {
         String sensorId;
@@ -187,10 +190,11 @@ public class BufferTransmitHandler extends Handler {
         try {
             String where = DataPoint.TRANSMIT_STATE + "==0";
             String sortOrder = DataPoint.TIMESTAMP + " ASC";
-            Cursor unsent = storageRef.get().query(contentUri, null, where, null, sortOrder);
+            Cursor unsent = storageRef.get().query(contentUri, null, where, null, LIMIT_UNSENT_DATA, sortOrder);
             if (null != unsent) {
                 //TODO: remove this
                 OutputUtils.appendLog( "Found " + unsent.getCount() + " unsent data points in local storage" );
+                OutputUtils.appendLog( DatabaseUtils.dumpCursorToString( unsent )); 
                 Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
             } else {
                 Log.w(TAG, "Failed to get unsent recent data points from local storage");
@@ -225,7 +229,7 @@ public class BufferTransmitHandler extends Handler {
 			wakeLock.acquire();
       
 			cursor = getUnsentData();
-            if (null != cursor && cursor.moveToFirst()) {
+      if (null != cursor && cursor.moveToFirst()) {
 				transmit(cursor, cookie);
 			} else {
 				// nothing to transmit
@@ -257,6 +261,9 @@ public class BufferTransmitHandler extends Handler {
             throws JSONException{
         // log our great success
         Log.i(TAG, "Sent recent sensor data from the local storage!");
+        //TODO: remove this before merge
+        OutputUtils.appendLog( "Sent recent sensor data from the local storage!");
+        OutputUtils.appendLog( "Number of sensor datas to be sent: " + sensorDatas.size());
 
         // new content values with updated transmit state
         ContentValues values = new ContentValues();
@@ -283,6 +290,8 @@ public class BufferTransmitHandler extends Handler {
             // update points in local storage
             try {
                 int updated = storageRef.get().update(contentUri, values, where, null);
+                //TODO: remove this before merge
+                OutputUtils.appendLog( "Number of rows updated (TransmitState):" + updated + " for " + sensorName);
                 if (updated == dataPoints.length()) {
                     // Log.v(TAG, "Updated all " + updated + " '" + sensorName
                     // + "' data points in the local storage");
@@ -293,7 +302,11 @@ public class BufferTransmitHandler extends Handler {
                 }
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Error updating points in Local Storage!", e);
+                //TODO: remove this before merge
+                OutputUtils.appendLog( "Error updating points in Local Storage!" + e.getLocalizedMessage());
             }
+            
+            //storageRef.get().persistRecentData();
         }
     }
 
@@ -382,12 +395,16 @@ public class BufferTransmitHandler extends Handler {
      */
     private void transmit(Cursor cursor, String cookie) throws JSONException, IOException {
 
+        OutputUtils.appendLog( "Transmit is triggered." );
+      
         // continue until all points in the cursor have been sent
         List<SensorDataEntry> sensorDataList = null;
         while (!cursor.isAfterLast()) {
 
             // organize the data into a hash map sorted by sensor
             sensorDataList = getSensorDataList(cursor);
+            
+            OutputUtils.appendLog( "number of items in the list"+  sensorDataList.size() );
 
             if (sensorDataList.size() < 1) {
                 // nothing to transmit
@@ -409,6 +426,8 @@ public class BufferTransmitHandler extends Handler {
             // perform the actual POST request
             boolean result = postData(cookie, transmission);
 
+            OutputUtils.appendLog( "post method is called :"+  result );
+            
             if (result) {
                 onTransmitSuccess(sensorDataList);
             } else {
