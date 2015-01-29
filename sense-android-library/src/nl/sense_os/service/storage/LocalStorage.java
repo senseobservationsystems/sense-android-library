@@ -113,9 +113,6 @@ public class LocalStorage {
     public int deleteOldData() {
         Log.i(TAG, "Delete old data points from persistent storage");
 
-        //TODO: remove this
-        OutputUtils.appendLog( "Delete old data points from persistent storage" );
-
         SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
         // set max retention time
@@ -143,9 +140,7 @@ public class LocalStorage {
             // not using CommonSense: delete all data older than maximum retention time
             where += DataPoint.TIMESTAMP + "<" + retentionLimit;
         }
-
-        //TODO : remove this
-        OutputUtils.appendLog( "Generated where clause:" + where );
+        
         int deleted = persisted.delete(where, null);
 
         return deleted;
@@ -165,8 +160,6 @@ public class LocalStorage {
              if(sensor != null){
                String wherePerSensor = DataPoint.SENSOR_NAME +"=='"+ sensor+ "' AND " + DataPoint.TRANSMIT_STATE +"==1 AND " + DataPoint.TIMESTAMP +"<(SELECT MAX("+DataPoint.TIMESTAMP +") FROM "
                                + DbHelper.TABLE + " WHERE " + DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.SENSOR_NAME + "=='" + sensor + "' GROUP BY " + DataPoint.SENSOR_NAME +")";
-               //TODO: remove this
-               OutputUtils.appendLog( "Generated where clause per sensor:" + wherePerSensor );
                persisted.delete(wherePerSensor, null);
                
                //exculde those sensors from normal delete query
@@ -252,6 +245,8 @@ public class LocalStorage {
 
     public int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
+        //TODO : remove this
+        OutputUtils.appendLog( "Persist recent data points from in-memory storage");
 
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
