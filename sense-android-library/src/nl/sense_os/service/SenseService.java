@@ -159,8 +159,18 @@ public class SenseService extends Service {
 
         logout();
 
-        // save new username and password in the preferences
         Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+
+        boolean encrypt_credential = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE)
+                                         .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+
+        // save new username and password in the preferences
+        if (encrypt_credential) {
+            EncryptionHelper encryptor = new EncryptionHelper(this);
+            username = encryptor.encrypt(username);
+            password = encryptor.encrypt(password);
+        }
+
         authEditor.putString(Auth.LOGIN_USERNAME, username);
         authEditor.putString(Auth.LOGIN_PASS, password);
         authEditor.commit();
@@ -227,10 +237,34 @@ public class SenseService extends Service {
 
         Log.v(TAG, "Try to log in");
 
-        // get login parameters from the preferences
         SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
-        final String username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
-        final String pass = authPrefs.getString(Auth.LOGIN_PASS, null);
+        final String username;
+        final String pass;
+
+        boolean encrypt_credential = mainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        // get login parameters from the preferences
+        if (encrypt_credential) {
+            EncryptionHelper decryptor = new EncryptionHelper(this);
+            String decrypted_username;
+            String decrypted_pass;
+            try {
+                decrypted_username = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_USERNAME, null));
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting username. Assume data is not encrypted");
+                decrypted_username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
+            }
+            username = decrypted_username;
+            try {
+                decrypted_pass = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_PASS, null));
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting password. Assume data is not encrypted");
+                decrypted_pass = authPrefs.getString(Auth.LOGIN_PASS, null);
+            }
+            pass = decrypted_pass;
+        } else {
+            username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
+            pass = authPrefs.getString(Auth.LOGIN_PASS, null);
+        }
 
         // try to log in
         int result = -1;
@@ -479,8 +513,18 @@ public class SenseService extends Service {
         // stop active sensing components
         stopSensorModules();
 
-        // save username and password in preferences
         Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+
+        boolean encrypt_credential = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE)
+                                         .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+
+        if (encrypt_credential) {
+            EncryptionHelper encryptor = new EncryptionHelper(this);
+            username = encryptor.encrypt(username);
+            password = encryptor.encrypt(password);
+        }
+
+        // save new username and password in the preferences
         authEditor.putString(Auth.LOGIN_USERNAME, username);
         authEditor.putString(Auth.LOGIN_PASS, password);
         authEditor.commit();
