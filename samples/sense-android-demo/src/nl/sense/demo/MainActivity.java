@@ -191,7 +191,10 @@ public class MainActivity extends Activity {
         SenseServiceStub senseService = mApplication.getSenseService();
 
         senseService.setPrefBool(Advanced.ENCRYPT_CREDENTIAL, true);
-
+        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT, "some salt !@#$%XCBCV");
+        senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, true);
+        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "some salt !@#$%XCBCV");
+        
         // turn off some specific sensors
         senseService.setPrefBool(Ambience.LIGHT, true);
         senseService.setPrefBool(Ambience.CAMERA_LIGHT, false);

@@ -111,20 +111,6 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
 
-        <!-- ACTIVITY THAT POPS UP WHEN AN NFC TAG WAS SCANNED -->
-        <!-- CAN BE REMOVED IF NOT USED -->
-        <activity
-            android:name="nl.sense_os.service.deviceprox.NfcScan"
-            android:configChanges="orientation"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc" />
-        </activity>
 
         <!-- MAIN SERVICE THAT MANAGES SENSING -->
         <service
