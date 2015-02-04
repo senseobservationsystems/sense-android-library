@@ -7,14 +7,12 @@ import java.io.IOException;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.ServiceStateHelper;
-import nl.sense_os.service.EncryptionHelper;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.configuration.ConfigurationService;
 import nl.sense_os.service.configuration.RequirementReceiver;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Status;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,18 +112,6 @@ public class GCMReceiver extends GCMBaseIntentService {
 
         SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
         String username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
-
-        boolean encrypt_credential = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE)
-                                         .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
-
-        if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(this);
-            try {
-                username = decryptor.decrypt(username);
-            } catch (EncryptionHelper.EncryptionHelperException e) {
-                Log.w(TAG, "Error decrypting username. Assume data is not encrypted");
-            }
-        }
 
         // check if I am the intended recipient or else ignore the message
         if (recipient.equals(username)) {

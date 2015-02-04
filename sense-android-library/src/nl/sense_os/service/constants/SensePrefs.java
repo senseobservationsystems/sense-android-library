@@ -186,28 +186,6 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  RETENTION_HOURS = "retention_hours";
-            /**
-             * Key for preference that enable database encryption.
-             * Default is false.
-             * @see SensePrefs#MAIN_PREFS
-             */            
-            public static final String  ENCRYPT_DATABASE = "encrypt_database";
-            /**
-             * Key for value of salt for database encryption
-             * @see SensePrefs#MAIN_PREFS
-             */
-            public static final String  ENCRYPT_DATABASE_SALT = "encrypt_database_salt";
-            /**
-             * Key for preference that enables encryption for credential data.
-             * Default is false.
-             * @see SensePrefs#MAIN_PREFS
-             */            
-            public static final String  ENCRYPT_CREDENTIAL = "encrypt_credential";
-            /**
-             * Key for value of salt for credential encryption.
-             * @see SensePrefs#MAIN_PREFS
-             */            
-            public static final String  ENCRYPT_CREDENTIAL_SALT = "encrypt_credential_salt";
         }
         
 
