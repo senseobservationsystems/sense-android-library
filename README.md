@@ -71,3 +71,20 @@ If it does not work, try the following solutions:
 - Change the first line to `#!/bin/sh` if using `sh` instead of `dash`.
 - Use only absolute paths (so no `$(pwd)`).
 
+## Local Storage Encryption
+
+The Sense Android Library uses the [sqlcipher for Android library](https://www.zetetic.net/sqlcipher/sqlcipher-for-android/) for encrypting the local sqlite database.
+The native files of the library for each architecture are included in the lib folder. An aditional required file is located in the assets folder which should be copied to the assets folder of your application.
+Optionally the unused native library folders can be removed if the application is only available for a specific architecture.
+
+Encryption can be turned on or off for the sqlite database via the preference:
+senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, true);
+
+An app specific salt key can be provided via:
+senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "1tD#V4#%6BT!@#$%XCBCV");
+
+The encryption for the shared authentication preferences file can be turned on or off via:
+senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, true);
+
+And an app specific salt key kan be provided via:
+senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "1tD#V4#%6BT!@#$%XCBCV");
