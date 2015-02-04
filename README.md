@@ -84,7 +84,7 @@ An app specific salt key can be provided via:
 senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "1tD#V4#%6BT!@#$%XCBCV");
 
 The encryption for the shared authentication preferences file can be turned on or off via:
-senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, true);
+senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL, true);
 
 And an app specific salt key kan be provided via:
-senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "1tD#V4#%6BT!@#$%XCBCV");
+senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT, "1tD#V4#%6BT!@#$%XCBCV");
