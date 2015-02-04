@@ -294,8 +294,6 @@ public class SenseApi {
      */
     public static String getDeviceConfiguration(Context context, String configuration_id)
             throws IOException, JSONException {
-        final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
-                Context.MODE_PRIVATE);
         final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
 
