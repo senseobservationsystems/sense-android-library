@@ -2,6 +2,7 @@ var classnl_1_1sense__os_1_1service_1_1_sense_service_stub =
 [
     [ "SenseServiceStub", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a8b2043ac2af20ec7f6e25e3f3580efd8", null ],
     [ "changeLogin", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a519528dee87149754e0acb31b6d71f90", null ],
+    [ "getCookie", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#adcf90dd743085dc028b555905688e27a", null ],
     [ "getPrefBool", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a95ac652ccc1005accea0a2b339b6817d", null ],
     [ "getPrefFloat", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#aae1ba283f76aac05e614c257ab559965", null ],
     [ "getPrefInt", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a3da9a4bed5ceda1d4b75a4cc45370620", null ],

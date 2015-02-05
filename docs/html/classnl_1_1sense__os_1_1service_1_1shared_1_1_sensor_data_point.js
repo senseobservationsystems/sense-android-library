@@ -1,6 +1,7 @@
 var classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point =
 [
     [ "DataType", "enumnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point_1_1_data_type.html", "enumnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point_1_1_data_type" ],
+    [ "SensorDataPoint", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a2944068e11336b9c67db3350afa25437", null ],
     [ "SensorDataPoint", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#aefb146c5f772599b82ad341e7bb1d982", null ],
     [ "SensorDataPoint", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#af5b429891ad6f20f953cfc94252aa1b1", null ],
     [ "SensorDataPoint", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a69150fca3285edb107b49044e629763c", null ],
