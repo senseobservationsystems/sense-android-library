@@ -246,6 +246,10 @@ public class SensePlatform {
         unbindFromSenseService();
     }
 
+    public boolean deleteAllLocalStorageData() {
+    	return LocalStorage.getInstance(mContext).deleteAllLocalValues();
+    }
+    
     /**
      * Flush data to CommonSense
      * 

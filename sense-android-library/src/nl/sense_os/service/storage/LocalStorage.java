@@ -103,6 +103,17 @@ public class LocalStorage {
         }
     }
 
+    public boolean deleteAllLocalValues() {
+        int nrDeleted = 0;
+        nrDeleted += inMemory.delete("1", null);
+        nrDeleted += persisted.delete("1", null);
+        if (nrDeleted > 0) {
+        	return true;
+        } else {
+        	return false;
+        }
+    }
+
     //TODO: make this method private before merge
     /**
      * Removes old data from the persistent storage.
