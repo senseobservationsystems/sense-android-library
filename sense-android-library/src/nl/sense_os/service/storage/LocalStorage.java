@@ -104,14 +104,8 @@ public class LocalStorage {
     }
 
     public boolean deleteAllLocalValues() {
-        int nrDeleted = 0;
-        nrDeleted += inMemory.delete("1", null);
-        nrDeleted += persisted.delete("1", null);
-        if (nrDeleted > 0) {
-        	return true;
-        } else {
-        	return false;
-        }
+        Uri contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority) + DataPoint.CONTENT_URI_PATH);
+        return (delete(contentUri, null, null) > 0);
     }
 
     //TODO: make this method private before merge

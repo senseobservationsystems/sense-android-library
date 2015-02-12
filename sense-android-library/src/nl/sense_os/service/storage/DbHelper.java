@@ -43,6 +43,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DbHelper";
 
+    private Context mContext;
+
     /**
      * Constructor. The database is not actually created or opened until one of
      * {@link #getWritableDatabase()} or {@link #getReadableDatabase()} is called.
@@ -55,6 +57,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public DbHelper(Context context, boolean persistent) {
         // if the database name is null, it will be created in-memory
         super(context, persistent ? DATABASE_NAME : null, null, DATABASE_VERSION);
+        this.mContext = context;
 
         if (null == sMainPrefs) {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -71,30 +74,6 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 
         SQLiteDatabase.loadLibs(context);
-
-        // check for old plain database
-        if (persistent && encrypt) {
-            // try to open the database with the password from the user.
-            // The only possible error now must be a wrong password or using plain database.
-            try {
-                getWritableDatabase(passphrase);
-            } catch (SQLiteException e) {
-                Log.v(TAG, "Trying to encrypte old plain database");
-                File plain = context.getDatabasePath(DATABASE_NAME);
-                File encrypted = context.getDatabasePath("tmp.db");
-
-                // try to open the database without password
-                SQLiteDatabase migrate_db = SQLiteDatabase.openOrCreateDatabase(plain, "", null);
-                migrate_db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",
-                                                    encrypted.getAbsolutePath(), passphrase));
-                migrate_db.rawExecSQL("SELECT sqlcipher_export('encrypted');");
-                migrate_db.execSQL("DETACH DATABASE encrypted;");
-                migrate_db.close();
-
-                // rename the encrypted file name back
-                encrypted.renameTo(new File(plain.getAbsolutePath()));
-            }
-        }
     }
 
     @Override
@@ -126,8 +105,25 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public SQLiteDatabase getWritableDatabase(){
-      return getWritableDatabase(passphrase);
+    public synchronized SQLiteDatabase getWritableDatabase(){
+        try {
+            return getWritableDatabase(passphrase);
+        } catch (SQLiteException e) {
+            File plain = this.mContext.getDatabasePath(DATABASE_NAME);
+            File encrypted = this.mContext.getDatabasePath("tmp.db");
+
+            // try to open the database without password
+            SQLiteDatabase migrate_db = SQLiteDatabase.openOrCreateDatabase(plain, "", null);
+            migrate_db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'", encrypted.getAbsolutePath(), passphrase));
+            migrate_db.rawExecSQL("SELECT sqlcipher_export('encrypted');");
+            migrate_db.execSQL("DETACH DATABASE encrypted;");
+            migrate_db.close();
+
+            // rename the encrypted file name back
+            encrypted.renameTo(new File(plain.getAbsolutePath()));
+
+            return getWritableDatabase(passphrase);
+        }
     }
 
     public SQLiteDatabase getReadableDatabase(){
