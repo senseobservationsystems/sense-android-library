@@ -105,7 +105,7 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public synchronized SQLiteDatabase getWritableDatabase(){
+    public SQLiteDatabase getWritableDatabase(){
         try {
             return getWritableDatabase(passphrase);
         } catch (SQLiteException e) {
