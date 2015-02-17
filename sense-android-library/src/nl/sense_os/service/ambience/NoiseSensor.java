@@ -223,35 +223,27 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                         if(AutomaticGainControl.isAvailable()){
                           Log.d(TAG, "AGC is available");
                           AutomaticGainControl agc = AutomaticGainControl.create(audioSessionId);
-                          //agc.setEnabled(true);
                           if(agc.getEnabled()){
-                            Log.d(TAG, "AGC is activated");
-                          } else {
-                            Log.d(TAG, "AGC is not activated");
+                            Log.d(TAG, "AGC is enabled. Trying to disable.");
+                            agc.setEnabled(false);
                           }
-                        } else {
-                          Log.d(TAG, "AGC is not available");
                         }
 
                         if(NoiseSuppressor.isAvailable()){
                           Log.d(TAG, "NS is available");
                           NoiseSuppressor ns = NoiseSuppressor.create(audioSessionId);
-                          //ns.setEnabled(true);
                           if(ns.getEnabled()){
-                            Log.d(TAG, "NS is activated");
-                          } else {
-                            Log.d(TAG, "NS is not activated");
+                            Log.d(TAG, "NS is enabled. Trying to disable");
+                            ns.setEnabled(false);
                           }
-                        } else {
-                          Log.d(TAG, "NS is not available");
                         }
 
-                        AudioEffect.Descriptor[] descs = AudioEffect.queryEffects();
+                        // AudioEffect.Descriptor[] descs = AudioEffect.queryEffects();
 
-                        Log.v(TAG, "Applied pre-processing count : %d "+ Integer.toString(descs.length));
-                        for(int i=0; i<descs.length; i++){
-                          Log.v(TAG, "Descriptor: "+"{"+"'mode':"+descs[i].connectMode+","+"'implementor':"+descs[i].implementor+","+"'name':"+descs[i].name+"}");
-                        }
+                        // Log.v(TAG, "Applied pre-processing count : %d "+ Integer.toString(descs.length));
+                        // for(int i=0; i<descs.length; i++){
+                        //   Log.v(TAG, "Descriptor: "+"{"+"'mode':"+descs[i].connectMode+","+"'implementor':"+descs[i].implementor+","+"'name':"+descs[i].name+"}");
+                        // }
 
 			if (audioRecord.getState() == AudioRecord.STATE_UNINITIALIZED) {
 				Log.w(TAG, "Failed to create AudioRecord!");
