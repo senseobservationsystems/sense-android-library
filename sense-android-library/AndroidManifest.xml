@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="nl.sense_os.service"    
-    android:versionName="3.2.2">
+    android:versionName="3.3.1">
 
     <!-- <uses-sdk -->
     <uses-sdk android:minSdkVersion="7"/>

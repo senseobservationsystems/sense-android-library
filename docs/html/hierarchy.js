@@ -1,25 +1,27 @@
 var hierarchy =
 [
+    [ "nl.sense_os.service.motion.AccelerationFilter", "classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html", null ],
+    [ "nl.sense_os.service.phonestate.AppInfoVersion", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_app_info_version.html", null ],
     [ "nl.sense_os.service.ambience.CameraLightValue", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value.html", null ],
     [ "nl.sense_os.service.ambience.CameraLightValue.CameraLightValueCallback", "interfacenl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value_1_1_camera_light_value_callback.html", null ],
-    [ "nl.sense_os.service.constants.Constants", "classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html", null ],
     [ "nl.sense_os.service.ctrl.Controller", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html", [
       [ "nl.sense_os.service.ctrl.CtrlDefault", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_default.html", null ],
       [ "nl.sense_os.service.ctrl.CtrlExtended", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended.html", null ]
     ] ],
     [ "nl.sense_os.service.external_sensors.CRC8", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_c_r_c8.html", null ],
-    [ "nl.sense_os.service.shared.DataProcessor", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_data_processor.html", [
+    [ "nl.sense_os.service.subscription.DataConsumer", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html", [
       [ "nl.sense_os.service.motion.EpilepsySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html", null ],
       [ "nl.sense_os.service.motion.FallDetector", "classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html", null ],
       [ "nl.sense_os.service.motion.MotionBurstSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html", null ],
       [ "nl.sense_os.service.motion.MotionEnergySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html", null ],
       [ "nl.sense_os.service.motion.StandardMotionSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor.html", null ]
     ] ],
-    [ "nl.sense_os.service.shared.DataProducer", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_data_producer.html", [
-      [ "nl.sense_os.service.shared.BaseDataProducer", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_data_producer.html", [
+    [ "nl.sense_os.service.subscription.DataProducer", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html", [
+      [ "nl.sense_os.service.subscription.BaseDataProducer", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html", [
         [ "nl.sense_os.service.ambience.AutoCalibratedNoiseSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_auto_calibrated_noise_sensor.html", null ],
         [ "nl.sense_os.service.ambience.CameraLightSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor.html", null ],
         [ "nl.sense_os.service.ambience.LoudnessSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_loudness_sensor.html", null ],
+        [ "nl.sense_os.service.ambience.NoiseSensor.NoiseBurstSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor_1_1_noise_burst_sensor.html", null ],
         [ "nl.sense_os.service.deviceprox.BluetoothDeviceProximity", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity.html", null ],
         [ "nl.sense_os.service.deviceprox.NfcScan", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_nfc_scan.html", null ],
         [ "nl.sense_os.service.deviceprox.WIFIDeviceProximity", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html", null ],
@@ -29,14 +31,18 @@ var hierarchy =
         [ "nl.sense_os.service.external_sensors.NewOBD2DeviceConnector", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html", null ],
         [ "nl.sense_os.service.external_sensors.ZephyrBioHarness", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness.html", null ],
         [ "nl.sense_os.service.external_sensors.ZephyrHxM", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html", null ],
+        [ "nl.sense_os.service.location.TimeZoneSensor", "classnl_1_1sense__os_1_1service_1_1location_1_1_time_zone_sensor.html", null ],
         [ "nl.sense_os.service.motion.EpilepsySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html", null ],
         [ "nl.sense_os.service.motion.FallDetector", "classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html", null ],
         [ "nl.sense_os.service.motion.MotionBurstSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html", null ],
         [ "nl.sense_os.service.motion.MotionEnergySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html", null ],
         [ "nl.sense_os.service.motion.StandardMotionSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor.html", null ],
+        [ "nl.sense_os.service.phonestate.AppInfoSensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_app_info_sensor.html", null ],
+        [ "nl.sense_os.service.phonestate.AppsSensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_apps_sensor.html", null ],
         [ "nl.sense_os.service.phonestate.BatterySensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html", null ],
         [ "nl.sense_os.service.phonestate.PhoneActivitySensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html", null ],
-        [ "nl.sense_os.service.shared.BaseSensor", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor.html", [
+        [ "nl.sense_os.service.subscription.BaseSensor", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html", [
+          [ "nl.sense_os.service.ambience.HumiditySensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html", null ],
           [ "nl.sense_os.service.ambience.LightSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_light_sensor.html", null ],
           [ "nl.sense_os.service.ambience.MagneticFieldSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_magnetic_field_sensor.html", null ],
           [ "nl.sense_os.service.ambience.NoiseSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html", null ],
@@ -48,10 +54,11 @@ var hierarchy =
           [ "nl.sense_os.service.phonestate.SensePhoneState", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html", null ]
         ] ]
       ] ],
-      [ "nl.sense_os.service.shared.BaseSensor", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor.html", null ]
+      [ "nl.sense_os.service.subscription.BaseSensor", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html", null ]
     ] ],
     [ "nl.sense_os.service.shared.SensorDataPoint.DataType", "enumnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point_1_1_data_type.html", null ],
     [ "nl.sense_os.service.deviceprox.DeviceProximity", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html", null ],
+    [ "nl.sense_os.service.EncryptionHelper", "classnl_1_1sense__os_1_1service_1_1_encryption_helper.html", null ],
     [ "nl.sense_os.service.feedback.FeedbackManager", "classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html", null ],
     [ "nl.sense_os.service.ambience.FourierTransform", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html", [
       [ "nl.sense_os.service.ambience.FFT", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html", null ]
@@ -80,6 +87,7 @@ var hierarchy =
     [ "nl.sense_os.service.external_sensors.OBD2Dongle", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html", null ],
     [ "nl.sense_os.service.storage.ParserUtils", "classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html", null ],
     [ "Runnable", null, [
+      [ "nl.sense_os.service.DataTransmitter", "classnl_1_1sense__os_1_1service_1_1_data_transmitter.html", null ],
       [ "nl.sense_os.service.external_sensors.ExternalSensor.UpdateThread", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_1_1_update_thread.html", null ],
       [ "nl.sense_os.service.external_sensors.NewOBD2DeviceConnector", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html", null ],
       [ "nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html", null ],
@@ -95,8 +103,8 @@ var hierarchy =
     [ "nl.sense_os.platform.SensePlatform", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html", null ],
     [ "nl.sense_os.service.constants.SensePrefs", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html", null ],
     [ "nl.sense_os.service.shared.SenseSensor", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html", [
-      [ "nl.sense_os.service.shared.BaseSensor", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor.html", null ],
       [ "nl.sense_os.service.shared.PeriodicPollingSensor", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html", [
+        [ "nl.sense_os.service.ambience.HumiditySensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html", null ],
         [ "nl.sense_os.service.ambience.LightSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_light_sensor.html", null ],
         [ "nl.sense_os.service.ambience.MagneticFieldSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_magnetic_field_sensor.html", null ],
         [ "nl.sense_os.service.ambience.NoiseSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html", null ],
@@ -104,9 +112,11 @@ var hierarchy =
         [ "nl.sense_os.service.ambience.TemperatureSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_temperature_sensor.html", null ],
         [ "nl.sense_os.service.location.LocationSensor", "classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor.html", null ],
         [ "nl.sense_os.service.motion.MotionSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html", null ],
+        [ "nl.sense_os.service.phonestate.AppsSensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_apps_sensor.html", null ],
         [ "nl.sense_os.service.phonestate.ProximitySensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html", null ],
         [ "nl.sense_os.service.phonestate.SensePhoneState", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html", null ]
-      ] ]
+      ] ],
+      [ "nl.sense_os.service.subscription.BaseSensor", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html", null ]
     ] ],
     [ "nl.sense_os.service.constants.SenseStatusCodes", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html", null ],
     [ "nl.sense_os.service.constants.SenseUrls", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html", null ],
@@ -121,6 +131,7 @@ var hierarchy =
     ] ],
     [ "nl.sense_os.service.ServiceStateHelper", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html", null ],
     [ "nl.sense_os.service.provider.SNTP", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html", null ],
+    [ "nl.sense_os.service.subscription.SubscriptionManager", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html", null ],
     [ "Thread", null, [
       [ "nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html", [
         [ "nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandEngineCoolant", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_coolant.html", null ],
@@ -150,7 +161,6 @@ var hierarchy =
       [ "nl.sense_os.service.AliveChecker", "classnl_1_1sense__os_1_1service_1_1_alive_checker.html", null ],
       [ "nl.sense_os.service.BootRx", "classnl_1_1sense__os_1_1service_1_1_boot_rx.html", null ],
       [ "nl.sense_os.service.configuration.RequirementReceiver", "classnl_1_1sense__os_1_1service_1_1configuration_1_1_requirement_receiver.html", null ],
-      [ "nl.sense_os.service.DataTransmitter", "classnl_1_1sense__os_1_1service_1_1_data_transmitter.html", null ],
       [ "nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.BTReceiver", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver.html", null ],
       [ "nl.sense_os.service.NetworkMonitor", "classnl_1_1sense__os_1_1service_1_1_network_monitor.html", null ],
       [ "nl.sense_os.service.scheduler.ExecutionAlarmReceiver", "classnl_1_1sense__os_1_1service_1_1scheduler_1_1_execution_alarm_receiver.html", null ]
@@ -176,6 +186,7 @@ var hierarchy =
       [ "nl.sense_os.service.configuration.ConfigurationService", "classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html", null ]
     ] ],
     [ "SensorEventListener", null, [
+      [ "nl.sense_os.service.ambience.HumiditySensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html", null ],
       [ "nl.sense_os.service.ambience.LightSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_light_sensor.html", null ],
       [ "nl.sense_os.service.ambience.MagneticFieldSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_magnetic_field_sensor.html", null ],
       [ "nl.sense_os.service.ambience.PressureSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html", null ],
