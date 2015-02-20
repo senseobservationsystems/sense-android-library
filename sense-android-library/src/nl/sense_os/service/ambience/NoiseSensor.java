@@ -223,18 +223,22 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
                         if(AutomaticGainControl.isAvailable()){
                           Log.d(TAG, "AGC is available");
                           AutomaticGainControl agc = AutomaticGainControl.create(audioSessionId);
-                          if(agc.getEnabled()){
-                            Log.d(TAG, "AGC is enabled. Trying to disable.");
-                            agc.setEnabled(false);
+                          if(agc != null){
+                            if(agc.getEnabled()){
+                              Log.d(TAG, "AGC is enabled. Trying to disable.");
+                              agc.setEnabled(false);
+                            }
                           }
                         }
 
                         if(NoiseSuppressor.isAvailable()){
                           Log.d(TAG, "NS is available");
                           NoiseSuppressor ns = NoiseSuppressor.create(audioSessionId);
-                          if(ns.getEnabled()){
-                            Log.d(TAG, "NS is enabled. Trying to disable");
-                            ns.setEnabled(false);
+                          if(ns != null){
+                            if(ns.getEnabled()){
+                              Log.d(TAG, "NS is enabled. Trying to disable");
+                              ns.setEnabled(false);
+                            }
                           }
                         }
 
