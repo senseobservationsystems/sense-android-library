@@ -75,7 +75,7 @@ If it does not work, try the following solutions:
 
 The Sense Android Library uses the [sqlcipher for Android library](https://www.zetetic.net/sqlcipher/sqlcipher-for-android/) for encrypting the local sqlite database.
 The native files of the library for each architecture are included in the lib folder. An aditional required file is located in the assets folder which should be copied to the assets folder of your application.
-Optionally the unused native library folders can be removed if the application is only available for a specific architecture.
+Optionally the unused native library folders can be removed if the application is only available for a specific architecture. Please make sure that you use senseService.getPref... for accessing the decrypted SensePrefs.Main.Auth preferences.
 
 Encryption can be turned on or off for the sqlite database via the preference:
 senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, true);
