@@ -110,6 +110,7 @@
             android:label="@string/title_activity_register"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
+
         <!-- ACTIVITY THAT POPS UP WHEN AN NFC TAG WAS SCANNED -->
         <!-- CAN BE REMOVED IF NOT USED -->
         <activity
@@ -119,7 +120,6 @@
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc" />

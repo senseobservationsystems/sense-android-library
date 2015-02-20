@@ -1146,7 +1146,8 @@ public class SenseApi {
                 DataOutputStream printout;
                 if (compress) {
                     // do not set content size
-                    urlConnection.setRequestProperty("Transfer-Encoding", "chunked");
+                    // use chunked transfer mode instead
+                    urlConnection.setChunkedStreamingMode(0);
                     urlConnection.setRequestProperty("Content-Encoding", "gzip");
                     GZIPOutputStream zipStream = new GZIPOutputStream(
                             urlConnection.getOutputStream());
