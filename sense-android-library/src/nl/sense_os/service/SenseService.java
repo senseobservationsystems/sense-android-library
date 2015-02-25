@@ -877,7 +877,7 @@ public class SenseService extends Service {
                 int interval = 1;
                 switch (rate) {
                 case -2:
-                    interval = 1;
+                    interval = 1000;
                     break;
                 case -1:
                     // often
