@@ -617,7 +617,87 @@ public class SensePrefs {
              */
             public static final String SYNC_TIME = "popquiz_sync_time";
         }
-                
+
+        public static class SampleRate {
+            /**
+             * Key for the preference that sets the sample interval to every 15 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String RARELY = "1";
+
+            /**
+             * Key for the preference that sets the sample interval to every 3 minutes.
+             * For the Location sensors this is 5 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String BALANCED = "2";
+
+            /**
+             * Key for the preference that sets the sample interval to every minute.
+             * For the Location sensors this is 5 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String NORMAL = "0";
+
+            /**
+             * Key for the preference that sets the sample interval to every 10 seconds.
+             * For the Location sensors this is every 30 seconds.
+             * For the External sensors this is every 5 seconds.
+             * For the Motion sensors this is every 5 seconds.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String OFTEN = "-1";
+
+            /**
+             * Key for the preference that sets the sample interval to every second.
+             * For the Ambience sensors this is as fast as possible.
+             * For the Noise sensor this enabled the recording of audio files.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String REAL_TIME = "-2";
+        }
+
+        public static class SyncRate {
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every 15 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String RARELY = "2";
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every 30 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String ECO_MODE = "1";
+
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every 5 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String NORMAL = "0";
+
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every minute.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String OFTEN = "-1";
+
+            /**
+             * Key for the preference that disables data buffering and uploads every data point immediately.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String REAL_TIME = "-2";
+        }
+
         /**
          * Key for preference that controls sample frequency of the sensors.
          * 

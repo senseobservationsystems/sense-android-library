@@ -1038,7 +1038,7 @@ public class ConfigurationService extends IntentService {
                     preference_rate = 1;
 
                 if (preference_rate != null) {
-                    String oldValue = mainPrefs.getString(Main.SAMPLE_RATE, "0");
+                    String oldValue = mainPrefs.getString(Main.SAMPLE_RATE, SensePrefs.Main.SampleRate.NORMAL);
 
                     // only update if its have higher rate
                     if (preference_rate < Integer.parseInt(oldValue)) {
