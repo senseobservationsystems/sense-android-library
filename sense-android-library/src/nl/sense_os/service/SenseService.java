@@ -30,6 +30,7 @@ import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
+import nl.sense_os.service.location.FusedLocationSensor;
 import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.location.TimeZoneSensor;
 import nl.sense_os.service.motion.MotionSensor;
@@ -132,6 +133,7 @@ public class SenseService extends Service {
     private AppsSensor appsSensor;
     private TimeZoneSensor timeZoneSensor;
     private AppInfoSensor appInfoSensor;
+    private FusedLocationSensor fusedLocationListener;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -1105,6 +1107,12 @@ public class SenseService extends Service {
                     timeZoneSensor = null;
                 }
 
+                if(fusedLocationListener != null)
+                {
+                    fusedLocationListener.stopSensing();
+                    fusedLocationListener = null;
+                }
+
                 // get sample rate
                 final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
                         MODE_PRIVATE);
@@ -1164,6 +1172,15 @@ public class SenseService extends Service {
                             mSubscrMgr.registerProducer(SensorNames.TIME_ZONE, timeZoneSensor);
                             timeZoneSensor.startSensing();
                         }
+
+                        if (mainPrefs.getBoolean(Location.FUSED_PROVIDER, false))
+                        {
+                            fusedLocationListener = FusedLocationSensor.getInstance(SenseService.this);
+                            mSubscrMgr.registerProducer(SensorNames.LOCATION, fusedLocationListener);
+                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, fusedLocationListener);
+                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, fusedLocationListener);
+                            fusedLocationListener.startSensing(time);
+                        }
                     }
                 });
 
@@ -1178,6 +1195,17 @@ public class SenseService extends Service {
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
                     locListener = null;
+                }
+
+                // stop fused location listener
+                if (null != fusedLocationListener)
+                {
+                    fusedLocationListener.stopSensing();
+                    // unregister is not needed for Singleton Sensors
+                    mSubscrMgr.unregisterProducer(SensorNames.LOCATION, fusedLocationListener);
+                    mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, fusedLocationListener);
+                    mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, fusedLocationListener);
+                    fusedLocationListener = null;
                 }
 
                 if(timeZoneSensor != null)

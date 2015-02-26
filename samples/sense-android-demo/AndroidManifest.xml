@@ -227,6 +227,9 @@
             android:name="nl.sense_os.service.provider.SensorDataProvider"
             android:authorities="nl.sense_os.demo.LocalStorage"
             android:exported="true" />
+        <!-- GOOGLE PLAY SERVICES USED FOR THE FUSED LOCATION PROVIDER -->
+        <meta-data android:name="com.google.android.gms.version"
+           android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

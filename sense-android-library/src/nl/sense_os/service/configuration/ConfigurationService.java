@@ -698,15 +698,14 @@ public class ConfigurationService extends IntentService {
      *            Position sensor requirement
      */
     private void handlePositionReq(JSONObject req) {
-        // TODO: select GPS / Network base on accuracy criteria ?
+        // TODO: select priority based on accuracy
         try {
             if (req.has("sampling_rate"))
                 updateSamplingRate(req.getInt("sampling_rate"));
             if (req.has("sync_rate"))
                 updateSyncRate(req.getInt("sync_rate"));
 
-            mainPrefs.edit().putBoolean(Location.GPS, true).putBoolean(Location.NETWORK, true)
-                    .putBoolean(Location.AUTO_GPS, true).commit();
+            mainPrefs.edit().putBoolean(Location.FUSED_PROVIDER, true).commit();
 
             statusPrefs.edit().putBoolean(Status.LOCATION, true).commit();
         } catch (JSONException e) {
