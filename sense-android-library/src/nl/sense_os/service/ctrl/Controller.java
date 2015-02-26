@@ -21,6 +21,7 @@ public abstract class Controller {
         static final long RARELY = 1000 * 60 * 15; 
         static final long NORMAL = 1000 * 60 * 5;
         static final long OFTEN = 1000 * 60 * 1;
+        static final long BALANCED = 1000 * 60 * 3;
     }
 
     private static final String TAG = "Controller";
@@ -104,8 +105,8 @@ public abstract class Controller {
 
         SharedPreferences mainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
-        int syncRate = Integer.parseInt(mainPrefs.getString(Main.SYNC_RATE, "0"));
-        int sampleRate = Integer.parseInt(mainPrefs.getString(Main.SAMPLE_RATE, "0"));
+        int syncRate = Integer.parseInt(mainPrefs.getString(Main.SYNC_RATE, SensePrefs.Main.SyncRate.NORMAL));
+        int sampleRate = Integer.parseInt(mainPrefs.getString(Main.SAMPLE_RATE, SensePrefs.Main.SampleRate.NORMAL));
 
         // pick transmission interval
         long txInterval;
@@ -124,6 +125,9 @@ public abstract class Controller {
             break;
         case -2: // real-time: schedule transmission based on sample time
             switch (sampleRate) {
+            case 2: // balanced
+                txInterval = Intervals.BALANCED * 3;
+                break;
             case 1: // rarely
                 txInterval = Intervals.ECO * 3;
                 break;
@@ -160,6 +164,9 @@ public abstract class Controller {
             break;
         case 1: // rarely (15 minutes)
             txTaskInterval = 15 * 60 * 1000;
+            break;
+        case 2: // balanced (3 minutes)
+            txTaskInterval = 3 * 60 * 1000;
             break;
         default:
             Log.w(TAG, "Unexpected sample rate value: " + sampleRate);

@@ -715,6 +715,9 @@ public class SenseService extends Service {
                 case 1: // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
                     break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
+                    break;
                 default:
                     Log.e(TAG, "Unexpected sample rate preference.");
                 }
@@ -874,19 +877,22 @@ public class SenseService extends Service {
                 int interval = 1;
                 switch (rate) {
                 case -2:
-                    interval = 60 * 1000;
+                    interval = 1000;
                     break;
                 case -1:
                     // often
-                    interval = 5 * 60 * 1000;
+                    interval = 10 * 1000;
                     break;
                 case 0:
                     // normal
-                    interval = 20 * 60 * 1000;
+                    interval = 60 * 1000;
                     break;
                 case 1:
                     // rarely (15 mins)
-                    interval = 60 * 60 * 1000;
+                    interval = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected device proximity rate preference.");
@@ -987,6 +993,9 @@ public class SenseService extends Service {
                 case 1:
                     // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected external sensor rate preference.");
@@ -1115,6 +1124,9 @@ public class SenseService extends Service {
                 case 1: // rarely
                     minTime = 15 * 60 * 1000;
                     break;
+                case 2: // balanced (same as normal)
+                    minTime = 5 * 60 * 1000;
+                    break;
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);
                     break;
@@ -1235,6 +1247,9 @@ public class SenseService extends Service {
                 case 1: // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
                     break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
+                    break;
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);
                     break;
@@ -1309,7 +1324,7 @@ public class SenseService extends Service {
                     batterySensor.stopBatterySensing();
                     batterySensor = null;
                 }
-                
+
                 // check app info sensor presence
                 if (appInfoSensor != null) {
                 	Log.w(TAG, "app info sensor is already present!");
@@ -1323,7 +1338,7 @@ public class SenseService extends Service {
                     phoneActivitySensor.stopPhoneActivitySensing();
                     phoneActivitySensor = null;
                 }
-                
+
                 // check apps sensor presence
                 if (appsSensor != null) {
                 	Log.w(TAG, "apps sensor is already present!");
@@ -1350,6 +1365,9 @@ public class SenseService extends Service {
                     break;
                 case 1: // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);
