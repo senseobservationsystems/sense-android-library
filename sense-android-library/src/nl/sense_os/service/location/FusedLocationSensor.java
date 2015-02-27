@@ -75,6 +75,7 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     private void initGoogleApiClient()
     {
+        Log.d(TAG, "Initializing Google API Client");
         googleApiClient = new GoogleApiClient.Builder(context)
         .addConnectionCallbacks(this)
         .addOnConnectionFailedListener(this)
@@ -85,12 +86,14 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     @Override
     public void onConnectionFailed(ConnectionResult arg0)
     {
+        Log.d(TAG, "Failed to connect to Google Api"+ arg0.toString());
         //TODO send message to the user
     }
 
     @Override
     public void onConnected(Bundle arg0)
     {
+        Log.d(TAG, "Connected to Google Api");
         // if already active start the location updates
         if(active)
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, createLocationRequest(), this);
@@ -99,7 +102,8 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     @Override
     public void onConnectionSuspended(int arg0)
     {
-      //TODO send message to the user
+        Log.d(TAG, "Connection to Google Api is suspended");
+        //TODO send message to the user
     }
 
 
@@ -271,6 +275,8 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     @Override
     public void startSensing(long sampleDelay) {
+        googleApiClient.connect();
+
         setSampleRate(sampleDelay);
         active = true;
 
@@ -307,6 +313,8 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     @Override
     public void stopSensing() {
+        googleApiClient.disconnect();
+
         active = false;
         stopListening();
         stopAlarms();
