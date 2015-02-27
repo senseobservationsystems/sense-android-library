@@ -882,7 +882,7 @@ public class SenseService extends Service {
                     break;
                 case -1:
                     // often
-                    interval = 5 * 60 * 1000;
+                    interval = /*5 *60 */ 30 * 1000;
                     break;
                 case 0:
                     // normal
@@ -1111,7 +1111,7 @@ public class SenseService extends Service {
                     minTime = 1000;
                     break;
                 case -1: // often
-                    minTime = 30 * 1000;
+                    minTime = 20 * 1000;
                     break;
                 case 0: // normal
                     minTime = 5 * 60 * 1000;
@@ -1193,6 +1193,7 @@ public class SenseService extends Service {
         if (true == active) {
             // properly start the service to start sensing
             Log.i(TAG, "Start service");
+            String string = getString(R.string.action_sense_service);
             startService(new Intent(getString(R.string.action_sense_service)));
 
         } else {
@@ -1225,6 +1226,10 @@ public class SenseService extends Service {
                         MODE_PRIVATE);
                 final int rate = Integer.parseInt(mainPrefs.getString(SensePrefs.Main.SAMPLE_RATE,
                         "0"));
+            	appInfoSensor.stopAppInfoSensing();
+            	mSubscrMgr.unregisterProducer(SensorNames.APP_INFO_SENSOR, appInfoSensor);
+            	appInfoSensor = null;
+            
                 int interval = -1;
                 switch (rate) {
                 case -2: // real time
