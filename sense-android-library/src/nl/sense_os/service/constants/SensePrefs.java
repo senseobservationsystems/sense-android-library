@@ -428,19 +428,25 @@ public class SensePrefs {
              * Key for preference that toggles use of GPS in location sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
              */
+            @Deprecated
             public static final String GPS = "location_gps";
             /**
              * Key for preference that toggles use of Network in location sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
              */
+            @Deprecated
             public static final String NETWORK = "location_network";
             /**
-             * Key for preference that toggles use of sensor fusion to toggle th GPS usage.
+             * Key for preference that toggles use of sensor fusion to toggle the GPS usage.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Selecting the GPS as provider automatically will be replaced by the fused location provider.
              */
+            @Deprecated
             public static final String AUTO_GPS = "automatic_gps";
             /**
              * Key for preference that toggles use of the time zone sensor
@@ -448,6 +454,44 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String TIME_ZONE = "time_zone";
+            /**
+             * Key for preference that toggles the use of the fused location provider.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String FUSED_PROVIDER = "location_fused";
+            /**
+             * Key for preference that sets the priority for the fused location provider.
+             * By default the BALANCED priority is used.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String FUSED_PROVIDER_PRIORITY = "location_fused_priority";
+
+            public static class FusedProviderPriority
+            {
+                /**
+                 * Key for preference that toggles the use of the fused location provider with a high power consumption and accuracy.
+                 * Accuracy: 1m (most precise location possible)
+                 * 
+                 * @see SensePrefs#MAIN_PREFS
+                 */
+                public static final String ACCURATE = "location_fused_accurate";
+                /**
+                 * Key for preference that toggles the use of the fused location provider with a balance between power consumption and accuracy.
+                 * Accuracy: 100 (city block)
+                 * 
+                 * @see SensePrefs#MAIN_PREFS
+                 */
+                public static final String BALANCED = "location_fused_balanced";
+                /**
+                 * Key for preference that toggles the use of the fused location provider with low power consumption and accuracy.
+                 * Accuracy: 10km (city level)
+                 * 
+                 * @see SensePrefs#MAIN_PREFS
+                 */
+                public static final String LOW_POWER = "location_fused_low_power";
+            }
         }
 
         public static class Motion {

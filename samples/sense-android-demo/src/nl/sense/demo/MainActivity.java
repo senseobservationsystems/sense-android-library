@@ -6,6 +6,7 @@ import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.Location;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 
 import org.json.JSONArray;
@@ -204,6 +205,10 @@ public class MainActivity extends Activity {
         senseService.setPrefBool(Ambience.MIC, true);
         // NOTE: spectrum might be too heavy for the phone or consume too much energy
         senseService.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
+
+        // use the location sensor with the Google Play Service FusedLocationProvider
+        senseService.setPrefBool(Location.FUSED_PROVIDER, true);
+        senseService.setPrefString(Location.FUSED_PROVIDER_PRIORITY, Location.FusedProviderPriority.BALANCED);
 
         // set how often to sample
         // 1 := rarely (~every 15 min)
