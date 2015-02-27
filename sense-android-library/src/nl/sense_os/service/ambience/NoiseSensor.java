@@ -41,8 +41,6 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
-import android.media.audiofx.AutomaticGainControl;
-import android.media.audiofx.NoiseSuppressor;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -216,37 +214,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				Log.e(TAG, "Failed to create the audiorecord!", e);
 				return false;
 			}
-
-                        int audioSessionId = audioRecord.getAudioSessionId();
-
-                        if(AutomaticGainControl.isAvailable()){
-                          Log.d(TAG, "AGC is available");
-                          AutomaticGainControl agc = AutomaticGainControl.create(audioSessionId);
-                          if(agc != null){
-                            if(agc.getEnabled()){
-                              Log.d(TAG, "AGC is enabled. Trying to disable.");
-                              agc.setEnabled(false);
-                            }
-                          }
-                        }
-
-                        if(NoiseSuppressor.isAvailable()){
-                          Log.d(TAG, "NS is available");
-                          NoiseSuppressor ns = NoiseSuppressor.create(audioSessionId);
-                          if(ns != null){
-                            if(ns.getEnabled()){
-                              Log.d(TAG, "NS is enabled. Trying to disable");
-                              ns.setEnabled(false);
-                            }
-                          }
-                        }
-
-                        // AudioEffect.Descriptor[] descs = AudioEffect.queryEffects();
-
-                        // Log.v(TAG, "Applied pre-processing count : %d "+ Integer.toString(descs.length));
-                        // for(int i=0; i<descs.length; i++){
-                        //   Log.v(TAG, "Descriptor: "+"{"+"'mode':"+descs[i].connectMode+","+"'implementor':"+descs[i].implementor+","+"'name':"+descs[i].name+"}");
-                        // }
 
 			if (audioRecord.getState() == AudioRecord.STATE_UNINITIALIZED) {
 				Log.w(TAG, "Failed to create AudioRecord!");
