@@ -206,7 +206,9 @@ public class MainActivity extends Activity {
         // NOTE: spectrum might be too heavy for the phone or consume too much energy
         senseService.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
 
+        // use the location sensor with the Google Play Service FusedLocationProvider
         senseService.setPrefBool(Location.FUSED_PROVIDER, true);
+        senseService.setPrefString(Location.FUSED_PROVIDER_PRIORITY, Location.FusedProviderPriority.BALANCED);
 
         // set how often to sample
         // 1 := rarely (~every 15 min)

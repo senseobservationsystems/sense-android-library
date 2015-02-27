@@ -58,7 +58,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     private boolean active;
     private TraveledDistanceEstimator distanceEstimator;
     private PeriodicPollAlarmReceiver pollAlarmReceiver;
-    private long lastLocationSendTime = 0;
 
     /**
      * Constructor.
@@ -75,7 +74,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     private void initGoogleApiClient()
     {
-        Log.d(TAG, "Initializing Google API Client");
         googleApiClient = new GoogleApiClient.Builder(context)
         .addConnectionCallbacks(this)
         .addOnConnectionFailedListener(this)
@@ -86,15 +84,13 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     @Override
     public void onConnectionFailed(ConnectionResult arg0)
     {
-        Log.d(TAG, "Failed to connect to Google Api"+ arg0.toString());
-        //TODO send message to the user
+        Log.e(TAG, "Failed to connect to Google Api"+ arg0.toString());
     }
 
     @Override
     public void onConnected(Bundle arg0)
     {
-        Log.d(TAG, "Connected to Google Api");
-        // if already active start the location updates
+        // if active start the location updates
         if(active)
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, createLocationRequest(), this);
     }
@@ -102,8 +98,7 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     @Override
     public void onConnectionSuspended(int arg0)
     {
-        Log.d(TAG, "Connection to Google Api is suspended");
-        //TODO send message to the user
+        Log.e(TAG, "Connection to Google Api is suspended");
     }
 
 
@@ -160,8 +155,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
             json.put("bearing", fix.hasBearing() ? fix.getBearing() : -1.0d);
             json.put("provider", null != fix.getProvider() ? fix.getProvider() : "unknown");
 
-            Log.d(TAG, "Got point from FusedLocationProvider: "+json.toString());
-
         } catch (JSONException e) {
             Log.e(TAG, "JSONException in onLocationChanged", e);
             return;
@@ -183,7 +176,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
         i.putExtra(DataPoint.TIMESTAMP, timestamp);
         context.startService(i);
-        lastLocationSendTime = timestamp;
         distanceEstimator.addPoint(fix);
     }
 
@@ -218,16 +210,9 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     @Override
     public void doSample() {
-        // if we didn't send a data point for at least 1.5 times the sample rate, than send the last known one
-        if (System.currentTimeMillis()-lastLocationSendTime < (long)getSampleRate()*1.5)
-            return;
-        // not yet ready
-        if(!googleApiClient.isConnected())
-            return;
-        // check if we haven't send the location for some time, then send the last known
-        Location lastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (lastKnownLocation != null)
-            onLocationChanged(lastKnownLocation);
+        // check if there is still a connection to the Google Play Services
+        if(active && googleApiClient != null && !googleApiClient.isConnected() && !googleApiClient.isConnecting())
+            googleApiClient.connect();
     }
 
     @Override
@@ -256,17 +241,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     }
 
     /**
-     * Registers for updates from the location providers.
-     */
-    private void startListening() {
-            // check if we are connected, if not connected or trying to call the init to connect to the Google play Services
-            if(googleApiClient.isConnected())
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, createLocationRequest(), this);
-            else if(!googleApiClient.isConnecting())
-                initGoogleApiClient();
-    }
-
-    /**
      * Registers for periodic polling using the scheduler.
      */
     private void startPolling() {
@@ -275,12 +249,10 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     @Override
     public void startSensing(long sampleDelay) {
-        googleApiClient.connect();
-
         setSampleRate(sampleDelay);
         active = true;
-
-        startListening();
+        if(!googleApiClient.isConnected() && !googleApiClient.isConnecting())
+            googleApiClient.connect();
         startAlarms();
     }
 
@@ -300,12 +272,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
         am.cancel(operation2);
     }
 
-    /**
-     * Stops listening for location updates.
-     */
-    private void stopListening() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-    }
 
     private void stopPolling() {
         pollAlarmReceiver.stop(context);
@@ -313,10 +279,11 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     @Override
     public void stopSensing() {
-        googleApiClient.disconnect();
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        if(googleApiClient.isConnected())
+            googleApiClient.disconnect();
 
         active = false;
-        stopListening();
         stopAlarms();
         stopPolling();
     }
