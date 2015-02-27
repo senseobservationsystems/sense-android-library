@@ -118,7 +118,7 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     /**
      * Set the location request
      * The interval of the location updates are set to the sample rate.<br>
-     * The fastest interval that is allowed is set the half of the sample rate.<br>
+     * There is no limit to the fastest interval at which the sensor can receive location updates.<br>
      * The priority (battery vs accuracy) is selected based on the main location preferences:<br>
      * SensePrefs.Main.Location.FUSED_PROVIDER_ACCURATE,<br>
      * SensePrefs.Main.Location.FUSED_PROVIDER_BALANCED,<br>
@@ -128,7 +128,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     protected LocationRequest createLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(getSampleRate());
-        locationRequest.setFastestInterval(getSampleRate()/2);
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         String priority = mainPrefs.getString(SensePrefs.Main.Location.FUSED_PROVIDER_PRIORITY, SensePrefs.Main.Location.FusedProviderPriority.BALANCED);
         if(priority.equals(SensePrefs.Main.Location.FusedProviderPriority.LOW_POWER))
