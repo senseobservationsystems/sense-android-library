@@ -60,6 +60,9 @@ by adding the following dependency to your POM:
 </dependency>
 ```
 
+#### Dependency 2: Google Play services client library
+Starting from version 3.4 the Google Play services client library is a requirement because there is a new implementation of the position sensor which uses the Fused Location Provider. To setup Google Play services follow these instructions: https://developer.android.com/google/play-services/setup.html
+
 ## Pre-build commands
 
 The `build/` folder contains scripts that need to be executed right before every build.
