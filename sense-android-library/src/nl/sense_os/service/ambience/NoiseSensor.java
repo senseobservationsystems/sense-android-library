@@ -201,7 +201,10 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 					channelConfig = AudioFormat.CHANNEL_IN_DEFAULT;
 
 				} else {
-					audioSource = MediaRecorder.AudioSource.MIC;
+					// Using VOICE_RECOGNITION (value 6) as AudioSource.
+					// Android Compatibility Definition require VOICE_RECOGNITION
+					// use case to disable all pre-processing effect.
+					audioSource = MediaRecorder.AudioSource.VOICE_RECOGNITION;
 					channelConfig = AudioFormat.CHANNEL_IN_MONO;
 
 				}

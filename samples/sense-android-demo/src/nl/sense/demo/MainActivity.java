@@ -6,6 +6,7 @@ import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.Location;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 
 import org.json.JSONArray;
@@ -191,7 +192,10 @@ public class MainActivity extends Activity {
         SenseServiceStub senseService = mApplication.getSenseService();
 
         senseService.setPrefBool(Advanced.ENCRYPT_CREDENTIAL, true);
-
+        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT, "some salt !@#$%XCBCV");
+        senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, true);
+        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "some salt !@#$%XCBCV");
+        
         // turn off some specific sensors
         senseService.setPrefBool(Ambience.LIGHT, true);
         senseService.setPrefBool(Ambience.CAMERA_LIGHT, false);
@@ -202,19 +206,23 @@ public class MainActivity extends Activity {
         // NOTE: spectrum might be too heavy for the phone or consume too much energy
         senseService.setPrefBool(Ambience.AUDIO_SPECTRUM, true);
 
+        // use the location sensor with the Google Play Service FusedLocationProvider
+        senseService.setPrefBool(Location.FUSED_PROVIDER, true);
+        senseService.setPrefString(Location.FUSED_PROVIDER_PRIORITY, Location.FusedProviderPriority.BALANCED);
+
         // set how often to sample
         // 1 := rarely (~every 15 min)
-        // 0 := normal (~every 5 min)
+        // 0 := normal (~every 1 min)
         // -1 := often (~every 10 sec)
-        // -2 := real time (this setting affects power consumption considerably!)
-        senseService.setPrefString(SensePrefs.Main.SAMPLE_RATE, "-1");
+        // -2 := real time (~every sec, this setting affects power consumption considerably!)
+        senseService.setPrefString(SensePrefs.Main.SAMPLE_RATE, SensePrefs.Main.SampleRate.BALANCED);
 
         // set how often to upload
         // 1 := eco mode (buffer data for 30 minutes before bulk uploading)
         // 0 := normal (buffer 5 min)
         // -1 := often (buffer 1 min)
         // -2 := real time (every new data point is uploaded immediately)
-        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, "-2");
+        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.REAL_TIME);
 
         // show message
         showToast(R.string.msg_prefs_set);

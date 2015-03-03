@@ -20,4 +20,6 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
-
+# ignore changes to the AppInfoVersion
+sense-android-library/src/nl/sense_os/service/phonestate/AppInfoVersion.java
+docs
