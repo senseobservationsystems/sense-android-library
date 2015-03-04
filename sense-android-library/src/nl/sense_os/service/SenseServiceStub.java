@@ -263,7 +263,7 @@ public class SenseServiceStub extends Binder {
                 Context.MODE_PRIVATE);
 
         // store value
-        boolean stored = prefs.edit().putFloat(key, value).commit();
+        boolean stored = prefs.edit().putInt(key, value).commit();
         if (stored == false) {
             Log.w(TAG, "Preference " + key + " not stored!");
         }
