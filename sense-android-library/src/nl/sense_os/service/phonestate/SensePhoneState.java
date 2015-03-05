@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -80,31 +81,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
-
-            JSONObject json = new JSONObject();
-            try {
-                switch (state) {
-                case TelephonyManager.CALL_STATE_IDLE:
-                    json.put("state", "idle");
-                    break;
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    json.put("state", "calling");
-                    break;
-                case TelephonyManager.CALL_STATE_RINGING:
-                    json.put("state", "ringing");
-                    json.put("incomingNumber", incomingNumber);
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected call state: " + state);
-                    return;
-                }
-            } catch (JSONException e) {
-                Log.e(TAG, "JSONException in onCallChanged", e);
-                return;
-            }
-
-            // immediately send data point
-            sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
+            sendCallState(state, incomingNumber);
         }
 
         @Override
@@ -292,9 +269,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
-    private void checkCallState() {
-        int state = telMgr.getCallState();
-
+    private void sendCallState(int state, String incomingNumber) {
         JSONObject json = new JSONObject();
         try {
             switch (state) {
@@ -306,6 +281,8 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
                 break;
             case TelephonyManager.CALL_STATE_RINGING:
                 json.put("state", "ringing");
+                if (null != incomingNumber)
+                    json.put("incomingNumber", incomingNumber);
                 break;
             default:
                 Log.e(TAG, "Unexpected call state: " + state);
@@ -325,7 +302,10 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
     @Override
     public void doSample() {
        //Log.v(TAG, "Do sample");
-        checkCallState();
+        int state = telMgr.getCallState();
+        sendCallState(state, null);
+
+        // send other data
         transmitLatestState();
     }
 
