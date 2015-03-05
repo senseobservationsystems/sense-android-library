@@ -1363,7 +1363,7 @@ public class SenseService extends Service {
                 // check phone activity sensor presence
                 if (phoneActivitySensor != null) {
                     Log.w(TAG, "phone activity sensor is already present!");
-                    phoneActivitySensor.stopPhoneActivitySensing();
+                    phoneActivitySensor.stopSensing();
                     phoneActivitySensor = null;
                 }
 
@@ -1430,7 +1430,7 @@ public class SenseService extends Service {
                             if (mainPrefs.getBoolean(PhoneState.SCREEN_ACTIVITY, true)) {
                                 phoneActivitySensor = PhoneActivitySensor
                                         .getInstance(SenseService.this);
-                                phoneActivitySensor.startPhoneActivitySensing(finalInterval);
+                                phoneActivitySensor.startSensing(finalInterval);
                                 mSubscrMgr.registerProducer(SensorNames.SCREEN_ACTIVITY,
                                         phoneActivitySensor);
                             }
@@ -1491,7 +1491,7 @@ public class SenseService extends Service {
                 	appInfoSensor = null;
                 }
                 if (null != phoneActivitySensor) {
-                    phoneActivitySensor.stopPhoneActivitySensing();
+                    phoneActivitySensor.stopSensing();
                     mSubscrMgr.unregisterProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
                     phoneActivitySensor = null;
                 }

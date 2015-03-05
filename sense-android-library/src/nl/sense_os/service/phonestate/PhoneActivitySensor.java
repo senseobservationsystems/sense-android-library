@@ -8,8 +8,10 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
+import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.subscription.BaseDataProducer;
+import nl.sense_os.service.subscription.BaseSensor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +29,19 @@ import android.util.Log;
  * 
  * @author Ted Schmidt <ted@sense-os.nl>
  */
-public class PhoneActivitySensor extends BaseDataProducer{
+public class PhoneActivitySensor extends BaseSensor implements PeriodicPollingSensor {
 
     private static final String TAG = "Sense Screen Activity";
     private final Context context;
         
     private static PhoneActivitySensor instance = null;
     
+    /**
+     * Factory method to get the singleton instance.
+     * 
+     * @param context
+     * @return instance
+     */
     public static PhoneActivitySensor getInstance(Context context) {
 	    if(instance == null) {
 	       instance = new PhoneActivitySensor(context);
@@ -56,7 +64,6 @@ public class PhoneActivitySensor extends BaseDataProducer{
                 Log.w(TAG, "Unexpected broadcast action: " + intent.getAction());
                 return;
             }
-
             sendData(screen);
         }
     };
@@ -88,19 +95,61 @@ public class PhoneActivitySensor extends BaseDataProducer{
     
     }
 
+    private boolean active;
+    private PowerManager pm;
+    private PeriodicPollAlarmReceiver alarmReceiver;
+
+    /**
+     * Constructor.
+     * 
+     * @param context
+     * @see #getInstance(Context)
+     */
     protected PhoneActivitySensor(Context context) {
+        super();
         this.context = context;
+        pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
-    public void startPhoneActivitySensing(long sampleDelay) {
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);        
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        context.registerReceiver(screenActivityReceiver, filter);
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);  
+    @Override
+    public void doSample() {
         sendData(pm.isScreenOn()?"on":"off");
     }
 
-    public void stopPhoneActivitySensing() {
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    @Override
+    public void setSampleRate(long sampleDelay) {
+        super.setSampleRate(sampleDelay);
+        stopPolling();
+        startPolling();
+    }
+
+    private void startPolling() {
+        Log.v(TAG, "start polling");
+        alarmReceiver.start(context);
+    }
+
+    public void startSensing(long sampleDelay) {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);        
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        context.registerReceiver(screenActivityReceiver, filter);
+
+        setSampleRate(sampleDelay);
+        // do the first sample immediately
+        doSample();
+    }
+
+    public void stopPolling() {
+        Log.v(TAG, "stop polling");
+        alarmReceiver.stop(context);
+    }
+
+    public void stopSensing() {
         try {
             context.unregisterReceiver(screenActivityReceiver);
         } catch (IllegalArgumentException e) {
