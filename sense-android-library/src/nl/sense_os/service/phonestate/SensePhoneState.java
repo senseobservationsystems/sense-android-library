@@ -292,9 +292,40 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
+    private void checkCallState() {
+        int state = telMgr.getCallState();
+
+        JSONObject json = new JSONObject();
+        try {
+            switch (state) {
+            case TelephonyManager.CALL_STATE_IDLE:
+                json.put("state", "idle");
+                break;
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                json.put("state", "calling");
+                break;
+            case TelephonyManager.CALL_STATE_RINGING:
+                json.put("state", "ringing");
+                break;
+            default:
+                Log.e(TAG, "Unexpected call state: " + state);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException in onCallChanged", e);
+            return;
+        }
+
+        Log.v(TAG, "sample call state" + json.toString());
+        // immediately send data point
+        sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
+
+    }
+
     @Override
     public void doSample() {
        //Log.v(TAG, "Do sample");
+        checkCallState();
         transmitLatestState();
     }
 
