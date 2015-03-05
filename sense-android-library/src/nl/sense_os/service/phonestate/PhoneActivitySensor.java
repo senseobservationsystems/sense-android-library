@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
 
@@ -114,7 +115,13 @@ public class PhoneActivitySensor extends BaseSensor implements PeriodicPollingSe
 
     @Override
     public void doSample() {
-        sendData(pm.isScreenOn()?"on":"off");
+        boolean isScreenActive;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            isScreenActive = pm.isInteractive();
+        } else {
+            isScreenActive = pm.isScreenOn();
+        }
+        sendData(isScreenActive?"on":"off");
     }
 
     @Override
