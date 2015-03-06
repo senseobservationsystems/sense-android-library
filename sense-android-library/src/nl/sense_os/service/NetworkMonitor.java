@@ -35,8 +35,11 @@ public class NetworkMonitor extends BroadcastReceiver {
 
 			// check that we are not logged in yet before logging in
 			if (false == state.isLoggedIn()) {
-				Log.i(TAG, "Regained connectivity! Try to log in");
-				context.startService(new Intent(context.getString(R.string.action_sense_service)));
+			    Log.i(TAG, "Regained connectivity! Try to log in");
+			    Intent i = new Intent(context.getString(R.string.action_sense_service));
+			    i.setClass(context, nl.sense_os.service.SenseService.class);
+			    context.startService(i);
+
 
 			} else {
 				// still connected, stay logged in

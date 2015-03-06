@@ -108,6 +108,7 @@ public class EpilepsySensor extends BaseDataProducer implements DataConsumer {
         i.putExtra(DataPoint.VALUE, value);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
         i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME);
+        i.setClass(context, nl.sense_os.service.MsgHandler.class);
         context.startService(i);
     }
 

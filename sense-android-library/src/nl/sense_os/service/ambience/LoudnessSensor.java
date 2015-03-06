@@ -152,6 +152,7 @@ public class LoudnessSensor extends BaseDataProducer {
 		sensorData.putExtra(DataPoint.VALUE, (float)value);
 		sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 		sensorData.putExtra(DataPoint.TIMESTAMP, ms);
+		sensorData.setClass(context, nl.sense_os.service.MsgHandler.class);
 		context.startService(sensorData);
 	}
 }

@@ -150,6 +150,7 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.TIMESTAMP, time);
+            i.setClass(context, nl.sense_os.service.MsgHandler.class);
             this.context.startService(i);
 
             stopSample();

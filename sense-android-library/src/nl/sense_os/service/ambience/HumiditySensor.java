@@ -111,6 +111,7 @@ public class HumiditySensor extends BaseSensor implements SensorEventListener,
         i.putExtra(DataPoint.SENSOR_NAME, sensorName);
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
         i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+        i.setClass(mContext, nl.sense_os.service.MsgHandler.class);
         mContext.startService(i);
 
         // done with sample

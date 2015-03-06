@@ -153,6 +153,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         i.putExtra(DataPoint.VALUE, value);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
         i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        i.setClass(mContext, nl.sense_os.service.MsgHandler.class);
         mContext.startService(i);
     }
 

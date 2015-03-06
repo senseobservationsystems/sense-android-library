@@ -348,6 +348,7 @@ public class NfcScan extends BaseDataProducer {
 			dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 			dataPoint.putExtra(DataPoint.TIMESTAMP, sensorDataPoint.timeStamp);
 			dataPoint.putExtra(DataPoint.VALUE, value);
+			dataPoint.setClass(this, nl.sense_os.service.MsgHandler.class);
 			startService(dataPoint);
 		}
 	}

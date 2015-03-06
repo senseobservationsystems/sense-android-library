@@ -234,6 +234,7 @@ public class FallDetector extends BaseDataProducer implements DataConsumer {
 		i.putExtra(DataPoint.VALUE, fall);
 		i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.BOOL);
 		i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+		i.setClass(context, nl.sense_os.service.MsgHandler.class);
 		context.startService(i);
 	}
 
