@@ -154,7 +154,7 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
             i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            i.setClass(mContext, nl.sense_os.service.MsgHandler.class);
+            i.setPackage(mContext.getPackageName());
             mContext.startService(i);
 
             // sample is successful: unregister the listener

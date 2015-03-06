@@ -325,7 +325,7 @@ public class ZephyrBioHarness extends BaseDataProducer {
 				Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
 			}
 			intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-			intent.setClass(context, nl.sense_os.service.MsgHandler.class);
+			intent.setPackage(context.getPackageName());
 			context.startService(intent);
 		}
 	}

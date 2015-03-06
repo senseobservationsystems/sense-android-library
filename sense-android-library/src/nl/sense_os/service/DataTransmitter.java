@@ -150,7 +150,7 @@ public class DataTransmitter implements Runnable {
     public void transmissionService() {
         Log.v(TAG, "Start transmission");
         Intent task = new Intent(mContext.getString(R.string.action_sense_send_data));
-        task.setClass(mContext, nl.sense_os.service.MsgHandler.class);
+        task.setPackage(mContext.getPackageName());
         mLastTxTime = SystemClock.elapsedRealtime();
         ComponentName service = mContext.startService(task);
         if (null == service) {

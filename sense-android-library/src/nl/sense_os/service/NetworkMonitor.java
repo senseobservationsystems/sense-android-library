@@ -37,7 +37,7 @@ public class NetworkMonitor extends BroadcastReceiver {
 			if (false == state.isLoggedIn()) {
 			    Log.i(TAG, "Regained connectivity! Try to log in");
 			    Intent i = new Intent(context.getString(R.string.action_sense_service));
-			    i.setClass(context, nl.sense_os.service.SenseService.class);
+			    i.setPackage(context.getPackageName());
 			    context.startService(i);
 
 

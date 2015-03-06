@@ -389,10 +389,10 @@ public class SenseService extends Service {
 
         // completely stop the MsgHandler service
         Intent newDataIntent = new Intent(getString(R.string.action_sense_new_data));
-        newDataIntent.setClass(this, nl.sense_os.service.MsgHandler.class);
+        newDataIntent.setPackage(getPackageName());
         stopService(newDataIntent);
         Intent sendDataIntent = new Intent(getString(R.string.action_sense_send_data));
-        sendDataIntent.setClass(this, nl.sense_os.service.MsgHandler.class);
+        sendDataIntent.setPackage(getPackageName());
         stopService(sendDataIntent);
     }
 
@@ -1196,7 +1196,7 @@ public class SenseService extends Service {
             // properly start the service to start sensing
             Log.i(TAG, "Start service");
             Intent serviceIntent = new Intent(getString(R.string.action_sense_service));
-            serviceIntent.setClass(this, nl.sense_os.service.SenseService.class);
+            serviceIntent.setPackage(getPackageName());
             startService(serviceIntent);
 
         } else {

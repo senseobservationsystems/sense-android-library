@@ -111,7 +111,7 @@ public class TemperatureSensor extends BaseSensor implements SensorEventListener
         i.putExtra(DataPoint.SENSOR_NAME, sensorName);
         i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
         i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-        i.setClass(mContext, nl.sense_os.service.MsgHandler.class);
+        i.setPackage(mContext.getPackageName());
         mContext.startService(i);
 
         // done with sample

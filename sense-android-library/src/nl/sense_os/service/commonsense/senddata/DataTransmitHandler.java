@@ -94,7 +94,7 @@ public class DataTransmitHandler extends Handler {
                     final Intent serviceIntent = new Intent(ctxRef.get().getString(
                             R.string.action_sense_service));
                     serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
-                    serviceIntent.setClass(ctxRef.get(), nl.sense_os.service.SenseService.class);
+                    serviceIntent.setPackage(ctxRef.get().getPackageName());
                     ctxRef.get().startService(serviceIntent);
                 }
 

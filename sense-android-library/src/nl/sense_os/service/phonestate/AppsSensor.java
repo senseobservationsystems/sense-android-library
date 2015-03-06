@@ -97,7 +97,7 @@ public class AppsSensor extends BaseDataProducer implements PeriodicPollingSenso
 			i.putExtra(DataPoint.VALUE, value.toString());
 			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.APP_INSTALLED);
 			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-			i.setClass(context, nl.sense_os.service.MsgHandler.class);
+			i.setPackage(context.getPackageName());
 			context.startService(i);
 
 		} catch (JSONException e) {
@@ -118,7 +118,7 @@ public class AppsSensor extends BaseDataProducer implements PeriodicPollingSenso
 		i.putExtra(DataPoint.VALUE, foreGroundApp.toString());
 		i.putExtra(DataPoint.SENSOR_NAME, SensorNames.APP_FOREGROUND);
 		i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-		i.setClass(context, nl.sense_os.service.MsgHandler.class);
+		i.setPackage(context.getPackageName());
 		context.startService(i);
 	}
 

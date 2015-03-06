@@ -136,7 +136,7 @@ public class BatterySensor extends BaseDataProducer{
                     i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BATTERY_SENSOR);
                     i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
                     lastSampleTime = System.currentTimeMillis();
-                    i.setClass(context, nl.sense_os.service.MsgHandler.class);
+                    i.setPackage(context.getPackageName());
                     context.startService(i);
                 }
 

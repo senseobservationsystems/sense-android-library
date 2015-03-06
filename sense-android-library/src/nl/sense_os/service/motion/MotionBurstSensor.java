@@ -156,7 +156,7 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
 			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime()
 					- burstDuration);
-			i.setClass(context, nl.sense_os.service.MsgHandler.class);
+			i.setPackage(context.getPackageName());
 			context.startService(i);
         }
 	}

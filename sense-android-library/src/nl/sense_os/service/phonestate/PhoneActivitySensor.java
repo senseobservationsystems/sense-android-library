@@ -84,7 +84,7 @@ public class PhoneActivitySensor extends BaseDataProducer{
         i.putExtra(DataPoint.VALUE, json.toString());
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.SCREEN_ACTIVITY);
         i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-        i.setClass(context, nl.sense_os.service.MsgHandler.class);
+        i.setPackage(context.getPackageName());
         context.startService(i);
     
     }

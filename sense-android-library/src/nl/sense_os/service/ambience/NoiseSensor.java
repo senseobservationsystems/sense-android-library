@@ -300,7 +300,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 									BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
 							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-							sensorData.setClass(context, nl.sense_os.service.MsgHandler.class);
+							sensorData.setPackage(context.getPackageName());
 							context.startService(sensorData);
 						}
 
@@ -334,7 +334,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							sensorData.putExtra(DataPoint.VALUE, jsonSpectrum.toString());
 							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-							sensorData.setClass(context, nl.sense_os.service.MsgHandler.class);
+							sensorData.setPackage(context.getPackageName());
 							context.startService(sensorData);
 						}
 
@@ -520,7 +520,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				i.putExtra(DataPoint.VALUE, fileName);
 				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
 				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-				i.setClass(context, nl.sense_os.service.MsgHandler.class);
+				i.setPackage(context.getPackageName());
 				context.startService(i);				
 
 			} catch (Exception e) {
@@ -602,7 +602,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				sensorData.putExtra(DataPoint.VALUE, data.toString());
 				sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 				sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-				sensorData.setClass(context, nl.sense_os.service.MsgHandler.class);
+				sensorData.setPackage(context.getPackageName());
 				context.startService(sensorData);
 			}
 		}

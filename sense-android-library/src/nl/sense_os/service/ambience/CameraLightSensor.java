@@ -63,7 +63,7 @@ public class CameraLightSensor extends BaseDataProducer{
 			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-			i.setClass(context, nl.sense_os.service.MsgHandler.class);
+			i.setPackage(context.getPackageName());
 			context.startService(i);
 			// Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
 			nextUpdate(camera_id);

@@ -1074,7 +1074,7 @@ public class ConfigurationService extends IntentService {
 
             // apply change by starting the service
             Intent i = new Intent(getString(R.string.action_sense_service));
-            i.setClass(this, nl.sense_os.service.SenseService.class);
+            i.setPackage(getPackageName());
             startService(i);
 
         } catch (JSONException e) {

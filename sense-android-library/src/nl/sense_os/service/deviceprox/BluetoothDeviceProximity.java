@@ -206,7 +206,7 @@ public class BluetoothDeviceProximity extends BaseDataProducer{
 				i.putExtra(DataPoint.VALUE, deviceJson.toString());
 				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-				i.setClass(context, nl.sense_os.service.MsgHandler.class);
+				i.setPackage(context.getPackageName());
 				BluetoothDeviceProximity.this.context.startService(i);
 			}
 
@@ -225,7 +225,7 @@ public class BluetoothDeviceProximity extends BaseDataProducer{
 			i.putExtra(DataPoint.VALUE, nrBluetoothNeighbours);
 			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.INT);
 			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-			i.setClass(context, nl.sense_os.service.MsgHandler.class);
+			i.setPackage(context.getPackageName());
 			BluetoothDeviceProximity.this.context.startService(i);
 			Log.v(TAG, "Found " + nrBluetoothNeighbours + " bluetooth neighbours");
 
