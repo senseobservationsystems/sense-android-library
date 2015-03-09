@@ -81,7 +81,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
-            sendCallState(state, incomingNumber);
+            updateCallState(state, incomingNumber);
         }
 
         @Override
@@ -269,7 +269,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
-    private void sendCallState(int state, String incomingNumber) {
+    private void updateCallState(int state, String incomingNumber) {
         JSONObject json = new JSONObject();
         try {
             switch (state) {
@@ -302,8 +302,8 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
     @Override
     public void doSample() {
        //Log.v(TAG, "Do sample");
-        int state = telMgr.getCallState();
-        sendCallState(state, null);
+        int callState = telMgr.getCallState();
+        updateCallState(callState, null);
 
         // send other data
         transmitLatestState();
