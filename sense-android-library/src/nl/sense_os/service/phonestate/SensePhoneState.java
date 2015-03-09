@@ -467,14 +467,12 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         if (null != lastServiceState) {
             // Log.d(TAG, "Transmit service state...");
             sendDataPoint(SensorNames.SERVICE_STATE, lastServiceState, SenseDataTypes.JSON);
-            lastServiceState = null;
         }
 
         // signal strength
         if (null != lastSignalStrength) {
             // Log.d(TAG, "Transmit signal strength...");
             sendDataPoint(SensorNames.SIGNAL_STRENGTH, lastSignalStrength, SenseDataTypes.JSON);
-            lastSignalStrength = null;
         }
     }
 }
