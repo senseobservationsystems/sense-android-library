@@ -109,7 +109,8 @@ public class StandardMotionSensor extends BaseDataProducer implements DataConsum
 	        i.putExtra(DataPoint.SENSOR_DESCRIPTION, description);
 	        i.putExtra(DataPoint.VALUE, json.toString());
 	        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-	      i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+	        i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+	        i.setPackage(context.getPackageName());
 	        context.startService(i);
 	    }
 	    catch(Exception e)

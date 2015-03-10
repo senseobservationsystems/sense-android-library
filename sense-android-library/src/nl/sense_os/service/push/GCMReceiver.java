@@ -240,6 +240,7 @@ public class GCMReceiver extends GCMBaseIntentService {
             editor.commit();
 
             Intent task = new Intent(context.getString(R.string.action_sense_service));
+            task.setPackage(context.getPackageName());
             context.startService(task);
         } else if (toggle.equals("0") && started) {
             Editor editor = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE).edit();
@@ -247,6 +248,7 @@ public class GCMReceiver extends GCMBaseIntentService {
             editor.commit();
 
             Intent task = new Intent(context.getString(R.string.action_sense_service));
+            task.setPackage(context.getPackageName());
             context.startService(task);
         }
     }

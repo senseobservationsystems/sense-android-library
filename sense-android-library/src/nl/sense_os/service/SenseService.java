@@ -390,8 +390,12 @@ public class SenseService extends Service {
         transmitter.stopTransmissions();
 
         // completely stop the MsgHandler service
-        stopService(new Intent(getString(R.string.action_sense_new_data)));
-        stopService(new Intent(getString(R.string.action_sense_send_data)));
+        Intent newDataIntent = new Intent(getString(R.string.action_sense_new_data));
+        newDataIntent.setPackage(getPackageName());
+        stopService(newDataIntent);
+        Intent sendDataIntent = new Intent(getString(R.string.action_sense_send_data));
+        sendDataIntent.setPackage(getPackageName());
+        stopService(sendDataIntent);
     }
 
     void onSampleRateChange() {
@@ -484,7 +488,9 @@ public class SenseService extends Service {
         }
 
         // update any widgets
-        startService(new Intent(getString(R.string.action_widget_update)));
+        Intent i = new Intent(getString(R.string.action_widget_update));
+        i.setPackage(getPackageName());
+        startService(i);
     }
 
     /**
@@ -1229,7 +1235,9 @@ public class SenseService extends Service {
         if (true == active) {
             // properly start the service to start sensing
             Log.i(TAG, "Start service");
-            startService(new Intent(getString(R.string.action_sense_service)));
+            Intent serviceIntent = new Intent(getString(R.string.action_sense_service));
+            serviceIntent.setPackage(getPackageName());
+            startService(serviceIntent);
 
         } else {
             Log.i(TAG, "Stop service");
