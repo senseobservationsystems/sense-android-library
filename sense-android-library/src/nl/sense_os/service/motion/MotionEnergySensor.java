@@ -146,6 +146,7 @@ public class MotionEnergySensor extends BaseDataProducer implements DataConsumer
         i.putExtra(DataPoint.VALUE, value);
         i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
         i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+        i.setPackage(context.getPackageName());
         context.startService(i);
     }
 

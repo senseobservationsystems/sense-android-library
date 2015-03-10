@@ -1,3 +1,8 @@
+## v3.4-rc2 (2015-03-10)
+
+### Fixed
+* Changed the implicit intents for starting services to explicit with the package as scope
+
 ## v3.4-rc1 (2015-03-02)
 
 ### Added

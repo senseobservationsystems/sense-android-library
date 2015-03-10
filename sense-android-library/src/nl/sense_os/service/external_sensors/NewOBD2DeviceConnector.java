@@ -676,7 +676,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 				Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
 			}
 			intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-
+			intent.setPackage(context.getPackageName());
 			boolean itemsent = (context.startService(intent) != null);
 			if (!itemsent)
 				Log.e(TAG, "Sending of DataPoint: " + sensorName + " " + value + " "

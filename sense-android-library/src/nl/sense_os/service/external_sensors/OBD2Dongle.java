@@ -525,6 +525,7 @@ public class OBD2Dongle {
                 i.putExtra(DataPoint.VALUE, getJSON().toString());
                 i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
                 i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+                i.setPackage(context.getPackageName());
                 context.startService(i);
         	}
         	

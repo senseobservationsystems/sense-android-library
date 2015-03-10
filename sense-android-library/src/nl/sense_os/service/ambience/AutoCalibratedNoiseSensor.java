@@ -109,6 +109,7 @@ public class AutoCalibratedNoiseSensor extends BaseDataProducer {
 		sensorData.putExtra(DataPoint.VALUE, (float)value);
 		sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 		sensorData.putExtra(DataPoint.TIMESTAMP, ms);
+		sensorData.setPackage(context.getPackageName());
 		context.startService(sensorData);
 	}
 }

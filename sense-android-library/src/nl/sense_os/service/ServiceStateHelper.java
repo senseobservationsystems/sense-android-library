@@ -180,13 +180,17 @@ public class ServiceStateHelper {
 	}
 
 	public void setAmbienceActive(boolean active) {
-		ambienceActive = active;
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+	    ambienceActive = active;
+	    Intent i = new Intent(context.getString(R.string.action_widget_update));
+	    i.setPackage(context.getPackageName());
+	    context.startService(i);
 	}
 
 	public void setDevProxActive(boolean active) {
 		devProxActive = active;
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+        Intent i = new Intent(context.getString(R.string.action_widget_update));
+        i.setPackage(context.getPackageName());
+        context.startService(i);
 	}
 
 	public void setExternalActive(boolean active) {
@@ -201,12 +205,16 @@ public class ServiceStateHelper {
 			// : "Sense Platform Service is in background...");
 			updateNotification();
 		}
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+        Intent i = new Intent(context.getString(R.string.action_widget_update));
+        i.setPackage(context.getPackageName());
+        context.startService(i);
 	}
 
 	public void setLocationActive(boolean active) {
 		locationActive = active;
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+        Intent i = new Intent(context.getString(R.string.action_widget_update));
+        i.setPackage(context.getPackageName());
+        context.startService(i);
 	}
 
 	public void setLoggedIn(boolean loggedIn) {
@@ -216,17 +224,23 @@ public class ServiceStateHelper {
 			// : "Sense Platform Service logged out...");
 			updateNotification();
 		}
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+        Intent i = new Intent(context.getString(R.string.action_widget_update));
+        i.setPackage(context.getPackageName());
+        context.startService(i);
 	}
 
 	public void setMotionActive(boolean active) {
 		motionActive = active;
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+        Intent i = new Intent(context.getString(R.string.action_widget_update));
+        i.setPackage(context.getPackageName());
+        context.startService(i);
 	}
 
 	public void setPhoneStateActive(boolean active) {
 		phoneStateActive = active;
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+        Intent i = new Intent(context.getString(R.string.action_widget_update));
+        i.setPackage(context.getPackageName());
+        context.startService(i);
 	}
 
 	public void setQuizActive(boolean active) {
@@ -241,7 +255,9 @@ public class ServiceStateHelper {
 			// : "Sense Platform Service stopped...");
 			updateNotification();
 		}
-		context.startService(new Intent(context.getString(R.string.action_widget_update)));
+        Intent i = new Intent(context.getString(R.string.action_widget_update));
+        i.setPackage(context.getPackageName());
+        context.startService(i);
 	}
 
 	/**
