@@ -5,6 +5,8 @@ package nl.sense_os.service.phonestate;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
@@ -20,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
@@ -137,7 +140,7 @@ public class PhoneActivitySensor extends BaseSensor implements PeriodicPollingSe
     }
 
     private void startPolling() {
-        Log.v(TAG, "start polling");
+        //Log.v(TAG, "start polling");
         alarmReceiver.start(context);
     }
 
@@ -146,13 +149,18 @@ public class PhoneActivitySensor extends BaseSensor implements PeriodicPollingSe
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(screenActivityReceiver, filter);
 
-        setSampleRate(sampleDelay);
+        SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+
+        if (mainPrefs.getBoolean(Advanced.HYBRID_EVENT_BASED_SENSOR, false))
+            setSampleRate(sampleDelay);
+
         // do the first sample immediately
         doSample();
     }
 
     public void stopPolling() {
-        Log.v(TAG, "stop polling");
+        //Log.v(TAG, "stop polling");
         alarmReceiver.stop(context);
     }
 
@@ -162,5 +170,6 @@ public class PhoneActivitySensor extends BaseSensor implements PeriodicPollingSe
         } catch (IllegalArgumentException e) {
             // probably was not registered
         }
+        stopPolling();
     }
 }

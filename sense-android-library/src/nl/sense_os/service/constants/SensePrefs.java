@@ -208,6 +208,12 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */            
             public static final String  ENCRYPT_CREDENTIAL_SALT = "encrypt_credential_salt";
+            /**
+             * Key for preference that enable hybrid type for event-based sensor.
+             * Default is false.
+             * @see SensePrefs#MAIN_PREFS
+             */            
+            public static final String  HYBRID_EVENT_BASED_SENSOR = "hybrid_event_based_sensor";
         }
         
 

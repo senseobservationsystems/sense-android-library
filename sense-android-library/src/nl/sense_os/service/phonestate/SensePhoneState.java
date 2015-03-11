@@ -10,6 +10,7 @@ import java.util.Enumeration;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
@@ -378,6 +379,18 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         context.startService(intent);
     }
 
+    @Override
+    public void setSampleRate(long sampleDelay) {
+        super.setSampleRate(sampleDelay);
+        stopPolling();
+        startPolling();
+    }
+
+    private void startPolling() {
+        //Log.v(TAG, "start polling");
+        alarmReceiver.start(context);
+    }
+
     /**
      * Starts sensing and schedules periodic transmission of the phone state.
      */
@@ -415,13 +428,14 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         if (0 != events) {
 
             active = true;
-            setSampleRate(interval);
 
             // start listening to the phone state
             /* THIS TRIGGERS AN EXCEPTION WHEN STOPPING AND STARTING THE SENSOR */
             telMgr.listen(phoneStateListener, events);
 
-            alarmReceiver.start(context);
+            if (mainPrefs.getBoolean(Advanced.HYBRID_EVENT_BASED_SENSOR, false)) {
+              setSampleRate(interval);
+            }
 
             // do the first sample immediately
             doSample();
@@ -430,6 +444,11 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
             Log.w(TAG, "Phone state sensor is started but is not registered for any events");
         }
 
+    }
+
+    public void stopPolling() {
+        //Log.v(TAG, "stop polling");
+        alarmReceiver.stop(context);
     }
 
     /**
@@ -443,7 +462,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         telMgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
 
         // stop periodic alarm
-        alarmReceiver.stop(context);
+        stopPolling();
 
         // clean up outgoing call receiver
         if (null != outgoingCallReceiver) {
