@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -80,31 +81,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
-
-            JSONObject json = new JSONObject();
-            try {
-                switch (state) {
-                case TelephonyManager.CALL_STATE_IDLE:
-                    json.put("state", "idle");
-                    break;
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    json.put("state", "calling");
-                    break;
-                case TelephonyManager.CALL_STATE_RINGING:
-                    json.put("state", "ringing");
-                    json.put("incomingNumber", incomingNumber);
-                    break;
-                default:
-                    Log.e(TAG, "Unexpected call state: " + state);
-                    return;
-                }
-            } catch (JSONException e) {
-                Log.e(TAG, "JSONException in onCallChanged", e);
-                return;
-            }
-
-            // immediately send data point
-            sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
+            updateCallState(state, incomingNumber);
         }
 
         @Override
@@ -120,72 +97,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         @Override
         public void onDataConnectionStateChanged(int state) {
             // Log.v(TAG, "Connection state changed...");
-
-            String strState = "";
-            switch (state) {
-            case TelephonyManager.DATA_CONNECTED:
-                // send the URL on which the phone can be reached
-                String ip = "";
-                try {
-                    Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-                    while (nis.hasMoreElements()) {
-                        NetworkInterface ni = nis.nextElement();
-                        Enumeration<InetAddress> iis = ni.getInetAddresses();
-                        while (iis.hasMoreElements()) {
-                            InetAddress ia = iis.nextElement();
-                            if (ni.getDisplayName().equalsIgnoreCase("rmnet0")) {
-                                ip = ia.getHostAddress();
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error getting my own IP:", e);
-                }
-                if (ip.length() > 1) {
-                    lastIp = ip;
-                }
-
-                strState = "connected";
-
-                break;
-            case TelephonyManager.DATA_CONNECTING:
-                strState = "connecting";
-                break;
-            case TelephonyManager.DATA_DISCONNECTED:
-                strState = "disconnected";
-                break;
-            case TelephonyManager.DATA_SUSPENDED:
-                strState = "suspended";
-                break;
-            default:
-                Log.e(TAG, "Unexpected data connection state: " + state);
-                return;
-            }
-
-            lastDataConnectionState = strState;
-
-            // check network type
-            ConnectivityManager connectivityManager = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo active = connectivityManager.getActiveNetworkInfo();
-            String typeName;
-            int type = -1;
-            if (active == null)
-                typeName = "none";
-            else {
-                typeName = active.getTypeName();
-                type = active.getType();
-            }
-
-            // only send changes. Note that this method is also called when another part of the
-            // state
-            // changed.
-            if (previousConnectionType != type) {
-                previousConnectionType = type;
-
-                // send data point immediately
-                sendDataPoint(SensorNames.CONN_TYPE, typeName, SenseDataTypes.STRING);
-            }
+            updateDataConnectionState(state);
         }
 
         @Override
@@ -272,8 +184,6 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
     private boolean msgIndicatorUpdated = false;
     private String lastServiceState;
     private String lastSignalStrength;
-    private String lastDataConnectionState;
-    private String lastIp;
     private int previousConnectionType = -2; // used to detect changes in connection type
     private PhoneStateListener phoneStateListener = new SensePhoneStateListener();
     private boolean active;
@@ -292,9 +202,117 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
+    private void updateCallState(int state, String incomingNumber) {
+        JSONObject json = new JSONObject();
+        try {
+            switch (state) {
+            case TelephonyManager.CALL_STATE_IDLE:
+                json.put("state", "idle");
+                break;
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                json.put("state", "calling");
+                break;
+            case TelephonyManager.CALL_STATE_RINGING:
+                json.put("state", "ringing");
+                if (null != incomingNumber)
+                    json.put("incomingNumber", incomingNumber);
+                break;
+            default:
+                Log.e(TAG, "Unexpected call state: " + state);
+                return;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException in onCallChanged", e);
+            return;
+        }
+
+        Log.v(TAG, "sample call state: " + json.toString());
+        // immediately send data point
+        sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
+
+    }
+
+    private void updateDataConnectionState(int state) {
+        String strState = "";
+        switch (state) {
+        case TelephonyManager.DATA_CONNECTED:
+            // send the URL on which the phone can be reached
+            String ip = "";
+            try {
+                Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+                while (nis.hasMoreElements()) {
+                    NetworkInterface ni = nis.nextElement();
+                    Enumeration<InetAddress> iis = ni.getInetAddresses();
+                    while (iis.hasMoreElements()) {
+                        InetAddress ia = iis.nextElement();
+                        if (ni.getDisplayName().equalsIgnoreCase("rmnet0")) {
+                            ip = ia.getHostAddress();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting my own IP:", e);
+            }
+            if (ip.length() > 1) {
+                Log.v(TAG, "sample ip addr: " + ip);
+                sendDataPoint(SensorNames.IP_ADDRESS, ip, SenseDataTypes.STRING);
+            }
+
+            strState = "connected";
+
+            break;
+        case TelephonyManager.DATA_CONNECTING:
+            strState = "connecting";
+            break;
+        case TelephonyManager.DATA_DISCONNECTED:
+            strState = "disconnected";
+            break;
+        case TelephonyManager.DATA_SUSPENDED:
+            strState = "suspended";
+            break;
+        default:
+            Log.e(TAG, "Unexpected data connection state: " + state);
+            return;
+        }
+
+        Log.v(TAG, "sample data conn state: " + strState);
+        sendDataPoint(SensorNames.DATA_CONN, strState, SenseDataTypes.STRING);
+
+        // check network type
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo active = connectivityManager.getActiveNetworkInfo();
+        String typeName;
+        int type = -1;
+        if (active == null)
+            typeName = "none";
+        else {
+            typeName = active.getTypeName();
+            type = active.getType();
+        }
+
+        // only send changes. Note that this method is also called when another part of the
+        // state
+        // changed.
+        if (previousConnectionType != type) {
+            previousConnectionType = type;
+
+            // send data point immediately
+            Log.v(TAG, "sample data conn type: " + typeName);
+            sendDataPoint(SensorNames.CONN_TYPE, typeName, SenseDataTypes.STRING);
+        }
+    }
+
     @Override
     public void doSample() {
        //Log.v(TAG, "Do sample");
+        int callState = telMgr.getCallState();
+        updateCallState(callState, null);
+
+        int dataConnectionState = telMgr.getDataState();
+        updateDataConnectionState(dataConnectionState);
+
+        // send other data
         transmitLatestState();
     }
 
@@ -435,23 +453,8 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
      */
     private void transmitLatestState() {
 
-        if (null != lastIp || null != lastDataConnectionState || true == msgIndicatorUpdated
-                || null != lastServiceState || null != lastSignalStrength) {
+        if (true == msgIndicatorUpdated || null != lastServiceState || null != lastSignalStrength) {
             // Log.v(TAG, "Transmit the latest phone state...");
-        }
-
-        // IP address
-        if (null != lastIp) {
-            // Log.d(TAG, "Transmit IP address...");
-            sendDataPoint(SensorNames.IP_ADDRESS, lastIp, SenseDataTypes.STRING);
-            lastIp = null;
-        }
-
-        // data connection state
-        if (null != lastDataConnectionState) {
-            // Log.d(TAG, "Transmit data connection state...");
-            sendDataPoint(SensorNames.DATA_CONN, lastDataConnectionState, SenseDataTypes.STRING);
-            lastDataConnectionState = null;
         }
 
         // message waiting indicator
