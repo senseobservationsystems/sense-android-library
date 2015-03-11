@@ -81,7 +81,8 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
-            updateCallState(state, incomingNumber);
+            lastIncomingNumber = incomingNumber;
+            updateCallState(state);
         }
 
         @Override
@@ -98,6 +99,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         public void onDataConnectionStateChanged(int state) {
             // Log.v(TAG, "Connection state changed...");
             updateDataConnectionState(state);
+            updateConnectionType();
         }
 
         @Override
@@ -180,8 +182,10 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
     private Context context;
     private BroadcastReceiver outgoingCallReceiver;
     private TelephonyManager telMgr;
+    private ConnectivityManager connMgr;
     private boolean lastMsgIndicatorState;
     private boolean msgIndicatorUpdated = false;
+    private String lastIncomingNumber;
     private String lastServiceState;
     private String lastSignalStrength;
     private int previousConnectionType = -2; // used to detect changes in connection type
@@ -199,26 +203,30 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         super();
         this.context = context;
         telMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         alarmReceiver = new PeriodicPollAlarmReceiver(this);
     }
 
-    private void updateCallState(int state, String incomingNumber) {
+    private void updateCallState(int state) {
         JSONObject json = new JSONObject();
         try {
             switch (state) {
             case TelephonyManager.CALL_STATE_IDLE:
                 json.put("state", "idle");
+                lastIncomingNumber = null;
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 json.put("state", "calling");
+                lastIncomingNumber = null;
                 break;
             case TelephonyManager.CALL_STATE_RINGING:
                 json.put("state", "ringing");
-                if (null != incomingNumber)
-                    json.put("incomingNumber", incomingNumber);
+                if (null != lastIncomingNumber)
+                    json.put("incomingNumber", lastIncomingNumber);
                 break;
             default:
                 Log.e(TAG, "Unexpected call state: " + state);
+                lastIncomingNumber = null;
                 return;
             }
         } catch (JSONException e) {
@@ -278,10 +286,11 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         Log.v(TAG, "sample data conn state: " + strState);
         sendDataPoint(SensorNames.DATA_CONN, strState, SenseDataTypes.STRING);
 
-        // check network type
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo active = connectivityManager.getActiveNetworkInfo();
+
+    }
+
+    private void updateConnectionType(){
+        NetworkInfo active = connMgr.getActiveNetworkInfo();
         String typeName;
         int type = -1;
         if (active == null)
@@ -307,10 +316,11 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
     public void doSample() {
        //Log.v(TAG, "Do sample");
         int callState = telMgr.getCallState();
-        updateCallState(callState, null);
+        updateCallState(callState);
 
         int dataConnectionState = telMgr.getDataState();
         updateDataConnectionState(dataConnectionState);
+        updateConnectionType();
 
         // send other data
         transmitLatestState();
