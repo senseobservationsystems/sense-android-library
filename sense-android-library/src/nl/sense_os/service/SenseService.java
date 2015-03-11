@@ -1349,7 +1349,7 @@ public class SenseService extends Service {
                 // check battery sensor presence
                 if (batterySensor != null) {
                     Log.w(TAG, "battery sensor is already present!");
-                    batterySensor.stopBatterySensing();
+                    batterySensor.stopSensing();
                     batterySensor = null;
                 }
 
@@ -1416,7 +1416,7 @@ public class SenseService extends Service {
                         try {
                             if (mainPrefs.getBoolean(PhoneState.BATTERY, true)) {
                                 batterySensor = BatterySensor.getInstance(SenseService.this);
-                                batterySensor.startBatterySensing(finalInterval);
+                                batterySensor.startSensing(finalInterval);
                                 mSubscrMgr.registerProducer(SensorNames.BATTERY_SENSOR,
                                         batterySensor);
                             }
@@ -1481,7 +1481,7 @@ public class SenseService extends Service {
                     proximitySensor = null;
                 }
                 if (null != batterySensor) {
-                    batterySensor.stopBatterySensing();
+                    batterySensor.stopSensing();
                     mSubscrMgr.unregisterProducer(SensorNames.BATTERY_SENSOR, batterySensor);
                     batterySensor = null;
                 }
