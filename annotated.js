@@ -23,6 +23,7 @@ var annotated =
             [ "CameraLightValue", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value.html", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value" ],
             [ "FFT", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t" ],
             [ "FourierTransform", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform" ],
+            [ "HumiditySensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor" ],
             [ "LightSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_light_sensor.html", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_light_sensor" ],
             [ "LoudnessSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_loudness_sensor.html", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_loudness_sensor" ],
             [ "MagneticFieldSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_magnetic_field_sensor.html", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_magnetic_field_sensor" ],
@@ -49,7 +50,6 @@ var annotated =
             [ "RequirementReceiver", "classnl_1_1sense__os_1_1service_1_1configuration_1_1_requirement_receiver.html", "classnl_1_1sense__os_1_1service_1_1configuration_1_1_requirement_receiver" ]
           ] ],
           [ "constants", null, [
-            [ "Constants", "classnl_1_1sense__os_1_1service_1_1constants_1_1_constants.html", null ],
             [ "SchedulerPrefs", "classnl_1_1sense__os_1_1service_1_1constants_1_1_scheduler_prefs.html", null ],
             [ "SenseDataTypes", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html", null ],
             [ "SensePrefs", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html", null ],
@@ -86,9 +86,11 @@ var annotated =
           ] ],
           [ "location", null, [
             [ "LocationSensor", "classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor.html", "classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor" ],
+            [ "TimeZoneSensor", "classnl_1_1sense__os_1_1service_1_1location_1_1_time_zone_sensor.html", "classnl_1_1sense__os_1_1service_1_1location_1_1_time_zone_sensor" ],
             [ "TraveledDistanceEstimator", "classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html", "classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator" ]
           ] ],
           [ "motion", null, [
+            [ "AccelerationFilter", "classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter" ],
             [ "EpilepsySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor" ],
             [ "FallDetector", "classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector" ],
             [ "MotionBurstSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor" ],
@@ -99,6 +101,9 @@ var annotated =
             [ "StandardMotionSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor.html", "classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor" ]
           ] ],
           [ "phonestate", null, [
+            [ "AppInfoSensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_app_info_sensor.html", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_app_info_sensor" ],
+            [ "AppInfoVersion", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_app_info_version.html", null ],
+            [ "AppsSensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_apps_sensor.html", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_apps_sensor" ],
             [ "BatterySensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor" ],
             [ "PhoneActivitySensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor" ],
             [ "ProximitySensor", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor" ],
@@ -119,10 +124,6 @@ var annotated =
             [ "Scheduler", "classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler.html", "classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler" ]
           ] ],
           [ "shared", null, [
-            [ "BaseDataProducer", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_data_producer.html", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_data_producer" ],
-            [ "BaseSensor", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor.html", "classnl_1_1sense__os_1_1service_1_1shared_1_1_base_sensor" ],
-            [ "DataProcessor", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_data_processor.html", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_data_processor" ],
-            [ "DataProducer", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_data_producer.html", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_data_producer" ],
             [ "PeriodicPollAlarmReceiver", "classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html", "classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver" ],
             [ "PeriodicPollingSensor", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor" ],
             [ "SenseSensor", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html", "interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor" ],
@@ -137,9 +138,17 @@ var annotated =
             [ "LocalStorage", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage" ],
             [ "ParserUtils", "classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html", null ]
           ] ],
+          [ "subscription", null, [
+            [ "BaseDataProducer", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer" ],
+            [ "BaseSensor", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor" ],
+            [ "DataConsumer", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer" ],
+            [ "DataProducer", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer" ],
+            [ "SubscriptionManager", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager" ]
+          ] ],
           [ "AliveChecker", "classnl_1_1sense__os_1_1service_1_1_alive_checker.html", "classnl_1_1sense__os_1_1service_1_1_alive_checker" ],
           [ "BootRx", "classnl_1_1sense__os_1_1service_1_1_boot_rx.html", "classnl_1_1sense__os_1_1service_1_1_boot_rx" ],
           [ "DataTransmitter", "classnl_1_1sense__os_1_1service_1_1_data_transmitter.html", "classnl_1_1sense__os_1_1service_1_1_data_transmitter" ],
+          [ "EncryptionHelper", "classnl_1_1sense__os_1_1service_1_1_encryption_helper.html", "classnl_1_1sense__os_1_1service_1_1_encryption_helper" ],
           [ "MsgHandler", "classnl_1_1sense__os_1_1service_1_1_msg_handler.html", "classnl_1_1sense__os_1_1service_1_1_msg_handler" ],
           [ "NetworkMonitor", "classnl_1_1sense__os_1_1service_1_1_network_monitor.html", "classnl_1_1sense__os_1_1service_1_1_network_monitor" ],
           [ "SenseService", "classnl_1_1sense__os_1_1service_1_1_sense_service.html", "classnl_1_1sense__os_1_1service_1_1_sense_service" ],
