@@ -1,6 +1,7 @@
 package nl.sense_os.service.commonsense.senddata;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
@@ -33,7 +34,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,7 +52,10 @@ import android.util.Log;
  */
 public class BufferTransmitHandler extends Handler {
 
-    private static final int LIMIT_UNSENT_DATA = 500;
+    private static final int LIMIT_UNSENT_DATA = 1000;
+    
+    //Remove this before release
+    private static final String DEBUG_TRANSMIT_TAG = "DebuggingTransmitter";
 
     class SensorDataEntry {
         String sensorId;
@@ -62,7 +65,7 @@ public class BufferTransmitHandler extends Handler {
     }
 
 	private static final String TAG = "BatchDataTransmitHandler";
-	private static final int MAX_POST_DATA = 100;
+	private static final int MAX_POST_DATA = 30;
     private final Uri contentUri;
     private final WeakReference<Context> ctxRef;
     private final WeakReference<LocalStorage> storageRef;
@@ -194,7 +197,7 @@ public class BufferTransmitHandler extends Handler {
             if (null != unsent) {
                 //TODO: remove this
                 OutputUtils.appendLog( "Found " + unsent.getCount() + " unsent data points in local storage" );
-                OutputUtils.appendLog( DatabaseUtils.dumpCursorToString( unsent )); 
+                //OutputUtils.appendLog( DatabaseUtils.dumpCursorToString( unsent )); 
                 Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
             } else {
                 Log.w(TAG, "Failed to get unsent recent data points from local storage");
@@ -212,6 +215,7 @@ public class BufferTransmitHandler extends Handler {
 	  OutputUtils.appendLog( "BufferTransmitHandler is triggered." );
 	  
 		String cookie = msg.getData().getString("cookie");
+		
 
 		// check if our references are still valid
 		if (null == ctxRef.get() || null == storageRef.get()) {
@@ -229,7 +233,8 @@ public class BufferTransmitHandler extends Handler {
 			wakeLock.acquire();
       
 			cursor = getUnsentData();
-      if (null != cursor && cursor.moveToFirst()) {
+			
+			if (null != cursor && cursor.moveToFirst()) {
 				transmit(cursor, cookie);
 			} else {
 				// nothing to transmit
@@ -250,7 +255,7 @@ public class BufferTransmitHandler extends Handler {
 
     /**
      * Performs cleanup tasks after transmission was successfully completed. Should update the data
-     * point records to show that they have been sent to CommonSense.
+     * point records to show that they have btransmiteen sent to CommonSense.
      * 
      * @param sensorDatas
      *            List of data that was sent to CommonSense. Contains all the data points that were
@@ -306,7 +311,6 @@ public class BufferTransmitHandler extends Handler {
                 OutputUtils.appendLog( "Error updating points in Local Storage!" + e.getLocalizedMessage());
             }
             
-            //storageRef.get().persistRecentData();
         }
     }
 
@@ -329,8 +333,20 @@ public class BufferTransmitHandler extends Handler {
             response = SenseApi.request(ctxRef.get(), url, transmission, cookie);
         } catch (IOException e) {
             // handle failure later
+        	
+        	//Remove this before release
+        	Log.w(DEBUG_TRANSMIT_TAG, "exception:" + e.getMessage()  );
+        	try {
+				Log.w(DEBUG_TRANSMIT_TAG, "size of the content:" + transmission.toString().getBytes("UTF-8").length);
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
 
+        //Remove this before release
+        Log.d(DEBUG_TRANSMIT_TAG, "response:"+response);
+        
         boolean result = false;
 
         if (response == null) {

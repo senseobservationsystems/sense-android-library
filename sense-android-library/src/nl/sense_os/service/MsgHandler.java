@@ -36,6 +36,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
@@ -237,6 +238,9 @@ public class MsgHandler extends Service {
 	}
 
 	private void handleSendIntent(Intent intent) {
+		//Remove this before release
+		Log.d("SendData", "The intent is received at handleSendIntent :" +intent.getAction());
+		
 		// Log.d(TAG, "handleSendIntent");
 		if (isOnline()) {
 
@@ -265,6 +269,8 @@ public class MsgHandler extends Service {
             Bundle args = new Bundle();
             args.putString("cookie", cookie);
             msg.setData(args);
+            //Remove this before release
+    		Log.d("SendData", "The message is being sent to bufferTransmitter");
             bufferHandler.sendMessage(msg);
 		}
 	}
@@ -388,7 +394,7 @@ public class MsgHandler extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+		
 		if (getString(R.string.action_sense_new_data).equals(intent.getAction())) {
 			handleNewMsgIntent(intent);
 		} else if (getString(R.string.action_sense_send_data).equals(intent.getAction())) {
