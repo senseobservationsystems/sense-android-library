@@ -127,9 +127,6 @@ class SQLiteStorage {
      */
     public int delete(String where, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        if(where!=null && where.equals( "" ) ){
-          where = null;
-        }
         int result = db.delete(DbHelper.TABLE, where, selectionArgs);
 
         // update the row count

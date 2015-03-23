@@ -129,7 +129,7 @@ public class LocalStorage {
         String where = "";
         
         if(preserveLastDatapoints){
-             where = deleteOldDataForCumulativeSensors( prefs, retentionLimit, where );
+             where += deleteOldDataForCumulativeSensors( prefs, retentionLimit, where );
         }
         
         if (useCommonSense) {
@@ -141,35 +141,49 @@ public class LocalStorage {
             where += DataPoint.TIMESTAMP + "<" + retentionLimit;
         }
         
+        if( where.equals( "" ) ){
+            where = null;
+        }
+        
         int deleted = persisted.delete(where, null);
 
         return deleted;
     }
 
+    /***
+     * 
+     * @param prefs: sharedPreferences which has the sensor names of cumulative sensor
+     * @param retentionLimit: The max retention time
+     * @param where: string which hold where clause
+     * @return where clause to exclude the cumulative sensors from the general delete query.
+     */
     public String deleteOldDataForCumulativeSensors( SharedPreferences prefs,
         long retentionLimit, String where ) {
-      List<String> list = getListOfPreservedSensors( prefs );
+    	
+    	//get the list of sensors that are specified in the preferences to be protected .
+    	List<String> list = getListOfPreservedSensors( prefs );
 
-       Iterator<String> iter = list.iterator();
+    	Iterator<String> iter = list.iterator();
        
-       if(list!=null && list.size()>0){
-         where = DataPoint.SENSOR_NAME + " NOT IN (";
+    	if(list!=null && list.size()>0){
+    		where = DataPoint.SENSOR_NAME + " NOT IN (";
          
-         while(iter.hasNext()){
-             String sensor = iter.next();
-             if(sensor != null){
-               String wherePerSensor = DataPoint.SENSOR_NAME +"=='"+ sensor+ "' AND " + DataPoint.TRANSMIT_STATE +"==1 AND " + DataPoint.TIMESTAMP +"<(SELECT MAX("+DataPoint.TIMESTAMP +") FROM "
+    		//the reason to use iterator is to check if it has next element
+    		while(iter.hasNext()){
+    			String sensor = iter.next();
+    			if(sensor != null){
+    				String wherePerSensor = DataPoint.SENSOR_NAME +"=='"+ sensor+ "' AND " + DataPoint.TRANSMIT_STATE +"==1 AND " + DataPoint.TIMESTAMP +"<(SELECT MAX("+DataPoint.TIMESTAMP +") FROM "
                                + DbHelper.TABLE + " WHERE " + DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.SENSOR_NAME + "=='" + sensor + "' GROUP BY " + DataPoint.SENSOR_NAME +")";
-               persisted.delete(wherePerSensor, null);
+    				persisted.delete(wherePerSensor, null);
                
-               //exculde those sensors from normal delete query
-               where += "'"+sensor+"'";
-               where += (iter.hasNext())?",":"";
-             }
-         }
-         where += ") AND ";
-       }
-      return where;
+    				//exculde those sensors from normal delete query
+    				where += "'" + sensor + "'";
+    				where += (iter.hasNext())? "," : "" ;
+    			}
+    		}
+    		where += ") AND ";
+    	}
+    	return where;
     }
 
     public List<String> getListOfPreservedSensors( SharedPreferences prefs ) {
