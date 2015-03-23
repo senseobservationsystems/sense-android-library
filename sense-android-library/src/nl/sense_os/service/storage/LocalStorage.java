@@ -13,7 +13,6 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.debug.OutputUtils;
 import nl.sense_os.service.provider.SNTP;
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
@@ -108,14 +107,13 @@ public class LocalStorage {
         return (delete(contentUri, null, null) > 0);
     }
 
-    //TODO: make this method private before merge
     /**
      * Removes old data from the persistent storage.
      * 
      * @return The number of data points deleted
      */
     @SuppressLint( "NewApi" )
-    public int deleteOldData() {
+    private int deleteOldData() {
         Log.i(TAG, "Delete old data points from persistent storage");
 
         SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -130,9 +128,6 @@ public class LocalStorage {
         
         String where = "";
         
-        //TODO: This is probably not a optimized solution. This runs delete query per cumulative sensors.
-        //      There is a query that should do the job in one go, but somehow subqueries do not return what it should.
-        //      The documentation is available at https://docs.google.com/a/sense-os.nl/document/d/1WEobs3ZlX5qnlct0n3N6jnwURPjhcMOIQMvclJCVwdY/edit?usp=sharing
         if(preserveLastDatapoints){
              where = deleteOldDataForCumulativeSensors( prefs, retentionLimit, where );
         }
@@ -170,8 +165,6 @@ public class LocalStorage {
                //exculde those sensors from normal delete query
                where += "'"+sensor+"'";
                where += (iter.hasNext())?",":"";
-               //TODO: remove this
-               Log.d("DBTest", sensor);
              }
          }
          where += ") AND ";
@@ -219,8 +212,6 @@ public class LocalStorage {
             rowId = inMemory.insert(values);
         } catch (BufferOverflowException e) {
             // in-memory storage is full!
-            //TODO: remove this before merge
-            OutputUtils.appendLog( "BufferOverflowException!" );
           
             deleteOldData();
             persistRecentData();
@@ -250,8 +241,6 @@ public class LocalStorage {
 
     public int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
-        //TODO : remove this
-        OutputUtils.appendLog( "Persist recent data points from in-memory storage");
 
         Cursor recentPoints = null;
         int nrRecentPoints = 0;
