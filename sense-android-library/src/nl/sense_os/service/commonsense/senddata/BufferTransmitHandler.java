@@ -32,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -60,6 +59,7 @@ public class BufferTransmitHandler extends Handler {
 
 	private static final String TAG = "BatchDataTransmitHandler";
 	private static final int MAX_POST_DATA = 100;
+	private static final int LIMIT_UNSENT_DATA = 1000;
     private final Uri contentUri;
     private final WeakReference<Context> ctxRef;
     private final WeakReference<LocalStorage> storageRef;
@@ -187,7 +187,7 @@ public class BufferTransmitHandler extends Handler {
         try {
             String where = DataPoint.TRANSMIT_STATE + "==0";
             String sortOrder = DataPoint.TIMESTAMP + " ASC";
-            Cursor unsent = storageRef.get().query(contentUri, null, where, null, null, sortOrder);
+            Cursor unsent = storageRef.get().query(contentUri, null, where, null, LIMIT_UNSENT_DATA, sortOrder);
             if (null != unsent) {
                 Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
             } else {
