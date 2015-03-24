@@ -60,9 +60,9 @@ public class BufferTransmitHandler extends Handler {
 	private static final String TAG = "BatchDataTransmitHandler";
 	private static final int MAX_POST_DATA = 100;
 	private static final int LIMIT_UNSENT_DATA = 1000;
-    private final Uri contentUri;
-    private final WeakReference<Context> ctxRef;
-    private final WeakReference<LocalStorage> storageRef;
+	private final Uri contentUri;
+	private final WeakReference<Context> ctxRef;
+	private final WeakReference<LocalStorage> storageRef;
 	private final String url;
 	private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
 	private final NumberFormat dateFormatter = new DecimalFormat("##########.###", symbols);
@@ -72,8 +72,8 @@ public class BufferTransmitHandler extends Handler {
 		this.ctxRef = new WeakReference<Context>(context);
 		this.storageRef = new WeakReference<LocalStorage>(storage);
 
-        contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
-                + DataPoint.CONTENT_URI_PATH);
+		contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority) 
+				+ DataPoint.CONTENT_URI_PATH);
 
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
