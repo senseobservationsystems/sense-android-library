@@ -6,6 +6,7 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensePrefs.Status;
+import nl.sense_os.service.debug.OutputUtils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Binder;
@@ -376,6 +377,9 @@ public class SenseServiceStub extends Binder {
                 Context.MODE_PRIVATE);
         prefs.edit().putBoolean(Status.MAIN, active).commit();
         service.toggleMain(active);
+        
+        //TODO: remove this
+        OutputUtils.appendLog("toggleMain!!! ");
     }
 
     public void toggleMotion(boolean active) {

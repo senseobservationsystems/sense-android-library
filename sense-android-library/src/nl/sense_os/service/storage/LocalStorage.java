@@ -282,7 +282,7 @@ public class LocalStorage {
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-            int limit, String sortOrder) {
+            Integer limit, String sortOrder) {
         // Log.v(TAG, "Query data points in local storage");
 
         // check URI
@@ -307,7 +307,7 @@ public class LocalStorage {
             projection = DEFAULT_PROJECTION;
         }
 
-        String limitStr = "" + limit;
+        String limitStr = (limit != null)? "" + limit : null;
         // query both databases
         Cursor inMemoryCursor = inMemory.query(projection, where, selectionArgs, sortOrder, limitStr);
         Cursor persistedCursor = persisted.query(projection, where, selectionArgs, sortOrder, limitStr);

@@ -34,6 +34,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -191,7 +192,7 @@ public class BufferTransmitHandler extends Handler {
 	 */
     private Cursor getUnsentData() {
         try {
-            String where = DataPoint.TRANSMIT_STATE + "==0";
+            String where = DataPoint.TRANSMIT_STATE + "=0";
             String sortOrder = DataPoint.TIMESTAMP + " ASC";
             Cursor unsent = storageRef.get().query(contentUri, null, where, null, LIMIT_UNSENT_DATA, sortOrder);
             if (null != unsent) {
