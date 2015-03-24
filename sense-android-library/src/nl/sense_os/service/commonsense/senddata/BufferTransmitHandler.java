@@ -51,8 +51,6 @@ import android.util.Log;
  */
 public class BufferTransmitHandler extends Handler {
 
-    private static final int LIMIT_UNSENT_DATA = 500;
-
     class SensorDataEntry {
         String sensorId;
         String sensorName;
@@ -189,7 +187,7 @@ public class BufferTransmitHandler extends Handler {
         try {
             String where = DataPoint.TRANSMIT_STATE + "==0";
             String sortOrder = DataPoint.TIMESTAMP + " ASC";
-            Cursor unsent = storageRef.get().query(contentUri, null, where, null, LIMIT_UNSENT_DATA, sortOrder);
+            Cursor unsent = storageRef.get().query(contentUri, null, where, null, null, sortOrder);
             if (null != unsent) {
                 Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
             } else {
