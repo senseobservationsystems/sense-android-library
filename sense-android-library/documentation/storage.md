@@ -1,10 +1,8 @@
 # Data Storage
 
-Sensor data can be stored in and obtained from local database as well as CommonSense. The data will be stored in local database first, and transmitted to CommonSense periodically (see MsgHandler).
+Sensor data can be stored in and obtained from local database as well as CommonSense. The data will be stored in local database first, and transmitted to CommonSense periodically (see [MsgHandler](documentation/msg_handler.md)). 
 
-Initially the data is stored in memory,  In case the memory becomes too full, the data is offloaded into a persistent database in the flash memory.  This process is hidden to the end user, so you do not have to worry about which data is where. But it’s still possible to manually persist the current data in inMemory database by calling update on LocalStorage instance with “persist” query parameter set to “true”.
-
-To store the data, sensor need to pass a message to MsgHandler by sending an Intent with action_sense_new_data containing the details of datapoint. This new data will be stored and buffered in Local database before transmitted to CommonSense at scheduled time.
+To store the data, sensor need to pass a message to [MsgHandler](documentation/msg_handler.md) by sending an Intent with action_sense_new_data containing the details of datapoint. This new data will be stored and buffered in local database before transmitted to CommonSense at scheduled time.
 
     Intent sensorData = new Intent(getString(R.string.action_sense_new_data));
     sensorData.putExtra(DataPoint.SENSOR_NAME, &quot;sensor name&quot;);
@@ -22,15 +20,19 @@ Sense library provide LocalStorage that will abstract the data storage mechanism
 * update existing data, and
 * query for data
 
-Particular for query functionality, LocalStorage instance could also behave as a proxy to query data from commonSense (see nl.sense_os.service.storage.LocalStorage.query).
+Query can be done with two URI path scheme, as follow :
+* [CONTENT_URI_PATH](@ref nl.sense_os.service.constants.SensorData.DataPoint.CONTENT_URI_PATH) scheme, will get the data from both inMemory and persisted
+* [CONTENT_REMOTE_URI_PATH](@ref nl.sense_os.service.constants.SensorData.DataPoint.CONTENT_REMOTE_URI_PATH) will get the data from commonSense
 
-Internally, LocalStorage will use two instance of SQLite to actually store the data, one in memory and one more in a file. The data in file will be persistent even when application killed, while the data in memory will be vanish in such case. The data will internally buffered in memory first, and will be moved into file database at certain condition :
-in memory database become overflow when inserting data
-call update function with “persist=true” query parameter
+In case of [CONTENT_REMOTE_URI_PATH](@ref nl.sense_os.service.constants.SensorData.DataPoint.CONTENT_REMOTE_URI_PATH), LocalStorage become a proxy to RemoteStorage. See nl.sense_os.service.storage.LocalStorage.query).
 
-the data in memory database will be deleted when data moved to in file database.
+LocalStorage is implemented in nl.sense_os.service.storage.LocalStorage
 
-Sense data will be stored locally as encrypted SQLite database with such field at minimal:
+### SQLite Database
+
+Local data will be stored in encrypted SQLite database (see nl.sense_os.service.storage.SQLiteStorage and nl.sense_os.service.storage.DbHelper).
+
+The data stored in database will have the following field (see nl.sense_os.service.storage.LocalStorage.DEFAULT_PROJECTION):
 * ID
 * SENSOR_NAME
 * DISPLAY_NAME
@@ -41,11 +43,17 @@ Sense data will be stored locally as encrypted SQLite database with such field a
 * DataPoint.DEVICE_UUID
 * TRANSMIT_STATE
 
-Query with LOCAL_VALUES_URI will get the data from both inMemory and persisted, while query from REMOTE_VALUES_URI will get the data from commonSense.
+### In RAM & In Flash Storage
 
-### Retention
+Internally, LocalStorage will use two instance of SQLite to actually store the data, one in memory (RAM) and one more in a file (Flash). The data in file will be persistent even when application killed, while the data in memory (RAM) will be vanish in such case. The data will internally buffered in memory (RAM) first, and will be moved into file database at certain condition :
+* in memory database become overflow when inserting data
+* manually call update function with “persist=true” query parameter
 
-Old data in persistent database will be deleted after exceed retention time (and not sended yet in case using commonSense). Retention times is gathered from preferences, or 24 hour by default.
+The data in memory (RAM) database will be deleted when data moved to in file database.
+
+### Retention Rate
+
+Old data in persistent database will be deleted after exceed retention time (and not sended yet in case using commonSense). Retention times is gathered from preferences (see nl.sense_os.service.constants.SensePrefs.Main.Advanced.RETENTION_HOURS), or 24 hour by default (see nl.sense_os.service.storage.LocalStorage.DEFAULT_RETENTION_HOURS)
 
 
 ## 2. Remote Storage
