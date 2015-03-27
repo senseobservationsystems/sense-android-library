@@ -89,8 +89,7 @@ public class DataTransmitter implements Runnable {
             NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             boolean passed_interval = SystemClock.elapsedRealtime() - mLastTxTime >= mTxInterval;
             
-            //TODO: temporary comment out persistRecentData here, since senseLibs stopped sending data to CommonSense.
-            //If it has not saved data in-memory storage more than the interval, save data into persisted storage
+            //If it has not saved data in in-memory storage to the persisted storage more than the interval, save data into the persisted storage.
             if(passed_interval){
               LocalStorage.getInstance( mContext ).persistRecentData();
             }
