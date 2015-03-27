@@ -4,11 +4,14 @@ Sense Android Library consist of several component as follow.
 
 ## 1. SenseService
 
-This is main sense service class from which application can binded to. A ServiceStateHelper object will keep information of the state of the service. A SubscriptionManager object will keep the producer-subscriber model of all available sensor.
+This is main sense service class from which application can binded to. 
 
-Activities or other component that binded to sense service can communicate with it through SenseServiceStub, that can be gathered by calling getService method from the binder object in onServiceConnected callback.
-
-The service itself is started by calling to toggleMain(true). The service will registers as foreground service so it does not get easily killed by Android. Another component called AliveChecker will look into the service and make sure it keeps running.
+Activities or other component that binded to sense service can not access the SenseService directly, but through nl.sense_os.service.SenseServiceStub instance, that can be gathered from the nl.sense_os.service.SenseService.SenseBinder instance refered in onServiceConnected callback of ServiceConnection defined when binding the service (see Binding). Through this SenseServiceStub instance, application could then retrieve some functionality:
+* Register user
+* Login/Logout
+* Toggle (start/stop) main sensing
+* Toggle (start/stop) individual sensor
+* Get/Set settings preferences
 
 SenseService is implemented in nl.sense_os.service.SenseService.
 
