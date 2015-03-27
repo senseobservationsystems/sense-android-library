@@ -655,7 +655,7 @@ public class SensePlatform {
             selection += " AND " + DataPoint.TIMESTAMP + ">=" + startDate ;
         }
         if(null != endDate){
-        	selection += " AND " + DataPoint.TIMESTAMP + "<=" + endDate;
+            selection += " AND " + DataPoint.TIMESTAMP + "<=" + endDate;
         }
         String[] selectionArgs = null;
 
