@@ -21,6 +21,4 @@ This documentation provides insights in the architecture and inner workings of t
 
 ## More Information
 
-Instruction on how to get started: http://developer.sense-os.nl/Libraries/Android
-
 The full API Reference: http://senseobservationsystems.github.io/sense-android-library

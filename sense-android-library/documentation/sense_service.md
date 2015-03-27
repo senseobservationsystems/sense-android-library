@@ -1,30 +1,30 @@
 # Sense Service
 
-This is main sense service class from which application can binded to. 
+This is the main SenseService class to which application can bind. 
 
-Activities or other component that binded to sense service can not access the SenseService directly, but through nl.sense_os.service.SenseServiceStub instance, that can be gathered from the nl.sense_os.service.SenseService.SenseBinder instance refered in onServiceConnected callback of ServiceConnection defined when binding the service (see Binding). Through this SenseServiceStub instance, application could then retrieve some functionality:
+Activities or other components that bind to SenseService can not access the SenseService directly, but must do so through an nl.sense_os.service.SenseServiceStub instance, that can be gathered from the nl.sense_os.service.SenseService.SenseBinder instance referred in onServiceConnected callback of ServiceConnection defined when binding the service (see Binding). Through this SenseServiceStub instance, the application can then retrieve some functionality:
 * Register user
 * Login/Logout
 * Toggle (start/stop) main sensing
 * Toggle (start/stop) individual sensor
 * Get/Set settings preferences
 
-SenseService is implemented as singleton, and it has an instance of nl.sense_os.service.ServiceStateHelper to keep its state. It also has an instance of nl.sense_os.service.subscription.SubscriptionManager to manage all available sensor in a producer-subscriber model (see Data Subcription).
+SenseService is implemented as a singleton, and it has an instance of nl.sense_os.service.ServiceStateHelper to keep its state. It also has an instance of nl.sense_os.service.subscription.SubscriptionManager to manage all available sensors in a producer-subscriber model (see DataSubcription).
 
-SenseService should always running as a foreground service, and should not being killed except being stop explicitly. There is also another component nl.sense_os.service.AliveChecker that will check the service periodically and make sure it keeps running.
+SenseService should always be running as a foreground service, and should not be killed except by being stopped explicitly. There is also another component, nl.sense_os.service.AliveChecker, that will check the service periodically and make sure it keeps running.
 
 SenseService is implemented in nl.sense_os.service.SenseService.
 
 ## 1. Binding
 
-Sense Service is a service that others component (application) could bind to. It will return nl.sense_os.service.SenseService.SenseBinder object to bounded component through a derivative of android.content.ServiceConnection when connected. Through this binder, the component could get a nl.sense_os.service.SenseServiceStub object which provide interface for SenseService functionality.
+SenseService is a service that others components (applications) can bind to. It will return an nl.sense_os.service.SenseService.SenseBinder object to the bound component through a derivative of android.content.ServiceConnection when connected. Through this binder, the component could get a nl.sense_os.service.SenseServiceStub object which provides an interface for SenseService functionality.
 
-Here an example from SensePlatform on how to bind to Sense Service.
+Here is an example from SensePlatform on how to bind to SenseService.
 
     final Intent serviceIntent = new Intent(getContext(), nl.sense_os.service.SenseService.class);
     boolean bindResult = mContext.bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
-And here is an example of onServiceConnected callback of ServiceConnection class that will receive the binder when connected to service (also from SensePlatform).
+And here is an example of onServiceConnected callback of the ServiceConnection class that will receive the binder when connected to the service (also from SensePlatform).
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
@@ -33,16 +33,16 @@ And here is an example of onServiceConnected callback of ServiceConnection class
             mSenseService = ((SenseBinder) binder).getService();
         }
 
-Some of functionality in SenseServiceStub provide callback mechanism implementing AIDL interface defined in nl.sense_os.service.ISenseServiceCallback. This interface provide several callback function :
-* statusReport, return the current status of SenseService
-* onChangeLoginResult, called when login status is change
-* onRegisterResult, called when finish registering a user
+Some of the functionality in SenseServiceStub provides a callback mechanism implementing an AIDL interface defined in nl.sense_os.service.ISenseServiceCallback. This interface provides several callback functions:
+* statusReport, returns the current status of SenseService
+* onChangeLoginResult, called when login status changes
+* onRegisterResult, called when finished registering a user
 
-This is an example of how to use the callback mechanism in login case.
+This is an example of how to use the callback mechanism in the login case.
 
 	mSenseService.changeLogin(username,	SenseApi.hashPassword(password), this.mServiceCallback);
 
-And this is the definition mServiceCallback for such example.
+And this is the definition mServiceCallback for that example.
 
     private final ISenseServiceCallback mServiceCallback = new ISenseServiceCallback.Stub() {
     	@Override
@@ -70,7 +70,7 @@ And this is the definition mServiceCallback for such example.
 
 ## 2. Manage/Stopping (Main / Sensor groups)
 
-SenseService provide several method to toggle the main state as well as sensor groups state (see Sensor Groups). There is a toggle method for each of the sensor groups. Here is an example of how to toggle the states of several sensor groups and the main service.
+SenseService provides several methods to toggle the main state as well as sensor group states (see Sensor Groups). There is a toggle method for each of the sensor groups. Here is an example of how to toggle the states of several sensor groups and the main service.
 
     // enable some specific sensor modules
     senseService.togglePhoneState(true);
@@ -84,22 +84,22 @@ SenseService provide several method to toggle the main state as well as sensor g
 
 ## 3. Background service
 
-The SenseService will start as a service when nl.sense_os.service.SenseService.toggleMain method is called with true argument, It will also registers itself as foreground service so it doesn’t easily killed by Android when the system low on memory. It will also being start as STICKY service so android know to start it again if it’s accidentally been killed.
+The SenseService will start as a service when nl.sense_os.service.SenseService.toggleMain method is called with true argument. It will also register itself as a foreground service so it doesn’t easily get killed by Android when the system is low on memory. It will also be started as a STICKY service so android knows to start it again if it’s accidentally been killed.
 
-When the service started, it will try to start available sensor based on preferences. It will also start scheduling for data transmission to commonSense. Finally it will send broadcast so any other component could be notified that the sense service already start (see Start Broadcast).
+When the service starts, it will try to start available sensors based on preferences. It will also start scheduling for data transmission to commonSense. Finally it will send a broadcast so any other component will be notified that the SenseService has started (see Start Broadcast).
 
-Each of sensor groups will also be run in different thread, and will keep exist while the service running.
+Each sensor group will also be run in a different thread, and will keep existing while the service running.
 
 ## 4. Start Broadcast
 
-Sense Service will broadcast *action_sense_service_broadcast* action everytime :
+SenseService will broadcast an *action_sense_service_broadcast* action everytime :
 * The service started
 * Sensor modules started/stop
 
-The broadcast receiver then could check the service status through nl.sense_os.service.ServiceStateHelper instance.
+The broadcast receiver then can check the service status through the nl.sense_os.service.ServiceStateHelper instance.
 
-## 5. Alive Checker
+## 5. AliveChecker
 
-SenseService has an instance of AliveChecker to make sure that keep running when it should be. It will start checking periodically when SenseService starts sensing.
+SenseService has an instance of AliveChecker to make sure that it keeps running when it should be. It will start checking periodically when SenseService starts sensing.
 
-Alive Checker will check every 15 minute if the phone is awake, and it will make sure to wake up every 1 hour. It will make sure the SenseService keep running by trying to start the service regardless of current state.
+AliveChecker will check every 15 minutes if the phone is awake, and it will make sure to wake up every hour. It will make sure the SenseService keeps running by trying to start the service regardless of current state.

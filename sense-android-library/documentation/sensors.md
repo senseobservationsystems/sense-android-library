@@ -2,29 +2,29 @@
 
 ## SenseSensor
 
-Almost all of sensor in Sense Library implement SenseSensor interface. This interface provide several function that common for all sensor:
+Almost all sensors in the Sense Library implement the SenseSensor interface. This interface provides several functions that are common for all sensors:
 * start and stop sensing
 * get and set sample rate
 
-SenseSensor interface is defined in nl.sense_os.service.shared.SenseSensor
+The SenseSensor interface is defined in nl.sense_os.service.shared.SenseSensor
 
 ## BaseSensor
 
-BaseSensor is base implementation of [SenseSensor](##SenseSensor). It inherit from nl.sense_os.service.subscription.BaseDataProducer therefore it also implement nl.sense_os.service.subscription.DataProducer. It provide basic implementation to set and get sample rate, and leaving the start and stop sensing mechanism to specific sensor it inherits.
+BaseSensor is a base implementation of [SenseSensor](##SenseSensor). It inherits from nl.sense_os.service.subscription.BaseDataProducer and therefore it also implements nl.sense_os.service.subscription.DataProducer. It provides a basic implementation to set and get sample rate, and leaves the start and stop sensing mechanism to the specific sensor it inherits.
 
 BaseSensor is implemented in nl.sense_os.service.subscription.BaseSensor
 
 ## PeriodicPollingSensor
 
-This is an interface that all of periodic-based sensor should implement. It provide **isActive** method for [PeriodicPollAlarmReceiver](##PeriodicPollAlarmReceiver) to check if the sensor is still active, and **doSample** method which [PeriodicPollAlarmReceiver](##PeriodicPollAlarmReceiver) will call to do the actual sampling at scheduled time.
+This is an interface that all periodic-based sensors should implement. It provides an **isActive** method for [PeriodicPollAlarmReceiver](##PeriodicPollAlarmReceiver) to check if the sensor is still active, and a **doSample** method which [PeriodicPollAlarmReceiver](##PeriodicPollAlarmReceiver) will call to do the actual sampling at a scheduled time.
 
-PeriodicPollingSensor interface is defined in nl.sense_os.service.shared.PeriodicPollingSensor
+The PeriodicPollingSensor interface is defined in nl.sense_os.service.shared.PeriodicPollingSensor
 
 ## PeriodicPollAlarmReceiver
 
-This is a generic BroadcastReceiver for periodic based sensor. Every periodic-based sensor should have an instance of this class and start it when start sensing. This instance will register itself to [Scheduler](##Scheduler) to be run at specific rate based on interval value of the specific sensor (see nl.sense_os.service.subscription.BaseSensor.sampleDelay).
+This is a generic BroadcastReceiver for periodic based sensors. Every periodic-based sensor should have an instance of this class and start it when it starts sensing. This instance will register itself to [Scheduler](##Scheduler) to be run at a specific rate based on the interval value of the specific sensor (see nl.sense_os.service.subscription.BaseSensor.sampleDelay).
 
-It will call **doSample** method of the sensor instance it bound to when it scheduled to be run.
+It will call the **doSample** method of the sensor instance it is bound to when it is scheduled to be run.
 
 PeriodicPollAlarmReceiver is implemented in nl.sense_os.service.shared.PeriodicPollAlarmReceiver
 
@@ -32,7 +32,7 @@ PeriodicPollAlarmReceiver is implemented in nl.sense_os.service.shared.PeriodicP
 
 ## Sensor groups
 
-Sensors in Sense Library is grouped based on it’s usecase as follow :
+Sensors in Sense Library are grouped based on their usecase as follows:
 * Ambience Sensors
   * nl.sense_os.service.ambience.NoiseSensor
   * nl.sense_os.service.ambience.LoudnessSensor
@@ -67,16 +67,16 @@ Sensors in Sense Library is grouped based on it’s usecase as follow :
   * nl.sense_os.service.phonestate.ProximitySensor
   * nl.sense_os.service.phonestate.SensePhoneState
 
-##Sensor Data Structure
+## Sensor Data Structure
 
-Every data from sensor should be encapsulated as nl.sense_os.service.shared.SensorDataPoint object. It contain several fields correspond to data point fields at CommonSense: 
+Every datapoint from a sensor should be encapsulated as nl.sense_os.service.shared.SensorDataPoint object. It contains several fields corresponding to data point fields at CommonSense: 
 * sensor name
-* sensor description (correspond to sensor_type field in CommonSense)
+* sensor description (corresponds to sensor_type field in CommonSense)
 * timestamp
 * data type
 * value
 
-Sensor datapoint could be one of following type:
+Sensor datapoints can be one of the following types:
 * Integer
 * Float
 * Bool
@@ -95,11 +95,12 @@ Here is an example of how to create a new datapoint :
     dataPoint.sensorDescription = sensor.getName();
     dataPoint.timeStamp = SNTP.getInstance().getTime();
 
-This sensor datapoint also need to send to [MsgHandler](documentation/msg_handler.md) so it could be stored in LocalStorage and later in CommonSense. Here is an example of how to send a sensor datapoint to be stored by MsgHandler.
+This sensor datapoint also needs to be sent to [MsgHandler](documentation/msg_handler.md) so it can be stored in LocalStorage and later in CommonSense. Here is an example of how to send a sensor datapoint to be stored by MsgHandler.
 
     Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
     sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
     sensorData.putExtra(DataPoint.VALUE, BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
     sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-    sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);	sensorData.setPackage(context.getPackageName());
+    sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);	
+    sensorData.setPackage(context.getPackageName());
     context.startService(sensorData);
