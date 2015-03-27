@@ -615,44 +615,8 @@ public class SensePlatform {
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri,
             String sortOrder) throws JSONException {
-        Cursor cursor = null;
-        JSONArray result = new JSONArray();
 
-        String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(mContext) : null;
-
-        String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
-        String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
-        if (null != deviceUuid) {
-            selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
-        }
-        String[] selectionArgs = null;
-
-        // make sure the limit is feasible
-        if (limit < 1) {
-            limit = 100;
-        }
-
-        try {
-            cursor = LocalStorage.getInstance(mContext).query(uri, projection, selection,
-                    selectionArgs, limit, sortOrder);
-
-            if (null != cursor && cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    JSONObject val = new JSONObject();
-                    val.put("date", cursor.getLong(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
-                    val.put("value", cursor.getString(cursor.getColumnIndex(DataPoint.VALUE)));
-                    result.put(val);
-                    cursor.moveToNext();
-                }
-            }
-        } catch (JSONException je) {
-            throw je;
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-
-        return result;
+        return getValues(sensorName, onlyFromDevice, limit, uri, sortOrder, null, null);
     }
 
     /**
@@ -676,7 +640,7 @@ public class SensePlatform {
      * @throws JSONException
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri,
-            String sortOrder, long startDate, long endDate) throws JSONException {
+            String sortOrder, Long startDate, Long endDate) throws JSONException {
         Cursor cursor = null;
         JSONArray result = new JSONArray();
 
@@ -687,7 +651,12 @@ public class SensePlatform {
         if (null != deviceUuid) {
             selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
         }
-        selection += " AND " + DataPoint.TIMESTAMP + ">=" + startDate + " AND " + DataPoint.TIMESTAMP + "<=" + endDate;
+        if(null != startDate){
+            selection += " AND " + DataPoint.TIMESTAMP + ">=" + startDate ;
+        }
+        if(null != endDate){
+        	selection += " AND " + DataPoint.TIMESTAMP + "<=" + endDate;
+        }
         String[] selectionArgs = null;
 
         // make sure the limit is feasible
@@ -718,7 +687,6 @@ public class SensePlatform {
         return result;
     }
     
-    //TODO: this can be combined with the method right above, but then need to change long to Long to handle null in startTime
     /**
      * Gets array of values from the LocalStorage without startDate.
      * It returns specified number of values counting from the endDate. The number of values can be specified in limit. 
@@ -740,45 +708,7 @@ public class SensePlatform {
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri,
             String sortOrder, long endDate) throws JSONException {
-        Cursor cursor = null;
-        JSONArray result = new JSONArray();
-
-        String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(mContext) : null;
-
-        String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
-        String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
-        if (null != deviceUuid) {
-            selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
-        }
-        selection += " AND " + DataPoint.TIMESTAMP + "<=" + endDate;
-        String[] selectionArgs = null;
-
-        // make sure the limit is feasible
-        if (limit < 1) {
-            limit = 100;
-        }
-
-        try {
-            cursor = LocalStorage.getInstance(mContext).query(uri, projection, selection,
-                    selectionArgs, limit, sortOrder);
-
-            if (null != cursor && cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    JSONObject val = new JSONObject();
-                    val.put("date", cursor.getLong(cursor.getColumnIndex(DataPoint.TIMESTAMP)));
-                    val.put("value", cursor.getString(cursor.getColumnIndex(DataPoint.VALUE)));
-                    result.put(val);
-                    cursor.moveToNext();
-                }
-            }
-        } catch (JSONException je) {
-            throw je;
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-
-        return result;
+        return getValues(sensorName, onlyFromDevice, limit, uri, sortOrder, null, endDate);
     }
 
     /**
