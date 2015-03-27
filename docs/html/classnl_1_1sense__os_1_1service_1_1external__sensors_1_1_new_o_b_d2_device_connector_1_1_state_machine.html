@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -108,6 +111,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pac-attribs">Package Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine Class Reference</div>  </div>
@@ -126,65 +132,943 @@ Inheritance diagram for nl.sense_os.service.external_sensors.NewOBD2DeviceConnec
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver.html">BTReceiver</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html">EmptyRegistrator</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae8067d2e18de8c61780cd8d49a3fe953"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8067d2e18de8c61780cd8d49a3fe953"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ()</td></tr>
+<tr class="memitem:ae8067d2e18de8c61780cd8d49a3fe953"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ae8067d2e18de8c61780cd8d49a3fe953">run</a> ()</td></tr>
 <tr class="separator:ae8067d2e18de8c61780cd8d49a3fe953"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a051bbdaec435add4972827d68ed66a5e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a051bbdaec435add4972827d68ed66a5e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stop</b> ()</td></tr>
+<tr class="memitem:a051bbdaec435add4972827d68ed66a5e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a051bbdaec435add4972827d68ed66a5e">stop</a> ()</td></tr>
 <tr class="separator:a051bbdaec435add4972827d68ed66a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:adb94d8193f1a344eec97c805bdfaf8e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adb94d8193f1a344eec97c805bdfaf8e5"></a>
-State&#160;</td><td class="memItemRight" valign="bottom"><b>doCheckBluetooth</b> ()</td></tr>
+<tr class="memitem:adb94d8193f1a344eec97c805bdfaf8e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#adb94d8193f1a344eec97c805bdfaf8e5">doCheckBluetooth</a> ()</td></tr>
 <tr class="separator:adb94d8193f1a344eec97c805bdfaf8e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3e9a4f1a10ac166b9b85354f405d377"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa3e9a4f1a10ac166b9b85354f405d377"></a>
-State&#160;</td><td class="memItemRight" valign="bottom"><b>doConnectSocket</b> ()</td></tr>
+<tr class="memitem:aa3e9a4f1a10ac166b9b85354f405d377"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#aa3e9a4f1a10ac166b9b85354f405d377">doConnectSocket</a> ()</td></tr>
 <tr class="separator:aa3e9a4f1a10ac166b9b85354f405d377"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5b2960081ed534c5c25d7c071056dad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5b2960081ed534c5c25d7c071056dad"></a>
-State&#160;</td><td class="memItemRight" valign="bottom"><b>doWaitForBoot</b> ()</td></tr>
+<tr class="memitem:ab5b2960081ed534c5c25d7c071056dad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ab5b2960081ed534c5c25d7c071056dad">doWaitForBoot</a> ()</td></tr>
 <tr class="separator:ab5b2960081ed534c5c25d7c071056dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a355e831c0494e480cd11f4231d44e4b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a355e831c0494e480cd11f4231d44e4b9"></a>
-State&#160;</td><td class="memItemRight" valign="bottom"><b>doInitializeUsingHayes</b> ()</td></tr>
+<tr class="memitem:a355e831c0494e480cd11f4231d44e4b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a355e831c0494e480cd11f4231d44e4b9">doInitializeUsingHayes</a> ()</td></tr>
 <tr class="separator:a355e831c0494e480cd11f4231d44e4b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d80ec659cf11cac61599c40a2a6d49e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d80ec659cf11cac61599c40a2a6d49e"></a>
-State&#160;</td><td class="memItemRight" valign="bottom"><b>doPollSensors</b> ()</td></tr>
+<tr class="memitem:a1d80ec659cf11cac61599c40a2a6d49e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a1d80ec659cf11cac61599c40a2a6d49e">doPollSensors</a> ()</td></tr>
 <tr class="separator:a1d80ec659cf11cac61599c40a2a6d49e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a5b8f840a9515ef90f04145433175d3af"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b8f840a9515ef90f04145433175d3af"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>runstart</b> = System.currentTimeMillis()</td></tr>
+<tr class="memitem:a5b8f840a9515ef90f04145433175d3af"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a5b8f840a9515ef90f04145433175d3af">runstart</a> = System.currentTimeMillis()</td></tr>
 <tr class="separator:a5b8f840a9515ef90f04145433175d3af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c16e5f7450136d1a04fad444c0db99e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7c16e5f7450136d1a04fad444c0db99e"></a>
-BluetoothAdapter&#160;</td><td class="memItemRight" valign="bottom"><b>adapter</b></td></tr>
+<tr class="memitem:a7c16e5f7450136d1a04fad444c0db99e"><td class="memItemLeft" align="right" valign="top">BluetoothAdapter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a7c16e5f7450136d1a04fad444c0db99e">adapter</a></td></tr>
 <tr class="separator:a7c16e5f7450136d1a04fad444c0db99e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23a39c6bc71b679f7e4f7aad33d92631"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a23a39c6bc71b679f7e4f7aad33d92631"></a>
-<a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver.html">BTReceiver</a>&#160;</td><td class="memItemRight" valign="bottom"><b>btReceiver</b></td></tr>
+<tr class="memitem:a23a39c6bc71b679f7e4f7aad33d92631"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver.html">BTReceiver</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a23a39c6bc71b679f7e4f7aad33d92631">btReceiver</a></td></tr>
 <tr class="separator:a23a39c6bc71b679f7e4f7aad33d92631"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e3e6d2eeb1be5034a450e05bc65db6a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e3e6d2eeb1be5034a450e05bc65db6a"></a>
-BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><b>socket</b></td></tr>
+<tr class="memitem:a2e3e6d2eeb1be5034a450e05bc65db6a"><td class="memItemLeft" align="right" valign="top">BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a2e3e6d2eeb1be5034a450e05bc65db6a">socket</a></td></tr>
 <tr class="separator:a2e3e6d2eeb1be5034a450e05bc65db6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0baf46b660eadd24af60c30d08160c09"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0baf46b660eadd24af60c30d08160c09"></a>
-InputStream&#160;</td><td class="memItemRight" valign="bottom"><b>input</b></td></tr>
+<tr class="memitem:a0baf46b660eadd24af60c30d08160c09"><td class="memItemLeft" align="right" valign="top">InputStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a0baf46b660eadd24af60c30d08160c09">input</a></td></tr>
 <tr class="separator:a0baf46b660eadd24af60c30d08160c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3af9b24a52ddd5109fa52ebb50250ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3af9b24a52ddd5109fa52ebb50250ec"></a>
-OutputStream&#160;</td><td class="memItemRight" valign="bottom"><b>output</b></td></tr>
+<tr class="memitem:ae3af9b24a52ddd5109fa52ebb50250ec"><td class="memItemLeft" align="right" valign="top">OutputStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ae3af9b24a52ddd5109fa52ebb50250ec">output</a></td></tr>
 <tr class="separator:ae3af9b24a52ddd5109fa52ebb50250ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-attribs"></a>
+Package Attributes</h2></td></tr>
+<tr class="memitem:a0e562ea89a417d1f09f4f7e87998d7b1"><td class="memItemLeft" align="right" valign="top">final String[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a0e562ea89a417d1f09f4f7e87998d7b1">hayescommands</a> = { &quot;AT E0&quot;, &quot;AT H 0&quot; }</td></tr>
+<tr class="separator:a0e562ea89a417d1f09f4f7e87998d7b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a96e2f663aad562fe05195151833398c5"><td class="memItemLeft" align="right" valign="top">BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a96e2f663aad562fe05195151833398c5">connectSocket</a> ()</td></tr>
+<tr class="separator:a96e2f663aad562fe05195151833398c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd054c571cd64c5dd8468692523f62a3"><td class="memItemLeft" align="right" valign="top">BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#afd054c571cd64c5dd8468692523f62a3">connectSocket</a> (BluetoothDevice dev)</td></tr>
+<tr class="separator:afd054c571cd64c5dd8468692523f62a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab601609ff0151da4228c26e064e192f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ab601609ff0151da4228c26e064e192f9">readUntilPrompt</a> ()</td></tr>
+<tr class="separator:ab601609ff0151da4228c26e064e192f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0026c312f571e4e2581aa0fb429d945"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ad0026c312f571e4e2581aa0fb429d945">clearBuffer</a> ()</td></tr>
+<tr class="separator:ad0026c312f571e4e2581aa0fb429d945"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a802c132d6fff44ba4e0fd2df7eef5f"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a4a802c132d6fff44ba4e0fd2df7eef5f">sendHayesCommand</a> (String command)</td></tr>
+<tr class="separator:a4a802c132d6fff44ba4e0fd2df7eef5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3baa78f83327af1b3994cc8b2ed677d0"><td class="memItemLeft" align="right" valign="top">String[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a3baa78f83327af1b3994cc8b2ed677d0">sendOBDCommand</a> (String command)</td></tr>
+<tr class="separator:a3baa78f83327af1b3994cc8b2ed677d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98a84c02eefb60ef8b12fd11b4870651"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a98a84c02eefb60ef8b12fd11b4870651">sendCommand</a> (String command, String validresponse)</td></tr>
+<tr class="separator:a98a84c02eefb60ef8b12fd11b4870651"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6d729371a6084fb8d77093a57b6018d"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ac6d729371a6084fb8d77093a57b6018d">trySend</a> (String data)</td></tr>
+<tr class="separator:ac6d729371a6084fb8d77093a57b6018d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5860b3e16b71cf1665d171b21da4996b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a5860b3e16b71cf1665d171b21da4996b">pollMonitorStatus</a> ()</td></tr>
+<tr class="separator:a5860b3e16b71cf1665d171b21da4996b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae99b7ca6b96c10a1c574a955d3257e0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ae99b7ca6b96c10a1c574a955d3257e0a">pollEngineLoad</a> ()</td></tr>
+<tr class="separator:ae99b7ca6b96c10a1c574a955d3257e0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafea5aa4cff63ca475134e29fbe42fc5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#aafea5aa4cff63ca475134e29fbe42fc5">pollEngineCoolant</a> ()</td></tr>
+<tr class="separator:aafea5aa4cff63ca475134e29fbe42fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3cf857f83f1dd6cebd613c04c4a0f6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ad3cf857f83f1dd6cebd613c04c4a0f6e">pollFuelPressure</a> ()</td></tr>
+<tr class="separator:ad3cf857f83f1dd6cebd613c04c4a0f6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6892f4d87b7e08d4742bab86a74295d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a6892f4d87b7e08d4742bab86a74295d4">pollIntakeManifoldPressure</a> ()</td></tr>
+<tr class="separator:a6892f4d87b7e08d4742bab86a74295d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab07b1eace6cc196ca9075a4616b46e96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ab07b1eace6cc196ca9075a4616b46e96">pollEngineRPM</a> ()</td></tr>
+<tr class="separator:ab07b1eace6cc196ca9075a4616b46e96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d7e7af7bcf543809c9ae6d1e9ab73e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a7d7e7af7bcf543809c9ae6d1e9ab73e3">pollVehicleSpeed</a> ()</td></tr>
+<tr class="separator:a7d7e7af7bcf543809c9ae6d1e9ab73e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5914d11e60b8503911503b83e9ff2a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#ad5914d11e60b8503911503b83e9ff2a7">pollIntakeAirTemperature</a> ()</td></tr>
+<tr class="separator:ad5914d11e60b8503911503b83e9ff2a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43bc7f656887532861f0c20e3f83fae3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a43bc7f656887532861f0c20e3f83fae3">pollThrottlePosition</a> ()</td></tr>
+<tr class="separator:a43bc7f656887532861f0c20e3f83fae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a994d4248b3c26f49f748cae820d44229"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a994d4248b3c26f49f748cae820d44229">SendDataPoint</a> (String sensorName, String sensorDescription, Object value, String dataType)</td></tr>
+<tr class="separator:a994d4248b3c26f49f748cae820d44229"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aec5482d606c601bc505ad5a94a77aa63"><td class="memItemLeft" align="right" valign="top">ArrayList&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#aec5482d606c601bc505ad5a94a77aa63">verifiedsensors</a> = new ArrayList&lt;String&gt;()</td></tr>
+<tr class="separator:aec5482d606c601bc505ad5a94a77aa63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a205c5e320c1150ed9504567cf787bdc6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html">EmptyRegistrator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a205c5e320c1150ed9504567cf787bdc6">registrator</a> = new <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html">EmptyRegistrator</a>()</td></tr>
+<tr class="separator:a205c5e320c1150ed9504567cf787bdc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66ea0ae6550688f1d70f59d07a98d868"><td class="memItemLeft" align="right" valign="top">final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a66ea0ae6550688f1d70f59d07a98d868">timeout</a> = 20000</td></tr>
+<tr class="separator:a66ea0ae6550688f1d70f59d07a98d868"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a986add3a5fbb34fbf640560713331195"><td class="memItemLeft" align="right" valign="top">final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a986add3a5fbb34fbf640560713331195">sleeptime</a> = 500</td></tr>
+<tr class="separator:a986add3a5fbb34fbf640560713331195"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad0026c312f571e4e2581aa0fb429d945"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.clearBuffer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a96e2f663aad562fe05195151833398c5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothSocket nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.connectSocket </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afd054c571cd64c5dd8468692523f62a3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothSocket nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.connectSocket </td>
+          <td>(</td>
+          <td class="paramtype">BluetoothDevice&#160;</td>
+          <td class="paramname"><em>dev</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>whether or not a Socket connection was established </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="adb94d8193f1a344eec97c805bdfaf8e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a> nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.doCheckBluetooth </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa3e9a4f1a10ac166b9b85354f405d377"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a> nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.doConnectSocket </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a355e831c0494e480cd11f4231d44e4b9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a> nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.doInitializeUsingHayes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1d80ec659cf11cac61599c40a2a6d49e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a> nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.doPollSensors </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab5b2960081ed534c5c25d7c071056dad"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html">State</a> nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.doWaitForBoot </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aafea5aa4cff63ca475134e29fbe42fc5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollEngineCoolant </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae99b7ca6b96c10a1c574a955d3257e0a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollEngineLoad </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab07b1eace6cc196ca9075a4616b46e96"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollEngineRPM </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad3cf857f83f1dd6cebd613c04c4a0f6e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollFuelPressure </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad5914d11e60b8503911503b83e9ff2a7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollIntakeAirTemperature </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6892f4d87b7e08d4742bab86a74295d4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollIntakeManifoldPressure </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5860b3e16b71cf1665d171b21da4996b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollMonitorStatus </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a43bc7f656887532861f0c20e3f83fae3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollThrottlePosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7d7e7af7bcf543809c9ae6d1e9ab73e3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.pollVehicleSpeed </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab601609ff0151da4228c26e064e192f9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.readUntilPrompt </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae8067d2e18de8c61780cd8d49a3fe953"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.run </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a98a84c02eefb60ef8b12fd11b4870651"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.sendCommand </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>command</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>validresponse</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a994d4248b3c26f49f748cae820d44229"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.SendDataPoint </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>sensorName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>sensorDescription</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Object&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>dataType</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4a802c132d6fff44ba4e0fd2df7eef5f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.sendHayesCommand </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>command</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">command</td><td>the Hayes command (AT command) to be sent </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>whether or not the execution of this command was successful </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a3baa78f83327af1b3994cc8b2ed677d0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String [] nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.sendOBDCommand </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>command</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">command</td><td>the Mode and PID for the OBD-command to be checked </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the formatted response gotten, or null iff the command was invalid </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a051bbdaec435add4972827d68ed66a5e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.stop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac6d729371a6084fb8d77093a57b6018d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.trySend </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7c16e5f7450136d1a04fad444c0db99e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothAdapter nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.adapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a23a39c6bc71b679f7e4f7aad33d92631"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_b_t_receiver.html">BTReceiver</a> nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.btReceiver</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0e562ea89a417d1f09f4f7e87998d7b1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String [] nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.hayescommands = { &quot;AT E0&quot;, &quot;AT H 0&quot; }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0baf46b660eadd24af60c30d08160c09"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">InputStream nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.input</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae3af9b24a52ddd5109fa52ebb50250ec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">OutputStream nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.output</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a205c5e320c1150ed9504567cf787bdc6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html">EmptyRegistrator</a> nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.registrator = new <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html">EmptyRegistrator</a>()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5b8f840a9515ef90f04145433175d3af"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.runstart = System.currentTimeMillis()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a986add3a5fbb34fbf640560713331195"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.sleeptime = 500</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2e3e6d2eeb1be5034a450e05bc65db6a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothSocket nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.socket</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a66ea0ae6550688f1d70f59d07a98d868"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.timeout = 20000</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aec5482d606c601bc505ad5a94a77aa63"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ArrayList&lt;String&gt; nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.verifiedsensors = new ArrayList&lt;String&gt;()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/external_sensors/NewOBD2DeviceConnector.java</li>
+<li>src/nl/sense_os/service/external_sensors/<a class="el" href="_new_o_b_d2_device_connector_8java.html">NewOBD2DeviceConnector.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>external_sensors</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html">NewOBD2DeviceConnector</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html">StateMachine</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:56 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1external__sensors.html">external_sensors</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html">NewOBD2DeviceConnector</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html">StateMachine</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

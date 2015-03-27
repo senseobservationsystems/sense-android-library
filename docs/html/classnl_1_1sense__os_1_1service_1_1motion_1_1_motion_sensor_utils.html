@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
 <div class="header">
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.motion.MotionSensorUtils Class Reference</div>  </div>
@@ -113,41 +117,252 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a7dd3f3046449b15ea758a74c6149831e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7dd3f3046449b15ea758a74c6149831e"></a>
-static JSONObject&#160;</td><td class="memItemRight" valign="bottom"><b>createJsonValue</b> (SensorEvent event)</td></tr>
+<tr class="memitem:a7dd3f3046449b15ea758a74c6149831e"><td class="memItemLeft" align="right" valign="top">static JSONObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a7dd3f3046449b15ea758a74c6149831e">createJsonValue</a> (SensorEvent event)</td></tr>
 <tr class="separator:a7dd3f3046449b15ea758a74c6149831e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc64069e990444205002a3ce5d85fef1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abc64069e990444205002a3ce5d85fef1"></a>
-static JSONObject&#160;</td><td class="memItemRight" valign="bottom"><b>createJsonValue</b> (float[] vals)</td></tr>
+<tr class="memitem:abc64069e990444205002a3ce5d85fef1"><td class="memItemLeft" align="right" valign="top">static JSONObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#abc64069e990444205002a3ce5d85fef1">createJsonValue</a> (float[] vals)</td></tr>
 <tr class="separator:abc64069e990444205002a3ce5d85fef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af73dcb19b85598aae8a5614343b3c85c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af73dcb19b85598aae8a5614343b3c85c"></a>
-static List&lt; Sensor &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getAvailableMotionSensors</b> (Context context)</td></tr>
+<tr class="memitem:af73dcb19b85598aae8a5614343b3c85c"><td class="memItemLeft" align="right" valign="top">static List&lt; Sensor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#af73dcb19b85598aae8a5614343b3c85c">getAvailableMotionSensors</a> (Context context)</td></tr>
 <tr class="separator:af73dcb19b85598aae8a5614343b3c85c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ade37879a1a845275ff071583623fcb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ade37879a1a845275ff071583623fcb"></a>
-static boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isFakeLinearRequired</b> (Context context)</td></tr>
+<tr class="memitem:a5ade37879a1a845275ff071583623fcb"><td class="memItemLeft" align="right" valign="top">static boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a5ade37879a1a845275ff071583623fcb">isFakeLinearRequired</a> (Context context)</td></tr>
 <tr class="separator:a5ade37879a1a845275ff071583623fcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e23bfedc7b8b2906c390a0dc7f8449a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e23bfedc7b8b2906c390a0dc7f8449a"></a>
-static String&#160;</td><td class="memItemRight" valign="bottom"><b>getSensorHeader</b> (Sensor sensor)</td></tr>
+<tr class="memitem:a4e23bfedc7b8b2906c390a0dc7f8449a"><td class="memItemLeft" align="right" valign="top">static String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a4e23bfedc7b8b2906c390a0dc7f8449a">getSensorHeader</a> (Sensor sensor)</td></tr>
 <tr class="separator:a4e23bfedc7b8b2906c390a0dc7f8449a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a999edecf083e870eee9361f2dc2f6af8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a999edecf083e870eee9361f2dc2f6af8"></a>
-static String&#160;</td><td class="memItemRight" valign="bottom"><b>getSensorName</b> (Sensor sensor)</td></tr>
+<tr class="memitem:a999edecf083e870eee9361f2dc2f6af8"><td class="memItemLeft" align="right" valign="top">static String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a999edecf083e870eee9361f2dc2f6af8">getSensorName</a> (Sensor sensor)</td></tr>
 <tr class="separator:a999edecf083e870eee9361f2dc2f6af8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a678e2b60ce91978fe68ff0a136d375a7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a678e2b60ce91978fe68ff0a136d375a7"></a>
-static double[]&#160;</td><td class="memItemRight" valign="bottom"><b>getVector</b> (SensorEvent event)</td></tr>
+<tr class="memitem:a678e2b60ce91978fe68ff0a136d375a7"><td class="memItemLeft" align="right" valign="top">static double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a678e2b60ce91978fe68ff0a136d375a7">getVector</a> (SensorEvent event)</td></tr>
 <tr class="separator:a678e2b60ce91978fe68ff0a136d375a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2af82ab8ec4e7f86dc099f863d123b6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2af82ab8ec4e7f86dc099f863d123b6c"></a>
-static double[]&#160;</td><td class="memItemRight" valign="bottom"><b>getVector</b> (float[] eventVals)</td></tr>
+<tr class="memitem:a2af82ab8ec4e7f86dc099f863d123b6c"><td class="memItemLeft" align="right" valign="top">static double[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a2af82ab8ec4e7f86dc099f863d123b6c">getVector</a> (float[] eventVals)</td></tr>
 <tr class="separator:a2af82ab8ec4e7f86dc099f863d123b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a7f1077e17f1fbf30a1ef30fc36756931"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a7f1077e17f1fbf30a1ef30fc36756931">TAG</a> = &quot;MotionHelper&quot;</td></tr>
+<tr class="separator:a7f1077e17f1fbf30a1ef30fc36756931"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a7dd3f3046449b15ea758a74c6149831e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static JSONObject nl.sense_os.service.motion.MotionSensorUtils.createJsonValue </td>
+          <td>(</td>
+          <td class="paramtype">SensorEvent&#160;</td>
+          <td class="paramname"><em>event</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abc64069e990444205002a3ce5d85fef1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static JSONObject nl.sense_os.service.motion.MotionSensorUtils.createJsonValue </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>vals</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af73dcb19b85598aae8a5614343b3c85c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt;Sensor&gt; nl.sense_os.service.motion.MotionSensorUtils.getAvailableMotionSensors </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4e23bfedc7b8b2906c390a0dc7f8449a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static String nl.sense_os.service.motion.MotionSensorUtils.getSensorHeader </td>
+          <td>(</td>
+          <td class="paramtype">Sensor&#160;</td>
+          <td class="paramname"><em>sensor</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a999edecf083e870eee9361f2dc2f6af8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static String nl.sense_os.service.motion.MotionSensorUtils.getSensorName </td>
+          <td>(</td>
+          <td class="paramtype">Sensor&#160;</td>
+          <td class="paramname"><em>sensor</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a678e2b60ce91978fe68ff0a136d375a7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double [] nl.sense_os.service.motion.MotionSensorUtils.getVector </td>
+          <td>(</td>
+          <td class="paramtype">SensorEvent&#160;</td>
+          <td class="paramname"><em>event</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2af82ab8ec4e7f86dc099f863d123b6c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double [] nl.sense_os.service.motion.MotionSensorUtils.getVector </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>eventVals</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5ade37879a1a845275ff071583623fcb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static boolean nl.sense_os.service.motion.MotionSensorUtils.isFakeLinearRequired </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7f1077e17f1fbf30a1ef30fc36756931"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.motion.MotionSensorUtils.TAG = &quot;MotionHelper&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/motion/MotionSensorUtils.java</li>
+<li>src/nl/sense_os/service/motion/<a class="el" href="_motion_sensor_utils_8java.html">MotionSensorUtils.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>motion</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html">MotionSensorUtils</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1motion.html">motion</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html">MotionSensorUtils</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

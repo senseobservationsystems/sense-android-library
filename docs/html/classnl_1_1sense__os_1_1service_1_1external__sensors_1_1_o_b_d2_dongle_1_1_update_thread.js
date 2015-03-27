@@ -15,5 +15,12 @@ var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_u
     [ "OBD2CommandVehicleSpeed", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_vehicle_speed.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_vehicle_speed" ],
     [ "UpdateThread", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a515dd0952ecfc72aec94ffbf1f5ed075", null ],
     [ "cancel", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a76f7128a23b863c1427afa0835ef4a80", null ],
-    [ "run", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#ab9f9b07135939b0b403986302fcf67fc", null ]
+    [ "execute", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a83bc8a353c7c1759afdacd024d42993f", null ],
+    [ "initializeDataStream", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a97626060c288d389a59993b9896b4235", null ],
+    [ "pollAll", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a1197ee7e3f637848a763f49701b49281", null ],
+    [ "queryString", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#ad330eeefaa97cd93fcecdeca270c284f", null ],
+    [ "run", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#ab9f9b07135939b0b403986302fcf67fc", null ],
+    [ "sampleCommand", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a25c2099cf0275f58e56e491b3504938f", null ],
+    [ "sockInputStream", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a3792ee2bbeb9f69598ce491618ff45e7", null ],
+    [ "sockOutputStream", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a78fdfd848403c2799e73192d27dca043", null ]
 ];

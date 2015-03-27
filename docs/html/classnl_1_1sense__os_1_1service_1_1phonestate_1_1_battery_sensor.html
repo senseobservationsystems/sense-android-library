@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pho
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pho
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.phonestate.BatterySensor Class Reference</div>  </div>
@@ -125,17 +130,13 @@ Inheritance diagram for nl.sense_os.service.phonestate.BatterySensor:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab283df2fe1825159733ff3e9392577b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab283df2fe1825159733ff3e9392577b9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSampleDelay</b> (long _sampleDelay)</td></tr>
+<tr class="memitem:ab283df2fe1825159733ff3e9392577b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#ab283df2fe1825159733ff3e9392577b9">setSampleDelay</a> (long _sampleDelay)</td></tr>
 <tr class="separator:ab283df2fe1825159733ff3e9392577b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28ac3ec249b29cd11c487cba01134674"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28ac3ec249b29cd11c487cba01134674"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>startBatterySensing</b> (long _sampleDelay)</td></tr>
+<tr class="memitem:a28ac3ec249b29cd11c487cba01134674"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a28ac3ec249b29cd11c487cba01134674">startBatterySensing</a> (long _sampleDelay)</td></tr>
 <tr class="separator:a28ac3ec249b29cd11c487cba01134674"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ae2213a766e786061b6dd88af23d7b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ae2213a766e786061b6dd88af23d7b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stopBatterySensing</b> ()</td></tr>
+<tr class="memitem:a0ae2213a766e786061b6dd88af23d7b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a0ae2213a766e786061b6dd88af23d7b7">stopBatterySensing</a> ()</td></tr>
 <tr class="separator:a0ae2213a766e786061b6dd88af23d7b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac025380e9c08d65842c8a949a0a7bc74"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac025380e9c08d65842c8a949a0a7bc74"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>getSampleDelay</b> ()</td></tr>
+<tr class="memitem:ac025380e9c08d65842c8a949a0a7bc74"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#ac025380e9c08d65842c8a949a0a7bc74">getSampleDelay</a> ()</td></tr>
 <tr class="separator:ac025380e9c08d65842c8a949a0a7bc74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
 <tr class="memitem:a714854a4b022953b78638ddbb67c2259 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a714854a4b022953b78638ddbb67c2259">addSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
@@ -149,14 +150,12 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>getSampleDelay</b> ()
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:afcde9afbd8aae4bd0173c0b9cb7414b1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afcde9afbd8aae4bd0173c0b9cb7414b1"></a>
-static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html">BatterySensor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> (Context context)</td></tr>
+<tr class="memitem:afcde9afbd8aae4bd0173c0b9cb7414b1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html">BatterySensor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#afcde9afbd8aae4bd0173c0b9cb7414b1">getInstance</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a3e0d1baf3582e42841153200218c58f4">context</a>)</td></tr>
 <tr class="separator:afcde9afbd8aae4bd0173c0b9cb7414b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a3c6449f7ef023e25a9489149308a2ad6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c6449f7ef023e25a9489149308a2ad6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>BatterySensor</b> (Context context)</td></tr>
+<tr class="memitem:a3c6449f7ef023e25a9489149308a2ad6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a3c6449f7ef023e25a9489149308a2ad6">BatterySensor</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a3e0d1baf3582e42841153200218c58f4">context</a>)</td></tr>
 <tr class="separator:a3c6449f7ef023e25a9489149308a2ad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
 <tr class="memitem:a19c613b40edd1aed1cd74b630cd85562 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a19c613b40edd1aed1cd74b630cd85562">checkSubscribers</a> ()</td></tr>
@@ -166,11 +165,28 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a95eab96ec40cc155e84c161aa0677873"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a95eab96ec40cc155e84c161aa0677873">sampleDelay</a> = 0</td></tr>
+<tr class="separator:a95eab96ec40cc155e84c161aa0677873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86d97fdbe64846456bee4d655d3d5ceb"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a86d97fdbe64846456bee4d655d3d5ceb">lastSampleTime</a></td></tr>
+<tr class="separator:a86d97fdbe64846456bee4d655d3d5ceb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e0d1baf3582e42841153200218c58f4"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a3e0d1baf3582e42841153200218c58f4">context</a></td></tr>
+<tr class="separator:a3e0d1baf3582e42841153200218c58f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9aa66b682d86f78447cec5773dd99e2d"><td class="memItemLeft" align="right" valign="top">BroadcastReceiver&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a9aa66b682d86f78447cec5773dd99e2d">batteryChangeReceiver</a></td></tr>
+<tr class="separator:a9aa66b682d86f78447cec5773dd99e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a475b00a448636992830f9708680c6e3d"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a475b00a448636992830f9708680c6e3d">TAG</a> = &quot;Sense Battery sensor&quot;</td></tr>
+<tr class="separator:a475b00a448636992830f9708680c6e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b4da06df14eb82118afdde72b3d5095"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html">BatterySensor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#a9b4da06df14eb82118afdde72b3d5095">instance</a> = null</td></tr>
+<tr class="separator:a9b4da06df14eb82118afdde72b3d5095"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -178,16 +194,249 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents the battery sensor. Registers itself for ACTION_BATTERY_CHANGED Broadcasts from Android.</p>
 <dl class="section author"><dt>Author</dt><dd>Ted Schmidt <a href="#" onclick="location.href='mai'+'lto:'+'ted'+'@s'+'ens'+'e-'+'os.'+'nl'; return false;">ted@s<span style="display: none;">.nosp@m.</span>ense<span style="display: none;">.nosp@m.</span>-os.n<span style="display: none;">.nosp@m.</span>l</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/phonestate/BatterySensor.java</li>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a3c6449f7ef023e25a9489149308a2ad6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.phonestate.BatterySensor.BatterySensor </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="afcde9afbd8aae4bd0173c0b9cb7414b1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html">BatterySensor</a> nl.sense_os.service.phonestate.BatterySensor.getInstance </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac025380e9c08d65842c8a949a0a7bc74"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.phonestate.BatterySensor.getSampleDelay </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab283df2fe1825159733ff3e9392577b9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.phonestate.BatterySensor.setSampleDelay </td>
+          <td>(</td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>_sampleDelay</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a28ac3ec249b29cd11c487cba01134674"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.phonestate.BatterySensor.startBatterySensing </td>
+          <td>(</td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>_sampleDelay</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0ae2213a766e786061b6dd88af23d7b7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.phonestate.BatterySensor.stopBatterySensing </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a9aa66b682d86f78447cec5773dd99e2d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BroadcastReceiver nl.sense_os.service.phonestate.BatterySensor.batteryChangeReceiver</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3e0d1baf3582e42841153200218c58f4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.phonestate.BatterySensor.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9b4da06df14eb82118afdde72b3d5095"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html">BatterySensor</a> nl.sense_os.service.phonestate.BatterySensor.instance = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a86d97fdbe64846456bee4d655d3d5ceb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.phonestate.BatterySensor.lastSampleTime</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a95eab96ec40cc155e84c161aa0677873"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.phonestate.BatterySensor.sampleDelay = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a475b00a448636992830f9708680c6e3d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.phonestate.BatterySensor.TAG = &quot;Sense Battery sensor&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/phonestate/<a class="el" href="_battery_sensor_8java.html">BatterySensor.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>phonestate</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html">BatterySensor</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1phonestate.html">phonestate</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html">BatterySensor</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

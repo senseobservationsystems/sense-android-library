@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_al
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -106,6 +109,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_al
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1_alive_checker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.AliveChecker Class Reference</div>  </div>
@@ -122,8 +126,7 @@ Inheritance diagram for nl.sense_os.service.AliveChecker:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8b8f3da9c4ecb4b0ebdec912e02fb9b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b8f3da9c4ecb4b0ebdec912e02fb9b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onReceive</b> (Context context, Intent intent)</td></tr>
+<tr class="memitem:a8b8f3da9c4ecb4b0ebdec912e02fb9b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a8b8f3da9c4ecb4b0ebdec912e02fb9b7">onReceive</a> (Context context, Intent intent)</td></tr>
 <tr class="separator:a8b8f3da9c4ecb4b0ebdec912e02fb9b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -132,11 +135,46 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a4d0cc47a6268d6fe26543e6476ac4553"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ced9b5a5d6aa22f2b45ee48360b9de1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a4ced9b5a5d6aa22f2b45ee48360b9de1">stopChecks</a> (Context context)</td></tr>
 <tr class="separator:a4ced9b5a5d6aa22f2b45ee48360b9de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a48493453b8e7dc9487a383c4917cedda"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a48493453b8e7dc9487a383c4917cedda">TAG</a> = &quot;AliveChecker&quot;</td></tr>
+<tr class="separator:a48493453b8e7dc9487a383c4917cedda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72aacdccd0bc6eef32f32bcf66f29f9f"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a72aacdccd0bc6eef32f32bcf66f29f9f">REQ_CODE_NORMAL</a> = 0x0C471FE1</td></tr>
+<tr class="separator:a72aacdccd0bc6eef32f32bcf66f29f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab8b5f53259489ed27372f4c3a5afd04"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#aab8b5f53259489ed27372f4c3a5afd04">REQ_CODE_WAKEUP</a> = 0x0C471FE2</td></tr>
+<tr class="separator:aab8b5f53259489ed27372f4c3a5afd04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is responsible for checking if the <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service.html">SenseService</a> is still alive when it should be. It works by setting periodic alarm broadcasts that are received by this class. The Sense service calls <a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a4d0cc47a6268d6fe26543e6476ac4553">scheduleChecks(Context)</a> when it starts sensing.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a8b8f3da9c4ecb4b0ebdec912e02fb9b7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.AliveChecker.onReceive </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Intent&#160;</td>
+          <td class="paramname"><em>intent</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a4d0cc47a6268d6fe26543e6476ac4553"></a>
 <div class="memitem">
 <div class="memproto">
@@ -199,16 +237,77 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a72aacdccd0bc6eef32f32bcf66f29f9f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.AliveChecker.REQ_CODE_NORMAL = 0x0C471FE1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aab8b5f53259489ed27372f4c3a5afd04"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.AliveChecker.REQ_CODE_WAKEUP = 0x0C471FE2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a48493453b8e7dc9487a383c4917cedda"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.AliveChecker.TAG = &quot;AliveChecker&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/AliveChecker.java</li>
+<li>src/nl/sense_os/service/<a class="el" href="_alive_checker_8java.html">AliveChecker.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html">AliveChecker</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html">AliveChecker</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:22 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

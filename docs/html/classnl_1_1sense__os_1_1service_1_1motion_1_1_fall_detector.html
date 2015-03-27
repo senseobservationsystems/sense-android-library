@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.motion.FallDetector Class Reference</div>  </div>
@@ -124,17 +130,20 @@ Inheritance diagram for nl.sense_os.service.motion.FallDetector:</div>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector_1_1_interrupt.html">Interrupt</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:affa619e6aefdf96c98c1ef85cdc1bc65"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affa619e6aefdf96c98c1ef85cdc1bc65"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FallDetector</b> (Context context)</td></tr>
+<tr class="memitem:affa619e6aefdf96c98c1ef85cdc1bc65"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#affa619e6aefdf96c98c1ef85cdc1bc65">FallDetector</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a59bfd6c605873e4de43d38a7778de1ba">context</a>)</td></tr>
 <tr class="separator:affa619e6aefdf96c98c1ef85cdc1bc65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae577ae05e91cd2723438688b0096ecb1"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#ae577ae05e91cd2723438688b0096ecb1">isSampleComplete</a> ()</td></tr>
 <tr class="separator:ae577ae05e91cd2723438688b0096ecb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51fa124f0a92e3426596c2aa528fbecb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a51fa124f0a92e3426596c2aa528fbecb">onNewData</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a51fa124f0a92e3426596c2aa528fbecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeed886463894ff3bc04a7ff4db2a1035"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeed886463894ff3bc04a7ff4db2a1035"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>sendFallMessage</b> (boolean fall)</td></tr>
+<tr class="memitem:aeed886463894ff3bc04a7ff4db2a1035"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#aeed886463894ff3bc04a7ff4db2a1035">sendFallMessage</a> (boolean fall)</td></tr>
 <tr class="separator:aeed886463894ff3bc04a7ff4db2a1035"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51ea54f272d752b59ee40c69cd02da4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a51ea54f272d752b59ee40c69cd02da4f">startNewSample</a> ()</td></tr>
 <tr class="separator:a51ea54f272d752b59ee40c69cd02da4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,9 +159,59 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>sendFallMessage</b> (
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a661a7b9108174ef568e845f0aa46d8f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a661a7b9108174ef568e845f0aa46d8f0"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>demo</b> = true</td></tr>
+<tr class="memitem:a661a7b9108174ef568e845f0aa46d8f0"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a661a7b9108174ef568e845f0aa46d8f0">demo</a> = true</td></tr>
 <tr class="separator:a661a7b9108174ef568e845f0aa46d8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ae77d156b855ee2579c03e7c7fdf69272"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#ae77d156b855ee2579c03e7c7fdf69272">activity</a> (float accVecSum)</td></tr>
+<tr class="separator:ae77d156b855ee2579c03e7c7fdf69272"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa930ebd94e86804aeb3bc3344f7cfc0"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#aaa930ebd94e86804aeb3bc3344f7cfc0">fallDetected</a> (float accVecSum)</td></tr>
+<tr class="separator:aaa930ebd94e86804aeb3bc3344f7cfc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34b62c97d0a27d9d79430047db113778"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a34b62c97d0a27d9d79430047db113778">freeFall</a> (float accVecSum)</td></tr>
+<tr class="separator:a34b62c97d0a27d9d79430047db113778"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54062f1a1ef5e791120d5f486d50e7bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a54062f1a1ef5e791120d5f486d50e7bc">inactivity</a> (float accVecSum)</td></tr>
+<tr class="separator:a54062f1a1ef5e791120d5f486d50e7bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a315bc1f45a50c250e96d43b6550e28ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a315bc1f45a50c250e96d43b6550e28ab">reset</a> ()</td></tr>
+<tr class="separator:a315bc1f45a50c250e96d43b6550e28ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a8d0d8625e2f091e2fa3eaa20b9804008"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector_1_1_interrupt.html">Interrupt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a8d0d8625e2f091e2fa3eaa20b9804008">interrupt</a></td></tr>
+<tr class="separator:a8d0d8625e2f091e2fa3eaa20b9804008"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bbbad89849d4d1a50ad392c8cd175c3"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a3bbbad89849d4d1a50ad392c8cd175c3">startInterrupt</a> = 0</td></tr>
+<tr class="separator:a3bbbad89849d4d1a50ad392c8cd175c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50750a16a63e48d8caa4f85fb7c78345"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a50750a16a63e48d8caa4f85fb7c78345">G</a> = 9.81F</td></tr>
+<tr class="separator:a50750a16a63e48d8caa4f85fb7c78345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a30fb186b6f361ce1bd2394baadf14d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a9a30fb186b6f361ce1bd2394baadf14d">THRESH_FF</a> = 0.6F * G</td></tr>
+<tr class="separator:a9a30fb186b6f361ce1bd2394baadf14d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdfc48862f6b2feef9b9940c19caa544"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#abdfc48862f6b2feef9b9940c19caa544">TIME_FF</a> = 60F</td></tr>
+<tr class="separator:abdfc48862f6b2feef9b9940c19caa544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0faecfd001b0cfa5ebb2a0a62945a0f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#af0faecfd001b0cfa5ebb2a0a62945a0f">TIME_FF_DEMO</a> = 200F</td></tr>
+<tr class="separator:af0faecfd001b0cfa5ebb2a0a62945a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86caf797fbd03eb39d51819dd07e9d9c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a86caf797fbd03eb39d51819dd07e9d9c">THRESH_ACT</a> = 2.0F * G</td></tr>
+<tr class="separator:a86caf797fbd03eb39d51819dd07e9d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b15bd9ee06e17eb8887a1888194bfe2"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a2b15bd9ee06e17eb8887a1888194bfe2">TIME_FF_ACT</a> = 200F</td></tr>
+<tr class="separator:a2b15bd9ee06e17eb8887a1888194bfe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a650865f097d663b69c1627c4f86b394e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a650865f097d663b69c1627c4f86b394e">THRESH_INACT</a> = 1.3F * G</td></tr>
+<tr class="separator:a650865f097d663b69c1627c4f86b394e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fc93a2e3b8d76cf88a1efa0593d420e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a8fc93a2e3b8d76cf88a1efa0593d420e">TIME_INACT</a> = 2000F</td></tr>
+<tr class="separator:a8fc93a2e3b8d76cf88a1efa0593d420e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc250860e328714a41bcb7413bb66663"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#abc250860e328714a41bcb7413bb66663">TIME_ACT_INACT</a> = 3500</td></tr>
+<tr class="separator:abc250860e328714a41bcb7413bb66663"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37bf05e0c7b3b953620190663abc0bad"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a37bf05e0c7b3b953620190663abc0bad">THRESH_INITIAL</a> = 0.7F * G</td></tr>
+<tr class="separator:a37bf05e0c7b3b953620190663abc0bad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0774f09f3792e171d88264713dcd48c3"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a0774f09f3792e171d88264713dcd48c3">time</a> = 0</td></tr>
+<tr class="separator:a0774f09f3792e171d88264713dcd48c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae000b728f0327f7a0ae0f08c71f39717"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#ae000b728f0327f7a0ae0f08c71f39717">useInactivity</a> = false</td></tr>
+<tr class="separator:ae000b728f0327f7a0ae0f08c71f39717"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59bfd6c605873e4de43d38a7778de1ba"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a59bfd6c605873e4de43d38a7778de1ba">context</a></td></tr>
+<tr class="separator:a59bfd6c605873e4de43d38a7778de1ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a5ad4a8c75e1801a7f5d6674aa1465ccd"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a5ad4a8c75e1801a7f5d6674aa1465ccd">TAG</a> = &quot;Fall Detector&quot;</td></tr>
+<tr class="separator:a5ad4a8c75e1801a7f5d6674aa1465ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -164,8 +223,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,7 +232,120 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 <div class="textblock"><p>Fall detection class is based on the fall detection algorithm proposed on: <a href="http://www.ecnmag.com/Articles/2009/12/human-fall-detection/">http://www.ecnmag.com/Articles/2009/12/human-fall-detection/</a></p>
 <dl class="section author"><dt>Author</dt><dd>Ted Schmidt <a href="#" onclick="location.href='mai'+'lto:'+'ted'+'@s'+'ens'+'e-'+'os.'+'nl'; return false;">ted@s<span style="display: none;">.nosp@m.</span>ense<span style="display: none;">.nosp@m.</span>-os.n<span style="display: none;">.nosp@m.</span>l</a></dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html">MotionSensor</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="affa619e6aefdf96c98c1ef85cdc1bc65"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.motion.FallDetector.FallDetector </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ae77d156b855ee2579c03e7c7fdf69272"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.FallDetector.activity </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>accVecSum</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aaa930ebd94e86804aeb3bc3344f7cfc0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.FallDetector.fallDetected </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>accVecSum</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a34b62c97d0a27d9d79430047db113778"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.FallDetector.freeFall </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>accVecSum</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a54062f1a1ef5e791120d5f486d50e7bc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.FallDetector.inactivity </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>accVecSum</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="ae577ae05e91cd2723438688b0096ecb1"></a>
 <div class="memitem">
 <div class="memproto">
@@ -218,6 +389,45 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 </div>
 </div>
+<a class="anchor" id="a315bc1f45a50c250e96d43b6550e28ab"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.FallDetector.reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aeed886463894ff3bc04a7ff4db2a1035"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.FallDetector.sendFallMessage </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>fall</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a51ea54f272d752b59ee40c69cd02da4f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -237,16 +447,349 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a59bfd6c605873e4de43d38a7778de1ba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.motion.FallDetector.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a661a7b9108174ef568e845f0aa46d8f0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.FallDetector.demo = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a50750a16a63e48d8caa4f85fb7c78345"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.G = 9.81F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8d0d8625e2f091e2fa3eaa20b9804008"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector_1_1_interrupt.html">Interrupt</a> nl.sense_os.service.motion.FallDetector.interrupt</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3bbbad89849d4d1a50ad392c8cd175c3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.motion.FallDetector.startInterrupt = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5ad4a8c75e1801a7f5d6674aa1465ccd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.motion.FallDetector.TAG = &quot;Fall Detector&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a86caf797fbd03eb39d51819dd07e9d9c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.THRESH_ACT = 2.0F * G</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9a30fb186b6f361ce1bd2394baadf14d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.THRESH_FF = 0.6F * G</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a650865f097d663b69c1627c4f86b394e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.THRESH_INACT = 1.3F * G</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a37bf05e0c7b3b953620190663abc0bad"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.THRESH_INITIAL = 0.7F * G</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0774f09f3792e171d88264713dcd48c3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.motion.FallDetector.time = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abc250860e328714a41bcb7413bb66663"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.TIME_ACT_INACT = 3500</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abdfc48862f6b2feef9b9940c19caa544"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.TIME_FF = 60F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2b15bd9ee06e17eb8887a1888194bfe2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.TIME_FF_ACT = 200F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af0faecfd001b0cfa5ebb2a0a62945a0f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.TIME_FF_DEMO = 200F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8fc93a2e3b8d76cf88a1efa0593d420e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.motion.FallDetector.TIME_INACT = 2000F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae000b728f0327f7a0ae0f08c71f39717"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.FallDetector.useInactivity = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/motion/FallDetector.java</li>
+<li>src/nl/sense_os/service/motion/<a class="el" href="_fall_detector_8java.html">FallDetector.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>motion</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html">FallDetector</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1motion.html">motion</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html">FallDetector</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

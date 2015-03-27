@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1fee
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -110,14 +113,17 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1fee
 
 <p>This is the complete list of members for <a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>FeedbackManager</b>(Context context) (defined in <a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html#aa4c4a04578f4405bdf3191d7be51c948">giveFeedback</a>(String name, long start, long end, String label)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html#ad307da4a2044866b4625d5f2c29425cf">context</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html#a4692abaa4144080853a397e30722aedc">FeedbackManager</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html#aa4c4a04578f4405bdf3191d7be51c948">giveFeedback</a>(String name, long start, long end, String label)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html#a8f3595d1aa6130071130eef7b4a1b529">manualLearn</a>(String sourceSensorId, String stateSensorId, long start, long end, String label)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html#a6ffdf7b4f89c0f923cdc4a35b38b1c18">TAG</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html">nl.sense_os.service.feedback.FeedbackManager</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

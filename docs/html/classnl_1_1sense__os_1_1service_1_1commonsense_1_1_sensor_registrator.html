@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.commonsense.SensorRegistrator Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -116,18 +121,18 @@ Inheritance diagram for nl.sense_os.service.commonsense.SensorRegistrator:</div>
  <div class="center">
   <img src="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.png" usemap="#nl.sense_os.service.commonsense.SensorRegistrator_map" alt=""/>
   <map id="nl.sense_os.service.commonsense.SensorRegistrator_map" name="nl.sense_os.service.commonsense.SensorRegistrator_map">
-<area href="classnl_1_1sense__os_1_1platform_1_1_trivial_sensor_registrator.html" alt="nl.sense_os.platform.TrivialSensorRegistrator" shape="rect" coords="0,56,397,80"/>
-<area href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_default_sensor_registrator.html" alt="nl.sense_os.service.commonsense.DefaultSensorRegistrator" shape="rect" coords="407,56,804,80"/>
-<area href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_registrator.html" alt="nl.sense_os.service.external_sensors.OBD2SensorRegistrator" shape="rect" coords="814,56,1211,80"/>
-<area href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness_registrator.html" alt="nl.sense_os.service.external_sensors.ZephyrBioHarnessRegistrator" shape="rect" coords="1221,56,1618,80"/>
-<area href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hxm_registrator.html" alt="nl.sense_os.service.external_sensors.ZephyrHxmRegistrator" shape="rect" coords="1628,56,2025,80"/>
+<area href="classnl_1_1sense__os_1_1platform_1_1_trivial_sensor_registrator.html" alt="nl.sense_os.platform.TrivialSensorRegistrator" shape="rect" coords="0,56,567,80"/>
+<area href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_default_sensor_registrator.html" alt="nl.sense_os.service.commonsense.DefaultSensorRegistrator" shape="rect" coords="577,56,1144,80"/>
+<area href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html" alt="nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine.EmptyRegistrator" shape="rect" coords="1154,56,1721,80"/>
+<area href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_registrator.html" alt="nl.sense_os.service.external_sensors.OBD2SensorRegistrator" shape="rect" coords="1731,56,2298,80"/>
+<area href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness_registrator.html" alt="nl.sense_os.service.external_sensors.ZephyrBioHarnessRegistrator" shape="rect" coords="2308,56,2875,80"/>
+<area href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hxm_registrator.html" alt="nl.sense_os.service.external_sensors.ZephyrHxmRegistrator" shape="rect" coords="2885,56,3452,80"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9376d5d1d9a5121490083f986d88e864"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9376d5d1d9a5121490083f986d88e864"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SensorRegistrator</b> (Context context)</td></tr>
+<tr class="memitem:a9376d5d1d9a5121490083f986d88e864"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a9376d5d1d9a5121490083f986d88e864">SensorRegistrator</a> (Context context)</td></tr>
 <tr class="separator:a9376d5d1d9a5121490083f986d88e864"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00d171677338a5476ba57818a37e7a0f"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a00d171677338a5476ba57818a37e7a0f">checkSensor</a> (String name, String displayName, String dataType, String description, String value, String deviceType, String deviceUuid)</td></tr>
 <tr class="separator:a00d171677338a5476ba57818a37e7a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,11 +140,38 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab91560cdeef6c3df58a819d5c593a78c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39eb6d66ebca1012e9aea1ee1eb70c63"><td class="memItemLeft" align="right" valign="top">abstract boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a39eb6d66ebca1012e9aea1ee1eb70c63">verifySensorIds</a> (String deviceType, String deviceUuid)</td></tr>
 <tr class="separator:a39eb6d66ebca1012e9aea1ee1eb70c63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ab4c03240eccca1e4b0dad6f5dd4b222a"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#ab4c03240eccca1e4b0dad6f5dd4b222a">mContext</a></td></tr>
+<tr class="separator:ab4c03240eccca1e4b0dad6f5dd4b222a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a1305075ecc27ba64931a8b843f8ffe2d"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a1305075ecc27ba64931a8b843f8ffe2d">TAG</a> = &quot;SensorRegistrator&quot;</td></tr>
+<tr class="separator:a1305075ecc27ba64931a8b843f8ffe2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Helper class that registers the sensors for a device at CommonSense.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a9376d5d1d9a5121490083f986d88e864"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.commonsense.SensorRegistrator.SensorRegistrator </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a00d171677338a5476ba57818a37e7a0f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -268,16 +300,57 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ab4c03240eccca1e4b0dad6f5dd4b222a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.commonsense.SensorRegistrator.mContext</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1305075ecc27ba64931a8b843f8ffe2d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.commonsense.SensorRegistrator.TAG = &quot;SensorRegistrator&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/commonsense/SensorRegistrator.java</li>
+<li>src/nl/sense_os/service/commonsense/<a class="el" href="_sensor_registrator_8java.html">SensorRegistrator.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>commonsense</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">SensorRegistrator</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1commonsense.html">commonsense</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">SensorRegistrator</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

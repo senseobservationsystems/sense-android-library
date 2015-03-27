@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1con
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -112,14 +115,15 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1con
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a6056a58a9b8dbf6ccbc8c8c46412367b">AUTH_PREFS</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html">nl.sense_os.service.constants.SensePrefs</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">MAIN_PREFS</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html">nl.sense_os.service.constants.SensePrefs</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a8010a772d4b639cc2ce871c6a7b1d7d7">SENSOR_SPECIFICS</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html">nl.sense_os.service.constants.SensePrefs</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a488096b47091f2079f31332ce198f698">STATUS_PREFS</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html">nl.sense_os.service.constants.SensePrefs</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a9a7586be3d11ddb8895685583f9371b8">SensePrefs</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html">nl.sense_os.service.constants.SensePrefs</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a8010a772d4b639cc2ce871c6a7b1d7d7">SENSOR_SPECIFICS</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html">nl.sense_os.service.constants.SensePrefs</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a488096b47091f2079f31332ce198f698">STATUS_PREFS</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html">nl.sense_os.service.constants.SensePrefs</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

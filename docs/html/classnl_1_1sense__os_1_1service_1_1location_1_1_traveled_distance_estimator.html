@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1loc
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -106,37 +109,746 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1loc
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pac-attribs">Package Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.location.TraveledDistanceEstimator Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2bef68801c89cc114832eb9e81b9cead"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2bef68801c89cc114832eb9e81b9cead"></a>
-synchronized void&#160;</td><td class="memItemRight" valign="bottom"><b>reset</b> ()</td></tr>
+<tr class="memitem:a916aab73c79d307446d7f3e2acf7642c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a916aab73c79d307446d7f3e2acf7642c">TraveledDistanceEstimator</a> ()</td></tr>
+<tr class="separator:a916aab73c79d307446d7f3e2acf7642c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bef68801c89cc114832eb9e81b9cead"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a2bef68801c89cc114832eb9e81b9cead">reset</a> ()</td></tr>
 <tr class="separator:a2bef68801c89cc114832eb9e81b9cead"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38774c5878a768d0875ee14580dcd8e1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a38774c5878a768d0875ee14580dcd8e1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addPoint</b> (final Location l)</td></tr>
+<tr class="memitem:a38774c5878a768d0875ee14580dcd8e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a38774c5878a768d0875ee14580dcd8e1">addPoint</a> (final Location l)</td></tr>
 <tr class="separator:a38774c5878a768d0875ee14580dcd8e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc982bfaebe516bda0aa650fb8b4fbc3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc982bfaebe516bda0aa650fb8b4fbc3"></a>
-synchronized void&#160;</td><td class="memItemRight" valign="bottom"><b>addPoint</b> (double timestamp, double lat, double lon, double acc)</td></tr>
+<tr class="memitem:afc982bfaebe516bda0aa650fb8b4fbc3"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#afc982bfaebe516bda0aa650fb8b4fbc3">addPoint</a> (double timestamp, double lat, double lon, double acc)</td></tr>
 <tr class="separator:afc982bfaebe516bda0aa650fb8b4fbc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f98b21eacebb9f7123fb6bf1bbe95c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4f98b21eacebb9f7123fb6bf1bbe95c2"></a>
-synchronized double&#160;</td><td class="memItemRight" valign="bottom"><b>getTraveledDistance</b> ()</td></tr>
+<tr class="memitem:a4f98b21eacebb9f7123fb6bf1bbe95c2"><td class="memItemLeft" align="right" valign="top">synchronized double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a4f98b21eacebb9f7123fb6bf1bbe95c2">getTraveledDistance</a> ()</td></tr>
 <tr class="separator:a4f98b21eacebb9f7123fb6bf1bbe95c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-attribs"></a>
+Package Attributes</h2></td></tr>
+<tr class="memitem:a60b8c7821ed96ae45a1953a5d6dbb342"><td class="memItemLeft" align="right" valign="top">final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a60b8c7821ed96ae45a1953a5d6dbb342">WINDOW_SIZE</a> = 7</td></tr>
+<tr class="separator:a60b8c7821ed96ae45a1953a5d6dbb342"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4f866412008b87d082fed5d41221068"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#ac4f866412008b87d082fed5d41221068">totalDistance_</a> = 0</td></tr>
+<tr class="separator:ac4f866412008b87d082fed5d41221068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57a84775c8dec0c4197992d32058fd17"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a57a84775c8dec0c4197992d32058fd17">weightSum_</a> = 0</td></tr>
+<tr class="separator:a57a84775c8dec0c4197992d32058fd17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6be7ce1b96e6932a93f8247c1d2f245f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a6be7ce1b96e6932a93f8247c1d2f245f">clusterCenter_</a></td></tr>
+<tr class="separator:a6be7ce1b96e6932a93f8247c1d2f245f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae17bcec5c3708adcbf78d2d1f33f5d54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#ae17bcec5c3708adcbf78d2d1f33f5d54">lastClusterCenter_</a></td></tr>
+<tr class="separator:ae17bcec5c3708adcbf78d2d1f33f5d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35128956e85807a3e1b953cde36df970"><td class="memItemLeft" align="right" valign="top">ArrayList&lt; <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a35128956e85807a3e1b953cde36df970">window_</a> = new ArrayList&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&gt;()</td></tr>
+<tr class="separator:a35128956e85807a3e1b953cde36df970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b5b12a713ac7a5a112b9720cae67ae4"><td class="memItemLeft" align="right" valign="top">Hashtable&lt; <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>, Double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a9b5b12a713ac7a5a112b9720cae67ae4">blackList_</a> = new Hashtable&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>, Double&gt;()</td></tr>
+<tr class="separator:a9b5b12a713ac7a5a112b9720cae67ae4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fbb89b13be212c6e85f5a41afc74db8"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a1fbb89b13be212c6e85f5a41afc74db8">skipLastDistance</a> = false</td></tr>
+<tr class="separator:a1fbb89b13be212c6e85f5a41afc74db8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aa471bf7ebdb6d573925caef426bd7606"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#aa471bf7ebdb6d573925caef426bd7606">getAccuracyAtQuantile</a> (double p)</td></tr>
+<tr class="separator:aa471bf7ebdb6d573925caef426bd7606"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3d2a13802a63a4cb9a6980ac0f7cb45"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#af3d2a13802a63a4cb9a6980ac0f7cb45">isBlackListed</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> p)</td></tr>
+<tr class="separator:af3d2a13802a63a4cb9a6980ac0f7cb45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5a79b98ede88030b1b57e5ba312bc77"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#ac5a79b98ede88030b1b57e5ba312bc77">blackList</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> p)</td></tr>
+<tr class="separator:ac5a79b98ede88030b1b57e5ba312bc77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d608271180a70b461792ed15ced96c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a8d608271180a70b461792ed15ced96c9">processPoint</a> (final <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> p)</td></tr>
+<tr class="separator:a8d608271180a70b461792ed15ced96c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ca6f5a816dba7391b828f444be1a8cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a9ca6f5a816dba7391b828f444be1a8cb">updateCenter</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> p)</td></tr>
+<tr class="separator:a9ca6f5a816dba7391b828f444be1a8cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a3611031608ae7275627a3e16e3897834"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a3611031608ae7275627a3e16e3897834">distanceBetween</a> (double lat1, double lon1, double lat2, double lon2)</td></tr>
+<tr class="separator:a3611031608ae7275627a3e16e3897834"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ef4b8173205a043dcaa4ff6cec8915f"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a2ef4b8173205a043dcaa4ff6cec8915f">distanceBetween</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> p1, <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> p2)</td></tr>
+<tr class="separator:a2ef4b8173205a043dcaa4ff6cec8915f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a506507ac45f7e1b1641ae0fe63cf0178"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a506507ac45f7e1b1641ae0fe63cf0178">MEDIAN_FILTER_FACTOR</a> = 2</td></tr>
+<tr class="separator:a506507ac45f7e1b1641ae0fe63cf0178"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1232207e10210cfafb35d0272e383a9"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#ae1232207e10210cfafb35d0272e383a9">MEDIAN_FILTER_QUANTILE</a> = 0.5</td></tr>
+<tr class="separator:ae1232207e10210cfafb35d0272e383a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48a8572d577b0eefcbafc3802043dc42"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a48a8572d577b0eefcbafc3802043dc42">BLACKLIST_TIMEOUT</a> = 3 * 3600 * 1000</td></tr>
+<tr class="separator:a48a8572d577b0eefcbafc3802043dc42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32d6a5fa7d13ec61b6fac68b80109f47"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a32d6a5fa7d13ec61b6fac68b80109f47">BLACKLIST_DISTANCE</a> = 300</td></tr>
+<tr class="separator:a32d6a5fa7d13ec61b6fac68b80109f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af01a3377487a75818cda2f891aa04fd2"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#af01a3377487a75818cda2f891aa04fd2">CLEANUP_SIZE</a> = 100</td></tr>
+<tr class="separator:af01a3377487a75818cda2f891aa04fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec2b7d3ee7c7340ad4c219a335f6ae98"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#aec2b7d3ee7c7340ad4c219a335f6ae98">MIN_ACCURACY</a> = 1</td></tr>
+<tr class="separator:aec2b7d3ee7c7340ad4c219a335f6ae98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b8335b96697c8aa38f4bc25799e6a47"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a1b8335b96697c8aa38f4bc25799e6a47">MAX_SPEED</a> = 60</td></tr>
+<tr class="separator:a1b8335b96697c8aa38f4bc25799e6a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b61a54fbc6b23c8274679c4997aea52"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a6b61a54fbc6b23c8274679c4997aea52">MIN_CLUSTER_DISTANCE</a> = 20</td></tr>
+<tr class="separator:a6b61a54fbc6b23c8274679c4997aea52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03fc2134aeface38f680859bd56ae1d2"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a03fc2134aeface38f680859bd56ae1d2">ACCURACY_FACTOR</a> = 1.5</td></tr>
+<tr class="separator:a03fc2134aeface38f680859bd56ae1d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a916aab73c79d307446d7f3e2acf7642c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.location.TraveledDistanceEstimator.TraveledDistanceEstimator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a38774c5878a768d0875ee14580dcd8e1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.location.TraveledDistanceEstimator.addPoint </td>
+          <td>(</td>
+          <td class="paramtype">final Location&#160;</td>
+          <td class="paramname"><em>l</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afc982bfaebe516bda0aa650fb8b4fbc3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">synchronized void nl.sense_os.service.location.TraveledDistanceEstimator.addPoint </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>timestamp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lat</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lon</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>acc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac5a79b98ede88030b1b57e5ba312bc77"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.location.TraveledDistanceEstimator.blackList </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3611031608ae7275627a3e16e3897834"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double nl.sense_os.service.location.TraveledDistanceEstimator.distanceBetween </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lat1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lon1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lat2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lon2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2ef4b8173205a043dcaa4ff6cec8915f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double nl.sense_os.service.location.TraveledDistanceEstimator.distanceBetween </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td>
+          <td class="paramname"><em>p1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td>
+          <td class="paramname"><em>p2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa471bf7ebdb6d573925caef426bd7606"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double nl.sense_os.service.location.TraveledDistanceEstimator.getAccuracyAtQuantile </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4f98b21eacebb9f7123fb6bf1bbe95c2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">synchronized double nl.sense_os.service.location.TraveledDistanceEstimator.getTraveledDistance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af3d2a13802a63a4cb9a6980ac0f7cb45"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.location.TraveledDistanceEstimator.isBlackListed </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8d608271180a70b461792ed15ced96c9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.location.TraveledDistanceEstimator.processPoint </td>
+          <td>(</td>
+          <td class="paramtype">final <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2bef68801c89cc114832eb9e81b9cead"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">synchronized void nl.sense_os.service.location.TraveledDistanceEstimator.reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9ca6f5a816dba7391b828f444be1a8cb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.location.TraveledDistanceEstimator.updateCenter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a03fc2134aeface38f680859bd56ae1d2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.ACCURACY_FACTOR = 1.5</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9b5b12a713ac7a5a112b9720cae67ae4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Hashtable&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>, Double&gt; nl.sense_os.service.location.TraveledDistanceEstimator.blackList_ = new Hashtable&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>, Double&gt;()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a32d6a5fa7d13ec61b6fac68b80109f47"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.BLACKLIST_DISTANCE = 300</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a48a8572d577b0eefcbafc3802043dc42"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.BLACKLIST_TIMEOUT = 3 * 3600 * 1000</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af01a3377487a75818cda2f891aa04fd2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.location.TraveledDistanceEstimator.CLEANUP_SIZE = 100</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6be7ce1b96e6932a93f8247c1d2f245f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> nl.sense_os.service.location.TraveledDistanceEstimator.clusterCenter_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae17bcec5c3708adcbf78d2d1f33f5d54"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a> nl.sense_os.service.location.TraveledDistanceEstimator.lastClusterCenter_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1b8335b96697c8aa38f4bc25799e6a47"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.MAX_SPEED = 60</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a506507ac45f7e1b1641ae0fe63cf0178"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.MEDIAN_FILTER_FACTOR = 2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae1232207e10210cfafb35d0272e383a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.MEDIAN_FILTER_QUANTILE = 0.5</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aec2b7d3ee7c7340ad4c219a335f6ae98"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.MIN_ACCURACY = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6b61a54fbc6b23c8274679c4997aea52"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.MIN_CLUSTER_DISTANCE = 20</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1fbb89b13be212c6e85f5a41afc74db8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.location.TraveledDistanceEstimator.skipLastDistance = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac4f866412008b87d082fed5d41221068"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double nl.sense_os.service.location.TraveledDistanceEstimator.totalDistance_ = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a57a84775c8dec0c4197992d32058fd17"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double nl.sense_os.service.location.TraveledDistanceEstimator.weightSum_ = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a35128956e85807a3e1b953cde36df970"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ArrayList&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&gt; nl.sense_os.service.location.TraveledDistanceEstimator.window_ = new ArrayList&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html">PositionPoint</a>&gt;()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a60b8c7821ed96ae45a1953a5d6dbb342"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final double nl.sense_os.service.location.TraveledDistanceEstimator.WINDOW_SIZE = 7</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/location/TraveledDistanceEstimator.java</li>
+<li>src/nl/sense_os/service/location/<a class="el" href="_traveled_distance_estimator_8java.html">TraveledDistanceEstimator.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>location</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html">TraveledDistanceEstimator</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1location.html">location</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html">TraveledDistanceEstimator</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

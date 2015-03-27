@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1amb
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,6 +112,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1amb
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
+<a href="#pac-methods">Package Functions</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.ambience.FourierTransform Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -188,72 +192,57 @@ Static Public Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a0c932cfe48f32093c1a2714e325cf84b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c932cfe48f32093c1a2714e325cf84b"></a>
-abstract void&#160;</td><td class="memItemRight" valign="bottom"><b>allocateArrays</b> ()</td></tr>
+<tr class="memitem:a0c932cfe48f32093c1a2714e325cf84b"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0c932cfe48f32093c1a2714e325cf84b">allocateArrays</a> ()</td></tr>
 <tr class="separator:a0c932cfe48f32093c1a2714e325cf84b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f94916ca6d3e0d2d24da5a21a502526"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f94916ca6d3e0d2d24da5a21a502526"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setComplex</b> (float[] r, float[] i)</td></tr>
+<tr class="memitem:a0f94916ca6d3e0d2d24da5a21a502526"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0f94916ca6d3e0d2d24da5a21a502526">setComplex</a> (float[] r, float[] i)</td></tr>
 <tr class="separator:a0f94916ca6d3e0d2d24da5a21a502526"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60006479c5cc16361584cf428f4fb288"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60006479c5cc16361584cf428f4fb288"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>fillSpectrum</b> ()</td></tr>
+<tr class="memitem:a60006479c5cc16361584cf428f4fb288"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288">fillSpectrum</a> ()</td></tr>
 <tr class="separator:a60006479c5cc16361584cf428f4fb288"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03073035f85d6bbbb60426d2ecb810b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03073035f85d6bbbb60426d2ecb810b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>doWindow</b> (float[] samples)</td></tr>
+<tr class="memitem:a03073035f85d6bbbb60426d2ecb810b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a03073035f85d6bbbb60426d2ecb810b7">doWindow</a> (float[] samples)</td></tr>
 <tr class="separator:a03073035f85d6bbbb60426d2ecb810b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cca45c2d3e9c6798dc52fc68e1802ca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8cca45c2d3e9c6798dc52fc68e1802ca"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>hamming</b> (float[] samples)</td></tr>
+<tr class="memitem:a8cca45c2d3e9c6798dc52fc68e1802ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8cca45c2d3e9c6798dc52fc68e1802ca">hamming</a> (float[] samples)</td></tr>
 <tr class="separator:a8cca45c2d3e9c6798dc52fc68e1802ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a63e12800c57b4d778bcd0653aec8e2f4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63e12800c57b4d778bcd0653aec8e2f4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>timeSize</b></td></tr>
+<tr class="memitem:a63e12800c57b4d778bcd0653aec8e2f4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a63e12800c57b4d778bcd0653aec8e2f4">timeSize</a></td></tr>
 <tr class="separator:a63e12800c57b4d778bcd0653aec8e2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29aa2be5a97f60426b47a0a937d5eb3e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29aa2be5a97f60426b47a0a937d5eb3e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>sampleRate</b></td></tr>
+<tr class="memitem:a29aa2be5a97f60426b47a0a937d5eb3e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a></td></tr>
 <tr class="separator:a29aa2be5a97f60426b47a0a937d5eb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3467206ed34a66dc0c440cb47f7d5884"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3467206ed34a66dc0c440cb47f7d5884"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bandWidth</b></td></tr>
+<tr class="memitem:a3467206ed34a66dc0c440cb47f7d5884"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884">bandWidth</a></td></tr>
 <tr class="separator:a3467206ed34a66dc0c440cb47f7d5884"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad25f116d14e6bb2129dbadcc5b30ae6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad25f116d14e6bb2129dbadcc5b30ae6c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>whichWindow</b></td></tr>
+<tr class="memitem:ad25f116d14e6bb2129dbadcc5b30ae6c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">whichWindow</a></td></tr>
 <tr class="separator:ad25f116d14e6bb2129dbadcc5b30ae6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c5a16e7157ddf366a595d0d6a554c77"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c5a16e7157ddf366a595d0d6a554c77"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>real</b></td></tr>
+<tr class="memitem:a8c5a16e7157ddf366a595d0d6a554c77"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a></td></tr>
 <tr class="separator:a8c5a16e7157ddf366a595d0d6a554c77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a169f1f61f53db36725963358ada148"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a169f1f61f53db36725963358ada148"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>imag</b></td></tr>
+<tr class="memitem:a1a169f1f61f53db36725963358ada148"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a></td></tr>
 <tr class="separator:a1a169f1f61f53db36725963358ada148"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a9b4e95ea67bd66571f167f7ea5ec3c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a9b4e95ea67bd66571f167f7ea5ec3c"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>spectrum</b></td></tr>
+<tr class="memitem:a1a9b4e95ea67bd66571f167f7ea5ec3c"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a></td></tr>
 <tr class="separator:a1a9b4e95ea67bd66571f167f7ea5ec3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca96fd6d12c4c44ac876b7014c2b495d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aca96fd6d12c4c44ac876b7014c2b495d"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>averages</b></td></tr>
+<tr class="memitem:aca96fd6d12c4c44ac876b7014c2b495d"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a></td></tr>
 <tr class="separator:aca96fd6d12c4c44ac876b7014c2b495d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a420589a2dcf6ecf5e6221710ae8ffb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a420589a2dcf6ecf5e6221710ae8ffb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>whichAverage</b></td></tr>
+<tr class="memitem:a5a420589a2dcf6ecf5e6221710ae8ffb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a></td></tr>
 <tr class="separator:a5a420589a2dcf6ecf5e6221710ae8ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2155df710c1c7c9529502c074c46f0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2155df710c1c7c9529502c074c46f0f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>octaves</b></td></tr>
+<tr class="memitem:ae2155df710c1c7c9529502c074c46f0f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a></td></tr>
 <tr class="separator:ae2155df710c1c7c9529502c074c46f0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc56e3eb2d9bfb3d3cdc36c3dd1dc680"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>avgPerOctave</b></td></tr>
+<tr class="memitem:afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a></td></tr>
 <tr class="separator:afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
-<tr class="memitem:a874f6deb8bf0ec1bf6fc1e7375c3accc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a874f6deb8bf0ec1bf6fc1e7375c3accc"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>LINAVG</b> = 2</td></tr>
+<tr class="memitem:a874f6deb8bf0ec1bf6fc1e7375c3accc"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">LINAVG</a> = 2</td></tr>
 <tr class="separator:a874f6deb8bf0ec1bf6fc1e7375c3accc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a765c36d59397438270dc4bffca8006e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a765c36d59397438270dc4bffca8006e5"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>LOGAVG</b> = 3</td></tr>
+<tr class="memitem:a765c36d59397438270dc4bffca8006e5"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">LOGAVG</a> = 3</td></tr>
 <tr class="separator:a765c36d59397438270dc4bffca8006e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a349d9e7844e2a67cad003f456b415ff4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a349d9e7844e2a67cad003f456b415ff4"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>NOAVG</b> = 4</td></tr>
+<tr class="memitem:a349d9e7844e2a67cad003f456b415ff4"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a349d9e7844e2a67cad003f456b415ff4">NOAVG</a> = 4</td></tr>
 <tr class="separator:a349d9e7844e2a67cad003f456b415ff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81809f6f353f8b6286c6fa35c72822ae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a81809f6f353f8b6286c6fa35c72822ae"></a>
-static final float&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_PI</b> = (float) (2 * Math.PI)</td></tr>
+<tr class="memitem:a81809f6f353f8b6286c6fa35c72822ae"><td class="memItemLeft" align="right" valign="top">static final float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a81809f6f353f8b6286c6fa35c72822ae">TWO_PI</a> = (float) (2 * Math.PI)</td></tr>
 <tr class="separator:a81809f6f353f8b6286c6fa35c72822ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-methods"></a>
+Package Functions</h2></td></tr>
+<tr class="memitem:ab73a1c1d44ac6f0bc8a403c9965854ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab73a1c1d44ac6f0bc8a403c9965854ad">FourierTransform</a> (int ts, float sr)</td></tr>
+<tr class="separator:ab73a1c1d44ac6f0bc8a403c9965854ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A Fourier Transform is an algorithm that transforms a signal in the time domain, such as a sample buffer, into a signal in the frequency domain, often called the spectrum. The spectrum does not represent individual frequencies, but actually represents frequency bands centered on particular frequencies. The center frequency of each band is usually expressed as a fraction of the sampling rate of the time domain signal and is equal to the index of the frequency band divided by the total number of bands. The total number of frequency bands is usually equal to the length of the time domain signal, but access is only provided to frequency bands with indices less than half the length, because they correspond to frequencies below the <a href="http://en.wikipedia.org/wiki/Nyquist_frequency">Nyquist frequency</a>. In other words, given a signal of length <code>N</code>, there will be <code>N/2</code> frequency bands in the spectrum. </p>
@@ -278,7 +267,73 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 <p><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a> also supports taking the inverse transform of a spectrum. This means that a frequency spectrum will be transformed into a time domain signal and placed in a provided sample buffer. The length of the time domain signal will be <code><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize()</a></code> long. The <code>set</code> and <code>scale</code> functions allow you the ability to shape the spectrum already stored in the object before taking the inverse transform. You might use these to filter frequencies in a spectrum or modify it in some other way.</p>
 <dl class="section author"><dt>Author</dt><dd>Damien Di Fede </dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://www.dspguide.com/ch8.htm">The Discrete Fourier Transform</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ab73a1c1d44ac6f0bc8a403c9965854ad"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.ambience.FourierTransform.FourierTransform </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ts</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>sr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construct a <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a> that will analyze sample buffers that are <code>ts</code> samples long and contain samples with a <code>sr</code> sample rate.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ts</td><td>the length of the buffers that will be analyzed </td></tr>
+    <tr><td class="paramname">sr</td><td>the sample rate of the samples that will be analyzed </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a0c932cfe48f32093c1a2714e325cf84b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void nl.sense_os.service.ambience.FourierTransform.allocateArrays </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">abstract</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="ae00e5788a99cd01bf3f24c1a02630d68"></a>
 <div class="memitem">
 <div class="memproto">
@@ -328,6 +383,53 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the average of all spectrum values within the bounds </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a03073035f85d6bbbb60426d2ecb810b7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.doWindow </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>samples</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a60006479c5cc16361584cf428f4fb288"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.fillSpectrum </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -577,6 +679,30 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
       </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>the spectrum of the last <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a04bb65e9abbdd046cba31397c8557f91">FourierTransform.forward()</a> call. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a8cca45c2d3e9c6798dc52fc68e1802ca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.hamming </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>samples</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -866,6 +992,40 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 
 </div>
 </div>
+<a class="anchor" id="a0f94916ca6d3e0d2d24da5a21a502526"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.setComplex </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>i</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a99a0558aab2a23ab846155547513400d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -958,6 +1118,66 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aca96fd6d12c4c44ac876b7014c2b495d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.averages</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afc56e3eb2d9bfb3d3cdc36c3dd1dc680"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.avgPerOctave</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3467206ed34a66dc0c440cb47f7d5884"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.ambience.FourierTransform.bandWidth</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a54441d948eb7b531594728913f6e5b7e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -976,6 +1196,86 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </table>
 </div><div class="memdoc">
 <p>A constant indicating a Hamming window should be used on sample buffers. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1a169f1f61f53db36725963358ada148"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.imag</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a874f6deb8bf0ec1bf6fc1e7375c3accc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.ambience.FourierTransform.LINAVG = 2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a765c36d59397438270dc4bffca8006e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.ambience.FourierTransform.LOGAVG = 3</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a349d9e7844e2a67cad003f456b415ff4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.ambience.FourierTransform.NOAVG = 4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1000,16 +1300,176 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 
 </div>
 </div>
+<a class="anchor" id="ae2155df710c1c7c9529502c074c46f0f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.octaves</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8c5a16e7157ddf366a595d0d6a554c77"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.real</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a29aa2be5a97f60426b47a0a937d5eb3e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.sampleRate</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1a9b4e95ea67bd66571f167f7ea5ec3c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.spectrum</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a63e12800c57b4d778bcd0653aec8e2f4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.timeSize</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a81809f6f353f8b6286c6fa35c72822ae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final float nl.sense_os.service.ambience.FourierTransform.TWO_PI = (float) (2 * Math.PI)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5a420589a2dcf6ecf5e6221710ae8ffb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.whichAverage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad25f116d14e6bb2129dbadcc5b30ae6c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.whichWindow</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/ambience/FourierTransform.java</li>
+<li>src/nl/sense_os/service/ambience/<a class="el" href="_fourier_transform_8java.html">FourierTransform.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>ambience</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1ambience.html">ambience</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:22 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

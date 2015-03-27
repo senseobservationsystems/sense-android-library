@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.motion.EpilepsySensor Class Reference</div>  </div>
@@ -124,8 +130,7 @@ Inheritance diagram for nl.sense_os.service.motion.EpilepsySensor:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa3846895d22db6cb103aee6b4ae0a254"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa3846895d22db6cb103aee6b4ae0a254"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>EpilepsySensor</b> (Context context)</td></tr>
+<tr class="memitem:aa3846895d22db6cb103aee6b4ae0a254"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#aa3846895d22db6cb103aee6b4ae0a254">EpilepsySensor</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#a9377dec2319ecdd36227e49d2d30d9ae">context</a>)</td></tr>
 <tr class="separator:aa3846895d22db6cb103aee6b4ae0a254"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff2dff29399d0c6bdf19539711dcd1c5"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#aff2dff29399d0c6bdf19539711dcd1c5">isSampleComplete</a> ()</td></tr>
 <tr class="separator:aff2dff29399d0c6bdf19539711dcd1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,6 +148,29 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#ae6fca630e7e8723e599a8492886a9887">removeSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
 <tr class="separator:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:acaff91e30abc6b4b7507b236757e0137"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#acaff91e30abc6b4b7507b236757e0137">sendData</a> (Sensor sensor)</td></tr>
+<tr class="separator:acaff91e30abc6b4b7507b236757e0137"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a97e3edfce8ce3c4a3383db8d11633cd0"><td class="memItemLeft" align="right" valign="top">long[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#a97e3edfce8ce3c4a3383db8d11633cd0">lastLocalSampleTimes</a> = new long[50]</td></tr>
+<tr class="separator:a97e3edfce8ce3c4a3383db8d11633cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7963d9a998a425039c6fb7e7ed600b29"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#a7963d9a998a425039c6fb7e7ed600b29">firstTimeSend</a> = 0</td></tr>
+<tr class="separator:a7963d9a998a425039c6fb7e7ed600b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace91210d45e77037d8b367ac6841bc58"><td class="memItemLeft" align="right" valign="top">JSONArray[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#ace91210d45e77037d8b367ac6841bc58">dataBuffer</a> = new JSONArray[10]</td></tr>
+<tr class="separator:ace91210d45e77037d8b367ac6841bc58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9377dec2319ecdd36227e49d2d30d9ae"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#a9377dec2319ecdd36227e49d2d30d9ae">context</a></td></tr>
+<tr class="separator:a9377dec2319ecdd36227e49d2d30d9ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:affb9887f9dd631455678d1eacf08c2e5"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#affb9887f9dd631455678d1eacf08c2e5">TAG</a> = &quot;EpilepsySensor&quot;</td></tr>
+<tr class="separator:affb9887f9dd631455678d1eacf08c2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0c13319d0c353a007f590809c3c85ba"><td class="memItemLeft" align="right" valign="top">static final long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html#ae0c13319d0c353a007f590809c3c85ba">LOCAL_BUFFER_TIME</a> = 15 * 1000</td></tr>
+<tr class="separator:ae0c13319d0c353a007f590809c3c85ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
@@ -153,12 +181,28 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="aa3846895d22db6cb103aee6b4ae0a254"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.motion.EpilepsySensor.EpilepsySensor </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="aff2dff29399d0c6bdf19539711dcd1c5"></a>
 <div class="memitem">
@@ -203,6 +247,30 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 </div>
 </div>
+<a class="anchor" id="acaff91e30abc6b4b7507b236757e0137"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.EpilepsySensor.sendData </td>
+          <td>(</td>
+          <td class="paramtype">Sensor&#160;</td>
+          <td class="paramname"><em>sensor</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a3d9ad940b3649e49c3533708d5b94600"></a>
 <div class="memitem">
 <div class="memproto">
@@ -222,16 +290,137 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a9377dec2319ecdd36227e49d2d30d9ae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.motion.EpilepsySensor.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ace91210d45e77037d8b367ac6841bc58"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">JSONArray [] nl.sense_os.service.motion.EpilepsySensor.dataBuffer = new JSONArray[10]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7963d9a998a425039c6fb7e7ed600b29"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.motion.EpilepsySensor.firstTimeSend = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a97e3edfce8ce3c4a3383db8d11633cd0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long [] nl.sense_os.service.motion.EpilepsySensor.lastLocalSampleTimes = new long[50]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae0c13319d0c353a007f590809c3c85ba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final long nl.sense_os.service.motion.EpilepsySensor.LOCAL_BUFFER_TIME = 15 * 1000</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="affb9887f9dd631455678d1eacf08c2e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.motion.EpilepsySensor.TAG = &quot;EpilepsySensor&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/motion/EpilepsySensor.java</li>
+<li>src/nl/sense_os/service/motion/<a class="el" href="_epilepsy_sensor_8java.html">EpilepsySensor.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>motion</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html">EpilepsySensor</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1motion.html">motion</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html">EpilepsySensor</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

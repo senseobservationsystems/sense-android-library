@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.motion.MotionBurstSensor Class Reference</div>  </div>
@@ -124,8 +130,7 @@ Inheritance diagram for nl.sense_os.service.motion.MotionBurstSensor:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a527c0af128e6f20c61181fb1d32ba690"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a527c0af128e6f20c61181fb1d32ba690"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MotionBurstSensor</b> (Context context, int sensorType, String sensorName)</td></tr>
+<tr class="memitem:a527c0af128e6f20c61181fb1d32ba690"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a527c0af128e6f20c61181fb1d32ba690">MotionBurstSensor</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#ad1dd72517a04ee76a11df2af60d9d8d6">context</a>, int sensorType, String sensorName)</td></tr>
 <tr class="separator:a527c0af128e6f20c61181fb1d32ba690"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad45a09772ef011448c053fe5335de2a2"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#ad45a09772ef011448c053fe5335de2a2">isSampleComplete</a> ()</td></tr>
 <tr class="separator:ad45a09772ef011448c053fe5335de2a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,6 +148,43 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#ae6fca630e7e8723e599a8492886a9887">removeSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
 <tr class="separator:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aa168286dfe3060e602c83b8d046f09fd"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#aa168286dfe3060e602c83b8d046f09fd">listToString</a> (List&lt; double[]&gt; <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a740fd31566a0d75ffab8c4ee0074af18">dataBuffer</a>)</td></tr>
+<tr class="separator:aa168286dfe3060e602c83b8d046f09fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb9c878d38e4d25e422639ce5d3d3e5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#abb9c878d38e4d25e422639ce5d3d3e5f">sendData</a> (Sensor sensor)</td></tr>
+<tr class="separator:abb9c878d38e4d25e422639ce5d3d3e5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aadbba06fdefa633471b760497bc53d78"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#aadbba06fdefa633471b760497bc53d78">burstDuration</a> = 3 * 1000</td></tr>
+<tr class="separator:aadbba06fdefa633471b760497bc53d78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58faebd129696d3a2ae9c8d666f384f1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a58faebd129696d3a2ae9c8d666f384f1">SENSOR_TYPE</a> = 0</td></tr>
+<tr class="separator:a58faebd129696d3a2ae9c8d666f384f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09ae96fdf5ea292d4f52f5e8bbe7f183"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a09ae96fdf5ea292d4f52f5e8bbe7f183">SENSOR_NAME</a></td></tr>
+<tr class="separator:a09ae96fdf5ea292d4f52f5e8bbe7f183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a740fd31566a0d75ffab8c4ee0074af18"><td class="memItemLeft" align="right" valign="top">List&lt; double[]&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a740fd31566a0d75ffab8c4ee0074af18">dataBuffer</a> = new ArrayList&lt;double[]&gt;()</td></tr>
+<tr class="separator:a740fd31566a0d75ffab8c4ee0074af18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1dd72517a04ee76a11df2af60d9d8d6"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#ad1dd72517a04ee76a11df2af60d9d8d6">context</a></td></tr>
+<tr class="separator:ad1dd72517a04ee76a11df2af60d9d8d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73448dec880b454da43aebd89e9e36a7"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a73448dec880b454da43aebd89e9e36a7">sampleComplete</a> = false</td></tr>
+<tr class="separator:a73448dec880b454da43aebd89e9e36a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0052e005124b7956e54e39421b2cf5eb"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a0052e005124b7956e54e39421b2cf5eb">timeAtStartOfBurst</a> = -1</td></tr>
+<tr class="separator:a0052e005124b7956e54e39421b2cf5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e94b5a4c00aa7eea86339a24c86278f"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a1e94b5a4c00aa7eea86339a24c86278f">isFakeLinear</a> = false</td></tr>
+<tr class="separator:a1e94b5a4c00aa7eea86339a24c86278f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23031a794a9f451d1ffb10f107868549"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html">AccelerationFilter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a23031a794a9f451d1ffb10f107868549">accelFilter</a></td></tr>
+<tr class="separator:a23031a794a9f451d1ffb10f107868549"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b47642d946e54f8a8cf87790adfc1e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html">MotionSensor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a4b47642d946e54f8a8cf87790adfc1e0">motionSensor</a> = null</td></tr>
+<tr class="separator:a4b47642d946e54f8a8cf87790adfc1e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:abab0cbc9e0122708417082df82cebd9c"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#abab0cbc9e0122708417082df82cebd9c">TAG</a> = &quot;MotionBurstSensor&quot;</td></tr>
+<tr class="separator:abab0cbc9e0122708417082df82cebd9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50d66f07830d774ca1ce370d539a4e3b"><td class="memItemLeft" align="right" valign="top">static final long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html#a50d66f07830d774ca1ce370d539a4e3b">DEFAULT_BURST_DURATION</a> = 3 * 1000</td></tr>
+<tr class="separator:a50d66f07830d774ca1ce370d539a4e3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
@@ -153,12 +195,44 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a527c0af128e6f20c61181fb1d32ba690"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.motion.MotionBurstSensor.MotionBurstSensor </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sensorType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>sensorName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ad45a09772ef011448c053fe5335de2a2"></a>
 <div class="memitem">
@@ -175,6 +249,30 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the data consumer has received enough sensor events so that the sample is complete </dd></dl>
 
 <p>Implements <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html#ae4b6e583ce4e1fbc9effbfa223a12c39">nl.sense_os.service.subscription.DataConsumer</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa168286dfe3060e602c83b8d046f09fd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.motion.MotionBurstSensor.listToString </td>
+          <td>(</td>
+          <td class="paramtype">List&lt; double[]&gt;&#160;</td>
+          <td class="paramname"><em>dataBuffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -203,6 +301,30 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 </div>
 </div>
+<a class="anchor" id="abb9c878d38e4d25e422639ce5d3d3e5f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.MotionBurstSensor.sendData </td>
+          <td>(</td>
+          <td class="paramtype">Sensor&#160;</td>
+          <td class="paramname"><em>sensor</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a7fb70026f1ea975290b400562f68f38e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -222,16 +344,257 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a23031a794a9f451d1ffb10f107868549"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html">AccelerationFilter</a> nl.sense_os.service.motion.MotionBurstSensor.accelFilter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aadbba06fdefa633471b760497bc53d78"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.motion.MotionBurstSensor.burstDuration = 3 * 1000</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad1dd72517a04ee76a11df2af60d9d8d6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.motion.MotionBurstSensor.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a740fd31566a0d75ffab8c4ee0074af18"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;double[]&gt; nl.sense_os.service.motion.MotionBurstSensor.dataBuffer = new ArrayList&lt;double[]&gt;()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a50d66f07830d774ca1ce370d539a4e3b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final long nl.sense_os.service.motion.MotionBurstSensor.DEFAULT_BURST_DURATION = 3 * 1000</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1e94b5a4c00aa7eea86339a24c86278f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.MotionBurstSensor.isFakeLinear = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4b47642d946e54f8a8cf87790adfc1e0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html">MotionSensor</a> nl.sense_os.service.motion.MotionBurstSensor.motionSensor = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a73448dec880b454da43aebd89e9e36a7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.MotionBurstSensor.sampleComplete = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a09ae96fdf5ea292d4f52f5e8bbe7f183"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.motion.MotionBurstSensor.SENSOR_NAME</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a58faebd129696d3a2ae9c8d666f384f1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.motion.MotionBurstSensor.SENSOR_TYPE = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abab0cbc9e0122708417082df82cebd9c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.motion.MotionBurstSensor.TAG = &quot;MotionBurstSensor&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0052e005124b7956e54e39421b2cf5eb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.motion.MotionBurstSensor.timeAtStartOfBurst = -1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/motion/MotionBurstSensor.java</li>
+<li>src/nl/sense_os/service/motion/<a class="el" href="_motion_burst_sensor_8java.html">MotionBurstSensor.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>motion</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html">MotionBurstSensor</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1motion.html">motion</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html">MotionBurstSensor</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

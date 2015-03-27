@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sch
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,10 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sch
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.scheduler.ScheduleAlarmTool Class Reference</div>  </div>
@@ -117,14 +124,13 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sch
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a68304d4fd47829899b499e27c250e7b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a68304d4fd47829899b499e27c250e7b2">cancelDeterministicAlarm</a> ()</td></tr>
 <tr class="separator:a68304d4fd47829899b499e27c250e7b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5024d97d634c3695985f4c07d19ffd4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5024d97d634c3695985f4c07d19ffd4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>cancelOpportunisticAlarm</b> ()</td></tr>
+<tr class="memitem:aa5024d97d634c3695985f4c07d19ffd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#aa5024d97d634c3695985f4c07d19ffd4">cancelOpportunisticAlarm</a> ()</td></tr>
 <tr class="separator:aa5024d97d634c3695985f4c07d19ffd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c9f53b89a9d7c97102a8a9c4492fcca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a0c9f53b89a9d7c97102a8a9c4492fcca">resetNextExecution</a> ()</td></tr>
 <tr class="separator:a0c9f53b89a9d7c97102a8a9c4492fcca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add643026fe794363fbd42cc835ed6182"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#add643026fe794363fbd42cc835ed6182">schedule</a> ()</td></tr>
 <tr class="separator:add643026fe794363fbd42cc835ed6182"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5494615a09e6036fb0da4932df2c5571"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a5494615a09e6036fb0da4932df2c5571">setTasks</a> (List&lt; Task &gt; tasks)</td></tr>
+<tr class="memitem:a5494615a09e6036fb0da4932df2c5571"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a5494615a09e6036fb0da4932df2c5571">setTasks</a> (List&lt; <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler_1_1_task.html">Task</a> &gt; tasks)</td></tr>
 <tr class="separator:a5494615a09e6036fb0da4932df2c5571"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -136,6 +142,40 @@ Static Public Member Functions</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:ac729fdddd328cf6862aafec0cef6a343"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#ac729fdddd328cf6862aafec0cef6a343">ScheduleAlarmTool</a> (Context context)</td></tr>
 <tr class="separator:ac729fdddd328cf6862aafec0cef6a343"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:af5aa0a14466ee5393ba8cefcba11ec1e"><td class="memItemLeft" align="right" valign="top">Runnable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#af5aa0a14466ee5393ba8cefcba11ec1e">getBatchTask</a> ()</td></tr>
+<tr class="separator:af5aa0a14466ee5393ba8cefcba11ec1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a013698632c49405e36d38dd5ceec47c2"><td class="memItemLeft" align="right" valign="top">static long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a013698632c49405e36d38dd5ceec47c2">gcd</a> (long p, long q)</td></tr>
+<tr class="separator:a013698632c49405e36d38dd5ceec47c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a70600664f0cb8288db093e440496c340"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a70600664f0cb8288db093e440496c340">mBackwardsFlex</a></td></tr>
+<tr class="separator:a70600664f0cb8288db093e440496c340"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad60d094f312c777ca41f18e3e33a9fe1"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#ad60d094f312c777ca41f18e3e33a9fe1">mContext</a></td></tr>
+<tr class="separator:ad60d094f312c777ca41f18e3e33a9fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187bbd51592d2e35da3cf898a0531111"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a187bbd51592d2e35da3cf898a0531111">mNextExecution</a> = 0</td></tr>
+<tr class="separator:a187bbd51592d2e35da3cf898a0531111"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b9bbb513dc984c42de070f07edecba3"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a1b9bbb513dc984c42de070f07edecba3">mRemainingFlex</a></td></tr>
+<tr class="separator:a1b9bbb513dc984c42de070f07edecba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17b348d333bc84aef11a095e49ad2e8e"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler_1_1_task.html">Task</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a17b348d333bc84aef11a095e49ad2e8e">mTasks</a> = new ArrayList&lt;Scheduler.Task&gt;()</td></tr>
+<tr class="separator:a17b348d333bc84aef11a095e49ad2e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:abe8a8be31c6d841d85f14a0e37fa60f5"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#abe8a8be31c6d841d85f14a0e37fa60f5">REQ_CODE_DETERMINISTIC</a> = 0xf01c0de</td></tr>
+<tr class="separator:abe8a8be31c6d841d85f14a0e37fa60f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4292ef8ace82769c47b7cabcfef833d"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#ab4292ef8ace82769c47b7cabcfef833d">REQ_CODE_OPPORTUNISTIC</a> = 0xf21d0de</td></tr>
+<tr class="separator:ab4292ef8ace82769c47b7cabcfef833d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a697cbb405657c4e37eab8d79a71e3d15"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html">ScheduleAlarmTool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a697cbb405657c4e37eab8d79a71e3d15">sInstance</a></td></tr>
+<tr class="separator:a697cbb405657c4e37eab8d79a71e3d15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace4a5ec2381fb1603a1f9adf80a93fc3"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#ace4a5ec2381fb1603a1f9adf80a93fc3">TAG</a> = &quot;ScheduleAlarmTool&quot;</td></tr>
+<tr class="separator:ace4a5ec2381fb1603a1f9adf80a93fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><dl class="section author"><dt>Author</dt><dd>Kimon Tsitsikas <a href="#" onclick="location.href='mai'+'lto:'+'kim'+'on'+'@se'+'ns'+'e-o'+'s.'+'nl'; return false;">kimon<span style="display: none;">.nosp@m.</span>@sen<span style="display: none;">.nosp@m.</span>se-os<span style="display: none;">.nosp@m.</span>.nl</a> </dd></dl>
@@ -193,6 +233,88 @@ Protected Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="aa5024d97d634c3695985f4c07d19ffd4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.scheduler.ScheduleAlarmTool.cancelOpportunisticAlarm </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a013698632c49405e36d38dd5ceec47c2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static long nl.sense_os.service.scheduler.ScheduleAlarmTool.gcd </td>
+          <td>(</td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>q</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the greatest common divisor of p and q</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td></td></tr>
+    <tr><td class="paramname">q</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="af5aa0a14466ee5393ba8cefcba11ec1e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Runnable nl.sense_os.service.scheduler.ScheduleAlarmTool.getBatchTask </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Calculates the next execution time and returns the batch of tasks that need to be executed at that time.</p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -267,7 +389,7 @@ Protected Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void nl.sense_os.service.scheduler.ScheduleAlarmTool.setTasks </td>
           <td>(</td>
-          <td class="paramtype">List&lt; Task &gt;&#160;</td>
+          <td class="paramtype">List&lt; <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler_1_1_task.html">Task</a> &gt;&#160;</td>
           <td class="paramname"><em>tasks</em></td><td>)</td>
           <td></td>
         </tr>
@@ -277,16 +399,197 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a70600664f0cb8288db093e440496c340"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.scheduler.ScheduleAlarmTool.mBackwardsFlex</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad60d094f312c777ca41f18e3e33a9fe1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.scheduler.ScheduleAlarmTool.mContext</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a187bbd51592d2e35da3cf898a0531111"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.scheduler.ScheduleAlarmTool.mNextExecution = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1b9bbb513dc984c42de070f07edecba3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.scheduler.ScheduleAlarmTool.mRemainingFlex</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a17b348d333bc84aef11a095e49ad2e8e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler_1_1_task.html">Task</a>&gt; nl.sense_os.service.scheduler.ScheduleAlarmTool.mTasks = new ArrayList&lt;Scheduler.Task&gt;()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abe8a8be31c6d841d85f14a0e37fa60f5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.scheduler.ScheduleAlarmTool.REQ_CODE_DETERMINISTIC = 0xf01c0de</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab4292ef8ace82769c47b7cabcfef833d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.scheduler.ScheduleAlarmTool.REQ_CODE_OPPORTUNISTIC = 0xf21d0de</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a697cbb405657c4e37eab8d79a71e3d15"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html">ScheduleAlarmTool</a> nl.sense_os.service.scheduler.ScheduleAlarmTool.sInstance</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ace4a5ec2381fb1603a1f9adf80a93fc3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.scheduler.ScheduleAlarmTool.TAG = &quot;ScheduleAlarmTool&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/scheduler/ScheduleAlarmTool.java</li>
+<li>src/nl/sense_os/service/scheduler/<a class="el" href="_schedule_alarm_tool_8java.html">ScheduleAlarmTool.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>scheduler</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html">ScheduleAlarmTool</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1scheduler.html">scheduler</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html">ScheduleAlarmTool</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

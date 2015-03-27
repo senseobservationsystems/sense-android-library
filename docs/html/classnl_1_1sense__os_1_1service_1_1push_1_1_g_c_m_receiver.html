@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pus
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -104,8 +107,12 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pus
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.push.GCMReceiver Class Reference</div>  </div>
@@ -120,31 +127,28 @@ Inheritance diagram for nl.sense_os.service.push.GCMReceiver:</div>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a4f58a1a9a8c0c5479d911e32de7edc2c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a4f58a1a9a8c0c5479d911e32de7edc2c">GCMReceiver</a> ()</td></tr>
+<tr class="separator:a4f58a1a9a8c0c5479d911e32de7edc2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a99a2f87c68f528015371b58abe523a18"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a99a2f87c68f528015371b58abe523a18"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENDER_ID</b> = &quot;926669645310&quot;</td></tr>
+<tr class="memitem:a99a2f87c68f528015371b58abe523a18"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a99a2f87c68f528015371b58abe523a18">SENDER_ID</a> = &quot;926669645310&quot;</td></tr>
 <tr class="separator:a99a2f87c68f528015371b58abe523a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7790ceb5de1aa29bb90ba957d1ec9862"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7790ceb5de1aa29bb90ba957d1ec9862"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>KEY_GCM_ID</b> = &quot;gcm_id&quot;</td></tr>
+<tr class="memitem:a7790ceb5de1aa29bb90ba957d1ec9862"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a7790ceb5de1aa29bb90ba957d1ec9862">KEY_GCM_ID</a> = &quot;gcm_id&quot;</td></tr>
 <tr class="separator:a7790ceb5de1aa29bb90ba957d1ec9862"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a731ea502702548db52aa2d7238ed91c9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a731ea502702548db52aa2d7238ed91c9"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TYPE_TOAST</b> = &quot;toast&quot;</td></tr>
+<tr class="memitem:a731ea502702548db52aa2d7238ed91c9"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a731ea502702548db52aa2d7238ed91c9">TYPE_TOAST</a> = &quot;toast&quot;</td></tr>
 <tr class="separator:a731ea502702548db52aa2d7238ed91c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c680c49e6687156bcfc76a44f1395d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c680c49e6687156bcfc76a44f1395d1"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TYPE_NOTIFICATION</b> = &quot;notification&quot;</td></tr>
+<tr class="memitem:a3c680c49e6687156bcfc76a44f1395d1"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a3c680c49e6687156bcfc76a44f1395d1">TYPE_NOTIFICATION</a> = &quot;notification&quot;</td></tr>
 <tr class="separator:a3c680c49e6687156bcfc76a44f1395d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f232a04b654cb7a08bb087c9f693bd5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1f232a04b654cb7a08bb087c9f693bd5"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TYPE_SERVICE</b> = &quot;service&quot;</td></tr>
+<tr class="memitem:a1f232a04b654cb7a08bb087c9f693bd5"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a1f232a04b654cb7a08bb087c9f693bd5">TYPE_SERVICE</a> = &quot;service&quot;</td></tr>
 <tr class="separator:a1f232a04b654cb7a08bb087c9f693bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47295691a490a06733f8410afff2b895"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a47295691a490a06733f8410afff2b895"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TYPE_UPDATE_CONFIGURATION</b> = &quot;update_configuration&quot;</td></tr>
+<tr class="memitem:a47295691a490a06733f8410afff2b895"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a47295691a490a06733f8410afff2b895">TYPE_UPDATE_CONFIGURATION</a> = &quot;update_configuration&quot;</td></tr>
 <tr class="separator:a47295691a490a06733f8410afff2b895"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4e068fd58a44efd4cbdba7c6748fffd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af4e068fd58a44efd4cbdba7c6748fffd"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TYPE_USE_CONFIGURATION</b> = &quot;use_configuration&quot;</td></tr>
+<tr class="memitem:af4e068fd58a44efd4cbdba7c6748fffd"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#af4e068fd58a44efd4cbdba7c6748fffd">TYPE_USE_CONFIGURATION</a> = &quot;use_configuration&quot;</td></tr>
 <tr class="separator:af4e068fd58a44efd4cbdba7c6748fffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c87ecd73f1d3336fafa7e093a4f6c73"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c87ecd73f1d3336fafa7e093a4f6c73"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>ACTION_GOT_CONFIGURATION</b> = &quot;nl.sense_os.service.push.got_requirement&quot;</td></tr>
+<tr class="memitem:a9c87ecd73f1d3336fafa7e093a4f6c73"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a9c87ecd73f1d3336fafa7e093a4f6c73">ACTION_GOT_CONFIGURATION</a> = &quot;nl.sense_os.service.push.got_requirement&quot;</td></tr>
 <tr class="separator:a9c87ecd73f1d3336fafa7e093a4f6c73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
@@ -157,13 +161,95 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a2507a86cd9a0b2bf958d232e790e6705"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2870d44cb20f87005ef98ddf2a53682"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#ad2870d44cb20f87005ef98ddf2a53682">onUnregistered</a> (Context context, String registrationId)</td></tr>
 <tr class="separator:ad2870d44cb20f87005ef98ddf2a53682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a26c5393d0e35d225cc6992d71229d5de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a26c5393d0e35d225cc6992d71229d5de">broadcastRequirement</a> (Context context, String req)</td></tr>
+<tr class="separator:a26c5393d0e35d225cc6992d71229d5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5aa4b61c28a238cab6c47433691be59d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a5aa4b61c28a238cab6c47433691be59d">showNotification</a> (Context context, String jsonContent)</td></tr>
+<tr class="separator:a5aa4b61c28a238cab6c47433691be59d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a605c4bbc2c4fd589bc6198d97aa51b07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a605c4bbc2c4fd589bc6198d97aa51b07">toggleService</a> (Context context, String toggle)</td></tr>
+<tr class="separator:a605c4bbc2c4fd589bc6198d97aa51b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e4f54a50e7caf906248ff1e9a94c8ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a7e4f54a50e7caf906248ff1e9a94c8ec">updateConfiguration</a> (Context context)</td></tr>
+<tr class="separator:a7e4f54a50e7caf906248ff1e9a94c8ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71db5bbd921a53fd0c642107c76a72c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a71db5bbd921a53fd0c642107c76a72c8">useConfiguration</a> (Context context, String configurationId)</td></tr>
+<tr class="separator:a71db5bbd921a53fd0c642107c76a72c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a3558a442913b8e175f740d86c7f5e55f"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a3558a442913b8e175f740d86c7f5e55f">TAG</a> = &quot;push&quot;</td></tr>
+<tr class="separator:a3558a442913b8e175f740d86c7f5e55f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:ad6117ac4cf132f079edb085bb171f387"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#ad6117ac4cf132f079edb085bb171f387">NOTIF_ID</a> = 0x01abc</td></tr>
+<tr class="separator:ad6117ac4cf132f079edb085bb171f387"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class that handles new message received with Google Cloud Messaging.<br/>
  <br/>
  It handles the registration of the gcm_id (identifier sent by Google for the device), and synchronizes that identifier to CommonSense. This class also handles commands sent by CommonSense to this device.</p>
 <dl class="section author"><dt>Author</dt><dd>Ahmy Yulrizka <a href="#" onclick="location.href='mai'+'lto:'+'ahm'+'y@'+'sen'+'se'+'-os'+'.n'+'l'; return false;">ahmy@<span style="display: none;">.nosp@m.</span>sens<span style="display: none;">.nosp@m.</span>e-os.<span style="display: none;">.nosp@m.</span>nl</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a4f58a1a9a8c0c5479d911e32de7edc2c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.push.GCMReceiver.GCMReceiver </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a26c5393d0e35d225cc6992d71229d5de"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.push.GCMReceiver.broadcastRequirement </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>req</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Broadcast new requirements</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td></td></tr>
+    <tr><td class="paramname">req</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#aa63ccae68546b77887e53a2997b01112">ConfigurationService::onHandleIntent</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ace9a2993113a0766c50809c8eacf4b9d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -353,16 +439,374 @@ use_configuration: "configuration_id" from commonSense </li>
 
 </div>
 </div>
+<a class="anchor" id="a5aa4b61c28a238cab6c47433691be59d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.push.GCMReceiver.showNotification </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>jsonContent</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Shows a notification to user.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td>application context </td></tr>
+    <tr><td class="paramname">jsonContent</td><td>String representation of JSon object consist of {title, text} </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a605c4bbc2c4fd589bc6198d97aa51b07"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.push.GCMReceiver.toggleService </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>toggle</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Starts or stops the Sense service</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td></td></tr>
+    <tr><td class="paramname">toggle</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a7e4f54a50e7caf906248ff1e9a94c8ec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.push.GCMReceiver.updateConfiguration </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Calls CommonSense API to get the new configuration</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a71db5bbd921a53fd0c642107c76a72c8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.push.GCMReceiver.useConfiguration </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>configurationId</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Calls CommonSense to get the specific configuration for a given configuration ID.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td></td></tr>
+    <tr><td class="paramname">configurationId</td><td>Configuration ID from CommonSense </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a9c87ecd73f1d3336fafa7e093a4f6c73"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.ACTION_GOT_CONFIGURATION = &quot;nl.sense_os.service.push.got_requirement&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7790ceb5de1aa29bb90ba957d1ec9862"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.KEY_GCM_ID = &quot;gcm_id&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad6117ac4cf132f079edb085bb171f387"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.push.GCMReceiver.NOTIF_ID = 0x01abc</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a99a2f87c68f528015371b58abe523a18"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.SENDER_ID = &quot;926669645310&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3558a442913b8e175f740d86c7f5e55f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.TAG = &quot;push&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3c680c49e6687156bcfc76a44f1395d1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.TYPE_NOTIFICATION = &quot;notification&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1f232a04b654cb7a08bb087c9f693bd5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.TYPE_SERVICE = &quot;service&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a731ea502702548db52aa2d7238ed91c9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.TYPE_TOAST = &quot;toast&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a47295691a490a06733f8410afff2b895"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.TYPE_UPDATE_CONFIGURATION = &quot;update_configuration&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af4e068fd58a44efd4cbdba7c6748fffd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.push.GCMReceiver.TYPE_USE_CONFIGURATION = &quot;use_configuration&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/push/GCMReceiver.java</li>
+<li>src/nl/sense_os/service/push/<a class="el" href="_g_c_m_receiver_8java.html">GCMReceiver.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>push</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html">GCMReceiver</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1push.html">push</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html">GCMReceiver</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

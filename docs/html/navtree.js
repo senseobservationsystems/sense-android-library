@@ -1,6 +1,27 @@
 var NAVTREE =
 [
   [ "Sense Android Library", "index.html", [
+    [ "Architecture Overview", "md_documentation_architecture.html", null ],
+    [ "Sense for Android apps", "md_documentation_introduction.html", null ],
+    [ "Message Handler", "md_documentation_msg_handler.html", null ],
+    [ "SensePlatform", "md_documentation_sense_platform.html", [
+      [ "User management", "md_documentation_sense_platform.html#user_management", [
+        [ "Encrypted credentials", "md_documentation_sense_platform.html#encrypted_credentials", null ]
+      ] ],
+      [ "Sensor data", "md_documentation_sense_platform.html#sensor_data", [
+        [ "Sensor data storage", "md_documentation_sense_platform.html#sensor_data_storage", null ],
+        [ "Sensor data access", "md_documentation_sense_platform.html#sensor_data_retrieval", null ],
+        [ "Flusing data", "md_documentation_sense_platform.html#flusing_Data", null ]
+      ] ]
+    ] ],
+    [ "Sense Service", "md_documentation_sense_service.html", null ],
+    [ "Sensors", "md_documentation_sensors.html", null ],
+    [ "Data Storage", "md_documentation_storage.html", null ],
+    [ "Data Subscription", "md_documentation_subscription.html", null ],
+    [ "Deprecated List", "deprecated.html", null ],
+    [ "Packages", null, [
+      [ "Packages", "namespaces.html", "namespaces" ]
+    ] ],
     [ "Classes", null, [
       [ "Class List", "annotated.html", "annotated" ],
       [ "Class Index", "classes.html", null ],
@@ -8,18 +29,29 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Variables", "functions_vars.html", null ]
+        [ "Variables", "functions_vars.html", "functions_vars" ],
+        [ "Enumerator", "functions_eval.html", null ]
       ] ]
+    ] ],
+    [ "Files", null, [
+      [ "File List", "files.html", "files" ]
     ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-".html",
-"classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor_1_1_noise_burst_sensor.html#a781961c423222b3ceb356444cfa97dc4",
-"classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_coolant.html",
-"classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#ae3b38e350e3668ba660b53ec9121f103"
+"_abstract_state_monitor_8java.html",
+"classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a52458b8b3f726262645fdd620b2b3e3b",
+"classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a467c6a47a7a54ea4831adbeb70062ee2",
+"classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a991d3c60b54a82c168ff1e64afa9fdf6",
+"classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sample_rate.html#a1e3f932f831167fc4582f4a4adf25057",
+"classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended.html#ac923cf45841da1d8729b1a4dbd045e69",
+"classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#ac6e94267de6e86094eb012dffa29b3be",
+"classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor.html#a32e11a36b436ddaff74b701f70b6f855",
+"classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor.html#af10a0fd8d0472aaf159f5e4b238373eb",
+"classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a256ee009491c563aa0a30592cca90cdf",
+"functions_vars_k.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

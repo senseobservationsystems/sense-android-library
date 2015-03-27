@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_se
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,10 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_se
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pac-attribs">Package Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1_service_state_helper-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.ServiceStateHelper Class Reference</div>  </div>
@@ -115,86 +122,140 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_se
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1522ff1c53c6790b6bda268359fd4714"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1522ff1c53c6790b6bda268359fd4714"></a>
-Notification&#160;</td><td class="memItemRight" valign="bottom"><b>getStateNotification</b> ()</td></tr>
+<tr class="memitem:a1522ff1c53c6790b6bda268359fd4714"><td class="memItemLeft" align="right" valign="top">Notification&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a1522ff1c53c6790b6bda268359fd4714">getStateNotification</a> ()</td></tr>
 <tr class="separator:a1522ff1c53c6790b6bda268359fd4714"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e23a4356af63802a9531dd8d336f104"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6e23a4356af63802a9531dd8d336f104">getStatusCode</a> ()</td></tr>
 <tr class="separator:a6e23a4356af63802a9531dd8d336f104"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af49d216bd90bc8999ff76f7eac9d79f3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af49d216bd90bc8999ff76f7eac9d79f3"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isAmbienceActive</b> ()</td></tr>
+<tr class="memitem:af49d216bd90bc8999ff76f7eac9d79f3"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#af49d216bd90bc8999ff76f7eac9d79f3">isAmbienceActive</a> ()</td></tr>
 <tr class="separator:af49d216bd90bc8999ff76f7eac9d79f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51b3f368329874d5d216759332713a2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a51b3f368329874d5d216759332713a2d"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isDevProxActive</b> ()</td></tr>
+<tr class="memitem:a51b3f368329874d5d216759332713a2d"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a51b3f368329874d5d216759332713a2d">isDevProxActive</a> ()</td></tr>
 <tr class="separator:a51b3f368329874d5d216759332713a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad845d150333930a965654d0f69062e7d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad845d150333930a965654d0f69062e7d"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isExternalActive</b> ()</td></tr>
+<tr class="memitem:ad845d150333930a965654d0f69062e7d"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#ad845d150333930a965654d0f69062e7d">isExternalActive</a> ()</td></tr>
 <tr class="separator:ad845d150333930a965654d0f69062e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd608b73abe52d98dcb6573b3301e615"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd608b73abe52d98dcb6573b3301e615"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isForeground</b> ()</td></tr>
+<tr class="memitem:afd608b73abe52d98dcb6573b3301e615"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#afd608b73abe52d98dcb6573b3301e615">isForeground</a> ()</td></tr>
 <tr class="separator:afd608b73abe52d98dcb6573b3301e615"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cd2123df74174bece8ebd292bfd6865"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1cd2123df74174bece8ebd292bfd6865"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isLocationActive</b> ()</td></tr>
+<tr class="memitem:a1cd2123df74174bece8ebd292bfd6865"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a1cd2123df74174bece8ebd292bfd6865">isLocationActive</a> ()</td></tr>
 <tr class="separator:a1cd2123df74174bece8ebd292bfd6865"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7948ff7a5a264281334e35d5ca9e8b93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7948ff7a5a264281334e35d5ca9e8b93"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isLoggedIn</b> ()</td></tr>
+<tr class="memitem:a7948ff7a5a264281334e35d5ca9e8b93"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a7948ff7a5a264281334e35d5ca9e8b93">isLoggedIn</a> ()</td></tr>
 <tr class="separator:a7948ff7a5a264281334e35d5ca9e8b93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a134c9eb02f44bfefee451e11715e8356"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a134c9eb02f44bfefee451e11715e8356"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isMotionActive</b> ()</td></tr>
+<tr class="memitem:a134c9eb02f44bfefee451e11715e8356"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a134c9eb02f44bfefee451e11715e8356">isMotionActive</a> ()</td></tr>
 <tr class="separator:a134c9eb02f44bfefee451e11715e8356"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e2a5fe493a02c7a0fec8dd92f68ad5a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e2a5fe493a02c7a0fec8dd92f68ad5a"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isPhoneStateActive</b> ()</td></tr>
+<tr class="memitem:a4e2a5fe493a02c7a0fec8dd92f68ad5a"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a4e2a5fe493a02c7a0fec8dd92f68ad5a">isPhoneStateActive</a> ()</td></tr>
 <tr class="separator:a4e2a5fe493a02c7a0fec8dd92f68ad5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3150db59f3f52726b51b964fa709be97"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3150db59f3f52726b51b964fa709be97"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isQuizActive</b> ()</td></tr>
+<tr class="memitem:a3150db59f3f52726b51b964fa709be97"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a3150db59f3f52726b51b964fa709be97">isQuizActive</a> ()</td></tr>
 <tr class="separator:a3150db59f3f52726b51b964fa709be97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a0a515f81d12007113d4483012973a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8a0a515f81d12007113d4483012973a9"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isStarted</b> ()</td></tr>
+<tr class="memitem:a8a0a515f81d12007113d4483012973a9"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a8a0a515f81d12007113d4483012973a9">isStarted</a> ()</td></tr>
 <tr class="separator:a8a0a515f81d12007113d4483012973a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67bce1e5531a72a62df17546aace9d0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a67bce1e5531a72a62df17546aace9d0f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setAmbienceActive</b> (boolean active)</td></tr>
+<tr class="memitem:a67bce1e5531a72a62df17546aace9d0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a67bce1e5531a72a62df17546aace9d0f">setAmbienceActive</a> (boolean active)</td></tr>
 <tr class="separator:a67bce1e5531a72a62df17546aace9d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06d3be9df4b7787cffe23d792d7d6b11"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06d3be9df4b7787cffe23d792d7d6b11"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setDevProxActive</b> (boolean active)</td></tr>
+<tr class="memitem:a06d3be9df4b7787cffe23d792d7d6b11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a06d3be9df4b7787cffe23d792d7d6b11">setDevProxActive</a> (boolean active)</td></tr>
 <tr class="separator:a06d3be9df4b7787cffe23d792d7d6b11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7261bbd05e5c17d944d32077f982a184"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7261bbd05e5c17d944d32077f982a184"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setExternalActive</b> (boolean active)</td></tr>
+<tr class="memitem:a7261bbd05e5c17d944d32077f982a184"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a7261bbd05e5c17d944d32077f982a184">setExternalActive</a> (boolean active)</td></tr>
 <tr class="separator:a7261bbd05e5c17d944d32077f982a184"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2ff39a0e34ca256c6a19a9599bccdc4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab2ff39a0e34ca256c6a19a9599bccdc4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setForeground</b> (boolean foreground)</td></tr>
+<tr class="memitem:ab2ff39a0e34ca256c6a19a9599bccdc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#ab2ff39a0e34ca256c6a19a9599bccdc4">setForeground</a> (boolean <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a39345f0f1049ede294d684d842fa0c96">foreground</a>)</td></tr>
 <tr class="separator:ab2ff39a0e34ca256c6a19a9599bccdc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10661fff8ea964be54d5ebe39a6d2a42"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10661fff8ea964be54d5ebe39a6d2a42"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setLocationActive</b> (boolean active)</td></tr>
+<tr class="memitem:a10661fff8ea964be54d5ebe39a6d2a42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a10661fff8ea964be54d5ebe39a6d2a42">setLocationActive</a> (boolean active)</td></tr>
 <tr class="separator:a10661fff8ea964be54d5ebe39a6d2a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa16663792051936cc71e445a26064055"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa16663792051936cc71e445a26064055"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setLoggedIn</b> (boolean loggedIn)</td></tr>
+<tr class="memitem:aa16663792051936cc71e445a26064055"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#aa16663792051936cc71e445a26064055">setLoggedIn</a> (boolean <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a21671e0ecf91f15b0fb28e50833cd6f4">loggedIn</a>)</td></tr>
 <tr class="separator:aa16663792051936cc71e445a26064055"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c371eaa7fbbb47f538cbf008f9e42bf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c371eaa7fbbb47f538cbf008f9e42bf"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setMotionActive</b> (boolean active)</td></tr>
+<tr class="memitem:a9c371eaa7fbbb47f538cbf008f9e42bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a9c371eaa7fbbb47f538cbf008f9e42bf">setMotionActive</a> (boolean active)</td></tr>
 <tr class="separator:a9c371eaa7fbbb47f538cbf008f9e42bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ac3910051be3af066410bb12d2f4004"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8ac3910051be3af066410bb12d2f4004"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setPhoneStateActive</b> (boolean active)</td></tr>
+<tr class="memitem:a8ac3910051be3af066410bb12d2f4004"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a8ac3910051be3af066410bb12d2f4004">setPhoneStateActive</a> (boolean active)</td></tr>
 <tr class="separator:a8ac3910051be3af066410bb12d2f4004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c5f5effb30099461b8c7c218cfafbd8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c5f5effb30099461b8c7c218cfafbd8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setQuizActive</b> (boolean active)</td></tr>
+<tr class="memitem:a3c5f5effb30099461b8c7c218cfafbd8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a3c5f5effb30099461b8c7c218cfafbd8">setQuizActive</a> (boolean active)</td></tr>
 <tr class="separator:a3c5f5effb30099461b8c7c218cfafbd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26b6dd933b5a301cf8a593e466004622"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26b6dd933b5a301cf8a593e466004622"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setStarted</b> (boolean started)</td></tr>
+<tr class="memitem:a26b6dd933b5a301cf8a593e466004622"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a26b6dd933b5a301cf8a593e466004622">setStarted</a> (boolean <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a5c413d0d6e904eefb5618be1c71e503c">started</a>)</td></tr>
 <tr class="separator:a26b6dd933b5a301cf8a593e466004622"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a759e7b0d58ea1559327f952c58ec6dea"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html">ServiceStateHelper</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a759e7b0d58ea1559327f952c58ec6dea">getInstance</a> (Context context)</td></tr>
+<tr class="memitem:a759e7b0d58ea1559327f952c58ec6dea"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html">ServiceStateHelper</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a759e7b0d58ea1559327f952c58ec6dea">getInstance</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#af45051a93c63935e105c89a1632126e3">context</a>)</td></tr>
 <tr class="separator:a759e7b0d58ea1559327f952c58ec6dea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:adaa399f5611edb10441e05a5d196db0c"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#adaa399f5611edb10441e05a5d196db0c">NOTIF_ID</a> = 1</td></tr>
 <tr class="separator:adaa399f5611edb10441e05a5d196db0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-attribs"></a>
+Package Attributes</h2></td></tr>
+<tr class="memitem:a39345f0f1049ede294d684d842fa0c96"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a39345f0f1049ede294d684d842fa0c96">foreground</a></td></tr>
+<tr class="separator:a39345f0f1049ede294d684d842fa0c96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21671e0ecf91f15b0fb28e50833cd6f4"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a21671e0ecf91f15b0fb28e50833cd6f4">loggedIn</a></td></tr>
+<tr class="separator:a21671e0ecf91f15b0fb28e50833cd6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a588f66df66f70dcb47d4719c7d9ef9a3"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a588f66df66f70dcb47d4719c7d9ef9a3">ambienceActive</a></td></tr>
+<tr class="separator:a588f66df66f70dcb47d4719c7d9ef9a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fb7cfe38b9a82cdcc792a50c50f35e1"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6fb7cfe38b9a82cdcc792a50c50f35e1">devProxActive</a></td></tr>
+<tr class="separator:a6fb7cfe38b9a82cdcc792a50c50f35e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafb30624d38673ab7587293b9e304a83"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#aafb30624d38673ab7587293b9e304a83">externalActive</a></td></tr>
+<tr class="separator:aafb30624d38673ab7587293b9e304a83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a381819483b337c6fa33c246913dee1db"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a381819483b337c6fa33c246913dee1db">locationActive</a></td></tr>
+<tr class="separator:a381819483b337c6fa33c246913dee1db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91a93e2b36371c54528eabacbcb60561"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a91a93e2b36371c54528eabacbcb60561">motionActive</a></td></tr>
+<tr class="separator:a91a93e2b36371c54528eabacbcb60561"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99875c751a1a32dd44f0448d1a1c1ca9"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a99875c751a1a32dd44f0448d1a1c1ca9">phoneStateActive</a></td></tr>
+<tr class="separator:a99875c751a1a32dd44f0448d1a1c1ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e642a3f0672083dd7dfe6ea4254b64d"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a4e642a3f0672083dd7dfe6ea4254b64d">quizActive</a></td></tr>
+<tr class="separator:a4e642a3f0672083dd7dfe6ea4254b64d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a920aa2277a6f17c5318dde10445d603c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a920aa2277a6f17c5318dde10445d603c">ServiceStateHelper</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#af45051a93c63935e105c89a1632126e3">context</a>)</td></tr>
+<tr class="separator:a920aa2277a6f17c5318dde10445d603c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0233f91e8b113e0d8c1fff6bb8fc9d36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a0233f91e8b113e0d8c1fff6bb8fc9d36">updateNotification</a> ()</td></tr>
+<tr class="separator:a0233f91e8b113e0d8c1fff6bb8fc9d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:af45051a93c63935e105c89a1632126e3"><td class="memItemLeft" align="right" valign="top">final Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#af45051a93c63935e105c89a1632126e3">context</a></td></tr>
+<tr class="separator:af45051a93c63935e105c89a1632126e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c413d0d6e904eefb5618be1c71e503c"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a5c413d0d6e904eefb5618be1c71e503c">started</a></td></tr>
+<tr class="separator:a5c413d0d6e904eefb5618be1c71e503c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a9bfccb65677c2036809c9069e3e62b29"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html">ServiceStateHelper</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a9bfccb65677c2036809c9069e3e62b29">instance</a> = null</td></tr>
+<tr class="separator:a9bfccb65677c2036809c9069e3e62b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29d6a3de02168a63558aaee5242c9d69"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a29d6a3de02168a63558aaee5242c9d69">TAG</a> = &quot;Sense Service State&quot;</td></tr>
+<tr class="separator:a29d6a3de02168a63558aaee5242c9d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is responsible for keeping track of the Sense service state and updating the status bar notification when the service is started or changes login status. We use the singleton pattern to make sure the entire application can see the same state object.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a920aa2277a6f17c5318dde10445d603c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.ServiceStateHelper.ServiceStateHelper </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Private constructor to enforce singleton pattern.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a759e7b0d58ea1559327f952c58ec6dea">ServiceStateHelper::getInstance(Context)</a> </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a759e7b0d58ea1559327f952c58ec6dea"></a>
 <div class="memitem">
 <div class="memproto">
@@ -226,6 +287,21 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a1522ff1c53c6790b6bda268359fd4714"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Notification nl.sense_os.service.ServiceStateHelper.getStateNotification </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a6e23a4356af63802a9531dd8d336f104"></a>
 <div class="memitem">
 <div class="memproto">
@@ -242,7 +318,527 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af49d216bd90bc8999ff76f7eac9d79f3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isAmbienceActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a51b3f368329874d5d216759332713a2d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isDevProxActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad845d150333930a965654d0f69062e7d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isExternalActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afd608b73abe52d98dcb6573b3301e615"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isForeground </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1cd2123df74174bece8ebd292bfd6865"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isLocationActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7948ff7a5a264281334e35d5ca9e8b93"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isLoggedIn </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a134c9eb02f44bfefee451e11715e8356"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isMotionActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4e2a5fe493a02c7a0fec8dd92f68ad5a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isPhoneStateActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3150db59f3f52726b51b964fa709be97"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isQuizActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8a0a515f81d12007113d4483012973a9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.isStarted </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a67bce1e5531a72a62df17546aace9d0f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setAmbienceActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a06d3be9df4b7787cffe23d792d7d6b11"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setDevProxActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7261bbd05e5c17d944d32077f982a184"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setExternalActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab2ff39a0e34ca256c6a19a9599bccdc4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setForeground </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>foreground</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a10661fff8ea964be54d5ebe39a6d2a42"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setLocationActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa16663792051936cc71e445a26064055"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setLoggedIn </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>loggedIn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9c371eaa7fbbb47f538cbf008f9e42bf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setMotionActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8ac3910051be3af066410bb12d2f4004"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setPhoneStateActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3c5f5effb30099461b8c7c218cfafbd8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setQuizActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a26b6dd933b5a301cf8a593e466004622"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.setStarted </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>started</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0233f91e8b113e0d8c1fff6bb8fc9d36"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ServiceStateHelper.updateNotification </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Shows a status bar notification that the Sense service is active, also displaying the username if the service is logged in.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loggedIn</td><td>set to <code>true</code> if the service is logged in. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a588f66df66f70dcb47d4719c7d9ef9a3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.ambienceActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af45051a93c63935e105c89a1632126e3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Context nl.sense_os.service.ServiceStateHelper.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6fb7cfe38b9a82cdcc792a50c50f35e1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.devProxActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aafb30624d38673ab7587293b9e304a83"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.externalActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a39345f0f1049ede294d684d842fa0c96"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.foreground</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9bfccb65677c2036809c9069e3e62b29"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html">ServiceStateHelper</a> nl.sense_os.service.ServiceStateHelper.instance = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a381819483b337c6fa33c246913dee1db"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.locationActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a21671e0ecf91f15b0fb28e50833cd6f4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.loggedIn</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a91a93e2b36371c54528eabacbcb60561"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.motionActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="adaa399f5611edb10441e05a5d196db0c"></a>
 <div class="memitem">
 <div class="memproto">
@@ -264,16 +860,96 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a99875c751a1a32dd44f0448d1a1c1ca9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.phoneStateActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4e642a3f0672083dd7dfe6ea4254b64d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.quizActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5c413d0d6e904eefb5618be1c71e503c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.ServiceStateHelper.started</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a29d6a3de02168a63558aaee5242c9d69"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.ServiceStateHelper.TAG = &quot;Sense Service State&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/ServiceStateHelper.java</li>
+<li>src/nl/sense_os/service/<a class="el" href="_service_state_helper_8java.html">ServiceStateHelper.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html">ServiceStateHelper</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html">ServiceStateHelper</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:22 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

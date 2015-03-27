@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1platform_1_1_s
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -110,19 +113,22 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1platform_1_1_s
 
 <p>This is the complete list of members for <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#ad67ca96c9b6366ce7025cf006faacdbc">getSensePlatform</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#ae14be6b5ab1f3659a1891ce55176dba8">getSenseService</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a71509185bce803c6c99ccb409426648b">isSensePlatformReady</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>onCreate</b>() (defined in <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>onServiceConnected</b>(ComponentName name, IBinder service) (defined in <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>onServiceDisconnected</b>(ComponentName name) (defined in <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a0f7b0b06902c2d67e5de5572195c0ae7">binded</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#ad67ca96c9b6366ce7025cf006faacdbc">getSensePlatform</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#ae14be6b5ab1f3659a1891ce55176dba8">getSenseService</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a71509185bce803c6c99ccb409426648b">isSensePlatformReady</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a2d0c0ea433931054860813862027c650">mSensePlatform</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#acf099b1221084a8144db051fa85c6394">onCreate</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a816fff613b34121db02edb958efb5e84">onServiceConnected</a>(ComponentName name, IBinder service)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a8c1be66c199e5f8ebef78a0701853665">onServiceDisconnected</a>(ComponentName name)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a5efe1cea7308cab35a91d7cca0f9bbcf">startSense</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#a0c0f11277c0f8a99b0c6684ed3907a82">TAG</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:22 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1con
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -104,7 +107,10 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1con
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.configuration.ConfigurationService Class Reference</div>  </div>
@@ -119,11 +125,95 @@ Inheritance diagram for nl.sense_os.service.configuration.ConfigurationService:<
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ab28a2563692a16445adcb3971c0c7ab9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ab28a2563692a16445adcb3971c0c7ab9">ConfigurationService</a> ()</td></tr>
+<tr class="separator:ab28a2563692a16445adcb3971c0c7ab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:aa63ccae68546b77887e53a2997b01112"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa63ccae68546b77887e53a2997b01112"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onHandleIntent</b> (Intent intent)</td></tr>
+<tr class="memitem:aa63ccae68546b77887e53a2997b01112"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#aa63ccae68546b77887e53a2997b01112">onHandleIntent</a> (Intent intent)</td></tr>
 <tr class="separator:aa63ccae68546b77887e53a2997b01112"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:af7bf2e3d621c13e7a73f03328d38a965"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#af7bf2e3d621c13e7a73f03328d38a965">handleAccelerometerReq</a> (JSONObject req)</td></tr>
+<tr class="separator:af7bf2e3d621c13e7a73f03328d38a965"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5c204b262270607f3aad5d67922ade0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad5c204b262270607f3aad5d67922ade0">handleActivityReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ad5c204b262270607f3aad5d67922ade0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62abfc0ac60986b25d37375adac9a4da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a62abfc0ac60986b25d37375adac9a4da">handleAttachToMyrianodeReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a62abfc0ac60986b25d37375adac9a4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af588072cd55fc2bc9c222d86270e618b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#af588072cd55fc2bc9c222d86270e618b">handleAudioSpectrumReq</a> (JSONObject req)</td></tr>
+<tr class="separator:af588072cd55fc2bc9c222d86270e618b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86cbfbef3da6368368299cfe532711e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a86cbfbef3da6368368299cfe532711e6">handleAvailabilityReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a86cbfbef3da6368368299cfe532711e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96c4e280ac887742ae711eb1b53c104b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a96c4e280ac887742ae711eb1b53c104b">handleBatterySensorReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a96c4e280ac887742ae711eb1b53c104b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc8e0fb4f9921bf5245e5c77286e4fed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#afc8e0fb4f9921bf5245e5c77286e4fed">handleAppInfoSensorReq</a> (JSONObject req)</td></tr>
+<tr class="separator:afc8e0fb4f9921bf5245e5c77286e4fed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe597c3de68947aa3d90329ba9cdb564"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#abe597c3de68947aa3d90329ba9cdb564">handleBluetoothDiscoveryReq</a> (JSONObject req)</td></tr>
+<tr class="separator:abe597c3de68947aa3d90329ba9cdb564"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fccba5422915754ec7be35fa38d687c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a0fccba5422915754ec7be35fa38d687c">handleBluetoothNeighboursCountReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a0fccba5422915754ec7be35fa38d687c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2aaaa25a92504a3373dbd5562b7c4d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ab2aaaa25a92504a3373dbd5562b7c4d8">handleCallStateReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ab2aaaa25a92504a3373dbd5562b7c4d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9579c0548d4eb03192f89a3a6480023b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9579c0548d4eb03192f89a3a6480023b">handleCameraLightReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a9579c0548d4eb03192f89a3a6480023b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4b36617d634b31d27eab762f88c80ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ae4b36617d634b31d27eab762f88c80ed">handleConnectionTypeReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ae4b36617d634b31d27eab762f88c80ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02930315e1bdc92e07e1bf3f76b2a77e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a02930315e1bdc92e07e1bf3f76b2a77e">handleDataConnectionReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a02930315e1bdc92e07e1bf3f76b2a77e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe934c429886c0e7c5c73d7d61901b8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#afe934c429886c0e7c5c73d7d61901b8c">handleIPAddressReq</a> (JSONObject req)</td></tr>
+<tr class="separator:afe934c429886c0e7c5c73d7d61901b8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85c55190747c826b33ed0e4571c37b8f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a85c55190747c826b33ed0e4571c37b8f">handleLightReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a85c55190747c826b33ed0e4571c37b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a891b72585c63f80b9004e78acf0b676b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a891b72585c63f80b9004e78acf0b676b">handleLinearAccelerationReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a891b72585c63f80b9004e78acf0b676b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17d7e0bcbd4e437f65361c3ed83d02a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a17d7e0bcbd4e437f65361c3ed83d02a6">handleLocationReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a17d7e0bcbd4e437f65361c3ed83d02a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00e7b9a0952f81b6fc2bc871cf7a2b26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a00e7b9a0952f81b6fc2bc871cf7a2b26">handleLoudnessReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a00e7b9a0952f81b6fc2bc871cf7a2b26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5671687dfa12bd8a37690d988f79557"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ab5671687dfa12bd8a37690d988f79557">handleMotionEnergyReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ab5671687dfa12bd8a37690d988f79557"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2a4de111c33a3f4c258b2574133e826"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad2a4de111c33a3f4c258b2574133e826">handleNoiseSensorReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ad2a4de111c33a3f4c258b2574133e826"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1daad3f22806788a26b78449a3ffd787"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a1daad3f22806788a26b78449a3ffd787">handleOrientationReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a1daad3f22806788a26b78449a3ffd787"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7ff905cf6d4599a3e31311e9edd8a6b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ab7ff905cf6d4599a3e31311e9edd8a6b">handlePositionReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ab7ff905cf6d4599a3e31311e9edd8a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64d65df4d60458aa7706bf4c551b73a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a64d65df4d60458aa7706bf4c551b73a4">handlePressureReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a64d65df4d60458aa7706bf4c551b73a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73abc49e1b2411beb4b665e34b26070d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a73abc49e1b2411beb4b665e34b26070d">handleProximityReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a73abc49e1b2411beb4b665e34b26070d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94555cb784206b9e6be00bdcbf738653"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a94555cb784206b9e6be00bdcbf738653">handleReachabilityReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a94555cb784206b9e6be00bdcbf738653"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad610a0eecbf65c33e087b5bb49e19de1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad610a0eecbf65c33e087b5bb49e19de1">handleScreenActiviyReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ad610a0eecbf65c33e087b5bb49e19de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9394a502b2193bb81d5224ead46276b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9394a502b2193bb81d5224ead46276b4">handleServiceStateReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a9394a502b2193bb81d5224ead46276b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9a9e17539a2ed426fe744305959d9af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad9a9e17539a2ed426fe744305959d9af">handleSignalStrengthReq</a> (JSONObject req)</td></tr>
+<tr class="separator:ad9a9e17539a2ed426fe744305959d9af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c36c577849a1bda826ca56704a21471"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9c36c577849a1bda826ca56704a21471">handleTraveledDistance1HReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a9c36c577849a1bda826ca56704a21471"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09a9710459ca22949f50295adff99333"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a09a9710459ca22949f50295adff99333">handleUnreadMsgReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a09a9710459ca22949f50295adff99333"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f300ad1cd9631700157d0566e072b03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9f300ad1cd9631700157d0566e072b03">handleWifiScanReq</a> (JSONObject req)</td></tr>
+<tr class="separator:a9f300ad1cd9631700157d0566e072b03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0308e5c60699a3e18107dde1721480c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a0308e5c60699a3e18107dde1721480c7">updateSamplingRate</a> (int newRate)</td></tr>
+<tr class="separator:a0308e5c60699a3e18107dde1721480c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6422fb1d627afbedc11ba5ceb5ab41a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#af6422fb1d627afbedc11ba5ceb5ab41a">updateSyncRate</a> (int newRate)</td></tr>
+<tr class="separator:af6422fb1d627afbedc11ba5ceb5ab41a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:afb7f01bf8e3d8dc7594b3ed1e492fe58"><td class="memItemLeft" align="right" valign="top">Integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#afb7f01bf8e3d8dc7594b3ed1e492fe58">samplingRate</a> = null</td></tr>
+<tr class="separator:afb7f01bf8e3d8dc7594b3ed1e492fe58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5516afc816012955db81f468d547089f"><td class="memItemLeft" align="right" valign="top">Integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a5516afc816012955db81f468d547089f">syncRate</a> = null</td></tr>
+<tr class="separator:a5516afc816012955db81f468d547089f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7563f2fdf4da681ae755b04db815bbc5"><td class="memItemLeft" align="right" valign="top">SharedPreferences&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a7563f2fdf4da681ae755b04db815bbc5">statusPrefs</a></td></tr>
+<tr class="separator:a7563f2fdf4da681ae755b04db815bbc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e64dcec04d4133ad363364b8512243f"><td class="memItemLeft" align="right" valign="top">SharedPreferences&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a2e64dcec04d4133ad363364b8512243f">mainPrefs</a></td></tr>
+<tr class="separator:a2e64dcec04d4133ad363364b8512243f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>IntentService to handle changes in the configuration. When the service is started, it will look into the requirement and set the preferences accordingly.<br/>
@@ -258,16 +348,1429 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>onHandleIntent</b> (I
      }
    }
 </pre><dl class="section author"><dt>Author</dt><dd>Ahmy Yulrizka <a href="#" onclick="location.href='mai'+'lto:'+'ahm'+'y@'+'sen'+'se'+'-os'+'.n'+'l'; return false;">ahmy@<span style="display: none;">.nosp@m.</span>sens<span style="display: none;">.nosp@m.</span>e-os.<span style="display: none;">.nosp@m.</span>nl</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/configuration/ConfigurationService.java</li>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ab28a2563692a16445adcb3971c0c7ab9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.configuration.ConfigurationService.ConfigurationService </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="af7bf2e3d621c13e7a73f03328d38a965"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleAccelerometerReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles accelerometer requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable unregister between sample sensing </li>
+<li>
+enable screenoff_fix </li>
+<li>
+turn on Motion sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>accelerometer requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad5c204b262270607f3aad5d67922ade0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleActivityReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Activity requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable unregister between sample sensing </li>
+<li>
+enable screenoff_fix </li>
+<li>
+turn on Motion sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Activity requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="afc8e0fb4f9921bf5245e5c77286e4fed"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleAppInfoSensorReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles App Info Sensor requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable Battery State sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>App info sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a62abfc0ac60986b25d37375adac9a4da"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleAttachToMyrianodeReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles attachToMyrianode requirements. </p>
+<ol>
+<li>
+enable attachToMyrianode preference </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>attachTo requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="af588072cd55fc2bc9c222d86270e618b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleAudioSpectrumReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles audio spectrum requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable mic sensing </li>
+<li>
+enable audio_specturm sensing </li>
+<li>
+turn on Ambience sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>audio_spectrum sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a86cbfbef3da6368368299cfe532711e6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleAvailabilityReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Availability requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable GPS provider </li>
+<li>
+enable Network Provider - enable Automatic GPS </li>
+<li>
+turn on Location sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Availability sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a96c4e280ac887742ae711eb1b53c104b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleBatterySensorReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Battery Sensor requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable Battery State sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Battery sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="abe597c3de68947aa3d90329ba9cdb564"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleBluetoothDiscoveryReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Bluetooth Discovery requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable bluetooth sensing </li>
+<li>
+turn on Device Proximity sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Bluetooth discovery sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a0fccba5422915754ec7be35fa38d687c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleBluetoothNeighboursCountReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles bluetooth neighbours count requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable bluetooth sensing </li>
+<li>
+turn on Device Proximity sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>bluetooth neighbours count sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ab2aaaa25a92504a3373dbd5562b7c4d8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleCallStateReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Call State requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable call state sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Call state sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a9579c0548d4eb03192f89a3a6480023b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleCameraLightReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles camera light requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable camera light sensing </li>
+<li>
+turn on Ambience sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>camera_light sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ae4b36617d634b31d27eab762f88c80ed"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleConnectionTypeReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Connection Type requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable data connection sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Connection type sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a02930315e1bdc92e07e1bf3f76b2a77e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleDataConnectionReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Data Connection requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable data connection sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Data Connection sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="afe934c429886c0e7c5c73d7d61901b8c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleIPAddressReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles IP address requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable IP address sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>IP Address sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a85c55190747c826b33ed0e4571c37b8f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleLightReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles light requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable light sensing </li>
+<li>
+turn on Ambience sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>light sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a891b72585c63f80b9004e78acf0b676b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleLinearAccelerationReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles linear acceleration requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable unregister between sample sensing </li>
+<li>
+enable screenoff_fix </li>
+<li>
+turn on Motion sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>linear acceleration requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a17d7e0bcbd4e437f65361c3ed83d02a6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleLocationReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles 1h requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable GPS provider </li>
+<li>
+enable Network Provider - enable Automatic GPS </li>
+<li>
+turn on Location sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Location sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a00e7b9a0952f81b6fc2bc871cf7a2b26"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleLoudnessReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles loudness sensor requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable Mic sensing </li>
+<li>
+turn on Ambience sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>loudness requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ab5671687dfa12bd8a37690d988f79557"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleMotionEnergyReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles motion energy requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable unregister between sample sensing </li>
+<li>
+enable motion energy sensor </li>
+<li>
+enable screenoff_fix </li>
+<li>
+turn on Motion sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>accelerometer requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad2a4de111c33a3f4c258b2574133e826"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleNoiseSensorReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles noise sensor requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable Mic sensing </li>
+<li>
+turn on Ambience sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>noise_sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a1daad3f22806788a26b78449a3ffd787"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleOrientationReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles orientation sensor requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable unregister between sample sensing </li>
+<li>
+enable screenoff_fix </li>
+<li>
+turn on Motion sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>orientation requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ab7ff905cf6d4599a3e31311e9edd8a6b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handlePositionReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles position requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable GPS provider </li>
+<li>
+enable Network Provider - enable Automatic GPS </li>
+<li>
+turn on Location sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Position sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a64d65df4d60458aa7706bf4c551b73a4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handlePressureReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles pressure sensor requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable pressure sensing </li>
+<li>
+turn on Ambience sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>pressure requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a73abc49e1b2411beb4b665e34b26070d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleProximityReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Proximity requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable proximity sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Proximity sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a94555cb784206b9e6be00bdcbf738653"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleReachabilityReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Reachability requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable service state sensing </li>
+<li>
+enable call state sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Reachability sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad610a0eecbf65c33e087b5bb49e19de1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleScreenActiviyReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Screen Activity requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable screen activity sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Screen activity sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a9394a502b2193bb81d5224ead46276b4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleServiceStateReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Service State requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable service state sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>ServiceState sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad9a9e17539a2ed426fe744305959d9af"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleSignalStrengthReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Signal Strength requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable signal strength sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Signal Strength sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a9c36c577849a1bda826ca56704a21471"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleTraveledDistance1HReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles travel distance 1h requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable GPS provider </li>
+<li>
+enable Network Provider - enable Automatic GPS </li>
+<li>
+turn on Location sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>travel distance 1h sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a09a9710459ca22949f50295adff99333"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleUnreadMsgReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles Call State requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable call state sensing </li>
+<li>
+turn on Phone State sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>Unread message sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a9f300ad1cd9631700157d0566e072b03"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.handleWifiScanReq </td>
+          <td>(</td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>req</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Handles wifi scan requirements. </p>
+<ol>
+<li>
+update sampling_rate if necessary </li>
+<li>
+enable wifi sensing </li>
+<li>
+turn on Device Proximity sensing </li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">req</td><td>wifi scan sensor requirement </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa63ccae68546b77887e53a2997b01112"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.onHandleIntent </td>
+          <td>(</td>
+          <td class="paramtype">Intent&#160;</td>
+          <td class="paramname"><em>intent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0308e5c60699a3e18107dde1721480c7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.updateSamplingRate </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>newRate</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Updates sampling rate</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newRate</td><td>new sampling rate </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="af6422fb1d627afbedc11ba5ceb5ab41a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.configuration.ConfigurationService.updateSyncRate </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>newRate</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Updates sync rate to common sense</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newRate</td><td>new sync rate </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a2e64dcec04d4133ad363364b8512243f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SharedPreferences nl.sense_os.service.configuration.ConfigurationService.mainPrefs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afb7f01bf8e3d8dc7594b3ed1e492fe58"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Integer nl.sense_os.service.configuration.ConfigurationService.samplingRate = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7563f2fdf4da681ae755b04db815bbc5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SharedPreferences nl.sense_os.service.configuration.ConfigurationService.statusPrefs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5516afc816012955db81f468d547089f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Integer nl.sense_os.service.configuration.ConfigurationService.syncRate = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/configuration/<a class="el" href="_configuration_service_8java.html">ConfigurationService.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>configuration</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html">ConfigurationService</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1configuration.html">configuration</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html">ConfigurationService</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

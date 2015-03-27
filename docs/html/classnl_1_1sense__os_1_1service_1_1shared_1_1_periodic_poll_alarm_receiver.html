@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sha
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sha
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.shared.PeriodicPollAlarmReceiver Class Reference</div>  </div>
@@ -121,21 +125,56 @@ Inheritance diagram for nl.sense_os.service.shared.PeriodicPollAlarmReceiver:</d
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a928ac92c45e5df69666bf9d5cc87f74b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a928ac92c45e5df69666bf9d5cc87f74b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>PeriodicPollAlarmReceiver</b> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html">PeriodicPollingSensor</a> sensor)</td></tr>
+<tr class="memitem:a928ac92c45e5df69666bf9d5cc87f74b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html#a928ac92c45e5df69666bf9d5cc87f74b">PeriodicPollAlarmReceiver</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html">PeriodicPollingSensor</a> <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html#af6c2190bf2d3208593ccad559a3b9435">sensor</a>)</td></tr>
 <tr class="separator:a928ac92c45e5df69666bf9d5cc87f74b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4fb88ce63d3b2bd4ad3b1a17e034d25"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af4fb88ce63d3b2bd4ad3b1a17e034d25"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ()</td></tr>
+<tr class="memitem:af4fb88ce63d3b2bd4ad3b1a17e034d25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html#af4fb88ce63d3b2bd4ad3b1a17e034d25">run</a> ()</td></tr>
 <tr class="separator:af4fb88ce63d3b2bd4ad3b1a17e034d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adee067f7406b68d83f667c544f172a27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html#adee067f7406b68d83f667c544f172a27">start</a> (Context context)</td></tr>
 <tr class="separator:adee067f7406b68d83f667c544f172a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27e264ce582f1869bf438a8a0c4ef238"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html#a27e264ce582f1869bf438a8a0c4ef238">stop</a> (Context context)</td></tr>
 <tr class="separator:a27e264ce582f1869bf438a8a0c4ef238"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:af6c2190bf2d3208593ccad559a3b9435"><td class="memItemLeft" align="right" valign="top">final <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html">PeriodicPollingSensor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html#af6c2190bf2d3208593ccad559a3b9435">sensor</a></td></tr>
+<tr class="separator:af6c2190bf2d3208593ccad559a3b9435"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Generic BroadcastReceiver implementation for <a class="el" href="">BasePeriodicPollingSensor</a> classes. Calls <a class="el" href="">BasePeriodicPollingSensor#doSample()</a> whenever a broadcast is received.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a928ac92c45e5df69666bf9d5cc87f74b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.shared.PeriodicPollAlarmReceiver.PeriodicPollAlarmReceiver </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html">PeriodicPollingSensor</a>&#160;</td>
+          <td class="paramname"><em>sensor</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="af4fb88ce63d3b2bd4ad3b1a17e034d25"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.shared.PeriodicPollAlarmReceiver.run </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="adee067f7406b68d83f667c544f172a27"></a>
 <div class="memitem">
 <div class="memproto">
@@ -182,16 +221,37 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ()</td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="af6c2190bf2d3208593ccad559a3b9435"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html">PeriodicPollingSensor</a> nl.sense_os.service.shared.PeriodicPollAlarmReceiver.sensor</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/shared/PeriodicPollAlarmReceiver.java</li>
+<li>src/nl/sense_os/service/shared/<a class="el" href="_periodic_poll_alarm_receiver_8java.html">PeriodicPollAlarmReceiver.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>shared</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html">PeriodicPollAlarmReceiver</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1shared.html">shared</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html">PeriodicPollAlarmReceiver</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

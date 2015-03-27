@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pro
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pro
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.provider.SensorDataProvider Class Reference</div>  </div>
@@ -121,24 +125,23 @@ Inheritance diagram for nl.sense_os.service.provider.SensorDataProvider:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad6033d5aef66c9f6f3005a75c9bc7596"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad6033d5aef66c9f6f3005a75c9bc7596"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>delete</b> (Uri uri, String where, String[] selectionArgs)</td></tr>
+<tr class="memitem:ad6033d5aef66c9f6f3005a75c9bc7596"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#ad6033d5aef66c9f6f3005a75c9bc7596">delete</a> (Uri uri, String where, String[] selectionArgs)</td></tr>
 <tr class="separator:ad6033d5aef66c9f6f3005a75c9bc7596"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5148a7e5a11ea95ea448154b1658ae9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5148a7e5a11ea95ea448154b1658ae9"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>getType</b> (Uri uri)</td></tr>
+<tr class="memitem:ae5148a7e5a11ea95ea448154b1658ae9"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#ae5148a7e5a11ea95ea448154b1658ae9">getType</a> (Uri uri)</td></tr>
 <tr class="separator:ae5148a7e5a11ea95ea448154b1658ae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf40c54c2aebb7e17e72d96065a7e8e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaf40c54c2aebb7e17e72d96065a7e8e4"></a>
-Uri&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (Uri uri, ContentValues values)</td></tr>
+<tr class="memitem:aaf40c54c2aebb7e17e72d96065a7e8e4"><td class="memItemLeft" align="right" valign="top">Uri&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#aaf40c54c2aebb7e17e72d96065a7e8e4">insert</a> (Uri uri, ContentValues values)</td></tr>
 <tr class="separator:aaf40c54c2aebb7e17e72d96065a7e8e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0885cc28ab80f519dc7aa532e0c5f283"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0885cc28ab80f519dc7aa532e0c5f283"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>onCreate</b> ()</td></tr>
+<tr class="memitem:a0885cc28ab80f519dc7aa532e0c5f283"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#a0885cc28ab80f519dc7aa532e0c5f283">onCreate</a> ()</td></tr>
 <tr class="separator:a0885cc28ab80f519dc7aa532e0c5f283"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85b88406c9e2844cf0963cc15325a8bd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85b88406c9e2844cf0963cc15325a8bd"></a>
-Cursor&#160;</td><td class="memItemRight" valign="bottom"><b>query</b> (Uri uri, String[] projection, String where, String[] selectionArgs, String sortOrder)</td></tr>
+<tr class="memitem:a85b88406c9e2844cf0963cc15325a8bd"><td class="memItemLeft" align="right" valign="top">Cursor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#a85b88406c9e2844cf0963cc15325a8bd">query</a> (Uri uri, String[] projection, String where, String[] selectionArgs, String sortOrder)</td></tr>
 <tr class="separator:a85b88406c9e2844cf0963cc15325a8bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c0a4c6e21f9e1204bd9c725224d2f52"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c0a4c6e21f9e1204bd9c725224d2f52"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> (Uri uri, ContentValues newValues, String where, String[] selectionArgs)</td></tr>
+<tr class="memitem:a0c0a4c6e21f9e1204bd9c725224d2f52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#a0c0a4c6e21f9e1204bd9c725224d2f52">update</a> (Uri uri, ContentValues newValues, String where, String[] selectionArgs)</td></tr>
 <tr class="separator:a0c0a4c6e21f9e1204bd9c725224d2f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:aceee53e771d37cb5be48791440fa218d"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#aceee53e771d37cb5be48791440fa218d">TAG</a> = &quot;SensorDataProvider&quot;</td></tr>
+<tr class="separator:aceee53e771d37cb5be48791440fa218d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ContentProvider that encapsulates recent sensor data. The data is stored in the devices RAM memory, so this implementation is more energy efficient than storing everything in flash. This does mean that parsing the selection queries is quite a challenge. Only a very limited set of queries will work: </p>
@@ -166,16 +169,209 @@ combinations of a sensor_name and a timestamp selection </li>
 <dl class="section see"><dt>See Also</dt><dd>LocalStorage </dd>
 <dd>
 DataPoint </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/provider/SensorDataProvider.java</li>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad6033d5aef66c9f6f3005a75c9bc7596"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.provider.SensorDataProvider.delete </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>where</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>selectionArgs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae5148a7e5a11ea95ea448154b1658ae9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.provider.SensorDataProvider.getType </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aaf40c54c2aebb7e17e72d96065a7e8e4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Uri nl.sense_os.service.provider.SensorDataProvider.insert </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ContentValues&#160;</td>
+          <td class="paramname"><em>values</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0885cc28ab80f519dc7aa532e0c5f283"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.provider.SensorDataProvider.onCreate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a85b88406c9e2844cf0963cc15325a8bd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Cursor nl.sense_os.service.provider.SensorDataProvider.query </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>projection</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>where</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>selectionArgs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>sortOrder</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0c0a4c6e21f9e1204bd9c725224d2f52"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.provider.SensorDataProvider.update </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ContentValues&#160;</td>
+          <td class="paramname"><em>newValues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>where</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>selectionArgs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aceee53e771d37cb5be48791440fa218d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.provider.SensorDataProvider.TAG = &quot;SensorDataProvider&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/provider/<a class="el" href="_sensor_data_provider_8java.html">SensorDataProvider.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>provider</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html">SensorDataProvider</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:57 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1provider.html">provider</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html">SensorDataProvider</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

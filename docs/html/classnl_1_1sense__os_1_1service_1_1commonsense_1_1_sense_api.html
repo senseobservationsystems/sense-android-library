@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -106,6 +109,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.commonsense.SenseApi Class Reference</div>  </div>
@@ -169,6 +174,26 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:a1aa0c08aa62a01c44673a840317f2a7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad9286e54c12f3766eed6fd7befd2522"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#aad9286e54c12f3766eed6fd7befd2522">RESPONSE_CONTENT</a> = &quot;content&quot;</td></tr>
 <tr class="separator:aad9286e54c12f3766eed6fd7befd2522"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a8bb0d7490244fc711f62d70de8db2c19"><td class="memItemLeft" align="right" valign="top">static List&lt; JSONObject &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a8bb0d7490244fc711f62d70de8db2c19">getMatchingSensors</a> (Context context, String name, String description, String dataType)  throws IOException, JSONException </td></tr>
+<tr class="separator:a8bb0d7490244fc711f62d70de8db2c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a5d4b3b2384c5b56870d619e21a714e3a"><td class="memItemLeft" align="right" valign="top">static final long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a5d4b3b2384c5b56870d619e21a714e3a">CACHE_REFRESH</a> = 1000l * 60 * 60</td></tr>
+<tr class="separator:a5d4b3b2384c5b56870d619e21a714e3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a828fbbd0809a9a03a61c8fb610dae672"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a828fbbd0809a9a03a61c8fb610dae672">TAG</a> = &quot;SenseApi&quot;</td></tr>
+<tr class="separator:a828fbbd0809a9a03a61c8fb610dae672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5c43166cf6c3fa7eba79bdfd657f8bd"><td class="memItemLeft" align="right" valign="top">static SharedPreferences&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#af5c43166cf6c3fa7eba79bdfd657f8bd">sAuthPrefs</a></td></tr>
+<tr class="separator:af5c43166cf6c3fa7eba79bdfd657f8bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ebf9fabc412ba8049da8a23e4d55beb"><td class="memItemLeft" align="right" valign="top">static SharedPreferences&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a3ebf9fabc412ba8049da8a23e4d55beb">sMainPrefs</a></td></tr>
+<tr class="separator:a3ebf9fabc412ba8049da8a23e4d55beb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd448196614dd9e1beac960337e39ebe"><td class="memItemLeft" align="right" valign="top">static TelephonyManager&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#afd448196614dd9e1beac960337e39ebe">sTelManager</a></td></tr>
+<tr class="separator:afd448196614dd9e1beac960337e39ebe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9393c21e9fac02afb76c98b0d2fbaa3"><td class="memItemLeft" align="right" valign="top">static String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#ae9393c21e9fac02afb76c98b0d2fbaa3">APPLICATION_KEY</a></td></tr>
+<tr class="separator:ae9393c21e9fac02afb76c98b0d2fbaa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main interface for communicating with the CommonSense API.</p>
@@ -531,6 +556,52 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a8bb0d7490244fc711f62d70de8db2c19"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt;JSONObject&gt; nl.sense_os.service.commonsense.SenseApi.getMatchingSensors </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>description</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>dataType</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> throws IOException, JSONException</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a0d8371b60b18e37d4711ee9355470163"></a>
 <div class="memitem">
 <div class="memproto">
@@ -884,7 +955,7 @@ Static Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See Also</dt><dd>SenseServiceStub::changeLogin(String, String, nl.sense_os.service.ISenseServiceCallback) </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a519528dee87149754e0acb31b6d71f90">SenseServiceStub::changeLogin</a>(String, String, nl.sense_os.service.ISenseServiceCallback) </dd></dl>
 
 </div>
 </div>
@@ -1108,7 +1179,7 @@ Static Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See Also</dt><dd>SenseServiceStub::register(String, String, String, String, String, String, String, String, String, nl.sense_os.service.ISenseServiceCallback) </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a799312f0fefb1942fe383f343d169f33">SenseServiceStub::register</a>(String, String, String, String, String, String, String, String, String, nl.sense_os.service.ISenseServiceCallback) </dd></dl>
 
 </div>
 </div>
@@ -1334,6 +1405,46 @@ Static Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ae9393c21e9fac02afb76c98b0d2fbaa3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.commonsense.SenseApi.APPLICATION_KEY</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5d4b3b2384c5b56870d619e21a714e3a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final long nl.sense_os.service.commonsense.SenseApi.CACHE_REFRESH = 1000l * 60 * 60</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a3764b1d9593f90e8d2e225dff4508d24"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1397,16 +1508,96 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af5c43166cf6c3fa7eba79bdfd657f8bd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SharedPreferences nl.sense_os.service.commonsense.SenseApi.sAuthPrefs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3ebf9fabc412ba8049da8a23e4d55beb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SharedPreferences nl.sense_os.service.commonsense.SenseApi.sMainPrefs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afd448196614dd9e1beac960337e39ebe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TelephonyManager nl.sense_os.service.commonsense.SenseApi.sTelManager</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a828fbbd0809a9a03a61c8fb610dae672"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.commonsense.SenseApi.TAG = &quot;SenseApi&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/commonsense/SenseApi.java</li>
+<li>src/nl/sense_os/service/commonsense/<a class="el" href="_sense_api_8java.html">SenseApi.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>commonsense</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html">SenseApi</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1commonsense.html">commonsense</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html">SenseApi</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:22 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

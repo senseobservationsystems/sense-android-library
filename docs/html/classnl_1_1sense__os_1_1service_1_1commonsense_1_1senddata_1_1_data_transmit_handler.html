@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.commonsense.senddata.DataTransmitHandler Class Reference</div>  </div>
@@ -121,26 +127,218 @@ Inheritance diagram for nl.sense_os.service.commonsense.senddata.DataTransmitHan
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2bdd9904dd24abeef967b586283bc23d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2bdd9904dd24abeef967b586283bc23d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DataTransmitHandler</b> (Context context, <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a> storage, Looper looper)</td></tr>
+<tr class="memitem:a2bdd9904dd24abeef967b586283bc23d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#a2bdd9904dd24abeef967b586283bc23d">DataTransmitHandler</a> (Context context, <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a> storage, Looper looper)</td></tr>
 <tr class="separator:a2bdd9904dd24abeef967b586283bc23d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f569d5060b9472bc0a1df56ff63a1a1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f569d5060b9472bc0a1df56ff63a1a1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>handleMessage</b> (Message msg)</td></tr>
+<tr class="memitem:a7f569d5060b9472bc0a1df56ff63a1a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#a7f569d5060b9472bc0a1df56ff63a1a1">handleMessage</a> (Message msg)</td></tr>
 <tr class="separator:a7f569d5060b9472bc0a1df56ff63a1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ad1771fae7081a8881811695a0ce04e7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#ad1771fae7081a8881811695a0ce04e7c">cleanup</a> (WakeLock wakeLock)</td></tr>
+<tr class="separator:ad1771fae7081a8881811695a0ce04e7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7edae45f567e4c068b25350e082b82c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#a7edae45f567e4c068b25350e082b82c3">onTransmitSuccess</a> (String name, String description, JSONObject json)  throws JSONException </td></tr>
+<tr class="separator:a7edae45f567e4c068b25350e082b82c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a310c5416918cd876b2b44170beb8e58a"><td class="memItemLeft" align="right" valign="top">final WeakReference&lt; Context &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#a310c5416918cd876b2b44170beb8e58a">ctxRef</a></td></tr>
+<tr class="separator:a310c5416918cd876b2b44170beb8e58a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad227032ccf8052027157e112bab2a315"><td class="memItemLeft" align="right" valign="top">final WeakReference&lt; <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#ad227032ccf8052027157e112bab2a315">storageRef</a></td></tr>
+<tr class="separator:ad227032ccf8052027157e112bab2a315"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a4ebb317a33757314a027973712de57a8"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#a4ebb317a33757314a027973712de57a8">TAG</a> = &quot;DataTransmitHandler&quot;</td></tr>
+<tr class="separator:a4ebb317a33757314a027973712de57a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Handler for transmission of a simple JSONObject containing sensor data for one sensor.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/commonsense/senddata/DataTransmitHandler.java</li>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a2bdd9904dd24abeef967b586283bc23d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.commonsense.senddata.DataTransmitHandler.DataTransmitHandler </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a>&#160;</td>
+          <td class="paramname"><em>storage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Looper&#160;</td>
+          <td class="paramname"><em>looper</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad1771fae7081a8881811695a0ce04e7c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.commonsense.senddata.DataTransmitHandler.cleanup </td>
+          <td>(</td>
+          <td class="paramtype">WakeLock&#160;</td>
+          <td class="paramname"><em>wakeLock</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7f569d5060b9472bc0a1df56ff63a1a1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.commonsense.senddata.DataTransmitHandler.handleMessage </td>
+          <td>(</td>
+          <td class="paramtype">Message&#160;</td>
+          <td class="paramname"><em>msg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7edae45f567e4c068b25350e082b82c3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.commonsense.senddata.DataTransmitHandler.onTransmitSuccess </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>description</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">JSONObject&#160;</td>
+          <td class="paramname"><em>json</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> throws JSONException</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a310c5416918cd876b2b44170beb8e58a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final WeakReference&lt;Context&gt; nl.sense_os.service.commonsense.senddata.DataTransmitHandler.ctxRef</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad227032ccf8052027157e112bab2a315"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final WeakReference&lt;<a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a>&gt; nl.sense_os.service.commonsense.senddata.DataTransmitHandler.storageRef</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4ebb317a33757314a027973712de57a8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.commonsense.senddata.DataTransmitHandler.TAG = &quot;DataTransmitHandler&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/commonsense/senddata/<a class="el" href="_data_transmit_handler_8java.html">DataTransmitHandler.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>commonsense</b></li><li class="navelem"><b>senddata</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html">DataTransmitHandler</a></li>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1commonsense.html">commonsense</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1commonsense_1_1senddata.html">senddata</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html">DataTransmitHandler</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -112,14 +115,16 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1com
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a00d171677338a5476ba57818a37e7a0f">checkSensor</a>(String name, String displayName, String dataType, String description, String value, String deviceType, String deviceUuid)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#ab91560cdeef6c3df58a819d5c593a78c">getContext</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>SensorRegistrator</b>(Context context) (defined in <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#ab4c03240eccca1e4b0dad6f5dd4b222a">mContext</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a9376d5d1d9a5121490083f986d88e864">SensorRegistrator</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a1305075ecc27ba64931a8b843f8ffe2d">TAG</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
   <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#a39eb6d66ebca1012e9aea1ee1eb70c63">verifySensorIds</a>(String deviceType, String deviceUuid)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html">nl.sense_os.service.commonsense.SensorRegistrator</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Feb 5 2015 17:36:55 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 16:20:23 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
