@@ -2,7 +2,7 @@
 
 Sensor data can be stored in and obtained from local database as well as CommonSense. The data will be stored in local database first, and transmitted to CommonSense periodically (see [MsgHandler](documentation/msg_handler.md)). 
 
-To store the data, sensor need to pass a message to MsgHandler by sending an Intent with action_sense_new_data containing the details of datapoint. This new data will be stored and buffered in Local database before transmitted to CommonSense at scheduled time.
+To store the data, sensor need to pass a message to [MsgHandler](documentation/msg_handler.md) by sending an Intent with action_sense_new_data containing the details of datapoint. This new data will be stored and buffered in local database before transmitted to CommonSense at scheduled time.
 
     Intent sensorData = new Intent(getString(R.string.action_sense_new_data));
     sensorData.putExtra(DataPoint.SENSOR_NAME, &quot;sensor name&quot;);
@@ -26,7 +26,9 @@ Query can be done with two URI path scheme, as follow :
 
 In case of [CONTENT_REMOTE_URI_PATH](@ref nl.sense_os.service.constants.SensorData.DataPoint.CONTENT_REMOTE_URI_PATH), LocalStorage become a proxy to RemoteStorage. See nl.sense_os.service.storage.LocalStorage.query).
 
-### SQLite
+LocalStorage is implemented in nl.sense_os.service.storage.LocalStorage
+
+### SQLite Database
 
 Local data will be stored in encrypted SQLite database (see nl.sense_os.service.storage.SQLiteStorage and nl.sense_os.service.storage.DbHelper).
 
@@ -51,7 +53,7 @@ The data in memory (RAM) database will be deleted when data moved to in file dat
 
 ### Retention Rate
 
-Old data in persistent database will be deleted after exceed retention time (and not sended yet in case using commonSense). Retention times is gathered from preferences, or 24 hour by default.
+Old data in persistent database will be deleted after exceed retention time (and not sended yet in case using commonSense). Retention times is gathered from preferences (see nl.sense_os.service.constants.SensePrefs.Main.Advanced.RETENTION_HOURS), or 24 hour by default (see nl.sense_os.service.storage.LocalStorage.DEFAULT_RETENTION_HOURS)
 
 
 ## 2. Remote Storage

@@ -10,21 +10,21 @@ SenseSensor interface is defined in nl.sense_os.service.shared.SenseSensor
 
 ## BaseSensor
 
-BaseSensor is base implementation of SenseSensor (nl.sense_os.service.shared.SenseSensor). It inherit from nl.sense_os.service.subscription.BaseDataProducer therefore it also implement nl.sense_os.service.subscription.DataProducer. It provide basic implementation to set and get sample rate, and leaving the start and stop sensing mechanism to specific sensor it inherits.
+BaseSensor is base implementation of [SenseSensor](##SenseSensor). It inherit from nl.sense_os.service.subscription.BaseDataProducer therefore it also implement nl.sense_os.service.subscription.DataProducer. It provide basic implementation to set and get sample rate, and leaving the start and stop sensing mechanism to specific sensor it inherits.
 
 BaseSensor is implemented in nl.sense_os.service.subscription.BaseSensor
 
 ## PeriodicPollingSensor
 
-This is an interface that all of periodic-based sensor should implement. It provide isActive method for PeriodicPollAlarmReceiver to check if the sensor is still active, and doSample method which PeriodicPollAlarmReceiver will call to do the actual sampling at scheduled time.
+This is an interface that all of periodic-based sensor should implement. It provide **isActive** method for [PeriodicPollAlarmReceiver](##PeriodicPollAlarmReceiver) to check if the sensor is still active, and **doSample** method which [PeriodicPollAlarmReceiver](##PeriodicPollAlarmReceiver) will call to do the actual sampling at scheduled time.
 
 PeriodicPollingSensor interface is defined in nl.sense_os.service.shared.PeriodicPollingSensor
 
 ## PeriodicPollAlarmReceiver
 
-This is a generic BroadcastReceiver for periodic based sensor. Every periodic-based sensor should have an instance of this class and start it when start sensing. This instance will register itself to scheduler to be run at specific rate based on interval value of the specific sensor (see nl.sense_os.service.subscription.BaseSensor.sampleDelay).
+This is a generic BroadcastReceiver for periodic based sensor. Every periodic-based sensor should have an instance of this class and start it when start sensing. This instance will register itself to [Scheduler](##Scheduler) to be run at specific rate based on interval value of the specific sensor (see nl.sense_os.service.subscription.BaseSensor.sampleDelay).
 
-It will call nl.sense_os.service.subscription.BaseSensor.doSample method of the sensor instance when it scheduled to be run.
+It will call **doSample** method of the sensor instance it bound to when it scheduled to be run.
 
 PeriodicPollAlarmReceiver is implemented in nl.sense_os.service.shared.PeriodicPollAlarmReceiver
 
@@ -95,7 +95,7 @@ Here is an example of how to create a new datapoint :
     dataPoint.sensorDescription = sensor.getName();
     dataPoint.timeStamp = SNTP.getInstance().getTime();
 
-This sensor datapoint also need to send to nl.sense_os.service.MsgHandler so it could be stored in LocalStorage and later in CommonSense. Here is an example of how to send a sensor datapoint to be stored by MsgHandler.
+This sensor datapoint also need to send to [MsgHandler](documentation/msg_handler.md) so it could be stored in LocalStorage and later in CommonSense. Here is an example of how to send a sensor datapoint to be stored by MsgHandler.
 
     Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
     sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);

@@ -1,18 +1,20 @@
 # Data Subscription
 
-## Subscription manager
+## SubscriptionManager
 
-Sense Library provide SubscriptionManager to keep all of the available producer as well as its subscriber. This class, like most of other class in Sense Library, is implemented with singleton pattern. Every sensor in sense library should registered to this subscriptionManager instance.
+Sense Library provide SubscriptionManager to keep all of available producer and subscriber as well as relation between them. Every sensor in sense library should registered to this subscriptionManager instance.
 
-A DataProducer could register to subscriptionManager identified with a given name. One name in SubscriptionManager could consist of one or more different instance DataProducer. Registering an existing instance of DataProducer will do nothing.
+This class, like most of other class in Sense Library, is implemented with singleton pattern. Its implemented is in nl.sense_os.service.subscription.SubscriptionManager.
 
-A DataConsumer could subscribe to one or more DataProducer registered as certain name. If there is no DataProducer for this name yet, SubscriptionManager will still store it as subscriber and subscribe it when a new DataProducer is registered with those name.
+A [DataProducer](##DataProducer) could register to [SubscriptionManager](##SubscribtionManager) instance with a given name. One name in SubscriptionManager could registered to one or more different DataProducer instance. Registering an existing instance of DataProducer will result in doing nothing.
+
+A [DataConsumer](##DataConsumer) could subscribe to one or more [DataProducer](##DataProducer) registered as certain name. If there is no DataProducer for this name yet, SubscriptionManager will still store it as a subscriber and subscribe it when a new DataProducer is registered with those name.
 
 ## DataProducer
 
-DataProducer is an interface that specify some functionality for object that producing data, specifically SensorDataPoint object, so that one or more DataConsumer could subscribe to it. Every sensor in Sense Library is an implementation of DataProducer. 
+DataProducer is an interface that specify some functionality for object that producing data, specifically [SensorDataPoint](##SensorDataPoint) object, so that one or more [DataConsumer](##DataConsumer) could subscribe to it. Every sensor in Sense Library is an implementation of DataProducer. 
 
-Sense library provide a base implementation of this interface in BaseDataProducer abstract class, and almost all of sensors in Sense library are based from this class. BaseDataProducer will store all of its subcriber in an ArrayList. This class also provide a mechanisme to notify all of it subscriber when there are new samples, and also send the SensorDataPoint to some or all of its subscribers when the sampling finished. BaseDataProducer object will check the status of it DataConsumer if they have get all the data they need before sending the data.
+Sense library provide a base implementation of this interface in nl.sense_os.service.subscription.BaseDataProducer abstract class, and almost all of sensors in Sense library are based from this class. BaseDataProducer will store all of its subcriber in an ArrayList. This class also provide a mechanisme to notify all of it subscriber when there are new samples, and also send the SensorDataPoint to some or all of its subscribers when the sampling finished. BaseDataProducer object will check the status of it DataConsumer if they have get all the data they need before sending the data.
 
 DataProducer could register to SubscriptionManager so a DataConsumer could subscribe to it. Here is an example of how to register a producer to SubscriptionManager
 
@@ -32,7 +34,7 @@ BaseDataProducer object like sensor should also notify and send the datapoint ev
 
 ## DataConsumer
 
-DataConsumer is an interface that specify some functionality for object to subscribe to one or more DataProducer. By subscribing to a DataProducer, a DataConsumer object will get notification everytime there is a new data, as well as get the actual data. Class that implement this interface also need to implement a function that enabling the DataProducer to check if the DataConsumer object has all of the data it need before sending the actual data.
+DataConsumer is an interface that specify some functionality for object to subscribe to one or more [DataProducer](##DataProducer). By subscribing to a DataProducer, a DataConsumer object will get notification everytime there is a new data, as well as get the actual data. Class that implement this interface also need to implement a function that enabling the DataProducer to check if the DataConsumer object has all of the data it need before sending the actual data.
 
 FallDetector and EpilepsySensor is an example of DataConsumer.
 
