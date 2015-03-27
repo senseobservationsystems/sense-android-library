@@ -1,14 +1,14 @@
 # Message Handler
 
-MsgHandler is a service that responsible for handling the data that has been collected by different sensors. There are two task that it could be done :
-* Receive sensor data from sensors and store it in LocalStorage
+MsgHandler is a service that responsible for handling the data that has been collected by different sensors. There are two task that it could done :
+* Receive sensor data from sensors and store it in [LocalStorage](docs/storage.md)
 * Periodically transmit all sensor data in LocalStorage to CommonSense
 
 MsgHandler is implemented in nl.sense_os.service.MsgHandler.
 
 ## Store datapoint from Sensor
 
-To send a sensor data to MsgHandler, sensors need to send an Intent with *action_sense_new_data* that contain the details of the datapoint.
+To send a sensor data to MsgHandler, sensors need to send an Intent with *action_sense_new_data* that contain the details of the datapoint (see Sensor DataPoint)
 
 Here is an example of sending a sensor datapoint to Message Handler.
 
@@ -16,10 +16,10 @@ Here is an example of sending a sensor datapoint to Message Handler.
     sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
     sensorData.putExtra(DataPoint.VALUE, BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
     sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-    sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);	sensorData.setPackage(context.getPackageName());
+    sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
+    sensorData.setPackage(context.getPackageName());
     context.startService(sensorData);
 
-<!-- It will create a LocalStorage instance when created, along with three different thread handler for BufferTransmitHandler, FileTransmitHandler, and DataTransmitHandler -->
 
 ## Transmit sensor data to CommonSense
 
