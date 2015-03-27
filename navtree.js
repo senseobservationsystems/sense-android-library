@@ -3,7 +3,24 @@ var NAVTREE =
   [ "Sense Android Library", "index.html", [
     [ "Architecture Overview", "md_documentation_architecture.html", null ],
     [ "Getting Started", "md_documentation_getting_started.html", null ],
+    [ "AndroidManifest", "md_documentation_manifest.html", [
+      [ "Permissions", "md_documentation_manifest.html#permissions", null ],
+      [ "Features", "md_documentation_manifest.html#features", null ],
+      [ "Services", "md_documentation_manifest.html#services", null ],
+      [ "Implicit SenseService Binding", "md_documentation_manifest.html#implicitbinding", null ],
+      [ "Google Play Service", "md_documentation_manifest.html#googleplayservices", null ]
+    ] ],
     [ "Message Handler", "md_documentation_msg_handler.html", null ],
+    [ "SensePlatform", "md_documentation_sense_platform.html", [
+      [ "User management", "md_documentation_sense_platform.html#user_management", [
+        [ "Encrypted credentials", "md_documentation_sense_platform.html#encrypted_credentials", null ]
+      ] ],
+      [ "Sensor data", "md_documentation_sense_platform.html#sensor_data", [
+        [ "Sensor data storage", "md_documentation_sense_platform.html#sensor_data_storage", null ],
+        [ "Sensor data access", "md_documentation_sense_platform.html#sensor_data_retrieval", null ],
+        [ "Flusing data", "md_documentation_sense_platform.html#flusing_Data", null ]
+      ] ]
+    ] ],
     [ "Sense Service", "md_documentation_sense_service.html", null ],
     [ "Sensors", "md_documentation_sensors.html", null ],
     [ "Data Storage", "md_documentation_storage.html", null ],
@@ -41,7 +58,7 @@ var NAVTREEINDEX =
 "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness_1_1_update_thread.html#ab6c2f1ecf4d0d84e3659374b5f376a29",
 "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html",
 "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a38f8668a0732b6ae31d1f82619486ed2",
-"dir_469d6e9b351ddbd237eb9996ca02f01a.html"
+"dir_363b92f6af5a1a8530d2b493f37ef944.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

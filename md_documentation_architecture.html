@@ -102,10 +102,10 @@ $(document).ready(function(){initNavTree('md_documentation_architecture.html',''
 <div class="title">Architecture Overview </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Sense Android Library consist of several component as follow.</p>
+<div class="textblock"><p>Sense Android Library consists of several components as follows.</p>
 <h2>1. SenseService</h2>
-<p>This is main sense service class from which application can binded to.</p>
-<p>Activities or other component that binded to sense service can not access the SenseService directly, but through <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html">nl.sense_os.service.SenseServiceStub</a> instance, that can be gathered from the <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_1_1_sense_binder.html">nl.sense_os.service.SenseService.SenseBinder</a> instance refered in onServiceConnected callback of ServiceConnection defined when binding the service (see Binding). Through this SenseServiceStub instance, application could then retrieve some functionality:</p>
+<p>This is the main SenseService class to which application can bind.</p>
+<p>Activities or other components that bind to SenseService can not access the SenseService directly, but must do so through an <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html">nl.sense_os.service.SenseServiceStub</a> instance, that can be gathered from the <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_1_1_sense_binder.html">nl.sense_os.service.SenseService.SenseBinder</a> instance referred in onServiceConnected callback of ServiceConnection defined when binding the service (see Binding). Through this SenseServiceStub instance, the application can then retrieve some functionality:</p>
 <ul>
 <li>Register user</li>
 <li>Login/Logout</li>
@@ -114,35 +114,39 @@ $(document).ready(function(){initNavTree('md_documentation_architecture.html',''
 <li>Get/Set settings preferences</li>
 </ul>
 <p>SenseService is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service.html">nl.sense_os.service.SenseService</a>.</p>
-<p>More details of SenseService here.</p>
+<p>More details on SenseService here.</p>
 <h2>2. SensePlatform</h2>
-<p>This provide a high level abstraction to Sense Service. It will create and bind to a new Sense Service when created.</p>
-<p>SenseService is implemented in <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html">nl.sense_os.platform.SensePlatform</a>.</p>
+<p>This provides a high level abstraction to SenseService. It will create and bind to a new SenseService when created.</p>
+<p>SensePlatform is implemented in <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html">nl.sense_os.platform.SensePlatform</a>.</p>
 <p>More details on SensePlatform here.</p>
 <h2>3. SenseApplication</h2>
-<p>This represents an application that using Sense Platform. All applications that using Sense should based on this class. It will create a new SensePlatform object when created, and if needed make sure the service is started when connected.</p>
+<p>This represents an application that uses SensePlatform. All applications that use SensePlatform should be based on this class. It will create a new SensePlatform object when created, and if needed make sure the service is started when connected.</p>
 <p>SenseApplication is implemented in <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html">nl.sense_os.platform.SenseApplication</a>.</p>
 <h2>4. MsgHandler</h2>
-<p>This is a service that responsible for handling the data that has been collected by different sensors. There are two task that it could be done : Receive sensor data from sensors and append it to buffer Periodically transmit all sensor data in buffer to CommonSense</p>
+<p>This is a service that is responsible for handling the data that has been collected by different sensors. There are two tasks that it fulfills:</p>
+<ul>
+<li>Receive sensor data from sensors and append it to buffer</li>
+<li>Periodically transmit all sensor data in buffer to CommonSense</li>
+</ul>
 <p>MsgHandler is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">nl.sense_os.service.MsgHandler</a>.</p>
 <p>More details on MsgHandler here</p>
 <h2>5. Local / Remote Storage</h2>
-<p>Sensor data can be stored in and obtained from local database as well as CommonSense. The data will be stored in local database first, and transmitted to CommonSense periodically. To store the data, sensor need to pass a message to MsgHandler by sending an Intent with action_sense_new_data containing the details of datapoint. This new data will be stored and buffered in Local database before transmitted to CommonSense at scheduled time.</p>
+<p>Sensor data can be stored in and obtained from a local database as well as CommonSense. The data will be stored in the local database first, and be transmitted to CommonSense periodically. To store the data, sensors need to pass a message to MsgHandler by sending an Intent with action_sense_new_data containing the details of the datapoint. This new data will be stored and buffered in the local database before being transmitted to CommonSense at a scheduled time.</p>
 <p>LocalStorage is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">nl.sense_os.service.storage.LocalStorage</a>.</p>
 <p>RemoteStorage is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_remote_storage.html">nl.sense_os.service.storage.RemoteStorage</a>.</p>
-<p>More details of Data Storage here</p>
+<p>More details on Data Storage here</p>
 <h2>6. Subscription Manager</h2>
-<p>This class will manage and keeping track of available DataProducers and DataConsumers. Basically, DataProducer could be anything that producing data, but currently it’s only use for Sensor. While DataConsumers could be anything that willing to receive update from DataProducer everytime there is a new data.</p>
-<p>Consumer will be added to producer’s subscriber list when a consumer subscribe to a named producer, and also when a new producer register with same name</p>
-<p>Every DataProducer instance like sensor should be registered to SubscriptionManager.</p>
+<p>This class will manage and keep track of available DataProducers and DataConsumers. Basically, a DataProducer could be anything that produces data, but currently it’s only used for sensors. A DataConsumer could be anything that wishes to receive updates from a DataProducer everytime there is a new data.</p>
+<p>A DataConsumer will be added to DataProducer’s subscriber list when the consumer subscribes to a named producer, and also when a new producer registers with that same name.</p>
+<p>Every DataProducer instance, like sensors, should be registered to SubscriptionManager.</p>
 <p>SubscriptionManager is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html">nl.sense_os.service.subscription.SubscriptionManager</a>.</p>
-<p>More details of Data Subscription here </p>
+<p>More details on SubscriptionManager here </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 18:17:26 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

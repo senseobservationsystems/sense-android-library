@@ -103,25 +103,25 @@ $(document).ready(function(){initNavTree('md_documentation_sensors.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><h2>SenseSensor</h2>
-<p>Almost all of sensor in Sense Library implement SenseSensor interface. This interface provide several function that common for all sensor:</p>
+<p>Almost all sensors in the Sense Library implement the SenseSensor interface. This interface provides several functions that are common for all sensors:</p>
 <ul>
 <li>start and stop sensing</li>
 <li>get and set sample rate</li>
 </ul>
-<p>SenseSensor interface is defined in <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html">nl.sense_os.service.shared.SenseSensor</a></p>
+<p>The SenseSensor interface is defined in <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html">nl.sense_os.service.shared.SenseSensor</a></p>
 <h2>BaseSensor</h2>
-<p>BaseSensor is base implementation of <a href="##SenseSensor">SenseSensor</a>. It inherit from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a> therefore it also implement <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html">nl.sense_os.service.subscription.DataProducer</a>. It provide basic implementation to set and get sample rate, and leaving the start and stop sensing mechanism to specific sensor it inherits.</p>
+<p>BaseSensor is a base implementation of <a href="##SenseSensor">SenseSensor</a>. It inherits from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a> and therefore it also implements <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html">nl.sense_os.service.subscription.DataProducer</a>. It provides a basic implementation to set and get sample rate, and leaves the start and stop sensing mechanism to the specific sensor it inherits.</p>
 <p>BaseSensor is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html">nl.sense_os.service.subscription.BaseSensor</a></p>
 <h2>PeriodicPollingSensor</h2>
-<p>This is an interface that all of periodic-based sensor should implement. It provide <b>isActive</b> method for <a href="##PeriodicPollAlarmReceiver">PeriodicPollAlarmReceiver</a> to check if the sensor is still active, and <b>doSample</b> method which <a href="##PeriodicPollAlarmReceiver">PeriodicPollAlarmReceiver</a> will call to do the actual sampling at scheduled time.</p>
-<p>PeriodicPollingSensor interface is defined in <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html">nl.sense_os.service.shared.PeriodicPollingSensor</a></p>
+<p>This is an interface that all periodic-based sensors should implement. It provides an <b>isActive</b> method for <a href="##PeriodicPollAlarmReceiver">PeriodicPollAlarmReceiver</a> to check if the sensor is still active, and a <b>doSample</b> method which <a href="##PeriodicPollAlarmReceiver">PeriodicPollAlarmReceiver</a> will call to do the actual sampling at a scheduled time.</p>
+<p>The PeriodicPollingSensor interface is defined in <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_periodic_polling_sensor.html">nl.sense_os.service.shared.PeriodicPollingSensor</a></p>
 <h2>PeriodicPollAlarmReceiver</h2>
-<p>This is a generic BroadcastReceiver for periodic based sensor. Every periodic-based sensor should have an instance of this class and start it when start sensing. This instance will register itself to <a href="##Scheduler">Scheduler</a> to be run at specific rate based on interval value of the specific sensor (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html#a0a23227db423528c5bb9b80161ba268f">nl.sense_os.service.subscription.BaseSensor.sampleDelay</a>).</p>
-<p>It will call <b>doSample</b> method of the sensor instance it bound to when it scheduled to be run.</p>
+<p>This is a generic BroadcastReceiver for periodic based sensors. Every periodic-based sensor should have an instance of this class and start it when it starts sensing. This instance will register itself to <a href="##Scheduler">Scheduler</a> to be run at a specific rate based on the interval value of the specific sensor (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html#a0a23227db423528c5bb9b80161ba268f">nl.sense_os.service.subscription.BaseSensor.sampleDelay</a>).</p>
+<p>It will call the <b>doSample</b> method of the sensor instance it is bound to when it is scheduled to be run.</p>
 <p>PeriodicPollAlarmReceiver is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_periodic_poll_alarm_receiver.html">nl.sense_os.service.shared.PeriodicPollAlarmReceiver</a></p>
 <h2>Controller</h2>
 <h2>Sensor groups</h2>
-<p>Sensors in Sense Library is grouped based on it’s usecase as follow :</p>
+<p>Sensors in Sense Library are grouped based on their usecase as follows:</p>
 <ul>
 <li>Ambience Sensors<ul>
 <li><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html">nl.sense_os.service.ambience.NoiseSensor</a></li>
@@ -170,15 +170,15 @@ $(document).ready(function(){initNavTree('md_documentation_sensors.html','');});
 </li>
 </ul>
 <h2>Sensor Data Structure</h2>
-<p>Every data from sensor should be encapsulated as <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">nl.sense_os.service.shared.SensorDataPoint</a> object. It contain several fields correspond to data point fields at CommonSense:</p>
+<p>Every datapoint from a sensor should be encapsulated as <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">nl.sense_os.service.shared.SensorDataPoint</a> object. It contains several fields corresponding to data point fields at CommonSense:</p>
 <ul>
 <li>sensor name</li>
-<li>sensor description (correspond to sensor_type field in CommonSense)</li>
+<li>sensor description (corresponds to sensor_type field in CommonSense)</li>
 <li>timestamp</li>
 <li>data type</li>
 <li>value</li>
 </ul>
-<p>Sensor datapoint could be one of following type:</p>
+<p>Sensor datapoints can be one of the following types:</p>
 <ul>
 <li>Integer</li>
 <li>Float</li>
@@ -196,18 +196,19 @@ $(document).ready(function(){initNavTree('md_documentation_sensors.html','');});
 dataPoint.sensorName = sensorName;
 dataPoint.sensorDescription = sensor.getName();
 dataPoint.timeStamp = SNTP.getInstance().getTime();
-</pre><p>This sensor datapoint also need to send to <a class="el" href="md_documentation_msg_handler.html">MsgHandler</a> so it could be stored in LocalStorage and later in CommonSense. Here is an example of how to send a sensor datapoint to be stored by MsgHandler. </p>
+</pre><p>This sensor datapoint also needs to be sent to <a class="el" href="md_documentation_msg_handler.html">MsgHandler</a> so it can be stored in LocalStorage and later in CommonSense. Here is an example of how to send a sensor datapoint to be stored by MsgHandler. </p>
 <pre class="fragment">Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
 sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
 sensorData.putExtra(DataPoint.VALUE, BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
 sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);   sensorData.setPackage(context.getPackageName());
+sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);   
+sensorData.setPackage(context.getPackageName());
 context.startService(sensorData);</pre> </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 18:17:26 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

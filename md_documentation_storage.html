@@ -102,32 +102,33 @@ $(document).ready(function(){initNavTree('md_documentation_storage.html','');});
 <div class="title">Data Storage </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Sensor data can be stored in and obtained from local database as well as CommonSense. The data will be stored in local database first, and transmitted to CommonSense periodically (see <a class="el" href="md_documentation_msg_handler.html">MsgHandler</a>).</p>
-<p>To store the data, sensor need to pass a message to <a class="el" href="md_documentation_msg_handler.html">MsgHandler</a> by sending an Intent with action_sense_new_data containing the details of datapoint. This new data will be stored and buffered in local database before transmitted to CommonSense at scheduled time. </p>
+<div class="textblock"><p>Sensor data can be stored in and obtained from a local database as well as CommonSense. The data will be stored in the local database first, and be transmitted to CommonSense periodically (see <a class="el" href="md_documentation_msg_handler.html">MsgHandler</a>). To store the data, sensors need to pass a message to MsgHandler <a class="el" href="md_documentation_msg_handler.html">MsgHandler</a> by sending an Intent with action_sense_new_data containing the details of the datapoint. This new data will be stored and buffered in the local database before being transmitted to CommonSense at a scheduled time. </p>
 <pre class="fragment">Intent sensorData = new Intent(getString(R.string.action_sense_new_data));
 sensorData.putExtra(DataPoint.SENSOR_NAME, &amp;quot;sensor name&amp;quot;);
 sensorData.putExtra(DataPoint.VALUE, &amp;quot;foo&amp;quot;);
 sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
 startService(sensorData);
-</pre><h2>1. LocalStorage</h2>
-<p>Sense library provide LocalStorage that will abstract the data storage mechanism. This class is implemented with singleton pattern, so there will be only one instance that managing the local data storage. This class provide several functionality regards to data storage, for example :</p>
+</pre><p>LocalStorage is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">nl.sense_os.service.storage.LocalStorage</a>.</p>
+<p>RemoteStorage is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_remote_storage.html">nl.sense_os.service.storage.RemoteStorage</a>.</p>
+<h2>1. LocalStorage</h2>
+<p>The Sense Library provides LocalStorage that will abstract the data storage mechanism. This class is implemented with the singleton pattern, so there will be only one instance that manages the local data storage. This class provides several functionalities regarding data storage, for example:</p>
 <ul>
 <li>insert new data,</li>
 <li>delete existing data,</li>
 <li>update existing data, and</li>
 <li>query for data</li>
 </ul>
-<p>Query can be done with two URI path scheme, as follow :</p>
+<p>Query can be done with two different URI path schemes, as follows:</p>
 <ul>
 <li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a697b677149c9b9639838551465c4ba27">CONTENT_URI_PATH</a> scheme, will get the data from both inMemory and persisted</li>
 <li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a2dfcd378ace8d39221afe4a50403f29d">CONTENT_REMOTE_URI_PATH</a> will get the data from commonSense</li>
 </ul>
-<p>In case of <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a2dfcd378ace8d39221afe4a50403f29d">CONTENT_REMOTE_URI_PATH</a>, LocalStorage become a proxy to RemoteStorage. See <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#ae3b38e350e3668ba660b53ec9121f103">nl.sense_os.service.storage.LocalStorage.query</a>).</p>
+<p>In case of <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a2dfcd378ace8d39221afe4a50403f29d">CONTENT_REMOTE_URI_PATH</a>, LocalStorage becomes a proxy to RemoteStorage. See <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#ae3b38e350e3668ba660b53ec9121f103">nl.sense_os.service.storage.LocalStorage.query</a>).</p>
 <p>LocalStorage is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">nl.sense_os.service.storage.LocalStorage</a></p>
 <h3>SQLite Database</h3>
-<p>Local data will be stored in encrypted SQLite database (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_s_q_lite_storage.html">nl.sense_os.service.storage.SQLiteStorage</a> and <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html">nl.sense_os.service.storage.DbHelper</a>).</p>
-<p>The data stored in database will have the following field (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a3198721a0d3119513f314115b9f6d690">nl.sense_os.service.storage.LocalStorage.DEFAULT_PROJECTION</a>):</p>
+<p>Local data will be stored in an encrypted SQLite database (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_s_q_lite_storage.html">nl.sense_os.service.storage.SQLiteStorage</a> and <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html">nl.sense_os.service.storage.DbHelper</a>).</p>
+<p>The data stored in the database will have the following fields (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a3198721a0d3119513f314115b9f6d690">nl.sense_os.service.storage.LocalStorage.DEFAULT_PROJECTION</a>):</p>
 <ul>
 <li>ID</li>
 <li>SENSOR_NAME</li>
@@ -140,21 +141,21 @@ startService(sensorData);
 <li>TRANSMIT_STATE</li>
 </ul>
 <h3>In RAM &amp; In Flash Storage</h3>
-<p>Internally, LocalStorage will use two instance of SQLite to actually store the data, one in memory (RAM) and one more in a file (Flash). The data in file will be persistent even when application killed, while the data in memory (RAM) will be vanish in such case. The data will internally buffered in memory (RAM) first, and will be moved into file database at certain condition :</p>
+<p>Internally, LocalStorage will use two instances of SQLite to actually store the data, one in memory (RAM) and one in a file (Flash). The data in file will be persistent even when the application is killed, while the data in memory (RAM) will vanish in such cases. The data will internally be buffered in memory (RAM) first, and will be moved into file database when certain conditions are met:</p>
 <ul>
-<li>in memory database become overflow when inserting data</li>
+<li>in memory database overflows when inserting data</li>
 <li>manually call update function with “persist=true” query parameter</li>
 </ul>
-<p>The data in memory (RAM) database will be deleted when data moved to in file database.</p>
+<p>The data in memory (RAM) database will be deleted when it is moved to in file database.</p>
 <h3>Retention Rate</h3>
-<p>Old data in persistent database will be deleted after exceed retention time (and not sended yet in case using commonSense). Retention times is gathered from preferences (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a4e11c8d72042e3c0327b9062c82a99c8">nl.sense_os.service.constants.SensePrefs.Main.Advanced.RETENTION_HOURS</a>), or 24 hour by default (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a7d79f88f583e30af0d5a14602b833cb6">nl.sense_os.service.storage.LocalStorage.DEFAULT_RETENTION_HOURS</a>)</p>
+<p>Old data in persistent database will be deleted after it exceeds the retention time (and has been sent to CommonSense, if applicable). The Retention Time is gathered from preferences (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a4e11c8d72042e3c0327b9062c82a99c8">nl.sense_os.service.constants.SensePrefs.Main.Advanced.RETENTION_HOURS</a>), and has a default value of 24 hours (see <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a7d79f88f583e30af0d5a14602b833cb6">nl.sense_os.service.storage.LocalStorage.DEFAULT_RETENTION_HOURS</a>).</p>
 <h2>2. Remote Storage</h2>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 18:17:26 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

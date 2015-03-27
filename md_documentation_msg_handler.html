@@ -102,14 +102,14 @@ $(document).ready(function(){initNavTree('md_documentation_msg_handler.html','')
 <div class="title">Message Handler </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>MsgHandler is a service that responsible for handling the data that has been collected by different sensors. There are two task that it could done :</p>
+<div class="textblock"><p>This is a service that is responsible for handling the data that has been collected by different sensors. There are two tasks that it fulfills:</p>
 <ul>
-<li>Receive sensor data from sensors and store it in LocalStorage</li>
-<li>Periodically transmit all sensor data in LocalStorage to CommonSense</li>
+<li>Receive sensor data from sensors and append it to buffer</li>
+<li>Periodically transmit all sensor data in buffer to CommonSense</li>
 </ul>
 <p>MsgHandler is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">nl.sense_os.service.MsgHandler</a>.</p>
 <h2>Store datapoint from Sensor</h2>
-<p>To send a sensor data to MsgHandler, sensors need to send an Intent with <em>action_sense_new_data</em> that contain the details of the datapoint (see Sensor DataPoint)</p>
+<p>To send a sensor datapoint to MsgHandler, sensors need to send an Intent with <em>action_sense_new_data</em> that contains the details of the datapoint (see Sensor DataPoint)</p>
 <p>Here is an example of sending a sensor datapoint to Message Handler. </p>
 <pre class="fragment">Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
 sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
@@ -119,11 +119,11 @@ sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
 sensorData.setPackage(context.getPackageName());
 context.startService(sensorData);
 </pre><h2>Transmit sensor data to CommonSense</h2>
-<p>Sense Service using <a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a> instance to schedule sending of data in LocalStorage to CommonSense periodically. This Controller will create an instance of <a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a> that will registering itself to scheduler to run at particular interval based on <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html">nl.sense_os.service.constants.SensePrefs.Main.SyncRate</a> settings in preferences. This DataTransmitter then will send an <em>action_sense_send_data</em> intent to <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">nl.sense_os.service.MsgHandler</a> when scheduled to run, to actually send the sensor data to CommonSense and empty it’s buffer.</p>
-<p>This is available option for SyncRate settings:</p>
+<p>SenseService uses an <a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a> instance to schedule sending of data in LocalStorage to CommonSense periodically. This Controller will create an instance of <a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a> that will register itself to scheduler to run at a particular interval based on the <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html">nl.sense_os.service.constants.SensePrefs.Main.SyncRate</a> setting in preferences. This DataTransmitter then will send an <em>action_sense_send_data</em> intent to <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">nl.sense_os.service.MsgHandler</a> when scheduled to run, to actually send the sensor data to CommonSense and empty its buffer.</p>
+<p>These options are available for SyncRate settings:</p>
 <ul>
-<li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html#a1240d97f5fb8489e82af0f3fee62c20b">nl.sense_os.service.SensePrefs.Main.SyncRate.RARELY</a> (15 minute)</li>
 <li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html#a7766837808fb9557e87b93b560a421b2">nl.sense_os.service.SensePrefs.Main.SyncRate.ECO_MODE</a> (30 minute)</li>
+<li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html#a1240d97f5fb8489e82af0f3fee62c20b">nl.sense_os.service.SensePrefs.Main.SyncRate.RARELY</a> (15 minute)</li>
 <li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html#aee586e99585ef94ec43642de2aba0d82">nl.sense_os.service.SensePrefs.Main.SyncRate.NORMAL</a> (5 minute)</li>
 <li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html#a17618842399b839ea794b23b261ee7c2">nl.sense_os.service.SensePrefs.Main.SyncRate.OFTEN</a> (1 minute)</li>
 <li><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html#a8ec33cd1ac51c49f62435330539b5e85">nl.sense_os.service.SensePrefs.Main.SyncRate.REAL_TIME</a> (depend on sample rate) </li>
@@ -133,7 +133,7 @@ context.startService(sensorData);
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 18:17:26 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

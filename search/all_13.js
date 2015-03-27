@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['senseplatform',['SensePlatform',['../md_documentation_sense_platform.html',1,'']]],
   ['sense_20service',['Sense Service',['../md_documentation_sense_service.html',1,'']]],
   ['sensors',['Sensors',['../md_documentation_sensors.html',1,'']]],
   ['sample_5frate',['SAMPLE_RATE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html#aae82d69166654089e87f8afe0b15ea14',1,'nl::sense_os::service::constants::SensePrefs::Main']]],
@@ -60,6 +61,7 @@ var searchData=
   ['sendtimezone',['sendTimeZone',['../classnl_1_1sense__os_1_1service_1_1location_1_1_time_zone_sensor.html#a69a762a64d2b050bf1f65e0ae5ee69d1',1,'nl::sense_os::service::location::TimeZoneSensor']]],
   ['sendtosubscribers',['sendToSubscribers',['../classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a',1,'nl::sense_os::service::subscription::BaseDataProducer']]],
   ['sense_5flibrary_5fversion',['SENSE_LIBRARY_VERSION',['../classnl_1_1sense__os_1_1service_1_1phonestate_1_1_app_info_version.html#a211949ca084dcb6f02b85f0407aaa20a',1,'nl::sense_os::service::phonestate::AppInfoVersion']]],
+  ['sense_5fplatform_2emd',['sense_platform.md',['../sense__platform_8md.html',1,'']]],
   ['sense_5fservice_2emd',['sense_service.md',['../sense__service_8md.html',1,'']]],
   ['senseapi',['SenseApi',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html',1,'nl::sense_os::service::commonsense']]],
   ['senseapi_2ejava',['SenseApi.java',['../_sense_api_8java.html',1,'']]],
@@ -288,6 +290,6 @@ var searchData=
   ['sync',['SYNC',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_quiz.html#a48b864efbd98afd902048e3bc293737c',1,'nl::sense_os::service::constants::SensePrefs::Main::Quiz']]],
   ['sync_5frate',['SYNC_RATE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html#a5a64be0a83254493c4645b6a188007e4',1,'nl::sense_os::service::constants::SensePrefs::Main']]],
   ['sync_5ftime',['SYNC_TIME',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_quiz.html#a588a205dc85c99762a79e4e04b157e08',1,'nl::sense_os::service::constants::SensePrefs::Main::Quiz']]],
-  ['syncrate',['syncRate',['../classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a5516afc816012955db81f468d547089f',1,'nl::sense_os::service::configuration::ConfigurationService']]],
-  ['syncrate',['SyncRate',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html',1,'nl::sense_os::service::constants::SensePrefs::Main']]]
+  ['syncrate',['SyncRate',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html',1,'nl::sense_os::service::constants::SensePrefs::Main']]],
+  ['syncrate',['syncRate',['../classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a5516afc816012955db81f468d547089f',1,'nl::sense_os::service::configuration::ConfigurationService']]]
 ];

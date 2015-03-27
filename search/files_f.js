@@ -3,6 +3,7 @@ var searchData=
   ['schedulealarmtool_2ejava',['ScheduleAlarmTool.java',['../_schedule_alarm_tool_8java.html',1,'']]],
   ['scheduler_2ejava',['Scheduler.java',['../_scheduler_8java.html',1,'']]],
   ['schedulerprefs_2ejava',['SchedulerPrefs.java',['../_scheduler_prefs_8java.html',1,'']]],
+  ['sense_5fplatform_2emd',['sense_platform.md',['../sense__platform_8md.html',1,'']]],
   ['sense_5fservice_2emd',['sense_service.md',['../sense__service_8md.html',1,'']]],
   ['senseapi_2ejava',['SenseApi.java',['../_sense_api_8java.html',1,'']]],
   ['senseapplication_2ejava',['SenseApplication.java',['../_sense_application_8java.html',1,'']]],

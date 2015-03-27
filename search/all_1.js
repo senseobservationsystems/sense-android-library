@@ -76,8 +76,8 @@ var searchData=
   ['auto_5fcalibrated',['AUTO_CALIBRATED',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_descriptions.html#a2f269242680d646554c118a3bc4fa84b',1,'nl::sense_os::service::constants::SensorData::SensorDescriptions']]],
   ['auto_5fgps',['AUTO_GPS',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_location.html#a037da09e4a1c3fe9fe4431430531ef28',1,'nl::sense_os::service::constants::SensePrefs::Main::Location']]],
   ['autocalibratednoise',['AutoCalibratedNoise',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_sensor_specifics_1_1_auto_calibrated_noise.html',1,'nl::sense_os::service::constants::SensePrefs::SensorSpecifics']]],
-  ['autocalibratednoisesensor',['AutoCalibratedNoiseSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_auto_calibrated_noise_sensor.html',1,'nl::sense_os::service::ambience']]],
   ['autocalibratednoisesensor',['AutoCalibratedNoiseSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_auto_calibrated_noise_sensor.html#a05e4db61044f690eb4334ec1c5b4e5ac',1,'nl.sense_os.service.ambience.AutoCalibratedNoiseSensor.AutoCalibratedNoiseSensor()'],['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a21a1652b0b64f2afd916cc3043269551',1,'nl.sense_os.service.ambience.NoiseSensor.autoCalibratedNoiseSensor()']]],
+  ['autocalibratednoisesensor',['AutoCalibratedNoiseSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_auto_calibrated_noise_sensor.html',1,'nl::sense_os::service::ambience']]],
   ['autocalibratednoisesensor_2ejava',['AutoCalibratedNoiseSensor.java',['../_auto_calibrated_noise_sensor_8java.html',1,'']]],
   ['autostart',['AUTOSTART',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status.html#ab8917fdd57e53f623487e6625f7029bb',1,'nl::sense_os::service::constants::SensePrefs::Status']]],
   ['auxiliary_5finput',['AUXILIARY_INPUT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#ae89a830341a4f701d8181a6ca3a69f68',1,'nl::sense_os::service::constants::SensorData::SensorNames']]],
@@ -88,5 +88,6 @@ var searchData=
   ['avgspeedchange',['avgSpeedChange',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be',1,'nl::sense_os::service::motion::MotionEnergySensor']]],
   ['avgspeedcount',['avgSpeedCount',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79',1,'nl::sense_os::service::motion::MotionEnergySensor']]],
   ['awaiting_5fbluetooth',['AWAITING_BLUETOOTH',['../enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html#a62198c6d28e986e62670cc16d1101db0',1,'nl::sense_os::service::external_sensors::NewOBD2DeviceConnector::State']]],
-  ['architecture_20overview',['Architecture Overview',['../md_documentation_architecture.html',1,'']]]
+  ['architecture_20overview',['Architecture Overview',['../md_documentation_architecture.html',1,'']]],
+  ['androidmanifest',['AndroidManifest',['../md_documentation_manifest.html',1,'']]]
 ];
