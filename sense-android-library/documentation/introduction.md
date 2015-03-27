@@ -6,6 +6,7 @@ This documentation provides insights in the architecture and inner workings of t
 
 ## Table of Content
 
+* [Getting Started](documentation/getting_started.md)
 * [Architecture Overview](documentation/architecture.md)
 * [Sense Service](documentation/sense_service.md)
 * [Sense Platform](documentation/sense_platform.md)
