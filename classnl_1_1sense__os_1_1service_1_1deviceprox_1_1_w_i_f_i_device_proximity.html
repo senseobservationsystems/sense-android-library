@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1dev
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -106,6 +109,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1dev
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.deviceprox.WIFIDeviceProximity Class Reference</div>  </div>
@@ -122,22 +127,22 @@ Inheritance diagram for nl.sense_os.service.deviceprox.WIFIDeviceProximity:</div
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html">WifiScanThread</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a096e22da8e35bbeb1aa1a8a5d17faf5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a096e22da8e35bbeb1aa1a8a5d17faf5f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>WIFIDeviceProximity</b> (Context context)</td></tr>
+<tr class="memitem:a096e22da8e35bbeb1aa1a8a5d17faf5f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a096e22da8e35bbeb1aa1a8a5d17faf5f">WIFIDeviceProximity</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a02a2d08baaec0b4b26ae6b0bfeea1741">context</a>)</td></tr>
 <tr class="separator:a096e22da8e35bbeb1aa1a8a5d17faf5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b737126ea26c2b44289b14820cf2a26"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b737126ea26c2b44289b14820cf2a26"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getScanInterval</b> ()</td></tr>
+<tr class="memitem:a4b737126ea26c2b44289b14820cf2a26"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a4b737126ea26c2b44289b14820cf2a26">getScanInterval</a> ()</td></tr>
 <tr class="separator:a4b737126ea26c2b44289b14820cf2a26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a161d289b9be5ff0e45343197ff822e44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a161d289b9be5ff0e45343197ff822e44"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setScanInterval</b> (int scanInterval)</td></tr>
+<tr class="memitem:a161d289b9be5ff0e45343197ff822e44"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a161d289b9be5ff0e45343197ff822e44">setScanInterval</a> (int <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">scanInterval</a>)</td></tr>
 <tr class="separator:a161d289b9be5ff0e45343197ff822e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4c61428f528211da4dba48503dcdac5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4c61428f528211da4dba48503dcdac5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>startEnvironmentScanning</b> (int interval)</td></tr>
+<tr class="memitem:ad4c61428f528211da4dba48503dcdac5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ad4c61428f528211da4dba48503dcdac5">startEnvironmentScanning</a> (int interval)</td></tr>
 <tr class="separator:ad4c61428f528211da4dba48503dcdac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a675177b3dbb9d03d78b97024a679305d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a675177b3dbb9d03d78b97024a679305d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stopEnvironmentScanning</b> ()</td></tr>
+<tr class="memitem:a675177b3dbb9d03d78b97024a679305d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a675177b3dbb9d03d78b97024a679305d">stopEnvironmentScanning</a> ()</td></tr>
 <tr class="separator:a675177b3dbb9d03d78b97024a679305d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
 <tr class="memitem:a714854a4b022953b78638ddbb67c2259 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a714854a4b022953b78638ddbb67c2259">addSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
@@ -149,6 +154,26 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopEnvironmentScanni
 <tr class="memitem:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#ae6fca630e7e8723e599a8492886a9887">removeSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
 <tr class="separator:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a02a2d08baaec0b4b26ae6b0bfeea1741"><td class="memItemLeft" align="right" valign="top">final Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a02a2d08baaec0b4b26ae6b0bfeea1741">context</a></td></tr>
+<tr class="separator:a02a2d08baaec0b4b26ae6b0bfeea1741"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af053fd85110d957cca7797b0ac3423f5"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#af053fd85110d957cca7797b0ac3423f5">scanEnabled</a> = false</td></tr>
+<tr class="separator:af053fd85110d957cca7797b0ac3423f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acec3382c8ba93a0d76ef30183e064aaa"><td class="memItemLeft" align="right" valign="top">final Handler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#acec3382c8ba93a0d76ef30183e064aaa">scanHandler</a> = new Handler(Looper.getMainLooper())</td></tr>
+<tr class="separator:acec3382c8ba93a0d76ef30183e064aaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5281d50ff6c2dbc7eefaf1623dfa5cd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">scanInterval</a> = 0</td></tr>
+<tr class="separator:ab5281d50ff6c2dbc7eefaf1623dfa5cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a553c4affb5f726984f7b388da68534ee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html">WifiScanThread</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a553c4affb5f726984f7b388da68534ee">wifiScanThread</a> = null</td></tr>
+<tr class="separator:a553c4affb5f726984f7b388da68534ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a74d1aa383da621ff91530a8f818db5"><td class="memItemLeft" align="right" valign="top">WifiManager&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a9a74d1aa383da621ff91530a8f818db5">wifi</a> = null</td></tr>
+<tr class="separator:a9a74d1aa383da621ff91530a8f818db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a507e0d5d115bb94c52cc21d2a9e325c1"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a507e0d5d115bb94c52cc21d2a9e325c1">TAG</a> = &quot;WIFI <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html">DeviceProximity</a>&quot;</td></tr>
+<tr class="separator:a507e0d5d115bb94c52cc21d2a9e325c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
@@ -159,8 +184,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -168,16 +192,302 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents the WiFi scan sensor. Performs periodic scans of the WiFi network on a separate thread.</p>
 <dl class="section author"><dt>Author</dt><dd>Ted Schmidt <a href="#" onclick="location.href='mai'+'lto:'+'ted'+'@s'+'ens'+'e-'+'os.'+'nl'; return false;">ted@s<span style="display: none;">.nosp@m.</span>ense<span style="display: none;">.nosp@m.</span>-os.n<span style="display: none;">.nosp@m.</span>l</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/deviceprox/WIFIDeviceProximity.java</li>
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00035">35</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a096e22da8e35bbeb1aa1a8a5d17faf5f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.deviceprox.WIFIDeviceProximity.WIFIDeviceProximity </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00151">151</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                                                {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        this.context = <a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a02a2d08baaec0b4b26ae6b0bfeea1741">context</a>;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_a02a2d08baaec0b4b26ae6b0bfeea1741"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a02a2d08baaec0b4b26ae6b0bfeea1741">nl.sense_os.service.deviceprox.WIFIDeviceProximity.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00144">WIFIDeviceProximity.java:144</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a4b737126ea26c2b44289b14820cf2a26"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.deviceprox.WIFIDeviceProximity.getScanInterval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00155">155</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                                 {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">scanInterval</a>;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_ab5281d50ff6c2dbc7eefaf1623dfa5cd"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanInterval</a></div><div class="ttdeci">int scanInterval</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00147">WIFIDeviceProximity.java:147</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a161d289b9be5ff0e45343197ff822e44"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.deviceprox.WIFIDeviceProximity.setScanInterval </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>scanInterval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00159">159</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                                                  {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        this.scanInterval = <a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">scanInterval</a>;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_ab5281d50ff6c2dbc7eefaf1623dfa5cd"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanInterval</a></div><div class="ttdeci">int scanInterval</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00147">WIFIDeviceProximity.java:147</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ad4c61428f528211da4dba48503dcdac5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.deviceprox.WIFIDeviceProximity.startEnvironmentScanning </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00163">163</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                                                       {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">scanInterval</a> = interval;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#af053fd85110d957cca7797b0ac3423f5">scanEnabled</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        Thread t = <span class="keyword">new</span> Thread() {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            @Override</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            <span class="keyword">public</span> <span class="keywordtype">void</span> run() {</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                scanHandler.post(<a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a553c4affb5f726984f7b388da68534ee">wifiScanThread</a> = <span class="keyword">new</span> WifiScanThread());</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            }</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        };</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        this.scanHandler.post(t);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_a553c4affb5f726984f7b388da68534ee"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a553c4affb5f726984f7b388da68534ee">nl.sense_os.service.deviceprox.WIFIDeviceProximity.wifiScanThread</a></div><div class="ttdeci">WifiScanThread wifiScanThread</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00148">WIFIDeviceProximity.java:148</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_af053fd85110d957cca7797b0ac3423f5"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#af053fd85110d957cca7797b0ac3423f5">nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanEnabled</a></div><div class="ttdeci">boolean scanEnabled</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00145">WIFIDeviceProximity.java:145</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_ab5281d50ff6c2dbc7eefaf1623dfa5cd"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#ab5281d50ff6c2dbc7eefaf1623dfa5cd">nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanInterval</a></div><div class="ttdeci">int scanInterval</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00147">WIFIDeviceProximity.java:147</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a675177b3dbb9d03d78b97024a679305d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.deviceprox.WIFIDeviceProximity.stopEnvironmentScanning </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00175">175</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                                          {</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#af053fd85110d957cca7797b0ac3423f5">scanEnabled</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            wifiScanThread.stop();</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            scanHandler.removeCallbacks(<a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a553c4affb5f726984f7b388da68534ee">wifiScanThread</a>);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        } <span class="keywordflow">catch</span> (Exception e) {</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a507e0d5d115bb94c52cc21d2a9e325c1">TAG</a>, <span class="stringliteral">&quot;Exception in stopping wifi scan thread:&quot;</span>, e);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        }</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_a507e0d5d115bb94c52cc21d2a9e325c1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a507e0d5d115bb94c52cc21d2a9e325c1">nl.sense_os.service.deviceprox.WIFIDeviceProximity.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00143">WIFIDeviceProximity.java:143</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_a553c4affb5f726984f7b388da68534ee"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a553c4affb5f726984f7b388da68534ee">nl.sense_os.service.deviceprox.WIFIDeviceProximity.wifiScanThread</a></div><div class="ttdeci">WifiScanThread wifiScanThread</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00148">WIFIDeviceProximity.java:148</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_html_af053fd85110d957cca7797b0ac3423f5"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#af053fd85110d957cca7797b0ac3423f5">nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanEnabled</a></div><div class="ttdeci">boolean scanEnabled</div><div class="ttdef"><b>Definition:</b> <a href="_w_i_f_i_device_proximity_8java_source.html#l00145">WIFIDeviceProximity.java:145</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a02a2d08baaec0b4b26ae6b0bfeea1741"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Context nl.sense_os.service.deviceprox.WIFIDeviceProximity.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00144">144</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af053fd85110d957cca7797b0ac3423f5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanEnabled = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00145">145</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acec3382c8ba93a0d76ef30183e064aaa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Handler nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanHandler = new Handler(Looper.getMainLooper())</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00146">146</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab5281d50ff6c2dbc7eefaf1623dfa5cd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.deviceprox.WIFIDeviceProximity.scanInterval = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00147">147</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a507e0d5d115bb94c52cc21d2a9e325c1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.deviceprox.WIFIDeviceProximity.TAG = &quot;WIFI <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html">DeviceProximity</a>&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00143">143</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9a74d1aa383da621ff91530a8f818db5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">WifiManager nl.sense_os.service.deviceprox.WIFIDeviceProximity.wifi = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00149">149</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a553c4affb5f726984f7b388da68534ee"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html">WifiScanThread</a> nl.sense_os.service.deviceprox.WIFIDeviceProximity.wifiScanThread = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_w_i_f_i_device_proximity_8java_source.html#l00148">148</a> of file <a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/deviceprox/<a class="el" href="_w_i_f_i_device_proximity_8java_source.html">WIFIDeviceProximity.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>deviceprox</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html">WIFIDeviceProximity</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1deviceprox.html">deviceprox</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html">WIFIDeviceProximity</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

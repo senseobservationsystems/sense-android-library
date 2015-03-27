@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pac-attribs">Package Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.external_sensors.OBD2Dongle Class Reference</div>  </div>
@@ -122,8 +128,7 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a33ce15066f4bdf17850e8470cb1fe4e0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a33ce15066f4bdf17850e8470cb1fe4e0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>OBD2Dongle</b> (Context context)</td></tr>
+<tr class="memitem:a33ce15066f4bdf17850e8470cb1fe4e0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a33ce15066f4bdf17850e8470cb1fe4e0">OBD2Dongle</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a54eb4ac79c3f9553b776548d8fc8af70">context</a>)</td></tr>
 <tr class="separator:a33ce15066f4bdf17850e8470cb1fe4e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4338e0326ff4d11e5ef10df3428fc672"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a4338e0326ff4d11e5ef10df3428fc672">start</a> (int interval)</td></tr>
 <tr class="separator:a4338e0326ff4d11e5ef10df3428fc672"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,11 +141,79 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:ad280d7b06f0f979f718787980c1709d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a854cc598118a8e2c2ad07f9e640980bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a854cc598118a8e2c2ad07f9e640980bb">setUpdateInterval</a> (int interval)</td></tr>
 <tr class="separator:a854cc598118a8e2c2ad07f9e640980bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-attribs"></a>
+Package Attributes</h2></td></tr>
+<tr class="memitem:a88f019a4b7280976e134418adb8fe9fd"><td class="memItemLeft" align="right" valign="top">boolean[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a88f019a4b7280976e134418adb8fe9fd">pidAvailable</a></td></tr>
+<tr class="separator:a88f019a4b7280976e134418adb8fe9fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38268fb526feb710813961fd3b44f8b2"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a38268fb526feb710813961fd3b44f8b2">vin</a> = &quot;&quot;</td></tr>
+<tr class="separator:a38268fb526feb710813961fd3b44f8b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a54eb4ac79c3f9553b776548d8fc8af70"><td class="memItemLeft" align="right" valign="top">final Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a54eb4ac79c3f9553b776548d8fc8af70">context</a></td></tr>
+<tr class="separator:a54eb4ac79c3f9553b776548d8fc8af70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace58c33ef18705e01cb1080e30488477"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#ace58c33ef18705e01cb1080e30488477">dongleEnabled</a> = false</td></tr>
+<tr class="separator:ace58c33ef18705e01cb1080e30488477"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc666f66ff0e9ae539ccadc7ce1aad9f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#afc666f66ff0e9ae539ccadc7ce1aad9f">updateInterval</a> = 0</td></tr>
+<tr class="separator:afc666f66ff0e9ae539ccadc7ce1aad9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c4475a5b88d5ac51e403b74072256b5"><td class="memItemLeft" align="right" valign="top">BluetoothAdapter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a2c4475a5b88d5ac51e403b74072256b5">btAdapter</a> = null</td></tr>
+<tr class="separator:a2c4475a5b88d5ac51e403b74072256b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5777a25918bc1f46ba9b82fe6eec24d"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#ab5777a25918bc1f46ba9b82fe6eec24d">connectionActive</a> = false</td></tr>
+<tr class="separator:ab5777a25918bc1f46ba9b82fe6eec24d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf7b1885a29ec0f7cb25eeea70dc8857"><td class="memItemLeft" align="right" valign="top">final Handler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abf7b1885a29ec0f7cb25eeea70dc8857">connectHandler</a> = new Handler()</td></tr>
+<tr class="separator:abf7b1885a29ec0f7cb25eeea70dc8857"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbcd830ac116a01e6a3a7e5944ee3b28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_connect_thread.html">ConnectThread</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abbcd830ac116a01e6a3a7e5944ee3b28">connectThread</a> = null</td></tr>
+<tr class="separator:abbcd830ac116a01e6a3a7e5944ee3b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a476581c5d6041f7eaed4560ca161dbd9"><td class="memItemLeft" align="right" valign="top">BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a476581c5d6041f7eaed4560ca161dbd9">socket</a> = null</td></tr>
+<tr class="separator:a476581c5d6041f7eaed4560ca161dbd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90e9d5e7350f2c8036a311793f153658"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a90e9d5e7350f2c8036a311793f153658">updateActive</a></td></tr>
+<tr class="separator:a90e9d5e7350f2c8036a311793f153658"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd07189898b003139984767b9bdeb42c"><td class="memItemLeft" align="right" valign="top">Handler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#acd07189898b003139984767b9bdeb42c">updateHandler</a> = new Handler()</td></tr>
+<tr class="separator:acd07189898b003139984767b9bdeb42c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa72ebdf5e6e7c7db475d2cbc338f2b08"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html">UpdateThread</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#aa72ebdf5e6e7c7db475d2cbc338f2b08">updateThread</a> = null</td></tr>
+<tr class="separator:aa72ebdf5e6e7c7db475d2cbc338f2b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe59a5c5d1127abb522eef2e9504ed7"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abfe59a5c5d1127abb522eef2e9504ed7">lastSampleTime</a> = 0</td></tr>
+<tr class="separator:abfe59a5c5d1127abb522eef2e9504ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a491037b231a750af668963cde842c1a1"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a491037b231a750af668963cde842c1a1">TAG</a> = &quot;OBD-II&quot;</td></tr>
+<tr class="separator:a491037b231a750af668963cde842c1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14caaa8c8beb258c7c93c6def315a2ac"><td class="memItemLeft" align="right" valign="top">static String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a14caaa8c8beb258c7c93c6def315a2ac">deviceType</a> = &quot;TestOBD&quot;</td></tr>
+<tr class="separator:a14caaa8c8beb258c7c93c6def315a2ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46f4ba3afcebfc196200e1b92323589d"><td class="memItemLeft" align="right" valign="top">static final UUID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a46f4ba3afcebfc196200e1b92323589d">serial_uuid</a> = UUID.fromString(&quot;00001101-0000-1000-8000-00805f9b34fb&quot;)</td></tr>
+<tr class="separator:a46f4ba3afcebfc196200e1b92323589d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class that manages connection with an OBD2 dongle via BLuetooth.</p>
 <dl class="section author"><dt>Author</dt><dd>Roelof van den Berg <a href="#" onclick="location.href='mai'+'lto:'+'roe'+'lo'+'f@s'+'en'+'se-'+'os'+'.nl'; return false;">roelo<span style="display: none;">.nosp@m.</span>f@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00037">37</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a33ce15066f4bdf17850e8470cb1fe4e0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.external_sensors.OBD2Dongle.OBD2Dongle </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00065">65</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                                       {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        this.context = <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a54eb4ac79c3f9553b776548d8fc8af70">context</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_html_a54eb4ac79c3f9553b776548d8fc8af70"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a54eb4ac79c3f9553b776548d8fc8af70">nl.sense_os.service.external_sensors.OBD2Dongle.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_o_b_d2_dongle_8java_source.html#l00043">OBD2Dongle.java:43</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ad280d7b06f0f979f718787980c1709d7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -163,6 +236,11 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>updateInterval in milliseconds </dd></dl>
 
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00112">112</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                                      {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keywordflow">return</span> this.updateInterval;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    }</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a854cc598118a8e2c2ad07f9e640980bb"></a>
@@ -193,6 +271,11 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00121">121</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                                                   {</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        this.updateInterval = interval;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    }</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a4338e0326ff4d11e5ef10df3428fc672"></a>
@@ -216,6 +299,26 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00075">75</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                                    {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a491037b231a750af668963cde842c1a1">TAG</a>, <span class="stringliteral">&quot;Starting dongle:&quot;</span>);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        this.setUpdateInterval(interval);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="comment">//set the enabled flag to true</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#ace58c33ef18705e01cb1080e30488477">dongleEnabled</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        Thread t = <span class="keyword">new</span> Thread() {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            @Override</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">public</span> <span class="keywordtype">void</span> run() {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                <span class="comment">// No check on android version, assume 2.1 or higher</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                connectHandler.post(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abbcd830ac116a01e6a3a7e5944ee3b28">connectThread</a> = <span class="keyword">new</span> ConnectThread());</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        };</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        this.connectHandler.post(t);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_html_abbcd830ac116a01e6a3a7e5944ee3b28"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abbcd830ac116a01e6a3a7e5944ee3b28">nl.sense_os.service.external_sensors.OBD2Dongle.connectThread</a></div><div class="ttdeci">ConnectThread connectThread</div><div class="ttdef"><b>Definition:</b> <a href="_o_b_d2_dongle_8java_source.html#l00054">OBD2Dongle.java:54</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_html_ace58c33ef18705e01cb1080e30488477"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#ace58c33ef18705e01cb1080e30488477">nl.sense_os.service.external_sensors.OBD2Dongle.dongleEnabled</a></div><div class="ttdeci">boolean dongleEnabled</div><div class="ttdef"><b>Definition:</b> <a href="_o_b_d2_dongle_8java_source.html#l00047">OBD2Dongle.java:47</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_html_a491037b231a750af668963cde842c1a1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a491037b231a750af668963cde842c1a1">nl.sense_os.service.external_sensors.OBD2Dongle.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_o_b_d2_dongle_8java_source.html#l00039">OBD2Dongle.java:39</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a0c5428deab65297d33221a6d4977635f"></a>
@@ -232,18 +335,410 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>stop reading the <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html">OBD2Dongle</a>, also removing its threads from the connectHandler </p>
 
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00094">94</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                       {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="comment">//set the enabled flag to false</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        this.dongleEnabled = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <span class="comment">// assume android version 2.1 or higher to use this method</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abbcd830ac116a01e6a3a7e5944ee3b28">connectThread</a> != null) {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                connectThread.stop();</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                connectHandler.removeCallbacks(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abbcd830ac116a01e6a3a7e5944ee3b28">connectThread</a>);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            }</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        } <span class="keywordflow">catch</span> (Exception e) {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a491037b231a750af668963cde842c1a1">TAG</a>, <span class="stringliteral">&quot;Exception in stopping Bluetooth scan thread:&quot;</span>, e);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        }</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_html_abbcd830ac116a01e6a3a7e5944ee3b28"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#abbcd830ac116a01e6a3a7e5944ee3b28">nl.sense_os.service.external_sensors.OBD2Dongle.connectThread</a></div><div class="ttdeci">ConnectThread connectThread</div><div class="ttdef"><b>Definition:</b> <a href="_o_b_d2_dongle_8java_source.html#l00054">OBD2Dongle.java:54</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_html_a491037b231a750af668963cde842c1a1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a491037b231a750af668963cde842c1a1">nl.sense_os.service.external_sensors.OBD2Dongle.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_o_b_d2_dongle_8java_source.html#l00039">OBD2Dongle.java:39</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a2c4475a5b88d5ac51e403b74072256b5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothAdapter nl.sense_os.service.external_sensors.OBD2Dongle.btAdapter = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00051">51</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abf7b1885a29ec0f7cb25eeea70dc8857"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Handler nl.sense_os.service.external_sensors.OBD2Dongle.connectHandler = new Handler()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00053">53</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab5777a25918bc1f46ba9b82fe6eec24d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.OBD2Dongle.connectionActive = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00052">52</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abbcd830ac116a01e6a3a7e5944ee3b28"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_connect_thread.html">ConnectThread</a> nl.sense_os.service.external_sensors.OBD2Dongle.connectThread = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00054">54</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a54eb4ac79c3f9553b776548d8fc8af70"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Context nl.sense_os.service.external_sensors.OBD2Dongle.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00043">43</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a14caaa8c8beb258c7c93c6def315a2ac"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.external_sensors.OBD2Dongle.deviceType = &quot;TestOBD&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00040">40</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ace58c33ef18705e01cb1080e30488477"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.OBD2Dongle.dongleEnabled = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00047">47</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abfe59a5c5d1127abb522eef2e9504ed7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.external_sensors.OBD2Dongle.lastSampleTime = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00061">61</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a88f019a4b7280976e134418adb8fe9fd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean [] nl.sense_os.service.external_sensors.OBD2Dongle.pidAvailable</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00062">62</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a46f4ba3afcebfc196200e1b92323589d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final UUID nl.sense_os.service.external_sensors.OBD2Dongle.serial_uuid = UUID.fromString(&quot;00001101-0000-1000-8000-00805f9b34fb&quot;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00043">43</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a476581c5d6041f7eaed4560ca161dbd9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothSocket nl.sense_os.service.external_sensors.OBD2Dongle.socket = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00055">55</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a491037b231a750af668963cde842c1a1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.external_sensors.OBD2Dongle.TAG = &quot;OBD-II&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00039">39</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a90e9d5e7350f2c8036a311793f153658"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.OBD2Dongle.updateActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00058">58</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acd07189898b003139984767b9bdeb42c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Handler nl.sense_os.service.external_sensors.OBD2Dongle.updateHandler = new Handler()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00059">59</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afc666f66ff0e9ae539ccadc7ce1aad9f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.external_sensors.OBD2Dongle.updateInterval = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00048">48</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa72ebdf5e6e7c7db475d2cbc338f2b08"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html">UpdateThread</a> nl.sense_os.service.external_sensors.OBD2Dongle.updateThread = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00060">60</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a38268fb526feb710813961fd3b44f8b2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.external_sensors.OBD2Dongle.vin = &quot;&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_o_b_d2_dongle_8java_source.html#l00063">63</a> of file <a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/external_sensors/OBD2Dongle.java</li>
+<li>src/nl/sense_os/service/external_sensors/<a class="el" href="_o_b_d2_dongle_8java_source.html">OBD2Dongle.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>external_sensors</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html">OBD2Dongle</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1external__sensors.html">external_sensors</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html">OBD2Dongle</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

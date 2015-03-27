@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,6 +112,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.external_sensors.ExternalSensor Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -133,17 +137,13 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aaec73b1ebd579408d2dd6406b466f0f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaec73b1ebd579408d2dd6406b466f0f8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ExternalSensor</b> (Context context)</td></tr>
+<tr class="memitem:aaec73b1ebd579408d2dd6406b466f0f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aaec73b1ebd579408d2dd6406b466f0f8">ExternalSensor</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa439af22c9649880e2d4042953d2fc27">context</a>)</td></tr>
 <tr class="separator:aaec73b1ebd579408d2dd6406b466f0f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6d14e824c8416d1321856a170044682"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab6d14e824c8416d1321856a170044682"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>start</b> (int interval)</td></tr>
+<tr class="memitem:ab6d14e824c8416d1321856a170044682"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#ab6d14e824c8416d1321856a170044682">start</a> (int interval)</td></tr>
 <tr class="separator:ab6d14e824c8416d1321856a170044682"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c3536b8f6866b61c6c485f706e2f638"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7c3536b8f6866b61c6c485f706e2f638"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stop</b> ()</td></tr>
+<tr class="memitem:a7c3536b8f6866b61c6c485f706e2f638"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a7c3536b8f6866b61c6c485f706e2f638">stop</a> ()</td></tr>
 <tr class="separator:a7c3536b8f6866b61c6c485f706e2f638"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a192904101dd5854dc23a699a2ea02422"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a192904101dd5854dc23a699a2ea02422"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setUpdateInterval</b> (int interval)</td></tr>
+<tr class="memitem:a192904101dd5854dc23a699a2ea02422"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a192904101dd5854dc23a699a2ea02422">setUpdateInterval</a> (int interval)</td></tr>
 <tr class="separator:a192904101dd5854dc23a699a2ea02422"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc14cb3bf472e8e74d35bccd13dc6b85"><td class="memItemLeft" align="right" valign="top">abstract boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#afc14cb3bf472e8e74d35bccd13dc6b85">isDevice</a> (BluetoothDevice dev)</td></tr>
 <tr class="separator:afc14cb3bf472e8e74d35bccd13dc6b85"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,13 +159,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setUpdateInterval</b>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a727822e19741243c44653f9ab0214a27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a727822e19741243c44653f9ab0214a27"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getUpdateInterval</b> ()</td></tr>
+<tr class="memitem:a727822e19741243c44653f9ab0214a27"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a727822e19741243c44653f9ab0214a27">getUpdateInterval</a> ()</td></tr>
 <tr class="separator:a727822e19741243c44653f9ab0214a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ecf84413103a3711ff8443c663db20b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a4ecf84413103a3711ff8443c663db20b">startAdapter</a> ()</td></tr>
 <tr class="separator:a4ecf84413103a3711ff8443c663db20b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af607f4ec28263b2a965ae2537c10e0bd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af607f4ec28263b2a965ae2537c10e0bd"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>connectSensor</b> ()</td></tr>
+<tr class="memitem:af607f4ec28263b2a965ae2537c10e0bd"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#af607f4ec28263b2a965ae2537c10e0bd">connectSensor</a> ()</td></tr>
 <tr class="separator:af607f4ec28263b2a965ae2537c10e0bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a984d27d5562e886490d1879b67104d55"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a984d27d5562e886490d1879b67104d55">tryConnectSocket</a> (BluetoothDevice dev)</td></tr>
 <tr class="separator:a984d27d5562e886490d1879b67104d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -183,61 +181,173 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>connectSensor</b> 
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:aa439af22c9649880e2d4042953d2fc27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa439af22c9649880e2d4042953d2fc27"></a>
-final Context&#160;</td><td class="memItemRight" valign="bottom"><b>context</b></td></tr>
+<tr class="memitem:aa439af22c9649880e2d4042953d2fc27"><td class="memItemLeft" align="right" valign="top">final Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa439af22c9649880e2d4042953d2fc27">context</a></td></tr>
 <tr class="separator:aa439af22c9649880e2d4042953d2fc27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a233818e7d71e771db744d476b3f959eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a233818e7d71e771db744d476b3f959eb"></a>
-final HandlerThread&#160;</td><td class="memItemRight" valign="bottom"><b>updateHandlerThread</b></td></tr>
+<tr class="memitem:a233818e7d71e771db744d476b3f959eb"><td class="memItemLeft" align="right" valign="top">final HandlerThread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a233818e7d71e771db744d476b3f959eb">updateHandlerThread</a></td></tr>
 <tr class="separator:a233818e7d71e771db744d476b3f959eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35458572f29a9d22a2b79824b63f651b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35458572f29a9d22a2b79824b63f651b"></a>
-final Handler&#160;</td><td class="memItemRight" valign="bottom"><b>updateHandler</b></td></tr>
+<tr class="memitem:a35458572f29a9d22a2b79824b63f651b"><td class="memItemLeft" align="right" valign="top">final Handler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a35458572f29a9d22a2b79824b63f651b">updateHandler</a></td></tr>
 <tr class="separator:a35458572f29a9d22a2b79824b63f651b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c3a4289dfc7a6ab6714cbddf173c0a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c3a4289dfc7a6ab6714cbddf173c0a5"></a>
-BluetoothAdapter&#160;</td><td class="memItemRight" valign="bottom"><b>mBluetoothAdapter</b> = null</td></tr>
+<tr class="memitem:a9c3a4289dfc7a6ab6714cbddf173c0a5"><td class="memItemLeft" align="right" valign="top">BluetoothAdapter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a9c3a4289dfc7a6ab6714cbddf173c0a5">mBluetoothAdapter</a> = null</td></tr>
 <tr class="separator:a9c3a4289dfc7a6ab6714cbddf173c0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56bac0021b4669b094edb553e5005524"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56bac0021b4669b094edb553e5005524"></a>
-BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><b>mBluetoothSocket</b> = null</td></tr>
+<tr class="memitem:a56bac0021b4669b094edb553e5005524"><td class="memItemLeft" align="right" valign="top">BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a56bac0021b4669b094edb553e5005524">mBluetoothSocket</a> = null</td></tr>
 <tr class="separator:a56bac0021b4669b094edb553e5005524"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa865b9a9a31aa44cdd8816c5e7511268"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa865b9a9a31aa44cdd8816c5e7511268"></a>
-<a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_1_1_update_thread.html">UpdateThread</a>&#160;</td><td class="memItemRight" valign="bottom"><b>updateThread</b></td></tr>
+<tr class="memitem:aa865b9a9a31aa44cdd8816c5e7511268"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_1_1_update_thread.html">UpdateThread</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268">updateThread</a></td></tr>
 <tr class="separator:aa865b9a9a31aa44cdd8816c5e7511268"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ca14f0abd5a3ee4ce321d4a8104035d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ca14f0abd5a3ee4ce321d4a8104035d"></a>
-LinkedList&lt; Runnable &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>runningThreads</b> = new LinkedList&lt;Runnable&gt;()</td></tr>
+<tr class="memitem:a3ca14f0abd5a3ee4ce321d4a8104035d"><td class="memItemLeft" align="right" valign="top">LinkedList&lt; Runnable &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a3ca14f0abd5a3ee4ce321d4a8104035d">runningThreads</a> = new LinkedList&lt;Runnable&gt;()</td></tr>
 <tr class="separator:a3ca14f0abd5a3ee4ce321d4a8104035d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ae3c168e27a12a30caf23bb8033b278"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ae3c168e27a12a30caf23bb8033b278"></a>
-InputStream&#160;</td><td class="memItemRight" valign="bottom"><b>mmInStream</b></td></tr>
+<tr class="memitem:a3ae3c168e27a12a30caf23bb8033b278"><td class="memItemLeft" align="right" valign="top">InputStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a3ae3c168e27a12a30caf23bb8033b278">mmInStream</a></td></tr>
 <tr class="separator:a3ae3c168e27a12a30caf23bb8033b278"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9f277e9e7cc6e5663974cd1dc177428"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9f277e9e7cc6e5663974cd1dc177428"></a>
-OutputStream&#160;</td><td class="memItemRight" valign="bottom"><b>mmOutStream</b></td></tr>
+<tr class="memitem:ae9f277e9e7cc6e5663974cd1dc177428"><td class="memItemLeft" align="right" valign="top">OutputStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#ae9f277e9e7cc6e5663974cd1dc177428">mmOutStream</a></td></tr>
 <tr class="separator:ae9f277e9e7cc6e5663974cd1dc177428"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a821094e12ade99af422fab20a869a5f6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a821094e12ade99af422fab20a869a5f6"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>connected</b> = false</td></tr>
+<tr class="memitem:a821094e12ade99af422fab20a869a5f6"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">connected</a> = false</td></tr>
 <tr class="separator:a821094e12ade99af422fab20a869a5f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a133e6537760b8afb54a2b933f9fa90bd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a133e6537760b8afb54a2b933f9fa90bd"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>devicename</b></td></tr>
+<tr class="memitem:a133e6537760b8afb54a2b933f9fa90bd"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a133e6537760b8afb54a2b933f9fa90bd">devicename</a></td></tr>
 <tr class="separator:a133e6537760b8afb54a2b933f9fa90bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76db623583c6e787d8782da7b3e4cb81"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a76db623583c6e787d8782da7b3e4cb81"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>deviceadress</b></td></tr>
+<tr class="memitem:a76db623583c6e787d8782da7b3e4cb81"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a76db623583c6e787d8782da7b3e4cb81">deviceadress</a></td></tr>
 <tr class="separator:a76db623583c6e787d8782da7b3e4cb81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
-<tr class="memitem:adc76ba8c779d47b4ced6fe309d377bce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc76ba8c779d47b4ced6fe309d377bce"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;OBD-II&quot;</td></tr>
+<tr class="memitem:adc76ba8c779d47b4ced6fe309d377bce"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a> = &quot;OBD-II&quot;</td></tr>
 <tr class="separator:adc76ba8c779d47b4ced6fe309d377bce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37489671bd5b905f6a6cb74d986a3aca"><td class="memItemLeft" align="right" valign="top">static final UUID&#160;</td><td class="memItemRight" valign="bottom"><b>serial_uuid</b></td></tr>
+<tr class="memitem:a37489671bd5b905f6a6cb74d986a3aca"><td class="memItemLeft" align="right" valign="top">static final UUID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a37489671bd5b905f6a6cb74d986a3aca">serial_uuid</a></td></tr>
 <tr class="separator:a37489671bd5b905f6a6cb74d986a3aca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a448f93a3c5302d01567c25f01eae8949"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a448f93a3c5302d01567c25f01eae8949">updateinterval</a></td></tr>
+<tr class="separator:a448f93a3c5302d01567c25f01eae8949"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a704640e2cd3a5b85d1101cdb5afa8909"><td class="memItemLeft" align="right" valign="top">BroadcastReceiver&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a704640e2cd3a5b85d1101cdb5afa8909">bluetoothReceiver</a></td></tr>
+<tr class="separator:a704640e2cd3a5b85d1101cdb5afa8909"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Generic class to represent an external sensor that needs to connect to the phone via Bluetooth.</p>
 <dl class="section author"><dt>Author</dt><dd>Roelof van den Berg <a href="#" onclick="location.href='mai'+'lto:'+'roe'+'lo'+'f@s'+'en'+'se-'+'os'+'.nl'; return false;">roelo<span style="display: none;">.nosp@m.</span>f@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00032">32</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="aaec73b1ebd579408d2dd6406b466f0f8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.external_sensors.ExternalSensor.ExternalSensor </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00058">58</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                                           {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        this.context = <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa439af22c9649880e2d4042953d2fc27">context</a>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a233818e7d71e771db744d476b3f959eb">updateHandlerThread</a> = <span class="keyword">new</span> HandlerThread(<span class="stringliteral">&quot;HandlerThread for External Sensor&quot;</span>);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        updateHandlerThread.start();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a35458572f29a9d22a2b79824b63f651b">updateHandler</a> = <span class="keyword">new</span> Handler(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a233818e7d71e771db744d476b3f959eb">updateHandlerThread</a>.getLooper());</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;created &quot;</span> + this.getClass().toString());</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_aa439af22c9649880e2d4042953d2fc27"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa439af22c9649880e2d4042953d2fc27">nl.sense_os.service.external_sensors.ExternalSensor.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00039">ExternalSensor.java:39</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a35458572f29a9d22a2b79824b63f651b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a35458572f29a9d22a2b79824b63f651b">nl.sense_os.service.external_sensors.ExternalSensor.updateHandler</a></div><div class="ttdeci">final Handler updateHandler</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00044">ExternalSensor.java:44</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_adc76ba8c779d47b4ced6fe309d377bce"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">nl.sense_os.service.external_sensors.ExternalSensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00035">ExternalSensor.java:35</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a233818e7d71e771db744d476b3f959eb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a233818e7d71e771db744d476b3f959eb">nl.sense_os.service.external_sensors.ExternalSensor.updateHandlerThread</a></div><div class="ttdeci">final HandlerThread updateHandlerThread</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00043">ExternalSensor.java:43</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="af607f4ec28263b2a965ae2537c10e0bd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.ExternalSensor.connectSensor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00158">158</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                                      {</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="comment">// only attempt to setup the sensor if this has not yet been done</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">connected</a>) {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;attempting to connect Sensor &quot;</span> + this.getClass().toString());</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            <span class="comment">// first, get the paired devices</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            Set&lt;BluetoothDevice&gt; pairedDevices = BluetoothAdapter.getDefaultAdapter()</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                    .getBondedDevices();</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <span class="comment">// then find which of these devices is the sensor we look for</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            <span class="keywordflow">for</span> (BluetoothDevice currentdevice : pairedDevices) {</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                <span class="comment">// check if this is the correct device</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#afc14cb3bf472e8e74d35bccd13dc6b85">isDevice</a>(currentdevice)) {</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                    <span class="comment">// try to connect</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">connected</a> = <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a984d27d5562e886490d1879b67104d55">tryConnectSocket</a>(currentdevice);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                    <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">connected</a>) {</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;Socket is connected, starting updateThread&quot;</span>);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268">updateThread</a> = <span class="keyword">new</span> UpdateThread();</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                        updateHandler.post(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268">updateThread</a>);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                        runningThreads.add(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268">updateThread</a>);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                    }</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                }</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;No suitable device was found to connect to&quot;</span>);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;connected is already set to true? &quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">connected</a>);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        }</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_afc14cb3bf472e8e74d35bccd13dc6b85"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#afc14cb3bf472e8e74d35bccd13dc6b85">nl.sense_os.service.external_sensors.ExternalSensor.isDevice</a></div><div class="ttdeci">abstract boolean isDevice(BluetoothDevice dev)</div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_adc76ba8c779d47b4ced6fe309d377bce"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">nl.sense_os.service.external_sensors.ExternalSensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00035">ExternalSensor.java:35</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a821094e12ade99af422fab20a869a5f6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">nl.sense_os.service.external_sensors.ExternalSensor.connected</a></div><div class="ttdeci">boolean connected</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00056">ExternalSensor.java:56</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a984d27d5562e886490d1879b67104d55"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a984d27d5562e886490d1879b67104d55">nl.sense_os.service.external_sensors.ExternalSensor.tryConnectSocket</a></div><div class="ttdeci">boolean tryConnectSocket(BluetoothDevice dev)</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00200">ExternalSensor.java:200</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_aa865b9a9a31aa44cdd8816c5e7511268"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268">nl.sense_os.service.external_sensors.ExternalSensor.updateThread</a></div><div class="ttdeci">UpdateThread updateThread</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00050">ExternalSensor.java:50</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a727822e19741243c44653f9ab0214a27"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.external_sensors.ExternalSensor.getUpdateInterval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00103">103</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                                      {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keywordflow">return</span> this.updateinterval;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a64a17ba80ec62f4c9f67c76d9940b382"></a>
 <div class="memitem">
 <div class="memproto">
@@ -318,6 +428,51 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b
 
 </div>
 </div>
+<a class="anchor" id="a192904101dd5854dc23a699a2ea02422"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.ExternalSensor.setUpdateInterval </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00099">99</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                                                {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        this.updateinterval = interval;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ab6d14e824c8416d1321856a170044682"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.ExternalSensor.start </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00066">66</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                                    {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;starting &quot;</span> + this.getClass().toString());</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        this.setUpdateInterval(interval);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        this.startAdapter();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_adc76ba8c779d47b4ced6fe309d377bce"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">nl.sense_os.service.external_sensors.ExternalSensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00035">ExternalSensor.java:35</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a4ecf84413103a3711ff8443c663db20b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -340,6 +495,84 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b
 </div><div class="memdoc">
 <p>Tries to connect to the external sensor using the local <a class="el" href="">BluetoothAdapter</a> </p>
 
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00110">110</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                                  {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;starting adapter &quot;</span> + this.getClass().toString());</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="comment">// Get local BluetoothAdapter</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a9c3a4289dfc7a6ab6714cbddf173c0a5">mBluetoothAdapter</a> = BluetoothAdapter.getDefaultAdapter();</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="comment">// if there is at least a BluetoothAdapter</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">if</span> (mBluetoothAdapter != null) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="comment">// if the adapter is enabled, run the sensor setup</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            <span class="keywordflow">if</span> (mBluetoothAdapter.isEnabled()) {</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                this.connectSensor();</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <span class="comment">// if the adapter is not enabled, request it to be enabled.</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <span class="comment">// sensor setup will be called through onReceive(Context, Intent) method</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                Intent enableIntent = <span class="keyword">new</span> Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                enableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                context.startActivity(enableIntent);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                context.registerReceiver(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a704640e2cd3a5b85d1101cdb5afa8909">bluetoothReceiver</a>, <span class="keyword">new</span> IntentFilter(</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                        BluetoothAdapter.ACTION_STATE_CHANGED));</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            }</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        }</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="comment">// if there is no BluetoothAdapter at all, stop the sensor.</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            this.stop();</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a704640e2cd3a5b85d1101cdb5afa8909"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a704640e2cd3a5b85d1101cdb5afa8909">nl.sense_os.service.external_sensors.ExternalSensor.bluetoothReceiver</a></div><div class="ttdeci">BroadcastReceiver bluetoothReceiver</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00140">ExternalSensor.java:140</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a9c3a4289dfc7a6ab6714cbddf173c0a5"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a9c3a4289dfc7a6ab6714cbddf173c0a5">nl.sense_os.service.external_sensors.ExternalSensor.mBluetoothAdapter</a></div><div class="ttdeci">BluetoothAdapter mBluetoothAdapter</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00048">ExternalSensor.java:48</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_adc76ba8c779d47b4ced6fe309d377bce"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">nl.sense_os.service.external_sensors.ExternalSensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00035">ExternalSensor.java:35</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a7c3536b8f6866b61c6c485f706e2f638"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.ExternalSensor.stop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00072">72</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                       {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="comment">// if connected, close the connection</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;stopping &quot;</span> + this.getClass().toString());</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="comment">// stop listening for bluetooth changes</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            context.unregisterReceiver(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a704640e2cd3a5b85d1101cdb5afa8909">bluetoothReceiver</a>);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        } <span class="keywordflow">catch</span> (Exception e) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    <span class="stringliteral">&quot;unable to unregister bluetoothReceiver, probably due to it not being registred&quot;</span>);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="comment">// if (connected) {</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="comment">// try to close the bluetooth socket</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            mBluetoothSocket.close();</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        } <span class="keywordflow">catch</span> (IOException e) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;Error on stopping service&quot;</span>, e);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">connected</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="comment">// and stop polling the sensor, stop all running threads</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">for</span> (Runnable r : <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a3ca14f0abd5a3ee4ce321d4a8104035d">runningThreads</a>) {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            updateHandler.removeCallbacks(r);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        runningThreads.clear();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="comment">// }</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, this.getClass().toString() + <span class="stringliteral">&quot; stopped&quot;</span>);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a704640e2cd3a5b85d1101cdb5afa8909"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a704640e2cd3a5b85d1101cdb5afa8909">nl.sense_os.service.external_sensors.ExternalSensor.bluetoothReceiver</a></div><div class="ttdeci">BroadcastReceiver bluetoothReceiver</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00140">ExternalSensor.java:140</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_adc76ba8c779d47b4ced6fe309d377bce"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">nl.sense_os.service.external_sensors.ExternalSensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00035">ExternalSensor.java:35</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a821094e12ade99af422fab20a869a5f6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a821094e12ade99af422fab20a869a5f6">nl.sense_os.service.external_sensors.ExternalSensor.connected</a></div><div class="ttdeci">boolean connected</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00056">ExternalSensor.java:56</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a3ca14f0abd5a3ee4ce321d4a8104035d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a3ca14f0abd5a3ee4ce321d4a8104035d">nl.sense_os.service.external_sensors.ExternalSensor.runningThreads</a></div><div class="ttdeci">LinkedList&lt; Runnable &gt; runningThreads</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00051">ExternalSensor.java:51</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a984d27d5562e886490d1879b67104d55"></a>
@@ -365,9 +598,280 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>whether or not a Socket connection was established </dd></dl>
 
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00200">200</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                                                            {</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;Attempting to connect to bluetooth socket&quot;</span>);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a56bac0021b4669b094edb553e5005524">mBluetoothSocket</a> = dev.createRfcommSocketToServiceRecord(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a37489671bd5b905f6a6cb74d986a3aca">serial_uuid</a>);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            mBluetoothSocket.connect();</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;Connected to socket via normal method&quot;</span>);</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        } <span class="keywordflow">catch</span> (IOException e) {</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;            Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;Standard method for socket connection failed&quot;</span>);</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;Attempting reflection work aroud for connecting socket&quot;</span>);</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                Method m = dev.getClass()</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                        .getMethod(<span class="stringliteral">&quot;createRfcommSocket&quot;</span>, <span class="keyword">new</span> Class[] { int.class });</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a56bac0021b4669b094edb553e5005524">mBluetoothSocket</a> = (BluetoothSocket) m.invoke(dev, Integer.valueOf(1));</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                mBluetoothSocket.connect();</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;Connected to socket via reflection work aroud&quot;</span>);</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;            }</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;            <span class="comment">// if all has failed, stop this sensor</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;            <span class="keywordflow">catch</span> (Exception ex) {</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;workaround method also failed to connect to &quot;</span> + dev.getName());</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;            }</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        } <span class="keywordflow">catch</span> (Exception ex) {</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;            Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;attempt at connecting socket to &quot;</span> + dev.getName() + <span class="stringliteral">&quot;failed&quot;</span>, ex);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        }</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a56bac0021b4669b094edb553e5005524"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a56bac0021b4669b094edb553e5005524">nl.sense_os.service.external_sensors.ExternalSensor.mBluetoothSocket</a></div><div class="ttdeci">BluetoothSocket mBluetoothSocket</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00049">ExternalSensor.java:49</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_a37489671bd5b905f6a6cb74d986a3aca"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a37489671bd5b905f6a6cb74d986a3aca">nl.sense_os.service.external_sensors.ExternalSensor.serial_uuid</a></div><div class="ttdeci">static final UUID serial_uuid</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00038">ExternalSensor.java:38</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_html_adc76ba8c779d47b4ced6fe309d377bce"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">nl.sense_os.service.external_sensors.ExternalSensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_external_sensor_8java_source.html#l00035">ExternalSensor.java:35</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a704640e2cd3a5b85d1101cdb5afa8909"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BroadcastReceiver nl.sense_os.service.external_sensors.ExternalSensor.bluetoothReceiver</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= <span class="keyword">new</span> BroadcastReceiver() {</div>
+<div class="line">        @Override</div>
+<div class="line">        <span class="keyword">public</span> <span class="keywordtype">void</span> onReceive(Context <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa439af22c9649880e2d4042953d2fc27">context</a>, Intent intent) {</div>
+<div class="line">            Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#adc76ba8c779d47b4ced6fe309d377bce">TAG</a>, <span class="stringliteral">&quot;state change sensed by &quot;</span> + this.getClass().toString());</div>
+<div class="line">            String action = intent.getAction();</div>
+<div class="line">            </div>
+<div class="line">            </div>
+<div class="line">            <span class="keywordflow">if</span> (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {</div>
+<div class="line">                <span class="keyword">final</span> <span class="keywordtype">int</span> state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,</div>
+<div class="line">                        BluetoothAdapter.STATE_OFF);</div>
+<div class="line">                <span class="keywordflow">if</span> (state == BluetoothAdapter.STATE_ON) {</div>
+<div class="line">                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a7c3536b8f6866b61c6c485f706e2f638">stop</a>();</div>
+<div class="line">                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#af607f4ec28263b2a965ae2537c10e0bd">connectSensor</a>();</div>
+<div class="line">                }</div>
+<div class="line">            }</div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+</div><!-- fragment --><p>listen to State-changes of BlueTooth Adapters using a BroadcastReceiver </p>
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00140">140</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a821094e12ade99af422fab20a869a5f6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.ExternalSensor.connected = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00056">56</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa439af22c9649880e2d4042953d2fc27"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Context nl.sense_os.service.external_sensors.ExternalSensor.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00039">39</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a76db623583c6e787d8782da7b3e4cb81"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.external_sensors.ExternalSensor.deviceadress</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00230">230</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a133e6537760b8afb54a2b933f9fa90bd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.external_sensors.ExternalSensor.devicename</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00229">229</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9c3a4289dfc7a6ab6714cbddf173c0a5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothAdapter nl.sense_os.service.external_sensors.ExternalSensor.mBluetoothAdapter = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00048">48</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a56bac0021b4669b094edb553e5005524"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothSocket nl.sense_os.service.external_sensors.ExternalSensor.mBluetoothSocket = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00049">49</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3ae3c168e27a12a30caf23bb8033b278"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">InputStream nl.sense_os.service.external_sensors.ExternalSensor.mmInStream</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00052">52</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae9f277e9e7cc6e5663974cd1dc177428"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">OutputStream nl.sense_os.service.external_sensors.ExternalSensor.mmOutStream</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00053">53</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3ca14f0abd5a3ee4ce321d4a8104035d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">LinkedList&lt;Runnable&gt; nl.sense_os.service.external_sensors.ExternalSensor.runningThreads = new LinkedList&lt;Runnable&gt;()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00051">51</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a37489671bd5b905f6a6cb74d986a3aca"></a>
 <div class="memitem">
 <div class="memproto">
@@ -388,18 +892,130 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b
 <b>Initial value:</b><div class="fragment"><div class="line">= UUID</div>
 <div class="line">            .fromString(<span class="stringliteral">&quot;00001101-0000-1000-8000-00805f9b34fb&quot;</span>)</div>
 </div><!-- fragment -->
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00038">38</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adc76ba8c779d47b4ced6fe309d377bce"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.external_sensors.ExternalSensor.TAG = &quot;OBD-II&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00035">35</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a35458572f29a9d22a2b79824b63f651b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Handler nl.sense_os.service.external_sensors.ExternalSensor.updateHandler</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00044">44</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a233818e7d71e771db744d476b3f959eb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final HandlerThread nl.sense_os.service.external_sensors.ExternalSensor.updateHandlerThread</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00043">43</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a448f93a3c5302d01567c25f01eae8949"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.external_sensors.ExternalSensor.updateinterval</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00047">47</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa865b9a9a31aa44cdd8816c5e7511268"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_1_1_update_thread.html">UpdateThread</a> nl.sense_os.service.external_sensors.ExternalSensor.updateThread</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_external_sensor_8java_source.html#l00050">50</a> of file <a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/external_sensors/ExternalSensor.java</li>
+<li>src/nl/sense_os/service/external_sensors/<a class="el" href="_external_sensor_8java_source.html">ExternalSensor.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>external_sensors</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html">ExternalSensor</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1external__sensors.html">external_sensors</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html">ExternalSensor</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

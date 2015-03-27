@@ -1,0 +1,4 @@
+var classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity_1_1_bluetooth_receiver =
+[
+    [ "onReceive", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity_1_1_bluetooth_receiver.html#ad691d1c15efece150c00769ec553d376", null ]
+];

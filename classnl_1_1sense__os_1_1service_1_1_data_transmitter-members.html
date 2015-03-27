@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_da
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -110,18 +113,26 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_da
 
 <p>This is the complete list of members for <a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa5494bdd32dc74d3648797e5eec8a2b3">DataTransmitter</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a1ab349ada2a00fe70e4a2d03c50ab52a">getInstance</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>run</b>() (defined in <a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#ac6c7d6c5a8cd26f7b1405cd23c7778ff">startTransmissions</a>(long transmissionInterval, long taskTransmitterInterval)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5e0b8d6ec9b95e380f4ba2df01046a15">stopTransmissions</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aeab1ca496facf73738a0a4a02b18c0d6">ADAPTIVE_TX_INTERVAL</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa5494bdd32dc74d3648797e5eec8a2b3">DataTransmitter</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a1ab349ada2a00fe70e4a2d03c50ab52a">getInstance</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a36dcc5a1cce3eb8c493c37bc5e11c392">mLastTxBytes</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">mLastTxTime</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5a40f7e1a3d583c0802d1986f7367fd4">mTxBytes</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a432562ff7ffde77c12bccc499e7ef5ca">mTxInterval</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a4bc585af44571704db7b12649d932ff0">run</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa718698da3f2848c45f8ed736ef53c68">sInstance</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#ac6c7d6c5a8cd26f7b1405cd23c7778ff">startTransmissions</a>(long transmissionInterval, long taskTransmitterInterval)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5e0b8d6ec9b95e380f4ba2df01046a15">stopTransmissions</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a92bb2520ba84ff67b7835cdf4c055324">TAG</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
   <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a4d9eb342ded58d580a948c18c708f617">transmissionService</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

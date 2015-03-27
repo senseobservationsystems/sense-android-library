@@ -1,0 +1,4 @@
+var classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity_1_1_scan_alarm_receiver =
+[
+    [ "onReceive", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity_1_1_scan_alarm_receiver.html#a08c8d4fc7490b25a335e08b04530fbb7", null ]
+];

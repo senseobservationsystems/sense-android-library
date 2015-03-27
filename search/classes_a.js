@@ -1,8 +1,14 @@
 var searchData=
 [
-  ['networkmonitor',['NetworkMonitor',['../classnl_1_1sense__os_1_1service_1_1_network_monitor.html',1,'nl::sense_os::service']]],
-  ['newobd2deviceconnector',['NewOBD2DeviceConnector',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html',1,'nl::sense_os::service::external_sensors']]],
-  ['nfcscan',['NfcScan',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_nfc_scan.html',1,'nl::sense_os::service::deviceprox']]],
-  ['noiseburstsensor',['NoiseBurstSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor_1_1_noise_burst_sensor.html',1,'nl::sense_os::service::ambience::NoiseSensor']]],
-  ['noisesensor',['NoiseSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html',1,'nl::sense_os::service::ambience']]]
+  ['magneticfieldsensor',['MagneticFieldSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_magnetic_field_sensor.html',1,'nl::sense_os::service::ambience']]],
+  ['main',['Main',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html',1,'nl::sense_os::service::constants::SensePrefs']]],
+  ['motion',['Motion',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_motion.html',1,'nl::sense_os::service::constants::SensePrefs::Main']]],
+  ['motionburstsensor',['MotionBurstSensor',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html',1,'nl::sense_os::service::motion']]],
+  ['motionenergysensor',['MotionEnergySensor',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html',1,'nl::sense_os::service::motion']]],
+  ['motionsensor',['MotionSensor',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html',1,'nl::sense_os::service::motion']]],
+  ['motionsensorinterface',['MotionSensorInterface',['../interfacenl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_interface.html',1,'nl::sense_os::service::motion']]],
+  ['motionsensorutils',['MotionSensorUtils',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html',1,'nl::sense_os::service::motion']]],
+  ['msghandler',['MsgHandler',['../classnl_1_1sense__os_1_1service_1_1_msg_handler.html',1,'nl::sense_os::service']]],
+  ['myglucohealth',['MyGlucoHealth',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external_1_1_my_gluco_health.html',1,'nl::sense_os::service::constants::SensePrefs::Main::External']]],
+  ['mylocationlistener',['MyLocationListener',['../classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor_1_1_my_location_listener.html',1,'nl::sense_os::service::location::LocationSensor']]]
 ];

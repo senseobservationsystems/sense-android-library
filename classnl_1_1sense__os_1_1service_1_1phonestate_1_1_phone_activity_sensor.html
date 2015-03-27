@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pho
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pho
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.phonestate.PhoneActivitySensor Class Reference</div>  </div>
@@ -125,11 +131,9 @@ Inheritance diagram for nl.sense_os.service.phonestate.PhoneActivitySensor:</div
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a537fc611b091383ed28678b5c5980eec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a537fc611b091383ed28678b5c5980eec"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>startPhoneActivitySensing</b> (long sampleDelay)</td></tr>
+<tr class="memitem:a537fc611b091383ed28678b5c5980eec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a537fc611b091383ed28678b5c5980eec">startPhoneActivitySensing</a> (long sampleDelay)</td></tr>
 <tr class="separator:a537fc611b091383ed28678b5c5980eec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04154120a5cdc1465dcec7e26a60dd27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04154120a5cdc1465dcec7e26a60dd27"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stopPhoneActivitySensing</b> ()</td></tr>
+<tr class="memitem:a04154120a5cdc1465dcec7e26a60dd27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a04154120a5cdc1465dcec7e26a60dd27">stopPhoneActivitySensing</a> ()</td></tr>
 <tr class="separator:a04154120a5cdc1465dcec7e26a60dd27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
 <tr class="memitem:a714854a4b022953b78638ddbb67c2259 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a714854a4b022953b78638ddbb67c2259">addSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
@@ -143,14 +147,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopPhoneActivitySens
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a172763db5817394a27a4b0087f9673f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a172763db5817394a27a4b0087f9673f2"></a>
-static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html">PhoneActivitySensor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> (Context context)</td></tr>
+<tr class="memitem:a172763db5817394a27a4b0087f9673f2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html">PhoneActivitySensor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a172763db5817394a27a4b0087f9673f2">getInstance</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a>)</td></tr>
 <tr class="separator:a172763db5817394a27a4b0087f9673f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:aed8deb82d6c28d4034c646355229fc13"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aed8deb82d6c28d4034c646355229fc13"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>PhoneActivitySensor</b> (Context context)</td></tr>
+<tr class="memitem:aed8deb82d6c28d4034c646355229fc13"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#aed8deb82d6c28d4034c646355229fc13">PhoneActivitySensor</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a>)</td></tr>
 <tr class="separator:aed8deb82d6c28d4034c646355229fc13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
 <tr class="memitem:a19c613b40edd1aed1cd74b630cd85562 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a19c613b40edd1aed1cd74b630cd85562">checkSubscribers</a> ()</td></tr>
@@ -160,11 +162,29 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:afb2a3da707c9b85f1d46191843946e5e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#afb2a3da707c9b85f1d46191843946e5e">sendData</a> (String screen)</td></tr>
+<tr class="separator:afb2a3da707c9b85f1d46191843946e5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:adb58428dca444444ca7f8aedf65e6d99"><td class="memItemLeft" align="right" valign="top">final Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a></td></tr>
+<tr class="separator:adb58428dca444444ca7f8aedf65e6d99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8265338f793e56c56a43a3d1518dcaf9"><td class="memItemLeft" align="right" valign="top">BroadcastReceiver&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a8265338f793e56c56a43a3d1518dcaf9">screenActivityReceiver</a></td></tr>
+<tr class="separator:a8265338f793e56c56a43a3d1518dcaf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a78de771b08e3e465b0dfb58b54e35173"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a78de771b08e3e465b0dfb58b54e35173">TAG</a> = &quot;Sense Screen Activity&quot;</td></tr>
+<tr class="separator:a78de771b08e3e465b0dfb58b54e35173"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af40a1b2b95292848c661a93e1d8d758d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html">PhoneActivitySensor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#af40a1b2b95292848c661a93e1d8d758d">instance</a> = null</td></tr>
+<tr class="separator:af40a1b2b95292848c661a93e1d8d758d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -172,16 +192,308 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents the screen activity sensor. Listens for ACTION_SCREEN_ON and ACTION_SCREEN_OFF broadcasts from Android.</p>
 <dl class="section author"><dt>Author</dt><dd>Ted Schmidt <a href="#" onclick="location.href='mai'+'lto:'+'ted'+'@s'+'ens'+'e-'+'os.'+'nl'; return false;">ted@s<span style="display: none;">.nosp@m.</span>ense<span style="display: none;">.nosp@m.</span>-os.n<span style="display: none;">.nosp@m.</span>l</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/phonestate/PhoneActivitySensor.java</li>
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00030">30</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="aed8deb82d6c28d4034c646355229fc13"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.phonestate.PhoneActivitySensor.PhoneActivitySensor </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00092">92</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                                                   {</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        this.context = <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_adb58428dca444444ca7f8aedf65e6d99"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">nl.sense_os.service.phonestate.PhoneActivitySensor.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00033">PhoneActivitySensor.java:33</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a172763db5817394a27a4b0087f9673f2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html">PhoneActivitySensor</a> nl.sense_os.service.phonestate.PhoneActivitySensor.getInstance </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00037">37</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                                                                   {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#af40a1b2b95292848c661a93e1d8d758d">instance</a> == null) {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;               <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#af40a1b2b95292848c661a93e1d8d758d">instance</a> = <span class="keyword">new</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#aed8deb82d6c28d4034c646355229fc13">PhoneActivitySensor</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#af40a1b2b95292848c661a93e1d8d758d">instance</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_adb58428dca444444ca7f8aedf65e6d99"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">nl.sense_os.service.phonestate.PhoneActivitySensor.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00033">PhoneActivitySensor.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_af40a1b2b95292848c661a93e1d8d758d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#af40a1b2b95292848c661a93e1d8d758d">nl.sense_os.service.phonestate.PhoneActivitySensor.instance</a></div><div class="ttdeci">static PhoneActivitySensor instance</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00035">PhoneActivitySensor.java:35</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_aed8deb82d6c28d4034c646355229fc13"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#aed8deb82d6c28d4034c646355229fc13">nl.sense_os.service.phonestate.PhoneActivitySensor.PhoneActivitySensor</a></div><div class="ttdeci">PhoneActivitySensor(Context context)</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00092">PhoneActivitySensor.java:92</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="afb2a3da707c9b85f1d46191843946e5e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.phonestate.PhoneActivitySensor.sendData </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>screen</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00064">64</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;         <span class="comment">// create new data point</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        JSONObject json = <span class="keyword">new</span> JSONObject();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            json.put(<span class="stringliteral">&quot;screen&quot;</span>, screen);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        } <span class="keywordflow">catch</span> (JSONException e) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a78de771b08e3e465b0dfb58b54e35173">TAG</a>, <span class="stringliteral">&quot;JSONException preparing screen activity data&quot;</span>);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a6b49b611a837ae5f0ce47ab1f65735f5">notifySubscribers</a>();</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        SensorDataPoint dataPoint = <span class="keyword">new</span> SensorDataPoint(json);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        dataPoint.sensorName = <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a22846ea3456e001ae4cd72a066592d9b">SensorNames.SCREEN_ACTIVITY</a>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        dataPoint.sensorDescription = <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a22846ea3456e001ae4cd72a066592d9b">SensorNames.SCREEN_ACTIVITY</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        dataPoint.timeStamp = SNTP.getInstance().getTime();        </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a>(dataPoint);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        Intent i = <span class="keyword">new</span> Intent(<a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a>.getString(R.string.action_sense_new_data));</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">DataPoint.DATA_TYPE</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#a96e3713573f43ad1fb7b0263c4d43080">SenseDataTypes.JSON</a>);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>, json.toString());</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">DataPoint.SENSOR_NAME</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a22846ea3456e001ae4cd72a066592d9b">SensorNames.SCREEN_ACTIVITY</a>);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">DataPoint.TIMESTAMP</a>, dataPoint.timeStamp);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        i.setPackage(context.getPackageName());</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        context.startService(i);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_adb58428dca444444ca7f8aedf65e6d99"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">nl.sense_os.service.phonestate.PhoneActivitySensor.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00033">PhoneActivitySensor.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_abdec19395d072f5ef68313273cfad9f1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">nl.sense_os.service.constants.SensorData.DataPoint.VALUE</a></div><div class="ttdeci">static final String VALUE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00091">SensorData.java:91</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names_html_a22846ea3456e001ae4cd72a066592d9b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a22846ea3456e001ae4cd72a066592d9b">nl.sense_os.service.constants.SensorData.SensorNames.SCREEN_ACTIVITY</a></div><div class="ttdeci">static final String SCREEN_ACTIVITY</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00231">SensorData.java:231</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_a78de771b08e3e465b0dfb58b54e35173"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a78de771b08e3e465b0dfb58b54e35173">nl.sense_os.service.phonestate.PhoneActivitySensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00032">PhoneActivitySensor.java:32</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a838808dd53f3dd49d81c69560cb6d6fc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_NAME</a></div><div class="ttdeci">static final String SENSOR_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00056">SensorData.java:56</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer_html_a670858394c8a97019cb43963e045447a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">nl.sense_os.service.subscription.BaseDataProducer.sendToSubscribers</a></div><div class="ttdeci">synchronized void sendToSubscribers(SensorDataPoint dataPoint)</div><div class="ttdef"><b>Definition:</b> <a href="_base_data_producer_8java_source.html#l00120">BaseDataProducer.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a6c0829bb39fd134b4dd5bc4fc7ce0225"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">nl.sense_os.service.constants.SensorData.DataPoint.DATA_TYPE</a></div><div class="ttdeci">static final String DATA_TYPE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00071">SensorData.java:71</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer_html_a6b49b611a837ae5f0ce47ab1f65735f5"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a6b49b611a837ae5f0ce47ab1f65735f5">nl.sense_os.service.subscription.BaseDataProducer.notifySubscribers</a></div><div class="ttdeci">synchronized void notifySubscribers()</div><div class="ttdef"><b>Definition:</b> <a href="_base_data_producer_8java_source.html#l00090">BaseDataProducer.java:90</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types_html_a96e3713573f43ad1fb7b0263c4d43080"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#a96e3713573f43ad1fb7b0263c4d43080">nl.sense_os.service.constants.SenseDataTypes.JSON</a></div><div class="ttdeci">static final String JSON</div><div class="ttdef"><b>Definition:</b> <a href="_sense_data_types_8java_source.html#l00015">SenseDataTypes.java:15</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_ad14ad97eb01429eee8adddd49d70141e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">nl.sense_os.service.constants.SensorData.DataPoint.TIMESTAMP</a></div><div class="ttdeci">static final String TIMESTAMP</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00085">SensorData.java:85</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a537fc611b091383ed28678b5c5980eec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.phonestate.PhoneActivitySensor.startPhoneActivitySensing </td>
+          <td>(</td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>sampleDelay</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00096">96</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                                                            {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        IntentFilter filter = <span class="keyword">new</span> IntentFilter(Intent.ACTION_SCREEN_ON);        </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        filter.addAction(Intent.ACTION_SCREEN_OFF);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        context.registerReceiver(<a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a8265338f793e56c56a43a3d1518dcaf9">screenActivityReceiver</a>, filter);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        PowerManager pm = (PowerManager) <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a>.getSystemService(Context.POWER_SERVICE);  </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#afb2a3da707c9b85f1d46191843946e5e">sendData</a>(pm.isScreenOn()?<span class="stringliteral">&quot;on&quot;</span>:<span class="stringliteral">&quot;off&quot;</span>);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_adb58428dca444444ca7f8aedf65e6d99"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">nl.sense_os.service.phonestate.PhoneActivitySensor.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00033">PhoneActivitySensor.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_afb2a3da707c9b85f1d46191843946e5e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#afb2a3da707c9b85f1d46191843946e5e">nl.sense_os.service.phonestate.PhoneActivitySensor.sendData</a></div><div class="ttdeci">void sendData(String screen)</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00064">PhoneActivitySensor.java:64</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_a8265338f793e56c56a43a3d1518dcaf9"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a8265338f793e56c56a43a3d1518dcaf9">nl.sense_os.service.phonestate.PhoneActivitySensor.screenActivityReceiver</a></div><div class="ttdeci">BroadcastReceiver screenActivityReceiver</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00044">PhoneActivitySensor.java:44</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a04154120a5cdc1465dcec7e26a60dd27"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.phonestate.PhoneActivitySensor.stopPhoneActivitySensing </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00104">104</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                                           {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            context.unregisterReceiver(<a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a8265338f793e56c56a43a3d1518dcaf9">screenActivityReceiver</a>);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        } <span class="keywordflow">catch</span> (IllegalArgumentException e) {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="comment">// probably was not registered</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        }</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor_html_a8265338f793e56c56a43a3d1518dcaf9"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a8265338f793e56c56a43a3d1518dcaf9">nl.sense_os.service.phonestate.PhoneActivitySensor.screenActivityReceiver</a></div><div class="ttdeci">BroadcastReceiver screenActivityReceiver</div><div class="ttdef"><b>Definition:</b> <a href="_phone_activity_sensor_8java_source.html#l00044">PhoneActivitySensor.java:44</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="adb58428dca444444ca7f8aedf65e6d99"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Context nl.sense_os.service.phonestate.PhoneActivitySensor.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00033">33</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af40a1b2b95292848c661a93e1d8d758d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html">PhoneActivitySensor</a> nl.sense_os.service.phonestate.PhoneActivitySensor.instance = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00035">35</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8265338f793e56c56a43a3d1518dcaf9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BroadcastReceiver nl.sense_os.service.phonestate.PhoneActivitySensor.screenActivityReceiver</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= <span class="keyword">new</span> BroadcastReceiver() {</div>
+<div class="line"></div>
+<div class="line">        @Override</div>
+<div class="line">        <span class="keyword">public</span> <span class="keywordtype">void</span> onReceive(Context <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#adb58428dca444444ca7f8aedf65e6d99">context</a>, Intent intent) {</div>
+<div class="line"></div>
+<div class="line">            </div>
+<div class="line">            String screen = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line">            <span class="keywordflow">if</span> (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {</div>
+<div class="line">                screen = <span class="stringliteral">&quot;off&quot;</span>;</div>
+<div class="line">            } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {</div>
+<div class="line">                screen = <span class="stringliteral">&quot;on&quot;</span>;</div>
+<div class="line">            } <span class="keywordflow">else</span> {</div>
+<div class="line">                Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a78de771b08e3e465b0dfb58b54e35173">TAG</a>, <span class="stringliteral">&quot;Unexpected broadcast action: &quot;</span> + intent.getAction());</div>
+<div class="line">                <span class="keywordflow">return</span>;</div>
+<div class="line">            }</div>
+<div class="line"></div>
+<div class="line">            <a class="code" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#afb2a3da707c9b85f1d46191843946e5e">sendData</a>(screen);</div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00044">44</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a78de771b08e3e465b0dfb58b54e35173"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.phonestate.PhoneActivitySensor.TAG = &quot;Sense Screen Activity&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_phone_activity_sensor_8java_source.html#l00032">32</a> of file <a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/phonestate/<a class="el" href="_phone_activity_sensor_8java_source.html">PhoneActivitySensor.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>phonestate</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html">PhoneActivitySensor</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1phonestate.html">phonestate</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html">PhoneActivitySensor</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

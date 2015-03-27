@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1con
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1con
 <div class="header">
   <div class="summary">
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.constants.SenseUrls Class Reference</div>  </div>
@@ -123,143 +127,138 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:a786283056af05f107b66914184ba3767"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af141adadee96410fdfd4c2ab0ff495e7"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7">PAGE_SIZE</a> = 1000</td></tr>
 <tr class="separator:af141adadee96410fdfd4c2ab0ff495e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a57af00e90d66fabdc56d2c2e676308"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><b>ALL_SENSORS</b></td></tr>
+<tr class="memitem:a7a57af00e90d66fabdc56d2c2e676308"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a7a57af00e90d66fabdc56d2c2e676308">ALL_SENSORS</a></td></tr>
 <tr class="separator:a7a57af00e90d66fabdc56d2c2e676308"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5f49f1e3d3e945301944d787a21de04"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><b>ALL_SENSORS_DEV</b></td></tr>
+<tr class="memitem:af5f49f1e3d3e945301944d787a21de04"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af5f49f1e3d3e945301944d787a21de04">ALL_SENSORS_DEV</a></td></tr>
 <tr class="separator:af5f49f1e3d3e945301944d787a21de04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae560f10767a035185d73c9da1ea0156e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae560f10767a035185d73c9da1ea0156e"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CONFIGURATION</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;configurations/%1&quot;</td></tr>
+<tr class="memitem:ae560f10767a035185d73c9da1ea0156e"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae560f10767a035185d73c9da1ea0156e">CONFIGURATION</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;configurations/%1&quot;</td></tr>
 <tr class="separator:ae560f10767a035185d73c9da1ea0156e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6573a304742142c32c534526e38451bc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6573a304742142c32c534526e38451bc"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CONFIGURATION_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;configurations/%1&quot;</td></tr>
+<tr class="memitem:a6573a304742142c32c534526e38451bc"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a6573a304742142c32c534526e38451bc">CONFIGURATION_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;configurations/%1&quot;</td></tr>
 <tr class="separator:a6573a304742142c32c534526e38451bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75f7f2cab3ba5a564d565748acfe86dc"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CONNECTED_SENSORS</b></td></tr>
+<tr class="memitem:a75f7f2cab3ba5a564d565748acfe86dc"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a75f7f2cab3ba5a564d565748acfe86dc">CONNECTED_SENSORS</a></td></tr>
 <tr class="separator:a75f7f2cab3ba5a564d565748acfe86dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af819642f4594dd86db23a39d9705b652"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CONNECTED_SENSORS_DEV</b></td></tr>
+<tr class="memitem:af819642f4594dd86db23a39d9705b652"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af819642f4594dd86db23a39d9705b652">CONNECTED_SENSORS_DEV</a></td></tr>
 <tr class="separator:af819642f4594dd86db23a39d9705b652"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad99dfab28540ad167fb16839c6d2eac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad99dfab28540ad167fb16839c6d2eac"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CREATE_SENSOR_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors&quot;</td></tr>
+<tr class="memitem:aad99dfab28540ad167fb16839c6d2eac"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#aad99dfab28540ad167fb16839c6d2eac">CREATE_SENSOR_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors&quot;</td></tr>
 <tr class="separator:aad99dfab28540ad167fb16839c6d2eac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8500c2ec2d4bcf3e5b46efdee730afc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8500c2ec2d4bcf3e5b46efdee730afc"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CURRENT_USER</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;users/current&quot;</td></tr>
+<tr class="memitem:ae8500c2ec2d4bcf3e5b46efdee730afc"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae8500c2ec2d4bcf3e5b46efdee730afc">CURRENT_USER</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;users/current&quot;</td></tr>
 <tr class="separator:ae8500c2ec2d4bcf3e5b46efdee730afc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7466eb1afa21a79e60106ce7874def8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad7466eb1afa21a79e60106ce7874def8"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CURRENT_USER_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;users/current&quot;</td></tr>
+<tr class="memitem:ad7466eb1afa21a79e60106ce7874def8"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ad7466eb1afa21a79e60106ce7874def8">CURRENT_USER_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;users/current&quot;</td></tr>
 <tr class="separator:ad7466eb1afa21a79e60106ce7874def8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba61d733e720b74f1be9ca178a571762"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba61d733e720b74f1be9ca178a571762"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_CONFIGURATION</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/configuration&quot;</td></tr>
+<tr class="memitem:aba61d733e720b74f1be9ca178a571762"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#aba61d733e720b74f1be9ca178a571762">DEVICE_CONFIGURATION</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/configuration&quot;</td></tr>
 <tr class="separator:aba61d733e720b74f1be9ca178a571762"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acec98c8ea1c771057c6b9642dbb83e46"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acec98c8ea1c771057c6b9642dbb83e46"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_CONFIGURATION_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/configuration&quot;</td></tr>
+<tr class="memitem:acec98c8ea1c771057c6b9642dbb83e46"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#acec98c8ea1c771057c6b9642dbb83e46">DEVICE_CONFIGURATION_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/configuration&quot;</td></tr>
 <tr class="separator:acec98c8ea1c771057c6b9642dbb83e46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab23eba3e5fd2058a7a0ab997e945c0c7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab23eba3e5fd2058a7a0ab997e945c0c7"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_SENSORS</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/sensors&quot;</td></tr>
+<tr class="memitem:ab23eba3e5fd2058a7a0ab997e945c0c7"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ab23eba3e5fd2058a7a0ab997e945c0c7">DEVICE_SENSORS</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/sensors&quot;</td></tr>
 <tr class="separator:ab23eba3e5fd2058a7a0ab997e945c0c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc00dc40499706f57e9bd43fd3fd09f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc00dc40499706f57e9bd43fd3fd09f0"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE_SENSORS_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/sensors&quot;</td></tr>
+<tr class="memitem:afc00dc40499706f57e9bd43fd3fd09f0"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#afc00dc40499706f57e9bd43fd3fd09f0">DEVICE_SENSORS_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/sensors&quot;</td></tr>
 <tr class="separator:afc00dc40499706f57e9bd43fd3fd09f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1775565b95ecce94455128470a338fb3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1775565b95ecce94455128470a338fb3"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICES</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices&quot;</td></tr>
+<tr class="memitem:a1775565b95ecce94455128470a338fb3"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a1775565b95ecce94455128470a338fb3">DEVICES</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices&quot;</td></tr>
 <tr class="separator:a1775565b95ecce94455128470a338fb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00fe374bb5686877b736bd30499cc5ce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00fe374bb5686877b736bd30499cc5ce"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICES_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices&quot;</td></tr>
+<tr class="memitem:a00fe374bb5686877b736bd30499cc5ce"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a00fe374bb5686877b736bd30499cc5ce">DEVICES_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices&quot;</td></tr>
 <tr class="separator:a00fe374bb5686877b736bd30499cc5ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac78f4491293635033aee6f882c00fbe6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac78f4491293635033aee6f882c00fbe6"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>FORGOT_PASSWORD</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;requestPasswordReset&quot;</td></tr>
+<tr class="memitem:ac78f4491293635033aee6f882c00fbe6"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac78f4491293635033aee6f882c00fbe6">FORGOT_PASSWORD</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;requestPasswordReset&quot;</td></tr>
 <tr class="separator:ac78f4491293635033aee6f882c00fbe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8b6c7f4e1d00bf304463289395274e8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af8b6c7f4e1d00bf304463289395274e8"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>FORGOT_PASSWORD_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;requestPasswordReset&quot;</td></tr>
+<tr class="memitem:af8b6c7f4e1d00bf304463289395274e8"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af8b6c7f4e1d00bf304463289395274e8">FORGOT_PASSWORD_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;requestPasswordReset&quot;</td></tr>
 <tr class="separator:af8b6c7f4e1d00bf304463289395274e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7afa53fce8658fb28ec586a939f341b8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7afa53fce8658fb28ec586a939f341b8"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>GROUP_USERS</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;groups/%1/users&quot;</td></tr>
+<tr class="memitem:a7afa53fce8658fb28ec586a939f341b8"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a7afa53fce8658fb28ec586a939f341b8">GROUP_USERS</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;groups/%1/users&quot;</td></tr>
 <tr class="separator:a7afa53fce8658fb28ec586a939f341b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae86418ba4512871a1a7e90d785ec4bd0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae86418ba4512871a1a7e90d785ec4bd0"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>GROUP_USERS_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;groups/%1/users&quot;</td></tr>
+<tr class="memitem:ae86418ba4512871a1a7e90d785ec4bd0"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae86418ba4512871a1a7e90d785ec4bd0">GROUP_USERS_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;groups/%1/users&quot;</td></tr>
 <tr class="separator:ae86418ba4512871a1a7e90d785ec4bd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9155d514962590e1d3c70a966da78cf4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9155d514962590e1d3c70a966da78cf4"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>LOGIN</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#acca86c783812bb086aba01e8e4665a1b">AUTH_API</a> + &quot;login&quot;</td></tr>
+<tr class="memitem:a9155d514962590e1d3c70a966da78cf4"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a9155d514962590e1d3c70a966da78cf4">LOGIN</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#acca86c783812bb086aba01e8e4665a1b">AUTH_API</a> + &quot;login&quot;</td></tr>
 <tr class="separator:a9155d514962590e1d3c70a966da78cf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9a420e8b90e88aada5c31a1c7eede5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9a420e8b90e88aada5c31a1c7eede5f"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>LOGIN_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac5b7823fa064545fa849cb3d0094d3de">AUTH_STAGING_API</a> + &quot;login&quot;</td></tr>
+<tr class="memitem:ae9a420e8b90e88aada5c31a1c7eede5f"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae9a420e8b90e88aada5c31a1c7eede5f">LOGIN_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac5b7823fa064545fa849cb3d0094d3de">AUTH_STAGING_API</a> + &quot;login&quot;</td></tr>
 <tr class="separator:ae9a420e8b90e88aada5c31a1c7eede5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af84600ff5e958d388d327ab392b30e93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af84600ff5e958d388d327ab392b30e93"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>MANUAL_LEARN</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/services/%2/manualLearn&quot;</td></tr>
+<tr class="memitem:af84600ff5e958d388d327ab392b30e93"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af84600ff5e958d388d327ab392b30e93">MANUAL_LEARN</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/services/%2/manualLearn&quot;</td></tr>
 <tr class="separator:af84600ff5e958d388d327ab392b30e93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ac63a227e121ffe8b3acbedeef8e50b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ac63a227e121ffe8b3acbedeef8e50b"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>MANUAL_LEARN_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/services/%2/manualLearn&quot;</td></tr>
+<tr class="memitem:a2ac63a227e121ffe8b3acbedeef8e50b"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a2ac63a227e121ffe8b3acbedeef8e50b">MANUAL_LEARN_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/services/%2/manualLearn&quot;</td></tr>
 <tr class="separator:a2ac63a227e121ffe8b3acbedeef8e50b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ef904f908b19040fac9a55fb8793f91"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7ef904f908b19040fac9a55fb8793f91"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>REGISTER</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;users&quot;</td></tr>
+<tr class="memitem:a7ef904f908b19040fac9a55fb8793f91"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a7ef904f908b19040fac9a55fb8793f91">REGISTER</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;users&quot;</td></tr>
 <tr class="separator:a7ef904f908b19040fac9a55fb8793f91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2d5f27dbd4b64af848c36f973b5a912"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2d5f27dbd4b64af848c36f973b5a912"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>REGISTER_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;users&quot;</td></tr>
+<tr class="memitem:ac2d5f27dbd4b64af848c36f973b5a912"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac2d5f27dbd4b64af848c36f973b5a912">REGISTER_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;users&quot;</td></tr>
 <tr class="separator:ac2d5f27dbd4b64af848c36f973b5a912"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ecf83bf8d92c957da2ce3f8cd4626e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ecf83bf8d92c957da2ce3f8cd4626e4"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>REGISTER_GCM_ID</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/push/register&quot;</td></tr>
+<tr class="memitem:a3ecf83bf8d92c957da2ce3f8cd4626e4"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a3ecf83bf8d92c957da2ce3f8cd4626e4">REGISTER_GCM_ID</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/push/register&quot;</td></tr>
 <tr class="separator:a3ecf83bf8d92c957da2ce3f8cd4626e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80375006e5944f60adf58d3a2a4cbfd0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a80375006e5944f60adf58d3a2a4cbfd0"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>REGISTER_GCM_ID_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/push/register&quot;</td></tr>
+<tr class="memitem:a80375006e5944f60adf58d3a2a4cbfd0"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a80375006e5944f60adf58d3a2a4cbfd0">REGISTER_GCM_ID_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/push/register&quot;</td></tr>
 <tr class="separator:a80375006e5944f60adf58d3a2a4cbfd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b0e2076fb1562815245fefa6f17df1f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b0e2076fb1562815245fefa6f17df1f"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_DATA</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/data&quot;</td></tr>
+<tr class="memitem:a5b0e2076fb1562815245fefa6f17df1f"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a5b0e2076fb1562815245fefa6f17df1f">SENSOR_DATA</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/data&quot;</td></tr>
 <tr class="separator:a5b0e2076fb1562815245fefa6f17df1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae47c2c0fc96636a61add032030debe86"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae47c2c0fc96636a61add032030debe86"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_DATA_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/data&quot;</td></tr>
+<tr class="memitem:ae47c2c0fc96636a61add032030debe86"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae47c2c0fc96636a61add032030debe86">SENSOR_DATA_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/data&quot;</td></tr>
 <tr class="separator:ae47c2c0fc96636a61add032030debe86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9549781ab0b374e71f48b2435d1c21a2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9549781ab0b374e71f48b2435d1c21a2"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_DATA_MULTIPLE</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/data&quot;</td></tr>
+<tr class="memitem:a9549781ab0b374e71f48b2435d1c21a2"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a9549781ab0b374e71f48b2435d1c21a2">SENSOR_DATA_MULTIPLE</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/data&quot;</td></tr>
 <tr class="separator:a9549781ab0b374e71f48b2435d1c21a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83e9e2cb743b295fafda991e58b70b21"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a83e9e2cb743b295fafda991e58b70b21"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_DATA_MULTIPLE_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/data&quot;</td></tr>
+<tr class="memitem:a83e9e2cb743b295fafda991e58b70b21"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a83e9e2cb743b295fafda991e58b70b21">SENSOR_DATA_MULTIPLE_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/data&quot;</td></tr>
 <tr class="separator:a83e9e2cb743b295fafda991e58b70b21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74fbdfd17ca18bae4bb605c5c929f808"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74fbdfd17ca18bae4bb605c5c929f808"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_DEVICE</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/device&quot;</td></tr>
+<tr class="memitem:a74fbdfd17ca18bae4bb605c5c929f808"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a74fbdfd17ca18bae4bb605c5c929f808">SENSOR_DEVICE</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/device&quot;</td></tr>
 <tr class="separator:a74fbdfd17ca18bae4bb605c5c929f808"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1d893c06eeda11453fcdd0ab2a242cc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1d893c06eeda11453fcdd0ab2a242cc"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_DEVICE_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/device&quot;</td></tr>
+<tr class="memitem:ad1d893c06eeda11453fcdd0ab2a242cc"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ad1d893c06eeda11453fcdd0ab2a242cc">SENSOR_DEVICE_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/device&quot;</td></tr>
 <tr class="separator:ad1d893c06eeda11453fcdd0ab2a242cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0ea2220df81a9bc689a5a0d8bf0305e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac0ea2220df81a9bc689a5a0d8bf0305e"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_FILE</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/file&quot;</td></tr>
+<tr class="memitem:ac0ea2220df81a9bc689a5a0d8bf0305e"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac0ea2220df81a9bc689a5a0d8bf0305e">SENSOR_FILE</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/file&quot;</td></tr>
 <tr class="separator:ac0ea2220df81a9bc689a5a0d8bf0305e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdc5aadd43dfbf57b3b707a3c4a0304e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afdc5aadd43dfbf57b3b707a3c4a0304e"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_FILE_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/file&quot;</td></tr>
+<tr class="memitem:afdc5aadd43dfbf57b3b707a3c4a0304e"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#afdc5aadd43dfbf57b3b707a3c4a0304e">SENSOR_FILE_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/file&quot;</td></tr>
 <tr class="separator:afdc5aadd43dfbf57b3b707a3c4a0304e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa36881efe0ddc7d84a145f511065ece"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa36881efe0ddc7d84a145f511065ece"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_USERS</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/users&quot;</td></tr>
+<tr class="memitem:afa36881efe0ddc7d84a145f511065ece"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#afa36881efe0ddc7d84a145f511065ece">SENSOR_USERS</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/users&quot;</td></tr>
 <tr class="separator:afa36881efe0ddc7d84a145f511065ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cff78d07fcd37ace9834e11f4ed7d48"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5cff78d07fcd37ace9834e11f4ed7d48"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSOR_USERS_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/users&quot;</td></tr>
+<tr class="memitem:a5cff78d07fcd37ace9834e11f4ed7d48"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a5cff78d07fcd37ace9834e11f4ed7d48">SENSOR_USERS_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/users&quot;</td></tr>
 <tr class="separator:a5cff78d07fcd37ace9834e11f4ed7d48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1e029ee97c2dda90d4301c150c9c9e7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1e029ee97c2dda90d4301c150c9c9e7"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>SENSORS</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors&quot;</td></tr>
+<tr class="memitem:aa1e029ee97c2dda90d4301c150c9c9e7"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#aa1e029ee97c2dda90d4301c150c9c9e7">SENSORS</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors&quot;</td></tr>
 <tr class="separator:aa1e029ee97c2dda90d4301c150c9c9e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78f3415675f212297c0d82853116853d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78f3415675f212297c0d82853116853d"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>VERSION</b> = &quot;http://data.sense-os.nl/senseapp/version.php&quot;</td></tr>
+<tr class="memitem:a78f3415675f212297c0d82853116853d"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a78f3415675f212297c0d82853116853d">VERSION</a> = &quot;http://data.sense-os.nl/senseapp/version.php&quot;</td></tr>
 <tr class="separator:a78f3415675f212297c0d82853116853d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20f5a70743b011dbd7f6a214aaf31f3e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a20f5a70743b011dbd7f6a214aaf31f3e"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DATAPROCESSOR_FILE</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;dataprocessors/files&quot;</td></tr>
+<tr class="memitem:a20f5a70743b011dbd7f6a214aaf31f3e"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a20f5a70743b011dbd7f6a214aaf31f3e">DATAPROCESSOR_FILE</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;dataprocessors/files&quot;</td></tr>
 <tr class="separator:a20f5a70743b011dbd7f6a214aaf31f3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcba7b1be5452db5a63e15687160bc4c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afcba7b1be5452db5a63e15687160bc4c"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>DATAPROCESSOR_FILE_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;dataprocessors/files&quot;</td></tr>
+<tr class="memitem:afcba7b1be5452db5a63e15687160bc4c"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#afcba7b1be5452db5a63e15687160bc4c">DATAPROCESSOR_FILE_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;dataprocessors/files&quot;</td></tr>
 <tr class="separator:afcba7b1be5452db5a63e15687160bc4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c77e7efe7c2a680cb83ca39d5afb912"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c77e7efe7c2a680cb83ca39d5afb912"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CHANGE_PASSWORD</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;change_password&quot;</td></tr>
+<tr class="memitem:a9c77e7efe7c2a680cb83ca39d5afb912"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a9c77e7efe7c2a680cb83ca39d5afb912">CHANGE_PASSWORD</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;change_password&quot;</td></tr>
 <tr class="separator:a9c77e7efe7c2a680cb83ca39d5afb912"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a568e42f1318060909fd220aa3e825dcd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a568e42f1318060909fd220aa3e825dcd"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>CHANGE_PASSWORD_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;change_password&quot;</td></tr>
+<tr class="memitem:a568e42f1318060909fd220aa3e825dcd"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a568e42f1318060909fd220aa3e825dcd">CHANGE_PASSWORD_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;change_password&quot;</td></tr>
 <tr class="separator:a568e42f1318060909fd220aa3e825dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f73eebb878c8e9e448c5bf868a5e095"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2f73eebb878c8e9e448c5bf868a5e095"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_PASSWORD_REQUEST</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#acca86c783812bb086aba01e8e4665a1b">AUTH_API</a> + &quot;reset_password/request&quot;</td></tr>
+<tr class="memitem:a2f73eebb878c8e9e448c5bf868a5e095"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a2f73eebb878c8e9e448c5bf868a5e095">RESET_PASSWORD_REQUEST</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#acca86c783812bb086aba01e8e4665a1b">AUTH_API</a> + &quot;reset_password/request&quot;</td></tr>
 <tr class="separator:a2f73eebb878c8e9e448c5bf868a5e095"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd7be6ab7144daed7da99d18bd9a3d10"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd7be6ab7144daed7da99d18bd9a3d10"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_PASSWORD_REQUEST_DEV</b> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac5b7823fa064545fa849cb3d0094d3de">AUTH_STAGING_API</a> + &quot;reset_password/request&quot;</td></tr>
+<tr class="memitem:afd7be6ab7144daed7da99d18bd9a3d10"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#afd7be6ab7144daed7da99d18bd9a3d10">RESET_PASSWORD_REQUEST_DEV</a> = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac5b7823fa064545fa849cb3d0094d3de">AUTH_STAGING_API</a> + &quot;reset_password/request&quot;</td></tr>
 <tr class="separator:afd7be6ab7144daed7da99d18bd9a3d10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a0dc52da018ecd47889c3ba95de6ed6bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a0dc52da018ecd47889c3ba95de6ed6bb">SenseUrls</a> ()</td></tr>
+<tr class="separator:a0dc52da018ecd47889c3ba95de6ed6bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains URL resources for communication with the CommonSense API</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a></dd></dl>
 <dl class="section see"><dt>See Also</dt><dd>SenseApi </dd></dl>
-</div><h2 class="groupheader">Member Data Documentation</h2>
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00012">12</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a0dc52da018ecd47889c3ba95de6ed6bb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.constants.SenseUrls.SenseUrls </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00074">74</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="comment">// private constructor to prevent instantiation</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="a7a57af00e90d66fabdc56d2c2e676308"></a>
 <div class="memitem">
 <div class="memproto">
@@ -280,6 +279,8 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 <b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + <span class="stringliteral">&quot;sensors&quot;</span> + <span class="stringliteral">&quot;?per_page=&quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7">PAGE_SIZE</a></div>
 <div class="line">            + <span class="stringliteral">&quot;&amp;details=full&quot;</span></div>
 </div><!-- fragment -->
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00024">24</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="af5f49f1e3d3e945301944d787a21de04"></a>
@@ -302,6 +303,8 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 <b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + <span class="stringliteral">&quot;sensors&quot;</span> + <span class="stringliteral">&quot;?per_page=&quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7">PAGE_SIZE</a></div>
 <div class="line">            + <span class="stringliteral">&quot;&amp;details=full&quot;</span></div>
 </div><!-- fragment -->
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00026">26</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="a4e5b3f6f308f3b3a576edbec1bcf7276"></a>
@@ -322,6 +325,8 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 </table>
 </div><div class="memdoc">
 <p>Host name of CommonSense API </p>
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00018">18</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
 
 </div>
 </div>
@@ -344,6 +349,8 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 </div><div class="memdoc">
 <p>Host name of CommonSense dev API </p>
 
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00020">20</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="acca86c783812bb086aba01e8e4665a1b"></a>
@@ -365,6 +372,8 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 </div><div class="memdoc">
 <p>Host name of CommonSense Authentication API </p>
 
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00014">14</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="ac5b7823fa064545fa849cb3d0094d3de"></a>
@@ -385,6 +394,96 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 </table>
 </div><div class="memdoc">
 <p>Host name of CommonSense Staging Authentication API </p>
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00016">16</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9c77e7efe7c2a680cb83ca39d5afb912"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.CHANGE_PASSWORD = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;change_password&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00069">69</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a568e42f1318060909fd220aa3e825dcd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.CHANGE_PASSWORD_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;change_password&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00070">70</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae560f10767a035185d73c9da1ea0156e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.CONFIGURATION = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;configurations/%1&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00028">28</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6573a304742142c32c534526e38451bc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.CONFIGURATION_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;configurations/%1&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00029">29</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
 
 </div>
 </div>
@@ -408,6 +507,8 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 <b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + <span class="stringliteral">&quot;sensors/%1/sensors&quot;</span> + <span class="stringliteral">&quot;?per_page=&quot;</span></div>
 <div class="line">            + <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7">PAGE_SIZE</a> + <span class="stringliteral">&quot;&amp;details=full&quot;</span></div>
 </div><!-- fragment -->
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00030">30</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="af819642f4594dd86db23a39d9705b652"></a>
@@ -430,6 +531,426 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 <b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + <span class="stringliteral">&quot;sensors/%1/sensors&quot;</span></div>
 <div class="line">            + <span class="stringliteral">&quot;?per_page=&quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7">PAGE_SIZE</a> + <span class="stringliteral">&quot;&amp;details=full&quot;</span></div>
 </div><!-- fragment -->
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00032">32</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aad99dfab28540ad167fb16839c6d2eac"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.CREATE_SENSOR_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00034">34</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae8500c2ec2d4bcf3e5b46efdee730afc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.CURRENT_USER = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;users/current&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00035">35</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad7466eb1afa21a79e60106ce7874def8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.CURRENT_USER_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;users/current&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00036">36</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a20f5a70743b011dbd7f6a214aaf31f3e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DATAPROCESSOR_FILE = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;dataprocessors/files&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00067">67</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afcba7b1be5452db5a63e15687160bc4c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DATAPROCESSOR_FILE_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;dataprocessors/files&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00068">68</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aba61d733e720b74f1be9ca178a571762"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DEVICE_CONFIGURATION = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/configuration&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00037">37</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acec98c8ea1c771057c6b9642dbb83e46"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DEVICE_CONFIGURATION_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/configuration&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00038">38</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab23eba3e5fd2058a7a0ab997e945c0c7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DEVICE_SENSORS = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/sensors&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00039">39</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afc00dc40499706f57e9bd43fd3fd09f0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DEVICE_SENSORS_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/sensors&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00040">40</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1775565b95ecce94455128470a338fb3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DEVICES = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00041">41</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a00fe374bb5686877b736bd30499cc5ce"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.DEVICES_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00042">42</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac78f4491293635033aee6f882c00fbe6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.FORGOT_PASSWORD = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;requestPasswordReset&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00043">43</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af8b6c7f4e1d00bf304463289395274e8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.FORGOT_PASSWORD_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;requestPasswordReset&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00044">44</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7afa53fce8658fb28ec586a939f341b8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.GROUP_USERS = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;groups/%1/users&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00045">45</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae86418ba4512871a1a7e90d785ec4bd0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.GROUP_USERS_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;groups/%1/users&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00046">46</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9155d514962590e1d3c70a966da78cf4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.LOGIN = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#acca86c783812bb086aba01e8e4665a1b">AUTH_API</a> + &quot;login&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00047">47</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae9a420e8b90e88aada5c31a1c7eede5f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.LOGIN_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac5b7823fa064545fa849cb3d0094d3de">AUTH_STAGING_API</a> + &quot;login&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00048">48</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af84600ff5e958d388d327ab392b30e93"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.MANUAL_LEARN = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/services/%2/manualLearn&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00049">49</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2ac63a227e121ffe8b3acbedeef8e50b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.MANUAL_LEARN_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/services/%2/manualLearn&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00050">50</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="af141adadee96410fdfd4c2ab0ff495e7"></a>
@@ -451,18 +972,416 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>RESET_
 </div><div class="memdoc">
 <p>Default page size for getting lists at CommonSense </p>
 
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00022">22</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7ef904f908b19040fac9a55fb8793f91"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.REGISTER = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;users&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00051">51</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac2d5f27dbd4b64af848c36f973b5a912"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.REGISTER_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;users&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00052">52</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3ecf83bf8d92c957da2ce3f8cd4626e4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.REGISTER_GCM_ID = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;devices/%1/push/register&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00053">53</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a80375006e5944f60adf58d3a2a4cbfd0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.REGISTER_GCM_ID_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;devices/%1/push/register&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00054">54</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2f73eebb878c8e9e448c5bf868a5e095"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.RESET_PASSWORD_REQUEST = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#acca86c783812bb086aba01e8e4665a1b">AUTH_API</a> + &quot;reset_password/request&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00071">71</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afd7be6ab7144daed7da99d18bd9a3d10"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.RESET_PASSWORD_REQUEST_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ac5b7823fa064545fa849cb3d0094d3de">AUTH_STAGING_API</a> + &quot;reset_password/request&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00072">72</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5b0e2076fb1562815245fefa6f17df1f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_DATA = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/data&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00055">55</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae47c2c0fc96636a61add032030debe86"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_DATA_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/data&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00056">56</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9549781ab0b374e71f48b2435d1c21a2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_DATA_MULTIPLE = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/data&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00057">57</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a83e9e2cb743b295fafda991e58b70b21"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_DATA_MULTIPLE_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/data&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00058">58</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a74fbdfd17ca18bae4bb605c5c929f808"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_DEVICE = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/device&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00059">59</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad1d893c06eeda11453fcdd0ab2a242cc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_DEVICE_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/device&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00060">60</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac0ea2220df81a9bc689a5a0d8bf0305e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_FILE = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/file&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00061">61</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afdc5aadd43dfbf57b3b707a3c4a0304e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_FILE_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/file&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00062">62</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afa36881efe0ddc7d84a145f511065ece"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_USERS = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors/%1/users&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00063">63</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5cff78d07fcd37ace9834e11f4ed7d48"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSOR_USERS_DEV = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a786283056af05f107b66914184ba3767">API_DEV</a> + &quot;sensors/%1/users&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00064">64</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa1e029ee97c2dda90d4301c150c9c9e7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.SENSORS = <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a4e5b3f6f308f3b3a576edbec1bcf7276">API</a> + &quot;sensors&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00065">65</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a78f3415675f212297c0d82853116853d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.constants.SenseUrls.VERSION = &quot;http://data.sense-os.nl/senseapp/version.php&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_sense_urls_8java_source.html#l00066">66</a> of file <a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/constants/SenseUrls.java</li>
+<li>src/nl/sense_os/service/constants/<a class="el" href="_sense_urls_8java_source.html">SenseUrls.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>constants</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html">SenseUrls</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1constants.html">constants</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html">SenseUrls</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -78,11 +81,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="functions.html#index_a"><span>a</span></a></li>
+      <li><a href="functions.html#index_["><span>[</span></a></li>
+      <li><a href="functions_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_b.html#index_b"><span>b</span></a></li>
       <li><a href="functions_c.html#index_c"><span>c</span></a></li>
       <li><a href="functions_d.html#index_d"><span>d</span></a></li>
       <li><a href="functions_e.html#index_e"><span>e</span></a></li>
@@ -91,17 +97,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_i.html#index_i"><span>i</span></a></li>
       <li><a href="functions_j.html#index_j"><span>j</span></a></li>
+      <li><a href="functions_k.html#index_k"><span>k</span></a></li>
       <li><a href="functions_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_m.html#index_m"><span>m</span></a></li>
       <li><a href="functions_n.html#index_n"><span>n</span></a></li>
       <li><a href="functions_o.html#index_o"><span>o</span></a></li>
       <li><a href="functions_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_q.html#index_q"><span>q</span></a></li>
       <li><a href="functions_r.html#index_r"><span>r</span></a></li>
       <li><a href="functions_s.html#index_s"><span>s</span></a></li>
       <li><a href="functions_t.html#index_t"><span>t</span></a></li>
       <li><a href="functions_u.html#index_u"><span>u</span></a></li>
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -124,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -134,14 +143,78 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 </div>
 
 <div class="contents">
-<div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
+<div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
+<li>G
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a50750a16a63e48d8caa4f85fb7c78345">nl.sense_os.service.motion.FallDetector</a>
+</li>
+<li>gcd()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a013698632c49405e36d38dd5ceec47c2">nl.sense_os.service.scheduler.ScheduleAlarmTool</a>
+</li>
+<li>GCM_REGISTRATION_ID
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a2922f10e5c3b9f6fded084e6dca6f90c">nl.sense_os.service.constants.SensePrefs.Auth</a>
+</li>
+<li>GCMReceiver()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a4f58a1a9a8c0c5479d911e32de7edc2c">nl.sense_os.service.push.GCMReceiver</a>
+</li>
+<li>generateJSON()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#a1e8e7a83bb40f1072d90ea89f0f2370d">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_coolant.html#ab31c4df69d0882570b92cadd36e2ebaf">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandEngineCoolant</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_load.html#afd4ce52dcee826366f677e12dd8314d9">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandEngineLoad</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_engine_r_p_m.html#af33b563c31bcf3a13f5c58a3d34615ea">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandEngineRPM</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_fuel_pressure.html#a633d04df5b7e6b8b2e2b893c6ee46ece">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandFuelPressure</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_bf2737f69498160dd0ba5a9b778dc72b1.html#a65ff2de0813b65cddea72c7baf8d9440">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandIntakeAirTemperature</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b932a38406b8861c909b77ae268a5d440.html#a98da08aade1f1c44c0425e589d258b9f">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandIntakeManifoldPressure</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_m_a_f_air_flow_rate.html#a9b59fe7c457c5d2db5a92c17d70dd420">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandMAFAirFlowRate</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_run_time.html#ad5951fe8213d441f24d2295010f0a139">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandRunTime</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_standards.html#a0188613b41f3d06edae0630afe226672">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandStandards</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_throttle_position.html#af19ac62b3ff3f136534d49893b73f091">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandThrottlePosition</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_timing_advance.html#aaede0a5e2f7862321fd7600e267cf342">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandTimingAdvance</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_vehicle_speed.html#a00804e2d84c8f36a29b995efb1ba7baf">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2CommandVehicleSpeed</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command.html#ae1102082ec9166bb258952dd2b77282e">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2Command</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_coolant.html#a19553454815a8ee134c12863d89f7b26">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandEngineCoolant</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_load.html#a71c32071ad4ab17d0844e4c0e6af4ed9">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandEngineLoad</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_r_p_m.html#aef5553302c21d2ea0824f563bbc6133a">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandEngineRPM</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_fuel_pressure.html#a280b1d46f6a14e84240716df77c689a2">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandFuelPressure</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_intake_air_temperature.html#acc4f255b814221c546ab5401d6e8f236">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandIntakeAirTemperature</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_intake_manifold_pressure.html#a7c780ed307b64e3e6919bd037eed0834">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandIntakeManifoldPressure</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_m_a_f_air_flow_rate.html#a22b53ed953fd7b71ff8d4052bf11b372">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandMAFAirFlowRate</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_run_time.html#a61fa40e1e6caf4a9646e3bdb494661e8">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandRunTime</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_standards.html#aacb7789d878d7dfd5058bb382b97dca0">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandStandards</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_throttle_position.html#af4dbac6a18636023e27e297afb206099">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandThrottlePosition</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_timing_advance.html#a2413236dd20dd4a7bd8240a2173188f9">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandTimingAdvance</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_vehicle_speed.html#a5b14a648e120bdbcd36e833a3478d363">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2CommandVehicleSpeed</a>
+</li>
+<li>GET_COMMONSENSE_DATA
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#acfc690cb7c13cc81a82e80a27515771c">com.phonegap.plugins.sense.SensePlugin.Actions</a>
+</li>
+<li>GET_DATA
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#ac48f58258af068d7dece005d8b7abb2f">com.phonegap.plugins.sense.SensePlugin.Actions</a>
+</li>
+<li>GET_PREF
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a9d29fdbfe61a91928b479af4f9011c08">com.phonegap.plugins.sense.SensePlugin.Actions</a>
+</li>
+<li>GET_SESSION
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a285aced983abb1758d2820337c1e6175">com.phonegap.plugins.sense.SensePlugin.Actions</a>
+</li>
+<li>GET_STATUS
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#ab29408753a95ac0d70ff39eae5393888">com.phonegap.plugins.sense.SensePlugin.Actions</a>
+</li>
+<li>getAccuracyAtQuantile()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#aa471bf7ebdb6d573925caef426bd7606">nl.sense_os.service.location.TraveledDistanceEstimator</a>
+</li>
 <li>getAllSensors()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#abc40f8277bf44ffbb9ce01f57b9d7cb6">nl.sense_os.service.commonsense.SenseApi</a>
 </li>
 <li>getArrayValue()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a49a52fabb24ecc8bb0cd34e071e05ad2">nl.sense_os.service.shared.SensorDataPoint</a>
+</li>
+<li>getAutoCalibratedNoiseSensor()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a2c3ced2541d7498238d2afd194ac021d">nl.sense_os.service.ambience.NoiseSensor</a>
+</li>
+<li>getAvailableMotionSensors()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#af73dcb19b85598aae8a5614343b3c85c">nl.sense_os.service.motion.MotionSensorUtils</a>
 </li>
 <li>getAverageCenterFrequency()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a6af463c65d3576479dfbc5d6eb5babbb">nl.sense_os.service.ambience.FourierTransform</a>
@@ -155,26 +228,35 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <li>getBandWidth()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2ac8bec3c8de5c355f6e205f9b42e1f">nl.sense_os.service.ambience.FourierTransform</a>
 </li>
+<li>getBatchTask()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#af5aa0a14466ee5393ba8cefcba11ec1e">nl.sense_os.service.scheduler.ScheduleAlarmTool</a>
+</li>
+<li>getBluetoothDeviceProximity()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html#ab3db297b0e697d75af819930005bb030">nl.sense_os.service.deviceprox.DeviceProximity</a>
+</li>
 <li>getBoolValue()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a3798dccceeee39e7136716c203d465ac">nl.sense_os.service.shared.SensorDataPoint</a>
 </li>
 <li>getCommand()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#ac44590775a21332f8cd1925f9a21779c">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command.html#a001ffd6616abb99e89c51b21891f59d6">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2Command</a>
 </li>
 <li>getConnectedSensors()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a1ee5e75f0b733ad88d6ee74bd6915fd0">nl.sense_os.service.commonsense.SenseApi</a>
 </li>
 <li>getContext()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#ab91560cdeef6c3df58a819d5c593a78c">nl.sense_os.service.commonsense.SensorRegistrator</a>
+: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a7b806a6d11c4f1b2fb6406694d2a9335">nl.sense_os.platform.SensePlatform</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sensor_registrator.html#ab91560cdeef6c3df58a819d5c593a78c">nl.sense_os.service.commonsense.SensorRegistrator</a>
 </li>
 <li>getController()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#aff7997ac79c9df4ca8dfa082352a69d1">nl.sense_os.service.ctrl.Controller</a>
 </li>
 <li>getCookie()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a04f63a76296c463e4aec6a07b6cd99e9">nl.sense_os.service.commonsense.SenseApi</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#adcf90dd743085dc028b555905688e27a">nl.sense_os.service.SenseServiceStub</a>
 </li>
 <li>getData()
-: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#ad98a21d0ec7696606c8c4dae515c48a1">nl.sense_os.platform.SensePlatform</a>
+: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a5f4ecacb5e9dd08182628653b70f75e2">nl.sense_os.platform.SensePlatform</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#a8cf9ab72ee880994c76005c84b2b2686">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command.html#aefa0098d4e5d9591e9173343f30d8dcf">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2Command</a>
 </li>
@@ -199,24 +281,43 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <li>getFloatValue()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#af4a89dca8ac6a25b0edc4d556c54bd69">nl.sense_os.service.shared.SensorDataPoint</a>
 </li>
+<li>getForgroundApp()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_apps_sensor.html#a964cd712c87c03245dd07c3ccaa838a6">nl.sense_os.service.phonestate.AppsSensor</a>
+</li>
 <li>getFreq()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a2a7c711687585ca81cf08fb7ff602328">nl.sense_os.service.ambience.FourierTransform</a>
+</li>
+<li>getGCMIntentServiceClassName()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_broadcast_receiver.html#adbbec22cd0cd933efb5a63488876b98a">nl.sense_os.service.push.GCMBroadcastReceiver</a>
 </li>
 <li>getImaginaryPart()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aa09f71fa7a7c59e64b3c8b30c765f650">nl.sense_os.service.ambience.FourierTransform</a>
 </li>
+<li>getInstalledApps()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_apps_sensor.html#a9a47517c1aba00127fd902200c25e701">nl.sense_os.service.phonestate.AppsSensor</a>
+</li>
 <li>getInstance()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html#a2fbec74576a94ee6947aaef26e3027ea">nl.sense_os.service.ambience.HumiditySensor</a>
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_auto_calibrated_noise_sensor.html#a129a9850caf5064deb364c82b158a362">nl.sense_os.service.ambience.AutoCalibratedNoiseSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor.html#a5d82c13b75fef61bc24f1811a34a8fdb">nl.sense_os.service.ambience.CameraLightSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html#a2fbec74576a94ee6947aaef26e3027ea">nl.sense_os.service.ambience.HumiditySensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_light_sensor.html#a77fd6c7364a10f96587d6890880824ef">nl.sense_os.service.ambience.LightSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_loudness_sensor.html#ab62edc9f6963b6d4e45a993bf6d37d8f">nl.sense_os.service.ambience.LoudnessSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_magnetic_field_sensor.html#a47e396c736e97052dbfd705a5cd42094">nl.sense_os.service.ambience.MagneticFieldSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a1d021eaef9b8b733d3fd0d9e43e6649a">nl.sense_os.service.ambience.NoiseSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_pressure_sensor.html#a648a1a89e1e0b3dc56cce3c77c60cd3b">nl.sense_os.service.ambience.PressureSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_temperature_sensor.html#a5dd89bdd0a4304ca76fc3999f5cedd66">nl.sense_os.service.ambience.TemperatureSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a1ab349ada2a00fe70e4a2d03c50ab52a">nl.sense_os.service.DataTransmitter</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_fused_location_sensor.html#a4bdfa93fc634b0bc6a7a71eab812a30c">nl.sense_os.service.location.FusedLocationSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor.html#ab203328975492c60b37d2967ba6962d9">nl.sense_os.service.location.LocationSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_time_zone_sensor.html#a79c9117a440dffc30dcbfa40a11bb74d">nl.sense_os.service.location.TimeZoneSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#a148f1e2567a18ee1809b4da89e1ec8ad">nl.sense_os.service.motion.MotionSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_app_info_sensor.html#abcf7d008f7f957123dd3c0973b889280">nl.sense_os.service.phonestate.AppInfoSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_apps_sensor.html#a478b5fa98a174e955f1f0d0615b578b6">nl.sense_os.service.phonestate.AppsSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#afcde9afbd8aae4bd0173c0b9cb7414b1">nl.sense_os.service.phonestate.BatterySensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_phone_activity_sensor.html#a172763db5817394a27a4b0087f9673f2">nl.sense_os.service.phonestate.PhoneActivitySensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html#aacb6fdc3cc0b453dddfa57bdebbfe9e1">nl.sense_os.service.phonestate.ProximitySensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#ac31b1c53c2daedcc280af05fdd69fe61">nl.sense_os.service.phonestate.SensePhoneState</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a1136edc1c6ce5ca775abb3c0cdbffe01">nl.sense_os.service.provider.SNTP</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_schedule_alarm_tool.html#a422a96cf625dcb1e2f49f84f0f23da8d">nl.sense_os.service.scheduler.ScheduleAlarmTool</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler.html#a08f8125a62f1ea053344fd3df4955a01">nl.sense_os.service.scheduler.Scheduler</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a759e7b0d58ea1559327f952c58ec6dea">nl.sense_os.service.ServiceStateHelper</a>
@@ -226,14 +327,48 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <li>getIntValue()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a110dc920880b87cc4d8b7647c1786cf1">nl.sense_os.service.shared.SensorDataPoint</a>
 </li>
+<li>getIv()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a3f3015c7d1f73accf09a67d77f1bc498">nl.sense_os.service.EncryptionHelper</a>
+</li>
+<li>getJSON()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command.html#a529d58867c89ab6b5cea2c6645a412b4">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread.OBD2Command</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command.html#ab6bc4cd1326e857204eb3ebb5e91548f">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2Command</a>
+</li>
 <li>getJSONValue()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#ae407cd436a26f34ef84d3f4c588e59a8">nl.sense_os.service.shared.SensorDataPoint</a>
 </li>
+<li>getLastKnownLocation()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor.html#aa2f6af7f3092eded67292ab0cf0de399">nl.sense_os.service.location.LocationSensor</a>
+</li>
+<li>getLastMode()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended.html#a3d09deb374ed64f3067cda46409b080c">nl.sense_os.service.ctrl.CtrlExtended</a>
+</li>
+<li>getLightValue()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value.html#a7636ed3dcaabc67f18d7589a3ea90871">nl.sense_os.service.ambience.CameraLightValue</a>
+</li>
 <li>getLocalData()
-: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a43047a71997efb2f8b594ef1082bb435">nl.sense_os.platform.SensePlatform</a>
+: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#ae63f14aaa2e51a68f07b24dd151899fb">nl.sense_os.platform.SensePlatform</a>
+</li>
+<li>getLocalValues()
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#af1ef888ea92be5e8f11c40e82208f076">com.phonegap.plugins.sense.SensePlugin</a>
+</li>
+<li>getLoudnessSensor()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a89f7c55ba51fcd86483677870bd1bd41">nl.sense_os.service.ambience.NoiseSensor</a>
+</li>
+<li>getMatchingSensors()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a8bb0d7490244fc711f62d70de8db2c19">nl.sense_os.service.commonsense.SenseApi</a>
+</li>
+<li>getMessage()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_process_zephyr_hx_m_message.html#ac4e0e25ba617ee7ee7ec1f175946b9b1">nl.sense_os.service.external_sensors.ZephyrHxM.ProcessZephyrHxMMessage</a>
+</li>
+<li>getMilliSencondsOfHours()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a3e3621c69972b65724d17e368defc861">nl.sense_os.service.storage.LocalStorage</a>
 </li>
 <li>getNewDataAction()
 : <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#ae1330113c32bd8c1cef5b7fb0ede685c">nl.sense_os.platform.SensePlatform</a>
+</li>
+<li>getNoiseBurstSensor()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#a79cfcc6793ef1a41f72954d19b349e88">nl.sense_os.service.ambience.NoiseSensor</a>
 </li>
 <li>getNtpTime()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a601338ad58f00e568385d4c2ac3b3877">nl.sense_os.service.provider.SNTP</a>
@@ -241,14 +376,44 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <li>getNtpTimeReference()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#add9c401767dc784afa3028f181a080eb">nl.sense_os.service.provider.SNTP</a>
 </li>
+<li>getNumberOfCameras()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value.html#a5c3f4b6399d46dc29c80f5855e40adad">nl.sense_os.service.ambience.CameraLightValue</a>
+</li>
+<li>getPrefBool()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a95ac652ccc1005accea0a2b339b6817d">nl.sense_os.service.SenseServiceStub</a>
+</li>
+<li>getPreference()
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#a3c599a33645918a8fd3ffd0436f13abb">com.phonegap.plugins.sense.SensePlugin</a>
+</li>
+<li>getPrefFloat()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#aae1ba283f76aac05e614c257ab559965">nl.sense_os.service.SenseServiceStub</a>
+</li>
+<li>getPrefInt()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a3da9a4bed5ceda1d4b75a4cc45370620">nl.sense_os.service.SenseServiceStub</a>
+</li>
+<li>getPrefLong()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a5200c940015e3fe5143494dd400d353f">nl.sense_os.service.SenseServiceStub</a>
+</li>
+<li>getPrefString()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a226df4425720d89694faada6e43ebad2">nl.sense_os.service.SenseServiceStub</a>
+</li>
+<li>getReadableDatabase()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a92361439356a13d08e1fa68e7fe9951a">nl.sense_os.service.storage.DbHelper</a>
+</li>
 <li>getRealPart()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a467c6a47a7a54ea4831adbeb70062ee2">nl.sense_os.service.ambience.FourierTransform</a>
 </li>
 <li>getRegisteredProducers()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">nl.sense_os.service.subscription.SubscriptionManager</a>
 </li>
+<li>getRemoteValues()
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#a0c08bd8d39dd2f78162383e8417bf489">com.phonegap.plugins.sense.SensePlugin</a>
+</li>
 <li>getRoundTripTime()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a1eff0a438c2455e90cc5633a1e77478d">nl.sense_os.service.provider.SNTP</a>
+</li>
+<li>getSampleDelay()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_battery_sensor.html#ac025380e9c08d65842c8a949a0a7bc74">nl.sense_os.service.phonestate.BatterySensor</a>
 </li>
 <li>getSampleRate()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor.html#aeaa9d215780f09ca0d6eb89a619cc6c6">nl.sense_os.service.ambience.NoiseSensor</a>
@@ -256,35 +421,83 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 , <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html#a9f94837a0200a551b0e8f78848a33f80">nl.sense_os.service.shared.SenseSensor</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html#ad5599199d63f9ddb16b20c703aec0ffd">nl.sense_os.service.subscription.BaseSensor</a>
 </li>
+<li>getScanEnabled()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html#aa5c6e4f21a11a52982bf0ac7bff7d6c9">nl.sense_os.service.deviceprox.DeviceProximity</a>
+</li>
+<li>getScanInterval()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_bluetooth_device_proximity.html#a2e3430dfbb9b1f30905f8a7745ba9f98">nl.sense_os.service.deviceprox.BluetoothDeviceProximity</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html#ae983b3628a888160491e84c6a23bf700">nl.sense_os.service.deviceprox.DeviceProximity</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a4b737126ea26c2b44289b14820cf2a26">nl.sense_os.service.deviceprox.WIFIDeviceProximity</a>
+</li>
+<li>getSecretKey()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#ae57c35caf46f766a974500e528cdbb7c">nl.sense_os.service.EncryptionHelper</a>
+</li>
+<li>getSelectedDeviceUuid()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html#a005244b77eac25d956ba86565fcda20a">nl.sense_os.service.storage.ParserUtils</a>
+</li>
 <li>getSelectedSensors()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html#a9ed2e970fb720167a121643263a5d821">nl.sense_os.service.storage.ParserUtils</a>
 </li>
 <li>getSelectedTimeRange()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html#acae4a883bfc8855b4df9960890b978a7">nl.sense_os.service.storage.ParserUtils</a>
 </li>
+<li>getSelectedTransmitState()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html#a5f24ef7bbac270e7fa736671f161507a">nl.sense_os.service.storage.ParserUtils</a>
+</li>
 <li>getSensePlatform()
 : <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#ad67ca96c9b6366ce7025cf006faacdbc">nl.sense_os.platform.SenseApplication</a>
 </li>
 <li>getSenseService()
 : <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_application.html#ae14be6b5ab1f3659a1891ce55176dba8">nl.sense_os.platform.SenseApplication</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a1f06958acc090ca1e253951a462efed5">nl.sense_os.service.SenseServiceStub</a>
+</li>
+<li>getSensorDataList()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html#ad833893740c00276c0f4506493e4d6ca">nl.sense_os.service.commonsense.senddata.BufferTransmitHandler</a>
+</li>
+<li>getSensorDescriptionMatches()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html#aec526d617e0d2113b9a8b193bab17f08">nl.sense_os.service.storage.ParserUtils</a>
 </li>
 <li>getSensorEventValue()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#af3a43601542a0247e19f479a94e0cc6e">nl.sense_os.service.shared.SensorDataPoint</a>
 </li>
+<li>getSensorHeader()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a4e23bfedc7b8b2906c390a0dc7f8449a">nl.sense_os.service.motion.MotionSensorUtils</a>
+</li>
 <li>getSensorId()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a0d8371b60b18e37d4711ee9355470163">nl.sense_os.service.commonsense.SenseApi</a>
+</li>
+<li>getSensorName()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a999edecf083e870eee9361f2dc2f6af8">nl.sense_os.service.motion.MotionSensorUtils</a>
+</li>
+<li>getSensorNameMatches()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html#ada97b56b81966186530d4cc27f718c82">nl.sense_os.service.storage.ParserUtils</a>
 </li>
 <li>getSensorUrl()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a9846374502fb7d78eca522710df0e435">nl.sense_os.service.commonsense.SenseApi</a>
 </li>
 <li>getService()
 : <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a36951a951eaf184579e4f9b7ddfdd99b">nl.sense_os.platform.SensePlatform</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_1_1_sense_binder.html#af5ee3b9f8c5aa95069fde26b10cc71dc">nl.sense_os.service.SenseService.SenseBinder</a>
+</li>
+<li>getSession()
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#a95e2830ea73704e2e101b8185594bd4b">com.phonegap.plugins.sense.SensePlugin</a>
 </li>
 <li>getSessionId()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a96704a82fda77885b4ff40ff7913da4f">nl.sense_os.service.commonsense.SenseApi</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a9ba38e161678331e8e328c8b1b2353e9">nl.sense_os.service.SenseServiceStub</a>
 </li>
 <li>getSpectrum()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a9b32297f70ad5eec2c7a45b0fec7ad65">nl.sense_os.service.ambience.FourierTransform</a>
+</li>
+<li>getStateNotification()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a1522ff1c53c6790b6bda268359fd4714">nl.sense_os.service.ServiceStateHelper</a>
+</li>
+<li>getStatus()
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#a6144e4b721104a2b86bf433815556c0c">com.phonegap.plugins.sense.SensePlugin</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a75d99a285234f5e1356930dc0b2f46ee">nl.sense_os.service.SenseServiceStub</a>
+</li>
+<li>getStatusCallback
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#a6ce53f666fecca7fd50a6839c5fb45c5">com.phonegap.plugins.sense.SensePlugin</a>
 </li>
 <li>getStatusCode()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6e23a4356af63802a9531dd8d336f104">nl.sense_os.service.ServiceStateHelper</a>
@@ -298,15 +511,79 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <li>getTime()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a206c767701d6cd6a0204b45c5ab25a36">nl.sense_os.service.provider.SNTP</a>
 </li>
+<li>getTraveledDistance()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a4f98b21eacebb9f7123fb6bf1bbe95c2">nl.sense_os.service.location.TraveledDistanceEstimator</a>
+</li>
+<li>getType()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#af83d619e43a2a522cfa32564a2919c2a">nl.sense_os.service.provider.LocalStorageSql</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#ae5148a7e5a11ea95ea448154b1658ae9">nl.sense_os.service.provider.SensorDataProvider</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a89ec54d291ea6554e01e52ad06b45d15">nl.sense_os.service.storage.LocalStorage</a>
+</li>
+<li>getUnsentData()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html#a91024b07a64268b13ffcff448f6205c4">nl.sense_os.service.commonsense.senddata.BufferTransmitHandler</a>
+</li>
 <li>getUpdateInterval()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#ad280d7b06f0f979f718787980c1709d7">nl.sense_os.service.external_sensors.OBD2Dongle</a>
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a727822e19741243c44653f9ab0214a27">nl.sense_os.service.external_sensors.ExternalSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#ad280d7b06f0f979f718787980c1709d7">nl.sense_os.service.external_sensors.OBD2Dongle</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness.html#a9d8fb1fc7a51db72201aed84861f5f8c">nl.sense_os.service.external_sensors.ZephyrBioHarness</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a027c976c9519858b3da2cc3da3acd989">nl.sense_os.service.external_sensors.ZephyrHxM</a>
 </li>
 <li>getUser()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a65d810f9cd682d8d67ab99a3cc9134e8">nl.sense_os.service.commonsense.SenseApi</a>
 </li>
+<li>getValues()
+: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a0a35e61144f348f53c51a9d83afe01e2">nl.sense_os.platform.SensePlatform</a>
+</li>
+<li>getVector()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor_utils.html#a678e2b60ce91978fe68ff0a136d375a7">nl.sense_os.service.motion.MotionSensorUtils</a>
+</li>
+<li>getWIFIDeviceProximity()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html#ab8b4635ab6c1edc8d2e9e950799fc75a">nl.sense_os.service.deviceprox.DeviceProximity</a>
+</li>
+<li>getWritableDatabase()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ae930f23fbd195bf1a097f36baf902424">nl.sense_os.service.storage.DbHelper</a>
+</li>
+<li>GIVE_FEEDBACK
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a1f3073c3ab04c72ccb7a5d7c5bba026a">com.phonegap.plugins.sense.SensePlugin.Actions</a>
+</li>
 <li>giveFeedback()
-: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#af31a71f63dd87ed53a42ec9d05d2418f">nl.sense_os.platform.SensePlatform</a>
+: <a class="el" href="classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#ae66a027bdea631995de19177a9d5def8">com.phonegap.plugins.sense.SensePlugin</a>
+, <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#af31a71f63dd87ed53a42ec9d05d2418f">nl.sense_os.platform.SensePlatform</a>
 , <a class="el" href="classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html#aa4c4a04578f4405bdf3191d7be51c948">nl.sense_os.service.feedback.FeedbackManager</a>
+</li>
+<li>googleApiClient
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_fused_location_sensor.html#afa38a2a1dc3bacb1354e5550827e37a0">nl.sense_os.service.location.FusedLocationSensor</a>
+</li>
+<li>gotStart
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_process_zephyr_hx_m_message.html#a5d9303b7b12860f3858bf092d46d9298">nl.sense_os.service.external_sensors.ZephyrHxM.ProcessZephyrHxMMessage</a>
+</li>
+<li>GPS
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_location.html#a8dfa53d1659f12e813edf4515ca34be0">nl.sense_os.service.constants.SensePrefs.Main.Location</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended.html#af57cd171370e0e1f16407f6da24e1275">nl.sense_os.service.ctrl.CtrlExtended</a>
+</li>
+<li>gpsListener
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor.html#a133756c3ec207fa2831961213b4a058f">nl.sense_os.service.location.LocationSensor</a>
+</li>
+<li>gravity
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html#ab5df40e707208b0924a20a3108400b6e">nl.sense_os.service.motion.AccelerationFilter</a>
+</li>
+<li>GROUP_USERS
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a7afa53fce8658fb28ec586a939f341b8">nl.sense_os.service.constants.SenseUrls</a>
+</li>
+<li>GROUP_USERS_DEV
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae86418ba4512871a1a7e90d785ec4bd0">nl.sense_os.service.constants.SenseUrls</a>
+</li>
+<li>GYRO
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a8470481df2ef1e7156e79952630342ae">nl.sense_os.service.constants.SensorData.SensorNames</a>
+</li>
+<li>GYRO_BURST
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#aeaf65cb4aad936a8bcfc0b359ad53fb1">nl.sense_os.service.constants.SensorData.SensorNames</a>
+</li>
+<li>gyroBurstSensor
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#ab235fd644e247c04eb6acaca1678fa37">nl.sense_os.service.motion.MotionSensor</a>
+</li>
+<li>GYROSCOPE
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_motion.html#a3a848695c92737df2e5b20528a2ac3bd">nl.sense_os.service.constants.SensePrefs.Main.Motion</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -314,7 +591,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

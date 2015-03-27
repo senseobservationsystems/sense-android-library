@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -78,11 +81,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="functions.html#index_a"><span>a</span></a></li>
+      <li><a href="functions.html#index_["><span>[</span></a></li>
+      <li><a href="functions_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_b.html#index_b"><span>b</span></a></li>
       <li><a href="functions_c.html#index_c"><span>c</span></a></li>
       <li><a href="functions_d.html#index_d"><span>d</span></a></li>
       <li><a href="functions_e.html#index_e"><span>e</span></a></li>
@@ -91,17 +97,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_i.html#index_i"><span>i</span></a></li>
       <li><a href="functions_j.html#index_j"><span>j</span></a></li>
+      <li><a href="functions_k.html#index_k"><span>k</span></a></li>
       <li><a href="functions_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_m.html#index_m"><span>m</span></a></li>
       <li><a href="functions_n.html#index_n"><span>n</span></a></li>
       <li><a href="functions_o.html#index_o"><span>o</span></a></li>
       <li><a href="functions_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_q.html#index_q"><span>q</span></a></li>
       <li><a href="functions_r.html#index_r"><span>r</span></a></li>
       <li><a href="functions_s.html#index_s"><span>s</span></a></li>
       <li><a href="functions_t.html#index_t"><span>t</span></a></li>
       <li><a href="functions_u.html#index_u"><span>u</span></a></li>
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li class="current"><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -124,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_w.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -134,11 +143,73 @@ $(document).ready(function(){initNavTree('functions_w.html','');});
 </div>
 
 <div class="contents">
-<div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
+<div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a class="anchor" id="index_w"></a>- w -</h3><ul>
+<li>wakeLock
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#a9016b3c7a0b53cd2e03bf2bcd00763a9">nl.sense_os.service.motion.MotionSensor</a>
+</li>
+<li>weightSum_
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a57a84775c8dec0c4197992d32058fd17">nl.sense_os.service.location.TraveledDistanceEstimator</a>
+</li>
+<li>whichAverage
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">nl.sense_os.service.ambience.FourierTransform</a>
+</li>
+<li>whichWindow
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">nl.sense_os.service.ambience.FourierTransform</a>
+</li>
+<li>WIFI
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_dev_prox.html#a21027450383003cfa547e3bf0d88e512">nl.sense_os.service.constants.SensePrefs.Main.DevProx</a>
+</li>
+<li>wifi
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a9a74d1aa383da621ff91530a8f818db5">nl.sense_os.service.deviceprox.WIFIDeviceProximity</a>
+</li>
+<li>WIFI_SCAN
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a4de28428eff595ec35d470fc205e58cc">nl.sense_os.service.constants.SensorData.SensorNames</a>
+</li>
+<li>WIFI_UPLOAD_ONLY
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a4c13daa16ba86962ba57b222dacfefe7">nl.sense_os.service.constants.SensePrefs.Main.Advanced</a>
+</li>
+<li>wifiActiveFromTheStart
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html#a71dbf184f2869632513f7d1141ec07c7">nl.sense_os.service.deviceprox.WIFIDeviceProximity.WifiScanThread</a>
+</li>
+<li>WIFIDeviceProximity()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a096e22da8e35bbeb1aa1a8a5d17faf5f">nl.sense_os.service.deviceprox.WIFIDeviceProximity</a>
+</li>
+<li>wifiDP
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html#a796b06f9e0d212ce90873d6623e20364">nl.sense_os.service.deviceprox.DeviceProximity</a>
+</li>
+<li>wifiReceiver
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html#a8f43f281f0ccbbfa14dc25d361a473cf">nl.sense_os.service.deviceprox.WIFIDeviceProximity.WifiScanThread</a>
+</li>
+<li>wifiScanThread
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a553c4affb5f726984f7b388da68534ee">nl.sense_os.service.deviceprox.WIFIDeviceProximity</a>
+</li>
+<li>WifiScanThread()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html#a7d62704c6d4702bb9d7002c325860e48">nl.sense_os.service.deviceprox.WIFIDeviceProximity.WifiScanThread</a>
+</li>
 <li>window()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5579a6d4866ef0fcaeb7437b6db60eb4">nl.sense_os.service.ambience.FourierTransform</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_loudness_sensor.html#adf53dab7a42ffe269c5b31ef0096acbf">nl.sense_os.service.ambience.LoudnessSensor</a>
+</li>
+<li>window_
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a35128956e85807a3e1b953cde36df970">nl.sense_os.service.location.TraveledDistanceEstimator</a>
+</li>
+<li>WINDOW_SIZE
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a60b8c7821ed96ae45a1953a5d6dbb342">nl.sense_os.service.location.TraveledDistanceEstimator</a>
+</li>
+<li>WORN_STATUS
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external_1_1_zephyr_bio_harness.html#a92d6397a96da8f2a53178f29a2131308">nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrBioHarness</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#ae68a0f547abcf72eeb38f7fdad4d573e">nl.sense_os.service.constants.SensorData.SensorNames</a>
+</li>
+<li>write()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness_1_1_update_thread.html#a63b517cc3c39bd5cef8d20dd4bbce73b">nl.sense_os.service.external_sensors.ZephyrBioHarness.UpdateThread</a>
+</li>
+<li>writer
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a28a1149f4c1a23e80b6ccb3f8a1945fa">nl.sense_os.service.EncryptionHelper</a>
+</li>
+<li>writeTimeStamp()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a988878df774c973fb3828472c2199fc8">nl.sense_os.service.provider.SNTP</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -146,7 +217,7 @@ $(document).ready(function(){initNavTree('functions_w.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

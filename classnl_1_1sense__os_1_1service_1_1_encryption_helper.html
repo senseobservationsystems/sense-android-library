@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_en
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_en
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.EncryptionHelper Class Reference</div>  </div>
@@ -115,39 +121,79 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_en
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><b>EncryptionHelperException</b></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper_1_1_encryption_helper_exception.html">EncryptionHelperException</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a52458b8b3f726262645fdd620b2b3e3b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a52458b8b3f726262645fdd620b2b3e3b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>EncryptionHelper</b> (Context context)  throws EncryptionHelperException </td></tr>
+<tr class="memitem:a52458b8b3f726262645fdd620b2b3e3b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a52458b8b3f726262645fdd620b2b3e3b">EncryptionHelper</a> (Context context)  throws EncryptionHelperException </td></tr>
 <tr class="separator:a52458b8b3f726262645fdd620b2b3e3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2003c2bc2f89bde70a5feaef6989fdf7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a2003c2bc2f89bde70a5feaef6989fdf7">EncryptionHelper</a> (Context context, String secureKey)  throws EncryptionHelperException </td></tr>
 <tr class="separator:a2003c2bc2f89bde70a5feaef6989fdf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ee9341759eaa6c3902e5a2ca43092fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ee9341759eaa6c3902e5a2ca43092fb"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>encrypt</b> (String value)  throws EncryptionHelperException </td></tr>
+<tr class="memitem:a3ee9341759eaa6c3902e5a2ca43092fb"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a3ee9341759eaa6c3902e5a2ca43092fb">encrypt</a> (String value)  throws EncryptionHelperException </td></tr>
 <tr class="separator:a3ee9341759eaa6c3902e5a2ca43092fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad40aa7411e18b8fab2307f2d0528fdc9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad40aa7411e18b8fab2307f2d0528fdc9"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>decrypt</b> (String securedEncodedValue)  throws EncryptionHelperException </td></tr>
+<tr class="memitem:ad40aa7411e18b8fab2307f2d0528fdc9"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#ad40aa7411e18b8fab2307f2d0528fdc9">decrypt</a> (String securedEncodedValue)  throws EncryptionHelperException </td></tr>
 <tr class="separator:ad40aa7411e18b8fab2307f2d0528fdc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a81b8af42f12db83a32bca242491eeaa6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a81b8af42f12db83a32bca242491eeaa6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initCiphers</b> (Context context, String secureKey)  throws NoSuchAlgorithmException, InvalidKeyException, 			InvalidAlgorithmParameterException </td></tr>
+<tr class="memitem:a81b8af42f12db83a32bca242491eeaa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a81b8af42f12db83a32bca242491eeaa6">initCiphers</a> (Context context, String secureKey)  throws NoSuchAlgorithmException, InvalidKeyException, 			InvalidAlgorithmParameterException </td></tr>
 <tr class="separator:a81b8af42f12db83a32bca242491eeaa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f3015c7d1f73accf09a67d77f1bc498"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3f3015c7d1f73accf09a67d77f1bc498"></a>
-IvParameterSpec&#160;</td><td class="memItemRight" valign="bottom"><b>getIv</b> ()</td></tr>
+<tr class="memitem:a3f3015c7d1f73accf09a67d77f1bc498"><td class="memItemLeft" align="right" valign="top">IvParameterSpec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a3f3015c7d1f73accf09a67d77f1bc498">getIv</a> ()</td></tr>
 <tr class="separator:a3f3015c7d1f73accf09a67d77f1bc498"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae57c35caf46f766a974500e528cdbb7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae57c35caf46f766a974500e528cdbb7c"></a>
-SecretKeySpec&#160;</td><td class="memItemRight" valign="bottom"><b>getSecretKey</b> (String key)  throws NoSuchAlgorithmException </td></tr>
+<tr class="memitem:ae57c35caf46f766a974500e528cdbb7c"><td class="memItemLeft" align="right" valign="top">SecretKeySpec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#ae57c35caf46f766a974500e528cdbb7c">getSecretKey</a> (String key)  throws NoSuchAlgorithmException </td></tr>
 <tr class="separator:ae57c35caf46f766a974500e528cdbb7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a306ef1507869dc1589db10e49c2c2fd1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a306ef1507869dc1589db10e49c2c2fd1"></a>
-byte[]&#160;</td><td class="memItemRight" valign="bottom"><b>createKeyBytes</b> (String key)  throws NoSuchAlgorithmException </td></tr>
+<tr class="memitem:a306ef1507869dc1589db10e49c2c2fd1"><td class="memItemLeft" align="right" valign="top">byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a306ef1507869dc1589db10e49c2c2fd1">createKeyBytes</a> (String key)  throws NoSuchAlgorithmException </td></tr>
 <tr class="separator:a306ef1507869dc1589db10e49c2c2fd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a7175e3222166fbce5c2dae5ddd5c6ec7"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a7175e3222166fbce5c2dae5ddd5c6ec7">convert</a> (Cipher cipher, byte[] bs)  throws EncryptionHelperException </td></tr>
+<tr class="separator:a7175e3222166fbce5c2dae5ddd5c6ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a28a1149f4c1a23e80b6ccb3f8a1945fa"><td class="memItemLeft" align="right" valign="top">final Cipher&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a28a1149f4c1a23e80b6ccb3f8a1945fa">writer</a></td></tr>
+<tr class="separator:a28a1149f4c1a23e80b6ccb3f8a1945fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a451d2419a4aa91619bfb00abcbc9bc8c"><td class="memItemLeft" align="right" valign="top">final Cipher&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a451d2419a4aa91619bfb00abcbc9bc8c">reader</a></td></tr>
+<tr class="separator:a451d2419a4aa91619bfb00abcbc9bc8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:af77178c5c5e34e5d64695043ab332645"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#af77178c5c5e34e5d64695043ab332645">TRANSFORMATION</a> = &quot;AES/CBC/PKCS5Padding&quot;</td></tr>
+<tr class="separator:af77178c5c5e34e5d64695043ab332645"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a036d5f86a2b736451e1d9b2d36f66216"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a036d5f86a2b736451e1d9b2d36f66216">SECRET_KEY_HASH_TRANSFORMATION</a> = &quot;SHA-256&quot;</td></tr>
+<tr class="separator:a036d5f86a2b736451e1d9b2d36f66216"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48df84c857d2b28e6d5d02bcf3ab80db"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a48df84c857d2b28e6d5d02bcf3ab80db">DEFAULT_KEY_SALT</a> = &quot;3XnMxOy3E&amp;jsdSSHWM941D89yK!RlRVH&quot;</td></tr>
+<tr class="separator:a48df84c857d2b28e6d5d02bcf3ab80db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a677b42be7ad3ac8c217c1fa315cb1172"><td class="memItemLeft" align="right" valign="top">static SharedPreferences&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a677b42be7ad3ac8c217c1fa315cb1172">sMainPrefs</a></td></tr>
+<tr class="separator:a677b42be7ad3ac8c217c1fa315cb1172"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00021">21</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a52458b8b3f726262645fdd620b2b3e3b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.EncryptionHelper.EncryptionHelper </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td> throws <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper_1_1_encryption_helper_exception.html">EncryptionHelperException</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00042">42</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                                                                                  {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                <span class="keyword">this</span>(context, null);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a2003c2bc2f89bde70a5feaef6989fdf7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +213,7 @@ byte[]&#160;</td><td class="memItemRight" valign="bottom"><b>createKeyBytes</b> 
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td> throws EncryptionHelperException</td>
+          <td></td><td> throws <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper_1_1_encryption_helper_exception.html">EncryptionHelperException</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -181,23 +227,436 @@ byte[]&#160;</td><td class="memItemRight" valign="bottom"><b>createKeyBytes</b> 
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">EncryptionHelperException</td><td></td></tr>
+    <tr><td class="paramname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper_1_1_encryption_helper_exception.html">EncryptionHelperException</a></td><td></td></tr>
   </table>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00053">53</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                                                                                                    {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        this.writer = Cipher.getInstance(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#af77178c5c5e34e5d64695043ab332645">TRANSFORMATION</a>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        this.reader = Cipher.getInstance(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#af77178c5c5e34e5d64695043ab332645">TRANSFORMATION</a>);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a81b8af42f12db83a32bca242491eeaa6">initCiphers</a>(context, secureKey);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                <span class="keywordflow">catch</span> (GeneralSecurityException e) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keywordflow">throw</span> <span class="keyword">new</span> EncryptionHelperException(e);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a81b8af42f12db83a32bca242491eeaa6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a81b8af42f12db83a32bca242491eeaa6">nl.sense_os.service.EncryptionHelper.initCiphers</a></div><div class="ttdeci">void initCiphers(Context context, String secureKey)</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00065">EncryptionHelper.java:65</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_af77178c5c5e34e5d64695043ab332645"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#af77178c5c5e34e5d64695043ab332645">nl.sense_os.service.EncryptionHelper.TRANSFORMATION</a></div><div class="ttdeci">static final String TRANSFORMATION</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00033">EncryptionHelper.java:33</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a7175e3222166fbce5c2dae5ddd5c6ec7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static byte [] nl.sense_os.service.EncryptionHelper.convert </td>
+          <td>(</td>
+          <td class="paramtype">Cipher&#160;</td>
+          <td class="paramname"><em>cipher</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>bs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> throws <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper_1_1_encryption_helper_exception.html">EncryptionHelperException</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00129">129</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                                                                                                 {</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                        <span class="keywordflow">return</span> cipher.doFinal(bs);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                }</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                <span class="keywordflow">catch</span> (Exception e) {</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                        <span class="keywordflow">throw</span> <span class="keyword">new</span> EncryptionHelperException(e);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                }</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a306ef1507869dc1589db10e49c2c2fd1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">byte [] nl.sense_os.service.EncryptionHelper.createKeyBytes </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td> throws NoSuchAlgorithmException</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00099">99</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                                                                                    {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                MessageDigest md = MessageDigest.getInstance(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a036d5f86a2b736451e1d9b2d36f66216">SECRET_KEY_HASH_TRANSFORMATION</a>);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                md.reset();</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                byte[] keyBytes = md.digest(key.getBytes());</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                <span class="keywordflow">return</span> keyBytes;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a036d5f86a2b736451e1d9b2d36f66216"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a036d5f86a2b736451e1d9b2d36f66216">nl.sense_os.service.EncryptionHelper.SECRET_KEY_HASH_TRANSFORMATION</a></div><div class="ttdeci">static final String SECRET_KEY_HASH_TRANSFORMATION</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00034">EncryptionHelper.java:34</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ad40aa7411e18b8fab2307f2d0528fdc9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.EncryptionHelper.decrypt </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>securedEncodedValue</em></td><td>)</td>
+          <td> throws <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper_1_1_encryption_helper_exception.html">EncryptionHelperException</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00113">113</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                                                                                           {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <span class="keywordflow">if</span> (securedEncodedValue == null || securedEncodedValue == <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                  <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                }</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                        byte[] securedValue = Base64.decode(securedEncodedValue, Base64.NO_WRAP);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                        byte[] value = <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a7175e3222166fbce5c2dae5ddd5c6ec7">convert</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a451d2419a4aa91619bfb00abcbc9bc8c">reader</a>, securedValue);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">new</span> String(value);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                } <span class="keywordflow">catch</span> (IllegalArgumentException e) {</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        <span class="comment">// maybe data is not encrypted</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                        <span class="keywordflow">throw</span> <span class="keyword">new</span> EncryptionHelperException(e);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                } <span class="keywordflow">catch</span> (EncryptionHelperException e) {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                        <span class="keywordflow">throw</span> e;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                }</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a451d2419a4aa91619bfb00abcbc9bc8c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a451d2419a4aa91619bfb00abcbc9bc8c">nl.sense_os.service.EncryptionHelper.reader</a></div><div class="ttdeci">final Cipher reader</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00040">EncryptionHelper.java:40</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a7175e3222166fbce5c2dae5ddd5c6ec7"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a7175e3222166fbce5c2dae5ddd5c6ec7">nl.sense_os.service.EncryptionHelper.convert</a></div><div class="ttdeci">static byte[] convert(Cipher cipher, byte[] bs)</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00129">EncryptionHelper.java:129</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a3ee9341759eaa6c3902e5a2ca43092fb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.EncryptionHelper.encrypt </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td> throws <a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper_1_1_encryption_helper_exception.html">EncryptionHelperException</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00106">106</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                                                                             {</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                byte[] secureValue;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                secureValue = <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a7175e3222166fbce5c2dae5ddd5c6ec7">convert</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a28a1149f4c1a23e80b6ccb3f8a1945fa">writer</a>, value.getBytes());</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                String secureValueEncoded = Base64.encodeToString(secureValue, Base64.NO_WRAP);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <span class="keywordflow">return</span> secureValueEncoded;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a7175e3222166fbce5c2dae5ddd5c6ec7"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a7175e3222166fbce5c2dae5ddd5c6ec7">nl.sense_os.service.EncryptionHelper.convert</a></div><div class="ttdeci">static byte[] convert(Cipher cipher, byte[] bs)</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00129">EncryptionHelper.java:129</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a28a1149f4c1a23e80b6ccb3f8a1945fa"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a28a1149f4c1a23e80b6ccb3f8a1945fa">nl.sense_os.service.EncryptionHelper.writer</a></div><div class="ttdeci">final Cipher writer</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00039">EncryptionHelper.java:39</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a3f3015c7d1f73accf09a67d77f1bc498"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">IvParameterSpec nl.sense_os.service.EncryptionHelper.getIv </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00088">88</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                                          {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                byte[] iv = <span class="keyword">new</span> byte[writer.getBlockSize()];</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                System.arraycopy(<span class="stringliteral">&quot;fldsjfodasjifudslfjdsaofshaufihadsf&quot;</span>.getBytes(), 0, iv, 0, <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a28a1149f4c1a23e80b6ccb3f8a1945fa">writer</a>.getBlockSize());</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">new</span> IvParameterSpec(iv);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a28a1149f4c1a23e80b6ccb3f8a1945fa"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a28a1149f4c1a23e80b6ccb3f8a1945fa">nl.sense_os.service.EncryptionHelper.writer</a></div><div class="ttdeci">final Cipher writer</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00039">EncryptionHelper.java:39</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ae57c35caf46f766a974500e528cdbb7c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SecretKeySpec nl.sense_os.service.EncryptionHelper.getSecretKey </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td> throws NoSuchAlgorithmException</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00094">94</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                                                                                         {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                byte[] keyBytes = <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a306ef1507869dc1589db10e49c2c2fd1">createKeyBytes</a>(key);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">new</span> SecretKeySpec(keyBytes, <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#af77178c5c5e34e5d64695043ab332645">TRANSFORMATION</a>);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_af77178c5c5e34e5d64695043ab332645"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#af77178c5c5e34e5d64695043ab332645">nl.sense_os.service.EncryptionHelper.TRANSFORMATION</a></div><div class="ttdeci">static final String TRANSFORMATION</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00033">EncryptionHelper.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a306ef1507869dc1589db10e49c2c2fd1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a306ef1507869dc1589db10e49c2c2fd1">nl.sense_os.service.EncryptionHelper.createKeyBytes</a></div><div class="ttdeci">byte[] createKeyBytes(String key)</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00099">EncryptionHelper.java:99</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a81b8af42f12db83a32bca242491eeaa6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.EncryptionHelper.initCiphers </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>secureKey</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> throws NoSuchAlgorithmException, InvalidKeyException, 			InvalidAlgorithmParameterException</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00065">65</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                                                           {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                <span class="keywordflow">if</span> (null == secureKey) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        String imei = telephonyManager.getDeviceId();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        secureKey = imei;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="keywordflow">if</span> (null == <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a677b42be7ad3ac8c217c1fa315cb1172">sMainPrefs</a>) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a677b42be7ad3ac8c217c1fa315cb1172">sMainPrefs</a> = context.getSharedPreferences(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">SensePrefs.MAIN_PREFS</a>,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                                                Context.MODE_PRIVATE);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                String salt = sMainPrefs.getString(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a802dae85f1891f96a51691af00f23386">Advanced.ENCRYPT_CREDENTIAL_SALT</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a48df84c857d2b28e6d5d02bcf3ab80db">DEFAULT_KEY_SALT</a>);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                IvParameterSpec ivSpec = <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a3f3015c7d1f73accf09a67d77f1bc498">getIv</a>();</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                SecretKeySpec secretKey = <a class="code" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#ae57c35caf46f766a974500e528cdbb7c">getSecretKey</a>(secureKey+salt);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                writer.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                reader.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a48df84c857d2b28e6d5d02bcf3ab80db"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a48df84c857d2b28e6d5d02bcf3ab80db">nl.sense_os.service.EncryptionHelper.DEFAULT_KEY_SALT</a></div><div class="ttdeci">static final String DEFAULT_KEY_SALT</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00035">EncryptionHelper.java:35</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_html_a09ef189b0ea21b5fcd5d59504ad7c63b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">nl.sense_os.service.constants.SensePrefs.MAIN_PREFS</a></div><div class="ttdeci">static final String MAIN_PREFS</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00893">SensePrefs.java:893</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a3f3015c7d1f73accf09a67d77f1bc498"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a3f3015c7d1f73accf09a67d77f1bc498">nl.sense_os.service.EncryptionHelper.getIv</a></div><div class="ttdeci">IvParameterSpec getIv()</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00088">EncryptionHelper.java:88</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced_html_a802dae85f1891f96a51691af00f23386"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a802dae85f1891f96a51691af00f23386">nl.sense_os.service.constants.SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT</a></div><div class="ttdeci">static final String ENCRYPT_CREDENTIAL_SALT</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00210">SensePrefs.java:210</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_a677b42be7ad3ac8c217c1fa315cb1172"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a677b42be7ad3ac8c217c1fa315cb1172">nl.sense_os.service.EncryptionHelper.sMainPrefs</a></div><div class="ttdeci">static SharedPreferences sMainPrefs</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00037">EncryptionHelper.java:37</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_encryption_helper_html_ae57c35caf46f766a974500e528cdbb7c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#ae57c35caf46f766a974500e528cdbb7c">nl.sense_os.service.EncryptionHelper.getSecretKey</a></div><div class="ttdeci">SecretKeySpec getSecretKey(String key)</div><div class="ttdef"><b>Definition:</b> <a href="_encryption_helper_8java_source.html#l00094">EncryptionHelper.java:94</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a48df84c857d2b28e6d5d02bcf3ab80db"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.EncryptionHelper.DEFAULT_KEY_SALT = &quot;3XnMxOy3E&amp;jsdSSHWM941D89yK!RlRVH&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00035">35</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a451d2419a4aa91619bfb00abcbc9bc8c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Cipher nl.sense_os.service.EncryptionHelper.reader</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00040">40</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a036d5f86a2b736451e1d9b2d36f66216"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.EncryptionHelper.SECRET_KEY_HASH_TRANSFORMATION = &quot;SHA-256&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00034">34</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a677b42be7ad3ac8c217c1fa315cb1172"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SharedPreferences nl.sense_os.service.EncryptionHelper.sMainPrefs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00037">37</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af77178c5c5e34e5d64695043ab332645"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.EncryptionHelper.TRANSFORMATION = &quot;AES/CBC/PKCS5Padding&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00033">33</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a28a1149f4c1a23e80b6ccb3f8a1945fa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Cipher nl.sense_os.service.EncryptionHelper.writer</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_encryption_helper_8java_source.html#l00039">39</a> of file <a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/EncryptionHelper.java</li>
+<li>src/nl/sense_os/service/<a class="el" href="_encryption_helper_8java_source.html">EncryptionHelper.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html">EncryptionHelper</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_encryption_helper.html">EncryptionHelper</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

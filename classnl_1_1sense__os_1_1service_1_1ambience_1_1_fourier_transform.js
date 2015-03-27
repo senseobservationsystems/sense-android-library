@@ -1,5 +1,6 @@
 var classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform =
 [
+    [ "FourierTransform", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab73a1c1d44ac6f0bc8a403c9965854ad", null ],
     [ "allocateArrays", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0c932cfe48f32093c1a2714e325cf84b", null ],
     [ "avgSize", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae00e5788a99cd01bf3f24c1a02630d68", null ],
     [ "calcAvg", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ada7cf4c850c769563faf5adc01ca032f", null ],
@@ -34,12 +35,18 @@ var classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform =
     [ "averages", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d", null ],
     [ "avgPerOctave", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680", null ],
     [ "bandWidth", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884", null ],
+    [ "HAMMING", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a54441d948eb7b531594728913f6e5b7e", null ],
     [ "imag", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148", null ],
+    [ "LINAVG", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc", null ],
+    [ "LOGAVG", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5", null ],
+    [ "NOAVG", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a349d9e7844e2a67cad003f456b415ff4", null ],
+    [ "NONE", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#abb13fc1a33ca07650c4ded16d8916c57", null ],
     [ "octaves", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f", null ],
     [ "real", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77", null ],
     [ "sampleRate", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e", null ],
     [ "spectrum", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c", null ],
     [ "timeSize", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a63e12800c57b4d778bcd0653aec8e2f4", null ],
+    [ "TWO_PI", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a81809f6f353f8b6286c6fa35c72822ae", null ],
     [ "whichAverage", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb", null ],
     [ "whichWindow", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c", null ]
 ];

@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1mot
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.motion.MotionEnergySensor Class Reference</div>  </div>
@@ -124,8 +130,7 @@ Inheritance diagram for nl.sense_os.service.motion.MotionEnergySensor:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0747b8511404260c5f74f0c6c358f9fa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0747b8511404260c5f74f0c6c358f9fa"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MotionEnergySensor</b> (Context context)</td></tr>
+<tr class="memitem:a0747b8511404260c5f74f0c6c358f9fa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a0747b8511404260c5f74f0c6c358f9fa">MotionEnergySensor</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">context</a>)</td></tr>
 <tr class="separator:a0747b8511404260c5f74f0c6c358f9fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a0177d96f49929b317b51f8b36a0ea3"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a2a0177d96f49929b317b51f8b36a0ea3">isSampleComplete</a> ()</td></tr>
 <tr class="separator:a2a0177d96f49929b317b51f8b36a0ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,6 +148,41 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#ae6fca630e7e8723e599a8492886a9887">removeSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
 <tr class="separator:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a735dca677ddaea78ba6e43cb0efd27cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a735dca677ddaea78ba6e43cb0efd27cc">checkLinAccSensor</a> ()</td></tr>
+<tr class="separator:a735dca677ddaea78ba6e43cb0efd27cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab378d42223c653063d49c552c883c9a6"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ab378d42223c653063d49c552c883c9a6">isEnoughDatapoints</a> ()</td></tr>
+<tr class="separator:ab378d42223c653063d49c552c883c9a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3842b96aaa2d15767c0306a8098a7fc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3842b96aaa2d15767c0306a8098a7fc9">sendData</a> ()</td></tr>
+<tr class="separator:a3842b96aaa2d15767c0306a8098a7fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ac74bab3dc9cdcec073a228a08a4557b3"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ac74bab3dc9cdcec073a228a08a4557b3">prevSampleTime</a></td></tr>
+<tr class="separator:ac74bab3dc9cdcec073a228a08a4557b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e6c9c1d3eaf6fc2802bd110213dd6be"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">avgSpeedChange</a></td></tr>
+<tr class="separator:a1e6c9c1d3eaf6fc2802bd110213dd6be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbf6d50670be20ef9210d975b5c90e79"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">avgSpeedCount</a></td></tr>
+<tr class="separator:adbf6d50670be20ef9210d975b5c90e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7cffcaf740d199619edd8dd4f77c6d63"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">context</a></td></tr>
+<tr class="separator:a7cffcaf740d199619edd8dd4f77c6d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9552e1b76b49ad5fb00e813b4ce019c2"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">hasLinAccSensor</a></td></tr>
+<tr class="separator:a9552e1b76b49ad5fb00e813b4ce019c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3557bbea06840bfc60a8bc9ab448950f"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">sampleStartTime</a> = 0</td></tr>
+<tr class="separator:a3557bbea06840bfc60a8bc9ab448950f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a944edf5d0ad50353089b1dae42e0dc5e"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">sampleComplete</a></td></tr>
+<tr class="separator:a944edf5d0ad50353089b1dae42e0dc5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1e084cdeca1c16e4bff31dba9ac1514"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html">AccelerationFilter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ab1e084cdeca1c16e4bff31dba9ac1514">accelFilter</a></td></tr>
+<tr class="separator:ab1e084cdeca1c16e4bff31dba9ac1514"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:aa60305a57fdc74828933d95bd84fb610"><td class="memItemLeft" align="right" valign="top">static final long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#aa60305a57fdc74828933d95bd84fb610">ENERGY_SAMPLE_LENGTH</a> = 500</td></tr>
+<tr class="separator:aa60305a57fdc74828933d95bd84fb610"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a117b8907760feee39271622a98bda395"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a117b8907760feee39271622a98bda395">TAG</a> = &quot;MotionEnergySensor&quot;</td></tr>
+<tr class="separator:a117b8907760feee39271622a98bda395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
@@ -153,13 +193,106 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00024">24</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a0747b8511404260c5f74f0c6c358f9fa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.motion.MotionEnergySensor.MotionEnergySensor </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00038">38</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                                               {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        this.context = <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">context</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a735dca677ddaea78ba6e43cb0efd27cc">checkLinAccSensor</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span>(!<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">hasLinAccSensor</a>){</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;          <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ab1e084cdeca1c16e4bff31dba9ac1514">accelFilter</a> = <span class="keyword">new</span> AccelerationFilter();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a735dca677ddaea78ba6e43cb0efd27cc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a735dca677ddaea78ba6e43cb0efd27cc">nl.sense_os.service.motion.MotionEnergySensor.checkLinAccSensor</a></div><div class="ttdeci">void checkLinAccSensor()</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00047">MotionEnergySensor.java:47</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a9552e1b76b49ad5fb00e813b4ce019c2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">nl.sense_os.service.motion.MotionEnergySensor.hasLinAccSensor</a></div><div class="ttdeci">boolean hasLinAccSensor</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00033">MotionEnergySensor.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a7cffcaf740d199619edd8dd4f77c6d63"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">nl.sense_os.service.motion.MotionEnergySensor.context</a></div><div class="ttdeci">Context context</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00032">MotionEnergySensor.java:32</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_ab1e084cdeca1c16e4bff31dba9ac1514"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ab1e084cdeca1c16e4bff31dba9ac1514">nl.sense_os.service.motion.MotionEnergySensor.accelFilter</a></div><div class="ttdeci">AccelerationFilter accelFilter</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00036">MotionEnergySensor.java:36</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a735dca677ddaea78ba6e43cb0efd27cc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.MotionEnergySensor.checkLinAccSensor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00047">47</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                                     {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        SensorManager mgr = (SensorManager) <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">context</a>.getSystemService(Context.SENSOR_SERVICE);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">hasLinAccSensor</a> = (null != mgr.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a9552e1b76b49ad5fb00e813b4ce019c2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">nl.sense_os.service.motion.MotionEnergySensor.hasLinAccSensor</a></div><div class="ttdeci">boolean hasLinAccSensor</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00033">MotionEnergySensor.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a7cffcaf740d199619edd8dd4f77c6d63"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">nl.sense_os.service.motion.MotionEnergySensor.context</a></div><div class="ttdeci">Context context</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00032">MotionEnergySensor.java:32</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ab378d42223c653063d49c552c883c9a6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.MotionEnergySensor.isEnoughDatapoints </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00052">52</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                                         {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">return</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">sampleStartTime</a> != 0 &amp;&amp; SystemClock.elapsedRealtime() - <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">sampleStartTime</a> &gt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#aa60305a57fdc74828933d95bd84fb610">ENERGY_SAMPLE_LENGTH</a>);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a3557bbea06840bfc60a8bc9ab448950f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">nl.sense_os.service.motion.MotionEnergySensor.sampleStartTime</a></div><div class="ttdeci">long sampleStartTime</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00034">MotionEnergySensor.java:34</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_aa60305a57fdc74828933d95bd84fb610"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#aa60305a57fdc74828933d95bd84fb610">nl.sense_os.service.motion.MotionEnergySensor.ENERGY_SAMPLE_LENGTH</a></div><div class="ttdeci">static final long ENERGY_SAMPLE_LENGTH</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00026">MotionEnergySensor.java:26</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a2a0177d96f49929b317b51f8b36a0ea3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -176,6 +309,12 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 <p>Implements <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html#ae4b6e583ce4e1fbc9effbfa223a12c39">nl.sense_os.service.subscription.DataConsumer</a>.</p>
 
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00057">57</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                      {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">sampleComplete</a>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a944edf5d0ad50353089b1dae42e0dc5e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">nl.sense_os.service.motion.MotionEnergySensor.sampleComplete</a></div><div class="ttdeci">boolean sampleComplete</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00035">MotionEnergySensor.java:35</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a55fe0f9f00c2323ed1907d4e0fa0de3a"></a>
@@ -201,6 +340,132 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 <p>Implements <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html#a7b1b272a8eee55bb430fddc7a468136e">nl.sense_os.service.subscription.DataConsumer</a>.</p>
 
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00069">69</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                                                     {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordtype">float</span>[] linAcc = null;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span> (dataPoint.getDataType() != <a class="code" href="enumnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point_1_1_data_type.html#a5e736630e7a3a1bc5a4cb6efcf737bad">DataType.SENSOREVENT</a>)</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        SensorEvent <span class="keyword">event</span> = dataPoint.getSensorEventValue();</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="comment">// check if this is a useful data point</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordtype">boolean</span> isEnergySample = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        Sensor sensor = event.sensor;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        isEnergySample = !<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">hasLinAccSensor</a> &amp;&amp; Sensor.TYPE_ACCELEROMETER == sensor.getType()</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                || <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">hasLinAccSensor</a> &amp;&amp; Sensor.TYPE_LINEAR_ACCELERATION == sensor.getType();</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">if</span> (!isEnergySample) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        }</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="comment">// approximate linear acceleration if we have no special sensor for it</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">hasLinAccSensor</a> &amp;&amp; Sensor.TYPE_ACCELEROMETER == event.sensor.getType()) {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            linAcc = accelFilter.calcLinAcc(event.values);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">hasLinAccSensor</a> &amp;&amp; Sensor.TYPE_LINEAR_ACCELERATION == event.sensor.getType()) {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            linAcc = event.values;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="comment">// sensor is not the right type</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="comment">// calculate speed change and adjust average</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordflow">if</span> (null != linAcc) {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="comment">// record the start of the motion sample</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">avgSpeedCount</a> == 0) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">sampleStartTime</a> = SystemClock.elapsedRealtime();</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="keywordtype">float</span> timeStep = (SystemClock.elapsedRealtime() - <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ac74bab3dc9cdcec073a228a08a4557b3">prevSampleTime</a>) / 1000f;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ac74bab3dc9cdcec073a228a08a4557b3">prevSampleTime</a> = SystemClock.elapsedRealtime();</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="keywordflow">if</span> (timeStep &gt; 0 &amp;&amp; timeStep &lt; 1) {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                <span class="keywordtype">float</span> accLength = FloatMath.sqrt((float) (Math.pow(linAcc[0], 2)</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                        + Math.pow(linAcc[1], 2) + Math.pow(linAcc[2], 2)));</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">avgSpeedChange</a> = (<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">avgSpeedCount</a> * <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">avgSpeedChange</a> + accLength) / (<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">avgSpeedCount</a> + 1);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">avgSpeedCount</a>++;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            }</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a117b8907760feee39271622a98bda395">TAG</a>, <span class="stringliteral">&quot;Cannot calculate motion energy! Linear acceleration value is null&quot;</span>);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="comment">// check if we gathered enough data points</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">sampleComplete</a> &amp;&amp; <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ab378d42223c653063d49c552c883c9a6">isEnoughDatapoints</a>()) {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3842b96aaa2d15767c0306a8098a7fc9">sendData</a>();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">sampleComplete</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a3557bbea06840bfc60a8bc9ab448950f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">nl.sense_os.service.motion.MotionEnergySensor.sampleStartTime</a></div><div class="ttdeci">long sampleStartTime</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00034">MotionEnergySensor.java:34</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_adbf6d50670be20ef9210d975b5c90e79"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">nl.sense_os.service.motion.MotionEnergySensor.avgSpeedCount</a></div><div class="ttdeci">int avgSpeedCount</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00031">MotionEnergySensor.java:31</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a944edf5d0ad50353089b1dae42e0dc5e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">nl.sense_os.service.motion.MotionEnergySensor.sampleComplete</a></div><div class="ttdeci">boolean sampleComplete</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00035">MotionEnergySensor.java:35</a></div></div>
+<div class="ttc" id="enumnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point_1_1_data_type_html_a5e736630e7a3a1bc5a4cb6efcf737bad"><div class="ttname"><a href="enumnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point_1_1_data_type.html#a5e736630e7a3a1bc5a4cb6efcf737bad">nl.sense_os.service.shared.SensorDataPoint.DataType.SENSOREVENT</a></div><div class="ttdeci">SENSOREVENT</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_point_8java_source.html#l00017">SensorDataPoint.java:17</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a9552e1b76b49ad5fb00e813b4ce019c2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">nl.sense_os.service.motion.MotionEnergySensor.hasLinAccSensor</a></div><div class="ttdeci">boolean hasLinAccSensor</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00033">MotionEnergySensor.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a1e6c9c1d3eaf6fc2802bd110213dd6be"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">nl.sense_os.service.motion.MotionEnergySensor.avgSpeedChange</a></div><div class="ttdeci">double avgSpeedChange</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00030">MotionEnergySensor.java:30</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_ab378d42223c653063d49c552c883c9a6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ab378d42223c653063d49c552c883c9a6">nl.sense_os.service.motion.MotionEnergySensor.isEnoughDatapoints</a></div><div class="ttdeci">boolean isEnoughDatapoints()</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00052">MotionEnergySensor.java:52</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a117b8907760feee39271622a98bda395"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a117b8907760feee39271622a98bda395">nl.sense_os.service.motion.MotionEnergySensor.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00027">MotionEnergySensor.java:27</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_ac74bab3dc9cdcec073a228a08a4557b3"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ac74bab3dc9cdcec073a228a08a4557b3">nl.sense_os.service.motion.MotionEnergySensor.prevSampleTime</a></div><div class="ttdeci">long prevSampleTime</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00029">MotionEnergySensor.java:29</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a3842b96aaa2d15767c0306a8098a7fc9"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3842b96aaa2d15767c0306a8098a7fc9">nl.sense_os.service.motion.MotionEnergySensor.sendData</a></div><div class="ttdeci">void sendData()</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00128">MotionEnergySensor.java:128</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a3842b96aaa2d15767c0306a8098a7fc9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.motion.MotionEnergySensor.sendData </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sends message with average motion energy to the <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">MsgHandler</a>. </p>
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00128">128</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                            {</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="comment">// round to three decimals</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keywordtype">float</span> value = BigDecimal.valueOf(<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">avgSpeedChange</a>).setScale(3, 0).floatValue();</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        this.notifySubscribers();</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        SensorDataPoint dataPoint = <span class="keyword">new</span> SensorDataPoint(value);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        dataPoint.sensorName = <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a09092a28bbc9225565099ce348424332">SensorNames.MOTION_ENERGY</a>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        dataPoint.sensorDescription = <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a09092a28bbc9225565099ce348424332">SensorNames.MOTION_ENERGY</a>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        dataPoint.timeStamp = SNTP.getInstance().getTime();</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        this.sendToSubscribers(dataPoint);</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="comment">// TODO: add the MsgHandler as data processor</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="comment">// prepare intent to send to MsgHandler</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        Intent i = <span class="keyword">new</span> Intent(<a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">context</a>.getString(R.string.action_sense_new_data));</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">DataPoint.SENSOR_NAME</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a09092a28bbc9225565099ce348424332">SensorNames.MOTION_ENERGY</a>);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#afbec24925591ba4d80372db1373c5d51">DataPoint.SENSOR_DESCRIPTION</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a09092a28bbc9225565099ce348424332">SensorNames.MOTION_ENERGY</a>);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>, value);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">DataPoint.DATA_TYPE</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#aa8231f323de1ac626b1ab293142d3ed3">SenseDataTypes.FLOAT</a>);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        i.putExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">DataPoint.TIMESTAMP</a>, dataPoint.timeStamp);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        i.setPackage(context.getPackageName());</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        context.startService(i);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_afbec24925591ba4d80372db1373c5d51"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#afbec24925591ba4d80372db1373c5d51">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_DESCRIPTION</a></div><div class="ttdeci">static final String SENSOR_DESCRIPTION</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00063">SensorData.java:63</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names_html_a09092a28bbc9225565099ce348424332"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a09092a28bbc9225565099ce348424332">nl.sense_os.service.constants.SensorData.SensorNames.MOTION_ENERGY</a></div><div class="ttdeci">static final String MOTION_ENERGY</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00183">SensorData.java:183</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_abdec19395d072f5ef68313273cfad9f1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">nl.sense_os.service.constants.SensorData.DataPoint.VALUE</a></div><div class="ttdeci">static final String VALUE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00091">SensorData.java:91</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types_html_aa8231f323de1ac626b1ab293142d3ed3"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#aa8231f323de1ac626b1ab293142d3ed3">nl.sense_os.service.constants.SenseDataTypes.FLOAT</a></div><div class="ttdeci">static final String FLOAT</div><div class="ttdef"><b>Definition:</b> <a href="_sense_data_types_8java_source.html#l00012">SenseDataTypes.java:12</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a838808dd53f3dd49d81c69560cb6d6fc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_NAME</a></div><div class="ttdeci">static final String SENSOR_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00056">SensorData.java:56</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a1e6c9c1d3eaf6fc2802bd110213dd6be"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">nl.sense_os.service.motion.MotionEnergySensor.avgSpeedChange</a></div><div class="ttdeci">double avgSpeedChange</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00030">MotionEnergySensor.java:30</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a7cffcaf740d199619edd8dd4f77c6d63"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a7cffcaf740d199619edd8dd4f77c6d63">nl.sense_os.service.motion.MotionEnergySensor.context</a></div><div class="ttdeci">Context context</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00032">MotionEnergySensor.java:32</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a6c0829bb39fd134b4dd5bc4fc7ce0225"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">nl.sense_os.service.constants.SensorData.DataPoint.DATA_TYPE</a></div><div class="ttdeci">static final String DATA_TYPE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00071">SensorData.java:71</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_ad14ad97eb01429eee8adddd49d70141e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">nl.sense_os.service.constants.SensorData.DataPoint.TIMESTAMP</a></div><div class="ttdeci">static final String TIMESTAMP</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00085">SensorData.java:85</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a89f9910aace9875c1a66d3473a00975a"></a>
@@ -220,18 +485,253 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 
 <p>Implements <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html#a6e708e4d12302bae22759e8d4e8168aa">nl.sense_os.service.subscription.DataConsumer</a>.</p>
 
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00154">154</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                                 {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">sampleComplete</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ac74bab3dc9cdcec073a228a08a4557b3">prevSampleTime</a> = 0;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">sampleStartTime</a> = 0;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">avgSpeedChange</a> = 0;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">avgSpeedCount</a> = 0;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a3557bbea06840bfc60a8bc9ab448950f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a3557bbea06840bfc60a8bc9ab448950f">nl.sense_os.service.motion.MotionEnergySensor.sampleStartTime</a></div><div class="ttdeci">long sampleStartTime</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00034">MotionEnergySensor.java:34</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_adbf6d50670be20ef9210d975b5c90e79"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#adbf6d50670be20ef9210d975b5c90e79">nl.sense_os.service.motion.MotionEnergySensor.avgSpeedCount</a></div><div class="ttdeci">int avgSpeedCount</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00031">MotionEnergySensor.java:31</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a944edf5d0ad50353089b1dae42e0dc5e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a944edf5d0ad50353089b1dae42e0dc5e">nl.sense_os.service.motion.MotionEnergySensor.sampleComplete</a></div><div class="ttdeci">boolean sampleComplete</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00035">MotionEnergySensor.java:35</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_a1e6c9c1d3eaf6fc2802bd110213dd6be"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a1e6c9c1d3eaf6fc2802bd110213dd6be">nl.sense_os.service.motion.MotionEnergySensor.avgSpeedChange</a></div><div class="ttdeci">double avgSpeedChange</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00030">MotionEnergySensor.java:30</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor_html_ac74bab3dc9cdcec073a228a08a4557b3"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#ac74bab3dc9cdcec073a228a08a4557b3">nl.sense_os.service.motion.MotionEnergySensor.prevSampleTime</a></div><div class="ttdeci">long prevSampleTime</div><div class="ttdef"><b>Definition:</b> <a href="_motion_energy_sensor_8java_source.html#l00029">MotionEnergySensor.java:29</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ab1e084cdeca1c16e4bff31dba9ac1514"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html">AccelerationFilter</a> nl.sense_os.service.motion.MotionEnergySensor.accelFilter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00036">36</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1e6c9c1d3eaf6fc2802bd110213dd6be"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double nl.sense_os.service.motion.MotionEnergySensor.avgSpeedChange</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00030">30</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adbf6d50670be20ef9210d975b5c90e79"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.motion.MotionEnergySensor.avgSpeedCount</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00031">31</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7cffcaf740d199619edd8dd4f77c6d63"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.motion.MotionEnergySensor.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00032">32</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa60305a57fdc74828933d95bd84fb610"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final long nl.sense_os.service.motion.MotionEnergySensor.ENERGY_SAMPLE_LENGTH = 500</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00026">26</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9552e1b76b49ad5fb00e813b4ce019c2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.MotionEnergySensor.hasLinAccSensor</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00033">33</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac74bab3dc9cdcec073a228a08a4557b3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.motion.MotionEnergySensor.prevSampleTime</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00029">29</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a944edf5d0ad50353089b1dae42e0dc5e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.motion.MotionEnergySensor.sampleComplete</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00035">35</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3557bbea06840bfc60a8bc9ab448950f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.motion.MotionEnergySensor.sampleStartTime = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00034">34</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a117b8907760feee39271622a98bda395"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.motion.MotionEnergySensor.TAG = &quot;MotionEnergySensor&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_motion_energy_sensor_8java_source.html#l00027">27</a> of file <a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/motion/MotionEnergySensor.java</li>
+<li>src/nl/sense_os/service/motion/<a class="el" href="_motion_energy_sensor_8java_source.html">MotionEnergySensor.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>motion</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html">MotionEnergySensor</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1motion.html">motion</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html">MotionEnergySensor</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

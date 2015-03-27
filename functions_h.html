@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -78,11 +81,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="functions.html#index_a"><span>a</span></a></li>
+      <li><a href="functions.html#index_["><span>[</span></a></li>
+      <li><a href="functions_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_b.html#index_b"><span>b</span></a></li>
       <li><a href="functions_c.html#index_c"><span>c</span></a></li>
       <li><a href="functions_d.html#index_d"><span>d</span></a></li>
       <li><a href="functions_e.html#index_e"><span>e</span></a></li>
@@ -91,17 +97,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_i.html#index_i"><span>i</span></a></li>
       <li><a href="functions_j.html#index_j"><span>j</span></a></li>
+      <li><a href="functions_k.html#index_k"><span>k</span></a></li>
       <li><a href="functions_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_m.html#index_m"><span>m</span></a></li>
       <li><a href="functions_n.html#index_n"><span>n</span></a></li>
       <li><a href="functions_o.html#index_o"><span>o</span></a></li>
       <li><a href="functions_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_q.html#index_q"><span>q</span></a></li>
       <li><a href="functions_r.html#index_r"><span>r</span></a></li>
       <li><a href="functions_s.html#index_s"><span>s</span></a></li>
       <li><a href="functions_t.html#index_t"><span>t</span></a></li>
       <li><a href="functions_u.html#index_u"><span>u</span></a></li>
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -124,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_h.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -134,14 +143,130 @@ $(document).ready(function(){initNavTree('functions_h.html','');});
 </div>
 
 <div class="contents">
-<div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
+<div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
+<li>hamming()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8cca45c2d3e9c6798dc52fc68e1802ca">nl.sense_os.service.ambience.FourierTransform</a>
+</li>
 <li>HAMMING
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a54441d948eb7b531594728913f6e5b7e">nl.sense_os.service.ambience.FourierTransform</a>
 </li>
+<li>handleAccelerometerReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#af7bf2e3d621c13e7a73f03328d38a965">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleActivityReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad5c204b262270607f3aad5d67922ade0">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleAppInfoSensorReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#afc8e0fb4f9921bf5245e5c77286e4fed">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleAttachToMyrianodeReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a62abfc0ac60986b25d37375adac9a4da">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleAudioSpectrumReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#af588072cd55fc2bc9c222d86270e618b">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleAvailabilityReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a86cbfbef3da6368368299cfe532711e6">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleBatterySensorReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a96c4e280ac887742ae711eb1b53c104b">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleBluetoothDiscoveryReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#abe597c3de68947aa3d90329ba9cdb564">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleBluetoothNeighboursCountReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a0fccba5422915754ec7be35fa38d687c">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleCallStateReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ab2aaaa25a92504a3373dbd5562b7c4d8">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleCameraLightReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9579c0548d4eb03192f89a3a6480023b">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleConnectionTypeReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ae4b36617d634b31d27eab762f88c80ed">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleDataConnectionReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a02930315e1bdc92e07e1bf3f76b2a77e">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleIPAddressReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#afe934c429886c0e7c5c73d7d61901b8c">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleLatestValue()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1phonestate_1_1_proximity_sensor.html#a64f92fcbb4009c206090a02d6c028c4e">nl.sense_os.service.phonestate.ProximitySensor</a>
+</li>
+<li>handleLightReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a85c55190747c826b33ed0e4571c37b8f">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleLinearAccelerationReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a891b72585c63f80b9004e78acf0b676b">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleLocationReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a17d7e0bcbd4e437f65361c3ed83d02a6">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleLoudnessReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a00e7b9a0952f81b6fc2bc871cf7a2b26">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleMessage()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html#a6bb85f44dbe70a403b053223b4d2ac53">nl.sense_os.service.commonsense.senddata.BufferTransmitHandler</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html#a7f569d5060b9472bc0a1df56ff63a1a1">nl.sense_os.service.commonsense.senddata.DataTransmitHandler</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_file_transmit_handler.html#a89d955316c577941791e4dfc3ed817e0">nl.sense_os.service.commonsense.senddata.FileTransmitHandler</a>
+</li>
+<li>handleMotionEnergyReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ab5671687dfa12bd8a37690d988f79557">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleNewMsgIntent()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a049854037bfb59abfc470a90374c1260">nl.sense_os.service.MsgHandler</a>
+</li>
+<li>handleNoiseSensorReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad2a4de111c33a3f4c258b2574133e826">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleOrientationReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a1daad3f22806788a26b78449a3ffd787">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handlePositionReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ab7ff905cf6d4599a3e31311e9edd8a6b">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handlePressureReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a64d65df4d60458aa7706bf4c551b73a4">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleProximityReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a73abc49e1b2411beb4b665e34b26070d">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleReachabilityReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a94555cb784206b9e6be00bdcbf738653">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleScreenActiviyReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad610a0eecbf65c33e087b5bb49e19de1">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleSendIntent()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#affce57b215b486d70f592eb4a1d70e82">nl.sense_os.service.MsgHandler</a>
+</li>
+<li>handleServiceStateReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9394a502b2193bb81d5224ead46276b4">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleSignalStrengthReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#ad9a9e17539a2ed426fe744305959d9af">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleTraveledDistance1HReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9c36c577849a1bda826ca56704a21471">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleUnreadMsgReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a09a9710459ca22949f50295adff99333">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>handleWifiScanReq()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a9f300ad1cd9631700157d0566e072b03">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>hashCode()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator_1_1_position_point.html#a2a4ee729394c0842762052c37063f194">nl.sense_os.service.location.TraveledDistanceEstimator.PositionPoint</a>
+</li>
 <li>hashPassword()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_sense_api.html#a991d3c60b54a82c168ff1e64afa9fdf6">nl.sense_os.service.commonsense.SenseApi</a>
+</li>
+<li>hasLinAccSensor
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#a9552e1b76b49ad5fb00e813b4ce019c2">nl.sense_os.service.motion.MotionEnergySensor</a>
 </li>
 <li>hasSubscriber()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#ac0a86034027cf1669ecb017ba699f08a">nl.sense_os.service.subscription.BaseDataProducer</a>
@@ -151,11 +276,56 @@ $(document).ready(function(){initNavTree('functions_h.html','');});
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#af723183e94bf0bf2c9ded48250abef68">nl.sense_os.service.subscription.BaseDataProducer</a>
 , <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html#abe0b8ac7a985f12ad3f48cfe844b9eff">nl.sense_os.service.subscription.DataProducer</a>
 </li>
+<li>hasValidResponse()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_a_t_command.html#a5a2cb722116f5eb84ed9c90bb5f99d56">nl.sense_os.service.external_sensors.OBD2Sensor.ATCommand</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command.html#af756a8ef75e11ca75e4248ed14feeccb">nl.sense_os.service.external_sensors.OBD2Sensor.OBD2Command</a>
+</li>
+<li>hayescommands
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html#a0e562ea89a417d1f09f4f7e87998d7b1">nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.StateMachine</a>
+</li>
+<li>HEART_RATE
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external_1_1_zephyr_bio_harness.html#a82a94d61289cfbc52c1b296ed3ed6ee4">nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrBioHarness</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external_1_1_zephyr_hx_m.html#a6c744b9fb4b742f72e08f7ef38d93b1f">nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrHxM</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#add094a71501bc459b9987363f522512c">nl.sense_os.service.constants.SensorData.SensorNames</a>
+</li>
+<li>HOST_ASIA
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a78b6c4efb2209d0702632f3ff220c401">nl.sense_os.service.provider.SNTP</a>
+</li>
+<li>HOST_EUROPE
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#aeb925d3d783442a0d8c2b282c984fd1d">nl.sense_os.service.provider.SNTP</a>
+</li>
+<li>HOST_NORTH_AMERICA
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a80a89bb00c1100145ccd1ff25954ec8b">nl.sense_os.service.provider.SNTP</a>
+</li>
+<li>HOST_OCEANIA
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#af1fb58e587b92bab635df01f10413473">nl.sense_os.service.provider.SNTP</a>
+</li>
+<li>HOST_SOUTH_AMERICA
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#ac9fa05b48c6f295a65fd5d86b646cdcc">nl.sense_os.service.provider.SNTP</a>
+</li>
+<li>HOST_WORLDWIDE
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a6f22c80ba71235a769777fb733d22eb2">nl.sense_os.service.provider.SNTP</a>
+</li>
 <li>humanReadableByteCount()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_util.html#afe040db1b147d711b5c6705205100ccc">nl.sense_os.service.constants.Util</a>
 </li>
+<li>HUMIDITY
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_ambience.html#aed594ee3546aad76c080ed36af8bd94a">nl.sense_os.service.constants.SensePrefs.Main.Ambience</a>
+</li>
 <li>HumiditySensor()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html#ad523718b781bf1fcdaea874ca37c4e2e">nl.sense_os.service.ambience.HumiditySensor</a>
+</li>
+<li>humiditySensor
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service.html#a0c6f2d3d946b59bb3b9e2f1474930f34">nl.sense_os.service.SenseService</a>
+</li>
+<li>hxmConnectThread
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d304547eaa76c09f327067d904be4b">nl.sense_os.service.external_sensors.ZephyrHxM</a>
+</li>
+<li>HxMConnectThread()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_hx_m_connect_thread.html#a3df1a0472df549f187260e4fdcf74866">nl.sense_os.service.external_sensors.ZephyrHxM.HxMConnectThread</a>
+</li>
+<li>hxmEnabled
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d5780be8d6f875bccdec55b6e22703">nl.sense_os.service.external_sensors.ZephyrHxM</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -163,7 +333,7 @@ $(document).ready(function(){initNavTree('functions_h.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

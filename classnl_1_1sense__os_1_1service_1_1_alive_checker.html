@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_al
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -106,6 +109,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_al
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1_alive_checker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.AliveChecker Class Reference</div>  </div>
@@ -122,8 +126,7 @@ Inheritance diagram for nl.sense_os.service.AliveChecker:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8b8f3da9c4ecb4b0ebdec912e02fb9b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b8f3da9c4ecb4b0ebdec912e02fb9b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onReceive</b> (Context context, Intent intent)</td></tr>
+<tr class="memitem:a8b8f3da9c4ecb4b0ebdec912e02fb9b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a8b8f3da9c4ecb4b0ebdec912e02fb9b7">onReceive</a> (Context context, Intent intent)</td></tr>
 <tr class="separator:a8b8f3da9c4ecb4b0ebdec912e02fb9b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -132,11 +135,74 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a4d0cc47a6268d6fe26543e6476ac4553"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ced9b5a5d6aa22f2b45ee48360b9de1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a4ced9b5a5d6aa22f2b45ee48360b9de1">stopChecks</a> (Context context)</td></tr>
 <tr class="separator:a4ced9b5a5d6aa22f2b45ee48360b9de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a48493453b8e7dc9487a383c4917cedda"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a48493453b8e7dc9487a383c4917cedda">TAG</a> = &quot;AliveChecker&quot;</td></tr>
+<tr class="separator:a48493453b8e7dc9487a383c4917cedda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72aacdccd0bc6eef32f32bcf66f29f9f"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a72aacdccd0bc6eef32f32bcf66f29f9f">REQ_CODE_NORMAL</a> = 0x0C471FE1</td></tr>
+<tr class="separator:a72aacdccd0bc6eef32f32bcf66f29f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab8b5f53259489ed27372f4c3a5afd04"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#aab8b5f53259489ed27372f4c3a5afd04">REQ_CODE_WAKEUP</a> = 0x0C471FE2</td></tr>
+<tr class="separator:aab8b5f53259489ed27372f4c3a5afd04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is responsible for checking if the <a class="el" href="classnl_1_1sense__os_1_1service_1_1_sense_service.html">SenseService</a> is still alive when it should be. It works by setting periodic alarm broadcasts that are received by this class. The Sense service calls <a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a4d0cc47a6268d6fe26543e6476ac4553">scheduleChecks(Context)</a> when it starts sensing.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="_alive_checker_8java_source.html#l00024">24</a> of file <a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a8b8f3da9c4ecb4b0ebdec912e02fb9b7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.AliveChecker.onReceive </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Intent&#160;</td>
+          <td class="paramname"><em>intent</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_alive_checker_8java_source.html#l00031">31</a> of file <a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                                                          {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a48493453b8e7dc9487a383c4917cedda">TAG</a>, <span class="stringliteral">&quot;Received broadcast&quot;</span>);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="comment">// check if the Sense service should be alive</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        SharedPreferences statusPrefs = context.getSharedPreferences(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a488096b47091f2079f31332ce198f698">SensePrefs.STATUS_PREFS</a>,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                Context.MODE_PRIVATE);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">boolean</span> alive = statusPrefs.getBoolean(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status.html#aa096fd526296b07d5cf8aa5ec41f2b6b">Status.MAIN</a>, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="comment">// if it should be alive, check if it really is still alive</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">true</span> == alive) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a48493453b8e7dc9487a383c4917cedda">TAG</a>, <span class="stringliteral">&quot;Sense should be alive: poke it&quot;</span>);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keyword">final</span> Intent serviceIntent = <span class="keyword">new</span> Intent(</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                    context.getString(R.string.action_sense_service));</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            serviceIntent.setPackage(context.getPackageName());</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="keywordflow">if</span> (null == context.startService(serviceIntent)) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a48493453b8e7dc9487a383c4917cedda">TAG</a>, <span class="stringliteral">&quot;Could not start Sense service!&quot;</span>);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="comment">// Sense service should NOT be alive: do nothing</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_alive_checker_html_a48493453b8e7dc9487a383c4917cedda"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a48493453b8e7dc9487a383c4917cedda">nl.sense_os.service.AliveChecker.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_alive_checker_8java_source.html#l00026">AliveChecker.java:26</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_html_a488096b47091f2079f31332ce198f698"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a488096b47091f2079f31332ce198f698">nl.sense_os.service.constants.SensePrefs.STATUS_PREFS</a></div><div class="ttdeci">static final String STATUS_PREFS</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00900">SensePrefs.java:900</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status_html_aa096fd526296b07d5cf8aa5ec41f2b6b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status.html#aa096fd526296b07d5cf8aa5ec41f2b6b">nl.sense_os.service.constants.SensePrefs.Status.MAIN</a></div><div class="ttdeci">static final String MAIN</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00794">SensePrefs.java:794</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a4d0cc47a6268d6fe26543e6476ac4553"></a>
 <div class="memitem">
 <div class="memproto">
@@ -166,6 +232,31 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_alive_checker_8java_source.html#l00059">59</a> of file <a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                                                       {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        Intent intent = <span class="keyword">new</span> Intent(context.getString(R.string.action_sense_alive_check_alarm));</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="comment">// try to check pretty often when the phone is awake</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        PendingIntent operation = PendingIntent.getBroadcast(context, <a class="code" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a72aacdccd0bc6eef32f32bcf66f29f9f">REQ_CODE_NORMAL</a>, intent, 0);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordtype">long</span> interval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordtype">long</span> triggerAt = SystemClock.elapsedRealtime() + interval;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        mgr.cancel(operation);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        mgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, triggerAt, interval, operation);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="comment">// make sure we wake up at least once an hour</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        operation = PendingIntent.getBroadcast(context, <a class="code" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#aab8b5f53259489ed27372f4c3a5afd04">REQ_CODE_WAKEUP</a>, intent, 0);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        interval = AlarmManager.INTERVAL_HOUR;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        triggerAt = SystemClock.elapsedRealtime() + interval;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        mgr.cancel(operation);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        mgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAt, interval,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                operation);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_alive_checker_html_aab8b5f53259489ed27372f4c3a5afd04"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#aab8b5f53259489ed27372f4c3a5afd04">nl.sense_os.service.AliveChecker.REQ_CODE_WAKEUP</a></div><div class="ttdeci">static final int REQ_CODE_WAKEUP</div><div class="ttdef"><b>Definition:</b> <a href="_alive_checker_8java_source.html#l00028">AliveChecker.java:28</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_alive_checker_html_a72aacdccd0bc6eef32f32bcf66f29f9f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a72aacdccd0bc6eef32f32bcf66f29f9f">nl.sense_os.service.AliveChecker.REQ_CODE_NORMAL</a></div><div class="ttdeci">static final int REQ_CODE_NORMAL</div><div class="ttdef"><b>Definition:</b> <a href="_alive_checker_8java_source.html#l00027">AliveChecker.java:27</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a4ced9b5a5d6aa22f2b45ee48360b9de1"></a>
@@ -197,18 +288,95 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_alive_checker_8java_source.html#l00087">87</a> of file <a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                                                   {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        Intent intent = <span class="keyword">new</span> Intent(context.getString(R.string.action_sense_alive_check_alarm));</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        mgr.cancel(PendingIntent.getBroadcast(context, <a class="code" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a72aacdccd0bc6eef32f32bcf66f29f9f">REQ_CODE_NORMAL</a>, intent, 0));</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        mgr.cancel(PendingIntent.getBroadcast(context, <a class="code" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#aab8b5f53259489ed27372f4c3a5afd04">REQ_CODE_WAKEUP</a>, intent, 0));</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_alive_checker_html_aab8b5f53259489ed27372f4c3a5afd04"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#aab8b5f53259489ed27372f4c3a5afd04">nl.sense_os.service.AliveChecker.REQ_CODE_WAKEUP</a></div><div class="ttdeci">static final int REQ_CODE_WAKEUP</div><div class="ttdef"><b>Definition:</b> <a href="_alive_checker_8java_source.html#l00028">AliveChecker.java:28</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_alive_checker_html_a72aacdccd0bc6eef32f32bcf66f29f9f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html#a72aacdccd0bc6eef32f32bcf66f29f9f">nl.sense_os.service.AliveChecker.REQ_CODE_NORMAL</a></div><div class="ttdeci">static final int REQ_CODE_NORMAL</div><div class="ttdef"><b>Definition:</b> <a href="_alive_checker_8java_source.html#l00027">AliveChecker.java:27</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a72aacdccd0bc6eef32f32bcf66f29f9f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.AliveChecker.REQ_CODE_NORMAL = 0x0C471FE1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_alive_checker_8java_source.html#l00027">27</a> of file <a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aab8b5f53259489ed27372f4c3a5afd04"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.AliveChecker.REQ_CODE_WAKEUP = 0x0C471FE2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_alive_checker_8java_source.html#l00028">28</a> of file <a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a48493453b8e7dc9487a383c4917cedda"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.AliveChecker.TAG = &quot;AliveChecker&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_alive_checker_8java_source.html#l00026">26</a> of file <a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/AliveChecker.java</li>
+<li>src/nl/sense_os/service/<a class="el" href="_alive_checker_8java_source.html">AliveChecker.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html">AliveChecker</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_alive_checker.html">AliveChecker</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -1,4 +1,23 @@
 var searchData=
 [
-  ['page_5fsize',['PAGE_SIZE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#af141adadee96410fdfd4c2ab0ff495e7',1,'nl::sense_os::service::constants::SenseUrls']]]
+  ['g',['G',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a50750a16a63e48d8caa4f85fb7c78345',1,'nl::sense_os::service::motion::FallDetector']]],
+  ['gcm_5fregistration_5fid',['GCM_REGISTRATION_ID',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a2922f10e5c3b9f6fded084e6dca6f90c',1,'nl::sense_os::service::constants::SensePrefs::Auth']]],
+  ['get_5fcommonsense_5fdata',['GET_COMMONSENSE_DATA',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#acfc690cb7c13cc81a82e80a27515771c',1,'com::phonegap::plugins::sense::SensePlugin::Actions']]],
+  ['get_5fdata',['GET_DATA',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#ac48f58258af068d7dece005d8b7abb2f',1,'com::phonegap::plugins::sense::SensePlugin::Actions']]],
+  ['get_5fpref',['GET_PREF',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a9d29fdbfe61a91928b479af4f9011c08',1,'com::phonegap::plugins::sense::SensePlugin::Actions']]],
+  ['get_5fsession',['GET_SESSION',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a285aced983abb1758d2820337c1e6175',1,'com::phonegap::plugins::sense::SensePlugin::Actions']]],
+  ['get_5fstatus',['GET_STATUS',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#ab29408753a95ac0d70ff39eae5393888',1,'com::phonegap::plugins::sense::SensePlugin::Actions']]],
+  ['getstatuscallback',['getStatusCallback',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#a6ce53f666fecca7fd50a6839c5fb45c5',1,'com::phonegap::plugins::sense::SensePlugin']]],
+  ['give_5ffeedback',['GIVE_FEEDBACK',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a1f3073c3ab04c72ccb7a5d7c5bba026a',1,'com::phonegap::plugins::sense::SensePlugin::Actions']]],
+  ['googleapiclient',['googleApiClient',['../classnl_1_1sense__os_1_1service_1_1location_1_1_fused_location_sensor.html#afa38a2a1dc3bacb1354e5550827e37a0',1,'nl::sense_os::service::location::FusedLocationSensor']]],
+  ['gotstart',['gotStart',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_process_zephyr_hx_m_message.html#a5d9303b7b12860f3858bf092d46d9298',1,'nl::sense_os::service::external_sensors::ZephyrHxM::ProcessZephyrHxMMessage']]],
+  ['gps',['GPS',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_location.html#a8dfa53d1659f12e813edf4515ca34be0',1,'nl.sense_os.service.constants.SensePrefs.Main.Location.GPS()'],['../classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended.html#af57cd171370e0e1f16407f6da24e1275',1,'nl.sense_os.service.ctrl.CtrlExtended.GPS()']]],
+  ['gpslistener',['gpsListener',['../classnl_1_1sense__os_1_1service_1_1location_1_1_location_sensor.html#a133756c3ec207fa2831961213b4a058f',1,'nl::sense_os::service::location::LocationSensor']]],
+  ['gravity',['gravity',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_acceleration_filter.html#ab5df40e707208b0924a20a3108400b6e',1,'nl::sense_os::service::motion::AccelerationFilter']]],
+  ['group_5fusers',['GROUP_USERS',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#a7afa53fce8658fb28ec586a939f341b8',1,'nl::sense_os::service::constants::SenseUrls']]],
+  ['group_5fusers_5fdev',['GROUP_USERS_DEV',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html#ae86418ba4512871a1a7e90d785ec4bd0',1,'nl::sense_os::service::constants::SenseUrls']]],
+  ['gyro',['GYRO',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a8470481df2ef1e7156e79952630342ae',1,'nl::sense_os::service::constants::SensorData::SensorNames']]],
+  ['gyro_5fburst',['GYRO_BURST',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#aeaf65cb4aad936a8bcfc0b359ad53fb1',1,'nl::sense_os::service::constants::SensorData::SensorNames']]],
+  ['gyroburstsensor',['gyroBurstSensor',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#ab235fd644e247c04eb6acaca1678fa37',1,'nl::sense_os::service::motion::MotionSensor']]],
+  ['gyroscope',['GYROSCOPE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_motion.html#a3a848695c92737df2e5b20528a2ac3bd',1,'nl::sense_os::service::constants::SensePrefs::Main::Motion']]]
 ];

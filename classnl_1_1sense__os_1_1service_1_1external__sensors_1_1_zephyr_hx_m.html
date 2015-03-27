@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -106,6 +109,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ext
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.external_sensors.ZephyrHxM Class Reference</div>  </div>
@@ -122,22 +128,26 @@ Inheritance diagram for nl.sense_os.service.external_sensors.ZephyrHxM:</div>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_hx_m_connect_thread.html">HxMConnectThread</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_process_zephyr_hx_m_message.html">ProcessZephyrHxMMessage</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_update_thread.html">UpdateThread</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9cbef6a855ea5e1d6286d985825c5047"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9cbef6a855ea5e1d6286d985825c5047"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ZephyrHxM</b> (Context context)</td></tr>
+<tr class="memitem:a9cbef6a855ea5e1d6286d985825c5047"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a9cbef6a855ea5e1d6286d985825c5047">ZephyrHxM</a> (Context <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">context</a>)</td></tr>
 <tr class="separator:a9cbef6a855ea5e1d6286d985825c5047"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a027c976c9519858b3da2cc3da3acd989"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a027c976c9519858b3da2cc3da3acd989"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getUpdateInterval</b> ()</td></tr>
+<tr class="memitem:a027c976c9519858b3da2cc3da3acd989"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a027c976c9519858b3da2cc3da3acd989">getUpdateInterval</a> ()</td></tr>
 <tr class="separator:a027c976c9519858b3da2cc3da3acd989"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79f5ecf2e72944520603173b24a19b6b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a79f5ecf2e72944520603173b24a19b6b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setUpdateInterval</b> (int updateInterval)</td></tr>
+<tr class="memitem:a79f5ecf2e72944520603173b24a19b6b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a79f5ecf2e72944520603173b24a19b6b">setUpdateInterval</a> (int <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">updateInterval</a>)</td></tr>
 <tr class="separator:a79f5ecf2e72944520603173b24a19b6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab84bd80ed902828f614c2079aef10311"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab84bd80ed902828f614c2079aef10311"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>startHxM</b> (int interval)</td></tr>
+<tr class="memitem:ab84bd80ed902828f614c2079aef10311"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ab84bd80ed902828f614c2079aef10311">startHxM</a> (int interval)</td></tr>
 <tr class="separator:ab84bd80ed902828f614c2079aef10311"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0625eb250a05c3d496de4c696a50b375"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0625eb250a05c3d496de4c696a50b375"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stopHxM</b> ()</td></tr>
+<tr class="memitem:a0625eb250a05c3d496de4c696a50b375"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a0625eb250a05c3d496de4c696a50b375">stopHxM</a> ()</td></tr>
 <tr class="separator:a0625eb250a05c3d496de4c696a50b375"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
 <tr class="memitem:a714854a4b022953b78638ddbb67c2259 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a714854a4b022953b78638ddbb67c2259">addSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
@@ -149,6 +159,59 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopHxM</b> ()</td></
 <tr class="memitem:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#ae6fca630e7e8723e599a8492886a9887">removeSubscriber</a> (<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> consumer)</td></tr>
 <tr class="separator:ae6fca630e7e8723e599a8492886a9887 inherit pub_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aa6f1c70cca3d1b958c7d5f86af8f7eb0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aa6f1c70cca3d1b958c7d5f86af8f7eb0">sendNotification</a> (String text)</td></tr>
+<tr class="separator:aa6f1c70cca3d1b958c7d5f86af8f7eb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a713574d0f7e635130a086e11d3177100"><td class="memItemLeft" align="right" valign="top">BluetoothAdapter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a713574d0f7e635130a086e11d3177100">btAdapter</a></td></tr>
+<tr class="separator:a713574d0f7e635130a086e11d3177100"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23930415ee6800d12f68e09247e23a66"><td class="memItemLeft" align="right" valign="top">final Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">context</a></td></tr>
+<tr class="separator:a23930415ee6800d12f68e09247e23a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65d5780be8d6f875bccdec55b6e22703"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d5780be8d6f875bccdec55b6e22703">hxmEnabled</a> = false</td></tr>
+<tr class="separator:a65d5780be8d6f875bccdec55b6e22703"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3b75f4b47e402398ce90bceaf239e24"><td class="memItemLeft" align="right" valign="top">UUID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ae3b75f4b47e402398ce90bceaf239e24">serial_uid</a> = UUID.fromString(&quot;00001101-0000-1000-8000-00805f9b34fb&quot;)</td></tr>
+<tr class="separator:ae3b75f4b47e402398ce90bceaf239e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6b6eaa9b179e4835fa13368d7f03f44"><td class="memItemLeft" align="right" valign="top">HandlerThread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ae6b6eaa9b179e4835fa13368d7f03f44">connectHT</a> = null</td></tr>
+<tr class="separator:ae6b6eaa9b179e4835fa13368d7f03f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a072c9fd2a1ff48e473573439a1bc00f7"><td class="memItemLeft" align="right" valign="top">HandlerThread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a072c9fd2a1ff48e473573439a1bc00f7">updateHT</a> = null</td></tr>
+<tr class="separator:a072c9fd2a1ff48e473573439a1bc00f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af644bf6f65a5b460a667716cde26f9f2"><td class="memItemLeft" align="right" valign="top">Handler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#af644bf6f65a5b460a667716cde26f9f2">connectHandler</a> = null</td></tr>
+<tr class="separator:af644bf6f65a5b460a667716cde26f9f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e759550b8d101d3b04f7f6e917f919e"><td class="memItemLeft" align="right" valign="top">Handler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a7e759550b8d101d3b04f7f6e917f919e">updateHandler</a> = null</td></tr>
+<tr class="separator:a7e759550b8d101d3b04f7f6e917f919e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff86bb747f80d28c938e959286dffcf2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">updateInterval</a> = 0</td></tr>
+<tr class="separator:aff86bb747f80d28c938e959286dffcf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5e354cfaac721b555741809e27f5c6f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_update_thread.html">UpdateThread</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ab5e354cfaac721b555741809e27f5c6f">updateThread</a> = null</td></tr>
+<tr class="separator:ab5e354cfaac721b555741809e27f5c6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35f97d7df0c695ed1a8a458a651784f7"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a35f97d7df0c695ed1a8a458a651784f7">lastSampleTime</a> = 0</td></tr>
+<tr class="separator:a35f97d7df0c695ed1a8a458a651784f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65d304547eaa76c09f327067d904be4b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_hx_m_connect_thread.html">HxMConnectThread</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d304547eaa76c09f327067d904be4b">hxmConnectThread</a> = null</td></tr>
+<tr class="separator:a65d304547eaa76c09f327067d904be4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00e5f640f3ebcf3e692a09c656a97436"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a00e5f640f3ebcf3e692a09c656a97436">streamEnabled</a> = false</td></tr>
+<tr class="separator:a00e5f640f3ebcf3e692a09c656a97436"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9e1fd4be9dd5d5a9c5d5c3ae3211b4d"><td class="memItemLeft" align="right" valign="top">BluetoothSocket&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#af9e1fd4be9dd5d5a9c5d5c3ae3211b4d">btSocket</a> = null</td></tr>
+<tr class="separator:af9e1fd4be9dd5d5a9c5d5c3ae3211b4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4605cc9b2c441d7b5ce88765a3ae8972"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_process_zephyr_hx_m_message.html">ProcessZephyrHxMMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a4605cc9b2c441d7b5ce88765a3ae8972">processZHxMMessage</a> = null</td></tr>
+<tr class="separator:a4605cc9b2c441d7b5ce88765a3ae8972"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1607a1061ce6539daee59f383b7c424"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ae1607a1061ce6539daee59f383b7c424">notifyOnNoConnection</a> = true</td></tr>
+<tr class="separator:ae1607a1061ce6539daee59f383b7c424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae23213e26bcafeb2d07d7da12e3cc86c"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ae23213e26bcafeb2d07d7da12e3cc86c">notifyOnEmptyBattery</a> = true</td></tr>
+<tr class="separator:ae23213e26bcafeb2d07d7da12e3cc86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a019f2c58213dfd2ae6900e2e4fb656d6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a019f2c58213dfd2ae6900e2e4fb656d6">connectionErrorCount</a> = 0</td></tr>
+<tr class="separator:a019f2c58213dfd2ae6900e2e4fb656d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c2775270e6921ddc8b2ec850e1f2ce4"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a4c2775270e6921ddc8b2ec850e1f2ce4">lastEmptyBatteryNotify</a> = 0</td></tr>
+<tr class="separator:a4c2775270e6921ddc8b2ec850e1f2ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f790cd9fde8e905f443b12e779381e5"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a0f790cd9fde8e905f443b12e779381e5">lastNoChestConnectionNofify</a> = 0</td></tr>
+<tr class="separator:a0f790cd9fde8e905f443b12e779381e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a2e8435196bc93dae6833d56e9522ad5d"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a2e8435196bc93dae6833d56e9522ad5d">TAG</a> = &quot;Zephyr HxM&quot;</td></tr>
+<tr class="separator:a2e8435196bc93dae6833d56e9522ad5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
@@ -159,8 +222,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">synchronized void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a> (<a class="el" href="classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html">SensorDataPoint</a> dataPoint)</td></tr>
 <tr class="separator:a670858394c8a97019cb43963e045447a inherit pro_methods_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td></tr>
-<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28d774f7e8fb7ed3dee590d0a88ef057"></a>
-final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &quot;BaseDataProducer&quot;</td></tr>
+<tr class="memitem:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a> = &quot;BaseDataProducer&quot;</td></tr>
 <tr class="separator:a28d774f7e8fb7ed3dee590d0a88ef057 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a> = new ArrayList&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt;()</td></tr>
 <tr class="separator:a7789d07d3a05f0534f71e8b1d846d960 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -168,16 +230,683 @@ final String&#160;</td><td class="memItemRight" valign="bottom"><b>TAG</b> = &qu
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents the Zephyr HxM sensor. When started, the phone tries to connect to the device via Bluetooth and requests sensor data.</p>
 <dl class="section author"><dt>Author</dt><dd>Ted Schmidt <a href="#" onclick="location.href='mai'+'lto:'+'ted'+'@s'+'ens'+'e-'+'os.'+'nl'; return false;">ted@s<span style="display: none;">.nosp@m.</span>ense<span style="display: none;">.nosp@m.</span>-os.n<span style="display: none;">.nosp@m.</span>l</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/external_sensors/ZephyrHxM.java</li>
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00046">46</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a9cbef6a855ea5e1d6286d985825c5047"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.external_sensors.ZephyrHxM.ZephyrHxM </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00553">553</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;                                          {</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;                this.context = <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">context</a>;</div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a23930415ee6800d12f68e09247e23a66"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">nl.sense_os.service.external_sensors.ZephyrHxM.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00530">ZephyrHxM.java:530</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a027c976c9519858b3da2cc3da3acd989"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.external_sensors.ZephyrHxM.getUpdateInterval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00557">557</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;                                       {</div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">updateInterval</a>;</div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_aff86bb747f80d28c938e959286dffcf2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">nl.sense_os.service.external_sensors.ZephyrHxM.updateInterval</a></div><div class="ttdeci">int updateInterval</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00537">ZephyrHxM.java:537</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="aa6f1c70cca3d1b958c7d5f86af8f7eb0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.ZephyrHxM.sendNotification </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00561">561</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;                                                   {</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;                NotificationCompat.Builder builder = <span class="keyword">new</span> NotificationCompat.Builder(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">context</a>);</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;                builder.setSmallIcon(R.drawable.ic_stat_sense_warning);</div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;                builder.setContentTitle(context.getString(R.string.stat_notify_title));</div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;                builder.setTicker(text);</div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;                builder.setWhen(System.currentTimeMillis());</div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;                <span class="comment">// set flags</span></div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;                builder.setOnlyAlertOnce(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;                builder.setDefaults(Notification.DEFAULT_ALL);</div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;                builder.setAutoCancel(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;</div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;                <span class="comment">// start sense when notification is pressed</span></div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;                <span class="keyword">final</span> Intent notifIntent = <span class="keyword">new</span> Intent(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">context</a>.getString(R.string.action_sense_app));</div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;                notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;                PendingIntent contentIntent = PendingIntent.getActivity(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">context</a>, 0, notifIntent, 0);</div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;                builder.setContentIntent(contentIntent);</div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;</div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;                NotificationManager mgr = (NotificationManager) context</div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;                                .getSystemService(Context.NOTIFICATION_SERVICE);</div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;                mgr.notify(2, builder.build());</div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a23930415ee6800d12f68e09247e23a66"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a23930415ee6800d12f68e09247e23a66">nl.sense_os.service.external_sensors.ZephyrHxM.context</a></div><div class="ttdeci">final Context context</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00530">ZephyrHxM.java:530</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a79f5ecf2e72944520603173b24a19b6b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.ZephyrHxM.setUpdateInterval </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>updateInterval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00585">585</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;                                                          {</div>
+<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;                this.updateInterval = <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">updateInterval</a>;</div>
+<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_aff86bb747f80d28c938e959286dffcf2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">nl.sense_os.service.external_sensors.ZephyrHxM.updateInterval</a></div><div class="ttdeci">int updateInterval</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00537">ZephyrHxM.java:537</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ab84bd80ed902828f614c2079aef10311"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.ZephyrHxM.startHxM </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00589">589</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;                                           {</div>
+<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;                Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a2e8435196bc93dae6833d56e9522ad5d">TAG</a>, <span class="stringliteral">&quot;Start HxM...&quot;</span>);</div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;</div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">updateInterval</a> = interval;</div>
+<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d5780be8d6f875bccdec55b6e22703">hxmEnabled</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;                <span class="comment">// create the handler threads</span></div>
+<div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ae6b6eaa9b179e4835fa13368d7f03f44">connectHT</a> = <span class="keyword">new</span> HandlerThread(<span class="stringliteral">&quot;Hxm Connect Handler Thread&quot;</span>);</div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a072c9fd2a1ff48e473573439a1bc00f7">updateHT</a> = <span class="keyword">new</span> HandlerThread(<span class="stringliteral">&quot;Hxm Update Handler Thread&quot;</span>);</div>
+<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;                connectHT.start();</div>
+<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;                updateHT.start();</div>
+<div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160;</div>
+<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;                <span class="comment">// get the looper</span></div>
+<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#af644bf6f65a5b460a667716cde26f9f2">connectHandler</a> = <span class="keyword">new</span> Handler(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ae6b6eaa9b179e4835fa13368d7f03f44">connectHT</a>.getLooper());</div>
+<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a7e759550b8d101d3b04f7f6e917f919e">updateHandler</a> = <span class="keyword">new</span> Handler(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a072c9fd2a1ff48e473573439a1bc00f7">updateHT</a>.getLooper());</div>
+<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;</div>
+<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;                Thread t = <span class="keyword">new</span> Thread() {</div>
+<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;</div>
+<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;                        @Override</div>
+<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;                        <span class="keyword">public</span> <span class="keywordtype">void</span> run() {</div>
+<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;                                connectHandler.post(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d304547eaa76c09f327067d904be4b">hxmConnectThread</a> = <span class="keyword">new</span> HxMConnectThread());</div>
+<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;                        }</div>
+<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;                };</div>
+<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;                connectHandler.post(t);</div>
+<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a65d5780be8d6f875bccdec55b6e22703"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d5780be8d6f875bccdec55b6e22703">nl.sense_os.service.external_sensors.ZephyrHxM.hxmEnabled</a></div><div class="ttdeci">boolean hxmEnabled</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00531">ZephyrHxM.java:531</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_aff86bb747f80d28c938e959286dffcf2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">nl.sense_os.service.external_sensors.ZephyrHxM.updateInterval</a></div><div class="ttdeci">int updateInterval</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00537">ZephyrHxM.java:537</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_af644bf6f65a5b460a667716cde26f9f2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#af644bf6f65a5b460a667716cde26f9f2">nl.sense_os.service.external_sensors.ZephyrHxM.connectHandler</a></div><div class="ttdeci">Handler connectHandler</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00535">ZephyrHxM.java:535</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a072c9fd2a1ff48e473573439a1bc00f7"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a072c9fd2a1ff48e473573439a1bc00f7">nl.sense_os.service.external_sensors.ZephyrHxM.updateHT</a></div><div class="ttdeci">HandlerThread updateHT</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00534">ZephyrHxM.java:534</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_ae6b6eaa9b179e4835fa13368d7f03f44"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ae6b6eaa9b179e4835fa13368d7f03f44">nl.sense_os.service.external_sensors.ZephyrHxM.connectHT</a></div><div class="ttdeci">HandlerThread connectHT</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00533">ZephyrHxM.java:533</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a7e759550b8d101d3b04f7f6e917f919e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a7e759550b8d101d3b04f7f6e917f919e">nl.sense_os.service.external_sensors.ZephyrHxM.updateHandler</a></div><div class="ttdeci">Handler updateHandler</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00536">ZephyrHxM.java:536</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a65d304547eaa76c09f327067d904be4b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d304547eaa76c09f327067d904be4b">nl.sense_os.service.external_sensors.ZephyrHxM.hxmConnectThread</a></div><div class="ttdeci">HxMConnectThread hxmConnectThread</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00541">ZephyrHxM.java:541</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a2e8435196bc93dae6833d56e9522ad5d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a2e8435196bc93dae6833d56e9522ad5d">nl.sense_os.service.external_sensors.ZephyrHxM.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00527">ZephyrHxM.java:527</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a0625eb250a05c3d496de4c696a50b375"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.external_sensors.ZephyrHxM.stopHxM </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00614">614</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;                              {</div>
+<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;                Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a2e8435196bc93dae6833d56e9522ad5d">TAG</a>, <span class="stringliteral">&quot;Stop HxM...&quot;</span>);</div>
+<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;</div>
+<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d5780be8d6f875bccdec55b6e22703">hxmEnabled</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;                        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d304547eaa76c09f327067d904be4b">hxmConnectThread</a> != null) {</div>
+<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;                                hxmConnectThread.stop();</div>
+<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;                                connectHandler.removeCallbacks(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d304547eaa76c09f327067d904be4b">hxmConnectThread</a>);</div>
+<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;                        }</div>
+<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;                        connectHT.getLooper().quit();</div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;                        updateHT.getLooper().quit();</div>
+<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;                } <span class="keywordflow">catch</span> (Exception e) {</div>
+<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;                        Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a2e8435196bc93dae6833d56e9522ad5d">TAG</a>, <span class="stringliteral">&quot;Exception in stopping Bluetooth scan thread:&quot;</span>, e);</div>
+<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;                }</div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a65d5780be8d6f875bccdec55b6e22703"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d5780be8d6f875bccdec55b6e22703">nl.sense_os.service.external_sensors.ZephyrHxM.hxmEnabled</a></div><div class="ttdeci">boolean hxmEnabled</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00531">ZephyrHxM.java:531</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a65d304547eaa76c09f327067d904be4b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a65d304547eaa76c09f327067d904be4b">nl.sense_os.service.external_sensors.ZephyrHxM.hxmConnectThread</a></div><div class="ttdeci">HxMConnectThread hxmConnectThread</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00541">ZephyrHxM.java:541</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_html_a2e8435196bc93dae6833d56e9522ad5d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a2e8435196bc93dae6833d56e9522ad5d">nl.sense_os.service.external_sensors.ZephyrHxM.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_zephyr_hx_m_8java_source.html#l00527">ZephyrHxM.java:527</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a713574d0f7e635130a086e11d3177100"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothAdapter nl.sense_os.service.external_sensors.ZephyrHxM.btAdapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00529">529</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af9e1fd4be9dd5d5a9c5d5c3ae3211b4d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BluetoothSocket nl.sense_os.service.external_sensors.ZephyrHxM.btSocket = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00544">544</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af644bf6f65a5b460a667716cde26f9f2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Handler nl.sense_os.service.external_sensors.ZephyrHxM.connectHandler = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00535">535</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae6b6eaa9b179e4835fa13368d7f03f44"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HandlerThread nl.sense_os.service.external_sensors.ZephyrHxM.connectHT = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00533">533</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a019f2c58213dfd2ae6900e2e4fb656d6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.external_sensors.ZephyrHxM.connectionErrorCount = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00549">549</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a23930415ee6800d12f68e09247e23a66"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final Context nl.sense_os.service.external_sensors.ZephyrHxM.context</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00530">530</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a65d304547eaa76c09f327067d904be4b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_hx_m_connect_thread.html">HxMConnectThread</a> nl.sense_os.service.external_sensors.ZephyrHxM.hxmConnectThread = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00541">541</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a65d5780be8d6f875bccdec55b6e22703"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.ZephyrHxM.hxmEnabled = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00531">531</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4c2775270e6921ddc8b2ec850e1f2ce4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.external_sensors.ZephyrHxM.lastEmptyBatteryNotify = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00550">550</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0f790cd9fde8e905f443b12e779381e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.external_sensors.ZephyrHxM.lastNoChestConnectionNofify = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00551">551</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a35f97d7df0c695ed1a8a458a651784f7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.external_sensors.ZephyrHxM.lastSampleTime = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00540">540</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae23213e26bcafeb2d07d7da12e3cc86c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.ZephyrHxM.notifyOnEmptyBattery = true</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00548">548</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae1607a1061ce6539daee59f383b7c424"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.ZephyrHxM.notifyOnNoConnection = true</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00547">547</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4605cc9b2c441d7b5ce88765a3ae8972"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_process_zephyr_hx_m_message.html">ProcessZephyrHxMMessage</a> nl.sense_os.service.external_sensors.ZephyrHxM.processZHxMMessage = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00545">545</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae3b75f4b47e402398ce90bceaf239e24"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">UUID nl.sense_os.service.external_sensors.ZephyrHxM.serial_uid = UUID.fromString(&quot;00001101-0000-1000-8000-00805f9b34fb&quot;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00532">532</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a00e5f640f3ebcf3e692a09c656a97436"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.external_sensors.ZephyrHxM.streamEnabled = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00543">543</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2e8435196bc93dae6833d56e9522ad5d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.external_sensors.ZephyrHxM.TAG = &quot;Zephyr HxM&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00527">527</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7e759550b8d101d3b04f7f6e917f919e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Handler nl.sense_os.service.external_sensors.ZephyrHxM.updateHandler = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00536">536</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a072c9fd2a1ff48e473573439a1bc00f7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HandlerThread nl.sense_os.service.external_sensors.ZephyrHxM.updateHT = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00534">534</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aff86bb747f80d28c938e959286dffcf2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.external_sensors.ZephyrHxM.updateInterval = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00537">537</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab5e354cfaac721b555741809e27f5c6f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_update_thread.html">UpdateThread</a> nl.sense_os.service.external_sensors.ZephyrHxM.updateThread = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_zephyr_hx_m_8java_source.html#l00538">538</a> of file <a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/external_sensors/<a class="el" href="_zephyr_hx_m_8java_source.html">ZephyrHxM.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>external_sensors</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html">ZephyrHxM</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1external__sensors.html">external_sensors</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html">ZephyrHxM</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

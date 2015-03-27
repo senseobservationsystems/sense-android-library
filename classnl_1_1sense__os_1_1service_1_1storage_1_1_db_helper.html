@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sto
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sto
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pac-static-attribs">Static Package Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.storage.DbHelper Class Reference</div>  </div>
@@ -123,21 +129,44 @@ Inheritance diagram for nl.sense_os.service.storage.DbHelper:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa8d78dfbf59fd0a78997655acf3f2b4b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#aa8d78dfbf59fd0a78997655acf3f2b4b">DbHelper</a> (Context context, boolean persistent)</td></tr>
 <tr class="separator:aa8d78dfbf59fd0a78997655acf3f2b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a377eaee19787b5eee8a0a5b6ab254934"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a377eaee19787b5eee8a0a5b6ab254934"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onCreate</b> (SQLiteDatabase db)</td></tr>
+<tr class="memitem:a377eaee19787b5eee8a0a5b6ab254934"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a377eaee19787b5eee8a0a5b6ab254934">onCreate</a> (SQLiteDatabase db)</td></tr>
 <tr class="separator:a377eaee19787b5eee8a0a5b6ab254934"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab525e94c0507238506f206699fd7fd11"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab525e94c0507238506f206699fd7fd11"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onUpgrade</b> (SQLiteDatabase db, int oldVers, int newVers)</td></tr>
+<tr class="memitem:ab525e94c0507238506f206699fd7fd11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ab525e94c0507238506f206699fd7fd11">onUpgrade</a> (SQLiteDatabase db, int oldVers, int newVers)</td></tr>
 <tr class="separator:ab525e94c0507238506f206699fd7fd11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae930f23fbd195bf1a097f36baf902424"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae930f23fbd195bf1a097f36baf902424"></a>
-SQLiteDatabase&#160;</td><td class="memItemRight" valign="bottom"><b>getWritableDatabase</b> ()</td></tr>
+<tr class="memitem:ae930f23fbd195bf1a097f36baf902424"><td class="memItemLeft" align="right" valign="top">SQLiteDatabase&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ae930f23fbd195bf1a097f36baf902424">getWritableDatabase</a> ()</td></tr>
 <tr class="separator:ae930f23fbd195bf1a097f36baf902424"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92361439356a13d08e1fa68e7fe9951a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a92361439356a13d08e1fa68e7fe9951a"></a>
-SQLiteDatabase&#160;</td><td class="memItemRight" valign="bottom"><b>getReadableDatabase</b> ()</td></tr>
+<tr class="memitem:a92361439356a13d08e1fa68e7fe9951a"><td class="memItemLeft" align="right" valign="top">SQLiteDatabase&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a92361439356a13d08e1fa68e7fe9951a">getReadableDatabase</a> ()</td></tr>
 <tr class="separator:a92361439356a13d08e1fa68e7fe9951a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-static-attribs"></a>
+Static Package Attributes</h2></td></tr>
+<tr class="memitem:a5b1b52a8e139eb82acf8d7df620ad92b"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a5b1b52a8e139eb82acf8d7df620ad92b">TABLE</a> = &quot;persisted_values&quot;</td></tr>
+<tr class="separator:a5b1b52a8e139eb82acf8d7df620ad92b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a65beb57353c2f11f0376e3953b626280"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a65beb57353c2f11f0376e3953b626280">setPassphrase</a> (String imei)</td></tr>
+<tr class="separator:a65beb57353c2f11f0376e3953b626280"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a379ca33c7cbc2f78a863f42ffe0b8dda"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a379ca33c7cbc2f78a863f42ffe0b8dda">DATABASE_NAME</a> = &quot;persitent_storage.sqlite3&quot;</td></tr>
+<tr class="separator:a379ca33c7cbc2f78a863f42ffe0b8dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7667f58f3b53ed65ad83def97f58c5a3"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a7667f58f3b53ed65ad83def97f58c5a3">DATABASE_VERSION</a> = 4</td></tr>
+<tr class="separator:a7667f58f3b53ed65ad83def97f58c5a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a39d431b908d78b51297187335bc3d2"><td class="memItemLeft" align="right" valign="top">static SharedPreferences&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a8a39d431b908d78b51297187335bc3d2">sMainPrefs</a></td></tr>
+<tr class="separator:a8a39d431b908d78b51297187335bc3d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52182f4e680037e3f6299dbc13ae7638"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a52182f4e680037e3f6299dbc13ae7638">DEFAULT_PASSPHRASE_SALT</a> = &quot;tUI@IBhf3J6o^G*&amp;dno3yH!yC*E5#3qy&quot;</td></tr>
+<tr class="separator:a52182f4e680037e3f6299dbc13ae7638"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85b2c4235c0a78f787ec84729e254471"><td class="memItemLeft" align="right" valign="top">static String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">passphrase</a> = &quot;&quot;</td></tr>
+<tr class="separator:a85b2c4235c0a78f787ec84729e254471"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b407f2fbe51a8e216c0355403697a90"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">TAG</a> = &quot;DbHelper&quot;</td></tr>
+<tr class="separator:a1b407f2fbe51a8e216c0355403697a90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Helper class that assist in creating, opening and managing the SQLite3 database for data points. </p>
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00021">21</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aa8d78dfbf59fd0a78997655acf3f2b4b"></a>
 <div class="memitem">
@@ -162,7 +191,7 @@ SQLiteDatabase&#160;</td><td class="memItemRight" valign="bottom"><b>getReadable
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Constructor. The database is not actually created or opened until one of <a class="el" href="">getWritableDatabase()</a> or <a class="el" href="">getReadableDatabase()</a> is called.</p>
+<p>Constructor. The database is not actually created or opened until one of <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ae930f23fbd195bf1a097f36baf902424">getWritableDatabase()</a> or <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a92361439356a13d08e1fa68e7fe9951a">getReadableDatabase()</a> is called.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">context</td><td>to use to open or create the database </td></tr>
@@ -171,18 +200,404 @@ SQLiteDatabase&#160;</td><td class="memItemRight" valign="bottom"><b>getReadable
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00055">55</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                                                         {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="comment">// if the database name is null, it will be created in-memory</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        super(context, persistent ? <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a379ca33c7cbc2f78a863f42ffe0b8dda">DATABASE_NAME</a> : null, null, <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a7667f58f3b53ed65ad83def97f58c5a3">DATABASE_VERSION</a>);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">if</span> (null == <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a8a39d431b908d78b51297187335bc3d2">sMainPrefs</a>) {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a8a39d431b908d78b51297187335bc3d2">sMainPrefs</a> = context.getSharedPreferences(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">SensePrefs.MAIN_PREFS</a>,</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                                                      Context.MODE_PRIVATE);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordtype">boolean</span> encrypt = sMainPrefs.getBoolean(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a45c579b18a8224e01124d06a5b95f30a">Advanced.ENCRYPT_DATABASE</a>, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">if</span> (encrypt) {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            String imei = telephonyManager.getDeviceId();</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a65beb57353c2f11f0376e3953b626280">setPassphrase</a>(imei);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        SQLiteDatabase.loadLibs(context);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="comment">// check for old plain database</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">if</span> (persistent &amp;&amp; encrypt) {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="comment">// try to open the database with the password from the user.</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="comment">// The only possible error now must be a wrong password or using plain database.</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ae930f23fbd195bf1a097f36baf902424">getWritableDatabase</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">passphrase</a>);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            } <span class="keywordflow">catch</span> (SQLiteException e) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">TAG</a>, <span class="stringliteral">&quot;Trying to encrypte old plain database&quot;</span>);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                File plain = context.getDatabasePath(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a379ca33c7cbc2f78a863f42ffe0b8dda">DATABASE_NAME</a>);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                File encrypted = context.getDatabasePath(<span class="stringliteral">&quot;tmp.db&quot;</span>);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="comment">// try to open the database without password</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                SQLiteDatabase migrate_db = SQLiteDatabase.openOrCreateDatabase(plain, <span class="stringliteral">&quot;&quot;</span>, null);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                migrate_db.rawExecSQL(String.format(<span class="stringliteral">&quot;ATTACH DATABASE &#39;%s&#39; AS encrypted KEY &#39;%s&#39;&quot;</span>,</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                                                    encrypted.getAbsolutePath(), <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">passphrase</a>));</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                migrate_db.rawExecSQL(<span class="stringliteral">&quot;SELECT sqlcipher_export(&#39;encrypted&#39;);&quot;</span>);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                migrate_db.execSQL(<span class="stringliteral">&quot;DETACH DATABASE encrypted;&quot;</span>);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                migrate_db.close();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                <span class="comment">// rename the encrypted file name back</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                encrypted.renameTo(<span class="keyword">new</span> File(plain.getAbsolutePath()));</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            }</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a1b407f2fbe51a8e216c0355403697a90"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">nl.sense_os.service.storage.DbHelper.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00044">DbHelper.java:44</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a8a39d431b908d78b51297187335bc3d2"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a8a39d431b908d78b51297187335bc3d2">nl.sense_os.service.storage.DbHelper.sMainPrefs</a></div><div class="ttdeci">static SharedPreferences sMainPrefs</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00038">DbHelper.java:38</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced_html_a45c579b18a8224e01124d06a5b95f30a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a45c579b18a8224e01124d06a5b95f30a">nl.sense_os.service.constants.SensePrefs.Main.Advanced.ENCRYPT_DATABASE</a></div><div class="ttdeci">static final String ENCRYPT_DATABASE</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00194">SensePrefs.java:194</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_ae930f23fbd195bf1a097f36baf902424"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ae930f23fbd195bf1a097f36baf902424">nl.sense_os.service.storage.DbHelper.getWritableDatabase</a></div><div class="ttdeci">SQLiteDatabase getWritableDatabase()</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00129">DbHelper.java:129</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_html_a09ef189b0ea21b5fcd5d59504ad7c63b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">nl.sense_os.service.constants.SensePrefs.MAIN_PREFS</a></div><div class="ttdeci">static final String MAIN_PREFS</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00893">SensePrefs.java:893</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a85b2c4235c0a78f787ec84729e254471"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">nl.sense_os.service.storage.DbHelper.passphrase</a></div><div class="ttdeci">static String passphrase</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00042">DbHelper.java:42</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a379ca33c7cbc2f78a863f42ffe0b8dda"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a379ca33c7cbc2f78a863f42ffe0b8dda">nl.sense_os.service.storage.DbHelper.DATABASE_NAME</a></div><div class="ttdeci">static final String DATABASE_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00026">DbHelper.java:26</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a65beb57353c2f11f0376e3953b626280"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a65beb57353c2f11f0376e3953b626280">nl.sense_os.service.storage.DbHelper.setPassphrase</a></div><div class="ttdeci">void setPassphrase(String imei)</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00137">DbHelper.java:137</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a7667f58f3b53ed65ad83def97f58c5a3"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a7667f58f3b53ed65ad83def97f58c5a3">nl.sense_os.service.storage.DbHelper.DATABASE_VERSION</a></div><div class="ttdeci">static final int DATABASE_VERSION</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00031">DbHelper.java:31</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a92361439356a13d08e1fa68e7fe9951a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SQLiteDatabase nl.sense_os.service.storage.DbHelper.getReadableDatabase </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00133">133</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                                               {</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;      <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a92361439356a13d08e1fa68e7fe9951a">getReadableDatabase</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">passphrase</a>);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a92361439356a13d08e1fa68e7fe9951a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a92361439356a13d08e1fa68e7fe9951a">nl.sense_os.service.storage.DbHelper.getReadableDatabase</a></div><div class="ttdeci">SQLiteDatabase getReadableDatabase()</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00133">DbHelper.java:133</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a85b2c4235c0a78f787ec84729e254471"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">nl.sense_os.service.storage.DbHelper.passphrase</a></div><div class="ttdeci">static String passphrase</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00042">DbHelper.java:42</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ae930f23fbd195bf1a097f36baf902424"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SQLiteDatabase nl.sense_os.service.storage.DbHelper.getWritableDatabase </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00129">129</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                                               {</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ae930f23fbd195bf1a097f36baf902424">getWritableDatabase</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">passphrase</a>);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_ae930f23fbd195bf1a097f36baf902424"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#ae930f23fbd195bf1a097f36baf902424">nl.sense_os.service.storage.DbHelper.getWritableDatabase</a></div><div class="ttdeci">SQLiteDatabase getWritableDatabase()</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00129">DbHelper.java:129</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a85b2c4235c0a78f787ec84729e254471"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">nl.sense_os.service.storage.DbHelper.passphrase</a></div><div class="ttdeci">static String passphrase</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00042">DbHelper.java:42</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a377eaee19787b5eee8a0a5b6ab254934"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.storage.DbHelper.onCreate </td>
+          <td>(</td>
+          <td class="paramtype">SQLiteDatabase&#160;</td>
+          <td class="paramname"><em>db</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00101">101</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                                            {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="keyword">final</span> StringBuilder sb = <span class="keyword">new</span> StringBuilder(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#aa8d78dfbf59fd0a78997655acf3f2b4b">DbHelper</a>.TABLE + <span class="stringliteral">&quot;(&quot;</span>);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            sb.append(BaseColumns._ID + <span class="stringliteral">&quot; INTEGER PRIMARY KEY AUTOINCREMENT&quot;</span>);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.SENSOR_NAME + <span class="stringliteral">&quot; TEXT&quot;</span>);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.DISPLAY_NAME + <span class="stringliteral">&quot; TEXT&quot;</span>);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.SENSOR_DESCRIPTION + <span class="stringliteral">&quot; TEXT&quot;</span>);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.DATA_TYPE + <span class="stringliteral">&quot; TEXT&quot;</span>);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.TIMESTAMP + <span class="stringliteral">&quot; INTEGER&quot;</span>);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.VALUE + <span class="stringliteral">&quot; TEXT&quot;</span>);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.DEVICE_UUID + <span class="stringliteral">&quot; TEXT&quot;</span>);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            sb.append(<span class="stringliteral">&quot;, &quot;</span> + DataPoint.TRANSMIT_STATE + <span class="stringliteral">&quot; INTEGER&quot;</span>);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            sb.append(<span class="stringliteral">&quot;);&quot;</span>);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            db.execSQL(sb.toString());</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        } <span class="keywordflow">catch</span> (SQLiteException e) {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">TAG</a>, <span class="stringliteral">&quot;Error creating database. Maybe the table is already there&quot;</span>, e);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a1b407f2fbe51a8e216c0355403697a90"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">nl.sense_os.service.storage.DbHelper.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00044">DbHelper.java:44</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_aa8d78dfbf59fd0a78997655acf3f2b4b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#aa8d78dfbf59fd0a78997655acf3f2b4b">nl.sense_os.service.storage.DbHelper.DbHelper</a></div><div class="ttdeci">DbHelper(Context context, boolean persistent)</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00055">DbHelper.java:55</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ab525e94c0507238506f206699fd7fd11"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.storage.DbHelper.onUpgrade </td>
+          <td>(</td>
+          <td class="paramtype">SQLiteDatabase&#160;</td>
+          <td class="paramname"><em>db</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>oldVers</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>newVers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00121">121</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                                                                       {</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">TAG</a>, <span class="stringliteral">&quot;Upgrading &#39;&quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a379ca33c7cbc2f78a863f42ffe0b8dda">DATABASE_NAME</a> + <span class="stringliteral">&quot;&#39; database from version &quot;</span> + oldVers</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                + <span class="stringliteral">&quot; to &quot;</span> + newVers + <span class="stringliteral">&quot;, which will destroy all old data&quot;</span>);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        db.execSQL(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a5b1b52a8e139eb82acf8d7df620ad92b">DbHelper.TABLE</a>);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a377eaee19787b5eee8a0a5b6ab254934">onCreate</a>(db);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a377eaee19787b5eee8a0a5b6ab254934"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a377eaee19787b5eee8a0a5b6ab254934">nl.sense_os.service.storage.DbHelper.onCreate</a></div><div class="ttdeci">void onCreate(SQLiteDatabase db)</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00101">DbHelper.java:101</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a1b407f2fbe51a8e216c0355403697a90"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">nl.sense_os.service.storage.DbHelper.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00044">DbHelper.java:44</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a379ca33c7cbc2f78a863f42ffe0b8dda"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a379ca33c7cbc2f78a863f42ffe0b8dda">nl.sense_os.service.storage.DbHelper.DATABASE_NAME</a></div><div class="ttdeci">static final String DATABASE_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00026">DbHelper.java:26</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a5b1b52a8e139eb82acf8d7df620ad92b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a5b1b52a8e139eb82acf8d7df620ad92b">nl.sense_os.service.storage.DbHelper.TABLE</a></div><div class="ttdeci">static final String TABLE</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00036">DbHelper.java:36</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a65beb57353c2f11f0376e3953b626280"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.storage.DbHelper.setPassphrase </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>imei</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00137">137</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                                          {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    String salt = sMainPrefs.getString(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#afdef4f9be4c79a7401b1dab58d8384a9">Advanced.ENCRYPT_DATABASE_SALT</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a52182f4e680037e3f6299dbc13ae7638">DEFAULT_PASSPHRASE_SALT</a>);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    MessageDigest md = null;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;      md = MessageDigest.getInstance(<span class="stringliteral">&quot;SHA-1&quot;</span>);</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    } <span class="keywordflow">catch</span> (NoSuchAlgorithmException e1) {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;      Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">TAG</a>, <span class="stringliteral">&quot;Error initializing SHA-1 message digest&quot;</span>);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    }</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    byte[] result_byte = md.digest((imei+salt).getBytes());</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <a class="code" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">passphrase</a> = <span class="keyword">new</span> String(result_byte);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a1b407f2fbe51a8e216c0355403697a90"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a1b407f2fbe51a8e216c0355403697a90">nl.sense_os.service.storage.DbHelper.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00044">DbHelper.java:44</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a52182f4e680037e3f6299dbc13ae7638"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a52182f4e680037e3f6299dbc13ae7638">nl.sense_os.service.storage.DbHelper.DEFAULT_PASSPHRASE_SALT</a></div><div class="ttdeci">static final String DEFAULT_PASSPHRASE_SALT</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00040">DbHelper.java:40</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper_html_a85b2c4235c0a78f787ec84729e254471"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a85b2c4235c0a78f787ec84729e254471">nl.sense_os.service.storage.DbHelper.passphrase</a></div><div class="ttdeci">static String passphrase</div><div class="ttdef"><b>Definition:</b> <a href="_db_helper_8java_source.html#l00042">DbHelper.java:42</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced_html_afdef4f9be4c79a7401b1dab58d8384a9"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#afdef4f9be4c79a7401b1dab58d8384a9">nl.sense_os.service.constants.SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT</a></div><div class="ttdeci">static final String ENCRYPT_DATABASE_SALT</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00199">SensePrefs.java:199</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a379ca33c7cbc2f78a863f42ffe0b8dda"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.storage.DbHelper.DATABASE_NAME = &quot;persitent_storage.sqlite3&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Name of the database on the disk </p>
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00026">26</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7667f58f3b53ed65ad83def97f58c5a3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.storage.DbHelper.DATABASE_VERSION = 4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Version of the database. Increment this when the database structure is changed. </p>
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00031">31</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a52182f4e680037e3f6299dbc13ae7638"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.storage.DbHelper.DEFAULT_PASSPHRASE_SALT = &quot;tUI@IBhf3J6o^G*&amp;dno3yH!yC*E5#3qy&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00040">40</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a85b2c4235c0a78f787ec84729e254471"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.storage.DbHelper.passphrase = &quot;&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00042">42</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8a39d431b908d78b51297187335bc3d2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SharedPreferences nl.sense_os.service.storage.DbHelper.sMainPrefs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00038">38</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5b1b52a8e139eb82acf8d7df620ad92b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.storage.DbHelper.TABLE = &quot;persisted_values&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Name of the table with the data points. </p>
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00036">36</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1b407f2fbe51a8e216c0355403697a90"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.storage.DbHelper.TAG = &quot;DbHelper&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_db_helper_8java_source.html#l00044">44</a> of file <a class="el" href="_db_helper_8java_source.html">DbHelper.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/storage/DbHelper.java</li>
+<li>src/nl/sense_os/service/storage/<a class="el" href="_db_helper_8java_source.html">DbHelper.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>storage</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html">DbHelper</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1storage.html">storage</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html">DbHelper</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

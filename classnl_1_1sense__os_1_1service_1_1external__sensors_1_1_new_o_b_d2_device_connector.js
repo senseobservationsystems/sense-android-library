@@ -1,11 +1,13 @@
 var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector =
 [
+    [ "State", "enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html", "enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state" ],
     [ "StateMachine", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine.html", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine" ],
     [ "NewOBD2DeviceConnector", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#ad6f97c10108dfb34b4c8b31ed6092be3", null ],
     [ "NewOBD2DeviceConnector", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#a92827df7fde153f85517cec4284d421e", null ],
     [ "run", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#aaa80a210380668937be22e2b57eba926", null ],
     [ "stop", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#a914b34a664517154e6d5f33ee7214527", null ],
     [ "context", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#a5aa2a2e9080a3fc2b0c693d616f31e63", null ],
+    [ "currentState", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#abbcc6ee760c5b380d4432e733f323f00", null ],
     [ "databuffer", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#aa34c95a5a3eeab92eb2dff754845b3f9", null ],
     [ "device", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#afb878653a32b47cceb5febce59e8cecd", null ],
     [ "interval", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#aebdb6f05f37b97be839f7a74b49355e5", null ],

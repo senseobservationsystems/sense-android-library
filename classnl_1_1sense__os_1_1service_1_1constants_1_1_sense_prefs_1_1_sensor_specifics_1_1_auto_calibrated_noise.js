@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_sensor_specifics_1_1_auto_calibrated_noise =
+[
+    [ "LOUDEST", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_sensor_specifics_1_1_auto_calibrated_noise.html#a4ded4ef10883dffa8e85c2486182830e", null ],
+    [ "TOTAL_SILENCE", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_sensor_specifics_1_1_auto_calibrated_noise.html#af006358f37614bc9f09fb4e24a677b4b", null ]
+];

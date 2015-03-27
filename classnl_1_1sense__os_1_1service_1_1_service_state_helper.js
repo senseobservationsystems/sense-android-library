@@ -1,5 +1,7 @@
 var classnl_1_1sense__os_1_1service_1_1_service_state_helper =
 [
+    [ "ServiceStateHelper", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a920aa2277a6f17c5318dde10445d603c", null ],
+    [ "getInstance", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a759e7b0d58ea1559327f952c58ec6dea", null ],
     [ "getStateNotification", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a1522ff1c53c6790b6bda268359fd4714", null ],
     [ "getStatusCode", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6e23a4356af63802a9531dd8d336f104", null ],
     [ "isAmbienceActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#af49d216bd90bc8999ff76f7eac9d79f3", null ],
@@ -21,5 +23,20 @@ var classnl_1_1sense__os_1_1service_1_1_service_state_helper =
     [ "setMotionActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a9c371eaa7fbbb47f538cbf008f9e42bf", null ],
     [ "setPhoneStateActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a8ac3910051be3af066410bb12d2f4004", null ],
     [ "setQuizActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a3c5f5effb30099461b8c7c218cfafbd8", null ],
-    [ "setStarted", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a26b6dd933b5a301cf8a593e466004622", null ]
+    [ "setStarted", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a26b6dd933b5a301cf8a593e466004622", null ],
+    [ "updateNotification", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a0233f91e8b113e0d8c1fff6bb8fc9d36", null ],
+    [ "ambienceActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a588f66df66f70dcb47d4719c7d9ef9a3", null ],
+    [ "context", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#af45051a93c63935e105c89a1632126e3", null ],
+    [ "devProxActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6fb7cfe38b9a82cdcc792a50c50f35e1", null ],
+    [ "externalActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#aafb30624d38673ab7587293b9e304a83", null ],
+    [ "foreground", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a39345f0f1049ede294d684d842fa0c96", null ],
+    [ "instance", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a9bfccb65677c2036809c9069e3e62b29", null ],
+    [ "locationActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a381819483b337c6fa33c246913dee1db", null ],
+    [ "loggedIn", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a21671e0ecf91f15b0fb28e50833cd6f4", null ],
+    [ "motionActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a91a93e2b36371c54528eabacbcb60561", null ],
+    [ "NOTIF_ID", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#adaa399f5611edb10441e05a5d196db0c", null ],
+    [ "phoneStateActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a99875c751a1a32dd44f0448d1a1c1ca9", null ],
+    [ "quizActive", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a4e642a3f0672083dd7dfe6ea4254b64d", null ],
+    [ "started", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a5c413d0d6e904eefb5618be1c71e503c", null ],
+    [ "TAG", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a29d6a3de02168a63558aaee5242c9d69", null ]
 ];

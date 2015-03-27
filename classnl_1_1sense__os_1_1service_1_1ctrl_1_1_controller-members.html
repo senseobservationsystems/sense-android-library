@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ctr
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -113,15 +116,18 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1ctr
   <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#a7b03ee17be671ef8880407dd0c8de030">checkLightSensor</a>(float value)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#a0415edf60ddc223076cfea5c6623fba1">checkNoiseSensor</a>(double dB)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#a26f767255c43581f0a83bc4b153af6c0">checkSensorSettings</a>(boolean isGpsAllowed, boolean isListeningNw, boolean isListeningGps, long time, Location lastGpsFix, long listenGpsStart, Location lastNwFix, long listenNwStart, long listenGpsStop, long listenNwStop)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Controller</b>(Context context) (defined in <a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#a1470e7d35afd50c6f60dba94394b7deb">Controller</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#aff7997ac79c9df4ca8dfa082352a69d1">getController</a>(Context context)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#ad1a54b9bc62c022ebda901adbfd8111a">scheduleTransmissions</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#ae1e6647c36de8239fea3d33c906ce0c0">mContext</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#ad1a54b9bc62c022ebda901adbfd8111a">scheduleTransmissions</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#aa7a71b1567fa36f09c7f9ac3fce37a1e">sInstance</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html#a68246c583fb027038c2b7c35c55fa031">TAG</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -1,9 +1,26 @@
 var classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage =
 [
+    [ "LocalStorage", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a86dc8e0bd4fde5ccf16cba8599d36acd", null ],
     [ "delete", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a922cb281a1e04c6fb4e09dc477609cb5", null ],
+    [ "deleteOldData", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#adcf427207e630027d0a30e6becf59bb6", null ],
+    [ "getInstance", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a149bd3498cf1a48e0f1dbe51069bcdb8", null ],
+    [ "getMilliSencondsOfHours", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a3e3621c69972b65724d17e368defc861", null ],
     [ "getType", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a89ec54d291ea6554e01e52ad06b45d15", null ],
     [ "insert", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a91a77b12c948ee742db90a5b1d38fa2c", null ],
+    [ "matchUri", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a8df826b3712393ea8044ef5ef283820f", null ],
+    [ "persistRecentData", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a028a7ba647244d5bd9229ca64f885ff5", null ],
     [ "query", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#ae3b38e350e3668ba660b53ec9121f103", null ],
     [ "query", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#ac6e9ac44eb13f57fe0f64528c7a3042f", null ],
-    [ "update", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a889f93fe38cba3b9216438c8096dd8b2", null ]
+    [ "update", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a889f93fe38cba3b9216438c8096dd8b2", null ],
+    [ "commonSense", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a9d3e836226de8ac62050912ce4ef1abc", null ],
+    [ "context", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a18e918c2c74abd86572fe45251f99629", null ],
+    [ "DEFAULT_LIMIT", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a141fac1ae2be6ed9c531e1a92db46623", null ],
+    [ "DEFAULT_PROJECTION", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a3198721a0d3119513f314115b9f6d690", null ],
+    [ "DEFAULT_RETENTION_HOURS", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a7d79f88f583e30af0d5a14602b833cb6", null ],
+    [ "inMemory", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#ae55bd9908487d1d496253570ac2bf769", null ],
+    [ "instance", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#aa08542128c0e283c1e2c6e2104a4f32b", null ],
+    [ "LOCAL_VALUES_URI", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a5b6237c3653b49fae3f875df96097cd7", null ],
+    [ "persisted", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a851d3b9ee61ed17d26c1c22babaf384c", null ],
+    [ "REMOTE_VALUES_URI", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a60803e25e4a015204859bdee28387c61", null ],
+    [ "TAG", "classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a1a3262a8ef5b195f1bfd1f6f7a141519", null ]
 ];

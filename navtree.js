@@ -1,6 +1,17 @@
 var NAVTREE =
 [
   [ "Sense Android Library", "index.html", [
+    [ "Architecture Overview", "md_documentation_architecture.html", null ],
+    [ "Getting Started", "md_documentation_getting_started.html", null ],
+    [ "Message Handler", "md_documentation_msg_handler.html", null ],
+    [ "Sense Service", "md_documentation_sense_service.html", null ],
+    [ "Sensors", "md_documentation_sensors.html", null ],
+    [ "Data Storage", "md_documentation_storage.html", null ],
+    [ "Data Subscription", "md_documentation_subscription.html", null ],
+    [ "Deprecated List", "deprecated.html", null ],
+    [ "Packages", null, [
+      [ "Packages", "namespaces.html", "namespaces" ]
+    ] ],
     [ "Classes", null, [
       [ "Class List", "annotated.html", "annotated" ],
       [ "Class Index", "classes.html", null ],
@@ -8,18 +19,29 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Variables", "functions_vars.html", null ]
+        [ "Variables", "functions_vars.html", "functions_vars" ],
+        [ "Enumerator", "functions_eval.html", null ]
       ] ]
+    ] ],
+    [ "Files", null, [
+      [ "File List", "files.html", "files" ]
     ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-".html",
-"classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor_1_1_noise_burst_sensor.html#a781961c423222b3ceb356444cfa97dc4",
-"classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor_1_1_o_b_d2_command_engine_coolant.html",
-"classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#ae3b38e350e3668ba660b53ec9121f103"
+"_abstract_state_monitor_8java.html",
+"classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a8d0aac463a69a3915dd158848d8053a6",
+"classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6fb7cfe38b9a82cdcc792a50c50f35e1",
+"classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor_1_1_noise_burst_sensor.html#aa83511fd6c8092af6e298c0038628033",
+"classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html",
+"classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a4bab0035fceb34fe19c1745faf412a81",
+"classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#aa695b1087cc5c5d11a05ac612d50c816",
+"classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness_1_1_update_thread.html#ab6c2f1ecf4d0d84e3659374b5f376a29",
+"classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html",
+"classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a38f8668a0732b6ae31d1f82619486ed2",
+"dir_469d6e9b351ddbd237eb9996ca02f01a.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

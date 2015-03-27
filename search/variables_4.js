@@ -1,5 +1,29 @@
 var searchData=
 [
-  ['main_5fprefs',['MAIN_PREFS',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b',1,'nl::sense_os::service::constants::SensePrefs']]],
-  ['msubscribers',['mSubscribers',['../classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960',1,'nl::sense_os::service::subscription::BaseDataProducer']]]
+  ['eco',['ECO',['../classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller_1_1_intervals.html#a5f3a2069fd75995a5896ca66d1b8d28a',1,'nl::sense_os::service::ctrl::Controller::Intervals']]],
+  ['eco_5fmode',['ECO_MODE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html#a7766837808fb9557e87b93b560a421b2',1,'nl::sense_os::service::constants::SensePrefs::Main::SyncRate']]],
+  ['encrypt_5fcredential',['ENCRYPT_CREDENTIAL',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a769994e50901f0a3b1b0bb13ff0c9c90',1,'nl::sense_os::service::constants::SensePrefs::Main::Advanced']]],
+  ['encrypt_5fcredential_5fsalt',['ENCRYPT_CREDENTIAL_SALT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a802dae85f1891f96a51691af00f23386',1,'nl::sense_os::service::constants::SensePrefs::Main::Advanced']]],
+  ['encrypt_5fdatabase',['ENCRYPT_DATABASE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a45c579b18a8224e01124d06a5b95f30a',1,'nl::sense_os::service::constants::SensePrefs::Main::Advanced']]],
+  ['encrypt_5fdatabase_5fsalt',['ENCRYPT_DATABASE_SALT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#afdef4f9be4c79a7401b1dab58d8384a9',1,'nl::sense_os::service::constants::SensePrefs::Main::Advanced']]],
+  ['energy',['energy',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#a3a5a7cd641aaa2bb5bef1fb53058e644',1,'nl::sense_os::service::motion::MotionSensor']]],
+  ['energy_5fsample_5flength',['ENERGY_SAMPLE_LENGTH',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html#aa60305a57fdc74828933d95bd84fb610',1,'nl::sense_os::service::motion::MotionEnergySensor']]],
+  ['engine_5fcoolant',['ENGINE_COOLANT',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a402621e51ce8095ff2290df74c29a7f3',1,'nl::sense_os::service::constants::SensorData::SensorNames']]],
+  ['engine_5fload',['ENGINE_LOAD',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a1d2fcb0c3c18a817e484a9efa9c8dece',1,'nl::sense_os::service::constants::SensorData::SensorNames']]],
+  ['engine_5frpm',['ENGINE_RPM',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a2f528b0d8bfd73b5cc179317c771ac76',1,'nl::sense_os::service::constants::SensorData::SensorNames']]],
+  ['epi',['epi',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#a808710d14d5db30bd22ae9920febb2e9',1,'nl::sense_os::service::motion::MotionSensor']]],
+  ['epimode',['EPIMODE',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_motion.html#a8773ea2d807155af80231db6750533ba',1,'nl::sense_os::service::constants::SensePrefs::Main::Motion']]],
+  ['error',['error',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_nfc_scan_1_1_parse_task.html#a7c8b81470e4615bc1af5f65445365663',1,'nl::sense_os::service::deviceprox::NfcScan::ParseTask']]],
+  ['es_5fbioharness',['es_bioHarness',['../classnl_1_1sense__os_1_1service_1_1_sense_service.html#a2dc4fd150f969c4e58f6ae677bc43f14',1,'nl::sense_os::service::SenseService']]],
+  ['es_5fhxm',['es_HxM',['../classnl_1_1sense__os_1_1service_1_1_sense_service.html#acc7a88f1d899a0108a8b4d01343ec0f5',1,'nl::sense_os::service::SenseService']]],
+  ['es_5fobd2sensor',['es_obd2sensor',['../classnl_1_1sense__os_1_1service_1_1_sense_service.html#a023595eacfded5520d8deb1723399317',1,'nl::sense_os::service::SenseService']]],
+  ['executioninterval',['executioninterval',['../classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_sensor.html#a96952891bb740925d715c52084b08876',1,'nl::sense_os::service::external_sensors::OBD2Sensor']]],
+  ['external',['EXTERNAL',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status.html#abd88dce9b876416d1e4146ac9fcd2fe0',1,'nl.sense_os.service.constants.SensePrefs.Status.EXTERNAL()'],['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html#a25ab03a406d6a0b11594d0d306b9ce40',1,'nl.sense_os.service.constants.SenseStatusCodes.EXTERNAL()']]],
+  ['externalactive',['externalActive',['../classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#aafb30624d38673ab7587293b9e304a83',1,'nl::sense_os::service::ServiceStateHelper']]],
+  ['extra_5fbuffer_5ftype',['EXTRA_BUFFER_TYPE',['../classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a10bac7b3919e745cd0a8149d54b0550a',1,'nl::sense_os::service::MsgHandler']]],
+  ['extra_5fexecution_5ftype',['EXTRA_EXECUTION_TYPE',['../classnl_1_1sense__os_1_1service_1_1scheduler_1_1_execution_alarm_receiver.html#a7da99c56b7b3c5508fe27b5cf9eaa05c',1,'nl::sense_os::service::scheduler::ExecutionAlarmReceiver']]],
+  ['extra_5frelogin',['EXTRA_RELOGIN',['../classnl_1_1sense__os_1_1service_1_1_sense_service.html#aa2b860eb2edbb0c0a7b75f51a4dfe466',1,'nl::sense_os::service::SenseService']]],
+  ['extra_5frequirements',['EXTRA_REQUIREMENTS',['../classnl_1_1sense__os_1_1service_1_1configuration_1_1_requirement_receiver.html#adef258ae8e2fb8a981b4b7143212a832',1,'nl::sense_os::service::configuration::RequirementReceiver']]],
+  ['extra_5fservice_5fstarted',['EXTRA_SERVICE_STARTED',['../classnl_1_1sense__os_1_1service_1_1_sense_service.html#ad77d2dba0febb2931104c9c2913b5e9d',1,'nl::sense_os::service::SenseService']]],
+  ['extsensorhandler',['extSensorHandler',['../classnl_1_1sense__os_1_1service_1_1_sense_service.html#ae1bf15901878cd5c7dad084275461edc',1,'nl::sense_os::service::SenseService']]]
 ];

@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_ms
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_ms
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1_msg_handler-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.MsgHandler Class Reference</div>  </div>
@@ -123,14 +128,11 @@ Inheritance diagram for nl.sense_os.service.MsgHandler:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9f8761b2c86af1ec0af5ca76c1b13dbc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f8761b2c86af1ec0af5ca76c1b13dbc"></a>
-IBinder&#160;</td><td class="memItemRight" valign="bottom"><b>onBind</b> (Intent intent)</td></tr>
+<tr class="memitem:a9f8761b2c86af1ec0af5ca76c1b13dbc"><td class="memItemLeft" align="right" valign="top">IBinder&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a9f8761b2c86af1ec0af5ca76c1b13dbc">onBind</a> (Intent intent)</td></tr>
 <tr class="separator:a9f8761b2c86af1ec0af5ca76c1b13dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6bfdd20f590047288cbb2fe48c7b317"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af6bfdd20f590047288cbb2fe48c7b317"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onCreate</b> ()</td></tr>
+<tr class="memitem:af6bfdd20f590047288cbb2fe48c7b317"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#af6bfdd20f590047288cbb2fe48c7b317">onCreate</a> ()</td></tr>
 <tr class="separator:af6bfdd20f590047288cbb2fe48c7b317"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4e44cba684c63569ff78475313ff84d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae4e44cba684c63569ff78475313ff84d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onDestroy</b> ()</td></tr>
+<tr class="memitem:ae4e44cba684c63569ff78475313ff84d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#ae4e44cba684c63569ff78475313ff84d">onDestroy</a> ()</td></tr>
 <tr class="separator:ae4e44cba684c63569ff78475313ff84d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e0f9988f1e3b1dc78c88d971fac911d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a6e0f9988f1e3b1dc78c88d971fac911d">onStartCommand</a> (Intent intent, int flags, int startId)</td></tr>
 <tr class="separator:a6e0f9988f1e3b1dc78c88d971fac911d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,12 +146,36 @@ Static Public Member Functions</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a10bac7b3919e745cd0a8149d54b0550a"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a10bac7b3919e745cd0a8149d54b0550a">EXTRA_BUFFER_TYPE</a> = &quot;buffer-type&quot;</td></tr>
 <tr class="separator:a10bac7b3919e745cd0a8149d54b0550a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afedaddd31d026d8ae519e1c16665c140"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afedaddd31d026d8ae519e1c16665c140"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>BUFFER_TYPE_FLASH</b> = 1</td></tr>
+<tr class="memitem:afedaddd31d026d8ae519e1c16665c140"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#afedaddd31d026d8ae519e1c16665c140">BUFFER_TYPE_FLASH</a> = 1</td></tr>
 <tr class="separator:afedaddd31d026d8ae519e1c16665c140"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cd200ac48b0f47d55c37a31107aa434"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5cd200ac48b0f47d55c37a31107aa434"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>BUFFER_TYPE_MEMORY</b> = 0</td></tr>
+<tr class="memitem:a5cd200ac48b0f47d55c37a31107aa434"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a5cd200ac48b0f47d55c37a31107aa434">BUFFER_TYPE_MEMORY</a> = 0</td></tr>
 <tr class="separator:a5cd200ac48b0f47d55c37a31107aa434"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a3740d9feaa868bb5bb52bd554e666538"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a3740d9feaa868bb5bb52bd554e666538">emptyBufferToDb</a> ()</td></tr>
+<tr class="separator:a3740d9feaa868bb5bb52bd554e666538"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a049854037bfb59abfc470a90374c1260"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a049854037bfb59abfc470a90374c1260">handleNewMsgIntent</a> (Intent intent)</td></tr>
+<tr class="separator:a049854037bfb59abfc470a90374c1260"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affce57b215b486d70f592eb4a1d70e82"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#affce57b215b486d70f592eb4a1d70e82">handleSendIntent</a> (Intent intent)</td></tr>
+<tr class="separator:affce57b215b486d70f592eb4a1d70e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac24fa1cd5dfefbf2c3d4d13469db145b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#ac24fa1cd5dfefbf2c3d4d13469db145b">insertToLocalStorage</a> (String name, String displayName, String description, String dataType, String deviceUuid, long timestamp, String value)</td></tr>
+<tr class="separator:ac24fa1cd5dfefbf2c3d4d13469db145b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d5dcc13497a33897f4db86374cfd4c6"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0d5dcc13497a33897f4db86374cfd4c6">isOnline</a> ()</td></tr>
+<tr class="separator:a0d5dcc13497a33897f4db86374cfd4c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a33d1f6cbc56cbc51a686a7c1577a3f39"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a> = &quot;Sense <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">MsgHandler</a>&quot;</td></tr>
+<tr class="separator:a33d1f6cbc56cbc51a686a7c1577a3f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17603f41ca69d0f8f9a216bbaad93c55"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_file_transmit_handler.html">FileTransmitHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a17603f41ca69d0f8f9a216bbaad93c55">fileHandler</a></td></tr>
+<tr class="separator:a17603f41ca69d0f8f9a216bbaad93c55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad678a964f1cc150dfaf9e548c11d1dd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html">DataTransmitHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#aad678a964f1cc150dfaf9e548c11d1dd">dataTransmitHandler</a></td></tr>
+<tr class="separator:aad678a964f1cc150dfaf9e548c11d1dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0071f1b62f10a1b1536c99151bec6d28"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html">BufferTransmitHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0071f1b62f10a1b1536c99151bec6d28">bufferHandler</a></td></tr>
+<tr class="separator:a0071f1b62f10a1b1536c99151bec6d28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2cc7a8b445b2de5cbb0a2d0821b8a32"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#ad2cc7a8b445b2de5cbb0a2d0821b8a32">storage</a></td></tr>
+<tr class="separator:ad2cc7a8b445b2de5cbb0a2d0821b8a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is responsible for handling the sensor data that has been collected by the different sensors. It has two main tasks: </p>
@@ -164,13 +190,483 @@ Periodically transmit all sensor data in the buffer to CommonSense. </li>
  For example:</p>
 <pre>
 Intent sensorData = new Intent(getString(R.string.action_sense_new_data));
-sensorData.putExtra(DataPoint.SENSOR_NAME, "sensor name");
-sensorData.putExtra(DataPoint.VALUE, "foo");
-sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
+sensorData.putExtra(<a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">DataPoint.SENSOR_NAME</a>, "sensor name");
+sensorData.putExtra(<a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>, "foo");
+sensorData.putExtra(<a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">DataPoint.DATA_TYPE</a>, <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#aa8231f323de1ac626b1ab293142d3ed3">SenseDataTypes.FLOAT</a>);
+sensorData.putExtra(<a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">DataPoint.TIMESTAMP</a>, System.currentTimeMillis());
 startService(sensorData);
 </pre><dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00067">67</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a3740d9feaa868bb5bb52bd554e666538"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.MsgHandler.emptyBufferToDb </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Puts data from the buffer in the flash database for long-term storage </p>
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00153">153</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                                       {</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                <span class="comment">// Log.v(TAG, &quot;Emptying buffer to persistant database...&quot;);</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                        Uri contentUri = Uri.parse(<span class="stringliteral">&quot;content://&quot;</span> + getString(R.string.local_storage_authority)</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                                        + DataPoint.CONTENT_URI_PATH + <span class="stringliteral">&quot;?persist=true&quot;</span>);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                        String where = DataPoint.TRANSMIT_STATE + <span class="stringliteral">&quot;=&quot;</span> + 0;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                        storage.update(contentUri, <span class="keyword">new</span> ContentValues(), where, null);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                } <span class="keywordflow">catch</span> (IllegalArgumentException e) {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                        Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Error updating Local Storage!&quot;</span>, e);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a049854037bfb59abfc470a90374c1260"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.MsgHandler.handleNewMsgIntent </td>
+          <td>(</td>
+          <td class="paramtype">Intent&#160;</td>
+          <td class="paramname"><em>intent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00165">165</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                                                       {</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                <span class="comment">// Log.d(TAG, &quot;handleNewMsgIntent&quot;);</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                        DecimalFormatSymbols otherSymbols = <span class="keyword">new</span> DecimalFormatSymbols(Locale.ENGLISH);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                        NumberFormat formatter = <span class="keyword">new</span> DecimalFormat(<span class="stringliteral">&quot;##########.###&quot;</span>, otherSymbols);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                        <span class="comment">// get data point details from Intent</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                        String sensorName = intent.getStringExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">DataPoint.SENSOR_NAME</a>);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                        String displayName = intent.getStringExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a8f413b3a74207ce174afa55f92b7a058">DataPoint.DISPLAY_NAME</a>);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                        String description = intent.getStringExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#afbec24925591ba4d80372db1373c5d51">DataPoint.SENSOR_DESCRIPTION</a>);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                        String dataType = intent.getStringExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">DataPoint.DATA_TYPE</a>);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                        String deviceUuid = intent.getStringExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c82c8eb3bff2f953653425a119210e1">DataPoint.DEVICE_UUID</a>);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                        <span class="keywordtype">long</span> timestamp = intent.getLongExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">DataPoint.TIMESTAMP</a>, SNTP.getInstance().getTime());</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                        String timeInSecs = formatter.format(timestamp / 1000.0d);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                        <span class="comment">// defaults</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                        description = description != null ? description : sensorName;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                        displayName = displayName != null ? displayName : sensorName;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                        deviceUuid = deviceUuid != null ? deviceUuid : SenseApi.getDefaultDeviceUuid(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                        <span class="comment">// convert sensor value to String</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                        String sensorValue = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                        <span class="keywordflow">if</span> (dataType.equals(SenseDataTypes.BOOL)) {</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                                sensorValue += intent.getBooleanExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (dataType.equals(SenseDataTypes.FLOAT)) {</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                                sensorValue += intent.getFloatExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>, Float.MIN_VALUE);</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (dataType.equals(SenseDataTypes.INT)) {</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                                sensorValue += intent.getIntExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>, Integer.MIN_VALUE);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (dataType.equals(SenseDataTypes.JSON)</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                                        || dataType.equals(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#a74dece52c5e83670f636812e9cbaf0d0">SenseDataTypes.JSON_TIME_SERIES</a>)) {</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                    sensorValue += <span class="keyword">new</span> JSONObject(intent.getStringExtra(DataPoint.VALUE))</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                            .toString();</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                } <span class="keywordflow">catch</span> (JSONException e) {</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                    <span class="comment">// assume value is an array</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                    sensorValue += <span class="keyword">new</span> JSONArray(intent.getStringExtra(DataPoint.VALUE)).toString();</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                }</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (dataType.equals(SenseDataTypes.STRING)</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                                        || dataType.equals(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#a30afacd62bdcdbac2bd6fe63ebb4cb20">SenseDataTypes.FILE</a>)) {</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                                sensorValue += intent.getStringExtra(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                        }</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                        <span class="comment">// put the data point in the local storage</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#ac24fa1cd5dfefbf2c3d4d13469db145b">insertToLocalStorage</a>(sensorName, displayName, description, dataType, deviceUuid,</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                                        timestamp, sensorValue);</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                        <span class="comment">/*</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="comment">                         * check if we can send the data point immediately</span></div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="comment">                         */</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                        SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                        <span class="keywordtype">int</span> rate = Integer.parseInt(mainPrefs.getString(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html#a5a64be0a83254493c4645b6a188007e4">Main.SYNC_RATE</a>, <span class="stringliteral">&quot;0&quot;</span>));</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                        <span class="keywordtype">boolean</span> isRealTimeMode = rate == -2;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0d5dcc13497a33897f4db86374cfd4c6">isOnline</a>() &amp;&amp; isRealTimeMode) {</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                                <span class="comment">// create sensor data JSON object with only 1 data point</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                                JSONObject sensorData = <span class="keyword">new</span> JSONObject();</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                                JSONArray dataArray = <span class="keyword">new</span> JSONArray();</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                                JSONObject data = <span class="keyword">new</span> JSONObject();</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                                data.put(<span class="stringliteral">&quot;value&quot;</span>, sensorValue);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                                data.put(<span class="stringliteral">&quot;date&quot;</span>, timeInSecs);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                                dataArray.put(data);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                                sensorData.put(<span class="stringliteral">&quot;data&quot;</span>, dataArray);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                                </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                                <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#af1324ae83c47bb56c0b6d82c5fcd9f4d">sendSensorData</a>(<span class="keyword">this</span>, sensorName, description, dataType, deviceUuid, sensorData);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;                        }</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                } <span class="keywordflow">catch</span> (Exception e) {</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                        Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Failed to handle new data point!&quot;</span>, e);</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                }</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;                <span class="comment">//broadcast this new data intent as well, so anybody can listen to data!</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                this.sendBroadcast(intent);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_afbec24925591ba4d80372db1373c5d51"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#afbec24925591ba4d80372db1373c5d51">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_DESCRIPTION</a></div><div class="ttdeci">static final String SENSOR_DESCRIPTION</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00063">SensorData.java:63</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_af1324ae83c47bb56c0b6d82c5fcd9f4d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#af1324ae83c47bb56c0b6d82c5fcd9f4d">nl.sense_os.service.MsgHandler.sendSensorData</a></div><div class="ttdeci">static void sendSensorData(Context context, String name, String description, String dataType, String deviceUuid, JSONObject sensorData)</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00099">MsgHandler.java:99</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_abdec19395d072f5ef68313273cfad9f1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">nl.sense_os.service.constants.SensorData.DataPoint.VALUE</a></div><div class="ttdeci">static final String VALUE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00091">SensorData.java:91</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_html_a5a64be0a83254493c4645b6a188007e4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html#a5a64be0a83254493c4645b6a188007e4">nl.sense_os.service.constants.SensePrefs.Main.SYNC_RATE</a></div><div class="ttdeci">static final String SYNC_RATE</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00756">SensePrefs.java:756</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a838808dd53f3dd49d81c69560cb6d6fc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_NAME</a></div><div class="ttdeci">static final String SENSOR_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00056">SensorData.java:56</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types_html_a74dece52c5e83670f636812e9cbaf0d0"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#a74dece52c5e83670f636812e9cbaf0d0">nl.sense_os.service.constants.SenseDataTypes.JSON_TIME_SERIES</a></div><div class="ttdeci">static final String JSON_TIME_SERIES</div><div class="ttdef"><b>Definition:</b> <a href="_sense_data_types_8java_source.html#l00018">SenseDataTypes.java:18</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a6c0829bb39fd134b4dd5bc4fc7ce0225"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">nl.sense_os.service.constants.SensorData.DataPoint.DATA_TYPE</a></div><div class="ttdeci">static final String DATA_TYPE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00071">SensorData.java:71</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types_html_a30afacd62bdcdbac2bd6fe63ebb4cb20"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_data_types.html#a30afacd62bdcdbac2bd6fe63ebb4cb20">nl.sense_os.service.constants.SenseDataTypes.FILE</a></div><div class="ttdeci">static final String FILE</div><div class="ttdef"><b>Definition:</b> <a href="_sense_data_types_8java_source.html#l00017">SenseDataTypes.java:17</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_ac24fa1cd5dfefbf2c3d4d13469db145b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#ac24fa1cd5dfefbf2c3d4d13469db145b">nl.sense_os.service.MsgHandler.insertToLocalStorage</a></div><div class="ttdeci">void insertToLocalStorage(String name, String displayName, String description, String dataType, String deviceUuid, long timestamp, String value)</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00292">MsgHandler.java:292</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a6c82c8eb3bff2f953653425a119210e1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c82c8eb3bff2f953653425a119210e1">nl.sense_os.service.constants.SensorData.DataPoint.DEVICE_UUID</a></div><div class="ttdeci">static final String DEVICE_UUID</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00105">SensorData.java:105</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a8f413b3a74207ce174afa55f92b7a058"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a8f413b3a74207ce174afa55f92b7a058">nl.sense_os.service.constants.SensorData.DataPoint.DISPLAY_NAME</a></div><div class="ttdeci">static final String DISPLAY_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00079">SensorData.java:79</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a0d5dcc13497a33897f4db86374cfd4c6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0d5dcc13497a33897f4db86374cfd4c6">nl.sense_os.service.MsgHandler.isOnline</a></div><div class="ttdeci">boolean isOnline()</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00318">MsgHandler.java:318</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_ad14ad97eb01429eee8adddd49d70141e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">nl.sense_os.service.constants.SensorData.DataPoint.TIMESTAMP</a></div><div class="ttdeci">static final String TIMESTAMP</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00085">SensorData.java:85</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="affce57b215b486d70f592eb4a1d70e82"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.MsgHandler.handleSendIntent </td>
+          <td>(</td>
+          <td class="paramtype">Intent&#160;</td>
+          <td class="paramname"><em>intent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00239">239</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                                                     {</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                <span class="comment">// Log.d(TAG, &quot;handleSendIntent&quot;);</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0d5dcc13497a33897f4db86374cfd4c6">isOnline</a>()) {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                        <span class="comment">// verify the sensor IDs</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                        startService(<span class="keyword">new</span> Intent(<span class="keyword">this</span>, DefaultSensorRegistrationService.class));</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;                        <span class="comment">// get the cookie</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                        SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;                        String cookie = authPrefs.getString(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a18a02349f10441526d88bc488b778f16">Auth.LOGIN_COOKIE</a>, null);</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                        SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;                        <span class="keywordtype">boolean</span> encrypt_credential = mainPrefs.getBoolean(Main.Advanced.ENCRYPT_CREDENTIAL, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                        <span class="keywordflow">if</span> (encrypt_credential) {</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                                EncryptionHelper decryptor = <span class="keyword">new</span> EncryptionHelper(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                                    cookie = decryptor.decrypt(cookie);</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                                } <span class="keywordflow">catch</span> (EncryptionHelper.EncryptionHelperException e) {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                                    Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Error decrypting cookie. Assume data is not encrypted&quot;</span>);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                                }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                        }</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            <span class="comment">// send the message to the handler</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            Message msg = Message.obtain();</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            Bundle args = <span class="keyword">new</span> Bundle();</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            args.putString(<span class="stringliteral">&quot;cookie&quot;</span>, cookie);</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            msg.setData(args);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            bufferHandler.sendMessage(msg);</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth_html_a18a02349f10441526d88bc488b778f16"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a18a02349f10441526d88bc488b778f16">nl.sense_os.service.constants.SensePrefs.Auth.LOGIN_COOKIE</a></div><div class="ttdeci">static final String LOGIN_COOKIE</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00041">SensePrefs.java:41</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a0d5dcc13497a33897f4db86374cfd4c6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0d5dcc13497a33897f4db86374cfd4c6">nl.sense_os.service.MsgHandler.isOnline</a></div><div class="ttdeci">boolean isOnline()</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00318">MsgHandler.java:318</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ac24fa1cd5dfefbf2c3d4d13469db145b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.MsgHandler.insertToLocalStorage </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>displayName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>description</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>dataType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>deviceUuid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>timestamp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Inserts a data point as new row in the local storage. Removal of old points is done automatically.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Sensor name. </td></tr>
+    <tr><td class="paramname">displayName</td><td>Sensor display name. </td></tr>
+    <tr><td class="paramname">description</td><td>Sensor description (previously 'device_type') </td></tr>
+    <tr><td class="paramname">dataType</td><td>Sensor data type </td></tr>
+    <tr><td class="paramname">deviceUuid</td><td>(Optional) UUID of the sensor's device. Set null to use the phone as the the default device </td></tr>
+    <tr><td class="paramname">timestamp</td><td>Data point time stamp </td></tr>
+    <tr><td class="paramname">value</td><td>Data point value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00292">292</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                                                                                          {</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                <span class="comment">// new value</span></div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                ContentValues values = <span class="keyword">new</span> ContentValues();</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">DataPoint.SENSOR_NAME</a>, name);</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a8f413b3a74207ce174afa55f92b7a058">DataPoint.DISPLAY_NAME</a>, displayName);</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#afbec24925591ba4d80372db1373c5d51">DataPoint.SENSOR_DESCRIPTION</a>, description);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">DataPoint.DATA_TYPE</a>, dataType);</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c82c8eb3bff2f953653425a119210e1">DataPoint.DEVICE_UUID</a>, deviceUuid);</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">DataPoint.TIMESTAMP</a>, timestamp);</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">DataPoint.VALUE</a>, value);</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                values.put(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#af35c78220f968829867da05756c87c7a">DataPoint.TRANSMIT_STATE</a>, 0);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                        Uri contentUri = Uri.parse(<span class="stringliteral">&quot;content://&quot;</span> + getString(R.string.local_storage_authority)</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                                        + <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a697b677149c9b9639838551465c4ba27">DataPoint.CONTENT_URI_PATH</a>);</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                        storage.insert(contentUri, values);</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                } <span class="keywordflow">catch</span> (IllegalArgumentException e) {</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                        Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Error inserting points in Local Storage!&quot;</span>, e);</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                }</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_afbec24925591ba4d80372db1373c5d51"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#afbec24925591ba4d80372db1373c5d51">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_DESCRIPTION</a></div><div class="ttdeci">static final String SENSOR_DESCRIPTION</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00063">SensorData.java:63</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_abdec19395d072f5ef68313273cfad9f1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#abdec19395d072f5ef68313273cfad9f1">nl.sense_os.service.constants.SensorData.DataPoint.VALUE</a></div><div class="ttdeci">static final String VALUE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00091">SensorData.java:91</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a838808dd53f3dd49d81c69560cb6d6fc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_NAME</a></div><div class="ttdeci">static final String SENSOR_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00056">SensorData.java:56</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_af35c78220f968829867da05756c87c7a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#af35c78220f968829867da05756c87c7a">nl.sense_os.service.constants.SensorData.DataPoint.TRANSMIT_STATE</a></div><div class="ttdeci">static final String TRANSMIT_STATE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00098">SensorData.java:98</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a6c0829bb39fd134b4dd5bc4fc7ce0225"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c0829bb39fd134b4dd5bc4fc7ce0225">nl.sense_os.service.constants.SensorData.DataPoint.DATA_TYPE</a></div><div class="ttdeci">static final String DATA_TYPE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00071">SensorData.java:71</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a697b677149c9b9639838551465c4ba27"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a697b677149c9b9639838551465c4ba27">nl.sense_os.service.constants.SensorData.DataPoint.CONTENT_URI_PATH</a></div><div class="ttdeci">static final String CONTENT_URI_PATH</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00046">SensorData.java:46</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a6c82c8eb3bff2f953653425a119210e1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a6c82c8eb3bff2f953653425a119210e1">nl.sense_os.service.constants.SensorData.DataPoint.DEVICE_UUID</a></div><div class="ttdeci">static final String DEVICE_UUID</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00105">SensorData.java:105</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a8f413b3a74207ce174afa55f92b7a058"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a8f413b3a74207ce174afa55f92b7a058">nl.sense_os.service.constants.SensorData.DataPoint.DISPLAY_NAME</a></div><div class="ttdeci">static final String DISPLAY_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00079">SensorData.java:79</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_ad14ad97eb01429eee8adddd49d70141e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#ad14ad97eb01429eee8adddd49d70141e">nl.sense_os.service.constants.SensorData.DataPoint.TIMESTAMP</a></div><div class="ttdeci">static final String TIMESTAMP</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00085">SensorData.java:85</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a0d5dcc13497a33897f4db86374cfd4c6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.MsgHandler.isOnline </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the phone has network connectivity. </dd></dl>
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00318">318</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                                   {</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                SharedPreferences mainPrefs;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                <span class="keywordflow">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.HONEYCOMB) {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                        mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_MULTI_PROCESS);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                        mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                }</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                <span class="keywordtype">boolean</span> isCommonSenseEnabled = mainPrefs.getBoolean(Main.Advanced.USE_COMMONSENSE, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                SharedPreferences authPrefs;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                <span class="keywordflow">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.HONEYCOMB) {</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                        authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_MULTI_PROCESS);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                        authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                <span class="keywordtype">boolean</span> isLoggedIn = authPrefs.getString(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a18a02349f10441526d88bc488b778f16">Auth.LOGIN_COOKIE</a>, null) != null;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                <span class="keyword">final</span> ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                <span class="keyword">final</span> NetworkInfo info = cm.getActiveNetworkInfo();</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                <span class="keywordflow">return</span> (null != info) &amp;&amp; info.isConnected() &amp;&amp; isCommonSenseEnabled &amp;&amp; isLoggedIn;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth_html_a18a02349f10441526d88bc488b778f16"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a18a02349f10441526d88bc488b778f16">nl.sense_os.service.constants.SensePrefs.Auth.LOGIN_COOKIE</a></div><div class="ttdeci">static final String LOGIN_COOKIE</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00041">SensePrefs.java:41</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a9f8761b2c86af1ec0af5ca76c1b13dbc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IBinder nl.sense_os.service.MsgHandler.onBind </td>
+          <td>(</td>
+          <td class="paramtype">Intent&#160;</td>
+          <td class="paramname"><em>intent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00341">341</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                                             {</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                <span class="comment">// you cannot bind to this service</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                <span class="keywordflow">return</span> null;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="af6bfdd20f590047288cbb2fe48c7b317"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.MsgHandler.onCreate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00347">347</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                               {</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;onCreate&quot;</span>);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                super.onCreate();</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#ad2cc7a8b445b2de5cbb0a2d0821b8a32">storage</a> = LocalStorage.getInstance(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                {</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                        HandlerThread handlerThread = <span class="keyword">new</span> HandlerThread(<span class="stringliteral">&quot;TransmitRecentDataThread&quot;</span>);</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                        handlerThread.start();</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0071f1b62f10a1b1536c99151bec6d28">bufferHandler</a> = <span class="keyword">new</span> BufferTransmitHandler(<span class="keyword">this</span>, storage, handlerThread.getLooper());</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                }</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                {</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                        HandlerThread handlerThread = <span class="keyword">new</span> HandlerThread(<span class="stringliteral">&quot;TransmitFileThread&quot;</span>);</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                        handlerThread.start();</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a17603f41ca69d0f8f9a216bbaad93c55">fileHandler</a> = <span class="keyword">new</span> FileTransmitHandler(<span class="keyword">this</span>, storage, handlerThread.getLooper());</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                }</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                {</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                        HandlerThread handlerThread = <span class="keyword">new</span> HandlerThread(<span class="stringliteral">&quot;TransmitDataPointThread&quot;</span>);</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                        handlerThread.start();</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#aad678a964f1cc150dfaf9e548c11d1dd">dataTransmitHandler</a> = <span class="keyword">new</span> DataTransmitHandler(<span class="keyword">this</span>, storage, handlerThread.getLooper());</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                }</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_ad2cc7a8b445b2de5cbb0a2d0821b8a32"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#ad2cc7a8b445b2de5cbb0a2d0821b8a32">nl.sense_os.service.MsgHandler.storage</a></div><div class="ttdeci">static LocalStorage storage</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00081">MsgHandler.java:81</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_aad678a964f1cc150dfaf9e548c11d1dd"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#aad678a964f1cc150dfaf9e548c11d1dd">nl.sense_os.service.MsgHandler.dataTransmitHandler</a></div><div class="ttdeci">static DataTransmitHandler dataTransmitHandler</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00079">MsgHandler.java:79</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a0071f1b62f10a1b1536c99151bec6d28"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a0071f1b62f10a1b1536c99151bec6d28">nl.sense_os.service.MsgHandler.bufferHandler</a></div><div class="ttdeci">static BufferTransmitHandler bufferHandler</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00080">MsgHandler.java:80</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a17603f41ca69d0f8f9a216bbaad93c55"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a17603f41ca69d0f8f9a216bbaad93c55">nl.sense_os.service.MsgHandler.fileHandler</a></div><div class="ttdeci">static FileTransmitHandler fileHandler</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00078">MsgHandler.java:78</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ae4e44cba684c63569ff78475313ff84d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.MsgHandler.onDestroy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00373">373</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                                {</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;onDestroy&quot;</span>);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a3740d9feaa868bb5bb52bd554e666538">emptyBufferToDb</a>();</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                <span class="comment">// stop buffered data transmission threads</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                bufferHandler.getLooper().quit();</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                fileHandler.getLooper().quit();</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                dataTransmitHandler.getLooper().quit();</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                super.onDestroy();</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a3740d9feaa868bb5bb52bd554e666538"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a3740d9feaa868bb5bb52bd554e666538">nl.sense_os.service.MsgHandler.emptyBufferToDb</a></div><div class="ttdeci">void emptyBufferToDb()</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00153">MsgHandler.java:153</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a6e0f9988f1e3b1dc78c88d971fac911d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -202,6 +698,24 @@ startService(sensorData);
 </div><div class="memdoc">
 <p>Handles an incoming Intent that started the service by checking if it wants to store a new message or if it wants to send data to CommonSense. </p>
 
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00390">390</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;                                                                         {</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                <span class="keywordflow">if</span> (getString(R.string.action_sense_new_data).equals(intent.getAction())) {</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a049854037bfb59abfc470a90374c1260">handleNewMsgIntent</a>(intent);</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (getString(R.string.action_sense_send_data).equals(intent.getAction())) {</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#affce57b215b486d70f592eb4a1d70e82">handleSendIntent</a>(intent);</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                        Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Unexpected intent action: &quot;</span> + intent.getAction());</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                }</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                <span class="comment">// this service is not sticky, it will get an intent to restart it if necessary</span></div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                <span class="keywordflow">return</span> START_NOT_STICKY;</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a049854037bfb59abfc470a90374c1260"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a049854037bfb59abfc470a90374c1260">nl.sense_os.service.MsgHandler.handleNewMsgIntent</a></div><div class="ttdeci">void handleNewMsgIntent(Intent intent)</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00165">MsgHandler.java:165</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_affce57b215b486d70f592eb4a1d70e82"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#affce57b215b486d70f592eb4a1d70e82">nl.sense_os.service.MsgHandler.handleSendIntent</a></div><div class="ttdeci">void handleSendIntent(Intent intent)</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00239">MsgHandler.java:239</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="af1324ae83c47bb56c0b6d82c5fcd9f4d"></a>
@@ -271,9 +785,152 @@ startService(sensorData);
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00099">99</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                                                                                   {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                        <span class="comment">// get cookie for transmission</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                        SharedPreferences authPrefs = context.getSharedPreferences(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a6056a58a9b8dbf6ccbc8c8c46412367b">SensePrefs.AUTH_PREFS</a>,</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                                        MODE_PRIVATE);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                        String cookie = authPrefs.getString(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a18a02349f10441526d88bc488b778f16">Auth.LOGIN_COOKIE</a>, null);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                        SharedPreferences mainPrefs = context.getSharedPreferences(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">SensePrefs.MAIN_PREFS</a>,</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                                        MODE_PRIVATE);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                        <span class="keywordtype">boolean</span> encrypt_credential = mainPrefs.getBoolean(Main.Advanced.ENCRYPT_CREDENTIAL, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        <span class="keywordflow">if</span> (encrypt_credential) {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                                EncryptionHelper decryptor = <span class="keyword">new</span> EncryptionHelper(context);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                                    cookie = decryptor.decrypt(cookie);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                                } <span class="keywordflow">catch</span> (EncryptionHelper.EncryptionHelperException e) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                                    Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Error decrypting cookie. Assume data is not encrypted&quot;</span>);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                                }</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                        }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        <span class="keywordflow">if</span> (cookie.length() &gt; 0) {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                                <span class="comment">// prepare message to let handler run task</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                                Bundle args = <span class="keyword">new</span> Bundle();</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                                args.putString(<span class="stringliteral">&quot;name&quot;</span>, name);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                                args.putString(<span class="stringliteral">&quot;description&quot;</span>, description);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                                args.putString(<span class="stringliteral">&quot;dataType&quot;</span>, dataType);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                                args.putString(<span class="stringliteral">&quot;deviceUuid&quot;</span>, deviceUuid);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                                args.putString(<span class="stringliteral">&quot;cookie&quot;</span>, cookie);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                                Message msg = Message.obtain();</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                                msg.setData(args);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                                msg.obj = sensorData;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                                <span class="comment">// check for sending a file</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                                <span class="keywordflow">if</span> (dataType.equals(SenseDataTypes.FILE)) {</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                                        fileHandler.sendMessage(msg);</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                                        dataTransmitHandler.sendMessage(msg);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                                }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                                Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Cannot send data point! no cookie&quot;</span>);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                        }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                } <span class="keywordflow">catch</span> (Exception e) {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                        Log.e(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">TAG</a>, <span class="stringliteral">&quot;Error in sending sensor data:&quot;</span>, e);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                }</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth_html_a18a02349f10441526d88bc488b778f16"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_auth.html#a18a02349f10441526d88bc488b778f16">nl.sense_os.service.constants.SensePrefs.Auth.LOGIN_COOKIE</a></div><div class="ttdeci">static final String LOGIN_COOKIE</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00041">SensePrefs.java:41</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_html_a6056a58a9b8dbf6ccbc8c8c46412367b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a6056a58a9b8dbf6ccbc8c8c46412367b">nl.sense_os.service.constants.SensePrefs.AUTH_PREFS</a></div><div class="ttdeci">static final String AUTH_PREFS</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00886">SensePrefs.java:886</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_html_a09ef189b0ea21b5fcd5d59504ad7c63b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">nl.sense_os.service.constants.SensePrefs.MAIN_PREFS</a></div><div class="ttdeci">static final String MAIN_PREFS</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00893">SensePrefs.java:893</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_msg_handler_html_a33d1f6cbc56cbc51a686a7c1577a3f39"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a33d1f6cbc56cbc51a686a7c1577a3f39">nl.sense_os.service.MsgHandler.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_msg_handler_8java_source.html#l00069">MsgHandler.java:69</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="afedaddd31d026d8ae519e1c16665c140"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.MsgHandler.BUFFER_TYPE_FLASH = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00075">75</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5cd200ac48b0f47d55c37a31107aa434"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.MsgHandler.BUFFER_TYPE_MEMORY = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00076">76</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0071f1b62f10a1b1536c99151bec6d28"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html">BufferTransmitHandler</a> nl.sense_os.service.MsgHandler.bufferHandler</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00080">80</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aad678a964f1cc150dfaf9e548c11d1dd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_data_transmit_handler.html">DataTransmitHandler</a> nl.sense_os.service.MsgHandler.dataTransmitHandler</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00079">79</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a10bac7b3919e745cd0a8149d54b0550a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -291,20 +948,88 @@ startService(sensorData);
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Key for Intent extra that defines the buffer type to send data from. The value should be either <a class="el" href="">BUFFER_TYPE_FLASH</a> or <a class="el" href="">BUFFER_TYPE_MEMORY</a>. </p>
+<p>Key for Intent extra that defines the buffer type to send data from. The value should be either <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#afedaddd31d026d8ae519e1c16665c140">BUFFER_TYPE_FLASH</a> or <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html#a5cd200ac48b0f47d55c37a31107aa434">BUFFER_TYPE_MEMORY</a>. </p>
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00074">74</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a17603f41ca69d0f8f9a216bbaad93c55"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_file_transmit_handler.html">FileTransmitHandler</a> nl.sense_os.service.MsgHandler.fileHandler</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00078">78</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad2cc7a8b445b2de5cbb0a2d0821b8a32"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a> nl.sense_os.service.MsgHandler.storage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00081">81</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a33d1f6cbc56cbc51a686a7c1577a3f39"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.MsgHandler.TAG = &quot;Sense <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">MsgHandler</a>&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_msg_handler_8java_source.html#l00069">69</a> of file <a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/MsgHandler.java</li>
+<li>src/nl/sense_os/service/<a class="el" href="_msg_handler_8java_source.html">MsgHandler.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">MsgHandler</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">MsgHandler</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

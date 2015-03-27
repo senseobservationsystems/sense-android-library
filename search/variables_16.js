@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['wakelock',['wakeLock',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#a9016b3c7a0b53cd2e03bf2bcd00763a9',1,'nl::sense_os::service::motion::MotionSensor']]],
+  ['weightsum_5f',['weightSum_',['../classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a57a84775c8dec0c4197992d32058fd17',1,'nl::sense_os::service::location::TraveledDistanceEstimator']]],
+  ['whichaverage',['whichAverage',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb',1,'nl::sense_os::service::ambience::FourierTransform']]],
+  ['whichwindow',['whichWindow',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c',1,'nl::sense_os::service::ambience::FourierTransform']]],
+  ['wifi',['WIFI',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_dev_prox.html#a21027450383003cfa547e3bf0d88e512',1,'nl.sense_os.service.constants.SensePrefs.Main.DevProx.WIFI()'],['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a9a74d1aa383da621ff91530a8f818db5',1,'nl.sense_os.service.deviceprox.WIFIDeviceProximity.wifi()']]],
+  ['wifi_5fscan',['WIFI_SCAN',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a4de28428eff595ec35d470fc205e58cc',1,'nl::sense_os::service::constants::SensorData::SensorNames']]],
+  ['wifi_5fupload_5fonly',['WIFI_UPLOAD_ONLY',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a4c13daa16ba86962ba57b222dacfefe7',1,'nl::sense_os::service::constants::SensePrefs::Main::Advanced']]],
+  ['wifiactivefromthestart',['wifiActiveFromTheStart',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html#a71dbf184f2869632513f7d1141ec07c7',1,'nl::sense_os::service::deviceprox::WIFIDeviceProximity::WifiScanThread']]],
+  ['wifidp',['wifiDP',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html#a796b06f9e0d212ce90873d6623e20364',1,'nl::sense_os::service::deviceprox::DeviceProximity']]],
+  ['wifireceiver',['wifiReceiver',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity_1_1_wifi_scan_thread.html#a8f43f281f0ccbbfa14dc25d361a473cf',1,'nl::sense_os::service::deviceprox::WIFIDeviceProximity::WifiScanThread']]],
+  ['wifiscanthread',['wifiScanThread',['../classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_w_i_f_i_device_proximity.html#a553c4affb5f726984f7b388da68534ee',1,'nl::sense_os::service::deviceprox::WIFIDeviceProximity']]],
+  ['window',['window',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_loudness_sensor.html#adf53dab7a42ffe269c5b31ef0096acbf',1,'nl::sense_os::service::ambience::LoudnessSensor']]],
+  ['window_5f',['window_',['../classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a35128956e85807a3e1b953cde36df970',1,'nl::sense_os::service::location::TraveledDistanceEstimator']]],
+  ['window_5fsize',['WINDOW_SIZE',['../classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a60b8c7821ed96ae45a1953a5d6dbb342',1,'nl::sense_os::service::location::TraveledDistanceEstimator']]],
+  ['worn_5fstatus',['WORN_STATUS',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external_1_1_zephyr_bio_harness.html#a92d6397a96da8f2a53178f29a2131308',1,'nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrBioHarness.WORN_STATUS()'],['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#ae68a0f547abcf72eeb38f7fdad4d573e',1,'nl.sense_os.service.constants.SensorData.SensorNames.WORN_STATUS()']]],
+  ['writer',['writer',['../classnl_1_1sense__os_1_1service_1_1_encryption_helper.html#a28a1149f4c1a23e80b6ccb3f8a1945fa',1,'nl::sense_os::service::EncryptionHelper']]]
+];

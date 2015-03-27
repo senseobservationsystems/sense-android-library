@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['temperaturesensor',['TemperatureSensor',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_temperature_sensor.html',1,'nl::sense_os::service::ambience']]],
-  ['timezonesensor',['TimeZoneSensor',['../classnl_1_1sense__os_1_1service_1_1location_1_1_time_zone_sensor.html',1,'nl::sense_os::service::location']]],
-  ['traveleddistanceestimator',['TraveledDistanceEstimator',['../classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html',1,'nl::sense_os::service::location']]],
-  ['trivialsensorregistrator',['TrivialSensorRegistrator',['../classnl_1_1sense__os_1_1platform_1_1_trivial_sensor_registrator.html',1,'nl::sense_os::platform']]]
+  ['remotestorage',['RemoteStorage',['../classnl_1_1sense__os_1_1service_1_1storage_1_1_remote_storage.html',1,'nl::sense_os::service::storage']]],
+  ['requirementreceiver',['RequirementReceiver',['../classnl_1_1sense__os_1_1service_1_1configuration_1_1_requirement_receiver.html',1,'nl::sense_os::service::configuration']]]
 ];

@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sub
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -118,17 +121,18 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sub
   <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a7789d07d3a05f0534f71e8b1d846d960">mSubscribers</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a6b49b611a837ae5f0ce47ab1f65735f5">notifySubscribers</a>()</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#ae6fca630e7e8723e599a8492886a9887">removeSubscriber</a>(DataConsumer consumer)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a>(SensorDataPoint dataPoint)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html#ab0f85d35783d1f4225b3873fe17176da">setSampleRate</a>(long sampleDelay)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html">nl.sense_os.service.subscription.BaseSensor</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html#aaee4500c6a9418f8c86ad77cde24eb8e">startSensing</a>(long sampleDelay)</td><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html">nl.sense_os.service.shared.SenseSensor</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html#a14fd0ab0deeca17ae9320866732eb516">stopSensing</a>()</td><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html">nl.sense_os.service.shared.SenseSensor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>TAG</b> (defined in <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a>)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html#a0a23227db423528c5bb9b80161ba268f">sampleDelay</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html">nl.sense_os.service.subscription.BaseSensor</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a670858394c8a97019cb43963e045447a">sendToSubscribers</a>(SensorDataPoint dataPoint)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html#ab0f85d35783d1f4225b3873fe17176da">setSampleRate</a>(long sampleDelay)</td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_sensor.html">nl.sense_os.service.subscription.BaseSensor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html#aaee4500c6a9418f8c86ad77cde24eb8e">startSensing</a>(long sampleDelay)</td><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html">nl.sense_os.service.shared.SenseSensor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html#a14fd0ab0deeca17ae9320866732eb516">stopSensing</a>()</td><td class="entry"><a class="el" href="interfacenl_1_1sense__os_1_1service_1_1shared_1_1_sense_sensor.html">nl.sense_os.service.shared.SenseSensor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html#a28d774f7e8fb7ed3dee590d0a88ef057">TAG</a></td><td class="entry"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

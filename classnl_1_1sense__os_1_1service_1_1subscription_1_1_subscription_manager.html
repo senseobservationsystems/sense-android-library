@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sub
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1sub
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.subscription.SubscriptionManager Class Reference</div>  </div>
@@ -143,10 +148,24 @@ Static Public Member Functions</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a69b8f553890964e0a0d02348a19e0835"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a69b8f553890964e0a0d02348a19e0835">SubscriptionManager</a> ()</td></tr>
 <tr class="separator:a69b8f553890964e0a0d02348a19e0835"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a7c5c405e54c2705b9973623c732adee6"><td class="memItemLeft" align="right" valign="top">Map&lt; String, List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a7c5c405e54c2705b9973623c732adee6">mConsumers</a></td></tr>
+<tr class="separator:a7c5c405e54c2705b9973623c732adee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a711dcee7d06a246916c4381fcec1d4"><td class="memItemLeft" align="right" valign="top">Map&lt; String, List&lt; <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html">DataProducer</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a0a711dcee7d06a246916c4381fcec1d4">mProducers</a></td></tr>
+<tr class="separator:a0a711dcee7d06a246916c4381fcec1d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:ac22d8e6114fb8256197727e6d1b9a290"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html">SubscriptionManager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#ac22d8e6114fb8256197727e6d1b9a290">sInstance</a></td></tr>
+<tr class="separator:ac22d8e6114fb8256197727e6d1b9a290"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Manager class for keeping track of DataProducers and DataConsumers </p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00015">15</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a69b8f553890964e0a0d02348a19e0835"></a>
 <div class="memitem">
@@ -177,6 +196,14 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a15fc88f05a64fcf9cd6252fba3ed5cc4">getInstance()</a> </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00044">44</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                                    {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a7c5c405e54c2705b9973623c732adee6">mConsumers</a> = <span class="keyword">new</span> HashMap&lt;String, List&lt;DataConsumer&gt;&gt;();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a0a711dcee7d06a246916c4381fcec1d4">mProducers</a> = <span class="keyword">new</span> HashMap&lt;String, List&lt;DataProducer&gt;&gt;();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a7c5c405e54c2705b9973623c732adee6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a7c5c405e54c2705b9973623c732adee6">nl.sense_os.service.subscription.SubscriptionManager.mConsumers</a></div><div class="ttdeci">Map&lt; String, List&lt; DataConsumer &gt; &gt; mConsumers</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00033">SubscriptionManager.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a0a711dcee7d06a246916c4381fcec1d4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a0a711dcee7d06a246916c4381fcec1d4">nl.sense_os.service.subscription.SubscriptionManager.mProducers</a></div><div class="ttdeci">Map&lt; String, List&lt; DataProducer &gt; &gt; mProducers</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00036">SubscriptionManager.java:36</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -203,6 +230,16 @@ Protected Member Functions</h2></td></tr>
 <p>Factory method for singleton pattern</p>
 <dl class="section return"><dt>Returns</dt><dd>The singleton instance of the subscription manager </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00025">25</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                                    {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordflow">if</span> (null == <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#ac22d8e6114fb8256197727e6d1b9a290">sInstance</a>) {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#ac22d8e6114fb8256197727e6d1b9a290">sInstance</a> = <span class="keyword">new</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a69b8f553890964e0a0d02348a19e0835">SubscriptionManager</a>();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        }</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#ac22d8e6114fb8256197727e6d1b9a290">sInstance</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_ac22d8e6114fb8256197727e6d1b9a290"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#ac22d8e6114fb8256197727e6d1b9a290">nl.sense_os.service.subscription.SubscriptionManager.sInstance</a></div><div class="ttdeci">static SubscriptionManager sInstance</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00018">SubscriptionManager.java:18</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a69b8f553890964e0a0d02348a19e0835"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a69b8f553890964e0a0d02348a19e0835">nl.sense_os.service.subscription.SubscriptionManager.SubscriptionManager</a></div><div class="ttdeci">SubscriptionManager()</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00044">SubscriptionManager.java:44</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a9a189a2dc9b0443f0653f9f515163916"></a>
@@ -226,6 +263,17 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A List of data producers that are registered under the given sensor name </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00054">54</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                                                                  {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        List&lt;DataProducer&gt; original = mProducers.get(name);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">if</span> (null != original) {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="comment">// return a copy of the list</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">new</span> ArrayList&lt;DataProducer&gt;(original);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <span class="keywordflow">return</span> null;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="af2f46c91b142b440ff14ea1021b5f9a4"></a>
@@ -249,6 +297,17 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A List of data consumers that are subscribed to the given sensor name </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00069">69</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                                                                  {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        List&lt;DataConsumer&gt; original = mConsumers.get(name);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">if</span> (null != original) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="comment">// return a copy of the list</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">new</span> ArrayList&lt;DataConsumer&gt;(original);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordflow">return</span> null;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a941cc647106aaf34c01cc5d66fb31dcf"></a>
@@ -283,6 +342,25 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if this consumer is already subscribed for producers with this name </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00086">86</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                                                                            {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordflow">if</span>(consumer == null)</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="comment">// check if data consumer is in the list of subscribed consumers</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        List&lt;DataConsumer&gt; consumers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">getSubscribedConsumers</a>(name);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordflow">if</span> (null != consumers) {</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keywordflow">for</span> (DataConsumer registeredConsumer : consumers) {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                <span class="keywordflow">if</span> (registeredConsumer != null &amp;&amp; registeredConsumer.equals(consumer)) {</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        }</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_af2f46c91b142b440ff14ea1021b5f9a4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">nl.sense_os.service.subscription.SubscriptionManager.getSubscribedConsumers</a></div><div class="ttdeci">List&lt; DataConsumer &gt; getSubscribedConsumers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00069">SubscriptionManager.java:69</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="af5399964e1b0d4c442f740acf553a1cc"></a>
@@ -306,6 +384,11 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if any data producer is already registered under this sensor name </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00108">108</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                                                     {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keywordflow">return</span> mProducers.containsKey(name);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a23004e4905fedbbeed68efa885c843c8"></a>
@@ -340,6 +423,25 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the data producer is already registered under this sensor name </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00119">119</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                                                                            {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keywordflow">if</span>(producer == null)</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="comment">// check if producer is already in the list of registered producers</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        List&lt;DataProducer&gt; producers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">getRegisteredProducers</a>(name);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keywordflow">if</span> (null != producers) {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordflow">for</span> (DataProducer registeredProducer : producers) {</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                <span class="keywordflow">if</span> (registeredProducer!= null &amp;&amp; registeredProducer.equals(producer)) {</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                }</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;            }</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        }</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a9a189a2dc9b0443f0653f9f515163916"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">nl.sense_os.service.subscription.SubscriptionManager.getRegisteredProducers</a></div><div class="ttdeci">List&lt; DataProducer &gt; getRegisteredProducers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00054">SubscriptionManager.java:54</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a888e2afb5a6bbf4de1b7a6a94f7a6062"></a>
@@ -375,6 +477,39 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00151">151</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                                                                                  {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af5399964e1b0d4c442f740acf553a1cc">isProducerRegistered</a>(name, producer)) {</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="comment">// data producer is already registered</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="keywordflow">if</span>(producer == null)</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="comment">// add the producer to the list of registered producers</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        List&lt;DataProducer&gt; producers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">getRegisteredProducers</a>(name);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keywordflow">if</span> (null == producers) {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;            producers = <span class="keyword">new</span> ArrayList&lt;DataProducer&gt;();</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        }</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        producers.add(producer);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        mProducers.put(name, producers);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="comment">// see if there are any data consumers subscribed to this sensor name</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        List&lt;DataConsumer&gt; subscribers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">getSubscribedConsumers</a>(name);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keywordflow">if</span> (null != subscribers) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            <span class="comment">// subscribe existing DataProcessors to the new DataProducer</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            <span class="keywordflow">for</span> (DataConsumer subscriber : subscribers) {</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                <span class="keywordflow">if</span>(subscriber != null)</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                    producer.addSubscriber(subscriber);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        }</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_af2f46c91b142b440ff14ea1021b5f9a4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">nl.sense_os.service.subscription.SubscriptionManager.getSubscribedConsumers</a></div><div class="ttdeci">List&lt; DataConsumer &gt; getSubscribedConsumers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00069">SubscriptionManager.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a9a189a2dc9b0443f0653f9f515163916"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">nl.sense_os.service.subscription.SubscriptionManager.getRegisteredProducers</a></div><div class="ttdeci">List&lt; DataProducer &gt; getRegisteredProducers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00054">SubscriptionManager.java:54</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_af5399964e1b0d4c442f740acf553a1cc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af5399964e1b0d4c442f740acf553a1cc">nl.sense_os.service.subscription.SubscriptionManager.isProducerRegistered</a></div><div class="ttdeci">boolean isProducerRegistered(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00108">SubscriptionManager.java:108</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a52d6bceb5d329f5dc5383605026631cc"></a>
@@ -411,6 +546,44 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a> successfully subscribed to the <a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html">DataProducer</a>. </dd></dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00196">196</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                                                                                      {</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a941cc647106aaf34c01cc5d66fb31dcf">isConsumerSubscribed</a>(name, consumer)) {</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;            <span class="comment">// consumer is already subscribed</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        }</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="keywordflow">if</span>(consumer == null)</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <span class="comment">// add the consumer to the list of subscribed consumers</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        List&lt;DataConsumer&gt; consumers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">getSubscribedConsumers</a>(name);</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        <span class="keywordflow">if</span> (null == consumers) {</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            consumers = <span class="keyword">new</span> ArrayList&lt;DataConsumer&gt;();</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        }</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        consumers.add(consumer);</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        mConsumers.put(name, consumers);</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        <span class="comment">// see if there are any producers for this sensor name</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        List&lt;DataProducer&gt; producers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">getRegisteredProducers</a>(name);</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">if</span> (producers == null) {</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;            <span class="comment">// nothing to subscribe to (yet)</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;            <span class="comment">// subscribe the new processor to the existing producers</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;            <span class="keywordtype">boolean</span> subscribed = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;            <span class="keywordflow">for</span> (DataProducer producer : producers) {</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                <span class="keywordflow">if</span>(producer != null)</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                    subscribed |= producer.addSubscriber(consumer);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            }</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;            <span class="keywordflow">return</span> subscribed;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        }</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_af2f46c91b142b440ff14ea1021b5f9a4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">nl.sense_os.service.subscription.SubscriptionManager.getSubscribedConsumers</a></div><div class="ttdeci">List&lt; DataConsumer &gt; getSubscribedConsumers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00069">SubscriptionManager.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a9a189a2dc9b0443f0653f9f515163916"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">nl.sense_os.service.subscription.SubscriptionManager.getRegisteredProducers</a></div><div class="ttdeci">List&lt; DataProducer &gt; getRegisteredProducers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00054">SubscriptionManager.java:54</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a941cc647106aaf34c01cc5d66fb31dcf"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a941cc647106aaf34c01cc5d66fb31dcf">nl.sense_os.service.subscription.SubscriptionManager.isConsumerSubscribed</a></div><div class="ttdeci">boolean isConsumerSubscribed(String name, DataConsumer consumer)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00086">SubscriptionManager.java:86</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="adb89852f26f3e03517e36a6f973b2dcf"></a>
@@ -447,6 +620,32 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00241">241</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                                                                                    {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a0a711dcee7d06a246916c4381fcec1d4">mProducers</a>.containsKey(name)) {</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            <span class="comment">// this producer is not registered under this name</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        }</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="comment">// remove the producer from the list of registered producers for this sensor name</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        List&lt;DataProducer&gt; dataProducers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">getRegisteredProducers</a>(name);</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        <span class="keywordflow">if</span> (null == dataProducers) {</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="comment">// apparently the list is already gone</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        }</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        dataProducers.remove(producer);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="comment">// update the map of registered producers</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">if</span> (dataProducers.size() == 0) {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            mProducers.remove(name);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            mProducers.put(name, dataProducers);</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        }</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a9a189a2dc9b0443f0653f9f515163916"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">nl.sense_os.service.subscription.SubscriptionManager.getRegisteredProducers</a></div><div class="ttdeci">List&lt; DataProducer &gt; getRegisteredProducers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00054">SubscriptionManager.java:54</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a0a711dcee7d06a246916c4381fcec1d4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a0a711dcee7d06a246916c4381fcec1d4">nl.sense_os.service.subscription.SubscriptionManager.mProducers</a></div><div class="ttdeci">Map&lt; String, List&lt; DataProducer &gt; &gt; mProducers</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00036">SubscriptionManager.java:36</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a270faefefb24153277681dba0581b9cb"></a>
@@ -481,18 +680,124 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00272">272</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                                                                                     {</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a7c5c405e54c2705b9973623c732adee6">mConsumers</a>.containsKey(name)) {</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="comment">// there are no consumers registered for this name (?)</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        }</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        <span class="comment">// remove the consumer from the list of subscribed consumer</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        List&lt;DataConsumer&gt; consumers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">getSubscribedConsumers</a>(name);</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <span class="keywordflow">if</span> (null == consumers) {</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            <span class="comment">// apparently the list is already gone</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        }</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        consumers.remove(consumer);</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        <span class="comment">// update the map of consumers</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        <span class="keywordflow">if</span> (consumers.size() == 0) {</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            mConsumers.remove(name);</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            mConsumers.put(name, consumers);</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        }</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="comment">// unsubscribe the consumer from the producers for this sensor name</span></div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        List&lt;DataProducer&gt; producers = <a class="code" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">getRegisteredProducers</a>(name);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        <span class="keywordflow">if</span> (null != producers) {</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <span class="keywordflow">for</span> (DataProducer registeredProducer : producers) {</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                <span class="keywordflow">if</span>(registeredProducer != null)</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                    registeredProducer.removeSubscriber(consumer);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            }</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        }</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a7c5c405e54c2705b9973623c732adee6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a7c5c405e54c2705b9973623c732adee6">nl.sense_os.service.subscription.SubscriptionManager.mConsumers</a></div><div class="ttdeci">Map&lt; String, List&lt; DataConsumer &gt; &gt; mConsumers</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00033">SubscriptionManager.java:33</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_af2f46c91b142b440ff14ea1021b5f9a4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#af2f46c91b142b440ff14ea1021b5f9a4">nl.sense_os.service.subscription.SubscriptionManager.getSubscribedConsumers</a></div><div class="ttdeci">List&lt; DataConsumer &gt; getSubscribedConsumers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00069">SubscriptionManager.java:69</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager_html_a9a189a2dc9b0443f0653f9f515163916"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a9a189a2dc9b0443f0653f9f515163916">nl.sense_os.service.subscription.SubscriptionManager.getRegisteredProducers</a></div><div class="ttdeci">List&lt; DataProducer &gt; getRegisteredProducers(String name)</div><div class="ttdef"><b>Definition:</b> <a href="_subscription_manager_8java_source.html#l00054">SubscriptionManager.java:54</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7c5c405e54c2705b9973623c732adee6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Map&lt;String, List&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html">DataConsumer</a>&gt; &gt; nl.sense_os.service.subscription.SubscriptionManager.mConsumers</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>All DataConsumers, mapped by the name of the producer they are subscribed to. </p>
+
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00033">33</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0a711dcee7d06a246916c4381fcec1d4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Map&lt;String, List&lt;<a class="el" href="interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html">DataProducer</a>&gt; &gt; nl.sense_os.service.subscription.SubscriptionManager.mProducers</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>All registered DataProducers, mapped by their name. </p>
+
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00036">36</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac22d8e6114fb8256197727e6d1b9a290"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html">SubscriptionManager</a> nl.sense_os.service.subscription.SubscriptionManager.sInstance</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Singleton instance </p>
+
+<p>Definition at line <a class="el" href="_subscription_manager_8java_source.html#l00018">18</a> of file <a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/subscription/SubscriptionManager.java</li>
+<li>src/nl/sense_os/service/subscription/<a class="el" href="_subscription_manager_8java_source.html">SubscriptionManager.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>subscription</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html">SubscriptionManager</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1subscription.html">subscription</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html">SubscriptionManager</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

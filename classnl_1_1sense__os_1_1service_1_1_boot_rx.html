@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_bo
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,6 +108,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_bo
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1_boot_rx-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.BootRx Class Reference</div>  </div>
@@ -121,23 +125,104 @@ Inheritance diagram for nl.sense_os.service.BootRx:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acb0b5f69fa687609e0bcbd18d0674d27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb0b5f69fa687609e0bcbd18d0674d27"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onReceive</b> (Context context, Intent intent)</td></tr>
+<tr class="memitem:acb0b5f69fa687609e0bcbd18d0674d27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html#acb0b5f69fa687609e0bcbd18d0674d27">onReceive</a> (Context context, Intent intent)</td></tr>
 <tr class="separator:acb0b5f69fa687609e0bcbd18d0674d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:ae65073573057bba29108b85e364e3827"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html#ae65073573057bba29108b85e364e3827">TAG</a> = &quot;BootRx&quot;</td></tr>
+<tr class="separator:ae65073573057bba29108b85e364e3827"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is responsible for automatically starting the Sense service when the phone boots up. It receives the <a class="el" href="">Intent#ACTION_BOOT_COMPLETED</a> broadcast from the Android system.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/BootRx.java</li>
+
+<p>Definition at line <a class="el" href="_boot_rx_8java_source.html#l00021">21</a> of file <a class="el" href="_boot_rx_8java_source.html">BootRx.java</a>.</p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="acb0b5f69fa687609e0bcbd18d0674d27"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.BootRx.onReceive </td>
+          <td>(</td>
+          <td class="paramtype">Context&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Intent&#160;</td>
+          <td class="paramname"><em>intent</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_boot_rx_8java_source.html#l00026">26</a> of file <a class="el" href="_boot_rx_8java_source.html">BootRx.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                                          {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html#ae65073573057bba29108b85e364e3827">TAG</a>, <span class="stringliteral">&quot;Received broadcast&quot;</span>);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        SharedPreferences statusPrefs = context.getSharedPreferences(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a488096b47091f2079f31332ce198f698">SensePrefs.STATUS_PREFS</a>,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                Context.MODE_PRIVATE);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">boolean</span> autostart = statusPrefs.getBoolean(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status.html#ab8917fdd57e53f623487e6625f7029bb">Status.AUTOSTART</a>, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="comment">// automatically start the Sense service if this is set in the preferences</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">true</span> == autostart) {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            Log.i(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html#ae65073573057bba29108b85e364e3827">TAG</a>, <span class="stringliteral">&quot;Autostart Sense Platform service&quot;</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            Intent startService = <span class="keyword">new</span> Intent(context.getString(R.string.action_sense_service));</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            startService.setPackage(context.getPackageName());</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            ComponentName service = context.startService(startService);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordflow">if</span> (null == service) {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html#ae65073573057bba29108b85e364e3827">TAG</a>, <span class="stringliteral">&quot;Failed to start Sense Platform service&quot;</span>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="comment">// Sense should not be started at boot</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status_html_ab8917fdd57e53f623487e6625f7029bb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status.html#ab8917fdd57e53f623487e6625f7029bb">nl.sense_os.service.constants.SensePrefs.Status.AUTOSTART</a></div><div class="ttdeci">static final String AUTOSTART</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00846">SensePrefs.java:846</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_html_a488096b47091f2079f31332ce198f698"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a488096b47091f2079f31332ce198f698">nl.sense_os.service.constants.SensePrefs.STATUS_PREFS</a></div><div class="ttdeci">static final String STATUS_PREFS</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00900">SensePrefs.java:900</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_boot_rx_html_ae65073573057bba29108b85e364e3827"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html#ae65073573057bba29108b85e364e3827">nl.sense_os.service.BootRx.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_boot_rx_8java_source.html#l00023">BootRx.java:23</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ae65073573057bba29108b85e364e3827"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.BootRx.TAG = &quot;BootRx&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_boot_rx_8java_source.html#l00023">23</a> of file <a class="el" href="_boot_rx_8java_source.html">BootRx.java</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/<a class="el" href="_boot_rx_8java_source.html">BootRx.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html">BootRx</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_boot_rx.html">BootRx</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

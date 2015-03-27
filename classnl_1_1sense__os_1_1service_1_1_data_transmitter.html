@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_da
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1_da
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.DataTransmitter Class Reference</div>  </div>
@@ -123,8 +128,7 @@ Inheritance diagram for nl.sense_os.service.DataTransmitter:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4bc585af44571704db7b12649d932ff0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4bc585af44571704db7b12649d932ff0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ()</td></tr>
+<tr class="memitem:a4bc585af44571704db7b12649d932ff0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a4bc585af44571704db7b12649d932ff0">run</a> ()</td></tr>
 <tr class="separator:a4bc585af44571704db7b12649d932ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6c7d6c5a8cd26f7b1405cd23c7778ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#ac6c7d6c5a8cd26f7b1405cd23c7778ff">startTransmissions</a> (long transmissionInterval, long taskTransmitterInterval)</td></tr>
 <tr class="separator:ac6c7d6c5a8cd26f7b1405cd23c7778ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,14 +146,38 @@ Static Public Member Functions</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:aa5494bdd32dc74d3648797e5eec8a2b3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa5494bdd32dc74d3648797e5eec8a2b3">DataTransmitter</a> (Context context)</td></tr>
 <tr class="separator:aa5494bdd32dc74d3648797e5eec8a2b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:acee65d9660aa9297e57a793abae5422a"><td class="memItemLeft" align="right" valign="top">Context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a></td></tr>
+<tr class="separator:acee65d9660aa9297e57a793abae5422a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36dcc5a1cce3eb8c493c37bc5e11c392"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a36dcc5a1cce3eb8c493c37bc5e11c392">mLastTxBytes</a> = 0</td></tr>
+<tr class="separator:a36dcc5a1cce3eb8c493c37bc5e11c392"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5691298633b3d0faf74ef6956dc6509c"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">mLastTxTime</a> = 0</td></tr>
+<tr class="separator:a5691298633b3d0faf74ef6956dc6509c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a432562ff7ffde77c12bccc499e7ef5ca"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a432562ff7ffde77c12bccc499e7ef5ca">mTxInterval</a></td></tr>
+<tr class="separator:a432562ff7ffde77c12bccc499e7ef5ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a40f7e1a3d583c0802d1986f7367fd4"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5a40f7e1a3d583c0802d1986f7367fd4">mTxBytes</a></td></tr>
+<tr class="separator:a5a40f7e1a3d583c0802d1986f7367fd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:aeab1ca496facf73738a0a4a02b18c0d6"><td class="memItemLeft" align="right" valign="top">static final long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aeab1ca496facf73738a0a4a02b18c0d6">ADAPTIVE_TX_INTERVAL</a> = AlarmManager.INTERVAL_HALF_HOUR</td></tr>
+<tr class="separator:aeab1ca496facf73738a0a4a02b18c0d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92bb2520ba84ff67b7835cdf4c055324"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a92bb2520ba84ff67b7835cdf4c055324">TAG</a> = &quot;DataTransmitter&quot;</td></tr>
+<tr class="separator:a92bb2520ba84ff67b7835cdf4c055324"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa718698da3f2848c45f8ed736ef53c68"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">DataTransmitter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa718698da3f2848c45f8ed736ef53c68">sInstance</a></td></tr>
+<tr class="separator:aa718698da3f2848c45f8ed736ef53c68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class is responsible for initiating the transmission of buffered data. It works by registering the transmission task to the scheduler. The Sense service calls <a class="el" href="">scheduleTransmissions(Context)</a> when it starts sensing. <br/>
  <br/>
  When the transmission task is executed, an Intent is sent to the <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">MsgHandler</a> to empty its buffer.<br/>
  <br/>
- The transmission frequency is based on the <a class="el" href="">Main#SYNC_RATE</a> preference. When the sync rate is set to the real-time setting, we look at the and <a class="el" href="">Main#SAMPLE_RATE</a> to determine periodic "just in case" transmissions. In case of transmission over 3G we transmit every one hour for energy conservation.</p>
+ The transmission frequency is based on the <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html#a5a64be0a83254493c4645b6a188007e4">Main#SYNC_RATE</a> preference. When the sync rate is set to the real-time setting, we look at the and <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html#aae82d69166654089e87f8afe0b15ea14">Main#SAMPLE_RATE</a> to determine periodic "just in case" transmissions. In case of transmission over 3G we transmit every one hour for energy conservation.</p>
 <dl class="section author"><dt>Author</dt><dd>Steven Mulder <a href="#" onclick="location.href='mai'+'lto:'+'ste'+'ve'+'n@s'+'en'+'se-'+'os'+'.nl'; return false;">steve<span style="display: none;">.nosp@m.</span>n@se<span style="display: none;">.nosp@m.</span>nse-o<span style="display: none;">.nosp@m.</span>s.nl</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00038">38</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aa5494bdd32dc74d3648797e5eec8a2b3"></a>
 <div class="memitem">
@@ -181,6 +209,17 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a1ab349ada2a00fe70e4a2d03c50ab52a">getInstance(Context)</a> </dd></dl>
 
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00070">70</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                                               {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a> = context;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.FROYO) {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5a40f7e1a3d583c0802d1986f7367fd4">mTxBytes</a> = TrafficStats.getMobileTxBytes();</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        }</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_acee65d9660aa9297e57a793abae5422a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">nl.sense_os.service.DataTransmitter.mContext</a></div><div class="ttdeci">Context mContext</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00057">DataTransmitter.java:57</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a5a40f7e1a3d583c0802d1986f7367fd4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5a40f7e1a3d583c0802d1986f7367fd4">nl.sense_os.service.DataTransmitter.mTxBytes</a></div><div class="ttdeci">long mTxBytes</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00061">DataTransmitter.java:61</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -214,6 +253,87 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>instance </dd></dl>
 
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00050">50</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                                                               {</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa718698da3f2848c45f8ed736ef53c68">sInstance</a> == null) {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa718698da3f2848c45f8ed736ef53c68">sInstance</a> = <span class="keyword">new</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa5494bdd32dc74d3648797e5eec8a2b3">DataTransmitter</a>(context);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa718698da3f2848c45f8ed736ef53c68">sInstance</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_aa718698da3f2848c45f8ed736ef53c68"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa718698da3f2848c45f8ed736ef53c68">nl.sense_os.service.DataTransmitter.sInstance</a></div><div class="ttdeci">static DataTransmitter sInstance</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00042">DataTransmitter.java:42</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_aa5494bdd32dc74d3648797e5eec8a2b3"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aa5494bdd32dc74d3648797e5eec8a2b3">nl.sense_os.service.DataTransmitter.DataTransmitter</a></div><div class="ttdeci">DataTransmitter(Context context)</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00070">DataTransmitter.java:70</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a4bc585af44571704db7b12649d932ff0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.DataTransmitter.run </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00080">80</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                      {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="comment">// check if the service is (supposed to be) alive before scheduling next alarm</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">true</span> == ServiceStateHelper.getInstance(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a>).isLoggedIn()) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="comment">// check if transmission should be started</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            ConnectivityManager connManager = (ConnectivityManager) <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                    .getSystemService(Context.CONNECTIVITY_SERVICE);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="comment">// start the transmission if we have WiFi connection</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">if</span> ((Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.FROYO) || wifi.isConnected()) {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                <span class="keywordflow">if</span> ((SystemClock.elapsedRealtime() - <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">mLastTxTime</a> &gt;= <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a432562ff7ffde77c12bccc499e7ef5ca">mTxInterval</a>)) {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a4d9eb342ded58d580a948c18c708f617">transmissionService</a>();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                <span class="keywordtype">long</span> interval = <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a432562ff7ffde77c12bccc499e7ef5ca">mTxInterval</a>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                SharedPreferences mainPrefs = mContext.getSharedPreferences(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">SensePrefs.MAIN_PREFS</a>, Context.MODE_PRIVATE);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                <span class="keywordtype">boolean</span> energy_saving = mainPrefs.getBoolean(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a05913d8294fb6640a85b5bdf07178a57">Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE</a>, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                <span class="keywordtype">boolean</span> wifiUploadOnly = mainPrefs.getBoolean(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a4c13daa16ba86962ba57b222dacfefe7">Advanced.WIFI_UPLOAD_ONLY</a>, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                <span class="keywordflow">if</span>(wifiUploadOnly)</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <span class="keywordflow">if</span>(energy_saving)</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                        interval = <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aeab1ca496facf73738a0a4a02b18c0d6">ADAPTIVE_TX_INTERVAL</a>; <span class="comment">//if there is no WiFi connection, postpone the transmission</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                               </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a36dcc5a1cce3eb8c493c37bc5e11c392">mLastTxBytes</a> = TrafficStats.getMobileTxBytes() - <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5a40f7e1a3d583c0802d1986f7367fd4">mTxBytes</a>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5a40f7e1a3d583c0802d1986f7367fd4">mTxBytes</a> = TrafficStats.getMobileTxBytes();</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                <span class="keywordflow">if</span> ((SystemClock.elapsedRealtime() - <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">mLastTxTime</a> &gt;= interval)) {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a4d9eb342ded58d580a948c18c708f617">transmissionService</a>();</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                }</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <span class="comment">// if any transmission took place recently, use the tail to transmit the sensor data</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (energy_saving &amp;&amp; (<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a36dcc5a1cce3eb8c493c37bc5e11c392">mLastTxBytes</a> &gt;= 500)</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                        &amp;&amp; (SystemClock.elapsedRealtime() - <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">mLastTxTime</a> &gt;= <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aeab1ca496facf73738a0a4a02b18c0d6">ADAPTIVE_TX_INTERVAL</a></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                                - (long) (<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aeab1ca496facf73738a0a4a02b18c0d6">ADAPTIVE_TX_INTERVAL</a> * 0.2))) {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a4d9eb342ded58d580a948c18c708f617">transmissionService</a>();</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                    <span class="comment">// do nothing</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <span class="comment">// skip transmission: Sense service is not logged in</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced_html_a4c13daa16ba86962ba57b222dacfefe7"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a4c13daa16ba86962ba57b222dacfefe7">nl.sense_os.service.constants.SensePrefs.Main.Advanced.WIFI_UPLOAD_ONLY</a></div><div class="ttdeci">static final String WIFI_UPLOAD_ONLY</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00182">SensePrefs.java:182</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a36dcc5a1cce3eb8c493c37bc5e11c392"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a36dcc5a1cce3eb8c493c37bc5e11c392">nl.sense_os.service.DataTransmitter.mLastTxBytes</a></div><div class="ttdeci">long mLastTxBytes</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00058">DataTransmitter.java:58</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a432562ff7ffde77c12bccc499e7ef5ca"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a432562ff7ffde77c12bccc499e7ef5ca">nl.sense_os.service.DataTransmitter.mTxInterval</a></div><div class="ttdeci">long mTxInterval</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00060">DataTransmitter.java:60</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a5691298633b3d0faf74ef6956dc6509c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">nl.sense_os.service.DataTransmitter.mLastTxTime</a></div><div class="ttdeci">long mLastTxTime</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00059">DataTransmitter.java:59</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a4d9eb342ded58d580a948c18c708f617"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a4d9eb342ded58d580a948c18c708f617">nl.sense_os.service.DataTransmitter.transmissionService</a></div><div class="ttdeci">void transmissionService()</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00150">DataTransmitter.java:150</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_html_a09ef189b0ea21b5fcd5d59504ad7c63b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs.html#a09ef189b0ea21b5fcd5d59504ad7c63b">nl.sense_os.service.constants.SensePrefs.MAIN_PREFS</a></div><div class="ttdeci">static final String MAIN_PREFS</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00893">SensePrefs.java:893</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_aeab1ca496facf73738a0a4a02b18c0d6"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#aeab1ca496facf73738a0a4a02b18c0d6">nl.sense_os.service.DataTransmitter.ADAPTIVE_TX_INTERVAL</a></div><div class="ttdeci">static final long ADAPTIVE_TX_INTERVAL</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00040">DataTransmitter.java:40</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_acee65d9660aa9297e57a793abae5422a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">nl.sense_os.service.DataTransmitter.mContext</a></div><div class="ttdeci">Context mContext</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00057">DataTransmitter.java:57</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced_html_a05913d8294fb6640a85b5bdf07178a57"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a05913d8294fb6640a85b5bdf07178a57">nl.sense_os.service.constants.SensePrefs.Main.Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE</a></div><div class="ttdeci">static final String MOBILE_INTERNET_ENERGY_SAVING_MODE</div><div class="ttdef"><b>Definition:</b> <a href="_sense_prefs_8java_source.html#l00176">SensePrefs.java:176</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a5a40f7e1a3d583c0802d1986f7367fd4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5a40f7e1a3d583c0802d1986f7367fd4">nl.sense_os.service.DataTransmitter.mTxBytes</a></div><div class="ttdeci">long mTxBytes</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00061">DataTransmitter.java:61</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ac6c7d6c5a8cd26f7b1405cd23c7778ff"></a>
@@ -247,6 +367,17 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00131">131</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                                                                                            {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="comment">// schedule transmissions</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a432562ff7ffde77c12bccc499e7ef5ca">mTxInterval</a> = transmissionInterval;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        Scheduler.getInstance(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a>).<span class="keyword">register</span>(<span class="keyword">this</span>, taskTransmitterInterval,</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                (<span class="keywordtype">long</span>) (taskTransmitterInterval * 0.2));</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a432562ff7ffde77c12bccc499e7ef5ca"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a432562ff7ffde77c12bccc499e7ef5ca">nl.sense_os.service.DataTransmitter.mTxInterval</a></div><div class="ttdeci">long mTxInterval</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00060">DataTransmitter.java:60</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_acee65d9660aa9297e57a793abae5422a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">nl.sense_os.service.DataTransmitter.mContext</a></div><div class="ttdeci">Context mContext</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00057">DataTransmitter.java:57</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a5e0b8d6ec9b95e380f4ba2df01046a15"></a>
@@ -263,6 +394,13 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Stops the periodic transmission of sensor data. </p>
 
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00142">142</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                                    {</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="comment">// stop transmissions</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        Scheduler.getInstance(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a>).unregister(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_acee65d9660aa9297e57a793abae5422a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">nl.sense_os.service.DataTransmitter.mContext</a></div><div class="ttdeci">Context mContext</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00057">DataTransmitter.java:57</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a4d9eb342ded58d580a948c18c708f617"></a>
@@ -279,18 +417,210 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Initiates the data transmission. </p>
 
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00150">150</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                                      {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a92bb2520ba84ff67b7835cdf4c055324">TAG</a>, <span class="stringliteral">&quot;Start transmission&quot;</span>);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        Intent task = <span class="keyword">new</span> Intent(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">mContext</a>.getString(R.string.action_sense_send_data));</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        task.setPackage(mContext.getPackageName());</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">mLastTxTime</a> = SystemClock.elapsedRealtime();</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        ComponentName service = mContext.startService(task);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keywordflow">if</span> (null == service) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;            Log.w(<a class="code" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a92bb2520ba84ff67b7835cdf4c055324">TAG</a>, <span class="stringliteral">&quot;Failed to start data sync service&quot;</span>);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        }</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a5691298633b3d0faf74ef6956dc6509c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a5691298633b3d0faf74ef6956dc6509c">nl.sense_os.service.DataTransmitter.mLastTxTime</a></div><div class="ttdeci">long mLastTxTime</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00059">DataTransmitter.java:59</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_a92bb2520ba84ff67b7835cdf4c055324"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#a92bb2520ba84ff67b7835cdf4c055324">nl.sense_os.service.DataTransmitter.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00041">DataTransmitter.java:41</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1_data_transmitter_html_acee65d9660aa9297e57a793abae5422a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html#acee65d9660aa9297e57a793abae5422a">nl.sense_os.service.DataTransmitter.mContext</a></div><div class="ttdeci">Context mContext</div><div class="ttdef"><b>Definition:</b> <a href="_data_transmitter_8java_source.html#l00057">DataTransmitter.java:57</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aeab1ca496facf73738a0a4a02b18c0d6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final long nl.sense_os.service.DataTransmitter.ADAPTIVE_TX_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00040">40</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acee65d9660aa9297e57a793abae5422a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Context nl.sense_os.service.DataTransmitter.mContext</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00057">57</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a36dcc5a1cce3eb8c493c37bc5e11c392"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.DataTransmitter.mLastTxBytes = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00058">58</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5691298633b3d0faf74ef6956dc6509c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.DataTransmitter.mLastTxTime = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00059">59</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5a40f7e1a3d583c0802d1986f7367fd4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.DataTransmitter.mTxBytes</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00061">61</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a432562ff7ffde77c12bccc499e7ef5ca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long nl.sense_os.service.DataTransmitter.mTxInterval</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00060">60</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa718698da3f2848c45f8ed736ef53c68"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">DataTransmitter</a> nl.sense_os.service.DataTransmitter.sInstance</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00042">42</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a92bb2520ba84ff67b7835cdf4c055324"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.DataTransmitter.TAG = &quot;DataTransmitter&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_data_transmitter_8java_source.html#l00041">41</a> of file <a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/DataTransmitter.java</li>
+<li>src/nl/sense_os/service/<a class="el" href="_data_transmitter_8java_source.html">DataTransmitter.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">DataTransmitter</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">DataTransmitter</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

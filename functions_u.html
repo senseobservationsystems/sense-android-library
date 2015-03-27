@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -78,11 +81,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="functions.html#index_a"><span>a</span></a></li>
+      <li><a href="functions.html#index_["><span>[</span></a></li>
+      <li><a href="functions_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_b.html#index_b"><span>b</span></a></li>
       <li><a href="functions_c.html#index_c"><span>c</span></a></li>
       <li><a href="functions_d.html#index_d"><span>d</span></a></li>
       <li><a href="functions_e.html#index_e"><span>e</span></a></li>
@@ -91,17 +97,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_i.html#index_i"><span>i</span></a></li>
       <li><a href="functions_j.html#index_j"><span>j</span></a></li>
+      <li><a href="functions_k.html#index_k"><span>k</span></a></li>
       <li><a href="functions_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_m.html#index_m"><span>m</span></a></li>
       <li><a href="functions_n.html#index_n"><span>n</span></a></li>
       <li><a href="functions_o.html#index_o"><span>o</span></a></li>
       <li><a href="functions_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_q.html#index_q"><span>q</span></a></li>
       <li><a href="functions_r.html#index_r"><span>r</span></a></li>
       <li><a href="functions_s.html#index_s"><span>s</span></a></li>
       <li><a href="functions_t.html#index_t"><span>t</span></a></li>
       <li class="current"><a href="functions_u.html#index_u"><span>u</span></a></li>
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -124,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_u.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -134,23 +143,132 @@ $(document).ready(function(){initNavTree('functions_u.html','');});
 </div>
 
 <div class="contents">
-<div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
+<div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
+<li>unbindFromSenseService()
+: <a class="el" href="classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a9cc27bc4e6977c8a683eaabc670605f6">nl.sense_os.platform.SensePlatform</a>
+</li>
+<li>UNREAD_MSG
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_phone_state.html#a496ed41935509bec287c88cd98eb3cc6">nl.sense_os.service.constants.SensePrefs.Main.PhoneState</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a5e83ad185dd422b37fa19e06b6c6bf57">nl.sense_os.service.constants.SensorData.SensorNames</a>
+</li>
+<li>UNREG
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_motion.html#aa1c988c9dd4658389f991b88b86faa27">nl.sense_os.service.constants.SensePrefs.Main.Motion</a>
+</li>
 <li>unregister()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler.html#aab85308205a7415cf38ce2b54d52b503">nl.sense_os.service.scheduler.Scheduler</a>
 </li>
 <li>unregisterProducer()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#adb89852f26f3e03517e36a6f973b2dcf">nl.sense_os.service.subscription.SubscriptionManager</a>
 </li>
+<li>unregisterSensors()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#a7eac32dac44107797a06fb34da39320a">nl.sense_os.service.motion.MotionSensor</a>
+</li>
 <li>unsubscribeConsumer()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#a270faefefb24153277681dba0581b9cb">nl.sense_os.service.subscription.SubscriptionManager</a>
 </li>
+<li>update()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#aa307eb2231521ca750b8fa91dd0d7557">nl.sense_os.service.provider.LocalStorageSql</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_sensor_data_provider.html#a0c0a4c6e21f9e1204bd9c725224d2f52">nl.sense_os.service.provider.SensorDataProvider</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html#a889f93fe38cba3b9216438c8096dd8b2">nl.sense_os.service.storage.LocalStorage</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_s_q_lite_storage.html#ae0eef668bf9d9fb509cf42f1cb64b72f">nl.sense_os.service.storage.SQLiteStorage</a>
+</li>
+<li>updateActive
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#a90e9d5e7350f2c8036a311793f153658">nl.sense_os.service.external_sensors.OBD2Dongle</a>
+</li>
+<li>UpdateAndSendCameraLightValues()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor_1_1_update_and_send_camera_light_values.html#a0635184ae628c6a5f3c8cc37e4085dc4">nl.sense_os.service.ambience.CameraLightSensor.UpdateAndSendCameraLightValues</a>
+</li>
+<li>updateAndSendValues
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor.html#ae0ed9c2453f686c10c603d4509d16dd8">nl.sense_os.service.ambience.CameraLightSensor</a>
+</li>
+<li>updateCenter()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a9ca6f5a816dba7391b828f444be1a8cb">nl.sense_os.service.location.TraveledDistanceEstimator</a>
+</li>
+<li>updateConfiguration()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a7e4f54a50e7caf906248ff1e9a94c8ec">nl.sense_os.service.push.GCMReceiver</a>
+</li>
+<li>updateHandler
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a35458572f29a9d22a2b79824b63f651b">nl.sense_os.service.external_sensors.ExternalSensor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#acd07189898b003139984767b9bdeb42c">nl.sense_os.service.external_sensors.OBD2Dongle</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness.html#acee8e84e88f0b47942bed09bf35e7b61">nl.sense_os.service.external_sensors.ZephyrBioHarness</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a7e759550b8d101d3b04f7f6e917f919e">nl.sense_os.service.external_sensors.ZephyrHxM</a>
+</li>
+<li>updateHandlerThread
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a233818e7d71e771db744d476b3f959eb">nl.sense_os.service.external_sensors.ExternalSensor</a>
+</li>
+<li>updateHT
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#a072c9fd2a1ff48e473573439a1bc00f7">nl.sense_os.service.external_sensors.ZephyrHxM</a>
+</li>
+<li>updateinterval
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#a448f93a3c5302d01567c25f01eae8949">nl.sense_os.service.external_sensors.ExternalSensor</a>
+</li>
+<li>updateInterval
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#afc666f66ff0e9ae539ccadc7ce1aad9f">nl.sense_os.service.external_sensors.OBD2Dongle</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness.html#a52b0c8884e5f6479a9ba5ec84d14d198">nl.sense_os.service.external_sensors.ZephyrBioHarness</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#aff86bb747f80d28c938e959286dffcf2">nl.sense_os.service.external_sensors.ZephyrHxM</a>
+</li>
+<li>updateNotification()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a0233f91e8b113e0d8c1fff6bb8fc9d36">nl.sense_os.service.ServiceStateHelper</a>
+</li>
+<li>updateReceiver
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1states_1_1_abstract_state_monitor.html#ab7b739f917aa1d5aa6b8963e4b5dc449">nl.sense_os.service.states.AbstractStateMonitor</a>
+</li>
+<li>updateSamplingRate()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a0308e5c60699a3e18107dde1721480c7">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
 <li>updateState()
-: <a class="el" href="classnl_1_1sense__os_1_1service_1_1states_1_1_epi_state_monitor.html#a788da6a77ef20f9d1c52420cad1b7f96">nl.sense_os.service.states.EpiStateMonitor</a>
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1states_1_1_abstract_state_monitor.html#adf0edccc7634a33b8c59063cb6e9e76a">nl.sense_os.service.states.AbstractStateMonitor</a>
+, <a class="el" href="classnl_1_1sense__os_1_1service_1_1states_1_1_epi_state_monitor.html#a788da6a77ef20f9d1c52420cad1b7f96">nl.sense_os.service.states.EpiStateMonitor</a>
+</li>
+<li>updateSyncRate()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#af6422fb1d627afbedc11ba5ceb5ab41a">nl.sense_os.service.configuration.ConfigurationService</a>
+</li>
+<li>updateThread
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor.html#aa865b9a9a31aa44cdd8816c5e7511268">nl.sense_os.service.external_sensors.ExternalSensor</a>
+</li>
+<li>UpdateThread()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_external_sensor_1_1_update_thread.html#ae94e1afd0c145bbcd051f11e2def2ba9">nl.sense_os.service.external_sensors.ExternalSensor.UpdateThread</a>
+</li>
+<li>updateThread
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle.html#aa72ebdf5e6e7c7db475d2cbc338f2b08">nl.sense_os.service.external_sensors.OBD2Dongle</a>
 </li>
 <li>UpdateThread()
 : <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread.html#a515dd0952ecfc72aec94ffbf1f5ed075">nl.sense_os.service.external_sensors.OBD2Dongle.UpdateThread</a>
+</li>
+<li>updateThread
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness.html#a5fa9f27d27e9f8ad3a080087c576f505">nl.sense_os.service.external_sensors.ZephyrBioHarness</a>
+</li>
+<li>UpdateThread()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness_1_1_update_thread.html#a04a01a1122802a21c9dd5ce8c116ad90">nl.sense_os.service.external_sensors.ZephyrBioHarness.UpdateThread</a>
+</li>
+<li>updateThread
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m.html#ab5e354cfaac721b555741809e27f5c6f">nl.sense_os.service.external_sensors.ZephyrHxM</a>
+</li>
+<li>UpdateThread()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_hx_m_1_1_update_thread.html#adc83d31c5966a1a3ed57bbad9076b04a">nl.sense_os.service.external_sensors.ZephyrHxM.UpdateThread</a>
+</li>
+<li>uriMatcher
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">nl.sense_os.service.provider.LocalStorageSql</a>
+</li>
+<li>url
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler.html#ae5fbcab2fe78bb060c2f8693db1831d1">nl.sense_os.service.commonsense.senddata.BufferTransmitHandler</a>
+</li>
+<li>USE_COMMONSENSE
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_advanced.html#a98cfb314d07654c3580f0fb67de16ca6">nl.sense_os.service.constants.SensePrefs.Main.Advanced</a>
+</li>
+<li>USE_GCM
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1commonsense_1_1_default_sensor_registration_service.html#a37cf0ef2ce02c31f151b10417dd9ff25">nl.sense_os.service.commonsense.DefaultSensorRegistrationService</a>
+</li>
+<li>useConfiguration()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a71db5bbd921a53fd0c642107c76a72c8">nl.sense_os.service.push.GCMReceiver</a>
+</li>
+<li>useInactivity
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#ae000b728f0327f7a0ae0f08c71f39717">nl.sense_os.service.motion.FallDetector</a>
+</li>
+<li>Util()
+: <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_util.html#a0f506c71ff1335cef88770395ad281e4">nl.sense_os.service.constants.Util</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -158,7 +276,7 @@ $(document).ready(function(){initNavTree('functions_u.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pro
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,6 +110,9 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1pro
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pac-static-methods">Static Package Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.provider.LocalStorageSql Class Reference</div>  </div>
@@ -121,32 +127,59 @@ Inheritance diagram for nl.sense_os.service.provider.LocalStorageSql:</div>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_1_1_db_helper.html">DbHelper</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0649900856650c445970a909181d367b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0649900856650c445970a909181d367b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>delete</b> (Uri uri, String selection, String[] selectionArgs)</td></tr>
+<tr class="memitem:a0649900856650c445970a909181d367b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a0649900856650c445970a909181d367b">delete</a> (Uri uri, String selection, String[] selectionArgs)</td></tr>
 <tr class="separator:a0649900856650c445970a909181d367b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af83d619e43a2a522cfa32564a2919c2a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af83d619e43a2a522cfa32564a2919c2a"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>getType</b> (Uri uri)</td></tr>
+<tr class="memitem:af83d619e43a2a522cfa32564a2919c2a"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#af83d619e43a2a522cfa32564a2919c2a">getType</a> (Uri uri)</td></tr>
 <tr class="separator:af83d619e43a2a522cfa32564a2919c2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a950baea9cebda645b49671a3e3bdf62d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a950baea9cebda645b49671a3e3bdf62d"></a>
-Uri&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (Uri uri, ContentValues values)</td></tr>
+<tr class="memitem:a950baea9cebda645b49671a3e3bdf62d"><td class="memItemLeft" align="right" valign="top">Uri&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a950baea9cebda645b49671a3e3bdf62d">insert</a> (Uri uri, ContentValues values)</td></tr>
 <tr class="separator:a950baea9cebda645b49671a3e3bdf62d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0181275100019b9be744fac27f075e6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0181275100019b9be744fac27f075e6c"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>onCreate</b> ()</td></tr>
+<tr class="memitem:a0181275100019b9be744fac27f075e6c"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a0181275100019b9be744fac27f075e6c">onCreate</a> ()</td></tr>
 <tr class="separator:a0181275100019b9be744fac27f075e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaad05205ad212c19cd324167d4138933"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaad05205ad212c19cd324167d4138933"></a>
-Cursor&#160;</td><td class="memItemRight" valign="bottom"><b>query</b> (Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)</td></tr>
+<tr class="memitem:aaad05205ad212c19cd324167d4138933"><td class="memItemLeft" align="right" valign="top">Cursor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#aaad05205ad212c19cd324167d4138933">query</a> (Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)</td></tr>
 <tr class="separator:aaad05205ad212c19cd324167d4138933"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa307eb2231521ca750b8fa91dd0d7557"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa307eb2231521ca750b8fa91dd0d7557"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> (Uri uri, ContentValues values, String selection, String[] selectionArgs)</td></tr>
+<tr class="memitem:aa307eb2231521ca750b8fa91dd0d7557"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#aa307eb2231521ca750b8fa91dd0d7557">update</a> (Uri uri, ContentValues values, String selection, String[] selectionArgs)</td></tr>
 <tr class="separator:aa307eb2231521ca750b8fa91dd0d7557"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:aec81be66328e01d4c7255640a8f64757"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec81be66328e01d4c7255640a8f64757"></a>
-static final String&#160;</td><td class="memItemRight" valign="bottom"><b>AUTHORITY</b> = &quot;nl.sense_os.service.provider.LocalStorage&quot;</td></tr>
+<tr class="memitem:aec81be66328e01d4c7255640a8f64757"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#aec81be66328e01d4c7255640a8f64757">AUTHORITY</a> = &quot;nl.sense_os.service.provider.LocalStorage&quot;</td></tr>
 <tr class="separator:aec81be66328e01d4c7255640a8f64757"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-static-methods"></a>
+Static Package Functions</h2></td></tr>
+<tr class="memitem:a89d931e01084ecf548bfae0e34b4ee86"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a89d931e01084ecf548bfae0e34b4ee86">[static initializer]</a></td></tr>
+<tr class="separator:a89d931e01084ecf548bfae0e34b4ee86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a8501fe44c7083604ac723e4f348b0673"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_1_1_db_helper.html">DbHelper</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a8501fe44c7083604ac723e4f348b0673">dbHelper</a></td></tr>
+<tr class="separator:a8501fe44c7083604ac723e4f348b0673"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a9c3a57c89f1681ee4ad7f814ee78af8e"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a9c3a57c89f1681ee4ad7f814ee78af8e">TAG</a> = &quot;Sense <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a>&quot;</td></tr>
+<tr class="separator:a9c3a57c89f1681ee4ad7f814ee78af8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71a7eeac2096de605cb133eb925526af"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a71a7eeac2096de605cb133eb925526af">DATABASE_NAME</a> = &quot;local_storage.sqlite3&quot;</td></tr>
+<tr class="separator:a71a7eeac2096de605cb133eb925526af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5818d59cb4e57d7f8d3a4ef7cd27145e"><td class="memItemLeft" align="right" valign="top">static final String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">VALUES_TABLE_NAME</a> = &quot;recent_values&quot;</td></tr>
+<tr class="separator:a5818d59cb4e57d7f8d3a4ef7cd27145e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7444ef570ca39267aa51e7078a29c071"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a7444ef570ca39267aa51e7078a29c071">DATABASE_VERSION</a> = 1</td></tr>
+<tr class="separator:a7444ef570ca39267aa51e7078a29c071"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7ffaa9d0e8454f1c29cf39f5ba862aa"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">VALUES_URI</a> = 1</td></tr>
+<tr class="separator:ab7ffaa9d0e8454f1c29cf39f5ba862aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9ebbe650fe604d0e15b980b5b2f237f"><td class="memItemLeft" align="right" valign="top">static final long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9ebbe650fe604d0e15b980b5b2f237f">RETENTION_TIME</a> = 1000 * 60 * 15</td></tr>
+<tr class="separator:ae9ebbe650fe604d0e15b980b5b2f237f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad94fa32e29a3e4b4114de4903512becf"><td class="memItemLeft" align="right" valign="top">static HashMap&lt; String, String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ad94fa32e29a3e4b4114de4903512becf">projectionMap</a></td></tr>
+<tr class="separator:ad94fa32e29a3e4b4114de4903512becf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9591a72edab5979240d372c63ff699d"><td class="memItemLeft" align="right" valign="top">static UriMatcher&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">uriMatcher</a></td></tr>
+<tr class="separator:ae9591a72edab5979240d372c63ff699d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ContentProvider that encapsulates recent sensor data. The data is persistently stored on the devices flash memory, so this implementation is not very energy efficient. This implementation is only kept as reference.</p>
@@ -154,16 +187,564 @@ static final String&#160;</td><td class="memItemRight" valign="bottom"><b>AUTHOR
 <dl class="section see"><dt>See Also</dt><dd>LocalStorage </dd>
 <dd>
 DataPoint </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/provider/LocalStorageSql.java</li>
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00036">36</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a89d931e01084ecf548bfae0e34b4ee86"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.provider.LocalStorageSql.[static initializer] </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0649900856650c445970a909181d367b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.provider.LocalStorageSql.delete </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>selection</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>selectionArgs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00096">96</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                                                                         {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="comment">// Log.v(TAG, &quot;Delete row(s) in local storage...&quot;);</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        SQLiteDatabase db = dbHelper.getWritableDatabase();</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordtype">int</span> count;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">switch</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">uriMatcher</a>.match(uri)) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">VALUES_URI</a>:</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            count = db.delete(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">VALUES_TABLE_NAME</a>, selection, selectionArgs);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="comment">// Log.v(TAG, count + &quot; rows deleted&quot;);</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Unknown URI &quot;</span> + uri);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        }</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        getContext().getContentResolver().notifyChange(uri, null);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keywordflow">return</span> count;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a5818d59cb4e57d7f8d3a4ef7cd27145e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">nl.sense_os.service.provider.LocalStorageSql.VALUES_TABLE_NAME</a></div><div class="ttdeci">static final String VALUES_TABLE_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00074">LocalStorageSql.java:74</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ab7ffaa9d0e8454f1c29cf39f5ba862aa"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">nl.sense_os.service.provider.LocalStorageSql.VALUES_URI</a></div><div class="ttdeci">static final int VALUES_URI</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00076">LocalStorageSql.java:76</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ae9591a72edab5979240d372c63ff699d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">nl.sense_os.service.provider.LocalStorageSql.uriMatcher</a></div><div class="ttdeci">static UriMatcher uriMatcher</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00082">LocalStorageSql.java:82</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="af83d619e43a2a522cfa32564a2919c2a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String nl.sense_os.service.provider.LocalStorageSql.getType </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00116">116</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                                   {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a9c3a57c89f1681ee4ad7f814ee78af8e">TAG</a>, <span class="stringliteral">&quot;Get content type...&quot;</span>);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">switch</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">uriMatcher</a>.match(uri)) {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">VALUES_URI</a>:</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_buffered_data.html#a5246fb9cb68e29ffca6bef2a22612529">BufferedData.CONTENT_TYPE</a>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Unknown URI &quot;</span> + uri);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_buffered_data_html_a5246fb9cb68e29ffca6bef2a22612529"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_buffered_data.html#a5246fb9cb68e29ffca6bef2a22612529">nl.sense_os.service.constants.SensorData.BufferedData.CONTENT_TYPE</a></div><div class="ttdeci">static final String CONTENT_TYPE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00023">SensorData.java:23</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ab7ffaa9d0e8454f1c29cf39f5ba862aa"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">nl.sense_os.service.provider.LocalStorageSql.VALUES_URI</a></div><div class="ttdeci">static final int VALUES_URI</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00076">LocalStorageSql.java:76</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ae9591a72edab5979240d372c63ff699d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">nl.sense_os.service.provider.LocalStorageSql.uriMatcher</a></div><div class="ttdeci">static UriMatcher uriMatcher</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00082">LocalStorageSql.java:82</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a9c3a57c89f1681ee4ad7f814ee78af8e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a9c3a57c89f1681ee4ad7f814ee78af8e">nl.sense_os.service.provider.LocalStorageSql.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00070">LocalStorageSql.java:70</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a950baea9cebda645b49671a3e3bdf62d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Uri nl.sense_os.service.provider.LocalStorageSql.insert </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ContentValues&#160;</td>
+          <td class="paramname"><em>values</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00129">129</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                                                     {</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="comment">// Log.v(TAG, &quot;Insert row in local storage...&quot;);</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">uriMatcher</a>.match(uri) != <a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">VALUES_URI</a>) {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Unknown URI &quot;</span> + uri);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        SQLiteDatabase db = dbHelper.getWritableDatabase();</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="comment">// remove older data points by this sensor</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        String removeWhere = DataPoint.SENSOR_NAME + <span class="stringliteral">&quot;=?&quot;</span> + <span class="stringliteral">&quot; AND &quot;</span> + DataPoint.TIMESTAMP + <span class="stringliteral">&quot;&lt;?&quot;</span>;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        String[] removeArgs = <span class="keyword">new</span> String[] { values.getAsString(<a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">DataPoint.SENSOR_NAME</a>),</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                <span class="stringliteral">&quot;&quot;</span> + (SNTP.getInstance().getTime() - <a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9ebbe650fe604d0e15b980b5b2f237f">RETENTION_TIME</a>) };</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keyword">delete</span>(uri, removeWhere, removeArgs);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keywordtype">long</span> rowId = db.insert(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">VALUES_TABLE_NAME</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_buffered_data.html#a535d57b2898743120187619f85f0a910">BufferedData.ACTIVE</a>, values);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">if</span> (rowId &gt; 0) {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            Uri contentUri = Uri.parse(<span class="stringliteral">&quot;content://&quot;</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                    + getContext().getString(R.string.local_storage_authority)</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                    + DataPoint.CONTENT_URI_PATH);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            Uri rowUri = ContentUris.withAppendedId(contentUri, rowId);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            getContext().getContentResolver().notifyChange(rowUri, null);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keywordflow">return</span> rowUri;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        }</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keywordflow">throw</span> <span class="keyword">new</span> SQLException(<span class="stringliteral">&quot;Failed to insert row into &quot;</span> + uri);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_buffered_data_html_a535d57b2898743120187619f85f0a910"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_buffered_data.html#a535d57b2898743120187619f85f0a910">nl.sense_os.service.constants.SensorData.BufferedData.ACTIVE</a></div><div class="ttdeci">static final String ACTIVE</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00029">SensorData.java:29</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point_html_a838808dd53f3dd49d81c69560cb6d6fc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_data_point.html#a838808dd53f3dd49d81c69560cb6d6fc">nl.sense_os.service.constants.SensorData.DataPoint.SENSOR_NAME</a></div><div class="ttdeci">static final String SENSOR_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_sensor_data_8java_source.html#l00056">SensorData.java:56</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a5818d59cb4e57d7f8d3a4ef7cd27145e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">nl.sense_os.service.provider.LocalStorageSql.VALUES_TABLE_NAME</a></div><div class="ttdeci">static final String VALUES_TABLE_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00074">LocalStorageSql.java:74</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ab7ffaa9d0e8454f1c29cf39f5ba862aa"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">nl.sense_os.service.provider.LocalStorageSql.VALUES_URI</a></div><div class="ttdeci">static final int VALUES_URI</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00076">LocalStorageSql.java:76</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ae9ebbe650fe604d0e15b980b5b2f237f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9ebbe650fe604d0e15b980b5b2f237f">nl.sense_os.service.provider.LocalStorageSql.RETENTION_TIME</a></div><div class="ttdeci">static final long RETENTION_TIME</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00077">LocalStorageSql.java:77</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ae9591a72edab5979240d372c63ff699d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">nl.sense_os.service.provider.LocalStorageSql.uriMatcher</a></div><div class="ttdeci">static UriMatcher uriMatcher</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00082">LocalStorageSql.java:82</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a0181275100019b9be744fac27f075e6c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean nl.sense_os.service.provider.LocalStorageSql.onCreate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00158">158</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                              {</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a9c3a57c89f1681ee4ad7f814ee78af8e">TAG</a>, <span class="stringliteral">&quot;Create local storage...&quot;</span>);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a8501fe44c7083604ac723e4f348b0673">dbHelper</a> = <span class="keyword">new</span> DbHelper(getContext());</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a8501fe44c7083604ac723e4f348b0673"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a8501fe44c7083604ac723e4f348b0673">nl.sense_os.service.provider.LocalStorageSql.dbHelper</a></div><div class="ttdeci">DbHelper dbHelper</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00079">LocalStorageSql.java:79</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a9c3a57c89f1681ee4ad7f814ee78af8e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a9c3a57c89f1681ee4ad7f814ee78af8e">nl.sense_os.service.provider.LocalStorageSql.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00070">LocalStorageSql.java:70</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="aaad05205ad212c19cd324167d4138933"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Cursor nl.sense_os.service.provider.LocalStorageSql.query </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>projection</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>selection</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>selectionArgs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>sortOrder</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00165">165</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                              {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        Log.v(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a9c3a57c89f1681ee4ad7f814ee78af8e">TAG</a>, <span class="stringliteral">&quot;Query local storage...&quot;</span>);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">uriMatcher</a>.match(uri) != <a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">VALUES_URI</a>) {</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Unknown URI &quot;</span> + uri);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        }</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        SQLiteQueryBuilder qb = <span class="keyword">new</span> SQLiteQueryBuilder();</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        qb.setTables(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">VALUES_TABLE_NAME</a>);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        qb.setProjectionMap(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ad94fa32e29a3e4b4114de4903512becf">projectionMap</a>);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        SQLiteDatabase db = dbHelper.getReadableDatabase();</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        c.setNotificationUri(getContext().getContentResolver(), uri);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keywordflow">return</span> c;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ad94fa32e29a3e4b4114de4903512becf"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ad94fa32e29a3e4b4114de4903512becf">nl.sense_os.service.provider.LocalStorageSql.projectionMap</a></div><div class="ttdeci">static HashMap&lt; String, String &gt; projectionMap</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00081">LocalStorageSql.java:81</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a5818d59cb4e57d7f8d3a4ef7cd27145e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">nl.sense_os.service.provider.LocalStorageSql.VALUES_TABLE_NAME</a></div><div class="ttdeci">static final String VALUES_TABLE_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00074">LocalStorageSql.java:74</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ab7ffaa9d0e8454f1c29cf39f5ba862aa"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">nl.sense_os.service.provider.LocalStorageSql.VALUES_URI</a></div><div class="ttdeci">static final int VALUES_URI</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00076">LocalStorageSql.java:76</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ae9591a72edab5979240d372c63ff699d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">nl.sense_os.service.provider.LocalStorageSql.uriMatcher</a></div><div class="ttdeci">static UriMatcher uriMatcher</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00082">LocalStorageSql.java:82</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a9c3a57c89f1681ee4ad7f814ee78af8e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a9c3a57c89f1681ee4ad7f814ee78af8e">nl.sense_os.service.provider.LocalStorageSql.TAG</a></div><div class="ttdeci">static final String TAG</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00070">LocalStorageSql.java:70</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="aa307eb2231521ca750b8fa91dd0d7557"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.provider.LocalStorageSql.update </td>
+          <td>(</td>
+          <td class="paramtype">Uri&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ContentValues&#160;</td>
+          <td class="paramname"><em>values</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>selection</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String[]&#160;</td>
+          <td class="paramname"><em>selectionArgs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00185">185</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                                                                                               {</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="comment">// Log.v(TAG, &quot;Update row(s) in local storage...&quot;);</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        SQLiteDatabase db = dbHelper.getWritableDatabase();</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        <span class="keywordtype">int</span> count;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        <span class="keywordflow">switch</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">uriMatcher</a>.match(uri)) {</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">VALUES_URI</a>:</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            count = db.update(<a class="code" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">VALUES_TABLE_NAME</a>, values, selection, selectionArgs);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Unknown URI &quot;</span> + uri);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        }</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        getContext().getContentResolver().notifyChange(uri, null);</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="keywordflow">return</span> count;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_a5818d59cb4e57d7f8d3a4ef7cd27145e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#a5818d59cb4e57d7f8d3a4ef7cd27145e">nl.sense_os.service.provider.LocalStorageSql.VALUES_TABLE_NAME</a></div><div class="ttdeci">static final String VALUES_TABLE_NAME</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00074">LocalStorageSql.java:74</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ab7ffaa9d0e8454f1c29cf39f5ba862aa"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ab7ffaa9d0e8454f1c29cf39f5ba862aa">nl.sense_os.service.provider.LocalStorageSql.VALUES_URI</a></div><div class="ttdeci">static final int VALUES_URI</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00076">LocalStorageSql.java:76</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_html_ae9591a72edab5979240d372c63ff699d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html#ae9591a72edab5979240d372c63ff699d">nl.sense_os.service.provider.LocalStorageSql.uriMatcher</a></div><div class="ttdeci">static UriMatcher uriMatcher</div><div class="ttdef"><b>Definition:</b> <a href="_local_storage_sql_8java_source.html#l00082">LocalStorageSql.java:82</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aec81be66328e01d4c7255640a8f64757"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.provider.LocalStorageSql.AUTHORITY = &quot;nl.sense_os.service.provider.LocalStorage&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00072">72</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a71a7eeac2096de605cb133eb925526af"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.provider.LocalStorageSql.DATABASE_NAME = &quot;local_storage.sqlite3&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00073">73</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7444ef570ca39267aa51e7078a29c071"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.provider.LocalStorageSql.DATABASE_VERSION = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00075">75</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8501fe44c7083604ac723e4f348b0673"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql_1_1_db_helper.html">DbHelper</a> nl.sense_os.service.provider.LocalStorageSql.dbHelper</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00079">79</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad94fa32e29a3e4b4114de4903512becf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HashMap&lt;String, String&gt; nl.sense_os.service.provider.LocalStorageSql.projectionMap</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00081">81</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae9ebbe650fe604d0e15b980b5b2f237f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final long nl.sense_os.service.provider.LocalStorageSql.RETENTION_TIME = 1000 * 60 * 15</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00077">77</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9c3a57c89f1681ee4ad7f814ee78af8e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.provider.LocalStorageSql.TAG = &quot;Sense <a class="el" href="classnl_1_1sense__os_1_1service_1_1storage_1_1_local_storage.html">LocalStorage</a>&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00070">70</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae9591a72edab5979240d372c63ff699d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">UriMatcher nl.sense_os.service.provider.LocalStorageSql.uriMatcher</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00082">82</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5818d59cb4e57d7f8d3a4ef7cd27145e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final String nl.sense_os.service.provider.LocalStorageSql.VALUES_TABLE_NAME = &quot;recent_values&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00074">74</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab7ffaa9d0e8454f1c29cf39f5ba862aa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.provider.LocalStorageSql.VALUES_URI = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_local_storage_sql_8java_source.html#l00076">76</a> of file <a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>src/nl/sense_os/service/provider/<a class="el" href="_local_storage_sql_8java_source.html">LocalStorageSql.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>provider</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html">LocalStorageSql</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1provider.html">provider</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1provider_1_1_local_storage_sql.html">LocalStorageSql</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:06 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

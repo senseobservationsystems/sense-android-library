@@ -20,7 +20,9 @@ var classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point =
     [ "getSensorEventValue", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#af3a43601542a0247e19f479a94e0cc6e", null ],
     [ "getStringValue", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#acc498e6e742fced22225fa99fc708648", null ],
     [ "setDataType", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#ad3f190b2874d7f040edd054f6a4ff41c", null ],
+    [ "dataType", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a1a5f642a9d47c3772cdc73f4800567fc", null ],
     [ "sensorDescription", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#ab92d5696f424a417fec9d9861e47ce3c", null ],
     [ "sensorName", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a256ee009491c563aa0a30592cca90cdf", null ],
-    [ "timeStamp", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#aabee264f574a40f30ec152bc1a63a87f", null ]
+    [ "timeStamp", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#aabee264f574a40f30ec152bc1a63a87f", null ],
+    [ "value", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html#a030e78a667cfd41447fa7d64151ddfa8", null ]
 ];

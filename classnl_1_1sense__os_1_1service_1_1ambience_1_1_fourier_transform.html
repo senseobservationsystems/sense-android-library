@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1amb
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,6 +112,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1amb
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
+<a href="#pac-methods">Package Functions</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.ambience.FourierTransform Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -188,72 +192,57 @@ Static Public Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a0c932cfe48f32093c1a2714e325cf84b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c932cfe48f32093c1a2714e325cf84b"></a>
-abstract void&#160;</td><td class="memItemRight" valign="bottom"><b>allocateArrays</b> ()</td></tr>
+<tr class="memitem:a0c932cfe48f32093c1a2714e325cf84b"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0c932cfe48f32093c1a2714e325cf84b">allocateArrays</a> ()</td></tr>
 <tr class="separator:a0c932cfe48f32093c1a2714e325cf84b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f94916ca6d3e0d2d24da5a21a502526"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f94916ca6d3e0d2d24da5a21a502526"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setComplex</b> (float[] r, float[] i)</td></tr>
+<tr class="memitem:a0f94916ca6d3e0d2d24da5a21a502526"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0f94916ca6d3e0d2d24da5a21a502526">setComplex</a> (float[] r, float[] i)</td></tr>
 <tr class="separator:a0f94916ca6d3e0d2d24da5a21a502526"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60006479c5cc16361584cf428f4fb288"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60006479c5cc16361584cf428f4fb288"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>fillSpectrum</b> ()</td></tr>
+<tr class="memitem:a60006479c5cc16361584cf428f4fb288"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288">fillSpectrum</a> ()</td></tr>
 <tr class="separator:a60006479c5cc16361584cf428f4fb288"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03073035f85d6bbbb60426d2ecb810b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03073035f85d6bbbb60426d2ecb810b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>doWindow</b> (float[] samples)</td></tr>
+<tr class="memitem:a03073035f85d6bbbb60426d2ecb810b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a03073035f85d6bbbb60426d2ecb810b7">doWindow</a> (float[] samples)</td></tr>
 <tr class="separator:a03073035f85d6bbbb60426d2ecb810b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cca45c2d3e9c6798dc52fc68e1802ca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8cca45c2d3e9c6798dc52fc68e1802ca"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>hamming</b> (float[] samples)</td></tr>
+<tr class="memitem:a8cca45c2d3e9c6798dc52fc68e1802ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8cca45c2d3e9c6798dc52fc68e1802ca">hamming</a> (float[] samples)</td></tr>
 <tr class="separator:a8cca45c2d3e9c6798dc52fc68e1802ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a63e12800c57b4d778bcd0653aec8e2f4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63e12800c57b4d778bcd0653aec8e2f4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>timeSize</b></td></tr>
+<tr class="memitem:a63e12800c57b4d778bcd0653aec8e2f4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a63e12800c57b4d778bcd0653aec8e2f4">timeSize</a></td></tr>
 <tr class="separator:a63e12800c57b4d778bcd0653aec8e2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29aa2be5a97f60426b47a0a937d5eb3e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29aa2be5a97f60426b47a0a937d5eb3e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>sampleRate</b></td></tr>
+<tr class="memitem:a29aa2be5a97f60426b47a0a937d5eb3e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a></td></tr>
 <tr class="separator:a29aa2be5a97f60426b47a0a937d5eb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3467206ed34a66dc0c440cb47f7d5884"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3467206ed34a66dc0c440cb47f7d5884"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bandWidth</b></td></tr>
+<tr class="memitem:a3467206ed34a66dc0c440cb47f7d5884"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884">bandWidth</a></td></tr>
 <tr class="separator:a3467206ed34a66dc0c440cb47f7d5884"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad25f116d14e6bb2129dbadcc5b30ae6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad25f116d14e6bb2129dbadcc5b30ae6c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>whichWindow</b></td></tr>
+<tr class="memitem:ad25f116d14e6bb2129dbadcc5b30ae6c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">whichWindow</a></td></tr>
 <tr class="separator:ad25f116d14e6bb2129dbadcc5b30ae6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c5a16e7157ddf366a595d0d6a554c77"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c5a16e7157ddf366a595d0d6a554c77"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>real</b></td></tr>
+<tr class="memitem:a8c5a16e7157ddf366a595d0d6a554c77"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a></td></tr>
 <tr class="separator:a8c5a16e7157ddf366a595d0d6a554c77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a169f1f61f53db36725963358ada148"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a169f1f61f53db36725963358ada148"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>imag</b></td></tr>
+<tr class="memitem:a1a169f1f61f53db36725963358ada148"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a></td></tr>
 <tr class="separator:a1a169f1f61f53db36725963358ada148"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a9b4e95ea67bd66571f167f7ea5ec3c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a9b4e95ea67bd66571f167f7ea5ec3c"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>spectrum</b></td></tr>
+<tr class="memitem:a1a9b4e95ea67bd66571f167f7ea5ec3c"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a></td></tr>
 <tr class="separator:a1a9b4e95ea67bd66571f167f7ea5ec3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca96fd6d12c4c44ac876b7014c2b495d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aca96fd6d12c4c44ac876b7014c2b495d"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>averages</b></td></tr>
+<tr class="memitem:aca96fd6d12c4c44ac876b7014c2b495d"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a></td></tr>
 <tr class="separator:aca96fd6d12c4c44ac876b7014c2b495d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a420589a2dcf6ecf5e6221710ae8ffb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a420589a2dcf6ecf5e6221710ae8ffb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>whichAverage</b></td></tr>
+<tr class="memitem:a5a420589a2dcf6ecf5e6221710ae8ffb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a></td></tr>
 <tr class="separator:a5a420589a2dcf6ecf5e6221710ae8ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2155df710c1c7c9529502c074c46f0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2155df710c1c7c9529502c074c46f0f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>octaves</b></td></tr>
+<tr class="memitem:ae2155df710c1c7c9529502c074c46f0f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a></td></tr>
 <tr class="separator:ae2155df710c1c7c9529502c074c46f0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc56e3eb2d9bfb3d3cdc36c3dd1dc680"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>avgPerOctave</b></td></tr>
+<tr class="memitem:afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a></td></tr>
 <tr class="separator:afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
 Static Protected Attributes</h2></td></tr>
-<tr class="memitem:a874f6deb8bf0ec1bf6fc1e7375c3accc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a874f6deb8bf0ec1bf6fc1e7375c3accc"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>LINAVG</b> = 2</td></tr>
+<tr class="memitem:a874f6deb8bf0ec1bf6fc1e7375c3accc"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">LINAVG</a> = 2</td></tr>
 <tr class="separator:a874f6deb8bf0ec1bf6fc1e7375c3accc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a765c36d59397438270dc4bffca8006e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a765c36d59397438270dc4bffca8006e5"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>LOGAVG</b> = 3</td></tr>
+<tr class="memitem:a765c36d59397438270dc4bffca8006e5"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">LOGAVG</a> = 3</td></tr>
 <tr class="separator:a765c36d59397438270dc4bffca8006e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a349d9e7844e2a67cad003f456b415ff4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a349d9e7844e2a67cad003f456b415ff4"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>NOAVG</b> = 4</td></tr>
+<tr class="memitem:a349d9e7844e2a67cad003f456b415ff4"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a349d9e7844e2a67cad003f456b415ff4">NOAVG</a> = 4</td></tr>
 <tr class="separator:a349d9e7844e2a67cad003f456b415ff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81809f6f353f8b6286c6fa35c72822ae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a81809f6f353f8b6286c6fa35c72822ae"></a>
-static final float&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_PI</b> = (float) (2 * Math.PI)</td></tr>
+<tr class="memitem:a81809f6f353f8b6286c6fa35c72822ae"><td class="memItemLeft" align="right" valign="top">static final float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a81809f6f353f8b6286c6fa35c72822ae">TWO_PI</a> = (float) (2 * Math.PI)</td></tr>
 <tr class="separator:a81809f6f353f8b6286c6fa35c72822ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-methods"></a>
+Package Functions</h2></td></tr>
+<tr class="memitem:ab73a1c1d44ac6f0bc8a403c9965854ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab73a1c1d44ac6f0bc8a403c9965854ad">FourierTransform</a> (int ts, float sr)</td></tr>
+<tr class="separator:ab73a1c1d44ac6f0bc8a403c9965854ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A Fourier Transform is an algorithm that transforms a signal in the time domain, such as a sample buffer, into a signal in the frequency domain, often called the spectrum. The spectrum does not represent individual frequencies, but actually represents frequency bands centered on particular frequencies. The center frequency of each band is usually expressed as a fraction of the sampling rate of the time domain signal and is equal to the index of the frequency band divided by the total number of bands. The total number of frequency bands is usually equal to the length of the time domain signal, but access is only provided to frequency bands with indices less than half the length, because they correspond to frequencies below the <a href="http://en.wikipedia.org/wiki/Nyquist_frequency">Nyquist frequency</a>. In other words, given a signal of length <code>N</code>, there will be <code>N/2</code> frequency bands in the spectrum. </p>
@@ -278,7 +267,92 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 <p><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a> also supports taking the inverse transform of a spectrum. This means that a frequency spectrum will be transformed into a time domain signal and placed in a provided sample buffer. The length of the time domain signal will be <code><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize()</a></code> long. The <code>set</code> and <code>scale</code> functions allow you the ability to shape the spectrum already stored in the object before taking the inverse transform. You might use these to filter frequencies in a spectrum or modify it in some other way.</p>
 <dl class="section author"><dt>Author</dt><dd>Damien Di Fede </dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://www.dspguide.com/ch8.htm">The Discrete Fourier Transform</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00110">110</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ab73a1c1d44ac6f0bc8a403c9965854ad"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nl.sense_os.service.ambience.FourierTransform.FourierTransform </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ts</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>sr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construct a <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a> that will analyze sample buffers that are <code>ts</code> samples long and contain samples with a <code>sr</code> sample rate.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ts</td><td>the length of the buffers that will be analyzed </td></tr>
+    <tr><td class="paramname">sr</td><td>the sample rate of the samples that will be analyzed </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00140">140</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                                       {</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> = ts;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> = (int) sr;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884">bandWidth</a> = (2f / <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>) * ((<span class="keywordtype">float</span>) <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2f);</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae3b62304fbf591a9b074255197e7648d">noAverages</a>();</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0c932cfe48f32093c1a2714e325cf84b">allocateArrays</a>();</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">whichWindow</a> = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#abb13fc1a33ca07650c4ded16d8916c57">NONE</a>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ad25f116d14e6bb2129dbadcc5b30ae6c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">nl.sense_os.service.ambience.FourierTransform.whichWindow</a></div><div class="ttdeci">int whichWindow</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00122">FourierTransform.java:122</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a0c932cfe48f32093c1a2714e325cf84b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0c932cfe48f32093c1a2714e325cf84b">nl.sense_os.service.ambience.FourierTransform.allocateArrays</a></div><div class="ttdeci">abstract void allocateArrays()</div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a29aa2be5a97f60426b47a0a937d5eb3e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">nl.sense_os.service.ambience.FourierTransform.sampleRate</a></div><div class="ttdeci">int sampleRate</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00120">FourierTransform.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a3467206ed34a66dc0c440cb47f7d5884"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884">nl.sense_os.service.ambience.FourierTransform.bandWidth</a></div><div class="ttdeci">float bandWidth</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00121">FourierTransform.java:121</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ae3b62304fbf591a9b074255197e7648d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae3b62304fbf591a9b074255197e7648d">nl.sense_os.service.ambience.FourierTransform.noAverages</a></div><div class="ttdeci">void noAverages()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00209">FourierTransform.java:209</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_abb13fc1a33ca07650c4ded16d8916c57"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#abb13fc1a33ca07650c4ded16d8916c57">nl.sense_os.service.ambience.FourierTransform.NONE</a></div><div class="ttdeci">static final int NONE</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00112">FourierTransform.java:112</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a0c932cfe48f32093c1a2714e325cf84b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void nl.sense_os.service.ambience.FourierTransform.allocateArrays </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">abstract</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="ae00e5788a99cd01bf3f24c1a02630d68"></a>
 <div class="memitem">
 <div class="memproto">
@@ -294,6 +368,11 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 <p>Returns the number of averages currently being calculated.</p>
 <dl class="section return"><dt>Returns</dt><dd>the length of the averages array </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00480">480</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;                         {</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        <span class="keywordflow">return</span> averages.length;</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    }</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ada7cf4c850c769563faf5adc01ca032f"></a>
@@ -329,6 +408,132 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the average of all spectrum values within the bounds </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00510">510</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;                                                      {</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;        <span class="keywordtype">int</span> lowBound = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">freqToIndex</a>(lowFreq);</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        <span class="keywordtype">int</span> hiBound = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">freqToIndex</a>(hiFreq);</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;        <span class="keywordtype">float</span> avg = 0;</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = lowBound; i &lt;= hiBound; i++) {</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;            avg += <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;        }</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;        avg /= (hiBound - lowBound + 1);</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;        <span class="keywordflow">return</span> avg;</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a13a20ed8725f8c206aa11d426f376c7b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">nl.sense_os.service.ambience.FourierTransform.freqToIndex</a></div><div class="ttdeci">int freqToIndex(float freq)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00363">FourierTransform.java:363</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a03073035f85d6bbbb60426d2ecb810b7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.doWindow </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>samples</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00273">273</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                                             {</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordflow">switch</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">whichWindow</a>) {</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a54441d948eb7b531594728913f6e5b7e">HAMMING</a>:</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8cca45c2d3e9c6798dc52fc68e1802ca">hamming</a>(samples);</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        }</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8cca45c2d3e9c6798dc52fc68e1802ca"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8cca45c2d3e9c6798dc52fc68e1802ca">nl.sense_os.service.ambience.FourierTransform.hamming</a></div><div class="ttdeci">void hamming(float[] samples)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00282">FourierTransform.java:282</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ad25f116d14e6bb2129dbadcc5b30ae6c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">nl.sense_os.service.ambience.FourierTransform.whichWindow</a></div><div class="ttdeci">int whichWindow</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00122">FourierTransform.java:122</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a54441d948eb7b531594728913f6e5b7e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a54441d948eb7b531594728913f6e5b7e">nl.sense_os.service.ambience.FourierTransform.HAMMING</a></div><div class="ttdeci">static final int HAMMING</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00114">FourierTransform.java:114</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a60006479c5cc16361584cf428f4fb288"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.fillSpectrum </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00167">167</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                                  {</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; spectrum.length; i++) {</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i] = FloatMath.sqrt(<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] * <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] + <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] * <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i]);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        }</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a> == <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">LINAVG</a>) {</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            <span class="keywordtype">int</span> avgWidth = (int) <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>.length / <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a>.length;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            for (<span class="keywordtype">int</span> i = 0; i &lt; averages.length; i++) {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                <span class="keywordtype">float</span> avg = 0;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                <span class="keywordtype">int</span> j;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                <span class="keywordflow">for</span> (j = 0; j &lt; avgWidth; j++) {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                    <span class="keywordtype">int</span> offset = j + i * avgWidth;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                    <span class="keywordflow">if</span> (offset &lt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>.length) {</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                        avg += <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[offset];</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                    }</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                }</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                avg /= j + 1;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a>[i] = avg;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            }</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a> == <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">LOGAVG</a>) {</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a>; i++) {</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                <span class="keywordtype">float</span> lowFreq, hiFreq, freqStep;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                <span class="keywordflow">if</span> (i == 0) {</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                    lowFreq = 0;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                    lowFreq = (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2) / (<span class="keywordtype">float</span>) Math.pow(2, octaves - i);</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                }</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                hiFreq = (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2) / (<span class="keywordtype">float</span>) Math.pow(2, octaves - i - 1);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                freqStep = (hiFreq - lowFreq) / <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a>;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                <span class="keywordtype">float</span> f = lowFreq;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a>; j++) {</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                    <span class="keywordtype">int</span> offset = j + i * <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a>;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a>[offset] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ada7cf4c850c769563faf5adc01ca032f">calcAvg</a>(f, f + freqStep);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                    f += freqStep;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                }</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            }</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        }</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a765c36d59397438270dc4bffca8006e5"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">nl.sense_os.service.ambience.FourierTransform.LOGAVG</a></div><div class="ttdeci">static final int LOGAVG</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00116">FourierTransform.java:116</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a29aa2be5a97f60426b47a0a937d5eb3e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">nl.sense_os.service.ambience.FourierTransform.sampleRate</a></div><div class="ttdeci">int sampleRate</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00120">FourierTransform.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a5a420589a2dcf6ecf5e6221710ae8ffb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">nl.sense_os.service.ambience.FourierTransform.whichAverage</a></div><div class="ttdeci">int whichAverage</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00127">FourierTransform.java:127</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a874f6deb8bf0ec1bf6fc1e7375c3accc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">nl.sense_os.service.ambience.FourierTransform.LINAVG</a></div><div class="ttdeci">static final int LINAVG</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00115">FourierTransform.java:115</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_aca96fd6d12c4c44ac876b7014c2b495d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">nl.sense_os.service.ambience.FourierTransform.averages</a></div><div class="ttdeci">float[] averages</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00126">FourierTransform.java:126</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ada7cf4c850c769563faf5adc01ca032f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ada7cf4c850c769563faf5adc01ca032f">nl.sense_os.service.ambience.FourierTransform.calcAvg</a></div><div class="ttdeci">float calcAvg(float lowFreq, float hiFreq)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00510">FourierTransform.java:510</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ae2155df710c1c7c9529502c074c46f0f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">nl.sense_os.service.ambience.FourierTransform.octaves</a></div><div class="ttdeci">int octaves</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00128">FourierTransform.java:128</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">nl.sense_os.service.ambience.FourierTransform.avgPerOctave</a></div><div class="ttdeci">int avgPerOctave</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00129">FourierTransform.java:129</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a04bb65e9abbdd046cba31397c8557f91"></a>
@@ -394,6 +599,22 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00539">539</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;                                                     {</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        <span class="keywordflow">if</span> (buffer.length - startAt &lt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>) {</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;                    <span class="stringliteral">&quot;FourierTransform.forward: not enough samples in the buffer between &quot;</span> + startAt</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;                            + <span class="stringliteral">&quot; and &quot;</span> + buffer.length + <span class="stringliteral">&quot; to perform a transform.&quot;</span>);</div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;        }</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;</div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;        <span class="comment">// copy the section of samples we want to analyze</span></div>
+<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;        <span class="keywordtype">float</span>[] section = <span class="keyword">new</span> <span class="keywordtype">float</span>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>];</div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;        System.arraycopy(buffer, startAt, section, 0, section.length);</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a04bb65e9abbdd046cba31397c8557f91">forward</a>(section);</div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a04bb65e9abbdd046cba31397c8557f91"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a04bb65e9abbdd046cba31397c8557f91">nl.sense_os.service.ambience.FourierTransform.forward</a></div><div class="ttdeci">abstract void forward(float[] buffer)</div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a13a20ed8725f8c206aa11d426f376c7b"></a>
@@ -418,6 +639,23 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the index of the frequency band that contains freq </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00363">363</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                                       {</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        <span class="comment">// special case: freq is lower than the bandwidth of spectrum[0]</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        <span class="keywordflow">if</span> (freq &lt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2ac8bec3c8de5c355f6e205f9b42e1f">getBandWidth</a>() / 2)</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        <span class="comment">// special case: freq is within the bandwidth of spectrum[spectrum.length - 1]</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        <span class="keywordflow">if</span> (freq &gt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2 - <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2ac8bec3c8de5c355f6e205f9b42e1f">getBandWidth</a>() / 2)</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            <span class="keywordflow">return</span> spectrum.length - 1;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        <span class="comment">// all other cases</span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        <span class="keywordtype">float</span> fraction = freq / (float) <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a>;</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <span class="keywordtype">int</span> i = Math.round(<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> * fraction);</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        <span class="keywordflow">return</span> i;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a29aa2be5a97f60426b47a0a937d5eb3e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">nl.sense_os.service.ambience.FourierTransform.sampleRate</a></div><div class="ttdeci">int sampleRate</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00120">FourierTransform.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ae2ac8bec3c8de5c355f6e205f9b42e1f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2ac8bec3c8de5c355f6e205f9b42e1f">nl.sense_os.service.ambience.FourierTransform.getBandWidth</a></div><div class="ttdeci">float getBandWidth()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00330">FourierTransform.java:330</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a6af463c65d3576479dfbc5d6eb5babbb"></a>
@@ -441,6 +679,49 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00407">407</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                                                  {</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a> == <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">LINAVG</a>) {</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;            <span class="comment">// an average represents a certain number of bands in the spectrum</span></div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            <span class="keywordtype">int</span> avgWidth = (int) <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>.length / <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a>.length;</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;            <span class="comment">// the &quot;center&quot; bin of the average, this is fudgy.</span></div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;            <span class="keywordtype">int</span> centerBinIndex = i * avgWidth + avgWidth / 2;</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a09ec12ec14f46d2af233913e81c92012">indexToFreq</a>(centerBinIndex);</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a> == <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">LOGAVG</a>) {</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            <span class="comment">// which &quot;octave&quot; is this index in?</span></div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            <span class="keywordtype">int</span> octave = i / <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a>;</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;            <span class="comment">// which band within that octave is this?</span></div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;            <span class="keywordtype">int</span> offset = i % <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a>;</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;            <span class="keywordtype">float</span> lowFreq, hiFreq, freqStep;</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;            <span class="comment">// figure out the low frequency for this octave</span></div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;            <span class="keywordflow">if</span> (octave == 0) {</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                lowFreq = 0;</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                lowFreq = (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2) / (<span class="keywordtype">float</span>) Math.pow(2, <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a> - octave);</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            }</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;            <span class="comment">// and the high frequency for this octave</span></div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;            hiFreq = (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2) / (<span class="keywordtype">float</span>) Math.pow(2, <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a> - octave - 1);</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;            <span class="comment">// each average band within the octave will be this big</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;            freqStep = (hiFreq - lowFreq) / <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a>;</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;            <span class="comment">// figure out the low frequency of the band we care about</span></div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;            <span class="keywordtype">float</span> f = lowFreq + offset * freqStep;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;            <span class="comment">// the center of the band will be the low plus half the width</span></div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;            <span class="keywordflow">return</span> f + freqStep / 2;</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        }</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a09ec12ec14f46d2af233913e81c92012"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a09ec12ec14f46d2af233913e81c92012">nl.sense_os.service.ambience.FourierTransform.indexToFreq</a></div><div class="ttdeci">float indexToFreq(int i)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00382">FourierTransform.java:382</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a765c36d59397438270dc4bffca8006e5"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">nl.sense_os.service.ambience.FourierTransform.LOGAVG</a></div><div class="ttdeci">static final int LOGAVG</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00116">FourierTransform.java:116</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a29aa2be5a97f60426b47a0a937d5eb3e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">nl.sense_os.service.ambience.FourierTransform.sampleRate</a></div><div class="ttdeci">int sampleRate</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00120">FourierTransform.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a5a420589a2dcf6ecf5e6221710ae8ffb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">nl.sense_os.service.ambience.FourierTransform.whichAverage</a></div><div class="ttdeci">int whichAverage</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00127">FourierTransform.java:127</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a874f6deb8bf0ec1bf6fc1e7375c3accc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">nl.sense_os.service.ambience.FourierTransform.LINAVG</a></div><div class="ttdeci">static final int LINAVG</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00115">FourierTransform.java:115</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_aca96fd6d12c4c44ac876b7014c2b495d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">nl.sense_os.service.ambience.FourierTransform.averages</a></div><div class="ttdeci">float[] averages</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00126">FourierTransform.java:126</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ae2155df710c1c7c9529502c074c46f0f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">nl.sense_os.service.ambience.FourierTransform.octaves</a></div><div class="ttdeci">int octaves</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00128">FourierTransform.java:128</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">nl.sense_os.service.ambience.FourierTransform.avgPerOctave</a></div><div class="ttdeci">int avgPerOctave</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00129">FourierTransform.java:129</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ad6369000c41319c24755b7ff2d9656d4"></a>
@@ -465,6 +746,17 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the value of the requested average band </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00491">491</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;                               {</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;        <span class="keywordtype">float</span> ret;</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a>.length &gt; 0)</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;            ret = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a>[i];</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;            ret = 0;</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_aca96fd6d12c4c44ac876b7014c2b495d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">nl.sense_os.service.ambience.FourierTransform.averages</a></div><div class="ttdeci">float[] averages</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00126">FourierTransform.java:126</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="aa6398b75969efc5abdd0ca00165281c3"></a>
@@ -489,6 +781,16 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the amplitude of the requested frequency band </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00315">315</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                                {</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keywordflow">if</span> (i &lt; 0)</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;            i = 0;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="keywordflow">if</span> (i &gt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>.length - 1)</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;            i = spectrum.length - 1;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ae2ac8bec3c8de5c355f6e205f9b42e1f"></a>
@@ -506,6 +808,12 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 <p>Returns the width of each frequency band in the spectrum (in Hz). It should be noted that the bandwidth of the first and last frequency bands is half as large as the value returned by this function.</p>
 <dl class="section return"><dt>Returns</dt><dd>the width of each frequency band in Hz. </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00330">330</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                                {</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884">bandWidth</a>;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a3467206ed34a66dc0c440cb47f7d5884"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884">nl.sense_os.service.ambience.FourierTransform.bandWidth</a></div><div class="ttdeci">float bandWidth</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00121">FourierTransform.java:121</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a2a7c711687585ca81cf08fb7ff602328"></a>
@@ -530,6 +838,13 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the amplitude of the frequency in the spectrum </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00447">447</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                                     {</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aa6398b75969efc5abdd0ca00165281c3">getBand</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">freqToIndex</a>(freq));</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_aa6398b75969efc5abdd0ca00165281c3"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aa6398b75969efc5abdd0ca00165281c3">nl.sense_os.service.ambience.FourierTransform.getBand</a></div><div class="ttdeci">float getBand(int i)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00315">FourierTransform.java:315</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a13a20ed8725f8c206aa11d426f376c7b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">nl.sense_os.service.ambience.FourierTransform.freqToIndex</a></div><div class="ttdeci">int freqToIndex(float freq)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00363">FourierTransform.java:363</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="aa09f71fa7a7c59e64b3c8b30c765f650"></a>
@@ -546,6 +861,12 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>the imaginary part of the last <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a04bb65e9abbdd046cba31397c8557f91">FourierTransform.forward()</a> call. </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00588">588</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;                                      {</div>
+<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>;</div>
+<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a467c6a47a7a54ea4831adbeb70062ee2"></a>
@@ -562,6 +883,12 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>the real part of the last <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a04bb65e9abbdd046cba31397c8557f91">FourierTransform.forward()</a> call. </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00583">583</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;                                 {</div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>;</div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a9b32297f70ad5eec2c7a45b0fec7ad65"></a>
@@ -578,6 +905,44 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>the spectrum of the last <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a04bb65e9abbdd046cba31397c8557f91">FourierTransform.forward()</a> call. </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00578">578</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;                                 {</div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>;</div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a8cca45c2d3e9c6798dc52fc68e1802ca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.hamming </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>samples</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00282">282</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                                            {</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; samples.length; i++) {</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;            samples[i] *= (0.54f - 0.46f * FloatMath.cos(<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a81809f6f353f8b6286c6fa35c72822ae">TWO_PI</a> * i / (samples.length - 1)));</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        }</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a81809f6f353f8b6286c6fa35c72822ae"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a81809f6f353f8b6286c6fa35c72822ae">nl.sense_os.service.ambience.FourierTransform.TWO_PI</a></div><div class="ttdeci">static final float TWO_PI</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00118">FourierTransform.java:118</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a09ec12ec14f46d2af233913e81c92012"></a>
@@ -601,6 +966,29 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00382">382</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                                    {</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        <span class="keywordtype">float</span> bw = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2ac8bec3c8de5c355f6e205f9b42e1f">getBandWidth</a>();</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        <span class="comment">// special case: the width of the first bin is half that of the others.</span></div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        <span class="comment">// so the center frequency is a quarter of the way.</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        <span class="keywordflow">if</span> (i == 0)</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;            <span class="keywordflow">return</span> bw * 0.25f;</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        <span class="comment">// special case: the width of the last bin is half that of the others.</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        <span class="keywordflow">if</span> (i == <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>.length - 1) {</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;            <span class="keywordtype">float</span> lastBinBeginFreq = (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2) - (bw / 2);</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;            <span class="keywordtype">float</span> binHalfWidth = bw * 0.25f;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;            <span class="keywordflow">return</span> lastBinBeginFreq + binHalfWidth;</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        }</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        <span class="comment">// the center frequency of the ith band is simply i*bw</span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        <span class="comment">// because the first band is half the width of all others.</span></div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        <span class="comment">// treating it as if it wasn&#39;t offsets us to the middle</span></div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        <span class="comment">// of the band.</span></div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <span class="keywordflow">return</span> i * bw;</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a29aa2be5a97f60426b47a0a937d5eb3e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">nl.sense_os.service.ambience.FourierTransform.sampleRate</a></div><div class="ttdeci">int sampleRate</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00120">FourierTransform.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ae2ac8bec3c8de5c355f6e205f9b42e1f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2ac8bec3c8de5c355f6e205f9b42e1f">nl.sense_os.service.ambience.FourierTransform.getBandWidth</a></div><div class="ttdeci">float getBandWidth()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00330">FourierTransform.java:330</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ab4adc8b548939340c9b6df28172e3ad1"></a>
@@ -673,6 +1061,14 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00572">572</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;                                                                            {</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0f94916ca6d3e0d2d24da5a21a502526">setComplex</a>(freqReal, freqImag);</div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab4adc8b548939340c9b6df28172e3ad1">inverse</a>(buffer);</div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ab4adc8b548939340c9b6df28172e3ad1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab4adc8b548939340c9b6df28172e3ad1">nl.sense_os.service.ambience.FourierTransform.inverse</a></div><div class="ttdeci">abstract void inverse(float[] buffer)</div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a0f94916ca6d3e0d2d24da5a21a502526"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0f94916ca6d3e0d2d24da5a21a502526">nl.sense_os.service.ambience.FourierTransform.setComplex</a></div><div class="ttdeci">void setComplex(float[] r, float[] i)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00155">FourierTransform.java:155</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ae997f8bd32254fc075a2762d6d4b8378"></a>
@@ -696,6 +1092,22 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00222">222</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                                        {</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        <span class="keywordflow">if</span> (numAvg &gt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>.length / 2) {</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                    <span class="stringliteral">&quot;The number of averages for this transform can be at most &quot;</span> + <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>.length</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                            / 2 + <span class="stringliteral">&quot;.&quot;</span>);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[numAvg];</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        }</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a> = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">LINAVG</a>;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a5a420589a2dcf6ecf5e6221710ae8ffb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">nl.sense_os.service.ambience.FourierTransform.whichAverage</a></div><div class="ttdeci">int whichAverage</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00127">FourierTransform.java:127</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a874f6deb8bf0ec1bf6fc1e7375c3accc"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">nl.sense_os.service.ambience.FourierTransform.LINAVG</a></div><div class="ttdeci">static final int LINAVG</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00115">FourierTransform.java:115</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_aca96fd6d12c4c44ac876b7014c2b495d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">nl.sense_os.service.ambience.FourierTransform.averages</a></div><div class="ttdeci">float[] averages</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00126">FourierTransform.java:126</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ac68abc2a4d255bf87eace6188ad87bb0"></a>
@@ -730,6 +1142,24 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00247">247</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                                                                  {</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="keywordtype">float</span> nyq = (float) <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a> / 2f;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a> = 1;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        <span class="keywordflow">while</span> ((nyq /= 2) &gt; minBandwidth) {</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a>++;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        }</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a> = bandsPerOctave;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a> * bandsPerOctave];</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a> = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">LOGAVG</a>;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a765c36d59397438270dc4bffca8006e5"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">nl.sense_os.service.ambience.FourierTransform.LOGAVG</a></div><div class="ttdeci">static final int LOGAVG</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00116">FourierTransform.java:116</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a29aa2be5a97f60426b47a0a937d5eb3e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">nl.sense_os.service.ambience.FourierTransform.sampleRate</a></div><div class="ttdeci">int sampleRate</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00120">FourierTransform.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a5a420589a2dcf6ecf5e6221710ae8ffb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">nl.sense_os.service.ambience.FourierTransform.whichAverage</a></div><div class="ttdeci">int whichAverage</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00127">FourierTransform.java:127</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_aca96fd6d12c4c44ac876b7014c2b495d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">nl.sense_os.service.ambience.FourierTransform.averages</a></div><div class="ttdeci">float[] averages</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00126">FourierTransform.java:126</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ae2155df710c1c7c9529502c074c46f0f"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">nl.sense_os.service.ambience.FourierTransform.octaves</a></div><div class="ttdeci">int octaves</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00128">FourierTransform.java:128</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_afc56e3eb2d9bfb3d3cdc36c3dd1dc680"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">nl.sense_os.service.ambience.FourierTransform.avgPerOctave</a></div><div class="ttdeci">int avgPerOctave</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00129">FourierTransform.java:129</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="ae3b62304fbf591a9b074255197e7648d"></a>
@@ -746,6 +1176,15 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </div><div class="memdoc">
 <p>Sets the object to not compute averages. </p>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00209">209</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                             {</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[0];</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a> = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a349d9e7844e2a67cad003f456b415ff4">NOAVG</a>;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a5a420589a2dcf6ecf5e6221710ae8ffb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">nl.sense_os.service.ambience.FourierTransform.whichAverage</a></div><div class="ttdeci">int whichAverage</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00127">FourierTransform.java:127</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a349d9e7844e2a67cad003f456b415ff4"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a349d9e7844e2a67cad003f456b415ff4">nl.sense_os.service.ambience.FourierTransform.NOAVG</a></div><div class="ttdeci">static final int NOAVG</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00117">FourierTransform.java:117</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_aca96fd6d12c4c44ac876b7014c2b495d"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">nl.sense_os.service.ambience.FourierTransform.averages</a></div><div class="ttdeci">float[] averages</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00126">FourierTransform.java:126</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a19bdfd17b430c32095d71ff3a5b74da9"></a>
@@ -822,6 +1261,13 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00471">471</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;                                               {</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a19bdfd17b430c32095d71ff3a5b74da9">scaleBand</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">freqToIndex</a>(freq), s);</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a19bdfd17b430c32095d71ff3a5b74da9"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a19bdfd17b430c32095d71ff3a5b74da9">nl.sense_os.service.ambience.FourierTransform.scaleBand</a></div><div class="ttdeci">abstract void scaleBand(int i, float s)</div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a13a20ed8725f8c206aa11d426f376c7b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">nl.sense_os.service.ambience.FourierTransform.freqToIndex</a></div><div class="ttdeci">int freqToIndex(float freq)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00363">FourierTransform.java:363</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a21065614f15df04749dfa65f167cd617"></a>
@@ -866,6 +1312,52 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 
 </div>
 </div>
+<a class="anchor" id="a0f94916ca6d3e0d2d24da5a21a502526"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FourierTransform.setComplex </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>i</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00155">155</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                                                    {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>.length != r.length &amp;&amp; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>.length != i.length) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;This won&#39;t work&quot;</span>);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            System.arraycopy(r, 0, <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>, 0, r.length);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            System.arraycopy(i, 0, <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>, 0, i.length);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a99a0558aab2a23ab846155547513400d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -898,6 +1390,13 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00459">459</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;                                             {</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a21065614f15df04749dfa65f167cd617">setBand</a>(<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">freqToIndex</a>(freq), a);</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a21065614f15df04749dfa65f167cd617"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a21065614f15df04749dfa65f167cd617">nl.sense_os.service.ambience.FourierTransform.setBand</a></div><div class="ttdeci">abstract void setBand(int i, float a)</div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a13a20ed8725f8c206aa11d426f376c7b"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b">nl.sense_os.service.ambience.FourierTransform.freqToIndex</a></div><div class="ttdeci">int freqToIndex(float freq)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00363">FourierTransform.java:363</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="af765ade76d46eaaca6bfebc904b81b3a"></a>
@@ -915,6 +1414,11 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 <p>Returns the size of the spectrum created by this transform. In other words, the number of frequency bands produced by this transform. This is typically equal to <code><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize()</a>/2 + 1</code>, see above for an explanation.</p>
 <dl class="section return"><dt>Returns</dt><dd>the size of the spectrum </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00304">304</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                          {</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <span class="keywordflow">return</span> spectrum.length;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    }</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="af6c0043dff6db7f537b63fabd236ee52"></a>
@@ -932,6 +1436,12 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 <p>Returns the length of the time domain signal expected by this transform.</p>
 <dl class="section return"><dt>Returns</dt><dd>the length of the time domain signal expected by this transform </dd></dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00293">293</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                          {</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>;</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a5579a6d4866ef0fcaeb7437b6db60eb4"></a>
@@ -955,9 +1465,85 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00265">265</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                                  {</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <span class="keywordflow">if</span> (which &lt; 0 || which &gt; 1) {</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Invalid window type.&quot;</span>);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">whichWindow</a> = which;</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        }</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_ad25f116d14e6bb2129dbadcc5b30ae6c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">nl.sense_os.service.ambience.FourierTransform.whichWindow</a></div><div class="ttdeci">int whichWindow</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00122">FourierTransform.java:122</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aca96fd6d12c4c44ac876b7014c2b495d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.averages</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00126">126</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afc56e3eb2d9bfb3d3cdc36c3dd1dc680"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.avgPerOctave</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00129">129</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3467206ed34a66dc0c440cb47f7d5884"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.ambience.FourierTransform.bandWidth</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00121">121</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a54441d948eb7b531594728913f6e5b7e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -976,6 +1562,96 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </table>
 </div><div class="memdoc">
 <p>A constant indicating a Hamming window should be used on sample buffers. </p>
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00114">114</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1a169f1f61f53db36725963358ada148"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.imag</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00124">124</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a874f6deb8bf0ec1bf6fc1e7375c3accc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.ambience.FourierTransform.LINAVG = 2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00115">115</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a765c36d59397438270dc4bffca8006e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.ambience.FourierTransform.LOGAVG = 3</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00116">116</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a349d9e7844e2a67cad003f456b415ff4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final int nl.sense_os.service.ambience.FourierTransform.NOAVG = 4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00117">117</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
 
 </div>
 </div>
@@ -998,18 +1674,196 @@ for (int i = 0; i &lt; fft.specSize(); i++) {
 </div><div class="memdoc">
 <p>A constant indicating no window should be used on sample buffers. </p>
 
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00112">112</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae2155df710c1c7c9529502c074c46f0f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.octaves</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00128">128</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8c5a16e7157ddf366a595d0d6a554c77"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.real</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00123">123</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a29aa2be5a97f60426b47a0a937d5eb3e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.sampleRate</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00120">120</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1a9b4e95ea67bd66571f167f7ea5ec3c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FourierTransform.spectrum</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00125">125</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a63e12800c57b4d778bcd0653aec8e2f4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.timeSize</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00119">119</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a81809f6f353f8b6286c6fa35c72822ae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">final float nl.sense_os.service.ambience.FourierTransform.TWO_PI = (float) (2 * Math.PI)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00118">118</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5a420589a2dcf6ecf5e6221710ae8ffb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.whichAverage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00127">127</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad25f116d14e6bb2129dbadcc5b30ae6c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int nl.sense_os.service.ambience.FourierTransform.whichWindow</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_fourier_transform_8java_source.html#l00122">122</a> of file <a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/ambience/FourierTransform.java</li>
+<li>src/nl/sense_os/service/ambience/<a class="el" href="_fourier_transform_8java_source.html">FourierTransform.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>ambience</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1ambience.html">ambience</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">FourierTransform</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

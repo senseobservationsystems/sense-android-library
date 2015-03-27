@@ -46,7 +46,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -93,7 +96,7 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1amb
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -106,6 +109,8 @@ $(document).ready(function(){initNavTree('classnl_1_1sense__os_1_1service_1_1amb
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">nl.sense_os.service.ambience.FFT Class Reference</div>  </div>
@@ -123,21 +128,17 @@ Inheritance diagram for nl.sense_os.service.ambience.FFT:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a19c6ad0d870f2c36e9f1daf6447f5b05"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a19c6ad0d870f2c36e9f1daf6447f5b05">FFT</a> (int timeSize, float sampleRate)</td></tr>
+<tr class="memitem:a19c6ad0d870f2c36e9f1daf6447f5b05"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a19c6ad0d870f2c36e9f1daf6447f5b05">FFT</a> (int <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a63e12800c57b4d778bcd0653aec8e2f4">timeSize</a>, float <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a>)</td></tr>
 <tr class="separator:a19c6ad0d870f2c36e9f1daf6447f5b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3f9934ea0c1d949dac0833ff8729036"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac3f9934ea0c1d949dac0833ff8729036"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>scaleBand</b> (int i, float s)</td></tr>
+<tr class="memitem:ac3f9934ea0c1d949dac0833ff8729036"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac3f9934ea0c1d949dac0833ff8729036">scaleBand</a> (int i, float s)</td></tr>
 <tr class="separator:ac3f9934ea0c1d949dac0833ff8729036"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8ebcb3c42cb532c8b90c75266d6d285"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8ebcb3c42cb532c8b90c75266d6d285"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setBand</b> (int i, float a)</td></tr>
+<tr class="memitem:ad8ebcb3c42cb532c8b90c75266d6d285"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ad8ebcb3c42cb532c8b90c75266d6d285">setBand</a> (int i, float a)</td></tr>
 <tr class="separator:ad8ebcb3c42cb532c8b90c75266d6d285"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a917c1e519d43e3485dfa87702b65f794"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a917c1e519d43e3485dfa87702b65f794"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>forward</b> (float[] buffer)</td></tr>
+<tr class="memitem:a917c1e519d43e3485dfa87702b65f794"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a917c1e519d43e3485dfa87702b65f794">forward</a> (float[] buffer)</td></tr>
 <tr class="separator:a917c1e519d43e3485dfa87702b65f794"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d09439948406388f339ed453d24662a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a6d09439948406388f339ed453d24662a">forward</a> (float[] buffReal, float[] buffImag)</td></tr>
 <tr class="separator:a6d09439948406388f339ed453d24662a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd2b74037992757b6102ad655fd3232e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd2b74037992757b6102ad655fd3232e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>inverse</b> (float[] buffer)</td></tr>
+<tr class="memitem:abd2b74037992757b6102ad655fd3232e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#abd2b74037992757b6102ad655fd3232e">inverse</a> (float[] buffer)</td></tr>
 <tr class="separator:abd2b74037992757b6102ad655fd3232e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">nl.sense_os.service.ambience.FourierTransform</a></td></tr>
 <tr class="memitem:ae3b62304fbf591a9b074255197e7648d inherit pub_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae3b62304fbf591a9b074255197e7648d">noAverages</a> ()</td></tr>
@@ -195,25 +196,45 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>inverse</b> (float[] 
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a2d0363cfe5613dffa931a2edb5e2fa9d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2d0363cfe5613dffa931a2edb5e2fa9d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>allocateArrays</b> ()</td></tr>
+<tr class="memitem:a2d0363cfe5613dffa931a2edb5e2fa9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a2d0363cfe5613dffa931a2edb5e2fa9d">allocateArrays</a> ()</td></tr>
 <tr class="separator:a2d0363cfe5613dffa931a2edb5e2fa9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">nl.sense_os.service.ambience.FourierTransform</a></td></tr>
-<tr class="memitem:a0c932cfe48f32093c1a2714e325cf84b inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c932cfe48f32093c1a2714e325cf84b"></a>
-abstract void&#160;</td><td class="memItemRight" valign="bottom"><b>allocateArrays</b> ()</td></tr>
+<tr class="memitem:a0c932cfe48f32093c1a2714e325cf84b inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0c932cfe48f32093c1a2714e325cf84b">allocateArrays</a> ()</td></tr>
 <tr class="separator:a0c932cfe48f32093c1a2714e325cf84b inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f94916ca6d3e0d2d24da5a21a502526 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f94916ca6d3e0d2d24da5a21a502526"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setComplex</b> (float[] r, float[] i)</td></tr>
+<tr class="memitem:a0f94916ca6d3e0d2d24da5a21a502526 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0f94916ca6d3e0d2d24da5a21a502526">setComplex</a> (float[] r, float[] i)</td></tr>
 <tr class="separator:a0f94916ca6d3e0d2d24da5a21a502526 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60006479c5cc16361584cf428f4fb288 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60006479c5cc16361584cf428f4fb288"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>fillSpectrum</b> ()</td></tr>
+<tr class="memitem:a60006479c5cc16361584cf428f4fb288 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288">fillSpectrum</a> ()</td></tr>
 <tr class="separator:a60006479c5cc16361584cf428f4fb288 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03073035f85d6bbbb60426d2ecb810b7 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03073035f85d6bbbb60426d2ecb810b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>doWindow</b> (float[] samples)</td></tr>
+<tr class="memitem:a03073035f85d6bbbb60426d2ecb810b7 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a03073035f85d6bbbb60426d2ecb810b7">doWindow</a> (float[] samples)</td></tr>
 <tr class="separator:a03073035f85d6bbbb60426d2ecb810b7 inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cca45c2d3e9c6798dc52fc68e1802ca inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8cca45c2d3e9c6798dc52fc68e1802ca"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>hamming</b> (float[] samples)</td></tr>
+<tr class="memitem:a8cca45c2d3e9c6798dc52fc68e1802ca inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8cca45c2d3e9c6798dc52fc68e1802ca">hamming</a> (float[] samples)</td></tr>
 <tr class="separator:a8cca45c2d3e9c6798dc52fc68e1802ca inherit pro_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a215f1f11a4ec8b9bc0509d2e9b9702eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb">fft</a> ()</td></tr>
+<tr class="separator:a215f1f11a4ec8b9bc0509d2e9b9702eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaff0dcaa74fea594a76d1e0bdd7e3a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#adaff0dcaa74fea594a76d1e0bdd7e3a1">buildReverseTable</a> ()</td></tr>
+<tr class="separator:adaff0dcaa74fea594a76d1e0bdd7e3a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d8c12542ccb1c58af952f0ccd521d18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a8d8c12542ccb1c58af952f0ccd521d18">bitReverseSamples</a> (float[] samples)</td></tr>
+<tr class="separator:a8d8c12542ccb1c58af952f0ccd521d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af063be5672b2a8a848c84a0ed60815e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#af063be5672b2a8a848c84a0ed60815e8">bitReverseComplex</a> ()</td></tr>
+<tr class="separator:af063be5672b2a8a848c84a0ed60815e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab88fc826b38799f4802c837ba8f55b88"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ab88fc826b38799f4802c837ba8f55b88">sin</a> (int i)</td></tr>
+<tr class="separator:ab88fc826b38799f4802c837ba8f55b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb7b0d0a6181097306318ce198772982"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#aeb7b0d0a6181097306318ce198772982">cos</a> (int i)</td></tr>
+<tr class="separator:aeb7b0d0a6181097306318ce198772982"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dd52c5386089399b4825f94a14bb1b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a5dd52c5386089399b4825f94a14bb1b1">buildTrigTables</a> ()</td></tr>
+<tr class="separator:a5dd52c5386089399b4825f94a14bb1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ac51ed6934de448212461bcfddfc48374"><td class="memItemLeft" align="right" valign="top">int[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">reverse</a></td></tr>
+<tr class="separator:ac51ed6934de448212461bcfddfc48374"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6d05034ed2516204402756e48ee1f1a"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ae6d05034ed2516204402756e48ee1f1a">sinlookup</a></td></tr>
+<tr class="separator:ae6d05034ed2516204402756e48ee1f1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58cc37d4dc25cfe900a957784df78c24"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a58cc37d4dc25cfe900a957784df78c24">coslookup</a></td></tr>
+<tr class="separator:a58cc37d4dc25cfe900a957784df78c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -223,52 +244,40 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a54441d948eb7b531594728913f6e5b7e inherit pub_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a54441d948eb7b531594728913f6e5b7e">HAMMING</a> = 1</td></tr>
 <tr class="separator:a54441d948eb7b531594728913f6e5b7e inherit pub_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">nl.sense_os.service.ambience.FourierTransform</a></td></tr>
-<tr class="memitem:a63e12800c57b4d778bcd0653aec8e2f4 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63e12800c57b4d778bcd0653aec8e2f4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>timeSize</b></td></tr>
+<tr class="memitem:a63e12800c57b4d778bcd0653aec8e2f4 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a63e12800c57b4d778bcd0653aec8e2f4">timeSize</a></td></tr>
 <tr class="separator:a63e12800c57b4d778bcd0653aec8e2f4 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29aa2be5a97f60426b47a0a937d5eb3e inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29aa2be5a97f60426b47a0a937d5eb3e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>sampleRate</b></td></tr>
+<tr class="memitem:a29aa2be5a97f60426b47a0a937d5eb3e inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a></td></tr>
 <tr class="separator:a29aa2be5a97f60426b47a0a937d5eb3e inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3467206ed34a66dc0c440cb47f7d5884 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3467206ed34a66dc0c440cb47f7d5884"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bandWidth</b></td></tr>
+<tr class="memitem:a3467206ed34a66dc0c440cb47f7d5884 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a3467206ed34a66dc0c440cb47f7d5884">bandWidth</a></td></tr>
 <tr class="separator:a3467206ed34a66dc0c440cb47f7d5884 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad25f116d14e6bb2129dbadcc5b30ae6c inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad25f116d14e6bb2129dbadcc5b30ae6c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>whichWindow</b></td></tr>
+<tr class="memitem:ad25f116d14e6bb2129dbadcc5b30ae6c inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ad25f116d14e6bb2129dbadcc5b30ae6c">whichWindow</a></td></tr>
 <tr class="separator:ad25f116d14e6bb2129dbadcc5b30ae6c inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c5a16e7157ddf366a595d0d6a554c77 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c5a16e7157ddf366a595d0d6a554c77"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>real</b></td></tr>
+<tr class="memitem:a8c5a16e7157ddf366a595d0d6a554c77 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a></td></tr>
 <tr class="separator:a8c5a16e7157ddf366a595d0d6a554c77 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a169f1f61f53db36725963358ada148 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a169f1f61f53db36725963358ada148"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>imag</b></td></tr>
+<tr class="memitem:a1a169f1f61f53db36725963358ada148 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a></td></tr>
 <tr class="separator:a1a169f1f61f53db36725963358ada148 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a9b4e95ea67bd66571f167f7ea5ec3c inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a9b4e95ea67bd66571f167f7ea5ec3c"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>spectrum</b></td></tr>
+<tr class="memitem:a1a9b4e95ea67bd66571f167f7ea5ec3c inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a></td></tr>
 <tr class="separator:a1a9b4e95ea67bd66571f167f7ea5ec3c inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca96fd6d12c4c44ac876b7014c2b495d inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aca96fd6d12c4c44ac876b7014c2b495d"></a>
-float[]&#160;</td><td class="memItemRight" valign="bottom"><b>averages</b></td></tr>
+<tr class="memitem:aca96fd6d12c4c44ac876b7014c2b495d inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#aca96fd6d12c4c44ac876b7014c2b495d">averages</a></td></tr>
 <tr class="separator:aca96fd6d12c4c44ac876b7014c2b495d inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a420589a2dcf6ecf5e6221710ae8ffb inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a420589a2dcf6ecf5e6221710ae8ffb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>whichAverage</b></td></tr>
+<tr class="memitem:a5a420589a2dcf6ecf5e6221710ae8ffb inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a5a420589a2dcf6ecf5e6221710ae8ffb">whichAverage</a></td></tr>
 <tr class="separator:a5a420589a2dcf6ecf5e6221710ae8ffb inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2155df710c1c7c9529502c074c46f0f inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2155df710c1c7c9529502c074c46f0f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>octaves</b></td></tr>
+<tr class="memitem:ae2155df710c1c7c9529502c074c46f0f inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ae2155df710c1c7c9529502c074c46f0f">octaves</a></td></tr>
 <tr class="separator:ae2155df710c1c7c9529502c074c46f0f inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc56e3eb2d9bfb3d3cdc36c3dd1dc680 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc56e3eb2d9bfb3d3cdc36c3dd1dc680"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>avgPerOctave</b></td></tr>
+<tr class="memitem:afc56e3eb2d9bfb3d3cdc36c3dd1dc680 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#afc56e3eb2d9bfb3d3cdc36c3dd1dc680">avgPerOctave</a></td></tr>
 <tr class="separator:afc56e3eb2d9bfb3d3cdc36c3dd1dc680 inherit pro_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td colspan="2" onclick="javascript:toggleInherit('pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform')"><img src="closed.png" alt="-"/>&#160;Static Protected Attributes inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">nl.sense_os.service.ambience.FourierTransform</a></td></tr>
-<tr class="memitem:a874f6deb8bf0ec1bf6fc1e7375c3accc inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a874f6deb8bf0ec1bf6fc1e7375c3accc"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>LINAVG</b> = 2</td></tr>
+<tr class="memitem:a874f6deb8bf0ec1bf6fc1e7375c3accc inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a874f6deb8bf0ec1bf6fc1e7375c3accc">LINAVG</a> = 2</td></tr>
 <tr class="separator:a874f6deb8bf0ec1bf6fc1e7375c3accc inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a765c36d59397438270dc4bffca8006e5 inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a765c36d59397438270dc4bffca8006e5"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>LOGAVG</b> = 3</td></tr>
+<tr class="memitem:a765c36d59397438270dc4bffca8006e5 inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a765c36d59397438270dc4bffca8006e5">LOGAVG</a> = 3</td></tr>
 <tr class="separator:a765c36d59397438270dc4bffca8006e5 inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a349d9e7844e2a67cad003f456b415ff4 inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a349d9e7844e2a67cad003f456b415ff4"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>NOAVG</b> = 4</td></tr>
+<tr class="memitem:a349d9e7844e2a67cad003f456b415ff4 inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">static final int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a349d9e7844e2a67cad003f456b415ff4">NOAVG</a> = 4</td></tr>
 <tr class="separator:a349d9e7844e2a67cad003f456b415ff4 inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81809f6f353f8b6286c6fa35c72822ae inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a81809f6f353f8b6286c6fa35c72822ae"></a>
-static final float&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_PI</b> = (float) (2 * Math.PI)</td></tr>
+<tr class="memitem:a81809f6f353f8b6286c6fa35c72822ae inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">static final float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a81809f6f353f8b6286c6fa35c72822ae">TWO_PI</a> = (float) (2 * Math.PI)</td></tr>
 <tr class="separator:a81809f6f353f8b6286c6fa35c72822ae inherit pro_static_attribs_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pac_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td colspan="2" onclick="javascript:toggleInherit('pac_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform')"><img src="closed.png" alt="-"/>&#160;Package Functions inherited from <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html">nl.sense_os.service.ambience.FourierTransform</a></td></tr>
+<tr class="memitem:ab73a1c1d44ac6f0bc8a403c9965854ad inherit pac_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab73a1c1d44ac6f0bc8a403c9965854ad">FourierTransform</a> (int ts, float sr)</td></tr>
+<tr class="separator:ab73a1c1d44ac6f0bc8a403c9965854ad inherit pac_methods_classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html">FFT</a> stands for Fast Fourier Transform. It is an efficient way to calculate the Complex Discrete Fourier Transform. There is not much to say about this class other than the fact that when you want to analyze the spectrum of an audio buffer you will almost always use this class. One restriction of this class is that the audio buffers you want to analyze must have a length that is a power of two. If you try to construct an <a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html">FFT</a> with a <code>timeSize</code> that is not a power of two, an IllegalArgumentException will be thrown.</p>
@@ -276,6 +285,8 @@ static final float&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_PI<
 <dd>
 <a href="http://www.dspguide.com/ch12.htm">The Fast Fourier Transform</a></dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Damien Di Fede </dd></dl>
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00031">31</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a19c6ad0d870f2c36e9f1daf6447f5b05"></a>
 <div class="memitem">
@@ -309,9 +320,328 @@ static final float&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_PI<
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00042">42</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                                               {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        super(<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>, <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">sampleRate</a>);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">if</span> ((<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> &amp; (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> - 1)) != 0)</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;FFT: timeSize must be a power of two.&quot;</span>);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#adaff0dcaa74fea594a76d1e0bdd7e3a1">buildReverseTable</a>();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a5dd52c5386089399b4825f94a14bb1b1">buildTrigTables</a>();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a29aa2be5a97f60426b47a0a937d5eb3e"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a29aa2be5a97f60426b47a0a937d5eb3e">nl.sense_os.service.ambience.FourierTransform.sampleRate</a></div><div class="ttdeci">int sampleRate</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00120">FourierTransform.java:120</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_adaff0dcaa74fea594a76d1e0bdd7e3a1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#adaff0dcaa74fea594a76d1e0bdd7e3a1">nl.sense_os.service.ambience.FFT.buildReverseTable</a></div><div class="ttdeci">void buildReverseTable()</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00178">FFT.java:178</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_a5dd52c5386089399b4825f94a14bb1b1"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a5dd52c5386089399b4825f94a14bb1b1">nl.sense_os.service.ambience.FFT.buildTrigTables</a></div><div class="ttdeci">void buildTrigTables()</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00223">FFT.java:223</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a2d0363cfe5613dffa931a2edb5e2fa9d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.allocateArrays </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00050">50</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                                    {</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> / 2 + 1];</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>];</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>];</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="af063be5672b2a8a848c84a0ed60815e8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.bitReverseComplex </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00199">199</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                                     {</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="keywordtype">float</span>[] revReal = <span class="keyword">new</span> <span class="keywordtype">float</span>[real.length];</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <span class="keywordtype">float</span>[] revImag = <span class="keyword">new</span> <span class="keywordtype">float</span>[imag.length];</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; real.length; i++) {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            revReal[i] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">reverse</a>[i]];</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            revImag[i] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[reverse[i]];</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        }</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a> = revReal;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a> = revImag;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_ac51ed6934de448212461bcfddfc48374"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">nl.sense_os.service.ambience.FFT.reverse</a></div><div class="ttdeci">int[] reverse</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00176">FFT.java:176</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a8d8c12542ccb1c58af952f0ccd521d18"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.bitReverseSamples </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>samples</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00191">191</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                                                    {</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; samples.length; i++) {</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] = samples[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">reverse</a>[i]];</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] = 0.0f;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        }</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_ac51ed6934de448212461bcfddfc48374"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">nl.sense_os.service.ambience.FFT.reverse</a></div><div class="ttdeci">int[] reverse</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00176">FFT.java:176</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="adaff0dcaa74fea594a76d1e0bdd7e3a1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.buildReverseTable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00178">178</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                                     {</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keywordtype">int</span> N = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">reverse</a> = <span class="keyword">new</span> <span class="keywordtype">int</span>[N];</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="comment">// set up the bit reversing table</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">reverse</a>[0] = 0;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> limit = 1, bit = N / 2; limit &lt; N; limit &lt;&lt;= 1, bit &gt;&gt;= 1)</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; limit; i++)</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">reverse</a>[i + limit] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">reverse</a>[i] + bit;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_ac51ed6934de448212461bcfddfc48374"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ac51ed6934de448212461bcfddfc48374">nl.sense_os.service.ambience.FFT.reverse</a></div><div class="ttdeci">int[] reverse</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00176">FFT.java:176</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a5dd52c5386089399b4825f94a14bb1b1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.buildTrigTables </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00223">223</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                                   {</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        <span class="keywordtype">int</span> N = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ae6d05034ed2516204402756e48ee1f1a">sinlookup</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[N];</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a58cc37d4dc25cfe900a957784df78c24">coslookup</a> = <span class="keyword">new</span> <span class="keywordtype">float</span>[N];</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; N; i++) {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ae6d05034ed2516204402756e48ee1f1a">sinlookup</a>[i] = FloatMath.sin(-(float) Math.PI / i);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a58cc37d4dc25cfe900a957784df78c24">coslookup</a>[i] = FloatMath.cos(-(float) Math.PI / i);</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        }</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_a58cc37d4dc25cfe900a957784df78c24"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a58cc37d4dc25cfe900a957784df78c24">nl.sense_os.service.ambience.FFT.coslookup</a></div><div class="ttdeci">float[] coslookup</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00213">FFT.java:213</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_ae6d05034ed2516204402756e48ee1f1a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ae6d05034ed2516204402756e48ee1f1a">nl.sense_os.service.ambience.FFT.sinlookup</a></div><div class="ttdeci">float[] sinlookup</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00212">FFT.java:212</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="aeb7b0d0a6181097306318ce198772982"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.ambience.FFT.cos </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00219">219</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                             {</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a58cc37d4dc25cfe900a957784df78c24">coslookup</a>[i];</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_a58cc37d4dc25cfe900a957784df78c24"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a58cc37d4dc25cfe900a957784df78c24">nl.sense_os.service.ambience.FFT.coslookup</a></div><div class="ttdeci">float[] coslookup</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00213">FFT.java:213</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a215f1f11a4ec8b9bc0509d2e9b9702eb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.fft </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00095">95</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                       {</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> halfSize = 1; halfSize &lt; real.length; halfSize *= 2) {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <span class="comment">// float k = -(float)Math.PI/halfSize;</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <span class="comment">// phase shift step</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="comment">// float phaseShiftStepR = (float)Math.cos(k);</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="comment">// float phaseShiftStepI = (float)Math.sin(k);</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <span class="comment">// using lookup table</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keywordtype">float</span> phaseShiftStepR = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#aeb7b0d0a6181097306318ce198772982">cos</a>(halfSize);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="keywordtype">float</span> phaseShiftStepI = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ab88fc826b38799f4802c837ba8f55b88">sin</a>(halfSize);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="comment">// current phase shift</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="keywordtype">float</span> currentPhaseShiftR = 1.0f;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="keywordtype">float</span> currentPhaseShiftI = 0.0f;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> fftStep = 0; fftStep &lt; halfSize; fftStep++) {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = fftStep; i &lt; real.length; i += 2 * halfSize) {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                    <span class="keywordtype">int</span> off = i + halfSize;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                    <span class="keywordtype">float</span> tr = (currentPhaseShiftR * <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[off]) - (currentPhaseShiftI * <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[off]);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                    <span class="keywordtype">float</span> ti = (currentPhaseShiftR * <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[off]) + (currentPhaseShiftI * <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[off]);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[off] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] - tr;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[off] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] - ti;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] += tr;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                    <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] += ti;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                }</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keywordtype">float</span> tmpR = currentPhaseShiftR;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                currentPhaseShiftR = (tmpR * phaseShiftStepR)</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                        - (currentPhaseShiftI * phaseShiftStepI);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                currentPhaseShiftI = (tmpR * phaseShiftStepI)</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                        + (currentPhaseShiftI * phaseShiftStepR);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        }</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_aeb7b0d0a6181097306318ce198772982"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#aeb7b0d0a6181097306318ce198772982">nl.sense_os.service.ambience.FFT.cos</a></div><div class="ttdeci">float cos(int i)</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00219">FFT.java:219</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_ab88fc826b38799f4802c837ba8f55b88"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ab88fc826b38799f4802c837ba8f55b88">nl.sense_os.service.ambience.FFT.sin</a></div><div class="ttdeci">float sin(int i)</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00215">FFT.java:215</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="a917c1e519d43e3485dfa87702b65f794"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.forward </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00126">126</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                                        {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keywordflow">if</span> (buffer.length != <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>) {</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                    <span class="stringliteral">&quot;FFT.forward: The length of the passed sample buffer must be equal to timeSize().&quot;</span>);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        }</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a03073035f85d6bbbb60426d2ecb810b7">doWindow</a>(buffer);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="comment">// copy samples to real/imag in bit-reversed order</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a8d8c12542ccb1c58af952f0ccd521d18">bitReverseSamples</a>(buffer);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="comment">// perform the fft</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb">fft</a>();</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="comment">// fill the spectrum buffer with amplitudes</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288">fillSpectrum</a>();</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_a215f1f11a4ec8b9bc0509d2e9b9702eb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb">nl.sense_os.service.ambience.FFT.fft</a></div><div class="ttdeci">void fft()</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00095">FFT.java:95</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a03073035f85d6bbbb60426d2ecb810b7"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a03073035f85d6bbbb60426d2ecb810b7">nl.sense_os.service.ambience.FourierTransform.doWindow</a></div><div class="ttdeci">void doWindow(float[] samples)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00273">FourierTransform.java:273</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_a8d8c12542ccb1c58af952f0ccd521d18"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a8d8c12542ccb1c58af952f0ccd521d18">nl.sense_os.service.ambience.FFT.bitReverseSamples</a></div><div class="ttdeci">void bitReverseSamples(float[] samples)</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00191">FFT.java:191</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a60006479c5cc16361584cf428f4fb288"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288">nl.sense_os.service.ambience.FourierTransform.fillSpectrum</a></div><div class="ttdeci">void fillSpectrum()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00167">FourierTransform.java:167</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="a6d09439948406388f339ed453d24662a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -344,18 +674,270 @@ static final float&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_PI<
   </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00148">148</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                                                            {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">if</span> (buffReal.length != <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> || buffImag.length != <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>) {</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                    <span class="stringliteral">&quot;FFT.forward: The length of the passed buffers must be equal to timeSize().&quot;</span>);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        }</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0f94916ca6d3e0d2d24da5a21a502526">setComplex</a>(buffReal, buffImag);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#af063be5672b2a8a848c84a0ed60815e8">bitReverseComplex</a>();</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb">fft</a>();</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288">fillSpectrum</a>();</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_a215f1f11a4ec8b9bc0509d2e9b9702eb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb">nl.sense_os.service.ambience.FFT.fft</a></div><div class="ttdeci">void fft()</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00095">FFT.java:95</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_af063be5672b2a8a848c84a0ed60815e8"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#af063be5672b2a8a848c84a0ed60815e8">nl.sense_os.service.ambience.FFT.bitReverseComplex</a></div><div class="ttdeci">void bitReverseComplex()</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00199">FFT.java:199</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a60006479c5cc16361584cf428f4fb288"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288">nl.sense_os.service.ambience.FourierTransform.fillSpectrum</a></div><div class="ttdeci">void fillSpectrum()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00167">FourierTransform.java:167</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a0f94916ca6d3e0d2d24da5a21a502526"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a0f94916ca6d3e0d2d24da5a21a502526">nl.sense_os.service.ambience.FourierTransform.setComplex</a></div><div class="ttdeci">void setComplex(float[] r, float[] i)</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00155">FourierTransform.java:155</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="abd2b74037992757b6102ad655fd3232e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.inverse </td>
+          <td>(</td>
+          <td class="paramtype">float[]&#160;</td>
+          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00159">159</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                                        {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keywordflow">if</span> (buffer.length &gt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>.length) {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                    <span class="stringliteral">&quot;FFT.inverse: the passed array&#39;s length must equal FFT.timeSize().&quot;</span>);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="comment">// conjugate</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a>; i++) {</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] *= -1;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        }</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#af063be5672b2a8a848c84a0ed60815e8">bitReverseComplex</a>();</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb">fft</a>();</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="comment">// copy the result in real into buffer, scaling as we do</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; buffer.length; i++) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            buffer[i] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] / real.length;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_a215f1f11a4ec8b9bc0509d2e9b9702eb"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb">nl.sense_os.service.ambience.FFT.fft</a></div><div class="ttdeci">void fft()</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00095">FFT.java:95</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_af063be5672b2a8a848c84a0ed60815e8"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#af063be5672b2a8a848c84a0ed60815e8">nl.sense_os.service.ambience.FFT.bitReverseComplex</a></div><div class="ttdeci">void bitReverseComplex()</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00199">FFT.java:199</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ac3f9934ea0c1d949dac0833ff8729036"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.scaleBand </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>s</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00056">56</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                                          {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">if</span> (s &lt; 0) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Can&#39;t scale a frequency band by a negative value.&quot;</span>);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i] != 0) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] /= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] /= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i] *= s;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] *= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] *= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">if</span> (i != 0 &amp;&amp; i != <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> / 2) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> - i] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i];</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> - i] = -<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i];</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ad8ebcb3c42cb532c8b90c75266d6d285"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nl.sense_os.service.ambience.FFT.setBand </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00073">73</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                                        {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">if</span> (a &lt; 0) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Can&#39;t set a frequency band to a negative value.&quot;</span>);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] == 0 &amp;&amp; <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] == 0) {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] = a;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i] = a;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] /= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] /= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i] = a;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i] *= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i] *= <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">spectrum</a>[i];</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">if</span> (i != 0 &amp;&amp; i != <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> / 2) {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> - i] = <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">real</a>[i];</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">timeSize</a> - i] = -<a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">imag</a>[i];</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a8c5a16e7157ddf366a595d0d6a554c77"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a8c5a16e7157ddf366a595d0d6a554c77">nl.sense_os.service.ambience.FourierTransform.real</a></div><div class="ttdeci">float[] real</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00123">FourierTransform.java:123</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a9b4e95ea67bd66571f167f7ea5ec3c"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a9b4e95ea67bd66571f167f7ea5ec3c">nl.sense_os.service.ambience.FourierTransform.spectrum</a></div><div class="ttdeci">float[] spectrum</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00125">FourierTransform.java:125</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_a1a169f1f61f53db36725963358ada148"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a1a169f1f61f53db36725963358ada148">nl.sense_os.service.ambience.FourierTransform.imag</a></div><div class="ttdeci">float[] imag</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00124">FourierTransform.java:124</a></div></div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform_html_af6c0043dff6db7f537b63fabd236ee52"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#af6c0043dff6db7f537b63fabd236ee52">nl.sense_os.service.ambience.FourierTransform.timeSize</a></div><div class="ttdeci">int timeSize()</div><div class="ttdef"><b>Definition:</b> <a href="_fourier_transform_8java_source.html#l00293">FourierTransform.java:293</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a class="anchor" id="ab88fc826b38799f4802c837ba8f55b88"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nl.sense_os.service.ambience.FFT.sin </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00215">215</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+<div class="fragment"><div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                             {</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ae6d05034ed2516204402756e48ee1f1a">sinlookup</a>[i];</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    }</div>
+<div class="ttc" id="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t_html_ae6d05034ed2516204402756e48ee1f1a"><div class="ttname"><a href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#ae6d05034ed2516204402756e48ee1f1a">nl.sense_os.service.ambience.FFT.sinlookup</a></div><div class="ttdeci">float[] sinlookup</div><div class="ttdef"><b>Definition:</b> <a href="_f_f_t_8java_source.html#l00212">FFT.java:212</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a58cc37d4dc25cfe900a957784df78c24"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FFT.coslookup</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00213">213</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac51ed6934de448212461bcfddfc48374"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int [] nl.sense_os.service.ambience.FFT.reverse</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00176">176</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae6d05034ed2516204402756e48ee1f1a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] nl.sense_os.service.ambience.FFT.sinlookup</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_f_f_t_8java_source.html#l00212">212</a> of file <a class="el" href="_f_f_t_8java_source.html">FFT.java</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/nl/sense_os/service/ambience/FFT.java</li>
+<li>src/nl/sense_os/service/ambience/<a class="el" href="_f_f_t_8java_source.html">FFT.java</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>nl</b></li><li class="navelem"><b>sense_os</b></li><li class="navelem"><b>service</b></li><li class="navelem"><b>ambience</b></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html">FFT</a></li>
-    <li class="footer">Generated on Mon Mar 23 2015 12:48:29 for Sense Android Library by
+    <li class="navelem"><a class="el" href="namespacenl.html">nl</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os.html">sense_os</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service.html">service</a></li><li class="navelem"><a class="el" href="namespacenl_1_1sense__os_1_1service_1_1ambience.html">ambience</a></li><li class="navelem"><a class="el" href="classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html">FFT</a></li>
+    <li class="footer">Generated on Fri Mar 27 2015 21:15:05 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

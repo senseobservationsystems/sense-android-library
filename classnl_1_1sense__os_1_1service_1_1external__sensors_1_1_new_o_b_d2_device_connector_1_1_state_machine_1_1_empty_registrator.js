@@ -1,0 +1,5 @@
+var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator =
+[
+    [ "EmptyRegistrator", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html#ab1d2fbcc5becc15f906460816ec451de", null ],
+    [ "verifySensorIds", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state_machine_1_1_empty_registrator.html#afb765a61b92c1f5a81b1a8e91247b497", null ]
+];

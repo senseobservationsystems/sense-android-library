@@ -1,0 +1,4 @@
+var classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external_1_1_tanita_scale =
+[
+    [ "MAIN", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external_1_1_tanita_scale.html#a16a836e7c371bd034400f0ebe9ba1fcc", null ]
+];

@@ -1,8 +1,28 @@
 var classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state =
 [
+    [ "OutgoingCallReceiver", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state_1_1_outgoing_call_receiver.html", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state_1_1_outgoing_call_receiver" ],
+    [ "SensePhoneStateListener", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state_1_1_sense_phone_state_listener.html", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state_1_1_sense_phone_state_listener" ],
     [ "SensePhoneState", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#ab1a09a7e0a2bfabd3eb20b23af2059fd", null ],
     [ "doSample", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#ae1fcf0b99deb315cff124dfbb8ca2089", null ],
+    [ "getInstance", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#ac31b1c53c2daedcc280af05fdd69fe61", null ],
     [ "isActive", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a70092a85653ee3d4240caf15e6caff5e", null ],
+    [ "sendDataPoint", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a410c98df9372e18f581e8b0bf68bdeb7", null ],
     [ "startSensing", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a1a48792f848affb6ec704cadadeeb7b8", null ],
-    [ "stopSensing", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a62d29d9b0d36b23162b4883ec8659cbf", null ]
+    [ "stopSensing", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a62d29d9b0d36b23162b4883ec8659cbf", null ],
+    [ "transmitLatestState", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#acb6be89bcb1a00a599cad7b6d7dee691", null ],
+    [ "active", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a09dfa786810609a1ee5fc9328b942ce1", null ],
+    [ "alarmReceiver", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a9bed283b1c1fe013b8bb19da33fb9cea", null ],
+    [ "context", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#ae9e631c0b2b79ef55d38ef02aa4bf320", null ],
+    [ "instance", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a60fd7a70d8a5104a53a85eb903413ed6", null ],
+    [ "lastDataConnectionState", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a6bea85de48c3ab6b16b72d3e26221523", null ],
+    [ "lastIp", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a188e5af62f24beb1b0146ac61ad091b3", null ],
+    [ "lastMsgIndicatorState", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#ab3cd736542404c70f98d2eb4c99eda8d", null ],
+    [ "lastServiceState", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#aa94dc654b27cc3d53a9ea2e7de6a3ca1", null ],
+    [ "lastSignalStrength", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a8904619255cbd842fb564a9b9af82e70", null ],
+    [ "msgIndicatorUpdated", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#ae7fc5c9ffb318b1f75104466c9eb6f1a", null ],
+    [ "outgoingCallReceiver", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a5638f37f361dc1c0b96ec749b67c1011", null ],
+    [ "phoneStateListener", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a2df12ede7c7f30eee18cc33b36e0d1b0", null ],
+    [ "previousConnectionType", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a1de4b0d16ddea9c7dc3e65dac873d71d", null ],
+    [ "TAG", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#a7c8000c5b3f7728db7159ae14d723009", null ],
+    [ "telMgr", "classnl_1_1sense__os_1_1service_1_1phonestate_1_1_sense_phone_state.html#aec5d2e57a5876b6441af7ef79201abbf", null ]
 ];

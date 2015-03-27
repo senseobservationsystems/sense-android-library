@@ -25,5 +25,7 @@ var classnl_1_1sense__os_1_1service_1_1_sense_service_stub =
     [ "toggleMain", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#aa544cce959ad0bc5da03c6c6d979dc9f", null ],
     [ "toggleMotion", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#acae185ca8388454e0251cdf2f85010d2", null ],
     [ "togglePhoneState", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a6953412d02acb96595dc2da97b6019c1", null ],
-    [ "togglePopQuiz", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a97423b73804e13702c4274e5f0624a07", null ]
+    [ "togglePopQuiz", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a97423b73804e13702c4274e5f0624a07", null ],
+    [ "service", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a2baaabc43ba584cdf6ccb8cad63b2502", null ],
+    [ "TAG", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#ab4aab15819d741dad169c6ccba7c571f", null ]
 ];
