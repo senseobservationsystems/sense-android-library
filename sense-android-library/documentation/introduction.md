@@ -6,17 +6,17 @@ This documentation provides insights in the architecture and inner workings of t
 
 ## Table of Content
 
-* [Architecture Overview](docs/architecture.md)
-* [Sense Service](docs/sense_service.md)
-* [Sense Platform](docs/sense_platform.md)
-* [Settings](docs/settings.md )
-* [Manifest](docs/manifest.md)
-* [Message Handler](docs/msg_handler.md)
-* [Data Storage](docs/storage.md)
-* [Sensors](docs/sensors.md)
-* [Data Subcription](docs/subscription.md)
-* [Best Practices](docs/best_practices.md)
-* [Extras](docs/extras.md)
+* [Architecture Overview](documentation/architecture.md)
+* [Sense Service](documentation/sense_service.md)
+* [Sense Platform](documentation/sense_platform.md)
+* [Settings](documentation/settings.md )
+* [Manifest](documentation/manifest.md)
+* [Message Handler](documentation/msg_handler.md)
+* [Data Storage](documentation/storage.md)
+* [Sensors](documentation/sensors.md)
+* [Data Subcription](documentation/subscription.md)
+* [Best Practices](documentation/best_practices.md)
+* [Extras](documentation/extras.md)
 
 ## More Information
 
