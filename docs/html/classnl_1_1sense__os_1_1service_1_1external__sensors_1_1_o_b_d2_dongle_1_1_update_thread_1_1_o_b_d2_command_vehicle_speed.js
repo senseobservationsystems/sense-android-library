@@ -1,5 +1,0 @@
-var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_vehicle_speed =
-[
-    [ "OBD2CommandVehicleSpeed", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_vehicle_speed.html#aaa92a3fe162c20dcc576f2feb0e2f801", null ],
-    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_vehicle_speed.html#a00804e2d84c8f36a29b995efb1ba7baf", null ]
-];
