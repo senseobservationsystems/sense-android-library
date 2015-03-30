@@ -16,8 +16,6 @@ This documentation provides insights in the architecture and inner workings of t
 * [Data Storage](documentation/storage.md)
 * [Sensors](documentation/sensors.md)
 * [Data Subcription](documentation/subscription.md)
-* [Best Practices](documentation/best_practices.md)
-* [Extras](documentation/extras.md)
 
 ## More Information
 

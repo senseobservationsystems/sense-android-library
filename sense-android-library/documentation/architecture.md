@@ -15,16 +15,16 @@ Activities or other components that bind to SenseService can not access the Sens
 
 SenseService is implemented in nl.sense_os.service.SenseService.
 
-More details on SenseService [here](docs/sense_service.md).
+More details on SenseService [here](documentation/sense_service.md).
 
 
 ## 2. SensePlatform
 
-This provides a high level abstraction to SenseService. It will create and bind to a new SenseService when created.
+The SensePlatform class provides an abstraction to simplify the interaction with the SenseService, user management and sensor data access. It's a proxy class which by instantiating binds (and starts if needed) the SenseService. You can then use the high level methods of this class, and/or get the service object to work directly with the SenseService.
 
 SensePlatform is implemented in nl.sense_os.platform.SensePlatform.
 
-More details on SensePlatform [here](docs/sense_platform.md).
+More details on SensePlatform [here](documentation/sense_platform.md).
 
 
 ## 3. SenseApplication
@@ -41,7 +41,7 @@ This is a service that is responsible for handling the data that has been collec
 
 MsgHandler is implemented in nl.sense_os.service.MsgHandler.
 
-More details on MsgHandler [here](docs/msg_handler.md)
+More details on MsgHandler [here](documentation/msg_handler.md)
 
 ## 5. Local / Remote Storage
 
@@ -51,7 +51,7 @@ LocalStorage is implemented in nl.sense_os.service.storage.LocalStorage.
 
 RemoteStorage is implemented in nl.sense_os.service.storage.RemoteStorage.
 
-More details on Data Storage [here](docs/storage.md)
+More details on Data Storage [here](documentation/storage.md)
 
 ## 6. Subscription Manager
 
@@ -64,4 +64,4 @@ Every DataProducer instance, like sensors, should be registered to SubscriptionM
 
 SubscriptionManager is implemented in nl.sense_os.service.subscription.SubscriptionManager.
 
-More details on SubscriptionManager [here](docs/subscription.md)
+More details on SubscriptionManager [here](documentation/subscription.md)

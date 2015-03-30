@@ -1,6 +1,6 @@
-# Data Subscription
+# Data Subscription {#data_subscription}
 
-## SubscriptionManager
+# Subscription Manager {#subscription_manager}
 
 Sense Library provides SubscriptionManager to keep all of the available producers and subscribers as well as relations between them. Every sensor in sense library should be registered to this SubscriptionManager instance.
 
@@ -10,7 +10,7 @@ A [DataProducer](##DataProducer) can register to [SubscriptionManager](##Subscri
 
 A [DataConsumer](##DataConsumer) can subscribe to one or more [DataProducer](##DataProducer) registered under a certain name. If there is no DataProducer for this name yet, SubscriptionManager will still store it as a subscriber and subscribe it when a new DataProducer is registered with that name.
 
-## DataProducer
+# Data Producer {#data_producer}
 
 DataProducer is an interface that specifies some functionality for objects that produce data, specifically [SensorDataPoint](##SensorDataPoint) objects, so that one or more [DataConsumer](##DataConsumer) can subscribe to it. Every sensor in Sense Library is an implementation of DataProducer. 
 
@@ -18,21 +18,24 @@ Sense library provides a base implementation of this interface in nl.sense_os.se
 
 DataProducer can register to SubscriptionManager so a DataConsumer can subscribe to it. Here is an example of how to register a producer to SubscriptionManager
 
-    mSubscrMgr = SubscriptionManager.getInstance();
-    testSensor = TestSensor.getInstance(ctx);
-    mSubscrMgr.registerProducer(“TestSensor”, testSensor);
+~~~
+mSubscrMgr = SubscriptionManager.getInstance();
+testSensor = TestSensor.getInstance(ctx);
+mSubscrMgr.registerProducer(“TestSensor”, testSensor);
+~~~
 
 BaseDataProducer objects like sensors should also notify and send the datapoint everytime there is a new sample. Here is an example of how to notify and send sensor data to subscribers when there is a new sample.
 
-    notifySubscribers();
-    SensorDataPoint dataPoint = new SensorDataPoint(value);
-    dataPoint.sensorName = "Sensor name";
-    dataPoint.sensorDescription = "Sensor description";
-    dataPoint.timeStamp = startTimestamp;
-    sendToSubscribers(dataPoint);
+~~~
+notifySubscribers();
+SensorDataPoint dataPoint = new SensorDataPoint(value);
+dataPoint.sensorName = "Sensor name";
+dataPoint.sensorDescription = "Sensor description";
+dataPoint.timeStamp = startTimestamp;
+sendToSubscribers(dataPoint);
+~~~
 
-
-## DataConsumer
+# Data Consumer {#data_consumer}
 
 DataConsumer is an interface that specifies some functionality for objects to subscribe to one or more [DataProducer](##DataProducer). By subscribing to a DataProducer, a DataConsumer object will get a notification every time there is a new datapoint, as well as get the actual data. Any class that implements this interface also needs to implement a function that enables the DataProducer to check if the DataConsumer object has all of the data it needs before sending the actual data.
 
@@ -40,12 +43,16 @@ FallDetector and EpilepsySensor are examples of DataConsumer.
 
 DataConsumer can subscribe to a DataProducer directly or through SubscriptionManager. Here is an example on how to subscribe a DataConsumer to a data producer directly
 
-    testConsumerSensor = TestConsumerSensor.getInstance();
-    dataProducer.addSubscriber(testConsumerSensor);
+~~~
+testConsumerSensor = TestConsumerSensor.getInstance();
+dataProducer.addSubscriber(testConsumerSensor);
+~~~
 
-and here is an example of how to subscribe a DataConsumer to DataProducer in previous example (see DataProducer) using SubscriptionManager
+and here is an example of how to subscribe a DataConsumer to DataProducer in previous example (see DataProducer) using SubscriptionManager.
 
-    testConsumerSensor = TestConsumerSensor.getInstance();
+~~~java
+testConsumerSensor = TestConsumerSensor.getInstance();
 
-    mSubscrMgr = SubscriptionManager.getInstance();
-    mSubscrMgr.subscribeConsumer("TestSensor", testConsumerSensor);
+mSubscrMgr = SubscriptionManager.getInstance();
+mSubscrMgr.subscribeConsumer("TestSensor", testConsumerSensor);
+~~~
