@@ -11,7 +11,7 @@ sensorData.putExtra(DataPoint.TIMESTAMP, System.currentTimeMillis());
 startService(sensorData);
 ~~~
 
-## Sensor registration {#sensor_registration}
+# Sensor registration {#sensor_registration}
 Before a sensor can be uploaded to CommonSense it needs to be created. The SensorRegistrator class implements a trivial sensor registration method called `checkSensor` which checks in the back-end whether a sensor with a given description already exists. If the back-end successfully returns and the sensor does not exist then it will be created and the method will return True.
 
 SensorRegistrator is implemented in nl.sense_os.service.commonsense.SensorRegistrator.
