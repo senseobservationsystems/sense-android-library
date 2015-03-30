@@ -19,23 +19,23 @@ into your local Maven repository as follows.
 First add some dependencies to your local Maven repository that are not available 
 in Maven central:
 
-#### Dependency 1: compatibility-v4 library (rev 12)
+#### Dependency 1: compatibility-v4 library (rev  21.0.3)
 
-Note that you need the compatibility-v4 library, revision 12. Google didn't put that 
-into Maven central (yet). If your local Maven repository does not contain it, install 
+Note that you need the compatibility-v4 library, revision  21.0.3. Google didn't put that 
+into Maven central. If your local Maven repository does not contain it, install 
 it locally by using the 
 [maven-android-sdk-deployer](https://github.com/mosabua/maven-android-sdk-deployer).
 
-#### Dependency 2: cordova 2.7.0
+#### Dependency 2: cordova 3.6.4
 
 Navigate to the Library's `libs/` folder and execute the following command:
 
 ```bash
 mvn install:install-file \
-  -Dfile=cordova-2.7.0.jar \
+  -Dfile=cordova-3.6.4.jar \
   -DgroupId=org.apache.cordova \
   -DartifactId=cordova \
-  -Dversion=2.7.0 \
+  -Dversion=3.6.4 \
   -Dpackaging=jar \
   -DgeneratePom=true
 ```
@@ -59,6 +59,9 @@ by adding the following dependency to your POM:
     <type>apklib</type>
 </dependency>
 ```
+
+#### Dependency 3: Google Play services client library
+Starting from version 3.4 the Google Play services client library is a requirement because there is a new implementation of the position sensor which uses the Fused Location Provider. To setup Google Play services follow these instructions: https://developer.android.com/google/play-services/setup.html
 
 ## Pre-build commands
 

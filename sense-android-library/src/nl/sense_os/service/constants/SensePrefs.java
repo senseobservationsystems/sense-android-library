@@ -428,19 +428,25 @@ public class SensePrefs {
              * Key for preference that toggles use of GPS in location sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
              */
+            @Deprecated
             public static final String GPS = "location_gps";
             /**
              * Key for preference that toggles use of Network in location sensor.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
              */
+            @Deprecated
             public static final String NETWORK = "location_network";
             /**
-             * Key for preference that toggles use of sensor fusion to toggle th GPS usage.
+             * Key for preference that toggles use of sensor fusion to toggle the GPS usage.
              * 
              * @see SensePrefs#MAIN_PREFS
+             * @deprecated Selecting the GPS as provider automatically will be replaced by the fused location provider.
              */
+            @Deprecated
             public static final String AUTO_GPS = "automatic_gps";
             /**
              * Key for preference that toggles use of the time zone sensor
@@ -448,6 +454,44 @@ public class SensePrefs {
              * @see SensePrefs#MAIN_PREFS
              */
             public static final String TIME_ZONE = "time_zone";
+            /**
+             * Key for preference that toggles the use of the fused location provider.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String FUSED_PROVIDER = "location_fused";
+            /**
+             * Key for preference that sets the priority for the fused location provider.
+             * By default the BALANCED priority is used.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String FUSED_PROVIDER_PRIORITY = "location_fused_priority";
+
+            public static class FusedProviderPriority
+            {
+                /**
+                 * Key for preference that toggles the use of the fused location provider with a high power consumption and accuracy.
+                 * Accuracy: 1m (most precise location possible)
+                 * 
+                 * @see SensePrefs#MAIN_PREFS
+                 */
+                public static final String ACCURATE = "location_fused_accurate";
+                /**
+                 * Key for preference that toggles the use of the fused location provider with a balance between power consumption and accuracy.
+                 * Accuracy: 100 (city block)
+                 * 
+                 * @see SensePrefs#MAIN_PREFS
+                 */
+                public static final String BALANCED = "location_fused_balanced";
+                /**
+                 * Key for preference that toggles the use of the fused location provider with low power consumption and accuracy.
+                 * Accuracy: 10km (city level)
+                 * 
+                 * @see SensePrefs#MAIN_PREFS
+                 */
+                public static final String LOW_POWER = "location_fused_low_power";
+            }
         }
 
         public static class Motion {
@@ -617,7 +661,87 @@ public class SensePrefs {
              */
             public static final String SYNC_TIME = "popquiz_sync_time";
         }
-                
+
+        public static class SampleRate {
+            /**
+             * Key for the preference that sets the sample interval to every 15 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String RARELY = "1";
+
+            /**
+             * Key for the preference that sets the sample interval to every 3 minutes.
+             * For the Location sensors this is 5 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String BALANCED = "2";
+
+            /**
+             * Key for the preference that sets the sample interval to every minute.
+             * For the Location sensors this is 5 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String NORMAL = "0";
+
+            /**
+             * Key for the preference that sets the sample interval to every 10 seconds.
+             * For the Location sensors this is every 30 seconds.
+             * For the External sensors this is every 5 seconds.
+             * For the Motion sensors this is every 5 seconds.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String OFTEN = "-1";
+
+            /**
+             * Key for the preference that sets the sample interval to every second.
+             * For the Ambience sensors this is as fast as possible.
+             * For the Noise sensor this enabled the recording of audio files.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String REAL_TIME = "-2";
+        }
+
+        public static class SyncRate {
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every 15 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String RARELY = "2";
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every 30 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String ECO_MODE = "1";
+
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every 5 minutes.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String NORMAL = "0";
+
+            /**
+             * Key for the preference that enables data buffering and sets the upload interval to every minute.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String OFTEN = "-1";
+
+            /**
+             * Key for the preference that disables data buffering and uploads every data point immediately.
+             * 
+             * @see SensePrefs#MAIN_PREFS
+             */
+            public static final String REAL_TIME = "-2";
+        }
+
         /**
          * Key for preference that controls sample frequency of the sensors.
          * 
