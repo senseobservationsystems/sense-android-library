@@ -11,6 +11,8 @@
 # generated files
 bin/
 gen/
+sense-android-library/documentation/output/
+
 
 # Eclipse-specific stuff
 .settings/
