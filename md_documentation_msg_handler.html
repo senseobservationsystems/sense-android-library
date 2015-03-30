@@ -108,17 +108,19 @@ $(document).ready(function(){initNavTree('md_documentation_msg_handler.html','')
 <li>Periodically transmit all sensor data in buffer to CommonSense</li>
 </ul>
 <p>MsgHandler is implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">nl.sense_os.service.MsgHandler</a>.</p>
-<h2>Store datapoint from Sensor</h2>
+<h1><a class="anchor" id="store_data"></a>
+Store Data from Sensor</h1>
 <p>To send a sensor datapoint to MsgHandler, sensors need to send an Intent with <em>action_sense_new_data</em> that contains the details of the datapoint (see Sensor DataPoint)</p>
-<p>Here is an example of sending a sensor datapoint to Message Handler. </p>
-<pre class="fragment">Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
-sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
-sensorData.putExtra(DataPoint.VALUE, BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
-sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-sensorData.setPackage(context.getPackageName());
-context.startService(sensorData);
-</pre><h2>Transmit sensor data to CommonSense</h2>
+<p>Here is an example of sending a sensor datapoint to Message Handler.</p>
+<div class="fragment"><div class="line">Intent sensorData = <span class="keyword">new</span> Intent(context.getString(R.string.action_sense_new_data));</div>
+<div class="line">sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);</div>
+<div class="line">sensorData.putExtra(DataPoint.VALUE, BigDecimal.valueOf(dB).setScale(2, 0).floatValue());</div>
+<div class="line">sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);</div>
+<div class="line">sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);</div>
+<div class="line">sensorData.setPackage(context.getPackageName());</div>
+<div class="line">context.startService(sensorData);</div>
+</div><!-- fragment --><h1><a class="anchor" id="transmit_data"></a>
+Transmit Sensor Data to CommonSense</h1>
 <p>SenseService uses an <a class="el" href="classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html">nl.sense_os.service.ctrl.Controller</a> instance to schedule sending of data in LocalStorage to CommonSense periodically. This Controller will create an instance of <a class="el" href="classnl_1_1sense__os_1_1service_1_1_data_transmitter.html">nl.sense_os.service.DataTransmitter</a> that will register itself to scheduler to run at a particular interval based on the <a class="el" href="classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_sync_rate.html">nl.sense_os.service.constants.SensePrefs.Main.SyncRate</a> setting in preferences. This DataTransmitter then will send an <em>action_sense_send_data</em> intent to <a class="el" href="classnl_1_1sense__os_1_1service_1_1_msg_handler.html">nl.sense_os.service.MsgHandler</a> when scheduled to run, to actually send the sensor data to CommonSense and empty its buffer.</p>
 <p>These options are available for SyncRate settings:</p>
 <ul>
@@ -133,7 +135,7 @@ context.startService(sensorData);
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Mar 27 2015 18:17:26 for Sense Android Library by
+    <li class="footer">Generated on Mon Mar 30 2015 09:23:32 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

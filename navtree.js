@@ -10,7 +10,10 @@ var NAVTREE =
       [ "Implicit SenseService Binding", "md_documentation_manifest.html#implicitbinding", null ],
       [ "Google Play Service", "md_documentation_manifest.html#googleplayservices", null ]
     ] ],
-    [ "Message Handler", "md_documentation_msg_handler.html", null ],
+    [ "Message Handler", "md_documentation_msg_handler.html", [
+      [ "Store Data from Sensor", "md_documentation_msg_handler.html#store_data", null ],
+      [ "Transmit Sensor Data to CommonSense", "md_documentation_msg_handler.html#transmit_data", null ]
+    ] ],
     [ "SensePlatform", "md_documentation_sense_platform.html", [
       [ "User management", "md_documentation_sense_platform.html#user_management", [
         [ "Encrypted credentials", "md_documentation_sense_platform.html#encrypted_credentials", null ]
@@ -21,10 +24,38 @@ var NAVTREE =
         [ "Flusing data", "md_documentation_sense_platform.html#flusing_Data", null ]
       ] ]
     ] ],
-    [ "Sense Service", "md_documentation_sense_service.html", null ],
-    [ "Sensors", "md_documentation_sensors.html", null ],
-    [ "Data Storage", "md_documentation_storage.html", null ],
-    [ "Data Subscription", "md_documentation_subscription.html", null ],
+    [ "Sense Service", "md_documentation_sense_service.html", [
+      [ "Binding", "md_documentation_sense_service.html#binding", null ],
+      [ "Manage Main and Sensor Groups", "md_documentation_sense_service.html#manage_main_sensor_groups", null ],
+      [ "Background service", "md_documentation_sense_service.html#background_service", null ],
+      [ "Start Broadcast", "md_documentation_sense_service.html#start_broadcast", null ],
+      [ "AliveChecker", "md_documentation_sense_service.html#alive_checker", null ]
+    ] ],
+    [ "Sensors", "md_documentation_sensors.html", [
+      [ "Sense Sensor", "md_documentation_sensors.html#sense_sensor", null ],
+      [ "Base Sensor", "md_documentation_sensors.html#base_sensor", null ],
+      [ "Periodic Polling Sensor", "md_documentation_sensors.html#periodic_polling_sensor", null ],
+      [ "Periodic Poll Alarm Receiver", "md_documentation_sensors.html#periodic_poll_alarm_receiver", null ],
+      [ "Sensor groups", "md_documentation_sensors.html#sense_sensor_groups", null ],
+      [ "Sensor Data Structure", "md_documentation_sensors.html#sensor_data_structure", null ]
+    ] ],
+    [ "Settings", "md_documentation_settings.html", [
+      [ "Access settings through SenseServiceStub", "md_documentation_settings.html#access_settings", null ],
+      [ "Settings list", "md_documentation_settings.html#settings_list", null ]
+    ] ],
+    [ "Data Storage", "md_documentation_storage.html", [
+      [ "Local Storage", "md_documentation_storage.html#local_storage", [
+        [ "Sensor registration", "md_documentation_storage.html#sensor_registration", null ],
+        [ "SQLite Database", "md_documentation_storage.html#sqlite_database", null ],
+        [ "In RAM & In Flash Storage", "md_documentation_storage.html#RAM_and_Flash_storage", null ],
+        [ "Retention Rate", "md_documentation_storage.html#retention_rate", null ]
+      ] ]
+    ] ],
+    [ "Data Subscription", "md_documentation_subscription.html", [
+      [ "Subscription Manager", "md_documentation_subscription.html#subscription_manager", null ],
+      [ "Data Producer", "md_documentation_subscription.html#data_producer", null ],
+      [ "Data Consumer", "md_documentation_subscription.html#data_consumer", null ]
+    ] ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Packages", null, [
       [ "Packages", "namespaces.html", "namespaces" ]

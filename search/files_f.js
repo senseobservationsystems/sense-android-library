@@ -23,6 +23,7 @@ var searchData=
   ['sensorregistrator_2ejava',['SensorRegistrator.java',['../_sensor_registrator_8java.html',1,'']]],
   ['sensors_2emd',['sensors.md',['../sensors_8md.html',1,'']]],
   ['servicestatehelper_2ejava',['ServiceStateHelper.java',['../_service_state_helper_8java.html',1,'']]],
+  ['settings_2emd',['settings.md',['../settings_8md.html',1,'']]],
   ['sntp_2ejava',['SNTP.java',['../_s_n_t_p_8java.html',1,'']]],
   ['sqlitestorage_2ejava',['SQLiteStorage.java',['../_s_q_lite_storage_8java.html',1,'']]],
   ['standardmotionsensor_2ejava',['StandardMotionSensor.java',['../_standard_motion_sensor_8java.html',1,'']]],

@@ -102,41 +102,45 @@ $(document).ready(function(){initNavTree('md_documentation_subscription.html',''
 <div class="title">Data Subscription </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2>SubscriptionManager</h2>
+<div class="textblock"><h1><a class="anchor" id="subscription_manager"></a>
+Subscription Manager</h1>
 <p>Sense Library provides SubscriptionManager to keep all of the available producers and subscribers as well as relations between them. Every sensor in sense library should be registered to this SubscriptionManager instance.</p>
 <p>This class, like most of other class in Sense Library, is implemented with singleton pattern. It's implemented in <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html">nl.sense_os.service.subscription.SubscriptionManager</a>.</p>
 <p>A <a href="##DataProducer">DataProducer</a> can register to <a href="##SubscribtionManager">SubscriptionManager</a> instance with a given name. One name in SubscriptionManager could be registered to one or more different DataProducer instances. Registering an existing instance of DataProducer will result in doing nothing.</p>
 <p>A <a href="##DataConsumer">DataConsumer</a> can subscribe to one or more <a href="##DataProducer">DataProducer</a> registered under a certain name. If there is no DataProducer for this name yet, SubscriptionManager will still store it as a subscriber and subscribe it when a new DataProducer is registered with that name.</p>
-<h2>DataProducer</h2>
+<h1><a class="anchor" id="data_producer"></a>
+Data Producer</h1>
 <p>DataProducer is an interface that specifies some functionality for objects that produce data, specifically <a href="##SensorDataPoint">SensorDataPoint</a> objects, so that one or more <a href="##DataConsumer">DataConsumer</a> can subscribe to it. Every sensor in Sense Library is an implementation of DataProducer.</p>
 <p>Sense library provides a base implementation of this interface in <a class="el" href="classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html">nl.sense_os.service.subscription.BaseDataProducer</a> abstract class, and almost all of sensors in Sense library are based on this class. BaseDataProducer will store all of its subcribers in an ArrayList. This class also provides a mechanisme to notify all of its subscribers when there are new samples, and also send the SensorDataPoint to some or all of its subscribers when the sampling is finished. BaseDataProducer object will check the status of its DataConsumers to see if they have received all the data they need before sending the data.</p>
-<p>DataProducer can register to SubscriptionManager so a DataConsumer can subscribe to it. Here is an example of how to register a producer to SubscriptionManager </p>
-<pre class="fragment">mSubscrMgr = SubscriptionManager.getInstance();
-testSensor = TestSensor.getInstance(ctx);
-mSubscrMgr.registerProducer(“TestSensor”, testSensor);
-</pre><p>BaseDataProducer objects like sensors should also notify and send the datapoint everytime there is a new sample. Here is an example of how to notify and send sensor data to subscribers when there is a new sample. </p>
-<pre class="fragment">notifySubscribers();
-SensorDataPoint dataPoint = new SensorDataPoint(value);
-dataPoint.sensorName = "Sensor name";
-dataPoint.sensorDescription = "Sensor description";
-dataPoint.timeStamp = startTimestamp;
-sendToSubscribers(dataPoint);
-</pre><h2>DataConsumer</h2>
+<p>DataProducer can register to SubscriptionManager so a DataConsumer can subscribe to it. Here is an example of how to register a producer to SubscriptionManager</p>
+<div class="fragment"><div class="line">mSubscrMgr = SubscriptionManager.getInstance();</div>
+<div class="line">testSensor = TestSensor.getInstance(ctx);</div>
+<div class="line">mSubscrMgr.registerProducer(“TestSensor”, testSensor);</div>
+</div><!-- fragment --><p>BaseDataProducer objects like sensors should also notify and send the datapoint everytime there is a new sample. Here is an example of how to notify and send sensor data to subscribers when there is a new sample.</p>
+<div class="fragment"><div class="line">notifySubscribers();</div>
+<div class="line">SensorDataPoint dataPoint = <span class="keyword">new</span> SensorDataPoint(value);</div>
+<div class="line">dataPoint.sensorName = <span class="stringliteral">&quot;Sensor name&quot;</span>;</div>
+<div class="line">dataPoint.sensorDescription = <span class="stringliteral">&quot;Sensor description&quot;</span>;</div>
+<div class="line">dataPoint.timeStamp = startTimestamp;</div>
+<div class="line">sendToSubscribers(dataPoint);</div>
+</div><!-- fragment --><h1><a class="anchor" id="data_consumer"></a>
+Data Consumer</h1>
 <p>DataConsumer is an interface that specifies some functionality for objects to subscribe to one or more <a href="##DataProducer">DataProducer</a>. By subscribing to a DataProducer, a DataConsumer object will get a notification every time there is a new datapoint, as well as get the actual data. Any class that implements this interface also needs to implement a function that enables the DataProducer to check if the DataConsumer object has all of the data it needs before sending the actual data.</p>
 <p>FallDetector and EpilepsySensor are examples of DataConsumer.</p>
-<p>DataConsumer can subscribe to a DataProducer directly or through SubscriptionManager. Here is an example on how to subscribe a DataConsumer to a data producer directly </p>
-<pre class="fragment">testConsumerSensor = TestConsumerSensor.getInstance();
-dataProducer.addSubscriber(testConsumerSensor);
-</pre><p>and here is an example of how to subscribe a DataConsumer to DataProducer in previous example (see DataProducer) using SubscriptionManager </p>
-<pre class="fragment">testConsumerSensor = TestConsumerSensor.getInstance();
-
-mSubscrMgr = SubscriptionManager.getInstance();
-mSubscrMgr.subscribeConsumer("TestSensor", testConsumerSensor);</pre> </div></div><!-- contents -->
+<p>DataConsumer can subscribe to a DataProducer directly or through SubscriptionManager. Here is an example on how to subscribe a DataConsumer to a data producer directly</p>
+<div class="fragment"><div class="line">testConsumerSensor = TestConsumerSensor.getInstance();</div>
+<div class="line">dataProducer.addSubscriber(testConsumerSensor);</div>
+</div><!-- fragment --><p>and here is an example of how to subscribe a DataConsumer to DataProducer in previous example (see DataProducer) using SubscriptionManager.</p>
+<div class="fragment"><div class="line">testConsumerSensor = TestConsumerSensor.getInstance();</div>
+<div class="line"></div>
+<div class="line">mSubscrMgr = SubscriptionManager.getInstance();</div>
+<div class="line">mSubscrMgr.subscribeConsumer(<span class="stringliteral">&quot;TestSensor&quot;</span>, testConsumerSensor);</div>
+</div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Mar 27 2015 18:17:26 for Sense Android Library by
+    <li class="footer">Generated on Mon Mar 30 2015 09:23:32 for Sense Android Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
