@@ -526,15 +526,18 @@ public class SenseService extends Service {
         boolean encrypt_credential = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE)
                                          .getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
 
+        String encryptedUsername = username;
+        String encryptedPassword = password;
+        
         if (encrypt_credential) {
             EncryptionHelper encryptor = new EncryptionHelper(this);
-            username = encryptor.encrypt(username);
-            password = encryptor.encrypt(password);
+            encryptedUsername = encryptor.encrypt(username);
+            encryptedPassword = encryptor.encrypt(password);
         }
 
         // save new username and password in the preferences
-        authEditor.putString(Auth.LOGIN_USERNAME, username);
-        authEditor.putString(Auth.LOGIN_PASS, password);
+        authEditor.putString(Auth.LOGIN_USERNAME, encryptedUsername);
+        authEditor.putString(Auth.LOGIN_PASS, encryptedPassword);
         authEditor.commit();
 
         // try to register
