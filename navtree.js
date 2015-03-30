@@ -41,6 +41,7 @@ var NAVTREE =
     ] ],
     [ "Settings", "md_documentation_settings.html", [
       [ "Access settings through SenseServiceStub", "md_documentation_settings.html#access_settings", null ],
+      [ "Sample and sync rate", "md_documentation_settings.html#sample_sync_rate", null ],
       [ "Settings list", "md_documentation_settings.html#settings_list", null ]
     ] ],
     [ "Data Storage", "md_documentation_storage.html", [
