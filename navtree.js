@@ -44,8 +44,8 @@ var NAVTREE =
       [ "Settings list", "md_documentation_settings.html#settings_list", null ]
     ] ],
     [ "Data Storage", "md_documentation_storage.html", [
+      [ "Sensor registration", "md_documentation_storage.html#sensor_registration", null ],
       [ "Local Storage", "md_documentation_storage.html#local_storage", [
-        [ "Sensor registration", "md_documentation_storage.html#sensor_registration", null ],
         [ "SQLite Database", "md_documentation_storage.html#sqlite_database", null ],
         [ "In RAM & In Flash Storage", "md_documentation_storage.html#RAM_and_Flash_storage", null ],
         [ "Retention Rate", "md_documentation_storage.html#retention_rate", null ]
