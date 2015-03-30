@@ -2,9 +2,8 @@
 
 Library project for Android apps that use the Sense platform and communicate with CommonSense.
 
-## Javadoc
-
-See this projects' [GitHub pages](http://senseobservationsystems.github.com/sense-android-library).
+## Documentation
+For information about the used concepts and implementation details visit the [GitHub pages](http://senseobservationsystems.github.com/sense-android-library).
 
 ## Tutorial
 

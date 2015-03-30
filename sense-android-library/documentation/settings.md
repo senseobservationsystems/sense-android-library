@@ -44,6 +44,39 @@ senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "some
 String username = senseService.getPrefString(SensePrefs.Auth.LOGIN_USERNAME, "");
 ~~~
 
+# Sample and sync rate {#sample_sync_rate}
+With the preferences nl.sense_os.service.constants.SensePrefs.Main.SAMPLE_RATE and nl.sense_os.service.constants.SensePrefs.Main.SYNC_RATE the sensor sample and data upload interval can be set respectively. By default the NORMAL sync and sample rates are selected, however for most applications it's recommended to use the BALANCED sample rate and lowest sync rate e.g. ECO_MODE.
+ 
+The different sample rates:
+
+* RARELY<br> 
+every 15 minutes
+* BALANCED<br>
+every 3 minutes, 5 minutes for location sensors
+* NORMAL<br>
+every minute, 5 minuts for location sensors
+* OFTEN<br>
+every 10 seconds, 30 seconds for location sensors, 5 seconds for external and motion sensors
+
+The different sync rates:
+
+* ECO_MODE<br>
+every 30 minutes
+* RARELY<br>
+every 15 minutes
+* NORMAL<br>
+every 5 minutes
+* OFTEN<br>
+every minute
+* REAL_TIME<br>
+immediately, local data buffering is disabled
+
+Example for setting the sample and sync rate:  
+~~~
+        senseService.setPrefString(SensePrefs.Main.SAMPLE_RATE, SensePrefs.Main.SampleRate.BALANCED);
+        senseService.setPrefString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.ECO_MODE);
+~~~
+
 # Settings list {#settings_list}
 
 * nl.sense_os.service.constants.SensePrefs.Main
@@ -118,6 +151,17 @@ String username = senseService.getPrefString(SensePrefs.Auth.LOGIN_USERNAME, "")
     * nl.sense_os.service.constants.SensePrefs.Main.PhoneState.SERVICE_STATE
     * nl.sense_os.service.constants.SensePrefs.Main.PhoneState.SIGNAL_STRENGTH
     * nl.sense_os.service.constants.SensePrefs.Main.PhoneState.UNREAD_MSG
+  * nl.sense_os.service.constants.SensePrefs.Main.SampleRate
+    * nl.sense_os.service.constants.SensePrefs.Main.SampleRate.RARELY
+    * nl.sense_os.service.constants.SensePrefs.Main.SampleRate.BALANCED
+    * nl.sense_os.service.constants.SensePrefs.Main.SampleRate.NORMAL
+    * nl.sense_os.service.constants.SensePrefs.Main.SampleRate.OFTEN
+  * nl.sense_os.service.constants.SensePrefs.Main.SyncRate
+    * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.RARELY
+    * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.ECO_MODE
+    * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.NORMAL
+    * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.OFTEN
+    * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.REAL_TIME
   * nl.sense_os.service.constants.SensePrefs.Main.Quiz
     * nl.sense_os.service.constants.SensePrefs.Main.Quiz.RATE
     * nl.sense_os.service.constants.SensePrefs.Main.Quiz.SILENT_MODE
