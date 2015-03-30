@@ -1,3 +1,17 @@
+## v3.4 (2015-03-30)
+
+### Added
+* Added a new implementation for the position sensor which uses the FusedLocationProvider of Google Play Services via SensePrefs.Location.FUSED_PROVIDER. The goal accuracy/battery consumption can be set via SensePrefs.Location.FUSED_PROVIDER_PRIORITY.
+
+### Fixed
+* Changed the implicit intents for starting services to explicit with the package as scope
+* Register user with user credential encryption enabled
+
+### Deprecated
+* The position sensor using the Android framework location API's via SensePrefs.Location.GPS|WIFI|AUTO_GPS
+
+### Dependency
+* Google Play services client library 
 
 ## v3.4-rc2 (2015-03-10)
 
