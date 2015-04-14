@@ -66,7 +66,7 @@ public class BufferTransmitHandler extends Handler {
     }
 
 	private static final String TAG = "BatchDataTransmitHandler";
-	private static final int MAX_POST_DATA = 30;
+	private static final int MAX_POST_DATA = 10;
     private final Uri contentUri;
     private final WeakReference<Context> ctxRef;
     private final WeakReference<LocalStorage> storageRef;
