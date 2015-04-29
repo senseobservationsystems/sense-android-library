@@ -30,6 +30,7 @@ import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
+import nl.sense_os.service.location.FusedLocationSensor;
 import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.location.TimeZoneSensor;
 import nl.sense_os.service.motion.MotionSensor;
@@ -133,6 +134,7 @@ public class SenseService extends Service {
     private AppsSensor appsSensor;
     private TimeZoneSensor timeZoneSensor;
     private AppInfoSensor appInfoSensor;
+    private FusedLocationSensor fusedLocationListener;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -392,8 +394,12 @@ public class SenseService extends Service {
         transmitter.stopTransmissions();
 
         // completely stop the MsgHandler service
-        stopService(new Intent(getString(R.string.action_sense_new_data)));
-        stopService(new Intent(getString(R.string.action_sense_send_data)));
+        Intent newDataIntent = new Intent(getString(R.string.action_sense_new_data));
+        newDataIntent.setPackage(getPackageName());
+        stopService(newDataIntent);
+        Intent sendDataIntent = new Intent(getString(R.string.action_sense_send_data));
+        sendDataIntent.setPackage(getPackageName());
+        stopService(sendDataIntent);
     }
 
     void onSampleRateChange() {
@@ -486,7 +492,9 @@ public class SenseService extends Service {
         }
 
         // update any widgets
-        startService(new Intent(getString(R.string.action_widget_update)));
+        Intent i = new Intent(getString(R.string.action_widget_update));
+        i.setPackage(getPackageName());
+        startService(i);
     }
 
     /**
@@ -722,6 +730,9 @@ public class SenseService extends Service {
                 case 1: // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
                     break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
+                    break;
                 default:
                     Log.e(TAG, "Unexpected sample rate preference.");
                 }
@@ -881,19 +892,22 @@ public class SenseService extends Service {
                 int interval = 1;
                 switch (rate) {
                 case -2:
-                    interval = 60 * 1000;
+                    interval = 1000;
                     break;
                 case -1:
                     // often
-                    interval = 5 * 60 * 1000;
+                    interval = 10 * 1000;
                     break;
                 case 0:
                     // normal
-                    interval = 20 * 60 * 1000;
+                    interval = 60 * 1000;
                     break;
                 case 1:
                     // rarely (15 mins)
-                    interval = 60 * 60 * 1000;
+                    interval = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected device proximity rate preference.");
@@ -994,6 +1008,9 @@ public class SenseService extends Service {
                 case 1:
                     // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected external sensor rate preference.");
@@ -1103,6 +1120,12 @@ public class SenseService extends Service {
                     timeZoneSensor = null;
                 }
 
+                if(fusedLocationListener != null)
+                {
+                    fusedLocationListener.stopSensing();
+                    fusedLocationListener = null;
+                }
+
                 // get sample rate
                 final SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS,
                         MODE_PRIVATE);
@@ -1121,6 +1144,9 @@ public class SenseService extends Service {
                     break;
                 case 1: // rarely
                     minTime = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (same as normal)
+                    minTime = 5 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);
@@ -1159,6 +1185,15 @@ public class SenseService extends Service {
                             mSubscrMgr.registerProducer(SensorNames.TIME_ZONE, timeZoneSensor);
                             timeZoneSensor.startSensing();
                         }
+
+                        if (mainPrefs.getBoolean(Location.FUSED_PROVIDER, false))
+                        {
+                            fusedLocationListener = FusedLocationSensor.getInstance(SenseService.this);
+                            mSubscrMgr.registerProducer(SensorNames.LOCATION, fusedLocationListener);
+                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, fusedLocationListener);
+                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, fusedLocationListener);
+                            fusedLocationListener.startSensing(time);
+                        }
                     }
                 });
 
@@ -1173,6 +1208,17 @@ public class SenseService extends Service {
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
                     locListener = null;
+                }
+
+                // stop fused location listener
+                if (null != fusedLocationListener)
+                {
+                    fusedLocationListener.stopSensing();
+                    // unregister is not needed for Singleton Sensors
+                    mSubscrMgr.unregisterProducer(SensorNames.LOCATION, fusedLocationListener);
+                    mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, fusedLocationListener);
+                    mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, fusedLocationListener);
+                    fusedLocationListener = null;
                 }
 
                 if(timeZoneSensor != null)
@@ -1196,7 +1242,9 @@ public class SenseService extends Service {
         if (true == active) {
             // properly start the service to start sensing
             Log.i(TAG, "Start service");
-            startService(new Intent(getString(R.string.action_sense_service)));
+            Intent serviceIntent = new Intent(getString(R.string.action_sense_service));
+            serviceIntent.setPackage(getPackageName());
+            startService(serviceIntent);
 
         } else {
             Log.i(TAG, "Stop service");
@@ -1241,6 +1289,9 @@ public class SenseService extends Service {
                     break;
                 case 1: // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);
@@ -1316,7 +1367,7 @@ public class SenseService extends Service {
                     batterySensor.stopBatterySensing();
                     batterySensor = null;
                 }
-                
+
                 // check app info sensor presence
                 if (appInfoSensor != null) {
                 	Log.w(TAG, "app info sensor is already present!");
@@ -1330,7 +1381,7 @@ public class SenseService extends Service {
                     phoneActivitySensor.stopPhoneActivitySensing();
                     phoneActivitySensor = null;
                 }
-                
+
                 // check apps sensor presence
                 if (appsSensor != null) {
                 	Log.w(TAG, "apps sensor is already present!");
@@ -1357,6 +1408,9 @@ public class SenseService extends Service {
                     break;
                 case 1: // rarely (15 minutes)
                     interval = 15 * 60 * 1000;
+                    break;
+                case 2: // balanced (3 minutes)
+                    interval = 3 * 60 * 1000;
                     break;
                 default:
                     Log.e(TAG, "Unexpected commonsense rate: " + rate);

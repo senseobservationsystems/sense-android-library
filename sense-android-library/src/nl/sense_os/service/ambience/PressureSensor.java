@@ -140,6 +140,7 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
             i.putExtra(DataPoint.SENSOR_NAME, sensorName);
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+            i.setPackage(mContext.getPackageName());
             mContext.startService(i);
 
             // sample is successful: unregister the listener

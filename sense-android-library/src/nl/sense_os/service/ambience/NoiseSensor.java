@@ -201,7 +201,10 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 					channelConfig = AudioFormat.CHANNEL_IN_DEFAULT;
 
 				} else {
-					audioSource = MediaRecorder.AudioSource.MIC;
+					// Using VOICE_RECOGNITION (value 6) as AudioSource.
+					// Android Compatibility Definition require VOICE_RECOGNITION
+					// use case to disable all pre-processing effect.
+					audioSource = MediaRecorder.AudioSource.VOICE_RECOGNITION;
 					channelConfig = AudioFormat.CHANNEL_IN_MONO;
 
 				}
@@ -297,6 +300,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 									BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
 							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
+							sensorData.setPackage(context.getPackageName());
 							context.startService(sensorData);
 						}
 
@@ -330,6 +334,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							sensorData.putExtra(DataPoint.VALUE, jsonSpectrum.toString());
 							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
+							sensorData.setPackage(context.getPackageName());
 							context.startService(sensorData);
 						}
 
@@ -515,6 +520,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				i.putExtra(DataPoint.VALUE, fileName);
 				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
 				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+				i.setPackage(context.getPackageName());
 				context.startService(i);				
 
 			} catch (Exception e) {
@@ -596,6 +602,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				sensorData.putExtra(DataPoint.VALUE, data.toString());
 				sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
 				sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
+				sensorData.setPackage(context.getPackageName());
 				context.startService(sensorData);
 			}
 		}

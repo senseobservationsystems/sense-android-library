@@ -439,8 +439,8 @@ public class SensePlugin extends CordovaPlugin {
         if (packageName.equals("nl.sense_os.ivitality")) {
             Log.w(TAG, "Set special iVitality sensor settings");
             SenseServiceStub service = sensePlatform.getService();
-            service.setPrefString(SensePrefs.Main.SAMPLE_RATE, "0");
-            service.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
+            service.setPrefString(SensePrefs.Main.SAMPLE_RATE, SensePrefs.Main.SampleRate.NORMAL);
+            service.setPrefString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.ECO_MODE);
 
             service.setPrefBool(SensePrefs.Main.Ambience.MIC, true);
             service.setPrefBool(SensePrefs.Main.Ambience.LIGHT, true);

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nl.sense_os.service"    
-    android:versionName="3.2.2">
-
+    package="nl.sense_os.service"
+    android:versionName="3.4">
     <!-- <uses-sdk -->
     <uses-sdk android:minSdkVersion="7"/>
 </manifest>

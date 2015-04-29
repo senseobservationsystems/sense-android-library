@@ -102,6 +102,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
             i.putExtra(DataPoint.VALUE, json.toString());
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.TIMESTAMP, timestamp);
+            i.setPackage(context.getPackageName());
             context.startService(i);
 
             distanceEstimator.addPoint(fix);
@@ -169,6 +170,7 @@ public class LocationSensor extends BaseSensor implements PeriodicPollingSensor 
             i.putExtra(DataPoint.VALUE, (float) distance);
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+            i.setPackage(context.getPackageName());
             context.startService(i);
 
             // start counting again, from the last location

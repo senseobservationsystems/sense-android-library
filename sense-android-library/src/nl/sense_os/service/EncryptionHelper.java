@@ -17,23 +17,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-import android.util.Log;
 
 public class EncryptionHelper {
 
 	public static class EncryptionHelperException extends RuntimeException {
 
-		public EncryptionHelperException(Throwable e) {
+        private static final long serialVersionUID = -4628390225138450908L;
+
+        public EncryptionHelperException(Throwable e) {
 			super(e);
 		}
 
 	}
 
-	private static final String TAG = "EncryptionHelper";
-
 	private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
 	private static final String SECRET_KEY_HASH_TRANSFORMATION = "SHA-256";
-	private static final String CHARSET = "UTF-8";
 	private static final String DEFAULT_KEY_SALT = "3XnMxOy3E&jsdSSHWM941D89yK!RlRVH";
 
 	private static SharedPreferences sMainPrefs;

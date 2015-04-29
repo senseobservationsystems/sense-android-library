@@ -91,6 +91,7 @@ public class TimeZoneSensor extends BaseDataProducer
             i.putExtra(DataPoint.SENSOR_DESCRIPTION, dataPoint.sensorDescription);
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+            i.setPackage(context.getPackageName());
             this.context.startService(i);
         }
         catch(Exception e)

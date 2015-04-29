@@ -199,6 +199,7 @@ public class SensePlatform {
             intent.putExtra(DataPoint.VALUE, (String) value);
         }
         intent.putExtra(DataPoint.TIMESTAMP, timestamp);
+        intent.setPackage(mContext.getPackageName());
         ComponentName serviceName = mContext.startService(intent);
 
         if (null != serviceName) {
@@ -260,6 +261,7 @@ public class SensePlatform {
     public boolean flushData() throws IllegalStateException {
         checkSenseService();
         Intent flush = new Intent(mContext.getString(R.string.action_sense_send_data));
+        flush.setPackage(mContext.getPackageName());
         ComponentName started = mContext.startService(flush);
         return null != started;
     }

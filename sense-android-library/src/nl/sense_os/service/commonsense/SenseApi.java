@@ -294,8 +294,6 @@ public class SenseApi {
      */
     public static String getDeviceConfiguration(Context context, String configuration_id)
             throws IOException, JSONException {
-        final SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS,
-                Context.MODE_PRIVATE);
         final SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
 
@@ -1151,7 +1149,8 @@ public class SenseApi {
                 DataOutputStream printout;
                 if (compress) {
                     // do not set content size
-                    urlConnection.setRequestProperty("Transfer-Encoding", "chunked");
+                    // use chunked transfer mode instead
+                    urlConnection.setChunkedStreamingMode(0);
                     urlConnection.setRequestProperty("Content-Encoding", "gzip");
                     GZIPOutputStream zipStream = new GZIPOutputStream(
                             urlConnection.getOutputStream());

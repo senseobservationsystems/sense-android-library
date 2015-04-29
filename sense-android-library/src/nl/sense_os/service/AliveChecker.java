@@ -41,6 +41,7 @@ public class AliveChecker extends BroadcastReceiver {
             Log.v(TAG, "Sense should be alive: poke it");
             final Intent serviceIntent = new Intent(
                     context.getString(R.string.action_sense_service));
+            serviceIntent.setPackage(context.getPackageName());
             if (null == context.startService(serviceIntent)) {
                 Log.w(TAG, "Could not start Sense service!");
             }
