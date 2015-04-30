@@ -20,6 +20,9 @@ import android.util.Log;
 public class SenseServiceStub extends Binder {
 
     private static final String TAG = "SenseServiceStub";
+    
+    private static final String[] INVISIBLE_LOGS = {Advanced.ENCRYPT_DATABASE_SALT};
+    
     private SenseService service;
 
     public SenseServiceStub(SenseService service) {
@@ -286,6 +289,10 @@ public class SenseServiceStub extends Binder {
     }
 
     public void setPrefString(String key, String value) {
+    	
+    	
+    	
+    	
         Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
         SharedPreferences prefs;
         if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_SESSION_ID)
@@ -336,6 +343,16 @@ public class SenseServiceStub extends Binder {
                 service.onSyncRateChange();
             }
         }
+    }
+    
+    // Returns false for sensitive logs, such as salts
+    public boolean checkValidLogKey(String key){
+    	
+    	for(String invalidKey: INVISIBLE_LOGS){
+    		if(invalidKey.equals(key))
+    			return false;
+    	}
+    	return true;
     }
 
     public void toggleAmbience(boolean active) {
