@@ -21,7 +21,8 @@ public class SenseServiceStub extends Binder {
 
     private static final String TAG = "SenseServiceStub";
     
-    private static final String[] INVISIBLE_LOGS = {Advanced.ENCRYPT_DATABASE_SALT};
+    private static final String[] INVISIBLE_LOGS = {Advanced.ENCRYPT_DATABASE_SALT,
+    												Advanced.ENCRYPT_CREDENTIAL_SALT};
     
     private SenseService service;
 
@@ -290,10 +291,10 @@ public class SenseServiceStub extends Binder {
 
     public void setPrefString(String key, String value) {
     	
+    	if(checkValidLogKey(key)){
+    		Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
+    	}
     	
-    	
-    	
-        Log.v(TAG, "Set preference: " + key + ": \'" + value + "\'");
         SharedPreferences prefs;
         if (key.equals(Auth.LOGIN_COOKIE) || key.equals(Auth.LOGIN_PASS) || key.equals(Auth.LOGIN_SESSION_ID)
                 || key.equals(Auth.LOGIN_USERNAME) || key.equals(Auth.SENSOR_LIST_COMPLETE)
@@ -347,10 +348,12 @@ public class SenseServiceStub extends Binder {
     
     // Returns false for sensitive logs, such as salts
     public boolean checkValidLogKey(String key){
-    	
+    	    	
     	for(String invalidKey: INVISIBLE_LOGS){
-    		if(invalidKey.equals(key))
+    		
+    		if(invalidKey.equals(key)){
     			return false;
+    		}
     	}
     	return true;
     }
