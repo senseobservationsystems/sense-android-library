@@ -89,6 +89,33 @@ public class MainActivity extends Activity {
 
                 JSONArray data;
                 try {
+                    //data = mApplication.getSensePlatform().getData(DEMO_SENSOR_NAME, true, 10);
+                    data = mApplication.getSensePlatform().getData(DEMO_SENSOR_NAME, true, 0, System.currentTimeMillis());
+
+                    // show message
+                    showToast(R.string.msg_query_remote, data.length());
+
+                } catch (IllegalStateException e) {
+                    Log.w(TAG, "Failed to query remote data", e);
+                    showToast(R.string.msg_error, e.getMessage());
+                } catch (JSONException e) {
+                    Log.w(TAG, "Failed to parse remote data", e);
+                    showToast(R.string.msg_error, e.getMessage());
+                }
+            };
+        }.start();
+    }
+    
+    private void getRemoteDateUnitTest() {
+    	
+    	Log.v(TAG, "Get data from CommonSense");
+
+        // start new Thread to prevent NetworkOnMainThreadException
+        new Thread() {
+            public void run() {
+
+                JSONArray data;
+                try {
                     data = mApplication.getSensePlatform().getData(DEMO_SENSOR_NAME, true, 10);
 
                     // show message
@@ -171,14 +198,21 @@ public class MainActivity extends Activity {
 
         // start new Thread to prevent NetworkOnMainThreadException
         new Thread() {
-
+      	
             @Override
             public void run() {
-                mApplication.getSensePlatform().addDataPoint(name, displayName, description,
-                        dataType, value, timestamp);
+            	
+            	try{
+            		mApplication.getSensePlatform().addDataPoint(name, displayName, description,
+                            dataType, value, timestamp);
+            	}catch(net.sqlcipher.database.SQLiteException e){
+            		Log.e(TAG, "Encryption starts bitching. Ignore for now",e);
+            	}
+                
             }
         }.start();
-
+        
+    
         // show message
         showToast(R.string.msg_sent_data, name);
     }
@@ -191,10 +225,10 @@ public class MainActivity extends Activity {
 
         SenseServiceStub senseService = mApplication.getSenseService();
 
-        senseService.setPrefBool(Advanced.ENCRYPT_CREDENTIAL, true);
-        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT, "some salt !@#$%XCBCV");
-        senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, true);
-        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "some salt !@#$%XCBCV");
+        senseService.setPrefBool(Advanced.ENCRYPT_CREDENTIAL, false);
+//        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT, "some salt !@#$%XCBCV");
+        senseService.setPrefBool(SensePrefs.Main.Advanced.ENCRYPT_DATABASE, false);
+//        senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT, "some salt !@#$%XCBCV");
         
         // turn off some specific sensors
         senseService.setPrefBool(Ambience.LIGHT, true);
