@@ -3,6 +3,7 @@ package nl.sense_os.service.storage;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +78,10 @@ class RemoteStorage {
 
         // get the data for the sensor
         DecimalFormat df = new DecimalFormat("#.###");
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
+        df.setDecimalFormatSymbols(dfs);
+        
         SharedPreferences sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
         String url = devMode ?  SenseUrls.SENSOR_DATA_DEV : SenseUrls.SENSOR_DATA;
