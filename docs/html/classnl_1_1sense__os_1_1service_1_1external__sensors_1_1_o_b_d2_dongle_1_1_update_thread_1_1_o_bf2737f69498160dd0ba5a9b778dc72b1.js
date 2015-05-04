@@ -1,5 +1,0 @@
-var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_bf2737f69498160dd0ba5a9b778dc72b1 =
-[
-    [ "OBD2CommandIntakeAirTemperature", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_bf2737f69498160dd0ba5a9b778dc72b1.html#a8bafcdac85e6bf70396d20364ecc26e9", null ],
-    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_bf2737f69498160dd0ba5a9b778dc72b1.html#a65ff2de0813b65cddea72c7baf8d9440", null ]
-];

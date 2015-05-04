@@ -138,6 +138,7 @@ public class AppInfoSensor extends BaseDataProducer {
             i.putExtra(DataPoint.VALUE, json.toString());
             i.putExtra(DataPoint.SENSOR_NAME, SensorNames.APP_INFO_SENSOR);
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+            i.setPackage(context.getPackageName());
             context.startService(i);
 		}
 	};

@@ -77,6 +77,7 @@ public class WIFIDeviceProximity extends BaseDataProducer{
                             i.putExtra(DataPoint.VALUE, deviceJson.toString());
                             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
                             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
+                            i.setPackage(context.getPackageName());
                             WIFIDeviceProximity.this.context.startService(i);
                         }
 

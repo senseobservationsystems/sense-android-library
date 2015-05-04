@@ -155,6 +155,7 @@ public class OBD2Sensor extends ExternalSensor {
             Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
         }
         intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
+        intent.setPackage(context.getPackageName());
         context.startService(intent);
     }
 	
@@ -265,6 +266,7 @@ public class OBD2Sensor extends ExternalSensor {
             i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
             i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
             //TODO: i.putExtra(DataPoint.DEVICE_UUID, )
+            i.setPackage(context.getPackageName());
             context.startService(i);
     	}
     	

@@ -1,5 +1,0 @@
-var classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_standards =
-[
-    [ "OBD2CommandStandards", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_standards.html#a8c66af89a81143bd89d15b165bb9ba1c", null ],
-    [ "generateJSON", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_o_b_d2_dongle_1_1_update_thread_1_1_o_b_d2_command_standards.html#a0188613b41f3d06edae0630afe226672", null ]
-];
