@@ -45,6 +45,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DbHelper";
 
+    private Context context;
+
     /**
      * Constructor. The database is not actually created or opened until one of
      * {@link #getWritableDatabase()} or {@link #getReadableDatabase()} is called.
@@ -57,6 +59,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public DbHelper(Context context, boolean persistent) {
         // if the database name is null, it will be created in-memory
         super(context, persistent ? DATABASE_NAME : null, null, DATABASE_VERSION);
+
+        this.context = context;
 
         if (null == sMainPrefs) {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
@@ -136,11 +140,15 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getWritableDatabase(){
-      return getWritableDatabase(passphrase);
+        if(!libsLoaded)
+            loadLibs(this.context);
+        return getWritableDatabase(passphrase);
     }
 
     public SQLiteDatabase getReadableDatabase(){
-      return getReadableDatabase(passphrase);
+        if(!libsLoaded)
+            loadLibs(this.context);
+        return getReadableDatabase(passphrase);
     }
 
   private void setPassphrase(String imei) {
