@@ -55,6 +55,7 @@ class SQLiteStorage {
         if (!persistent) {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.setMaximumSize(MAX_INMEMORY_SIZE);
+            db.close();
         }
     }
 
@@ -111,6 +112,8 @@ class SQLiteStorage {
             db.endTransaction();
         }
 
+        db.close();
+
         // update the row count
         if (!persistent) {
             rowCount += insertCount;
@@ -129,6 +132,7 @@ class SQLiteStorage {
     public int delete(String where, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int result = db.delete(DbHelper.TABLE, where, selectionArgs);
+        db.close();
 
         // update the row count
         if (!persistent) {
@@ -153,6 +157,7 @@ class SQLiteStorage {
         // insert in database
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long rowId = db.insert(DbHelper.TABLE, DataPoint.SENSOR_NAME, values);
+        db.close();
 
         // update row count
         if (!persistent) {
@@ -193,6 +198,7 @@ class SQLiteStorage {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DbHelper.TABLE, projection, where, selectionArgs, null, null,
                 orderBy, limitStr);
+        db.close();
 
         return cursor;
     }
@@ -208,6 +214,7 @@ class SQLiteStorage {
     public int update(ContentValues newValues, String where, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         int result = db.update(DbHelper.TABLE, newValues, where, selectionArgs);
+        db.close();
         return result;
     }
 }
