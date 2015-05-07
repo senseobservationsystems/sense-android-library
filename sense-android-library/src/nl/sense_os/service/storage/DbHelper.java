@@ -44,6 +44,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static String passphrase = "";
 
+    private static boolean libsLoaded = false;
+
     private static final String TAG = "DbHelper";
 
     private Context mContext;
@@ -66,7 +68,7 @@ public class DbHelper extends SQLiteOpenHelper {
             sMainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS,
                     Context.MODE_PRIVATE);
         }
-        SQLiteDatabase.loadLibs(context);
+        loadLibs(context);
         updateEncryption();
         // add a listener to update the encryption settings when it changes
         sMainPrefs.registerOnSharedPreferenceChangeListener(encryptionChanged);
@@ -93,6 +95,13 @@ public class DbHelper extends SQLiteOpenHelper {
                 updateEncryption();
         }
     };
+
+    private synchronized void loadLibs(Context context) {
+        if(!libsLoaded) {
+            SQLiteDatabase.loadLibs(context);
+            libsLoaded = true;
+        }
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
