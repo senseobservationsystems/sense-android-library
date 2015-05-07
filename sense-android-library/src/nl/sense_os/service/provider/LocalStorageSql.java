@@ -108,6 +108,8 @@ public class LocalStorageSql extends ContentProvider {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
+        db.close();
+
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }
@@ -142,6 +144,9 @@ public class LocalStorageSql extends ContentProvider {
         delete(uri, removeWhere, removeArgs);
 
         long rowId = db.insert(VALUES_TABLE_NAME, BufferedData.ACTIVE, values);
+
+        db.close();
+
         if (rowId > 0) {
             Uri contentUri = Uri.parse("content://"
                     + getContext().getString(R.string.local_storage_authority)
@@ -177,7 +182,10 @@ public class LocalStorageSql extends ContentProvider {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 
+        db.close();
+
         c.setNotificationUri(getContext().getContentResolver(), uri);
+
         return c;
     }
 
@@ -195,6 +203,8 @@ public class LocalStorageSql extends ContentProvider {
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
+
+        db.close();
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
