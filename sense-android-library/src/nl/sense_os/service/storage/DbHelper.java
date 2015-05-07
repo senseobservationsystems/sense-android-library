@@ -41,6 +41,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static String passphrase = "";
 
+    private static boolean libsLoaded = false;
+
     private static final String TAG = "DbHelper";
 
     /**
@@ -70,7 +72,7 @@ public class DbHelper extends SQLiteOpenHelper {
             setPassphrase(imei);
         }
 
-        SQLiteDatabase.loadLibs(context);
+        loadLibs(context);
 
         // check for old plain database
         if (persistent && encrypt) {
@@ -94,6 +96,13 @@ public class DbHelper extends SQLiteOpenHelper {
                 // rename the encrypted file name back
                 encrypted.renameTo(new File(plain.getAbsolutePath()));
             }
+        }
+    }
+
+    private synchronized void loadLibs(Context context) {
+        if(!libsLoaded) {
+            SQLiteDatabase.loadLibs(context);
+            libsLoaded = true;
         }
     }
 
