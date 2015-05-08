@@ -1,19 +1,22 @@
 package nl.sense_os.service.storage;
 
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import android.content.Context;
 import android.content.SharedPreferences;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
-import net.sqlcipher.database.SQLiteException;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteException;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SensorData.DataPoint;
 
 /**
  * Helper class that assist in creating, opening and managing the SQLite3 database for data points.
@@ -58,23 +61,37 @@ public class DbHelper extends SQLiteOpenHelper {
         // if the database name is null, it will be created in-memory
         super(context, persistent ? DATABASE_NAME : null, null, DATABASE_VERSION);
         this.mContext = context;
-
         if (null == sMainPrefs) {
-            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                                                      Context.MODE_PRIVATE);
+            sMainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
         }
-
-        boolean encrypt = sMainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
-
-        if (encrypt) {
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            String imei = telephonyManager.getDeviceId();
-
-            setPassphrase(imei);
-        }
-
+        updateEncryption();
+        // add a listener to update the encryption settings when it changes
+        sMainPrefs.registerOnSharedPreferenceChangeListener(encryptionChanged);
         SQLiteDatabase.loadLibs(context);
     }
+
+    public void updateEncryption()
+    {
+        boolean encrypt = sMainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
+        if (encrypt) {
+            TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+            String imei = telephonyManager.getDeviceId();
+            setPassphrase(imei);
+        }
+    }
+
+    /**
+     * Monitor changes in the database encryption settings
+     */
+    SharedPreferences.OnSharedPreferenceChangeListener encryptionChanged = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+        {
+            if(key.equals(Advanced.ENCRYPT_DATABASE) || key.equals(Advanced.ENCRYPT_DATABASE_SALT))
+                updateEncryption();
+        }
+    };
 
     @Override
     public void onCreate(SQLiteDatabase db) {
