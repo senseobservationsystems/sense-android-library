@@ -96,7 +96,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     };
 
-    private synchronized void loadLibs(Context context) {
+    public static synchronized void loadLibs(Context context) {
         if(!libsLoaded) {
             SQLiteDatabase.loadLibs(context);
             libsLoaded = true;
