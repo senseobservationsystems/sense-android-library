@@ -135,6 +135,8 @@ public class SenseService extends Service {
     private AppInfoSensor appInfoSensor;
     private FusedLocationSensor fusedLocationListener;
 
+    private LocalStorage mLocalStorage;
+
     /**
      * Handler on main application thread to display toasts to the user.
      */
@@ -334,6 +336,8 @@ public class SenseService extends Service {
         Log.v(TAG, "Sense Platform service is being created");
         state = ServiceStateHelper.getInstance(this);
         mSubscrMgr = SubscriptionManager.getInstance();
+        // Create the instance to avoid concurrency problems in the SQLCipher lib
+        mLocalStorage = LocalStorage.getInstance(this);
     }
 
     /**
