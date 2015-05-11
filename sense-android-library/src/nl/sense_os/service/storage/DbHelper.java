@@ -74,7 +74,7 @@ public class DbHelper extends SQLiteOpenHelper {
         sMainPrefs.registerOnSharedPreferenceChangeListener(encryptionChanged);
     }
 
-    public void updateEncryption(boolean persistent)
+    public void updateEncryption()
     {
         boolean encrypt = sMainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
         if (encrypt) {

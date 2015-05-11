@@ -43,6 +43,7 @@ import nl.sense_os.service.phonestate.AppInfoSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.scheduler.ScheduleAlarmTool;
 import nl.sense_os.service.subscription.SubscriptionManager;
+import nl.sense_os.service.storage.LocalStorage;
 
 import org.json.JSONObject;
 
