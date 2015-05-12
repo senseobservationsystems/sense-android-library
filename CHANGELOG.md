@@ -1,3 +1,9 @@
+## v3.4.1 (2015-05-12)
+
+### Fixed
+* Hide log for encryption salt.
+* Force using "." as decimal separator in getData function of RemoteStorage.
+
 ## v3.4 (2015-03-30)
 
 ### Added
