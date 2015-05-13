@@ -1,3 +1,8 @@
+## v3.4.2 (2015-05-13)
+
+### Fixed
+* Fixed crash on sqlite cipher when loading and sending data too early
+
 ## v3.4.1 (2015-05-12)
 
 ### Fixed
