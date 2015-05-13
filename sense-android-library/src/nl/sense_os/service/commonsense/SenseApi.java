@@ -1046,6 +1046,7 @@ public class SenseApi {
         // create JSON object to POST
         final JSONObject data = new JSONObject();
         final JSONObject user = new JSONObject();
+        
         user.put("username", username);
         user.put("password", password);
         if (null != name) {

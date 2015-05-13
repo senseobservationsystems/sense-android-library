@@ -2,6 +2,8 @@ package nl.sense_os.service.storage;
 
 import java.nio.BufferOverflowException;
 
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteStatement;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -9,9 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteStatement;
-
 /**
  * Class that manages a store for sensor data points in a persistent SQLite database. Helper class
  * for {@link LocalStorage}.
@@ -132,12 +131,12 @@ class SQLiteStorage {
 
         // update the row count
         if (!persistent) {
-            rowCount -= result;
+            rowCount -= result; 
         }
 
         return result;
     }
-
+    
     /**
      * Inserts a row into the database.
      * 
@@ -175,13 +174,37 @@ class SQLiteStorage {
      * @return Cursor with the result set
      */
     public Cursor query(String[] projection, String where, String[] selectionArgs, String orderBy) {
+        return query(projection, where, selectionArgs, orderBy, null);
+    }
+    
+    /**
+     * Query the database
+     * 
+     * @param projection
+     * @param where
+     * @param selectionArgs
+     * @param orderBy
+     *            How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY
+     *            itself). Passing null will use the default sort order, which orders by descending
+     *            timestamp.
+     * @param limit 
+     *            Maximum number of rows in String. It will use default limit when limit is set to null.
+     * @return Cursor with the result set
+     */
+    public Cursor query(String[] projection, String where, String[] selectionArgs, String orderBy, String limit) {
 
-        // limit parameter depends on epi mode preference
-        SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                Context.MODE_PRIVATE);
         String limitStr = "" + QUERY_RESULTS_LIMIT;
-        if (pref.getBoolean(Motion.EPIMODE, false)) {
-            limitStr = "" + QUERY_RESULTS_LIMIT_EPI_MODE;
+        //check if limit is specified in the query
+        if(limit != null){
+          limitStr = limit;
+        }else{
+          // limit parameter depends on epi mode preference
+          SharedPreferences pref = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                  Context.MODE_PRIVATE);
+
+          if (pref.getBoolean(Motion.EPIMODE, false)) {
+              limitStr = "" + QUERY_RESULTS_LIMIT_EPI_MODE;
+          }
         }
 
         // set default ordering

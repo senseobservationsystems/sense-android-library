@@ -7,6 +7,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.scheduler.Scheduler;
+import nl.sense_os.service.storage.LocalStorage;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.content.ComponentName;
@@ -81,14 +82,21 @@ public class DataTransmitter implements Runnable {
 
         // check if the service is (supposed to be) alive before scheduling next alarm
         if (true == ServiceStateHelper.getInstance(mContext).isLoggedIn()) {
+            
             // check if transmission should be started
             ConnectivityManager connManager = (ConnectivityManager) mContext
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
+            boolean passed_interval = SystemClock.elapsedRealtime() - mLastTxTime >= mTxInterval;
+            
+            //If it has not saved data in in-memory storage to the persisted storage more than the interval, save data into the persisted storage.
+            if(passed_interval){
+              LocalStorage.getInstance( mContext ).persistRecentData();
+            }
+            
             // start the transmission if we have WiFi connection
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) || wifi.isConnected()) {
-                if ((SystemClock.elapsedRealtime() - mLastTxTime >= mTxInterval)) {
+                if ((passed_interval)) {
                     transmissionService();
                 }
             } else {

@@ -338,7 +338,7 @@ public class SensorData {
             // class should not be instantiated
         }
     }
-
+    
     /**
      * Standard descriptions for sensors.
      * 

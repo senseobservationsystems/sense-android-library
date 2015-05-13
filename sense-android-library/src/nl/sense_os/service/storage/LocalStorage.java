@@ -4,6 +4,9 @@
 package nl.sense_os.service.storage;
 
 import java.nio.BufferOverflowException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import nl.sense_os.service.R;
@@ -11,6 +14,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -98,14 +102,19 @@ public class LocalStorage {
         }
     }
 
+    public boolean deleteAllLocalValues() {
+        Uri contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority) + DataPoint.CONTENT_URI_PATH);
+        return (delete(contentUri, null, null) > 0);
+    }
+
     /**
      * Removes old data from the persistent storage.
      * 
      * @return The number of data points deleted
      */
+    @SuppressLint( "NewApi" )
     private int deleteOldData() {
         Log.i(TAG, "Delete old data points from persistent storage");
-
 
         SharedPreferences prefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
@@ -113,21 +122,80 @@ public class LocalStorage {
         int retentionHours = prefs.getInt( Main.Advanced.RETENTION_HOURS, DEFAULT_RETENTION_HOURS );
         long retentionLimit = SNTP.getInstance().getTime() - getMilliSencondsOfHours( retentionHours );
         // check preferences to see if the data needs to be sent to CommonSense
-        boolean useCommonSense = prefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true);
-
-        String where = null;
+        boolean useCommonSense = prefs.getBoolean(Main.Advanced.USE_COMMONSENSE, true );
+        boolean preserveLastDatapoints = prefs.getBoolean( Main.Advanced.PRESERVE_LAST_DATAPOINTS, false );
+        
+        
+        String where = "";
+        
+        if(preserveLastDatapoints){
+             where += deleteOldDataForCumulativeSensors( prefs, retentionLimit, where );
+        }
+        
         if (useCommonSense) {
             // delete data older than maximum retention time if it had been transmitted
-            where = DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.TRANSMIT_STATE
+            where += DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.TRANSMIT_STATE
                     + "==1";
         } else {
             // not using CommonSense: delete all data older than maximum retention time
-            where = DataPoint.TIMESTAMP + "<" + retentionLimit;
+            where += DataPoint.TIMESTAMP + "<" + retentionLimit;
         }
+        
+        if( where.equals( "" ) ){
+            where = null;
+        }
+        
         int deleted = persisted.delete(where, null);
 
         return deleted;
     }
+
+    /***
+     * 
+     * @param prefs: sharedPreferences which has the sensor names of cumulative sensor
+     * @param retentionLimit: The max retention time
+     * @param where: string which hold where clause
+     * @return where clause to exclude the cumulative sensors from the general delete query.
+     */
+    public String deleteOldDataForCumulativeSensors( SharedPreferences prefs,
+        long retentionLimit, String where ) {
+    	
+    	//get the list of sensors that are specified in the preferences to be protected .
+    	List<String> list = getListOfPreservedSensors( prefs );
+
+    	Iterator<String> iter = list.iterator();
+       
+    	if(list!=null && list.size()>0){
+    		where = DataPoint.SENSOR_NAME + " NOT IN (";
+         
+    		//the reason to use iterator is to check if it has next element
+    		while(iter.hasNext()){
+    			String sensor = iter.next();
+    			if(sensor != null){
+    				String wherePerSensor = DataPoint.SENSOR_NAME +"=='"+ sensor+ "' AND " + DataPoint.TRANSMIT_STATE +"==1 AND " + DataPoint.TIMESTAMP +"<(SELECT MAX("+DataPoint.TIMESTAMP +") FROM "
+                               + DbHelper.TABLE + " WHERE " + DataPoint.TIMESTAMP + "<" + retentionLimit + " AND " + DataPoint.SENSOR_NAME + "=='" + sensor + "' GROUP BY " + DataPoint.SENSOR_NAME +")";
+    				persisted.delete(wherePerSensor, null);
+               
+    				//exculde those sensors from normal delete query
+    				where += "'" + sensor + "'";
+    				where += (iter.hasNext())? "," : "" ;
+    			}
+    		}
+    		where += ") AND ";
+    	}
+    	return where;
+    }
+
+    public List<String> getListOfPreservedSensors( SharedPreferences prefs ) {
+      int size = prefs.getInt( SensePrefs.Main.Advanced.PRESERVED_SENSORS_SIZE, 0 );
+       List<String> list= new ArrayList<String>();
+       for(int i = 0; i < size ; i++){
+         list.add(prefs.getString( SensePrefs.Main.Advanced.PRESERVED_SENSOR_PREFIX + i, null ));
+       }
+      return list;
+    }
+    
+
 
     public String getType(Uri uri) {
         int uriType = matchUri(uri);
@@ -158,6 +226,7 @@ public class LocalStorage {
             rowId = inMemory.insert(values);
         } catch (BufferOverflowException e) {
             // in-memory storage is full!
+          
             deleteOldData();
             persistRecentData();
 
@@ -184,7 +253,7 @@ public class LocalStorage {
         }
     }
 
-    private int persistRecentData() {
+    public int persistRecentData() {
         Log.i(TAG, "Persist recent data points from in-memory storage");
 
         Cursor recentPoints = null;
@@ -221,7 +290,7 @@ public class LocalStorage {
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-            int limit, String sortOrder) {
+            Integer limit, String sortOrder) {
         // Log.v(TAG, "Query data points in local storage");
 
         // check URI
@@ -246,9 +315,11 @@ public class LocalStorage {
             projection = DEFAULT_PROJECTION;
         }
 
+        //when limitStr is null, the limit is set to 10000 
+        String limitStr = (limit != null)? "" + limit : null;
         // query both databases
-        Cursor inMemoryCursor = inMemory.query(projection, where, selectionArgs, sortOrder);
-        Cursor persistedCursor = persisted.query(projection, where, selectionArgs, sortOrder);
+        Cursor inMemoryCursor = inMemory.query(projection, where, selectionArgs, sortOrder, limitStr);
+        Cursor persistedCursor = persisted.query(projection, where, selectionArgs, sortOrder, limitStr);
 
         if (inMemoryCursor.getCount() > 0) {
             if (persistedCursor.getCount() > 0) {

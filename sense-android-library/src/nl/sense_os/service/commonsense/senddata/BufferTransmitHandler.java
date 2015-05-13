@@ -59,9 +59,10 @@ public class BufferTransmitHandler extends Handler {
 
 	private static final String TAG = "BatchDataTransmitHandler";
 	private static final int MAX_POST_DATA = 100;
-    private final Uri contentUri;
-    private final WeakReference<Context> ctxRef;
-    private final WeakReference<LocalStorage> storageRef;
+	private static final int LIMIT_UNSENT_DATA = 1000;
+	private final Uri contentUri;
+	private final WeakReference<Context> ctxRef;
+	private final WeakReference<LocalStorage> storageRef;
 	private final String url;
 	private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
 	private final NumberFormat dateFormatter = new DecimalFormat("##########.###", symbols);
@@ -71,8 +72,8 @@ public class BufferTransmitHandler extends Handler {
 		this.ctxRef = new WeakReference<Context>(context);
 		this.storageRef = new WeakReference<LocalStorage>(storage);
 
-        contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
-                + DataPoint.CONTENT_URI_PATH);
+		contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority) 
+				+ DataPoint.CONTENT_URI_PATH);
 
 		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
 				Context.MODE_PRIVATE);
@@ -184,9 +185,9 @@ public class BufferTransmitHandler extends Handler {
 	 */
     private Cursor getUnsentData() {
         try {
-            String where = DataPoint.TRANSMIT_STATE + "=0";
+            String where = DataPoint.TRANSMIT_STATE + "==0";
             String sortOrder = DataPoint.TIMESTAMP + " ASC";
-            Cursor unsent = storageRef.get().query(contentUri, null, where, null, sortOrder);
+            Cursor unsent = storageRef.get().query(contentUri, null, where, null, LIMIT_UNSENT_DATA, sortOrder);
             if (null != unsent) {
                 Log.v(TAG, "Found " + unsent.getCount() + " unsent data points in local storage");
             } else {
@@ -201,7 +202,7 @@ public class BufferTransmitHandler extends Handler {
 
 	@Override
 	public void handleMessage(Message msg) {
-
+	  
 		String cookie = msg.getData().getString("cookie");
 
 		// check if our references are still valid
@@ -218,9 +219,9 @@ public class BufferTransmitHandler extends Handler {
 					Context.POWER_SERVICE);
 			wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 			wakeLock.acquire();
-
+      
 			cursor = getUnsentData();
-            if (null != cursor && cursor.moveToFirst()) {
+      if (null != cursor && cursor.moveToFirst()) {
 				transmit(cursor, cookie);
 			} else {
 				// nothing to transmit
@@ -289,6 +290,8 @@ public class BufferTransmitHandler extends Handler {
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Error updating points in Local Storage!", e);
             }
+            
+            //storageRef.get().persistRecentData();
         }
     }
 
@@ -377,7 +380,7 @@ public class BufferTransmitHandler extends Handler {
      * @throws IOException
      */
     private void transmit(Cursor cursor, String cookie) throws JSONException, IOException {
-
+      
         // continue until all points in the cursor have been sent
         List<SensorDataEntry> sensorDataList = null;
         while (!cursor.isAfterLast()) {
@@ -404,7 +407,7 @@ public class BufferTransmitHandler extends Handler {
 
             // perform the actual POST request
             boolean result = postData(cookie, transmission);
-
+            
             if (result) {
                 onTransmitSuccess(sensorDataList);
             } else {
