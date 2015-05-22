@@ -1,19 +1,22 @@
 package nl.sense_os.service.storage;
 
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import android.content.Context;
 import android.content.SharedPreferences;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
-import net.sqlcipher.database.SQLiteException;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteException;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SensorData.DataPoint;
 
 /**
  * Helper class that assist in creating, opening and managing the SQLite3 database for data points.
@@ -41,7 +44,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static String passphrase = "";
 
+    private static boolean libsLoaded = false;
+
     private static final String TAG = "DbHelper";
+
+    private Context mContext;
 
     /**
      * Constructor. The database is not actually created or opened until one of
@@ -55,45 +62,44 @@ public class DbHelper extends SQLiteOpenHelper {
     public DbHelper(Context context, boolean persistent) {
         // if the database name is null, it will be created in-memory
         super(context, persistent ? DATABASE_NAME : null, null, DATABASE_VERSION);
+        this.mContext = context;
 
         if (null == sMainPrefs) {
-            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                                                      Context.MODE_PRIVATE);
+            sMainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                    Context.MODE_PRIVATE);
         }
+        loadLibs(context);
+        updateEncryption();
+        // add a listener to update the encryption settings when it changes
+        sMainPrefs.registerOnSharedPreferenceChangeListener(encryptionChanged);
+    }
 
+    public void updateEncryption()
+    {
         boolean encrypt = sMainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
-
         if (encrypt) {
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             String imei = telephonyManager.getDeviceId();
-
             setPassphrase(imei);
         }
+    }
 
-        SQLiteDatabase.loadLibs(context);
+    /**
+     * Monitor changes in the database encryption settings
+     */
+    SharedPreferences.OnSharedPreferenceChangeListener encryptionChanged = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+        {
+            if(key.equals(Advanced.ENCRYPT_DATABASE) || key.equals(Advanced.ENCRYPT_DATABASE_SALT))
+                updateEncryption();
+        }
+    };
 
-        // check for old plain database
-        if (persistent && encrypt) {
-            // try to open the database with the password from the user.
-            // The only possible error now must be a wrong password or using plain database.
-            try {
-                getWritableDatabase(passphrase);
-            } catch (SQLiteException e) {
-                Log.v(TAG, "Trying to encrypte old plain database");
-                File plain = context.getDatabasePath(DATABASE_NAME);
-                File encrypted = context.getDatabasePath("tmp.db");
-
-                // try to open the database without password
-                SQLiteDatabase migrate_db = SQLiteDatabase.openOrCreateDatabase(plain, "", null);
-                migrate_db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",
-                                                    encrypted.getAbsolutePath(), passphrase));
-                migrate_db.rawExecSQL("SELECT sqlcipher_export('encrypted');");
-                migrate_db.execSQL("DETACH DATABASE encrypted;");
-                migrate_db.close();
-
-                // rename the encrypted file name back
-                encrypted.renameTo(new File(plain.getAbsolutePath()));
-            }
+    public static synchronized void loadLibs(Context context) {
+        if(!libsLoaded) {
+            SQLiteDatabase.loadLibs(context);
+            libsLoaded = true;
         }
     }
 
@@ -127,11 +133,36 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getWritableDatabase(){
-      return getWritableDatabase(passphrase);
+        try {
+            return getWritableDatabase(passphrase);
+        } catch (SQLiteException e) {
+            migrateDatabase();
+            return getWritableDatabase(passphrase);
+        }
     }
 
     public SQLiteDatabase getReadableDatabase(){
-      return getReadableDatabase(passphrase);
+        try {
+            return getWritableDatabase(passphrase);
+        } catch (SQLiteException e) {
+            migrateDatabase();
+            return getWritableDatabase(passphrase);
+        }
+    }
+
+    private void migrateDatabase() {
+        File plain = mContext.getDatabasePath(DATABASE_NAME);
+        File encrypted = mContext.getDatabasePath("tmp.db");
+
+        // try to open the database without password
+        SQLiteDatabase migrate_db = SQLiteDatabase.openOrCreateDatabase(plain, "", null);
+        migrate_db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'", encrypted.getAbsolutePath(), passphrase));
+        migrate_db.rawExecSQL("SELECT sqlcipher_export('encrypted');");
+        migrate_db.execSQL("DETACH DATABASE encrypted;");
+        migrate_db.close();
+
+        // rename the encrypted file name back
+        encrypted.renameTo(new File(plain.getAbsolutePath()));
     }
 
   private void setPassphrase(String imei) {
