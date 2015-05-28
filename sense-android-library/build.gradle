@@ -3,24 +3,26 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.5+'
+        classpath 'com.android.tools.build:gradle:1.1.0'
     }
 }
-apply plugin: 'android-library'
-
+apply plugin: 'com.android.library'
+ 
 repositories {
-    mavenCentral()
+    jcenter()
 }
-
+ 
 dependencies {
-    compile 'com.android.support:support-v4:13.0.0'
-    compile files('libs/gcm.jar', 'libs/cordova-3.6.4.jar')
+    compile 'com.android.support:support-v4:19.+'
+    compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.google.android.gms:play-services:6.1.71'
+    compile files('libs/gcm.jar', 'libs/cordova-3.6.4.jar', 'libs/sqlcipher.jar')
 }
-
+ 
 android {
-    compileSdkVersion 17
-    buildToolsVersion "17.0.0"
-
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+ 
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -28,10 +30,11 @@ android {
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
+            jniLibs.srcDirs = ['libs']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
-
+ 
         instrumentTest.setRoot('tests')
     }
 }

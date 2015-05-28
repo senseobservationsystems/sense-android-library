@@ -25,3 +25,8 @@ local.properties
 # ignore changes to the AppInfoVersion
 sense-android-library/src/nl/sense_os/service/phonestate/AppInfoVersion.java
 docs
+.DS_Store
+sense-android-library/.DS_Store
+sense-android-library/src/.DS_Store
+sense-android-library/src/nl/.DS_Store
+sense-android-library/src/nl/sense_os/.DS_Store
