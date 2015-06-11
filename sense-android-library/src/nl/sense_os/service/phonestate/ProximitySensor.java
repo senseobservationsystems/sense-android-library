@@ -4,6 +4,7 @@
 package nl.sense_os.service.phonestate;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import nl.sense_os.service.R;
@@ -47,7 +48,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     private static final String TAG = "ProximitySensor";
     private static final int REQ_CODE = 1;
     private static final String ACTION_STOP_SAMPLE = ProximitySensor.class.getName() + ".STOP";
-
+    
     /**
      * Factory method to get the singleton instance.
      * 
@@ -61,7 +62,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         return sInstance;
     }
 
-    private SharedPreferences sSensorPrefs;
+    private ProximityFilter proximityFilter;
     private boolean mActive;
     private Context mContext;
     private SensorManager mSensorMgr;
@@ -91,13 +92,12 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         if (null != mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY)) {
             mSensors.add(mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY));
         }
-        mStartSampleReceiver = new PeriodicPollAlarmReceiver(this);
-        sSensorPrefs = context.getSharedPreferences(SensePrefs.SENSOR_SPECIFICS, Context.MODE_PRIVATE);
+        mStartSampleReceiver = new PeriodicPollAlarmReceiver(this);    
+        proximityFilter = ProximityFilter.getInstance();     
     }
 
     @Override
     public void doSample() {
-       //Log.v(TAG, "Do sample");
 
         // acquire wake lock
         if (null == mWakeLock) {
@@ -121,8 +121,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         // reset sample state
         mLatestValue = Float.NaN;
         
-        Log.v(TAG, "Proximity start sample");
-
         // set alarm for stop the sample
         mContext.registerReceiver(mStopSampleReceiver, new IntentFilter(ACTION_STOP_SAMPLE));
         Intent intent = new Intent(ACTION_STOP_SAMPLE);
@@ -134,55 +132,44 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     }
 
     /**
-     * Accepts the latest sensor value and send it to the MsgHandler.
+     * Accepts the latest sensor value and filter it.
      */
     private void handleLatestValue() {
     	
-    	Log.v(TAG, "Proximity latest value: "+mLatestValue);
-
         // if the value is NaN, no sample was collected: assume nothing in proximity
         float value = Float.isNaN(mLatestValue) || mLatestValue > 0 ? 1 : 0;
         
-    	Log.v(TAG, "Proximity saved value: "+value);
-
+        Log.d(TAG, "Proximity. measurement result: "+value);
+        
         Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         
-        int cacheTS = sSensorPrefs.getInt(SensePrefs.SensorSpecifics.Proximity.CACHE_TS, -1);
-
-
-        try {
-            notifySubscribers();
-            SensorDataPoint dataPoint = new SensorDataPoint(value);
-            dataPoint.sensorName = SensorNames.PROXIMITY;
-            dataPoint.sensorDescription = sensor.getName();
-            dataPoint.timeStamp = SNTP.getInstance().getTime();
-            sendToSubscribers(dataPoint);
-        } catch (Exception e) {
-            Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
+        SensorDataPoint dataPoint = new SensorDataPoint(value);
+        dataPoint.sensorName = SensorNames.PROXIMITY;
+        dataPoint.sensorDescription = sensor.getName();
+        dataPoint.timeStamp = SNTP.getInstance().getTime();
+                
+        Iterator<SensorDataPoint>  it = proximityFilter.filter(dataPoint);
+        SensorDataPoint point;   
+        
+        while(it.hasNext()){
+        	point = it.next();
+        	saveValue(point);
         }
-
-        // pass message to the MsgHandler
-        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, value);
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        i.setPackage(mContext.getPackageName());
-        mContext.startService(i);
     }
 
     /**
-     * 
+     * Send filtered datapoints to the MsgHandler
      */
     private void saveValue(SensorDataPoint dataPoint){
-    	
+    	    	
     	try {
             notifySubscribers();
             sendToSubscribers(dataPoint);
         } catch (Exception e) {
             Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
         }
+    	
+        Log.d(TAG, "Proximity. saved value: "+dataPoint.getFloatValue());
     	
     	// pass message to the MsgHandler
         Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
@@ -193,14 +180,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
         i.setPackage(mContext.getPackageName());
         mContext.startService(i);
-    }
-    
-    private void setCache(float value, int timestamp){
-    	
-    	Editor edit = sSensorPrefs.edit();
-    	edit.putFloat(SensePrefs.SensorSpecifics.Proximity.CACHE_PROXIMITY, value);
-    	edit.putInt(SensePrefs.SensorSpecifics.Proximity.CACHE_TS, timestamp); 	
-        edit.commit();
     }
     
     /**
@@ -229,8 +208,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         // scale to meters
         mLatestValue = event.values[0];
         
-        Log.v(TAG, "Proximity onSensorChanged "+mLatestValue);
-
     }
 
     /**
