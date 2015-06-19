@@ -138,7 +138,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     	
         // if the value is NaN, no sample was collected: assume nothing in proximity
         float value = Float.isNaN(mLatestValue) || mLatestValue > 0 ? 1 : 0;
-                
+                      
         Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         
         SensorDataPoint dataPoint = new SensorDataPoint(value);
@@ -156,10 +156,10 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     }
 
     /**
-     * Send filtered datapoints to the MsgHandler
+     * Send filtered data points to the MsgHandler
      */
     private void saveValue(SensorDataPoint dataPoint){
-    	    	
+    	    	    	
     	try {
             notifySubscribers();
             sendToSubscribers(dataPoint);
@@ -217,6 +217,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     public void setSampleRate(long sampleDelay) {
         super.setSampleRate(sampleDelay);
         stopPolling();
+        proximityFilter.setCacheTime(2 *sampleDelay);
         startPolling();
     }
 

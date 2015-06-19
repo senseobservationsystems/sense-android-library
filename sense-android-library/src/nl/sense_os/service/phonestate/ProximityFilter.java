@@ -3,12 +3,16 @@ package nl.sense_os.service.phonestate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import android.util.Log;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 /**
- * Provides filter functionality for the proximity sensor. Only single peaks are
- * filtered out.
+ * Provides filter functionality for the proximity sensor. Faulty measurements are
+ * not uncommon in the proximity sensor of some Android devices. These errors usually show up as
+ * single peaks in the data. This is undesired behaviour since the sleep time tracker is dependent on 
+ * this sensor. 
+ * This class filters only single peaks in the measurements. 
  * 
  * @author ronald@sense-os.nl
  *
@@ -19,10 +23,12 @@ public class ProximityFilter {
 
 	private static ArrayList<SensorDataPoint> cache;
 	private static ProximityFilter instance;
-	private static long CACHE_TIME = 30 * 60 * 1000l;
+	private long CACHE_TIME = 15 * 60 * 1000l; //default cache time.
 
 	/**
+	 * 
 	 * @return singleton instance of ProximityFilter
+	 * 
 	 */
 	public static ProximityFilter getInstance() {
 
@@ -33,8 +39,20 @@ public class ProximityFilter {
 		}
 		return instance;
 	}
+	
+	/**
+	 * Set the cache time for filtering. If the time between two
+	 * measurements is bigger than this value, no filtering will be performed
+	 * on those measurements. 
+	 * @param cacheTime
+	 */
+	public void setCacheTime(long cacheTime){
+		
+		CACHE_TIME = cacheTime;
+	}
 
 	private ProximityFilter() {
+
 	}
 
 	/**
