@@ -217,7 +217,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     public void setSampleRate(long sampleDelay) {
         super.setSampleRate(sampleDelay);
         stopPolling();
-        proximityFilter.setCacheTime(2 *sampleDelay);
+        proximityFilter.setCacheTime(4 *sampleDelay);
         startPolling();
     }
 
