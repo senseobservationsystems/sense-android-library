@@ -138,9 +138,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
     	
         // if the value is NaN, no sample was collected: assume nothing in proximity
         float value = Float.isNaN(mLatestValue) || mLatestValue > 0 ? 1 : 0;
-        
-        Log.d(TAG, "Proximity. measurement result: "+value);
-        
+                
         Sensor sensor = mSensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         
         SensorDataPoint dataPoint = new SensorDataPoint(value);
@@ -168,9 +166,7 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         } catch (Exception e) {
             Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
         }
-    	
-        Log.d(TAG, "Proximity. saved value: "+dataPoint.getFloatValue());
-    	
+    	    	
     	// pass message to the MsgHandler
         Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
         i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
