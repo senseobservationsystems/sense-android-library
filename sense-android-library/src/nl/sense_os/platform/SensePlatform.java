@@ -1,5 +1,19 @@
 package nl.sense_os.platform;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.Date;
 
@@ -13,20 +27,6 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.feedback.FeedbackManager;
 import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.util.Log;
 
 /**
  * A proxy class that acts as a high-level interface to the sense Android library. By instantiating
@@ -130,7 +130,7 @@ public class SensePlatform {
      * @return true if the data point was sent to the Sense service
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
-     * @see #addDataPoint(String, String, String, String, String, String, long)
+     * @see #addDataPoint(String, String, String, String, String, Object, long)
      */
     public boolean addDataPoint(String sensorName, String displayName, String description,
             String dataType, Object value, long timestamp) throws IllegalStateException {
@@ -395,9 +395,6 @@ public class SensePlatform {
      * 
      * @param sensorName
      *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
      * @return JSONArray of data points
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
@@ -413,9 +410,6 @@ public class SensePlatform {
      * 
      * @param sensorName
      *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
      * @param startDate 
      *            The epoch start date in milliseconds of the period to get the sensor data from
      * @param endDate 
@@ -435,9 +429,6 @@ public class SensePlatform {
      * 
      * @param sensorName
      *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
      * @param limit
      *            Maximum amount of data points.
      * @return JSONArray of data points
@@ -499,13 +490,10 @@ public class SensePlatform {
     }
 
     /**
-     * Retrieve a number of values of a sensor from the local storage.
+     * Retrieve a number of values of a device sensor from the local storage.
      * 
      * @param sensorName
      *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
      * @param startDate 
      *            The epoch start date in milliseconds of the period to get the sensor data from
      * @param endDate 
@@ -533,6 +521,48 @@ public class SensePlatform {
 
         return result;
     }
+
+    /**
+     * Retrieve a number of values of a sensor from the local storage.
+     *
+     * @param sensorName
+     *            The name of the sensor to get data from
+     * @param description
+     *            Description of the sensor, i.e. CommonSense "device_type"
+     * @param limit
+     *            Maximum amount of data points.
+     * @param onlyFromDevice
+     *            Whether or not to only look through sensors that are part of this device. Searches
+     *            all sensors, including those of this device, if set to NO
+     * @param startDate
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate
+     *            The epoch end date in milliseconds of the period to get the sensor data from
+     * @return JSONArray of data points
+     * @throws IllegalStateException
+     *             If the Sense service is not bound yet
+     * @throws JSONException
+     *             If the response from CommonSense could not be parsed
+     */
+    public JSONArray getLocalData(String sensorName, String description, int limit, boolean onlyFromDevice, long startDate, long endDate) throws IllegalStateException,
+            JSONException {
+        checkSenseService();
+
+        JSONArray result;
+
+        // select remote path in local storage
+        String localStorage = mContext.getString(R.string.local_storage_authority);
+        Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_URI_PATH);
+
+        // set the sort order for the TIMESTAMP
+        String sortOrder = DataPoint.TIMESTAMP + " DESC";
+
+        // get the data
+        result = getValues(sensorName, description, onlyFromDevice, limit, uri, sortOrder, startDate, endDate);
+
+        return result;
+    }
+
 
     /**
      * @return The intent action for new sensor data. This can be used to subscribe to new data.
@@ -675,6 +705,33 @@ public class SensePlatform {
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri,
             String sortOrder, long startDate, long endDate) throws JSONException {
+       return getValues(sensorName, null, onlyFromDevice, limit, uri,sortOrder, startDate, endDate);
+    }
+
+    /**
+     * Gets array of values from the LocalStorage
+     *
+     * @param sensorName
+     *            Name of the sensor to get values from.
+     * @param description
+     *            Description of the sensor, i.e. CommonSense "device_type", ignored if null
+     * @param onlyFromDevice
+     *            If true this function only looks for sensors attached to this device.
+     * @param limit
+     *            Maximum amount of data points. Optional, use null to set the default limit (100).
+     * @param uri
+     *            The uri to get data from, can be either local or remote.
+     * @param startDate
+     *            The epoch start date in milliseconds of the period to get the sensor data from
+     * @param endDate
+     *            The epoch end date in milliseconds of the period to get the sensor data from
+     * @param sortOrder
+     *            The sort order, one of <code>DESC</code> or <code>ASC</code>.
+     * @return JSONArray with values for the sensor with the selected name and device
+     * @throws JSONException
+     */
+    private JSONArray getValues(String sensorName, String description, boolean onlyFromDevice, Integer limit, Uri uri,
+                                String sortOrder, long startDate, long endDate) throws JSONException {
         Cursor cursor = null;
         JSONArray result = new JSONArray();
 
@@ -685,6 +742,10 @@ public class SensePlatform {
         if (null != deviceUuid) {
             selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
         }
+
+        if(null != description)
+            selection += " AND " + DataPoint.SENSOR_DESCRIPTION + " = '" + description + "'";
+
         selection += " AND " + DataPoint.TIMESTAMP + ">=" + startDate + " AND " + DataPoint.TIMESTAMP + "<=" + endDate;
         String[] selectionArgs = null;
 
@@ -753,9 +814,9 @@ public class SensePlatform {
      * Tries to log in at CommonSense using the supplied username and password. After login, the
      * service remembers the username and password.
      * 
-     * @param username
+     * @param user
      *            Username for login
-     * @param pass
+     * @param password
      *            Hashed password for login
      * @param callback
      *            Interface to receive callback when login is completed
