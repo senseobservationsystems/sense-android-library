@@ -117,7 +117,7 @@ public class SensePlatform {
 
     /**
      * Convenience method to add a data point without specifying the device UUID
-     * 
+     *
      * @param sensorName
      *            Name of the sensor
      * @param displayName
@@ -143,7 +143,7 @@ public class SensePlatform {
     /**
      * Adds a data point for a sensor at CommonSense. If the sensor does not exist yet, it will be
      * created.
-     * 
+     *
      * @param sensorName
      *            Name of the sensor
      * @param displayName
@@ -246,7 +246,7 @@ public class SensePlatform {
     /**
      * Check that the sense service is bound. This method is used for public methods to provide a
      * single check for the sense service.
-     * 
+     *
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
      */
@@ -265,7 +265,7 @@ public class SensePlatform {
 
     /**
      * Flush data to CommonSense
-     * 
+     *
      * @return true if the flush task was successfully started
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
@@ -280,7 +280,7 @@ public class SensePlatform {
 
     /**
      * Flush data to Common Sense, return after the flush is completed
-     * 
+     *
      * @throws IllegalStateException
      *             If the Sense service is not bound yet
      */
@@ -296,7 +296,7 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from CommonSense.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
      * @param onlyFromDevice
@@ -316,7 +316,7 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from CommonSense.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
      * @param onlyFromDevice
@@ -339,7 +339,7 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from CommonSense.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
      * @param onlyFromDevice
@@ -373,7 +373,7 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from CommonSense.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
      * @param onlyFromDevice
@@ -381,9 +381,9 @@ public class SensePlatform {
      *            all sensors, including those of this device, if set to NO
      * @param limit
      *            Maximum amount of data points.
-     * @param startDate 
+     * @param startDate
      *            The epoch start date in milliseconds of the period to get the sensor data from
-     * @param endDate 
+     * @param endDate
      *            The epoch end date in milliseconds of the period to get the sensor data from
      * @return JSONArray of data points
      * @throws IllegalStateException
@@ -409,7 +409,7 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from the local storage.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
      * @return JSONArray of data points
@@ -424,12 +424,12 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from the local storage.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
-     * @param startDate 
+     * @param startDate
      *            The epoch start date in milliseconds of the period to get the sensor data from
-     * @param endDate 
+     * @param endDate
      *            The epoch end date in milliseconds of the period to get the sensor data from
      * @return JSONArray of data points
      * @throws IllegalStateException
@@ -443,7 +443,7 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from the local storage.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
      * @param limit
@@ -466,21 +466,27 @@ public class SensePlatform {
 
         // get the data
         result = getValues(sensorName, true, limit, uri);
-
+        if(result.length() > limit)
+        {
+            JSONArray limitedResult = new JSONArray();
+            for(int i = 0; i < limit; ++i)
+                limitedResult.put(result.get(i));
+            return limitedResult;
+        }
         return result;
     }
 
     /**
      * Retrieve a number of values of a sensor from the local storage.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
      * @param onlyFromDevice
      *            Whether or not to only look through sensors that are part of this device. Searches
      *            all sensors, including those of this device, if set to NO
-     * @param startDate 
+     * @param startDate
      *            The epoch start date in milliseconds of the period to get the sensor data from
-     * @param endDate 
+     * @param endDate
      *            The epoch end date in milliseconds of the period to get the sensor data from
      * @param limit
      *            Maximum amount of data points.
@@ -502,18 +508,24 @@ public class SensePlatform {
 
         // get the data
         result = getValues(sensorName, onlyFromDevice, limit, uri, startDate, endDate);
-
+        if(result.length() > limit)
+        {
+            JSONArray limitedResult = new JSONArray();
+            for(int i = 0; i < limit; ++i)
+                limitedResult.put(result.get(i));
+            return limitedResult;
+        }
         return result;
     }
 
     /**
      * Retrieve a number of values of a device sensor from the local storage.
-     * 
+     *
      * @param sensorName
      *            The name of the sensor to get data from
-     * @param startDate 
+     * @param startDate
      *            The epoch start date in milliseconds of the period to get the sensor data from
-     * @param endDate 
+     * @param endDate
      *            The epoch end date in milliseconds of the period to get the sensor data from
      * @param limit
      *            Maximum amount of data points.
@@ -535,7 +547,13 @@ public class SensePlatform {
 
         // get the data
         result = getValues(sensorName, true, limit, uri, startDate, endDate);
-
+        if(result.length() > limit)
+        {
+            JSONArray limitedResult = new JSONArray();
+            for(int i = 0; i < limit; ++i)
+                limitedResult.put(result.get(i));
+            return limitedResult;
+        }
         return result;
     }
 
@@ -575,8 +593,14 @@ public class SensePlatform {
         String sortOrder = DataPoint.TIMESTAMP + " DESC";
 
         // get the data
-        result = getValues(sensorName, description, onlyFromDevice, limit, uri, sortOrder, startDate, endDate);
-
+        result = getValues(sensorName, description, onlyFromDevice, Integer.MAX_VALUE, uri, sortOrder, startDate, endDate);
+        if(result.length() > limit)
+        {
+            JSONArray limitedResult = new JSONArray();
+            for(int i = 0; i < limit; ++i)
+                limitedResult.put(result.get(i));
+            return limitedResult;
+        }
         return result;
     }
 
@@ -598,7 +622,7 @@ public class SensePlatform {
 
     /**
      * Gets array of values from the LocalStorage in <code>DESC</code> order.
-     * 
+     *
      * @param sensorName
      *            Name of the sensor to get values from.
      * @param onlyFromDevice
@@ -619,16 +643,16 @@ public class SensePlatform {
 
     /**
      * Gets array of values from the LocalStorage in <code>DESC</code> order.
-     * 
+     *
      * @param sensorName
      *            Name of the sensor to get values from.
      * @param onlyFromDevice
      *            If true this function only looks for sensors attached to this device.
      * @param limit
      *            Maximum amount of data points. Optional, use null to set the default limit (100).
-     * @param startDate 
+     * @param startDate
      *            The epoch start date in milliseconds of the period to get the sensor data from
-     * @param endDate 
+     * @param endDate
      *            The epoch end date in milliseconds of the period to get the sensor data from
      * @param uri
      *            The uri to get data from, can be either local or remote.
@@ -644,7 +668,7 @@ public class SensePlatform {
 
     /**
      * Gets array of values from the LocalStorage
-     * 
+     *
      * @param sensorName
      *            Name of the sensor to get values from.
      * @param onlyFromDevice
@@ -702,7 +726,7 @@ public class SensePlatform {
 
     /**
      * Gets array of values from the LocalStorage
-     * 
+     *
      * @param sensorName
      *            Name of the sensor to get values from.
      * @param onlyFromDevice
@@ -711,9 +735,9 @@ public class SensePlatform {
      *            Maximum amount of data points. Optional, use null to set the default limit (100).
      * @param uri
      *            The uri to get data from, can be either local or remote.
-     * @param startDate 
+     * @param startDate
      *            The epoch start date in milliseconds of the period to get the sensor data from
-     * @param endDate 
+     * @param endDate
      *            The epoch end date in milliseconds of the period to get the sensor data from
      * @param sortOrder
      *            The sort order, one of <code>DESC</code> or <code>ASC</code>.
@@ -735,7 +759,7 @@ public class SensePlatform {
      * @param onlyFromDevice
      *            If true this function only looks for sensors attached to this device.
      * @param limit
-     *            Maximum amount of data points. Optional, use null to set the default limit (100).
+     *            Maximum amount of data points. Optional, use null to set the default limit (100). Only used for remote
      * @param uri
      *            The uri to get data from, can be either local or remote.
      * @param startDate
@@ -796,7 +820,7 @@ public class SensePlatform {
 
     /**
      * Give feedback on a state sensor.
-     * 
+     *
      * @param state
      *            The state to give feedback on.
      * @param from
@@ -830,7 +854,7 @@ public class SensePlatform {
     /**
      * Tries to log in at CommonSense using the supplied username and password. After login, the
      * service remembers the username and password.
-     * 
+     *
      * @param user
      *            Username for login
      * @param password
@@ -857,7 +881,7 @@ public class SensePlatform {
 
     /**
      * Registers a new user at CommonSense and logs in immediately.
-     * 
+     *
      * @param username
      *            Username for the new user
      * @param password
