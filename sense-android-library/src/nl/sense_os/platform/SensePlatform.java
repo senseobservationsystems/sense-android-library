@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import nl.sense_os.service.ISenseServiceCallback;
@@ -90,6 +91,8 @@ public class SensePlatform {
     private final ServiceConnection mServiceConnection;
 
     private SensorRegistrator trivialSensorRegistrator;
+
+    private ArrayList<String> sensorRegistratorCache = new ArrayList<String>();
 
     /**
      * @param context
@@ -172,7 +175,21 @@ public class SensePlatform {
         // register the sensor
         synchronized (trivialSensorRegistrator)
         {
-            trivialSensorRegistrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null, deviceUuid);
+            // Check if the sensor has already been registered successfully
+            boolean registerSensor = true;
+            String cacheEntry = null;
+            try {
+                 cacheEntry = sensorName + description + dataType + deviceUuid;
+                registerSensor = !sensorRegistratorCache.contains(cacheEntry);
+            }catch(Exception e)
+            {
+                Log.e(TAG, "Failed using trivialSensorRegistrator cache");
+            }
+
+            if(registerSensor) {
+                if(trivialSensorRegistrator.checkSensor(sensorName, displayName, dataType, description, "" + value, null, deviceUuid) && cacheEntry != null)
+                    sensorRegistratorCache.add(cacheEntry);
+            }
         }
 
         // send data point
