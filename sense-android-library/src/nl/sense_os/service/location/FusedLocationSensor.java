@@ -280,9 +280,10 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
 
     @Override
     public void stopSensing() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        if(googleApiClient.isConnected())
+        if(googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
             googleApiClient.disconnect();
+        }
 
         active = false;
         stopAlarms();
