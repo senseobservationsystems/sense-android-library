@@ -874,19 +874,6 @@ public class SensePrefs {
              */
             public static final String LOUDEST = "AutoCalibratedNoise.loudest";
         }
-        
-        public static class Proximity{
-        	
-        	/**
-        	 * Key for cached proximity data point
-        	 */
-        	public static final String CACHE_PROXIMITY = "proximity_cache";
-        	
-        	/**
-        	 * Key for cached proximity time stamp
-        	 */
-        	public static final String CACHE_TS = "proximity_cache_ts";
-        }
     }
 
     /**
