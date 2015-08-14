@@ -3,19 +3,20 @@
  *************************************************************************************************/
 package nl.sense_os.service.states;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensorData;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensorData;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.storage.LocalStorage;
 
 /**
  * State monitor that periodically checks the data form the epi sensor and triggers and action when
@@ -49,7 +50,7 @@ public class EpiStateMonitor extends AbstractStateMonitor {
                     DataPoint.VALUE, DataPoint.TIMESTAMP };
             String where = DataPoint.SENSOR_NAME + "='" + SensorData.SensorNames.FALL_DETECTOR
                     + "'" + " AND " + DataPoint.TIMESTAMP + ">"
-                    + (System.currentTimeMillis() - TIME_RANGE);
+                    + (SNTP.getInstance().getTime() - TIME_RANGE);
             fallData = storage.query(contentUri, projection, where, null, null);
 
             if (null != fallData && fallData.moveToFirst()) {
@@ -68,7 +69,7 @@ public class EpiStateMonitor extends AbstractStateMonitor {
                     DataPoint.TIMESTAMP };
             where = DataPoint.SENSOR_NAME + "='" + SensorData.SensorNames.ACCELEROMETER_EPI + "'"
                     + " AND " + DataPoint.TIMESTAMP + ">"
-                    + (System.currentTimeMillis() - (TIME_RANGE << 1));
+                    + (SNTP.getInstance().getTime() - (TIME_RANGE << 1));
             epiData = storage.query(contentUri, projection, where, null, null);
 
             if (null != epiData && epiData.moveToFirst()) {
@@ -104,7 +105,7 @@ public class EpiStateMonitor extends AbstractStateMonitor {
         Intent alert = new Intent("nl.ask.paige.receiver.IntentRx");
         alert.putExtra("sensorName", "epi state");
         alert.putExtra("value", "SEIZURE!!!");
-        alert.putExtra("timestamp", "" + System.currentTimeMillis());
+        alert.putExtra("timestamp", "" + SNTP.getInstance().getTime());
         sendBroadcast(alert);
     }
 

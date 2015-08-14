@@ -110,8 +110,8 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        if (System.currentTimeMillis() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
-            lastSampleTimes[sensor.getType()] = System.currentTimeMillis();
+        if (SNTP.getInstance().getTime() > lastSampleTimes[sensor.getType()] + getSampleRate()) {
+            lastSampleTimes[sensor.getType()] = SNTP.getInstance().getTime();
 
             String sensorName = "";
             if (sensor.getType() == Sensor.TYPE_LIGHT) {

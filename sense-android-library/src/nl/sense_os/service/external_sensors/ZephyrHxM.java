@@ -333,15 +333,15 @@ public class ZephyrHxM extends BaseDataProducer {
 								SenseDataTypes.INT);
 
 						if (notifyOnEmptyBattery && battery < 5 && battery != 0
-								&& System.currentTimeMillis() - lastEmptyBatteryNotify > 300000) {
+								&& SNTP.getInstance().getTime() - lastEmptyBatteryNotify > 300000) {
 							sendNotification("Zephyr HxM empty battery warning: " + battery + "%");
-							lastEmptyBatteryNotify = System.currentTimeMillis();
+							lastEmptyBatteryNotify = SNTP.getInstance().getTime();
 						}
 						// every 5 min
 						if (battery == 0
-								&& System.currentTimeMillis() - lastNoChestConnectionNofify > 300000) {
+								&& SNTP.getInstance().getTime() - lastNoChestConnectionNofify > 300000) {
 							sendNotification("Zephyr HxM not properly connected to the chest, make sure the strap is wet enough.");
-							lastNoChestConnectionNofify = System.currentTimeMillis();
+							lastNoChestConnectionNofify = SNTP.getInstance().getTime();
 						}
 					}
 					// send strides count
@@ -481,7 +481,7 @@ public class ZephyrHxM extends BaseDataProducer {
 					boolean done = false;
 					while (!done) {
 						Log.v(TAG, "Try to read from Bluetooth input stream...");
-						lastSampleTime = System.currentTimeMillis();
+						lastSampleTime = SNTP.getInstance().getTime();
 						// Read from the InputStream
 						// the msg size is 60
 						byte[] buffer = new byte[60];

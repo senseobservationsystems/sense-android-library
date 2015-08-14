@@ -116,8 +116,8 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        if (System.currentTimeMillis() > mLastSampleTimes[sensor.getType()] + getSampleRate()) {
-            mLastSampleTimes[sensor.getType()] = System.currentTimeMillis();
+        if (SNTP.getInstance().getTime() > mLastSampleTimes[sensor.getType()] + getSampleRate()) {
+            mLastSampleTimes[sensor.getType()] = SNTP.getInstance().getTime();
 
             String sensorName = SensorNames.PRESSURE;
 
