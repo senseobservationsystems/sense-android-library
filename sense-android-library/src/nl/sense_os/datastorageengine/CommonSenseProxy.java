@@ -36,7 +36,7 @@ public class CommonSenseProxy {
 
     private static final String TAG = "CommonSenseProxy";
     private static String appKey;				  //The app key
-    private String urlBase;				  //The base url to use, will differ based on whether to use live or staging server
+    private static String urlBase;				  //The base url to use, will differ based on whether to use live or staging server
     private String urlAuth;				  //The base url to use for authentication, will differ based on whether to use live or staging server
     private int requestTimeoutInterval;	  //Timeout interval in seconds
 
@@ -67,8 +67,6 @@ public class CommonSenseProxy {
      */
     public static final String RESPONSE_CONTENT = "content";
 
-    //private static SharedPreferences sAuthPrefs;
-    //private static SharedPreferences sMainPrefs;
     /**
      * Default constructor for the DSECommonSenseProxy.
      *
@@ -82,7 +80,6 @@ public class CommonSenseProxy {
     public void CommonSenseProxy (boolean useLiveServer, String theAppKey)
     {
         appKey = theAppKey;
-
         if(useLiveServer) {
             urlBase     = kUrlBaseURLLive;
             urlAuth		= kUrlAuthenticationLive;
@@ -90,14 +87,13 @@ public class CommonSenseProxy {
             urlBase     = kUrlBaseURLStaging;
             urlAuth		= kUrlAuthenticationStaging;
         }
-
     }
 
 
     /**
      * Login a user
      *
-     * If a user is already logged in this call will fail. That user should be logged out first before a new login attempt can be made. Otherwise, it will throw an IOException.
+     * If a user is already logged in this call will also return the session ID.
      *
      * @param username		A user account in commonsense is uniquely identified by a username. Cannot be empty.
      * @param password		A password in commonsense does not have any specific requirements.
@@ -112,39 +108,21 @@ public class CommonSenseProxy {
             throw new IOException("invalid input of username or password");
 
         final String url = urlAuth + "/" + kUrlLogin;
-
         final JSONObject user = new JSONObject();
         user.put("username", username);
         user.put("password", password);
 
-        // TODO disable compressed login
-        Map<String, String> response = request( url, user, null);
+        Map<String, String> response = request(url, user, null,"POST");
 
         // if response code is not 200 (OK), the login was incorrect
-        String responseCode = response.get(RESPONSE_CODE);
-        int result = -1;
-        if ("403".equalsIgnoreCase(responseCode)) {
-            Log.w(TAG, "CommonSense login refused! Response: forbidden!");
-            result = -2;
-        } else if (!"200".equalsIgnoreCase(responseCode)) {
-            Log.w(TAG, "CommonSense login failed! Response: " + responseCode);
-            result = -1;
-        } else {
-            // received 200 response
-            result = 0;
-        }
+        int result = checkResponseCode(response.get(RESPONSE_CODE), "login");
 
         // create a cookie from the session_id
         String session_id = response.get("session-id");
-        String cookie = "";
         if (result == 0 && session_id == null) {
             // something went horribly wrong
             Log.w(TAG, "CommonSense login failed: no cookie received?!");
-            result = -1;
         }
-        else
-            cookie = "session_id="+session_id+"; domain=.sense-os.nl";
-
         return session_id;
     }
 
@@ -157,29 +135,86 @@ public class CommonSenseProxy {
      * @return				Whether or not the logout finished succesfully.
      */
      //- (BOOL) logoutCurrentUserWithSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public static boolean logoutCurrentUserWithSessionID(String sessionID) throws IOException
+    public boolean logoutCurrentUserWithSessionID(String sessionID) throws IOException
     {
         if(sessionID == null || sessionID.isEmpty())
             throw new IOException("invalid input of session ID");
+
+        final String url = urlAuth + "/" + kUrlLogout;
+
+        Map<String, String> response = request(url, null, null,"POST");
+
+        // if response code is not 200 (OK), the logout was incorrect
+        String responseCode = response.get(RESPONSE_CODE);
+        int result = checkResponseCode(response.get(RESPONSE_CODE), "logout");
+
+        return (result == 0);
+
     }
 
     /**
      * Create a new sensor in the commonsense backend
      *
-     * Each sensor in commonsense is uniquely identified by a name and devicetype combination. If this combination already exists in the commonsense backend this call will fail.
+     * Each sensor in commonsense is uniquely identified by a name and device type combination.
+     * If this combination already exists in the commonsense backend this call will fail.
      *
      * @param name			Name of the sensor to create. This will be used to identify the sensor. Required.
-     * @param displayName		Extra field to make sensor name more readable if necessary when displaying it. Not required.
-     * @param deviceType		Name of the device type the sensor belongs to. Required.
+     * @param displayName	Extra field to make sensor name more readable if necessary when displaying it. Not required.
+     * @param deviceType	Name of the device type the sensor belongs to. Required.
      * @param dataType		Type of data that the sensor stores. Required.
      * @param dataStructure	Structure of the data in the data; can be used to specify the JSON structure in the sensor. Not required.
      * @param sessionID		The sessionID of the current user. Cannot be empty.
-     * @throws IOException
-     *@result				Dictionary with the information of the created sensor.
+     * @throws IOException, JSONException
+     *@result				JSONObject with the information of the created sensor. Null if the sensor ID is null or empty.
      */
      //- (NSDictionary *) createSensorWithName: (NSString *) name andDisplayName: (NSString *) displayName andDeviceType: (NSString *) deviceType andDataType: (NSString *) dataType andDataStructure: (NSString *) dataStructure andSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public static HashMap<String, JSONObject> createSensorWithName(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException
-    {}
+    public static JSONObject createSensorWithName(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException, JSONException
+    {
+        if(name == null || name.isEmpty() || sessionID == null || sessionID.isEmpty()|| deviceType == null || deviceType.isEmpty()||  dataType == null || dataType.isEmpty())
+            throw new IOException("invalid input of name or sessionID or deviceType or dataType");
+
+        if(dataStructure == null) {
+            dataStructure = "";
+        }
+
+        if(displayName == null) {
+            displayName = "";
+        }
+        final String url = makeCSRestUrlFor(kUrlSensors, null);
+
+        JSONObject sensor = new JSONObject();
+        sensor.put("name", name);
+        sensor.put("device_type", deviceType);
+        sensor.put("display_name", displayName);
+        sensor.put("pager_type", "");
+        sensor.put("data_type", dataType);
+        sensor.put("data_structure",dataStructure);
+
+        JSONObject postData = new JSONObject();
+        postData.put("sensor", sensor);
+
+        // perform actual request
+        Map<String, String> response = request(url, postData, sessionID,"POST");
+
+        // check response code
+        String code = response.get(RESPONSE_CODE);
+        int result = checkResponseCode(response.get(RESPONSE_CODE), "createSensorWithName");
+        if (result != -2) {
+            throw new IOException("Incorrect response of createSensorWithName from CommonSense: " + code);
+        }
+
+        // retrieve the newly created sensor ID
+        String locationHeader = response.get("location");
+        String[] split = locationHeader.split("/");
+        String id = split[split.length - 1];
+
+        if(id == null || id.isEmpty()){
+            return null;
+        }
+        // store the new sensor in the preferences
+        sensor.put("sensor_id", id);
+        return sensor;
+    }
     
     /**
      * Get all sensors for the currently logged in user.
@@ -192,7 +227,9 @@ public class CommonSenseProxy {
      */
      //- (NSArray *) getSensorsWithSessionID: (NSString *) sessionID andError: (NSError **) error;
     public static JSONArray getSensorsWithSessionID(String sessionID) throws IOException
-    {}    
+    {
+        
+    }
 
     /**
      * Get all devices for the currently logged in user.
@@ -278,28 +315,21 @@ public class CommonSenseProxy {
      * @param content
      *            (Optional) Content for the request. If the content is not null, the request method
      *            is automatically POST. The default method is GET.
-     * @param cookie
-     *            (Optional) Cookie header for the request.
+     * @param sessionID
+     *            (Optional) Session ID header for the request.
+     * @param requestMethod
+     *            The required method for the HTTP request, such as POST or GET.
      * @return Map with SenseApi.KEY_CONTENT and SenseApi.KEY_RESPONSE_CODE fields, plus fields for
      *         all response headers.
      * @throws IOException
      */
 
-    public static Map<String, String> request( String urlString,
-                                              JSONObject content, String cookie) throws IOException {
+    private static Map<String, String> request( String urlString,
+                                              JSONObject content, String sessionID, String requestMethod) throws IOException {
 
         HttpURLConnection urlConnection = null;
         HashMap<String, String> result = new HashMap<String, String>();
         try {
-
-            // get compression preference
-//            if (null == sMainPrefs) {
-//                sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-//                        Context.MODE_PRIVATE);
-//            }
-            //final boolean compress = sMainPrefs.getBoolean(SensePrefs.Main.Advanced.COMPRESS, true);
-
-
             final boolean compress = true;
 
             // open new URL connection channel.
@@ -317,14 +347,20 @@ public class CommonSenseProxy {
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setRequestProperty("Accept", "application/json");
 
-            // set cookie (if available)
-            if (null != cookie) {
-                urlConnection.setRequestProperty("Cookie", cookie);
-            }
+//            // set cookie (if available)
+//            if (null != cookie) {
+//                urlConnection.setRequestProperty("Cookie", cookie);
+//            }
 
             // set the application id
             if(null != appKey)
                 urlConnection.setRequestProperty("APPLICATION-KEY", appKey);
+
+            if(sessionID != null)
+                urlConnection.setRequestProperty("SESSION-ID", sessionID);
+
+            if(requestMethod != null)
+                urlConnection.setRequestMethod(requestMethod);
 
             // send content (if available)
             if (null != content) {
@@ -410,6 +446,51 @@ public class CommonSenseProxy {
         }
     }
 
+    /**
+     * Upload sensor data to commonsense
+     *
+     * Data can be coming from multiple sensors.
+     *
+     * @param responseCode	The response code returned from the request
+     * @param method		The method that requires code checking
+     *
+     * @result	The integer value of the result
+     *
+     */
+    private static int checkResponseCode(String responseCode, String method){
+        if ("403".equalsIgnoreCase(responseCode)) {
+            Log.w(TAG, "CommonSense" + method + "refused! Response: forbidden!");
+            return -3;
+        } else if ("201".equalsIgnoreCase(responseCode)) {
+            Log.e(TAG, "CommonSense" + method + "created! Response: " + responseCode);
+            return -2;
+        } else if (!"200".equalsIgnoreCase(responseCode)) {
+            Log.w(TAG, "CommonSense" + method + "failed! Response: " + responseCode);
+            return -1;
+        } else {
+            // received 200 response
+            Log.e(TAG, "CommonSense" + method + "OK! ");
+            return  0;
+        }
+    }
 
 
+    /**
+     * Make a url with the included action
+     *
+     * @param action	The required endpoint
+     * @param appendix	The appendix of the endpoint, can be null
+     *
+     * @result	The required url
+     */
+    private static String makeCSRestUrlFor(String action, String appendix)
+    {
+        if(action == null || action.isEmpty()){
+            return null;
+        }
+        if(appendix == null)
+            appendix = "";
+        String url = urlBase + "/" + action + kUrlJsonSuffix + appendix;
+        return url;
+    }
 }
