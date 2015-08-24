@@ -1,7 +1,5 @@
 package nl.sense_os.datastorageengine;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -16,7 +14,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,36 +22,36 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import nl.sense_os.service.EncryptionHelper;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SenseUrls;
-
 /**
  * Created by fei on 20/08/15.
  */
 public class CommonSenseProxy {
 
     private static final String TAG = "CommonSenseProxy";
-    private static String appKey;				  //The app key
-    private static String urlBase;				  //The base url to use, will differ based on whether to use live or staging server
-    private static String urlAuth;				  //The base url to use for authentication, will differ based on whether to use live or staging server
+    private static String APP_KEY;				  //The app key
+    private static String URL_BASE;				  //The base url to use, will differ based on whether to use live or staging server
+    private static String URL_AUTH;				  //The base url to use for authentication, will differ based on whether to use live or staging server
     private int requestTimeoutInterval;	  //Timeout interval in seconds
 
-    public static final String kUrlBaseURLLive              = "https://api.sense-os.nl";
-    public static final String kUrlBaseURLStaging           = "http://api.staging.sense-os.nl";
-    public static final String kUrlAuthenticationLive       = "https://auth-api.sense-os.nl/v1";
-    public static final String kUrlAuthenticationStaging    = "http://auth-api.staging.sense-os.nl/v1";
+    public static final String BASE_URL_LIVE                = "https://api.sense-os.nl";
+    public static final String BASE_URL_STAGING             = "http://api.staging.sense-os.nl";
+    public static final String BASE_URL_AUTHENTICATION_LIVE = "https://auth-api.sense-os.nl/v1";
+    public static final String BASE_URL_AUTHENTICATION_STAGING = "http://auth-api.staging.sense-os.nl/v1";
 
-    public static final String kUrlLogin					= "login";
-    public static final String kUrlLogout                   = "logout";
-    public static final String kUrlSensorDevice             = "device";
-    public static final String kUrlSensors                  = "sensors";
-    public static final String kUrlUsers                    = "users";
-    public static final String kUrlUploadMultipleSensors    = "sensors/data";
-    public static final String kUrlData                     = "data";
-    public static final String kUrlDevices                  = "devices";
+    public static final String URL_LOGIN                    = "login";
+    public static final String URL_LOGOUT                   ="logout";
+    public static final String URL_SENSOR_DEVICE            = "device";
+    public static final String URL_SENSORS                  = "sensors";
+    public static final String URL_USERS                    = "users";
+    public static final String URLE_UPLOAD_MULTIPLE_SENSORS = "sensors/data";
+    public static final String URL_DATA                     = "data";
+    public static final String URL_DEVICES                  = "devices";
 
-    public static final String kUrlJsonSuffix               = ".json";
+    public static final String URL_JSON_SUFFIX              = ".json";
+
+    public static final String HTTP_METHOD_POST = "POST";
+    public static final String HTTP_METHOD_GET = "GET";
+
 
     /**
      * Key for getting the http response code from the Map object that is returned by
@@ -78,13 +75,13 @@ public class CommonSenseProxy {
      */
     public CommonSenseProxy (boolean useLiveServer, String theAppKey)
     {
-        appKey = theAppKey;
+        APP_KEY = theAppKey;
         if(useLiveServer) {
-            urlBase     = kUrlBaseURLLive;
-            urlAuth		= kUrlAuthenticationLive;
+            URL_BASE = BASE_URL_LIVE;
+            URL_AUTH = BASE_URL_AUTHENTICATION_LIVE;
         } else {
-            urlBase     = kUrlBaseURLStaging;
-            urlAuth		= kUrlAuthenticationStaging;
+            URL_BASE = BASE_URL_STAGING;
+            URL_AUTH = BASE_URL_AUTHENTICATION_STAGING;
         }
     }
 
@@ -100,23 +97,21 @@ public class CommonSenseProxy {
      * @throws IOException and JSONException
      * @return				Session ID. Will be null if the call fails.
      */
-     // - (String *) loginUser: (NSString *) username andPassword: (NSString *) password andError: (NSError **) error;
     public String loginUser( String username, String password) throws IOException, JSONException
     {
         if(username == null || username.isEmpty() || password == null || password.isEmpty())
             throw new IOException("invalid input of username or password");
 
-        final String url = urlAuth + "/" + kUrlLogin;
+        final String url = URL_AUTH + "/" + URL_LOGIN;
         final JSONObject user = new JSONObject();
         user.put("username", username);
         user.put("password", password);
 
-        Map<String, String> response = request(url, user, null,"POST");
+        Map<String, String> response = request(url, user, null, HTTP_METHOD_POST);
 
         // if response code is not 200 (OK), the login was incorrect
         int result = checkResponseCode(response.get(RESPONSE_CODE), "login");
 
-        // create a cookie from the session_id
         String session_id = response.get("session-id");
         if (result != 0 && session_id == null) {
             // something went horribly wrong
@@ -132,21 +127,20 @@ public class CommonSenseProxy {
      *
      * @param sessionID		The sessionID of the user to logout. Cannot be empty.
      * @throws IOException
-     * @return				Whether or not the logout finished succesfully.
+     * @return				Whether or not the logout finished successfully.
      */
-     //- (BOOL) logoutCurrentUserWithSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public boolean logoutCurrentUserWithSessionID(String sessionID) throws IOException
+    public boolean logoutCurrentUser(String sessionID) throws IOException
     {
         if(sessionID == null || sessionID.isEmpty())
             throw new IOException("invalid input of session ID");
 
-        final String url = urlAuth + "/" + kUrlLogout;
-
-        Map<String, String> response = request(url, null, null,"POST");
-
+        final String url = URL_AUTH + "/" + URL_LOGOUT;
+        Map<String, String> response = request(url, null, sessionID, HTTP_METHOD_POST);
         // if response code is not 200 (OK), the logout was incorrect
         String responseCode = response.get(RESPONSE_CODE);
         int result = checkResponseCode(response.get(RESPONSE_CODE), "logout");
+        if(result != 0)
+            throw new IOException("logout with session id failed ");
 
         return (result == 0);
 
@@ -167,8 +161,7 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      *@result				JSONObject with the information of the created sensor. Null if the sensor ID is null or empty.
      */
-     //- (NSDictionary *) createSensorWithName: (NSString *) name andDisplayName: (NSString *) displayName andDeviceType: (NSString *) deviceType andDataType: (NSString *) dataType andDataStructure: (NSString *) dataStructure andSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public static JSONObject createSensorWithName(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException, JSONException
+    public static JSONObject createSensor(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException, JSONException
     {
         if(name == null || name.isEmpty() || sessionID == null || sessionID.isEmpty()|| deviceType == null || deviceType.isEmpty()||  dataType == null || dataType.isEmpty())
             throw new IOException("invalid input of name or sessionID or deviceType or dataType");
@@ -180,7 +173,7 @@ public class CommonSenseProxy {
         if(displayName == null) {
             displayName = "";
         }
-        final String url = makeCSRestUrlFor(kUrlSensors, null);
+        final String url = makeCSRestUrlFor(URL_SENSORS, null);
 
         JSONObject sensor = new JSONObject();
         sensor.put("name", name);
@@ -194,13 +187,13 @@ public class CommonSenseProxy {
         postData.put("sensor", sensor);
 
         // perform actual request
-        Map<String, String> response = request(url, postData, sessionID,"POST");
+        Map<String, String> response = request(url, postData, sessionID, HTTP_METHOD_POST);
 
         // check response code
         String code = response.get(RESPONSE_CODE);
-        int result = checkResponseCode(response.get(RESPONSE_CODE), "createSensorWithName");
+        int result = checkResponseCode(response.get(RESPONSE_CODE), "createSensor");
         if (result != -2) {
-            throw new IOException("Incorrect response of createSensorWithName from CommonSense: " + code);
+            throw new IOException("Incorrect response of createSensor from CommonSense: " + code);
         }
 
         // retrieve the newly created sensor ID
@@ -209,6 +202,7 @@ public class CommonSenseProxy {
         String id = split[split.length - 1];
 
         if(id == null || id.isEmpty()){
+            Log.w(TAG, "No id for the newly created sensor");
             return null;
         }
         // store the new sensor in the preferences
@@ -219,37 +213,36 @@ public class CommonSenseProxy {
     /**
      * Get all sensors for the currently logged in user.
      *
-     * This will fetch all the sensors for the current user and pass them on to the success callback as an NSArray. Each element in the array will contain an NSDictionary with data from one sensor.
+     * This will fetch all the sensors for the current user and pass them on JSONArray.
+     * Each element in the array will contain a JSONObject with data from one sensor.
      *
      * @param sessionID		The sessionID of the current user. Cannot be empty.
      * @throws IOException, JSONException
-     * @result				Array of sensors. Each object will be an NSDictionary with the resulting sensor information. Will be null if an error occurs.
+     * @result				Array of sensors. Each object will be a JSONObject with the resulting sensor information. Will be null if an error occurs.
      */
-     //- (NSArray *) getSensorsWithSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public static JSONArray getSensorsWithSessionID(String sessionID) throws IOException, JSONException
+    public static JSONArray getAllSensors(String sessionID) throws IOException, JSONException
     {
         if(sessionID == null || sessionID.isEmpty())
-            throw new IOException("getSensorsWithSessionID: invalid input of sessionID");
+            throw new IOException("getAllSensors: invalid input of sessionID");
         String params = "&per_page=1000&details=full";
-        return getListForURLAction(kUrlSensors, params, "sensors", sessionID, 1000, "getSensorsWithSessionID");
+        return getListForURLAction(URL_SENSORS, params, "sensors", sessionID, 1000, "getAllSensors");
     }
 
     /**
      * Get all devices for the currently logged in user.
      *
-     * This will fetch all the devices for the current user and pass them on to the success callback as an NSArray. Each element in the array will contain an NSDictionary with data from one device.
+     * This will fetch all the devices for the current user and pass them on to a JSONArray. Each element in the array will contain a JSONObject with data from one device.
      *
      * @param sessionID		The sessionID of the current user. Cannot be empty.
      * @throws IOException, JSONException
-     * @result				Array of devices. Each object will be an NSDictionary with the resulting device information. Will be null if an error occurs.
+     * @result				Array of devices. Each object will be a JSONObject with the resulting device information. Will be null if an error occurs.
      */
-     //- (NSArray *) getDevicesWithSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public static JSONArray getDevicesWithSessionID(String sessionID) throws IOException, JSONException
+    public static JSONArray getAllDevices(String sessionID) throws IOException, JSONException
     {
         if(sessionID == null || sessionID.isEmpty())
-            throw new IOException("getDevicesWithSessionID: invalid input of sessionID");
+            throw new IOException("getAllDevices: invalid input of sessionID");
         String params = "&per_page=1000&details=full";
-        return getListForURLAction(kUrlDevices, params, "devices", sessionID, 1000,"getDevicesWithSessionID");
+        return getListForURLAction(URL_DEVICES, params, "devices", sessionID, 1000,"getAllDevices");
     }
 
     /**
@@ -267,10 +260,9 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				Whether or not the sensor was successfully added to the device.
      */
-     //- (BOOL) addSensorWithID: (NSString *) csSensorID toDeviceWithID: (NSString *) csDeviceID andSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public static boolean addSensorWithID(String csSensorID, String deviceType, String UUID, String sessionID)throws IOException, JSONException
+    public static boolean addSensor(String csSensorID, String deviceType, String UUID, String sessionID)throws IOException, JSONException
     {
-        if(csSensorID == null || csSensorID.isEmpty() || deviceType == null || deviceType.isEmpty()|| UUID == null || UUID.isEmpty()||  sessionID == null || sessionID.isEmpty())
+        if(csSensorID == null || csSensorID.isEmpty() || deviceType == null || deviceType.isEmpty()|| UUID == null || UUID.isEmpty()|| sessionID == null || sessionID.isEmpty())
             throw new IOException("invalid input of csSensorID or deviceType or UUID or sessionID");
 
         JSONObject sensor = new JSONObject();
@@ -279,13 +271,14 @@ public class CommonSenseProxy {
         JSONObject postData = new JSONObject();
         postData.put("device", sensor);
 
-        String url = kUrlSensors + "/" + csSensorID + "/" + kUrlSensorDevice;
+        String url = URL_SENSORS + "/" + csSensorID + "/" + URL_SENSOR_DEVICE;
                url = makeUrlFor(url,null);
         // perform actual request
-        Map<String, String> response = request(url, postData, sessionID,"POST");
-        int code = checkResponseCode(response.get(RESPONSE_CODE), "addSensorWithID");
+        Map<String, String> response = request(url, postData, sessionID, "POST");
+        int code = checkResponseCode(response.get(RESPONSE_CODE), "addSensor");
+        // check if the response code is 201 CREATED
         if(code != -2)
-            throw new IOException("Incorrect response of addSensorWithID from CommonSense: " + code);
+            throw new IOException("Incorrect response of addSensor from CommonSense: " + code);
         return (code == -2);
     }
 
@@ -301,7 +294,6 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				Whether or not the post of the data was succesfull.
      */
-     //- (BOOL) postData: (NSArray *) data withSessionID: (NSString *) sessionID andError: (NSError **) error;
     public static boolean postData(JSONArray data, String sessionID) throws IOException, JSONException
     {
         if(sessionID == null || sessionID.isEmpty() || data == null || data.length() == 0)
@@ -310,7 +302,7 @@ public class CommonSenseProxy {
         JSONObject postData = new JSONObject();
         postData.put("sensors",data);
 
-        String url = makeUrlFor(kUrlUploadMultipleSensors,null);
+        String url = makeUrlFor(URLE_UPLOAD_MULTIPLE_SENSORS,null);
         Map<String, String> response = request(url, postData, sessionID,"POST");
         int code = checkResponseCode(response.get(RESPONSE_CODE), "postData");
         if(code != -2)
@@ -323,22 +315,21 @@ public class CommonSenseProxy {
      *
      * The downloaded data will be passed as an JSONArray to the success callback method from which it can be further processed.
      *
-     * @param csSensorID		Identifier of the sensor from CommonSense for which to download the data. Cannot be empty.
-     * @param fromDateDate	    Date from which to download data. Datapoints after this date will be included in the download.
-     *                          Datapoints from before this date will be ignored. Cannot be null.
+     * @param sensorID		Identifier of the sensor from CommonSense for which to download the data. Cannot be empty.
+     * @param fromDate	    Date from which to download data. Data points after this date will be included in the download.
+     *                          Data points before this date will be ignored. Cannot be null.
      * @param sessionID		    The sessionID of the current user. Cannot be empty.
-     * @throws IOException
-     * @result				    JSONArray with the resulting data. Each object is a JSONObject with the data as provided by the backend. Will be null if an error occured.
+     * @throws IOException, JSONException
+     * @result				    JSONArray with the resulting data. Each object is a JSONObject with the data as provided by the backend. Will be null if an error occurred.
      */
-     //- (NSArray *) getDataForSensor: (NSString *) csSensorID fromDate: (NSDate *) startDate withSessionID: (NSString *) sessionID andError: (NSError **) error;
-    public static JSONArray getDataForSensor(String csSensorID, long fromDateDate, String sessionID) throws IOException,JSONException
+    public static JSONArray getData(String sensorID, long fromDate, String sessionID) throws IOException, JSONException
     {
-        if(fromDateDate == 0 || sessionID == null || sessionID.isEmpty())
-            throw new IOException("invalid input of date or sessionID");
-        String params = "?per_page=1000&start_date=" + fromDateDate + "&end_date=" + System.currentTimeMillis() +"&sort=DESC";
-        String urlAction = kUrlSensors + "/" + csSensorID + "/" + kUrlData;
+        if(fromDate == 0 || sensorID == null || sensorID.isEmpty() ||sessionID == null || sessionID.isEmpty())
+            throw new IOException("invalid input of date or or sensorID or sessionID");
+        String params = "?per_page=1000&start_date=" + fromDate + "&end_date=" + System.currentTimeMillis() +"&sort=DESC";
+        String urlAction = URL_SENSORS + "/" + sensorID + "/" + URL_DATA;
 
-        return getListForURLAction(urlAction, params, "data", sessionID, 1000, "getDataForSensor");
+        return getListForURLAction(urlAction, params, "data", sessionID, 1000, "getData");
     }
 
 
@@ -379,8 +370,8 @@ public class CommonSenseProxy {
             urlConnection.setUseCaches(false);
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setRequestProperty("Accept", "application/json");
-            if(null != appKey)
-                urlConnection.setRequestProperty("APPLICATION-KEY", appKey);
+            if(null != APP_KEY)
+                urlConnection.setRequestProperty("APPLICATION-KEY", APP_KEY);
 
             if(sessionID != null)
                 urlConnection.setRequestProperty("SESSION-ID", sessionID);
@@ -515,7 +506,7 @@ public class CommonSenseProxy {
         }
         if(appendix == null)
             appendix = "";
-        String url = urlBase + "/" + action + kUrlJsonSuffix + appendix;
+        String url = URL_BASE + "/" + action + URL_JSON_SUFFIX + appendix;
         return url;
     }
 
@@ -535,10 +526,10 @@ public class CommonSenseProxy {
         if(appendix == null)
             appendix = "";
         String url;
-        if(action.equals(kUrlLogin) || action.equals(kUrlLogout)){
-            url = urlAuth + "/" + action + appendix;
+        if(action.equals(URL_LOGIN) || action.equals(URL_LOGOUT)){
+            url = URL_AUTH + "/" + action + appendix;
         }else{
-            url = urlAuth + "/" + action + kUrlJsonSuffix + appendix;
+            url = URL_AUTH + "/" + action + URL_JSON_SUFFIX + appendix;
         }
 
         return url;
@@ -547,17 +538,17 @@ public class CommonSenseProxy {
     /**
      * Helper function for getting a list from the cs-rest API
      *
-     * @param urlAction
-     * @param paramsString
-     * @param resultKey
-     * @param sessionID
-     * @param pageSize
-     * @param methodName
-     * @throws IOException
+     * @param urlAction     Part og url.
+     * @param paramsString  Part of url.
+     * @param resultKey     The name of the query field.
+     * @param sessionID     The sessionID of the current user.
+     * @param pageSize      The number of items in one page.
+     * @param methodName    The name of the caller method.
+     *                      
+     * @throws IOException, JSONException
      * @result	The integer value of the result
      *
      */
-    //- (NSArray *) getListForURLAction: (const NSString*) urlAction withParams: (NSString *) paramsString withResultKey: (NSString *) resultKey withSessionID: (NSString *) sessionID andError: (NSError **) error {
    private static JSONArray getListForURLAction(String urlAction, String paramsString, String resultKey, String sessionID, int pageSize, String methodName) throws IOException, JSONException
    {
        int page = 0;
@@ -566,14 +557,14 @@ public class CommonSenseProxy {
        while (!done) {
            String params = "?page=" + page + paramsString;
            String url =  makeUrlFor(urlAction,params);
-           Map<String, String> response = request(url, null, null, "GET");
+           Map<String, String> response = request(url, null, sessionID, "GET");
            int codeResult = checkResponseCode(response.get(RESPONSE_CODE), methodName);
            if (codeResult != 0) {
                throw new IOException("Incorrect response of" + methodName + "from CommonSense");
            }
            // parse response and store the list
            JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));
-           JSONArray paramList = content.getJSONArray("resultKey");
+           JSONArray paramList = content.getJSONArray(resultKey);
            // put the sensor list in the result array
            for (int i = 0; i < paramList.length(); i++) {
                resultList.put(paramList.getJSONObject(i));
