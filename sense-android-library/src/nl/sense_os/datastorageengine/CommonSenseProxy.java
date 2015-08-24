@@ -58,12 +58,12 @@ public class CommonSenseProxy {
 
     /**
      * Key for getting the http response code from the Map object that is returned by
-     * {@link nl.sense_os.service.commonsense.SenseApi#request(Context, String, JSONObject, String)}
+     * {@link nl.sense_os.datastorageengine.CommonSenseProxy#request(String, JSONObject, String, String)}
      */
     public static final String RESPONSE_CODE = "http response code";
     /**
      * Key for getting the response content from the Map object that is returned by
-     * {@link nl.sense_os.service.commonsense.SenseApi#request(Context, String, JSONObject, String)}
+     * {@link nl.sense_os.datastorageengine.CommonSenseProxy#request(String, JSONObject, String, String)}
      */
     public static final String RESPONSE_CONTENT = "content";
 
@@ -76,7 +76,6 @@ public class CommonSenseProxy {
      * @param useLiveServer	If true, the live server will be used. If false, the staging server will be used.
      * @param theAppKey		An application key that identifies the application to the commonsense server. Cannot be empty.
      */
-     //- (id) initAndUseLiveServer: (BOOL) useLiveServer withAppKey: (String *) theAppKey;
     public CommonSenseProxy (boolean useLiveServer, String theAppKey)
     {
         appKey = theAppKey;
@@ -119,9 +118,9 @@ public class CommonSenseProxy {
 
         // create a cookie from the session_id
         String session_id = response.get("session-id");
-        if (result == 0 && session_id == null) {
+        if (result != 0 && session_id == null) {
             // something went horribly wrong
-            Log.w(TAG, "CommonSense login failed: no session id received?!");
+            Log.w(TAG, "CommonSense login failed: no session id received!");
             throw new IOException("login failed with no session id");
         }
         return session_id;
