@@ -6,10 +6,14 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
+
+//apply plugin: 'com.android.application'
 apply plugin: 'com.android.library'
  
 repositories {
-    jcenter()
+    jcenter() // for integrated junit
+    mavenLocal() // for junit, robolectric, mockito, ...
+    mavenCentral()
 }
  
 dependencies {
@@ -17,8 +21,15 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.android.gms:play-services:6.1.71'
     compile files('libs/gcm.jar', 'libs/cordova-3.6.4.jar', 'libs/sqlcipher.jar')
+
+    testCompile 'junit:junit:4.12'
+    //testCompile "org.mockito:mockito-core:1.10.19"
+    testCompile('org.robolectric:robolectric:3.0') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
 }
- 
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -36,5 +47,20 @@ android {
         }
  
         instrumentTest.setRoot('tests')
+
+        // include debug source set for unit tests
+        // see http://tools.android.com/tech-docs/unit-testing-support
+        test {
+            manifest.srcFile 'test/AndroidManifest.xml'
+            java.srcDirs = [ 'test/java']
+            resources.srcDirs = ['test/java']
+            aidl.srcDirs = ['test/java']
+            renderscript.srcDirs = ['test/java']
+            res.srcDirs = ['test/res']
+            assets.srcDirs = ['test/assets']
+        }
     }
+
+    // required for Android Studio (see notes on http://stackoverflow.com/a/29405415)
+    testOptions { unitTests.returnDefaultValues = true }
 }
