@@ -32,13 +32,15 @@ public class CommonSenseProxyTest {
     @Test(expected=IOException.class)
     public void doLoginTest() throws IOException, JSONException {
         Log.d(TAG, "Started doLoginTest()");
-        final String appKey = "", userName = "myUser", userPass = "myPass";
+        final String appKey = "myAppKey", userName = "myUser", userPass = "myPass";
 
         final CommonSenseProxy cs = new CommonSenseProxy(false, appKey);
+        Log.d(TAG, "Created proxy for application key: "+appKey);
+
         final String sessionID = cs.loginUser(userName, userPass);
         Log.d(TAG, "Logged in as "+userName+" with session ID: "+sessionID);
 
-        cs.logoutCurrentUserWithSessionID(sessionID);
+        cs.logoutCurrentUser(sessionID);
         Log.d(TAG, "Logged out from session ID: " + sessionID);
 
         Log.d(TAG, "Completed doLoginTest()");
