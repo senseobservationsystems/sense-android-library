@@ -5,6 +5,6 @@
     package="nl.sense_os.service"
     android:versionName="3.4.2">
     <!-- <uses-sdk -->
-    <uses-sdk android:minSdkVersion="7" tools:overrideLibrary="com.google.android.gms"/>
+    <uses-sdk android:minSdkVersion="9" tools:overrideLibrary="com.google.android.gms"/>
  
 </manifest>
