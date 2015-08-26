@@ -2,15 +2,22 @@ package nl.sense_os.datastorageengine;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.BeforeClass;
+import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import nl.sense_os.datastorageengine.CSUtils;
 
 import java.io.IOException;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 import nl.sense_os.service.BuildConfig;
 
@@ -21,29 +28,508 @@ import nl.sense_os.service.BuildConfig;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class CommonSenseProxyTest {
 
-    private static final String TAG = "CommonSenseProxyTest";
+    Map<String, String> newUser;
+    CommonSenseProxy proxy = new CommonSenseProxy(false, CSUtils.APP_KEY);
 
-    /** TODO move to common/suite extension of {@link RobolectricTestRunner} */
-    @BeforeClass
-    public static void setupLogging() {
-        ShadowLog.stream = System.out;
+    @Before
+    public void setUp () throws IOException{
+        newUser = CSUtils.createCSAccount();
+        System.out.println("Start");
+        System.out.println("Start: "+newUser.get("username"));
+
     }
 
-    @Test(expected=IOException.class)
-    public void doLoginTest() throws IOException, JSONException {
-        Log.d(TAG, "Started doLoginTest()");
-        final String appKey = "myAppKey", userName = "myUser", userPass = "myPass";
-
-        final CommonSenseProxy cs = new CommonSenseProxy(false, appKey);
-        Log.d(TAG, "Created proxy for application key: "+appKey);
-
-        final String sessionID = cs.loginUser(userName, userPass);
-        Log.d(TAG, "Logged in as "+userName+" with session ID: "+sessionID);
-
-        cs.logoutCurrentUser(sessionID);
-        Log.d(TAG, "Logged out from session ID: " + sessionID);
-
-        Log.d(TAG, "Completed doLoginTest()");
+    @Test
+    public void testLoginUserWithValidUsernameAndValidPassword() throws IOException, JSONException{
+        String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
+        assertNotNull("session_id returned from server is null", session_id);
+        assertFalse("session_id returned from server is empty",session_id.isEmpty());
     }
 
+    public void testLoginUserWithValidUsernameAndWrongPassword() throws IOException, JSONException{
+        String session_id = proxy.loginUser(newUser.get("name"),"123456789");
+        assertNotNull("session_id returned from server is null", session_id);
+        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+    }
+
+    public void testLoginUserWithValidUsernameAndNullPassword() throws IOException, JSONException{
+        String session_id = proxy.loginUser(newUser.get("name"),null);
+        assertNotNull("session_id returned from server is null", session_id);
+        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+    }
+    public void testLoginUserWithValidUsernameAndEmptyPassword() throws IOException, JSONException{
+        String session_id = proxy.loginUser(newUser.get("name"),"");
+        assertNotNull("session_id returned from server is null", session_id);
+        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+    }
+
+    public void testLoginUserWithNullUsernameAndValidPassword() throws IOException, JSONException{
+        String session_id = proxy.loginUser(null,newUser.get("password"));
+        assertNotNull("session_id returned from server is null", session_id);
+        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+    }
+
+    public void testLoginUserWithEmptyUsernameAndValidPassword() throws IOException, JSONException{
+        String session_id = proxy.loginUser("",newUser.get("password"));
+        assertNotNull("session_id returned from server is null", session_id);
+        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+    }
+
+    public void testLogoutCurrentUserWithValidSessionID() throws IOException, JSONException{
+        // log in first in order to log out
+        String session_id = proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        boolean result = proxy.logoutCurrentUser(session_id);
+        assertTrue("current user cannot be successfully logged out", result);
+    }
+
+    public void testLogoutCurrentUserWithNullSessionID() throws IOException, JSONException{
+        // log in first in order to log out
+        proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        boolean result = proxy.logoutCurrentUser(null);
+        assertTrue("current user cannot be successfully logged out", result);
+    }
+
+    public void testLogoutCurrentUserWithEmptySessionID() throws IOException, JSONException{
+        // log in first in order to log out
+        proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        boolean result = proxy.logoutCurrentUser("");
+        assertTrue("current user cannot be successfully logged out", result);
+    }
+
+    public void testLogoutCurrentUserWithWrongSessionID() throws IOException, JSONException{
+        // log in first in order to log out
+        proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        boolean result = proxy.logoutCurrentUser("987654321");
+        assertTrue("current user cannot be successfully logged out", result);
+    }
+
+    public void testLogoutCurrentUserTwice() throws IOException, JSONException{
+        // log in first in order to log out
+        String session_id = proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        boolean result = proxy.logoutCurrentUser(session_id);
+        assertTrue("current user cannot be logged out", result);
+        result = proxy.logoutCurrentUser(session_id);
+        assertTrue("attempts to log out twice", result);
+    }
+
+    public void testCreateSensorAndGetSensorWithValidParams() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        int sensorNumber = 0;
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval:\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+        sensorNumber++;
+
+        // then check if the sensor id has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The sensor id returned from the server is empty",false, sensorId.isEmpty());
+
+        // check the sensor with valid session id
+        JSONArray sensorList = proxy.getAllSensors(sessionID);
+        assertEquals("Failed to get correct number of sensor", sensorNumber, sensorList.length());
+    }
+
+    public void testCreateSensorMoreThanOne() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        int sensorNumber = 0;
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval:\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+        sensorNumber++;
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        // check the sensor with valid session id
+        JSONArray sensorList = proxy.getAllSensors(sessionID);
+        assertEquals("Failed to get correct number of sensor", sensorNumber, sensorList.length());
+
+        name = "test1";
+        displayName = "test1";
+        // first check the sensor JSONObject has been created,
+        sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+        sensorNumber++;
+
+        // then check if the sensorid has been returned from the server
+        sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        // check the sensor with valid session id
+        sensorList = proxy.getAllSensors(sessionID);
+        assertEquals("Failed to get correct number of sensor", sensorNumber, sensorList.length());
+    }
+
+    public void testCreateSensorWithEmptyName() throws IOException, JSONException {
+        /*This should be the same as testing invalid dataType, deviceType and Session ID*/
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+    }
+
+    public void testCreateSensorWithNullDisplayName() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, null, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+    }
+
+    public void testCreateSensorWithNullDataStructure() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, null, deviceType, dataType, null, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+    }
+
+    public void testGetAllSensorsWithNullSessionId() throws IOException, JSONException {
+        // log in first in order to create sensor
+        proxy.loginUser(newUser.get("name"), newUser.get("password"));
+
+        // check the sensor with valid session id
+        JSONArray sensorList = proxy.getAllSensors(null);
+        assertEquals("Failed to get correct number of sensor", true, (sensorList.length()>0));
+    }
+
+    public void testGetAllSensorsWithEmptySessionId() throws IOException, JSONException {
+        // log in first in order to create sensor
+        proxy.loginUser(newUser.get("name"), newUser.get("password"));
+
+        // check the sensor with valid session id
+        JSONArray sensorList = proxy.getAllSensors("");
+        assertEquals("Failed to get correct number of sensor", true, (sensorList.length()>0));
+    }
+
+    public void testAddSensorWithValidParams() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        // add the sensor to a device
+        boolean result = proxy.addSensor(sensorId,"deviceType","uuid",sessionID);
+        assertEquals("Failed to add the sensor to a device", true,result);
+    }
+
+    public void testAddSensorWithNullUuid() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        // add the sensor to a device
+        boolean result = proxy.addSensor(sensorId,"deviceType",null,sessionID);
+        assertEquals("Failed to add the sensor to a device", true,result);
+    }
+
+    public void testGetAllDevicesWithSingleDevice() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        int deviceNumber = 0;
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        // add the sensor to a device
+        boolean result = proxy.addSensor(sensorId,"deviceType","uuid",sessionID);
+        assertEquals("Failed to add the sensor to a device", true,result);
+        deviceNumber++;
+
+        JSONArray deviceList = proxy.getAllDevices(sessionID);
+        assertNotNull("Failed to get the list of devices", deviceList);
+        assertEquals("Incorrect device number", deviceNumber,deviceList.length());
+
+    }
+
+    public void testGetAllDevicesWithTwoDevices() throws IOException, JSONException {
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        int deviceNumber = 0;
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        // add the sensor to a device
+        boolean result = proxy.addSensor(sensorId,"deviceType","uuid",sessionID);
+        deviceNumber++;
+        assertEquals("Failed to add the sensor to a device", true,result);
+
+        JSONArray deviceList = proxy.getAllDevices(sessionID);
+        assertNotNull("Failed to get the list of devices", deviceList);
+        assertEquals("Incorrect device number", deviceNumber, deviceList.length());
+
+        name = "test1";
+        displayName = "test1";
+        deviceType = "deviceType1";
+        value = "{\"interval:\":0,\"data\":[2.23, 19.45, 20.0]}";
+        dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        // add the sensor to a device
+        result = proxy.addSensor(sensorId,"deviceType1","uuid1",sessionID);
+        deviceNumber++;
+        assertEquals("Failed to add the sensor to a device", true,result);
+
+        deviceList = proxy.getAllDevices(sessionID);
+        assertNotNull("Failed to get the list of devices", deviceList);
+        assertEquals("Incorrect device number", deviceNumber, deviceList.length());
+
+    }
+
+    public void testPostDataWithInvalidDataFormat() throws IOException, JSONException{
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        JSONArray postData = new JSONArray();
+        JSONObject data = new JSONObject();
+        data.put("sensor_id", sensorId);
+        postData.put(data);
+
+        boolean result = proxy.postData(postData,sessionID);
+        assertEquals("Failed to post data to the server",true, result);
+
+    }
+    public void testPostDataAndGetDataWithValidParams()throws IOException, JSONException{
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        JSONArray postData = createDataPoint(sensorId);
+
+        boolean result = proxy.postData(postData,sessionID);
+        assertEquals("Failed to post data to the server",true, result);
+
+        long fromDate = System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7;
+        JSONArray getData = proxy.getData(sensorId, fromDate, sessionID);
+        assertEquals("Failed to get data from the server", true, (getData.length()!=0));
+
+    }
+
+    public void testPostDataAndGetDataWithInvalidParams()throws IOException, JSONException{
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        JSONArray postData = createDataPoint(sensorId);
+        boolean result = proxy.postData(postData,sessionID);
+        assertEquals("Failed to post data to the server",true, result);
+
+        long fromDate = System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7;
+        JSONArray getData = proxy.getData(sensorId, fromDate, null);
+        assertEquals("Failed to get data from the server", true, (getData.length()!=0));
+
+    }
+
+    public void testGetDataWithInvalidDate()throws IOException, JSONException{
+        // log in first in order to create sensor
+        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        int deviceNumber = 0;
+        String name = "test";
+        String displayName = "test";
+        String deviceType = "deviceType";
+        String dataType = "json";
+        String sessionID = session_id;
+        String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
+        String dataStructure = createDataStructure(value);
+
+        // first check the sensor JSONObject has been created,
+        JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
+        assertNotNull("Failed to create a sensor", sensor);
+
+        // then check if the sensorid has been returned from the server
+        String sensorId = sensor.get("sensor_id").toString();
+        assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
+
+        JSONArray postData = createDataPoint(sensorId);
+        boolean result = proxy.postData(postData,sessionID);
+        assertEquals("Failed to post data to the server",true, result);
+
+        long fromDate = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7;
+        JSONArray getData = proxy.getData(sensorId, fromDate, sessionID);
+        assertEquals("Failed to get data from the server", true, (getData.length()!=0));
+
+    }
+
+    private JSONArray createDataPoint(String sensorId) throws JSONException {
+        JSONObject value = new JSONObject();
+        value.put("value1",1);
+        value.put("value2",2);
+        value.put("value3",3);
+
+        JSONObject dataPoint = new JSONObject();
+        dataPoint.put("date",System.currentTimeMillis());
+        dataPoint.put("value",value);
+
+        JSONArray dataPoints = new JSONArray();
+        dataPoints.put(dataPoint);
+
+        JSONObject data = new JSONObject();
+        data.put("sensor_id", sensorId);
+        data.put("data", dataPoints);
+
+        JSONArray dataArray = new JSONArray();
+        dataArray.put(data);
+
+        return dataArray;
+    }
+
+    private String createDataStructure(String value) throws JSONException{
+        JSONObject dataStructJSon = new JSONObject(value);
+        JSONArray fieldNames = dataStructJSon.names();
+        for (int x = 0; x < fieldNames.length(); x++) {
+            String fieldName = fieldNames.getString(x);
+            int start = dataStructJSon.get(fieldName).getClass().getName().lastIndexOf(".");
+            dataStructJSon.put(fieldName, dataStructJSon.get(fieldName).getClass()
+                    .getName().substring(start + 1));
+
+        }
+        return dataStructJSon.toString().replaceAll("\"", "\\\"");
+    }
+
+    @After
+    public void tearDown() throws IOException{
+        CSUtils.deleteAccount(newUser.get("name"), newUser.get("password"));
+    }
 }

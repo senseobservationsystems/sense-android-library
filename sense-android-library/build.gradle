@@ -17,17 +17,15 @@ repositories {
 }
  
 dependencies {
-    compile 'com.android.support:support-v4:19.+'
-    compile 'com.android.support:appcompat-v7:19.+'
-    compile 'com.google.android.gms:play-services:6.1.71'
+    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.google.android.gms:play-services:7.8.0'
     compile files('libs/gcm.jar', 'libs/cordova-3.6.4.jar', 'libs/sqlcipher.jar')
 
     testCompile 'junit:junit:4.12'
-    //testCompile "org.mockito:mockito-core:1.10.19"
-    testCompile('org.robolectric:robolectric:3.0') {
-        exclude group: 'commons-logging', module: 'commons-logging'
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
+    testCompile('org.robolectric:robolectric:3.0')
+
+
 }
 
 android {
@@ -60,7 +58,4 @@ android {
             assets.srcDirs = ['test/assets']
         }
     }
-
-    // required for Android Studio (see notes on http://stackoverflow.com/a/29405415)
-    testOptions { unitTests.returnDefaultValues = true }
 }
