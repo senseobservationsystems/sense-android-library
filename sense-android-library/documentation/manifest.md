@@ -1,5 +1,5 @@
 # AndroidManifest {#androidmanifest}
-The Android manifest defines the permissions, services and intent handlers used by the Sense Android library. 
+The Android manifest defines the permissions, services and intent handlers used by the Sense Android library. An example manifest file can be found in the sense-android-demo: https://github.com/senseobservationsystems/sense-android-library/blob/master/samples/sense-android-demo/AndroidManifest.xml
 
 # Permissions {#permissions}
 The Sense Android library defines a lot of permissions because the library should be capable of accessing many different resources for  the wide variety of sensor output streams. It is not recommended to leave any of these permission out of your application's manifest, but if you want to do so then please make sure that all the required sensors produce valid output.  
