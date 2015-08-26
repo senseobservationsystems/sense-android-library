@@ -59,6 +59,15 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
     private TraveledDistanceEstimator distanceEstimator;
     private PeriodicPollAlarmReceiver pollAlarmReceiver;
 
+    private static final long BALANCED_FASTEST_INTERVAL_MILISECONDS = 1*60*1000;
+    private static final long BALANCED_INTERVAL_MILISECONDS         = 5*60*1000;
+
+    private static final long HIGH_ACCURACY_FASTEST_INTERVAL_MILISECONDS = 1*1000;
+    private static final long HIGH_ACCURACY_INTERVAL_MILISECONDS         = 5*1000;
+
+
+
+
     /**
      * Constructor.
      * 
@@ -132,10 +141,16 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
         String priority = mainPrefs.getString(SensePrefs.Main.Location.FUSED_PROVIDER_PRIORITY, SensePrefs.Main.Location.FusedProviderPriority.BALANCED);
         if(priority.equals(SensePrefs.Main.Location.FusedProviderPriority.LOW_POWER))
             locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-        else if(priority.equals(SensePrefs.Main.Location.FusedProviderPriority.ACCURATE))
+        else if(priority.equals(SensePrefs.Main.Location.FusedProviderPriority.ACCURATE)){
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        else
+            locationRequest.setFastestInterval(HIGH_ACCURACY_FASTEST_INTERVAL_MILISECONDS);
+            locationRequest.setInterval(HIGH_ACCURACY_INTERVAL_MILISECONDS);
+        }
+        else{
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            locationRequest.setFastestInterval(BALANCED_FASTEST_INTERVAL_MILISECONDS);
+            locationRequest.setInterval(BALANCED_INTERVAL_MILISECONDS);
+        }
         return locationRequest;
     }
 
