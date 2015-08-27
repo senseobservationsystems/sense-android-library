@@ -1,25 +1,28 @@
 package nl.sense_os.datastorageengine;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
-import nl.sense_os.datastorageengine.CSUtils;
+import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 import nl.sense_os.service.BuildConfig;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * {@link CommonSenseProxyTest} tests whether {@link CommonSenseProxy} covers the full CommonSense API
@@ -28,14 +31,19 @@ import nl.sense_os.service.BuildConfig;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class CommonSenseProxyTest {
 
-    Map<String, String> newUser;
+    static Map<String, String> newUser;
     CommonSenseProxy proxy = new CommonSenseProxy(false, CSUtils.APP_KEY);
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+
     @Before
-    public void setUp () throws IOException{
+    public static void setUp () throws IOException{
+        System.out.println("befor");
         newUser = CSUtils.createCSAccount();
-        System.out.println("Start");
-        System.out.println("Start: "+newUser.get("username"));
+        String username = newUser.get("username");
+        System.out.println("username is:" + username);
 
     }
 
@@ -45,76 +53,82 @@ public class CommonSenseProxyTest {
         assertNotNull("session_id returned from server is null", session_id);
         assertFalse("session_id returned from server is empty",session_id.isEmpty());
     }
-
+    @Test
     public void testLoginUserWithValidUsernameAndWrongPassword() throws IOException, JSONException{
-        String session_id = proxy.loginUser(newUser.get("name"),"123456789");
-        assertNotNull("session_id returned from server is null", session_id);
-        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+        thrown.expect(IOException.class);
+        thrown.expectMessage("could not get InputStream");
+        proxy.loginUser(newUser.get("username"), "123456789");
     }
-
+    @Test
     public void testLoginUserWithValidUsernameAndNullPassword() throws IOException, JSONException{
-        String session_id = proxy.loginUser(newUser.get("name"),null);
-        assertNotNull("session_id returned from server is null", session_id);
-        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+        thrown.expect(IOException.class);
+        thrown.expectMessage("invalid input of username or password");
+        proxy.loginUser(newUser.get("username"),null);
     }
+    @Test
     public void testLoginUserWithValidUsernameAndEmptyPassword() throws IOException, JSONException{
-        String session_id = proxy.loginUser(newUser.get("name"),"");
-        assertNotNull("session_id returned from server is null", session_id);
-        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+        thrown.expect(IOException.class);
+        thrown.expectMessage("invalid input of username or password");
+        proxy.loginUser(newUser.get("username"),"");
     }
-
+    @Test
     public void testLoginUserWithNullUsernameAndValidPassword() throws IOException, JSONException{
-        String session_id = proxy.loginUser(null,newUser.get("password"));
-        assertNotNull("session_id returned from server is null", session_id);
-        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+        thrown.expect(IOException.class);
+        thrown.expectMessage("invalid input of username or password");
+        proxy.loginUser(null,newUser.get("password"));
     }
-
+    @Test
     public void testLoginUserWithEmptyUsernameAndValidPassword() throws IOException, JSONException{
-        String session_id = proxy.loginUser("",newUser.get("password"));
-        assertNotNull("session_id returned from server is null", session_id);
-        assertFalse("session_id returned from server is empty",session_id.isEmpty());
+        thrown.expect(IOException.class);
+        thrown.expectMessage("invalid input of username or password");
+        proxy.loginUser(null,newUser.get("password"));
+        proxy.loginUser("",newUser.get("password"));
     }
-
+    @Test
     public void testLogoutCurrentUserWithValidSessionID() throws IOException, JSONException{
         // log in first in order to log out
-        String session_id = proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(session_id);
         assertTrue("current user cannot be successfully logged out", result);
     }
-
+    @Test
     public void testLogoutCurrentUserWithNullSessionID() throws IOException, JSONException{
+        thrown.expect(IOException.class);
+        thrown.expectMessage("invalid input of session ID");
         // log in first in order to log out
-        proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(null);
-        assertTrue("current user cannot be successfully logged out", result);
     }
-
+    @Test
     public void testLogoutCurrentUserWithEmptySessionID() throws IOException, JSONException{
+        thrown.expect(IOException.class);
+        thrown.expectMessage("invalid input of session ID");
         // log in first in order to log out
-        proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser("");
-        assertTrue("current user cannot be successfully logged out", result);
     }
-
+    @Test
     public void testLogoutCurrentUserWithWrongSessionID() throws IOException, JSONException{
+        thrown.expect(IOException.class);
+        thrown.expectMessage("logout with session id failed");
         // log in first in order to log out
-        proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser("987654321");
-        assertTrue("current user cannot be successfully logged out", result);
+        //assertTrue("current user cannot be successfully logged out", result);
     }
-
+    @Test
     public void testLogoutCurrentUserTwice() throws IOException, JSONException{
         // log in first in order to log out
-        String session_id = proxy.loginUser(newUser.get("name"),newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(session_id);
         assertTrue("current user cannot be logged out", result);
         result = proxy.logoutCurrentUser(session_id);
         assertTrue("attempts to log out twice", result);
     }
-
+    @Test
     public void testCreateSensorAndGetSensorWithValidParams() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int sensorNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -137,10 +151,10 @@ public class CommonSenseProxyTest {
         JSONArray sensorList = proxy.getAllSensors(sessionID);
         assertEquals("Failed to get correct number of sensor", sensorNumber, sensorList.length());
     }
-
+    @Test
     public void testCreateSensorMoreThanOne() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int sensorNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -178,11 +192,11 @@ public class CommonSenseProxyTest {
         sensorList = proxy.getAllSensors(sessionID);
         assertEquals("Failed to get correct number of sensor", sensorNumber, sensorList.length());
     }
-
+    @Test
     public void testCreateSensorWithEmptyName() throws IOException, JSONException {
         /*This should be the same as testing invalid dataType, deviceType and Session ID*/
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -195,10 +209,10 @@ public class CommonSenseProxyTest {
         JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
         assertNotNull("Failed to create a sensor", sensor);
     }
-
+    @Test
     public void testCreateSensorWithNullDisplayName() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String deviceType = "deviceType";
         String dataType = "json";
@@ -210,10 +224,10 @@ public class CommonSenseProxyTest {
         JSONObject sensor = proxy.createSensor(name, null, deviceType, dataType, dataStructure, sessionID);
         assertNotNull("Failed to create a sensor", sensor);
     }
-
+    @Test
     public void testCreateSensorWithNullDataStructure() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String deviceType = "deviceType";
         String dataType = "json";
@@ -223,28 +237,28 @@ public class CommonSenseProxyTest {
         JSONObject sensor = proxy.createSensor(name, null, deviceType, dataType, null, sessionID);
         assertNotNull("Failed to create a sensor", sensor);
     }
-
+    @Test
     public void testGetAllSensorsWithNullSessionId() throws IOException, JSONException {
         // log in first in order to create sensor
-        proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        proxy.loginUser(newUser.get("username"), newUser.get("password"));
 
         // check the sensor with valid session id
         JSONArray sensorList = proxy.getAllSensors(null);
         assertEquals("Failed to get correct number of sensor", true, (sensorList.length()>0));
     }
-
+    @Test
     public void testGetAllSensorsWithEmptySessionId() throws IOException, JSONException {
         // log in first in order to create sensor
-        proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        proxy.loginUser(newUser.get("username"), newUser.get("password"));
 
         // check the sensor with valid session id
         JSONArray sensorList = proxy.getAllSensors("");
         assertEquals("Failed to get correct number of sensor", true, (sensorList.length()>0));
     }
-
+    @Test
     public void testAddSensorWithValidParams() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -265,10 +279,10 @@ public class CommonSenseProxyTest {
         boolean result = proxy.addSensor(sensorId,"deviceType","uuid",sessionID);
         assertEquals("Failed to add the sensor to a device", true,result);
     }
-
+    @Test
     public void testAddSensorWithNullUuid() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -289,10 +303,10 @@ public class CommonSenseProxyTest {
         boolean result = proxy.addSensor(sensorId,"deviceType",null,sessionID);
         assertEquals("Failed to add the sensor to a device", true,result);
     }
-
+    @Test
     public void testGetAllDevicesWithSingleDevice() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -320,10 +334,10 @@ public class CommonSenseProxyTest {
         assertEquals("Incorrect device number", deviceNumber,deviceList.length());
 
     }
-
+    @Test
     public void testGetAllDevicesWithTwoDevices() throws IOException, JSONException {
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -374,10 +388,10 @@ public class CommonSenseProxyTest {
         assertEquals("Incorrect device number", deviceNumber, deviceList.length());
 
     }
-
+    @Test
     public void testPostDataWithInvalidDataFormat() throws IOException, JSONException{
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -403,9 +417,10 @@ public class CommonSenseProxyTest {
         assertEquals("Failed to post data to the server",true, result);
 
     }
+    @Test
     public void testPostDataAndGetDataWithValidParams()throws IOException, JSONException{
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -432,10 +447,10 @@ public class CommonSenseProxyTest {
         assertEquals("Failed to get data from the server", true, (getData.length()!=0));
 
     }
-
+    @Test
     public void testPostDataAndGetDataWithInvalidParams()throws IOException, JSONException{
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -461,10 +476,10 @@ public class CommonSenseProxyTest {
         assertEquals("Failed to get data from the server", true, (getData.length()!=0));
 
     }
-
+    @Test
     public void testGetDataWithInvalidDate()throws IOException, JSONException{
         // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("name"), newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -530,6 +545,7 @@ public class CommonSenseProxyTest {
 
     @After
     public void tearDown() throws IOException{
-        CSUtils.deleteAccount(newUser.get("name"), newUser.get("password"));
+
+        CSUtils.deleteAccount(newUser.get("username"), newUser.get("password"),newUser.get("id"));
     }
 }

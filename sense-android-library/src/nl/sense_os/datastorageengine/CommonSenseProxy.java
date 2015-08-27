@@ -108,7 +108,6 @@ public class CommonSenseProxy {
         user.put("password", password);
 
         Map<String, String> response = request(url, user, null, HTTP_METHOD_POST);
-
         // if response code is not 200 (OK), the login was incorrect
         int result = checkResponseCode(response.get(RESPONSE_CODE), "login");
 
@@ -161,7 +160,7 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      *@result				JSONObject with the information of the created sensor. Null if the sensor ID is null or empty.
      */
-    public static JSONObject createSensor(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException, JSONException
+    public JSONObject createSensor(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException, JSONException
     {
         if(name == null || name.isEmpty() || sessionID == null || sessionID.isEmpty()|| deviceType == null || deviceType.isEmpty()||  dataType == null || dataType.isEmpty())
             throw new IOException("invalid input of name or sessionID or deviceType or dataType");
@@ -220,7 +219,7 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				Array of sensors. Each object will be a JSONObject with the resulting sensor information. Will be null if an error occurs.
      */
-    public static JSONArray getAllSensors(String sessionID) throws IOException, JSONException
+    public JSONArray getAllSensors(String sessionID) throws IOException, JSONException
     {
         if(sessionID == null || sessionID.isEmpty())
             throw new IOException("getAllSensors: invalid input of sessionID");
@@ -237,7 +236,7 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				Array of devices. Each object will be a JSONObject with the resulting device information. Will be null if an error occurs.
      */
-    public static JSONArray getAllDevices(String sessionID) throws IOException, JSONException
+    public JSONArray getAllDevices(String sessionID) throws IOException, JSONException
     {
         if(sessionID == null || sessionID.isEmpty())
             throw new IOException("getAllDevices: invalid input of sessionID");
@@ -260,7 +259,7 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				Whether or not the sensor was successfully added to the device.
      */
-    public static boolean addSensor(String csSensorID, String deviceType, String UUID, String sessionID)throws IOException, JSONException
+    public boolean addSensor(String csSensorID, String deviceType, String UUID, String sessionID)throws IOException, JSONException
     {
         if(csSensorID == null || csSensorID.isEmpty() || deviceType == null || deviceType.isEmpty()|| UUID == null || UUID.isEmpty()|| sessionID == null || sessionID.isEmpty())
             throw new IOException("invalid input of csSensorID or deviceType or UUID or sessionID");
@@ -294,7 +293,7 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				Whether or not the post of the data was succesfull.
      */
-    public static boolean postData(JSONArray data, String sessionID) throws IOException, JSONException
+    public boolean postData(JSONArray data, String sessionID) throws IOException, JSONException
     {
         if(sessionID == null || sessionID.isEmpty() || data == null || data.length() == 0)
             throw new IOException("invalid input of data or sessionID");
@@ -322,7 +321,7 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				    JSONArray with the resulting data. Each object is a JSONObject with the data as provided by the backend. Will be null if an error occurred.
      */
-    public static JSONArray getData(String sensorID, long fromDate, String sessionID) throws IOException, JSONException
+    public JSONArray getData(String sensorID, long fromDate, String sessionID) throws IOException, JSONException
     {
         if(fromDate == 0 || sensorID == null || sensorID.isEmpty() ||sessionID == null || sessionID.isEmpty())
             throw new IOException("invalid input of date or or sensorID or sessionID");
@@ -350,7 +349,7 @@ public class CommonSenseProxy {
      * @throws IOException
      */
 
-    private static Map<String, String> request( String urlString,
+    public static Map<String, String> request( String urlString,
                                               JSONObject content, String sessionID, String requestMethod) throws IOException {
 
         HttpURLConnection urlConnection = null;

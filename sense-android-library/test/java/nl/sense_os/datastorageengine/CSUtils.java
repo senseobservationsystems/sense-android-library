@@ -44,6 +44,7 @@ public class CSUtils {
         String username = "spam+"+now+"@sense-os.nl";
         String email = "spam+"+now+"@sense-os.nl";
         String password = "87f95196987d8c3bf339e2a52be957f4" ;
+        String userid = "";
 
         try{
             user.put("username", username);
@@ -112,7 +113,12 @@ public class CSUtils {
             }
             response.put("RESPONSE_CONTENT", responseContent.toString());
             response.put("RESPONSE_CODE", Integer.toString(urlConnection.getResponseCode()));
-
+            try {
+                JSONObject userobj = new JSONObject(response.get("RESPONSE_CONTENT")).getJSONObject("user");
+                userid = userobj.getString("id");
+            }catch(JSONException e){
+                return null;
+            }
             // clean up
             reader.close();
             reader = null;
@@ -139,6 +145,8 @@ public class CSUtils {
                 result.put("username", username);
                 result.put("email", email);
                 result.put("password", password);
+                result.put("id",userid);
+
                 return result;
             }else{
                 return null;
@@ -158,23 +166,18 @@ public class CSUtils {
 
     }
 
-    public static boolean deleteAccount(String userName, String passWord){
+    public static boolean deleteAccount(String userName, String passWord,String userId){
 
-        String appKey = "";
+        //String appKey = "";
 
-        CommonSenseProxy csProxy = new CommonSenseProxy(false, appKey);
+        CommonSenseProxy csProxy = new CommonSenseProxy(false,  APP_KEY);
 
         try {
-            String sessioId = csProxy.loginUser(userName, passWord);
-            String url = "http://api.staging.sense-os.nl/users/self";
-            Map<String, String >response = request(url, null, sessioId, "POST");
-            String rawJSONString = response.get("RESPONSE_CONTENT");
-            JSONObject user = new JSONObject(rawJSONString);
-            int userId = user.getInt("user_id");
+            String sessionId = csProxy.loginUser(userName, passWord);
+            String url = "http://api.staging.sense-os.nl/users/"+userId;
+            Map<String, String> response = request(url, null, sessionId, "DELETE");
 
-            url = "http://api.staging.sense-os.nl/users/"+userId;
-            response = request(url, null, sessioId, "DELETE");
-
+            System.out.println("Delete："+response.get("RESPONSE_CODE"));
 
         } catch (IOException e) {
             e.printStackTrace();
