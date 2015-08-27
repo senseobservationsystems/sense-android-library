@@ -122,8 +122,6 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testCreateSensorAndGetSensorWithValidParams() throws IOException, JSONException {
-        //thrown.expect(IOException.class);
-        //thrown.expectMessage(startsWith("Incorrect response of"));
         // log in first in order to create sensor
         String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int sensorNumber = 0;
@@ -191,6 +189,8 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testCreateSensorWithEmptyName() throws IOException, JSONException {
+        thrown.expect(IOException.class);
+        thrown.expectMessage(startsWith("invalid input of name"));
         /*This should be the same as testing invalid dataType, deviceType and Session ID*/
         // log in first in order to create sensor
         String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
@@ -204,7 +204,6 @@ public class CommonSenseProxyTest {
 
         // first check the sensor JSONObject has been created,
         JSONObject sensor = proxy.createSensor(name, displayName, deviceType, dataType, dataStructure, sessionID);
-        assertNotNull("Failed to create a sensor", sensor);
     }
     @Test
     public void testCreateSensorWithNullDisplayName() throws IOException, JSONException {
@@ -236,21 +235,23 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testGetAllSensorsWithNullSessionId() throws IOException, JSONException {
+        thrown.expect(IOException.class);
+        thrown.expectMessage("getAllSensors: invalid input of sessionID");
         // log in first in order to create sensor
         proxy.loginUser(newUser.get("username"), newUser.get("password"));
 
         // check the sensor with valid session id
         JSONArray sensorList = proxy.getAllSensors(null);
-        assertEquals("Failed to get correct number of sensor", true, (sensorList.length()>0));
     }
     @Test
     public void testGetAllSensorsWithEmptySessionId() throws IOException, JSONException {
+        thrown.expect(IOException.class);
+        thrown.expectMessage("getAllSensors: invalid input of sessionID");
         // log in first in order to create sensor
         proxy.loginUser(newUser.get("username"), newUser.get("password"));
 
         // check the sensor with valid session id
         JSONArray sensorList = proxy.getAllSensors("");
-        assertEquals("Failed to get correct number of sensor", true, (sensorList.length()>0));
     }
     @Test
     public void testAddSensorWithValidParams() throws IOException, JSONException {
@@ -278,6 +279,8 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testAddSensorWithNullUuid() throws IOException, JSONException {
+        thrown.expect(IOException.class);
+        thrown.expectMessage(startsWith("invalid input of csSensorID"));
         // log in first in order to create sensor
         String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
@@ -408,7 +411,9 @@ public class CommonSenseProxyTest {
         JSONArray postData = new JSONArray();
         JSONObject data = new JSONObject();
         data.put("sensor_id", sensorId);
+        data.put("data","1234");
         postData.put(data);
+        System.out.println(postData.toString());
 
         boolean result = proxy.postData(postData,sessionID);
         assertEquals("Failed to post data to the server",true, result);

@@ -303,6 +303,7 @@ public class CommonSenseProxy {
 
         String url = makeUrlFor(URLE_UPLOAD_MULTIPLE_SENSORS,null);
         Map<String, String> response = request(url, postData, sessionID,"POST");
+        System.out.println("response is:" + response.get(RESPONSE_CODE));
         int code = checkResponseCode(response.get(RESPONSE_CODE), "postData");
         if(code != -2)
             throw new IOException("Incorrect response of postData from CommonSense: " + code);
