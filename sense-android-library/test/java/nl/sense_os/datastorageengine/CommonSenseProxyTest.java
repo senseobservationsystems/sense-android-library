@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.annotation.Config;
-
+import static org.hamcrest.core.StringStartsWith.startsWith;
 import java.io.IOException;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class CommonSenseProxyTest {
 
-    static Map<String, String> newUser;
+    Map<String, String> newUser;
     CommonSenseProxy proxy = new CommonSenseProxy(false, CSUtils.APP_KEY);
 
     @Rule
@@ -39,11 +39,8 @@ public class CommonSenseProxyTest {
 
 
     @Before
-    public static void setUp () throws IOException{
-        System.out.println("befor");
+    public  void setUp () throws IOException{
         newUser = CSUtils.createCSAccount();
-        String username = newUser.get("username");
-        System.out.println("username is:" + username);
 
     }
 
@@ -81,7 +78,6 @@ public class CommonSenseProxyTest {
     public void testLoginUserWithEmptyUsernameAndValidPassword() throws IOException, JSONException{
         thrown.expect(IOException.class);
         thrown.expectMessage("invalid input of username or password");
-        proxy.loginUser(null,newUser.get("password"));
         proxy.loginUser("",newUser.get("password"));
     }
     @Test
@@ -114,19 +110,20 @@ public class CommonSenseProxyTest {
         // log in first in order to log out
         proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser("987654321");
-        //assertTrue("current user cannot be successfully logged out", result);
     }
     @Test
     public void testLogoutCurrentUserTwice() throws IOException, JSONException{
+        thrown.expect(IOException.class);
+        thrown.expectMessage("logout with session id failed");
         // log in first in order to log out
         String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(session_id);
-        assertTrue("current user cannot be logged out", result);
         result = proxy.logoutCurrentUser(session_id);
-        assertTrue("attempts to log out twice", result);
     }
     @Test
     public void testCreateSensorAndGetSensorWithValidParams() throws IOException, JSONException {
+        //thrown.expect(IOException.class);
+        //thrown.expectMessage(startsWith("Incorrect response of"));
         // log in first in order to create sensor
         String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int sensorNumber = 0;

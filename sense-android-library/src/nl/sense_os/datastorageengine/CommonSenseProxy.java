@@ -528,7 +528,7 @@ public class CommonSenseProxy {
         if(action.equals(URL_LOGIN) || action.equals(URL_LOGOUT)){
             url = URL_AUTH + "/" + action + appendix;
         }else{
-            url = URL_AUTH + "/" + action + URL_JSON_SUFFIX + appendix;
+            url = URL_BASE + "/" + action + URL_JSON_SUFFIX + appendix;
         }
 
         return url;
@@ -559,7 +559,7 @@ public class CommonSenseProxy {
            Map<String, String> response = request(url, null, sessionID, "GET");
            int codeResult = checkResponseCode(response.get(RESPONSE_CODE), methodName);
            if (codeResult != 0) {
-               throw new IOException("Incorrect response of" + methodName + "from CommonSense");
+               throw new IOException("Incorrect response of " + methodName + " from CommonSense");
            }
            // parse response and store the list
            JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));

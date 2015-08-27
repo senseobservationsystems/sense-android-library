@@ -176,9 +176,6 @@ public class CSUtils {
             String sessionId = csProxy.loginUser(userName, passWord);
             String url = "http://api.staging.sense-os.nl/users/"+userId;
             Map<String, String> response = request(url, null, sessionId, "DELETE");
-
-            System.out.println("Delete："+response.get("RESPONSE_CODE"));
-
         } catch (IOException e) {
             e.printStackTrace();
             return false;
