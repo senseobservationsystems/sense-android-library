@@ -40,7 +40,6 @@ public class CommonSenseProxyTest {
 
     @Before
     public static void setUp () throws IOException{
-        System.out.println("befor");
         newUser = CSUtils.createCSAccount();
         String username = newUser.get("username");
         System.out.println("username is:" + username);
@@ -81,13 +80,12 @@ public class CommonSenseProxyTest {
     public void testLoginUserWithEmptyUsernameAndValidPassword() throws IOException, JSONException{
         thrown.expect(IOException.class);
         thrown.expectMessage("invalid input of username or password");
-        proxy.loginUser(null,newUser.get("password"));
-        proxy.loginUser("",newUser.get("password"));
+        proxy.loginUser("",newUser.get("password")); //WHY?
     }
     @Test
     public void testLogoutCurrentUserWithValidSessionID() throws IOException, JSONException{
         // log in first in order to log out
-        String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(session_id);
         assertTrue("current user cannot be successfully logged out", result);
     }
@@ -95,7 +93,6 @@ public class CommonSenseProxyTest {
     public void testLogoutCurrentUserWithNullSessionID() throws IOException, JSONException{
         thrown.expect(IOException.class);
         thrown.expectMessage("invalid input of session ID");
-        // log in first in order to log out
         proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(null);
     }
