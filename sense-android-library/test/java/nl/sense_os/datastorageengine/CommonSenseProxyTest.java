@@ -388,6 +388,8 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testPostDataWithInvalidDataFormat() throws IOException, JSONException{
+        thrown.expect(IOException.class);
+        thrown.expectMessage(startsWith("Incorrect response of postData from CommonSense"));
         // log in first in order to create sensor
         String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
@@ -408,10 +410,10 @@ public class CommonSenseProxyTest {
 
         JSONArray postData = new JSONArray();
         JSONObject data = new JSONObject();
-        data.put("sensor_id", sensorId);
+        //This is the invalid data format
+        data.put("sensor", sensorId);
         data.put("data","1234");
         postData.put(data);
-        System.out.println(postData.toString());
 
         boolean result = proxy.postData(postData,sessionID);
         assertEquals("Failed to post data to the server",true, result);
@@ -439,10 +441,10 @@ public class CommonSenseProxyTest {
 
         JSONArray postData = createDataPoint(sensorId);
 
+        double fromDate = System.currentTimeMillis()/1000;
         boolean result = proxy.postData(postData,sessionID);
         assertEquals("Failed to post data to the server",true, result);
 
-        long fromDate = System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7;
         JSONArray getData = proxy.getData(sensorId, fromDate, sessionID);
         assertEquals("Failed to get data from the server", true, (getData.length()!=0));
 
@@ -468,16 +470,18 @@ public class CommonSenseProxyTest {
         assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
 
         JSONArray postData = createDataPoint(sensorId);
+        float fromDate = System.currentTimeMillis()/1000;
         boolean result = proxy.postData(postData,sessionID);
         assertEquals("Failed to post data to the server",true, result);
 
-        long fromDate = System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7;
         JSONArray getData = proxy.getData(sensorId, fromDate, null);
         assertEquals("Failed to get data from the server", true, (getData.length()!=0));
 
     }
     @Test
     public void testGetDataWithInvalidDate()throws IOException, JSONException{
+        thrown.expect(IOException.class);
+        thrown.expectMessage(startsWith("start date cannot be after current date"));
         // log in first in order to create sensor
         String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
@@ -501,8 +505,9 @@ public class CommonSenseProxyTest {
         boolean result = proxy.postData(postData,sessionID);
         assertEquals("Failed to post data to the server",true, result);
 
-        long fromDate = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7;
+        double fromDate = (System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)/1000;
         JSONArray getData = proxy.getData(sensorId, fromDate, sessionID);
+
         assertEquals("Failed to get data from the server", true, (getData.length()!=0));
 
     }
@@ -514,8 +519,9 @@ public class CommonSenseProxyTest {
         value.put("value3",3);
 
         JSONObject dataPoint = new JSONObject();
-        dataPoint.put("date",System.currentTimeMillis());
         dataPoint.put("value",value);
+        double time = System.currentTimeMillis()/1000;
+        dataPoint.put("date",time);
 
         JSONArray dataPoints = new JSONArray();
         dataPoints.put(dataPoint);

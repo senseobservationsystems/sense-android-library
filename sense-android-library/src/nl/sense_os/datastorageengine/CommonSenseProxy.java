@@ -310,10 +310,9 @@ public class CommonSenseProxy {
 
         String url = makeUrlFor(URLE_UPLOAD_MULTIPLE_SENSORS,null);
         Map<String, String> response = request(url, postData, sessionID,"POST");
-        System.out.println("response is:" + response.get(RESPONSE_CODE));
         int code = checkResponseCode(response.get(RESPONSE_CODE), "postData");
         if(code != -2)
-            throw new IOException("Incorrect response of postData from CommonSense: " + code);
+            throw new IOException("Incorrect response of postData from CommonSense: " + response.get(RESPONSE_CODE));
         return (code == -2);
     }
 
@@ -329,11 +328,18 @@ public class CommonSenseProxy {
      * @throws IOException, JSONException
      * @result				    JSONArray with the resulting data. Each object is a JSONObject with the data as provided by the backend. Will be null if an error occurred.
      */
-    public JSONArray getData(String sensorID, long fromDate, String sessionID) throws IOException, JSONException
+    public JSONArray getData(String sensorID, double fromDate, String sessionID) throws IOException, JSONException
     {
         if(fromDate == 0 || sensorID == null || sensorID.isEmpty() ||sessionID == null || sessionID.isEmpty())
             throw new IOException("invalid input of date or or sensorID or sessionID");
-        String params = "?per_page=1000&start_date=" + fromDate + "&end_date=" + System.currentTimeMillis() +"&sort=DESC";
+        double currTime = System.currentTimeMillis() /1000;
+        if(fromDate > currTime){
+            throw new IOException ("start date cannot be after current date");
+        }
+        String params = "?per_page=1000&start_date=" + fromDate + "&end_date=" + currTime +"&sort=DESC";
+        System.out.println("prev:" + fromDate);
+        System.out.println("curr:" + currTime);
+
         String urlAction = URL_SENSORS + "/" + sensorID + "/" + URL_DATA;
 
         return getListForURLAction(urlAction, params, "data", sessionID, 1000, "getData");
@@ -565,9 +571,10 @@ public class CommonSenseProxy {
            String params = "?page=" + page + paramsString;
            String url =  makeUrlFor(urlAction,params);
            Map<String, String> response = request(url, null, sessionID, HTTP_METHOD_GET);
+
            int codeResult = checkResponseCode(response.get(RESPONSE_CODE), methodName);
            if (codeResult != 0) {
-               throw new IOException("Incorrect response of " + methodName + " from CommonSense");
+               throw new IOException("Incorrect response of " + methodName + " from CommonSense,\n the content is:" + response.get(RESPONSE_CONTENT));
            }
            // parse response and store the list
            JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));
