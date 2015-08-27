@@ -23,6 +23,12 @@ import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
+ * Proxy class, mimicking all the calls to CommonSense necessary for the Data Storage Engine. This
+ * class should not be used for any functionality other than performing calls to the CommonSense
+ * server. All other functionality such as storing username, password or session information is
+ * NOT handled by this class.
+ *
+ *
  * Created by fei on 20/08/15.
  */
 public class CommonSenseProxy {
@@ -39,7 +45,7 @@ public class CommonSenseProxy {
     public static final String BASE_URL_AUTHENTICATION_STAGING = "http://auth-api.staging.sense-os.nl/v1";
 
     public static final String URL_LOGIN                    = "login";
-    public static final String URL_LOGOUT                   ="logout";
+    public static final String URL_LOGOUT                   = "logout";
     public static final String URL_SENSOR_DEVICE            = "device";
     public static final String URL_SENSORS                  = "sensors";
     public static final String URL_USERS                    = "users";
@@ -112,6 +118,7 @@ public class CommonSenseProxy {
         int result = checkResponseCode(response.get(RESPONSE_CODE), "login");
 
         String session_id = response.get("session-id");
+
         if (result != 0 && session_id == null) {
             // something went horribly wrong
             Log.w(TAG, "CommonSense login failed: no session id received!");
@@ -273,7 +280,7 @@ public class CommonSenseProxy {
         String url = URL_SENSORS + "/" + csSensorID + "/" + URL_SENSOR_DEVICE;
                url = makeUrlFor(url,null);
         // perform actual request
-        Map<String, String> response = request(url, postData, sessionID, "POST");
+        Map<String, String> response = request(url, postData, sessionID, HTTP_METHOD_POST);
         int code = checkResponseCode(response.get(RESPONSE_CODE), "addSensor");
         // check if the response code is 201 CREATED
         if(code != -2)
@@ -557,7 +564,7 @@ public class CommonSenseProxy {
        while (!done) {
            String params = "?page=" + page + paramsString;
            String url =  makeUrlFor(urlAction,params);
-           Map<String, String> response = request(url, null, sessionID, "GET");
+           Map<String, String> response = request(url, null, sessionID, HTTP_METHOD_GET);
            int codeResult = checkResponseCode(response.get(RESPONSE_CODE), methodName);
            if (codeResult != 0) {
                throw new IOException("Incorrect response of " + methodName + " from CommonSense");

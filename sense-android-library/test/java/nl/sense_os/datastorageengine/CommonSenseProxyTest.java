@@ -78,12 +78,11 @@ public class CommonSenseProxyTest {
     public void testLoginUserWithEmptyUsernameAndValidPassword() throws IOException, JSONException{
         thrown.expect(IOException.class);
         thrown.expectMessage("invalid input of username or password");
-        proxy.loginUser("",newUser.get("password"));
     }
     @Test
     public void testLogoutCurrentUserWithValidSessionID() throws IOException, JSONException{
         // log in first in order to log out
-        String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
+        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(session_id);
         assertTrue("current user cannot be successfully logged out", result);
     }
@@ -91,7 +90,6 @@ public class CommonSenseProxyTest {
     public void testLogoutCurrentUserWithNullSessionID() throws IOException, JSONException{
         thrown.expect(IOException.class);
         thrown.expectMessage("invalid input of session ID");
-        // log in first in order to log out
         proxy.loginUser(newUser.get("username"),newUser.get("password"));
         boolean result = proxy.logoutCurrentUser(null);
     }
