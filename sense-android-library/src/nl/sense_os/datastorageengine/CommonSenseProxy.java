@@ -23,6 +23,12 @@ import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
+ * Proxy class, mimicking all the calls to CommonSense necessary for the Data Storage Engine. This
+ * class should not be used for any functionality other than performing calls to the CommonSense
+ * server. All other functionality such as storing username, password or session information is
+ * NOT handled by this class.
+ *
+ *
  * Created by fei on 20/08/15.
  */
 public class CommonSenseProxy {
@@ -529,7 +535,7 @@ public class CommonSenseProxy {
         if(action.equals(URL_LOGIN) || action.equals(URL_LOGOUT)){
             url = URL_AUTH + "/" + action + appendix;
         }else{
-            url = URL_AUTH + "/" + action + URL_JSON_SUFFIX + appendix;
+            url = URL_BASE + "/" + action + URL_JSON_SUFFIX + appendix;
         }
 
         return url;
@@ -560,7 +566,7 @@ public class CommonSenseProxy {
            Map<String, String> response = request(url, null, sessionID, HTTP_METHOD_GET);
            int codeResult = checkResponseCode(response.get(RESPONSE_CODE), methodName);
            if (codeResult != 0) {
-               throw new IOException("Incorrect response of" + methodName + "from CommonSense");
+               throw new IOException("Incorrect response of " + methodName + " from CommonSense");
            }
            // parse response and store the list
            JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));
