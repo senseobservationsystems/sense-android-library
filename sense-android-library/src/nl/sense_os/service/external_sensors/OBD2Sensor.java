@@ -185,12 +185,12 @@ public class OBD2Sensor extends ExternalSensor {
     	public void execute(){
     		try{
 				//determine the endtime of this execution
-    			long endtime = System.currentTimeMillis() + maximumexecutetime;
+    			long endtime = SNTP.getInstance().getTime() + maximumexecutetime;
     			
     			//send the command once
 				sendRequest();
 				
-				while(connected && System.currentTimeMillis() < endtime){
+				while(connected && SNTP.getInstance().getTime() < endtime){
 					//read the response
 					//TODO: if this does not work all the time, have a thorough look at readUpToPrompt from ELMBT.java in com.gtosoft.libvoyager.android;
 					receiveResponse();					

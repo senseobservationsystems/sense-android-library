@@ -376,7 +376,7 @@ public class SenseService extends Service {
 
         // store this login
         SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-        prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
+        prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, SNTP.getInstance().getTime()).commit();
 
         checkVersion();
     }

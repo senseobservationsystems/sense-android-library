@@ -311,9 +311,9 @@ public class OBD2Dongle {
 	                    updateHandler.post(updateThread = new UpdateThread());
 	                }
 	                // TODO not necessary to check connection alive now, is it?
-	                else if (System.currentTimeMillis() > lastSampleTime + updateInterval) {
+	                else if (SNTP.getInstance().getTime() > lastSampleTime + updateInterval) {
 	                    // start sampling, so set the lastSampletime to NOW
-	                    lastSampleTime = System.currentTimeMillis();
+	                    lastSampleTime = SNTP.getInstance().getTime();
 	                	// invoke data gathering subroutines
 	                    pollAll();
 	                }

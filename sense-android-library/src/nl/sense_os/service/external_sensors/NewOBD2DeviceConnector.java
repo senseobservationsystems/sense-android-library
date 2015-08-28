@@ -108,7 +108,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 	}
 
 	public class StateMachine implements Runnable {
-		protected long runstart = System.currentTimeMillis();
+		protected long runstart = SNTP.getInstance().getTime();
 
 		// connection variables
 		protected BluetoothAdapter adapter;
@@ -131,7 +131,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 		@Override
 		public void run() {
 			while (sensorsenabled && currentState != State.STOPPED) {
-				runstart = System.currentTimeMillis();
+				runstart = SNTP.getInstance().getTime();
 				// Log.d(TAG, "Current State: " + currentState + " (past:" + previousState + ")");
 				previousState = currentState;
 				switch (currentState) {
@@ -164,7 +164,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 					currentState = State.AWAITING_BLUETOOTH;
 					break;
 				}
-				long sleeptime = interval - (System.currentTimeMillis() - runstart);
+				long sleeptime = interval - (SNTP.getInstance().getTime() - runstart);
 				// Log.v(TAG, "currentState == previousState? " + (currentState == previousState));
 				// Log.v(TAG, "sleeptime: " + sleeptime + " milliseconds");
 				if (currentState == previousState && sleeptime > 0) {
@@ -452,11 +452,11 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 
 		private boolean sendCommand(String command, String validresponse) {
 			clearBuffer();
-			long deadline = System.currentTimeMillis() + timeout;
+			long deadline = SNTP.getInstance().getTime() + timeout;
 
 			boolean commandsent = false;
 			// first try and send the command
-			while (System.currentTimeMillis() < deadline) {
+			while (SNTP.getInstance().getTime() < deadline) {
 				commandsent = trySend(command);
 				if (commandsent)
 					break;
@@ -468,7 +468,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 			}
 
 			// try to find the reply which indicates a correct reading of the command
-			while (System.currentTimeMillis() < deadline) {
+			while (SNTP.getInstance().getTime() < deadline) {
 				readUntilPrompt();
 				if (databuffer.contains(validresponse)) {
 					databuffer = databuffer.substring(databuffer.indexOf(validresponse));

@@ -16,12 +16,12 @@ package nl.sense_os.service.provider;
  * limitations under the License.
  */
 
+import android.os.SystemClock;
+import android.util.Log;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
-import android.os.SystemClock;
-import android.util.Log;
 
 /**
  * {@hide}
@@ -56,6 +56,7 @@ public class SNTP {
     public static final String HOST_NORTH_AMERICA = "north-america.pool.ntp.org";
     public static final String HOST_SOUTH_AMERICA = "south-america.pool.ntp.org";
     public static final String HOST_OCEANIA = "oceania.pool.ntp.org";
+    private boolean useSimulateTime = false;
 
     // Number of seconds between Jan 1, 1900 and Jan 1, 1970
     // 70 years plus 17 leap days
@@ -74,13 +75,45 @@ public class SNTP {
 
     private static SNTP sntp = null;
 
+    /**
+     * Returns whether time simulation is used
+     * @return True is simulate time is being used
+     */
+    public boolean isSimulatingTime()
+    {
+        return useSimulateTime;
+    }
+
+    /**
+     * Sets the current simulation time
+     *
+     * Will set the clock to the provided simulation time.<br>
+     * #getTime will give the updated time based on this simulation time<br>
+     * @param time The epoch time in ms to use as current time
+     */
+    public void setCurrentSimulationTime(long time)
+    {
+        clockOffset = time - System.currentTimeMillis();
+        useSimulateTime = true;
+    }
+
+    /**
+     * Disables the time simulation
+     */
+    public void disableTimeSimulation()
+    {
+        if(!useSimulateTime)
+            return;
+        clockOffset = -1;
+        useSimulateTime = false;
+    }
     /*
      * Nice singleton :)
      */
-    public static SNTP getInstance() {
-	if (sntp == null)
-	    sntp = new SNTP();
-	return sntp;
+    public synchronized static SNTP getInstance() {
+        if (sntp == null)
+            sntp = new SNTP();
+        return sntp;
     }
 
     /**

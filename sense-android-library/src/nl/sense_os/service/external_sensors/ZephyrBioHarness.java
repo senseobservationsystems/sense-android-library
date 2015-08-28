@@ -385,9 +385,9 @@ public class ZephyrBioHarness extends BaseDataProducer {
 						return;
 					}
 
-					if (System.currentTimeMillis() > lastSampleTime + updateInterval) {
+					if (SNTP.getInstance().getTime() > lastSampleTime + updateInterval) {
 						while (!readMessage) {
-							lastSampleTime = System.currentTimeMillis();
+							lastSampleTime = SNTP.getInstance().getTime();
 							// Read from the InputStream
 							byte[] buffer = new byte[80];
 							int bytes; // bytes returned from read()
