@@ -5,20 +5,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.annotation.Config;
-import static org.hamcrest.core.StringStartsWith.startsWith;
+
 import java.io.IOException;
 import java.util.Map;
 
 import nl.sense_os.service.BuildConfig;
 
+import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -78,6 +77,7 @@ public class CommonSenseProxyTest {
     public void testLoginUserWithEmptyUsernameAndValidPassword() throws IOException, JSONException{
         thrown.expect(IOException.class);
         thrown.expectMessage("invalid input of username or password");
+        proxy.loginUser("",newUser.get("password"));
     }
     @Test
     public void testLogoutCurrentUserWithValidSessionID() throws IOException, JSONException{
@@ -451,6 +451,8 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testPostDataAndGetDataWithInvalidParams()throws IOException, JSONException{
+        thrown.expect(IOException.class);
+        thrown.expectMessage("invalid input of date or or sensorID or sessionID");
         // log in first in order to create sensor
         String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
@@ -474,6 +476,7 @@ public class CommonSenseProxyTest {
         boolean result = proxy.postData(postData,sessionID);
         assertEquals("Failed to post data to the server",true, result);
 
+        //get data with null session id
         JSONArray getData = proxy.getData(sensorId, fromDate, null);
         assertEquals("Failed to get data from the server", true, (getData.length()!=0));
 
