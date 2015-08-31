@@ -13,7 +13,7 @@ env:
 # to prevent re-downloading all dependencies, as per answer http://stackoverflow.com/a/29647967
 cache:
   directories:
-  - $HOME/.gradle/wrapper
+  - $HOME/gradle/wrapper
   - $HOME/.gradle/native
   - $HOME/.gradle/daemon
   - $HOME/.gradle/caches/jars-1
