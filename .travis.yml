@@ -10,6 +10,15 @@ env:
   matrix:
     - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
 
+# to prevent re-downloading all dependencies, as per answer http://stackoverflow.com/a/29647967
+cache:
+  directories:
+  - $HOME/.gradle/wrapper
+  - $HOME/.gradle/native
+  - $HOME/.gradle/daemon
+  - $HOME/.gradle/caches/jars-1
+  - $HOME/.gradle/caches/2.5
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -42,5 +51,6 @@ before_script:
   # - adb wait-for-device
   # - adb shell input keyevent 82 &
 
+# disabled dex on CI (non-incremental) builds, as per advice on http://www.littlerobots.nl/blog/disable-android-pre-dexing-on-ci-builds/
 script: ./gradlew -p ./ -PdisablePreDex connectedAndroidTest
 
