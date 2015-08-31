@@ -1,0 +1,56 @@
+# use container-less execution to avoid JVM memory issue 137 with 'sudo: false', see: https://github.com/travis-ci/travis-ci/issues/3695
+sudo: required 
+# sudo: false
+
+language: android
+
+jdk: oraclejdk7
+
+env:
+  matrix:
+    - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
+
+# to prevent re-downloading all dependencies, as per answer http://stackoverflow.com/a/29647967
+cache:
+  directories:
+  - $HOME/.gradle/wrapper
+  - $HOME/.gradle/native
+  - $HOME/.gradle/daemon
+  - $HOME/.gradle/caches/jars-1
+  - $HOME/.gradle/caches/2.5
+
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    # - platform-tools
+    # - tools
+
+    # The BuildTools version used by your project
+    - build-tools-19.1.0
+
+    # The SDK version used to compile your project
+    - android-19
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-19
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    # - sys-img-armeabi-v7a-android-19
+    # - sys-img-x86-android-17
+
+before_script:
+  - cd ./sense-android-library
+  # Create and start emulator
+  # - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  # - emulator -avd test -no-skin -no-audio -no-window &
+  # - adb wait-for-device
+  # - adb shell input keyevent 82 &
+
+# disabled dex on CI (non-incremental) builds, as per advice on http://www.littlerobots.nl/blog/disable-android-pre-dexing-on-ci-builds/
+script: ./gradlew -p ./ -PdisablePreDex connectedAndroidTest
+
