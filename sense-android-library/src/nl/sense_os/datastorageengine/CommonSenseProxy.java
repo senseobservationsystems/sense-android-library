@@ -22,6 +22,8 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import nl.sense_os.service.provider.SNTP;
+
 /**
  * Proxy class, mimicking all the calls to CommonSense necessary for the Data Storage Engine. This
  * class should not be used for any functionality other than performing calls to the CommonSense
@@ -37,11 +39,10 @@ public class CommonSenseProxy {
     private static String APP_KEY;				  //The app key
     private static String URL_BASE;				  //The base url to use, will differ based on whether to use live or staging server
     private static String URL_AUTH;				  //The base url to use for authentication, will differ based on whether to use live or staging server
-    private int requestTimeoutInterval;	  //Timeout interval in seconds
 
-    public static final String BASE_URL_LIVE                = "https://api.sense-os.nl";
-    public static final String BASE_URL_STAGING             = "http://api.staging.sense-os.nl";
-    public static final String BASE_URL_AUTHENTICATION_LIVE = "https://auth-api.sense-os.nl/v1";
+    public static final String BASE_URL_LIVE                   = "https://api.sense-os.nl";
+    public static final String BASE_URL_STAGING                = "http://api.staging.sense-os.nl";
+    public static final String BASE_URL_AUTHENTICATION_LIVE    = "https://auth-api.sense-os.nl/v1";
     public static final String BASE_URL_AUTHENTICATION_STAGING = "http://auth-api.staging.sense-os.nl/v1";
 
     public static final String URL_LOGIN                    = "login";
@@ -95,35 +96,41 @@ public class CommonSenseProxy {
     /**
      * Login a user
      *
-     * If a user is already logged in this call will also return the session ID.
+     * If a user is already logged in this call, it will also return the session ID.
      *
      * @param username		A user account in commonsense is uniquely identified by a username. Cannot be empty.
      * @param password		A password in commonsense does not have any specific requirements.
      *                      It will be MD5 hashed before sending to the server so the user does not have to provide a hashed password. Cannot be empty.
-     * @throws IOException and JSONException
+     * @throws IOException and RuntimeException
+     *                      IOException is thrown from request() method when the the response content(inputStream) has error,
+     *                      or the response code from server is not OK(200).
+     *                      RuntimeException is thrown when the request content can not be created.
+     *                      A subclass of RuntimeException, IllegalArgumentException is thrown when username and password are null or empty.
+     *                      A subclass of RuntimeException, NullPointerException is thrown when session id returned from server is null.
      * @return				Session ID. Will be null if the call fails.
      */
-    public String loginUser( String username, String password) throws IOException, JSONException
+    public String loginUser( String username, String password) throws IOException, RuntimeException
     {
         if(username == null || username.isEmpty() || password == null || password.isEmpty())
-            throw new IOException("invalid input of username or password");
+            throw new IllegalArgumentException("invalid input of username or password");
 
         final String url = URL_AUTH + "/" + URL_LOGIN;
         final JSONObject user = new JSONObject();
-        user.put("username", username);
-        user.put("password", password);
-
+        try {
+            user.put("username", username);
+            user.put("password", password);
+        }catch(JSONException JS){
+            throw new RuntimeException("loginUser failed to create the content for the request");
+        }
         Map<String, String> response = request(url, user, null, HTTP_METHOD_POST);
         // if response code is not 200 (OK), the login was incorrect
         int result = checkResponseCode(response.get(RESPONSE_CODE), "login");
-
+        if(result != 0)
+            throw new IOException("failed to log in, response code is:" + response.get(RESPONSE_CODE));
         String session_id = response.get("session-id");
+        if (session_id == null)
+            throw new NullPointerException("failed to log in, null session id returned from the server");
 
-        if (result != 0 && session_id == null) {
-            // something went horribly wrong
-            Log.w(TAG, "CommonSense login failed: no session id received!");
-            throw new IOException("login failed with no session id");
-        }
         return session_id;
     }
 
@@ -132,21 +139,21 @@ public class CommonSenseProxy {
      * Logout the currently logged in user.
      *
      * @param sessionID		The sessionID of the user to logout. Cannot be empty.
-     * @throws IOException
+     * @throws IOException, IllegalArgumentException
+     *                      IOException is thrown from request() method when the the response content(inputStream) has errors,
+     *                      IllegalArgumentException is thrown when session id is null or empty.
      * @return				Whether or not the logout finished successfully.
      */
-    public boolean logoutCurrentUser(String sessionID) throws IOException
+    public boolean logoutCurrentUser(String sessionID) throws IOException, IllegalArgumentException
     {
         if(sessionID == null || sessionID.isEmpty())
-            throw new IOException("invalid input of session ID");
+            throw new IllegalArgumentException("invalid input of session ID");
 
         final String url = URL_AUTH + "/" + URL_LOGOUT;
         Map<String, String> response = request(url, null, sessionID, HTTP_METHOD_POST);
         // if response code is not 200 (OK), the logout was incorrect
         String responseCode = response.get(RESPONSE_CODE);
         int result = checkResponseCode(response.get(RESPONSE_CODE), "logout");
-        if(result != 0)
-            throw new IOException("logout with session id failed ");
 
         return (result == 0);
 
@@ -164,13 +171,17 @@ public class CommonSenseProxy {
      * @param dataType		Type of data that the sensor stores. Required.
      * @param dataStructure	Structure of the data in the data; can be used to specify the JSON structure in the sensor. Not required.
      * @param sessionID		The sessionID of the current user. Cannot be empty.
-     * @throws IOException, JSONException
+     * @throws IOException, RuntimeException
+     *                      IOException is thrown from request() method when the the response content(inputStream) has errors,
+     *                      or the response code from server is not CREATED(201).
+     *                      RuntimeException is thrown when the request content can not be created or the returned session id cannot be put to the sensor object.
+     *                      A subclass of RuntimeException, IllegalArgumentException is thrown when any parameters are null or empty.
      *@result				JSONObject with the information of the created sensor. Null if the sensor ID is null or empty.
      */
-    public JSONObject createSensor(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException, JSONException
+    public JSONObject createSensor(String name, String displayName, String deviceType, String dataType, String dataStructure, String sessionID) throws IOException, RuntimeException
     {
         if(name == null || name.isEmpty() || sessionID == null || sessionID.isEmpty()|| deviceType == null || deviceType.isEmpty()||  dataType == null || dataType.isEmpty())
-            throw new IOException("invalid input of name or sessionID or deviceType or dataType");
+            throw new IllegalArgumentException("invalid input of name or sessionID or deviceType or dataType");
 
         if(dataStructure == null) {
             dataStructure = "";
@@ -182,26 +193,31 @@ public class CommonSenseProxy {
         final String url = makeCSRestUrlFor(URL_SENSORS, null);
 
         JSONObject sensor = new JSONObject();
-        sensor.put("name", name);
-        sensor.put("device_type", deviceType);
-        sensor.put("display_name", displayName);
-        sensor.put("pager_type", "");
-        sensor.put("data_type", dataType);
-        sensor.put("data_structure",dataStructure);
-
         JSONObject postData = new JSONObject();
-        postData.put("sensor", sensor);
+        try {
+            sensor.put("name", name);
+            sensor.put("device_type", deviceType);
+            sensor.put("display_name", displayName);
+            sensor.put("pager_type", "");
+            sensor.put("data_type", dataType);
+            sensor.put("data_structure", dataStructure);
+            postData.put("sensor", sensor);
 
+        }catch(JSONException js){
+            throw new RuntimeException("createSensor failed to create the content for the request");
+        }
         // perform actual request
         Map<String, String> response = request(url, postData, sessionID, HTTP_METHOD_POST);
 
         // check response code
         String code = response.get(RESPONSE_CODE);
         int result = checkResponseCode(response.get(RESPONSE_CODE), "createSensor");
-        if (result != -2) {
-            throw new IOException("Incorrect response of createSensor from CommonSense: " + code);
+        if (result != 1) {
+            if(result == -2)
+                throw new IOException("Request of createSensor is forbidden from CommonSense: " + code);
+            else
+                throw new IOException("Failed response other than forbidden of createSensor from CommonSense: " + code);
         }
-
         // retrieve the newly created sensor ID
         String locationHeader = response.get("location");
         String[] split = locationHeader.split("/");
@@ -211,8 +227,12 @@ public class CommonSenseProxy {
             Log.w(TAG, "No id for the newly created sensor");
             return null;
         }
-        // store the new sensor in the preferences
-        sensor.put("sensor_id", id);
+        try {
+            // store the new sensor in the preferences
+            sensor.put("sensor_id", id);
+        }catch(JSONException js){
+            throw new RuntimeException("createSensor failed to put the session id into sensor object");
+        }
         return sensor;
     }
     
@@ -223,15 +243,24 @@ public class CommonSenseProxy {
      * Each element in the array will contain a JSONObject with data from one sensor.
      *
      * @param sessionID		The sessionID of the current user. Cannot be empty.
-     * @throws IOException, JSONException
+     * @throws IllegalArgumentException, IOException
+     *                      IllegalArgumentException is thrown when the session id is null or empty.
+     *                      IOException is thrown when failed to get the list of sensors from the server.
      * @result				Array of sensors. Each object will be a JSONObject with the resulting sensor information. Will be null if an error occurs.
      */
-    public JSONArray getAllSensors(String sessionID) throws IOException, JSONException
+    public JSONArray getAllSensors(String sessionID) throws IllegalArgumentException, IOException
+
     {
         if(sessionID == null || sessionID.isEmpty())
-            throw new IOException("getAllSensors: invalid input of sessionID");
+            throw new IllegalArgumentException("getAllSensors: invalid input of sessionID");
         String params = "&per_page=1000&details=full";
-        return getListForURLAction(URL_SENSORS, params, "sensors", sessionID, 1000, "getAllSensors");
+        JSONArray sensorList ;
+        try {
+            sensorList = getListForURLAction(URL_SENSORS, params, "sensors", sessionID, 1000, "getAllSensors");
+        }catch(JSONException js){
+            throw new IOException("Failed to get the list of sensors from the server");
+        }
+        return sensorList;
     }
 
     /**
@@ -240,15 +269,23 @@ public class CommonSenseProxy {
      * This will fetch all the devices for the current user and pass them on to a JSONArray. Each element in the array will contain a JSONObject with data from one device.
      *
      * @param sessionID		The sessionID of the current user. Cannot be empty.
-     * @throws IOException, JSONException
+     * @throws IllegalArgumentException, IOException
+     *                      The IllegalArgumentException is thrown when session id is null or empty.
+     *                      IOException is thrown when failed to get the list of devices from the server.
      * @result				Array of devices. Each object will be a JSONObject with the resulting device information. Will be null if an error occurs.
      */
-    public JSONArray getAllDevices(String sessionID) throws IOException, JSONException
+    public JSONArray getAllDevices(String sessionID) throws IllegalArgumentException, IOException
     {
         if(sessionID == null || sessionID.isEmpty())
-            throw new IOException("getAllDevices: invalid input of sessionID");
+            throw new IllegalArgumentException("getAllDevices: invalid input of sessionID");
         String params = "&per_page=1000&details=full";
-        return getListForURLAction(URL_DEVICES, params, "devices", sessionID, 1000,"getAllDevices");
+        JSONArray deviceList ;
+        try{
+            deviceList = getListForURLAction(URL_DEVICES, params, "devices", sessionID, 1000,"getAllDevices");
+        }catch(JSONException js){
+            throw new IOException("Failed to get the list of devices from the server");
+        }
+        return deviceList;
     }
 
     /**
@@ -263,29 +300,32 @@ public class CommonSenseProxy {
      * @param deviceType    The name of the device.
      * @param UUID      	CommonSense device ID for the device. Cannot be empty.
      * @param sessionID		The sessionID of the current user. Cannot be empty.
-     * @throws IOException, JSONException
+     * @throws RuntimeException, IOException
+     *                      IOException is thrown from request() method when the the response content(inputStream) has errors.
+     *                      RuntimeException is thrown when the request content can not be created.
+     *                      A subclass of RuntimeException, IllegalArgumentException is thrown when any parameters are null or empty.
      * @result				Whether or not the sensor was successfully added to the device.
      */
-    public boolean addSensor(String csSensorID, String deviceType, String UUID, String sessionID)throws IOException, JSONException
+    public boolean addSensorToDevice(String csSensorID, String deviceType, String UUID, String sessionID)throws RuntimeException, IOException
     {
         if(csSensorID == null || csSensorID.isEmpty() || deviceType == null || deviceType.isEmpty()|| UUID == null || UUID.isEmpty()|| sessionID == null || sessionID.isEmpty())
-            throw new IOException("invalid input of csSensorID or deviceType or UUID or sessionID");
+            throw new IllegalArgumentException("invalid input of csSensorID or deviceType or UUID or sessionID");
 
         JSONObject sensor = new JSONObject();
-        sensor.put("type", deviceType);
-        sensor.put("uuid", UUID);
         JSONObject postData = new JSONObject();
-        postData.put("device", sensor);
-
+        try {
+            sensor.put("type", deviceType);
+            sensor.put("uuid", UUID);
+            postData.put("device", sensor);
+        }catch(JSONException js){
+            throw new  RuntimeException("addSensorToDevice failed to create the content for the request");
+        }
         String url = URL_SENSORS + "/" + csSensorID + "/" + URL_SENSOR_DEVICE;
                url = makeUrlFor(url,null);
         // perform actual request
         Map<String, String> response = request(url, postData, sessionID, HTTP_METHOD_POST);
         int code = checkResponseCode(response.get(RESPONSE_CODE), "addSensor");
-        // check if the response code is 201 CREATED
-        if(code != -2)
-            throw new IOException("Incorrect response of addSensor from CommonSense: " + code);
-        return (code == -2);
+        return (code == 1);
     }
 
     /**
@@ -297,52 +337,64 @@ public class CommonSenseProxy {
      *                      Each datapoint should be a JSONObject with fields called "sensorID", "value", and "date".
      *                      These fields will be parsed into the correct form for uploading to commonsense.
      * @param sessionID		The sessionID of the current user. Cannot be empty.
-     * @throws IOException, JSONException
-     * @result				Whether or not the post of the data was succesfull.
+     * @throws RuntimeException, IOException
+     *                      IOException is thrown from request() method when the the response content(inputStream) has errors.
+     *                      RuntimeException is thrown when the request content can not be created.
+     *                      A subclass of RuntimeException, IllegalArgumentException is thrown when any parameters are null or empty.
+     * @result				Whether or not the post of the data was successful.
      */
-    public boolean postData(JSONArray data, String sessionID) throws IOException, JSONException
+    public boolean postData(JSONArray data, String sessionID) throws RuntimeException, IOException
     {
         if(sessionID == null || sessionID.isEmpty() || data == null || data.length() == 0)
-            throw new IOException("invalid input of data or sessionID");
+            throw new IllegalArgumentException("invalid input of data or sessionID");
 
         JSONObject postData = new JSONObject();
-        postData.put("sensors",data);
 
+        try {
+            postData.put("sensors", data);
+        }catch(JSONException js){
+            throw new RuntimeException("postData failed to create the content for the request");
+        }
         String url = makeUrlFor(URLE_UPLOAD_MULTIPLE_SENSORS,null);
         Map<String, String> response = request(url, postData, sessionID,"POST");
         int code = checkResponseCode(response.get(RESPONSE_CODE), "postData");
-        if(code != -2)
-            throw new IOException("Incorrect response of postData from CommonSense: " + response.get(RESPONSE_CODE));
-        return (code == -2);
+        return (code == 1);
     }
 
     /**
      * Download sensor data from commonsense from a certain date till now.
      *
-     * The downloaded data will be passed as an JSONArray to the success callback method from which it can be further processed.
+     * The downloaded data will be returned as an JSONArray.
      *
      * @param sensorID		Identifier of the sensor from CommonSense for which to download the data. Cannot be empty.
      * @param fromDate	    Date from which to download data. Data points after this date will be included in the download.
-     *                          Data points before this date will be ignored. Cannot be null.
-     * @param sessionID		    The sessionID of the current user. Cannot be empty.
-     * @throws IOException, JSONException
-     * @result				    JSONArray with the resulting data. Each object is a JSONObject with the data as provided by the backend. Will be null if an error occurred.
+     *                      Data points before this date will be ignored. Cannot be null.
+     * @param sessionID	    The sessionID of the current user. Cannot be empty.
+     * @throws IllegalArgumentException, IOException
+     *                      IllegalArgumentException is thrown when sensor id or session id is null or empty, or the fromDate is after the current date.
+     *                      IOException is thrown when failed to get the list of data from the server.
+     * @result			    JSONArray with the resulting data. Each object is a JSONObject with the data as provided by the backend. Will be null if an error occurred.
      */
-    public JSONArray getData(String sensorID, double fromDate, String sessionID) throws IOException, JSONException
+    public JSONArray getData(String sensorID, double fromDate, String sessionID) throws IllegalArgumentException, IOException
     {
         if(fromDate == 0 || sensorID == null || sensorID.isEmpty() ||sessionID == null || sessionID.isEmpty())
-            throw new IOException("invalid input of date or or sensorID or sessionID");
-        double currTime = System.currentTimeMillis() /1000;
+            throw new IllegalArgumentException("invalid input of date or or sensorID or sessionID");
+        SNTP sntp = new SNTP();
+        double currTime = sntp.getTime() /1000;
         if(fromDate > currTime){
-            throw new IOException ("start date cannot be after current date");
+            throw new IllegalArgumentException ("start date cannot be after current date");
         }
         String params = "?per_page=1000&start_date=" + fromDate + "&end_date=" + currTime +"&sort=DESC";
-        System.out.println("prev:" + fromDate);
-        System.out.println("curr:" + currTime);
 
         String urlAction = URL_SENSORS + "/" + sensorID + "/" + URL_DATA;
+        JSONArray dataList;
 
-        return getListForURLAction(urlAction, params, "data", sessionID, 1000, "getData");
+        try {
+           dataList = getListForURLAction(urlAction, params, "data", sessionID, 1000, "getData");
+        }catch(JSONException js){
+            throw new IOException("Failed to get the list of data from the server");
+        }
+        return dataList;
     }
 
 
@@ -358,12 +410,13 @@ public class CommonSenseProxy {
      *            (Optional) Session ID header for the request.
      * @param requestMethod
      *            The required method for the HTTP request, such as POST or GET.
-     * @return Map with SenseApi.KEY_CONTENT and SenseApi.KEY_RESPONSE_CODE fields, plus fields for
-     *         all response headers.
      * @throws IOException
+     *            IOException is thrown when the inputStream has errors.
+     * @return Map with RESPONSE_CONTENT and RESPONSE_CODE fields,and fields for
+     *         all response headers.
      */
 
-    public static Map<String, String> request( String urlString,
+    private static Map<String, String> request( String urlString,
                                               JSONObject content, String sessionID, String requestMethod) throws IOException {
 
         HttpURLConnection urlConnection = null;
@@ -489,10 +542,10 @@ public class CommonSenseProxy {
     private static int checkResponseCode(String responseCode, String method){
         if ("403".equalsIgnoreCase(responseCode)) {
             Log.w(TAG, "CommonSense" + method + "refused! Response: forbidden!");
-            return -3;
+            return -2;
         } else if ("201".equalsIgnoreCase(responseCode)) {
             Log.e(TAG, "CommonSense" + method + "created! Response: " + responseCode);
-            return -2;
+            return 1;
         } else if (!"200".equalsIgnoreCase(responseCode)) {
             Log.w(TAG, "CommonSense" + method + "failed! Response: " + responseCode);
             return -1;
@@ -574,7 +627,7 @@ public class CommonSenseProxy {
 
            int codeResult = checkResponseCode(response.get(RESPONSE_CODE), methodName);
            if (codeResult != 0) {
-               throw new IOException("Incorrect response of " + methodName + " from CommonSense,\n the content is:" + response.get(RESPONSE_CONTENT));
+               throw new IOException("Incorrect response of " + methodName + " from CommonSense,\n the code is:" + response.get(RESPONSE_CODE));
            }
            // parse response and store the list
            JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));

@@ -179,9 +179,6 @@ public class CSUtils {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
         }
 
         return true;
