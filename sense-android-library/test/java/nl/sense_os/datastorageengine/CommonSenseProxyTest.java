@@ -366,7 +366,13 @@ public class CommonSenseProxyTest {
         JSONArray deviceList = proxy.getAllDevices(sessionID);
         assertNotNull("Failed to get the list of devices", deviceList);
         assertEquals("Incorrect device number", deviceNumber,deviceList.length());
-
+        String returnedDeviceType;
+        try {
+            returnedDeviceType = deviceList.getJSONObject(0).getString("type");
+        }catch(JSONException js){
+            throw new RuntimeException("failed to get a sensor from the device list");
+        }
+        assertEquals("Incorrect device Type",deviceType,returnedDeviceType);
     }
     @Test
     public void testGetAllDevicesWithTwoDevices() throws IllegalArgumentException, IOException {

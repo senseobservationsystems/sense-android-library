@@ -404,8 +404,7 @@ public class CommonSenseProxy {
      * @param urlString
      *            Complete URL to perform request to.
      * @param content
-     *            (Optional) Content for the request. If the content is not null, the request method
-     *            is automatically POST. The default method is GET.
+     *            (Optional) Content for the request.
      * @param sessionID
      *            (Optional) Session ID header for the request.
      * @param requestMethod
