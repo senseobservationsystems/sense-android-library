@@ -102,10 +102,10 @@ public class CommonSenseProxy {
      * @param password		A password in commonsense does not have any specific requirements.
      *                      It will be MD5 hashed before sending to the server so the user does not have to provide a hashed password. Cannot be empty.
      * @throws IOException and RuntimeException
-     *                      IOException is thrown from request() method when the the response content(inputStream) has error,
+     *                      IOException is thrown from request() method when the the response content(inputStream) has errors,
      *                      or the response code from server is not OK(200).
      *                      RuntimeException is thrown when the request content can not be created.
-     *                      A subclass of RuntimeException, IllegalArgumentException is thrown when username and password are null or empty.
+     *                      A subclass of RuntimeException, IllegalArgumentException is thrown when username or password is null or empty.
      *                      A subclass of RuntimeException, NullPointerException is thrown when session id returned from server is null.
      * @return				Session ID. Will be null if the call fails.
      */
@@ -129,7 +129,7 @@ public class CommonSenseProxy {
             throw new IOException("failed to log in, response code is:" + response.get(RESPONSE_CODE));
         String session_id = response.get("session-id");
         if (session_id == null)
-            throw new NullPointerException("failed to log in, null session id returned from the server");
+            Log.w(TAG, "loginUser returns a null session id");
 
         return session_id;
     }
@@ -339,7 +339,7 @@ public class CommonSenseProxy {
      * @param sessionID		The sessionID of the current user. Cannot be empty.
      * @throws RuntimeException, IOException
      *                      IOException is thrown from request() method when the the response content(inputStream) has errors.
-     *                      RuntimeException is thrown when the request content can not be created.
+     *                      RuntimeException is thrown when the post data request content can not be created.
      *                      A subclass of RuntimeException, IllegalArgumentException is thrown when any parameters are null or empty.
      * @result				Whether or not the post of the data was successful.
      */
