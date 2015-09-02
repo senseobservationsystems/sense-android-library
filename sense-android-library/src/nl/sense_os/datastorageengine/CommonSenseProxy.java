@@ -162,8 +162,6 @@ public class CommonSenseProxy {
     /**
      * Create a new sensor in the commonsense backend
      *
-     * Each sensor in commonsense is uniquely identified by a name and device type combination.
-     * If this combination already exists in the commonsense backend this call will fail.
      *
      * @param name			Name of the sensor to create. This will be used to identify the sensor. Required.
      * @param displayName	Extra field to make sensor name more readable if necessary when displaying it. Not required.

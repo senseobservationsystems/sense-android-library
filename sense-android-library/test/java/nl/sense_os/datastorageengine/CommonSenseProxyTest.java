@@ -340,6 +340,7 @@ public class CommonSenseProxyTest {
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
+        String uuid = "uuid";
         String dataType = "json";
         String sessionID = session_id;
         String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
@@ -358,21 +359,28 @@ public class CommonSenseProxyTest {
         }
         assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
 
+        // before adding sensor, check the number of device
+        JSONArray deviceList = proxy.getAllDevices(sessionID);
+        assertEquals("No devices should be created", deviceNumber, deviceList.length());
         // add the sensor to a device
-        boolean result = proxy.addSensorToDevice(sensorId, "deviceType", "uuid", sessionID);
+        boolean result = proxy.addSensorToDevice(sensorId, "deviceType", uuid, sessionID);
         assertEquals("Failed to add the sensor to a device", true,result);
         deviceNumber++;
 
-        JSONArray deviceList = proxy.getAllDevices(sessionID);
+        // after adding sensor, check the number of device
+        deviceList = proxy.getAllDevices(sessionID);
         assertNotNull("Failed to get the list of devices", deviceList);
         assertEquals("Incorrect device number", deviceNumber,deviceList.length());
         String returnedDeviceType;
+        String returnedUUID;
         try {
             returnedDeviceType = deviceList.getJSONObject(0).getString("type");
+            returnedUUID = deviceList.getJSONObject(0).getString("uuid");
         }catch(JSONException js){
             throw new RuntimeException("failed to get a sensor from the device list");
         }
         assertEquals("Incorrect device Type",deviceType,returnedDeviceType);
+        assertEquals("Incorrect UUID", uuid, returnedUUID);
     }
     @Test
     public void testGetAllDevicesWithTwoDevices() throws IllegalArgumentException, IOException {
@@ -382,6 +390,7 @@ public class CommonSenseProxyTest {
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
+        String uuid = "uuid";
         String dataType = "json";
         String sessionID = session_id;
         String value = "{\"interval\":0,\"data\":[2.23, 19.45, 20.2]}";
@@ -400,18 +409,34 @@ public class CommonSenseProxyTest {
         }
         assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
 
+        // before adding sensor, check the number of device
+        JSONArray deviceList = proxy.getAllDevices(sessionID);
+        assertEquals("No devices should be created", deviceNumber, deviceList.length());
+
         // add the sensor to a device
-        boolean result = proxy.addSensorToDevice(sensorId, "deviceType", "uuid", sessionID);
+        boolean result = proxy.addSensorToDevice(sensorId, deviceType, uuid, sessionID);
         deviceNumber++;
         assertEquals("Failed to add the sensor to a device", true,result);
 
-        JSONArray deviceList = proxy.getAllDevices(sessionID);
+        deviceList = proxy.getAllDevices(sessionID);
         assertNotNull("Failed to get the list of devices", deviceList);
         assertEquals("Incorrect device number", deviceNumber, deviceList.length());
+
+        String returnedDeviceType;
+        String returnedUUID;
+        try {
+            returnedDeviceType = deviceList.getJSONObject(0).getString("type");
+            returnedUUID = deviceList.getJSONObject(0).getString("uuid");
+        }catch(JSONException js){
+            throw new RuntimeException("failed to get a sensor from the device list");
+        }
+        assertEquals("Incorrect device Type",deviceType,returnedDeviceType);
+        assertEquals("Incorrect UUID","uuid",returnedUUID);
 
         name = "test1";
         displayName = "test1";
         deviceType = "deviceType1";
+        uuid = "uuid1";
         value = "{\"interval:\":0,\"data\":[2.23, 19.45, 20.0]}";
         dataStructure = createDataStructure(value);
 
@@ -427,14 +452,26 @@ public class CommonSenseProxyTest {
         }
         assertEquals("The new sensorid returned from the server is empty",false, sensorId.isEmpty());
 
+        deviceList = proxy.getAllDevices(sessionID);
+        assertEquals("No devices should be created", deviceNumber, deviceList.length());
+
         // add the sensor to a device
-        result = proxy.addSensorToDevice(sensorId, "deviceType1", "uuid1", sessionID);
+        result = proxy.addSensorToDevice(sensorId, deviceType, uuid, sessionID);
         deviceNumber++;
         assertEquals("Failed to add the sensor to a device", true,result);
 
         deviceList = proxy.getAllDevices(sessionID);
         assertNotNull("Failed to get the list of devices", deviceList);
         assertEquals("Incorrect device number", deviceNumber, deviceList.length());
+
+        try {
+            returnedDeviceType = deviceList.getJSONObject(1).getString("type");
+            returnedUUID = deviceList.getJSONObject(1).getString("uuid");
+        }catch(JSONException js){
+            throw new RuntimeException("failed to get a sensor from the device list");
+        }
+        assertEquals("Incorrect device Type",deviceType,returnedDeviceType);
+        assertEquals("Incorrect UUID", uuid, returnedUUID);
 
     }
     @Test
