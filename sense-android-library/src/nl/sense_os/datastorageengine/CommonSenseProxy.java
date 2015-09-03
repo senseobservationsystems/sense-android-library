@@ -526,9 +526,7 @@ public class CommonSenseProxy {
     }
 
     /**
-     * Upload sensor data to commonsense
-     *
-     * Data can be coming from multiple sensors.
+     * Verify the response code
      *
      * @param responseCode	The response code returned from the request
      * @param method		The method that requires code checking
