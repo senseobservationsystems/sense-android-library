@@ -522,10 +522,10 @@ public class CtrlExtended extends Controller {
         Cursor data = null;
         if (mPositionFlag == Flag.NOT_READY && (distanceTraveled == 0)) {
             // Log.d(TAG, "1A");
-            mStartTime = System.currentTimeMillis();
+            mStartTime = SNTP.getInstance().getTime();
             mPositionFlag = Flag.READY;
             return moved;
-        } else if ((System.currentTimeMillis() - mStartTime) >= 4 * 60 * 1000
+        } else if ((SNTP.getInstance().getTime() - mStartTime) >= 4 * 60 * 1000
                 || (distanceTraveled != 0)) {
 
             try {

@@ -3,16 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.external_sensors;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.UUID;
-
-import nl.sense_os.service.subscription.BaseDataProducer;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -23,6 +13,17 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.UUID;
+
+import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.subscription.BaseDataProducer;
 
 /**
  * Generic class to represent an external sensor that needs to connect to the phone via Bluetooth.
@@ -259,13 +260,13 @@ public abstract class ExternalSensor extends BaseDataProducer {
             // while the connection is alive, poll every updateInterval
             long nextpoll, sleeptimer;
             while (connected) {
-                nextpoll = System.currentTimeMillis() + updateinterval;
+                nextpoll = SNTP.getInstance().getTime() + updateinterval;
                 if (sensorinitialized)
                     pollSensor();
                 else
                     sensorinitialized = initializeSensor();
                 try {
-                    if ((sleeptimer = nextpoll - System.currentTimeMillis()) > 0)
+                    if ((sleeptimer = nextpoll - SNTP.getInstance().getTime()) > 0)
                         Thread.sleep(sleeptimer);
                 } catch (InterruptedException e) {
                     Log.w(TAG, "UpdateThread was interrupted in its sleep");

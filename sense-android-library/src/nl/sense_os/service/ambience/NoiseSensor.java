@@ -3,6 +3,26 @@
  *************************************************************************************************/
 package nl.sense_os.service.ambience;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+import android.media.MediaRecorder.OnInfoListener;
+import android.os.Build;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -11,7 +31,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import nl.sense_os.service.ambience.FFT;
 import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -28,26 +47,6 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import nl.sense_os.service.subscription.BaseDataProducer;
 import nl.sense_os.service.subscription.BaseSensor;
 import nl.sense_os.service.subscription.DataProducer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
-import android.media.MediaRecorder.OnInfoListener;
-import android.os.Build;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 
 /**
  * Main sound sensor class. Uses Android MediaRecorder class to capture small bits of audio and
@@ -244,11 +243,11 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
 						// schedule task to stop recording and calculate the
 						// noise
-						long now = System.currentTimeMillis();
+						long now = SNTP.getInstance().getTime();
 						byte[] totalBuffer = new byte[BUFFER_SIZE];
 						int readCount = 0;
 						while (audioRecord != null
-								&& System.currentTimeMillis() < now + RECORDING_TIME_NOISE) {
+								&& SNTP.getInstance().getTime() < now + RECORDING_TIME_NOISE) {
 							int chunkSize = Math.min(256, totalBuffer.length - readCount);
 							int readResult = audioRecord.read(totalBuffer, readCount, chunkSize);
 							if (readResult < 0) {

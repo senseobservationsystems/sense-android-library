@@ -3,6 +3,16 @@
  *************************************************************************************************/
 package nl.sense_os.service.phonestate;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
@@ -10,16 +20,6 @@ import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseDataProducer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
-import android.util.Log;
 
 /**
  * Represents the battery sensor. Registers itself for ACTION_BATTERY_CHANGED Broadcasts from
@@ -54,7 +54,7 @@ public class BatterySensor extends BaseDataProducer{
 
             boolean gotData = false;
 
-            if (System.currentTimeMillis() > lastSampleTime + sampleDelay) {
+            if (SNTP.getInstance().getTime() > lastSampleTime + sampleDelay) {
 
                 // Send a message when the battery state has changed
                 JSONObject json = new JSONObject();
@@ -135,7 +135,7 @@ public class BatterySensor extends BaseDataProducer{
                     i.putExtra(DataPoint.VALUE, json.toString());
                     i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BATTERY_SENSOR);
                     i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-                    lastSampleTime = System.currentTimeMillis();
+                    lastSampleTime = SNTP.getInstance().getTime();
                     i.setPackage(context.getPackageName());
                     context.startService(i);
                 }

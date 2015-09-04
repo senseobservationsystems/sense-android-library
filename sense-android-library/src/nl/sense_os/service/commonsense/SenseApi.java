@@ -11,16 +11,6 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import nl.sense_os.service.SenseServiceStub;
-import nl.sense_os.service.EncryptionHelper;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
-import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.push.GCMReceiver;
-
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +34,17 @@ import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import nl.sense_os.service.EncryptionHelper;
+import nl.sense_os.service.SenseServiceStub;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.push.GCMReceiver;
 
 /**
  * Main interface for communicating with the CommonSense API.
@@ -94,7 +95,7 @@ public class SenseApi {
         try {
             String cachedSensors = sAuthPrefs.getString(Auth.SENSOR_LIST_COMPLETE, null);
             long cacheTime = sAuthPrefs.getLong(Auth.SENSOR_LIST_COMPLETE_TIME, 0);
-            boolean isOutdated = System.currentTimeMillis() - cacheTime > CACHE_REFRESH;
+            boolean isOutdated = SNTP.getInstance().getTime() - cacheTime > CACHE_REFRESH;
 
             // return cached list of it is still valid
             if (false == isOutdated && null != cachedSensors) {
@@ -155,7 +156,7 @@ public class SenseApi {
         // store the new sensor list
         Editor authEditor = sAuthPrefs.edit();
         authEditor.putString(Auth.SENSOR_LIST_COMPLETE, result.toString());
-        authEditor.putLong(Auth.SENSOR_LIST_COMPLETE_TIME, System.currentTimeMillis());
+        authEditor.putLong(Auth.SENSOR_LIST_COMPLETE_TIME, SNTP.getInstance().getTime());
         authEditor.commit();
 
         return result;

@@ -31,7 +31,8 @@ sense-android-library/src/.DS_Store
 sense-android-library/src/nl/.DS_Store
 sense-android-library/src/nl/sense_os/.DS_Store
 
-#Android studio stuff
+# Android studio stuff
 *.iml
 .idea
 .gradle
+build/
