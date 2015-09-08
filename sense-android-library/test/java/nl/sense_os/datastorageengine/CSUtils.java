@@ -1,5 +1,7 @@
 package nl.sense_os.datastorageengine;
 
+import android.util.Log;
+
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +31,103 @@ import nl.sense_os.datastorageengine.CommonSenseProxy;
 public class CSUtils {
 
     public static final String APP_KEY = "wRgE7HZvhDsRKaRm6YwC3ESpIqqtakeg";
+    public static final String  TAG = "CSUtils";
+
+    private static String URL_BASE;				  //The base url to use, will differ based on whether to use live or staging server
+    private static String URL_AUTH;				  //The base url to use for authentication, will differ based on whether to use live or staging server
+
+    public static final String BASE_URL_LIVE                   = "https://api.sense-os.nl";
+    public static final String BASE_URL_STAGING                = "http://api.staging.sense-os.nl";
+    public static final String BASE_URL_AUTHENTICATION_LIVE    = "https://auth-api.sense-os.nl/v1";
+    public static final String BASE_URL_AUTHENTICATION_STAGING = "http://auth-api.staging.sense-os.nl/v1";
+
+    public static final String URL_LOGIN                       = "login";
+    public static final String URL_LOGOUT                      = "logout";
+
+    public static final String RESPONSE_CODE = "http response code";
+    public static final String RESPONSE_CONTENT = "content";
+
+    public static final String HTTP_METHOD_POST = "POST";
+
+
+    public CSUtils (boolean useLiveServer)
+    {
+        if(useLiveServer) {
+            URL_BASE = BASE_URL_LIVE;
+            URL_AUTH = BASE_URL_AUTHENTICATION_LIVE;
+        } else {
+            URL_BASE = BASE_URL_STAGING;
+            URL_AUTH = BASE_URL_AUTHENTICATION_STAGING;
+        }
+    }
+
+
+    /**
+     * Login a user
+     *
+     * If a user is already logged in this call, it will also return the session ID.
+     *
+     * @param username		A user account in commonsense is uniquely identified by a username. Cannot be empty.
+     * @param password		A password in commonsense does not have any specific requirements.
+     *                      It will be MD5 hashed before sending to the server so the user does not have to provide a hashed password. Cannot be empty.
+     * @throws IOException and RuntimeException
+     *                      IOException is thrown from request() method when the the response content(inputStream) has errors,
+     *                      or the response code from server is not OK(200).
+     *                      RuntimeException is thrown when the request content can not be created.
+     *                      A subclass of RuntimeException, IllegalArgumentException is thrown when username or password is null or empty.
+     *                      A subclass of RuntimeException, NullPointerException is thrown when session id returned from server is null.
+     * @return				Session ID. Will be null if the call fails.
+     */
+    public static String loginUser( String username, String password) throws IOException, RuntimeException
+    {
+        if(username == null || username.isEmpty() || password == null || password.isEmpty())
+            throw new IllegalArgumentException("invalid input of username or password");
+
+        final String url = URL_AUTH + "/" + URL_LOGIN;
+        final JSONObject user = new JSONObject();
+        try {
+            user.put("username", username);
+            user.put("password", password);
+        }catch(JSONException JS){
+            throw new RuntimeException("loginUser failed to create the content for the request");
+        }
+        Map<String, String> response = request(url, user, null, HTTP_METHOD_POST);
+        // if response code is not 200 (OK), the login was incorrect
+        int result = checkResponseCode(response.get(RESPONSE_CODE), "login");
+        if(result != 0)
+            throw new IOException("failed to log in, response code is:" + response.get(RESPONSE_CODE));
+        String session_id = response.get("session-id");
+        if (session_id == null)
+            Log.w(TAG, "loginUser returns a null session id");
+
+        return session_id;
+    }
+
+//
+//    /**
+//     * Logout the currently logged in user.
+//     *
+//     * @param sessionID		The sessionID of the user to logout. Cannot be empty.
+//     * @throws IOException, IllegalArgumentException
+//     *                      IOException is thrown from request() method when the the response content(inputStream) has errors,
+//     *                      IllegalArgumentException is thrown when session id is null or empty.
+//     * @return				Whether or not the logout finished successfully.
+//     */
+//    public static boolean logoutCurrentUser(String sessionID) throws IOException, IllegalArgumentException
+//    {
+//        if(sessionID == null || sessionID.isEmpty())
+//            throw new IllegalArgumentException("invalid input of session ID");
+//
+//        final String url = URL_AUTH + "/" + URL_LOGOUT;
+//        Map<String, String> response = request(url, null, sessionID, HTTP_METHOD_POST);
+//        // if response code is not 200 (OK), the logout was incorrect
+//        String responseCode = response.get(RESPONSE_CODE);
+//        int result = checkResponseCode(response.get(RESPONSE_CODE), "logout");
+//
+//        return (result == 0);
+//
+//    }
+
     //creates random account on CommonSense.
     // @ return map{"email", email  ;  "username", <username>  ; "password" <password> }
     public static Map<String, String> createCSAccount() throws IOException {
@@ -168,12 +267,10 @@ public class CSUtils {
 
     public static boolean deleteAccount(String userName, String passWord,String userId){
 
-        //String appKey = "";
-
         CommonSenseProxy csProxy = new CommonSenseProxy(false,  APP_KEY);
 
         try {
-            String sessionId = csProxy.loginUser(userName, passWord);
+            String sessionId = loginUser(userName, passWord);
             String url = "http://api.staging.sense-os.nl/users/"+userId;
             Map<String, String> response = request(url, null, sessionId, "DELETE");
         } catch (IOException e) {
@@ -186,24 +283,50 @@ public class CSUtils {
 
 
     /**
+     * Verify the response code
+     *
+     * @param responseCode	The response code returned from the request
+     * @param method		The method that requires code checking
+     *
+     * @result	The integer value of the result
+     *
+     */
+    public static int checkResponseCode(String responseCode, String method){
+        if ("403".equalsIgnoreCase(responseCode)) {
+            Log.w(TAG, "CommonSense" + method + "refused! Response: forbidden!");
+            return -2;
+        } else if ("201".equalsIgnoreCase(responseCode)) {
+            Log.e(TAG, "CommonSense" + method + "created! Response: " + responseCode);
+            return 1;
+        } else if (!"200".equalsIgnoreCase(responseCode)) {
+            Log.w(TAG, "CommonSense" + method + "failed! Response: " + responseCode);
+            return -1;
+        } else {
+            // received 200 response
+            Log.e(TAG, "CommonSense" + method + "OK! ");
+            return  0;
+        }
+    }
+
+    /**
      * Performs request at CommonSense API. Returns the response code, content, and headers.
      *
      * @param urlString
      *            Complete URL to perform request to.
      * @param content
-     *            (Optional) Content for the request. If the content is not null, the request method
-     *            is automatically POST. The default method is GET.
+     *            (Optional) Content for the request.
      * @param sessionID
      *            (Optional) Session ID header for the request.
      * @param requestMethod
      *            The required method for the HTTP request, such as POST or GET.
-     * @return Map with SenseApi.KEY_CONTENT and SenseApi.KEY_RESPONSE_CODE fields, plus fields for
-     *         all response headers.
      * @throws IOException
+     *            IOException is thrown when the inputStream has errors.
+     * @return Map with RESPONSE_CONTENT and RESPONSE_CODE fields,and fields for
+     *         all response headers.
      */
 
-    public static Map<String, String> request( String urlString,
-                                               JSONObject content, String sessionID, String requestMethod) throws IOException {
+    private static Map<String, String> request( String urlString,
+                                                JSONObject content, String sessionID, String requestMethod) throws IOException {
 
         HttpURLConnection urlConnection = null;
         HashMap<String, String> result = new HashMap<String, String>();
@@ -281,8 +404,8 @@ public class CSUtils {
                 responseContent.append(line);
                 responseContent.append('\r');
             }
-            result.put("RESPONSE_CONTENT", responseContent.toString());
-            result.put("RESPONSE_CODE", Integer.toString(urlConnection.getResponseCode()));
+            result.put(RESPONSE_CONTENT, responseContent.toString());
+            result.put(RESPONSE_CODE, Integer.toString(urlConnection.getResponseCode()));
 
             // clean up
             reader.close();

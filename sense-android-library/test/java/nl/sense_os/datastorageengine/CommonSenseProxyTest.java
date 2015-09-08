@@ -33,7 +33,9 @@ import static org.junit.Assert.assertTrue;
 public class CommonSenseProxyTest {
 
     Map<String, String> newUser;
-    CommonSenseProxy proxy = new CommonSenseProxy(false, CSUtils.APP_KEY);
+    String session_id;
+    CSUtils csUtils = new CSUtils(false);
+    CommonSenseProxy proxy = new CommonSenseProxy(false, csUtils.APP_KEY);
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -41,87 +43,13 @@ public class CommonSenseProxyTest {
 
     @Before
     public  void setUp () throws IOException{
-        newUser = CSUtils.createCSAccount();
-
+        newUser = csUtils.createCSAccount();
+        session_id = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
     }
 
-    @Test
-    public void testLoginUserWithValidUsernameAndValidPassword() throws IOException, RuntimeException{
-        String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
-        assertNotNull("session_id returned from server is null", session_id);
-        assertFalse("session_id returned from server is empty",session_id.isEmpty());
-    }
-    @Test
-    public void testLoginUserWithValidUsernameAndWrongPassword() throws IOException, RuntimeException{
-        thrown.expect(IOException.class);
-        thrown.expectMessage("could not get InputStream");
-        proxy.loginUser(newUser.get("username"), "123456789");
-    }
-    @Test
-    public void testLoginUserWithValidUsernameAndNullPassword() throws IOException, RuntimeException{
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("invalid input of username or password");
-        proxy.loginUser(newUser.get("username"),null);
-    }
-    @Test
-    public void testLoginUserWithValidUsernameAndEmptyPassword() throws IOException, RuntimeException{
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("invalid input of username or password");
-        proxy.loginUser(newUser.get("username"),"");
-    }
-    @Test
-    public void testLoginUserWithNullUsernameAndValidPassword() throws IOException, RuntimeException{
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("invalid input of username or password");
-        proxy.loginUser(null,newUser.get("password"));
-    }
-    @Test
-    public void testLoginUserWithEmptyUsernameAndValidPassword() throws IOException, RuntimeException{
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("invalid input of username or password");
-        proxy.loginUser("",newUser.get("password"));
-    }
-    @Test
-    public void testLogoutCurrentUserWithValidSessionID() throws IOException, IllegalArgumentException{
-        // log in first in order to log out
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
-        boolean result = proxy.logoutCurrentUser(session_id);
-        assertTrue("current user cannot be successfully logged out", result);
-    }
-    @Test
-    public void testLogoutCurrentUserWithNullSessionID() throws IOException, IllegalArgumentException{
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("invalid input of session ID");
-        proxy.loginUser(newUser.get("username"),newUser.get("password"));
-        boolean result = proxy.logoutCurrentUser(null);
-    }
-    @Test
-    public void testLogoutCurrentUserWithEmptySessionID() throws IOException, IllegalArgumentException{
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("invalid input of session ID");
-        // log in first in order to log out
-        proxy.loginUser(newUser.get("username"),newUser.get("password"));
-        boolean result = proxy.logoutCurrentUser("");
-    }
-    @Test
-    public void testLogoutCurrentUserWithWrongSessionID() throws IOException, IllegalArgumentException{
-        // log in first in order to log out
-        proxy.loginUser(newUser.get("username"),newUser.get("password"));
-        boolean result = proxy.logoutCurrentUser("987654321");
-        assertFalse("logout with wrong session id should fail",result);
-    }
-    @Test
-    public void testLogoutCurrentUserTwice() throws IOException, IllegalArgumentException{
-        // log in first in order to log out
-        String session_id = proxy.loginUser(newUser.get("username"),newUser.get("password"));
-        boolean result = proxy.logoutCurrentUser(session_id);
-        result = proxy.logoutCurrentUser(session_id);
-        assertFalse("logout twice should fail",result);
-    }
     @Test
     public void testCreateSensorAndGetSensorWithValidParams() throws IOException, RuntimeException {
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
+
         int sensorNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -150,8 +78,7 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testCreateSensorMoreThanOne() throws IOException, RuntimeException {
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
+
         int sensorNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -199,12 +126,10 @@ public class CommonSenseProxyTest {
         assertEquals("Failed to get correct number of sensor", sensorNumber, sensorList.length());
     }
     @Test
+    /*This should be the same as testing invalid dataType, deviceType and Session ID*/
     public void testCreateSensorWithEmptyName() throws IOException, RuntimeException {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(startsWith("invalid input of name"));
-        /*This should be the same as testing invalid dataType, deviceType and Session ID*/
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -218,8 +143,7 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testCreateSensorWithNullDisplayName() throws IOException, RuntimeException {
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
+
         String name = "test";
         String deviceType = "deviceType";
         String dataType = "json";
@@ -233,8 +157,7 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testCreateSensorWithNullDataStructure() throws IOException, RuntimeException {
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
+
         String name = "test";
         String deviceType = "deviceType";
         String dataType = "json";
@@ -248,24 +171,19 @@ public class CommonSenseProxyTest {
     public void testGetAllSensorsWithNullSessionId() throws IOException, IllegalArgumentException {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("getAllSensors: invalid input of sessionID");
-        // log in first in order to create sensor
-        proxy.loginUser(newUser.get("username"), newUser.get("password"));
+
         // check the sensor with valid session id
-        JSONArray sensorList = proxy.getAllSensors(null);
+        proxy.getAllSensors(null);
     }
     @Test
     public void testGetAllSensorsWithEmptySessionId() throws IOException, IllegalArgumentException {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("getAllSensors: invalid input of sessionID");
-        // log in first in order to create sensor
-        proxy.loginUser(newUser.get("username"), newUser.get("password"));
         // check the sensor with valid session id
-        JSONArray sensorList = proxy.getAllSensors("");
+        proxy.getAllSensors("");
     }
     @Test
     public void testAddSensorToDeviceWithValidParams() throws RuntimeException, IOException {
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -300,8 +218,6 @@ public class CommonSenseProxyTest {
     public void testAddSensorToDeviceWithNullUuid() throws RuntimeException, IOException {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(startsWith("invalid input of csSensorID"));
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -334,8 +250,6 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testGetAllDevicesWithSingleDevice() throws IllegalArgumentException, IOException {
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -384,8 +298,6 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testGetAllDevicesWithTwoDevices() throws IllegalArgumentException, IOException {
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -463,10 +375,10 @@ public class CommonSenseProxyTest {
         deviceList = proxy.getAllDevices(sessionID);
         assertNotNull("Failed to get the list of devices", deviceList);
         assertEquals("Incorrect device number", deviceNumber, deviceList.length());
-
+        // be aware that addSensorToDevice, the newly created device is stored at the head of the list
         try {
-            returnedDeviceType = deviceList.getJSONObject(1).getString("type");
-            returnedUUID = deviceList.getJSONObject(1).getString("uuid");
+            returnedDeviceType = deviceList.getJSONObject(0).getString("type");
+            returnedUUID = deviceList.getJSONObject(0).getString("uuid");
         }catch(JSONException js){
             throw new RuntimeException("failed to get a sensor from the device list");
         }
@@ -476,8 +388,6 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testPostDataWithInvalidDataFormat() throws RuntimeException, IOException{
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -516,8 +426,6 @@ public class CommonSenseProxyTest {
     }
     @Test
     public void testPostDataAndGetDataWithValidParams()throws RuntimeException, IOException{
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -553,8 +461,6 @@ public class CommonSenseProxyTest {
     public void testPostDataAndGetDataWithInvalidParams()throws RuntimeException, IOException{
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("invalid input of date or or sensorID or sessionID");
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         String name = "test";
         String displayName = "test";
         String deviceType = "deviceType";
@@ -591,8 +497,6 @@ public class CommonSenseProxyTest {
     public void testGetDataWithInvalidDate()throws IllegalArgumentException, IOException{
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(startsWith("start date cannot be after current date"));
-        // log in first in order to create sensor
-        String session_id = proxy.loginUser(newUser.get("username"), newUser.get("password"));
         int deviceNumber = 0;
         String name = "test";
         String displayName = "test";
@@ -676,6 +580,6 @@ public class CommonSenseProxyTest {
     @After
     public void tearDown() throws IOException{
 
-        CSUtils.deleteAccount(newUser.get("username"), newUser.get("password"),newUser.get("id"));
+        csUtils.deleteAccount(newUser.get("username"), newUser.get("password"),newUser.get("id"));
     }
 }
