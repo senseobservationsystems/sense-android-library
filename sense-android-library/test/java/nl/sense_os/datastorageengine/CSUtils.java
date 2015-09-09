@@ -103,31 +103,6 @@ public class CSUtils {
         return session_id;
     }
 
-//
-//    /**
-//     * Logout the currently logged in user.
-//     *
-//     * @param sessionID		The sessionID of the user to logout. Cannot be empty.
-//     * @throws IOException, IllegalArgumentException
-//     *                      IOException is thrown from request() method when the the response content(inputStream) has errors,
-//     *                      IllegalArgumentException is thrown when session id is null or empty.
-//     * @return				Whether or not the logout finished successfully.
-//     */
-//    public static boolean logoutCurrentUser(String sessionID) throws IOException, IllegalArgumentException
-//    {
-//        if(sessionID == null || sessionID.isEmpty())
-//            throw new IllegalArgumentException("invalid input of session ID");
-//
-//        final String url = URL_AUTH + "/" + URL_LOGOUT;
-//        Map<String, String> response = request(url, null, sessionID, HTTP_METHOD_POST);
-//        // if response code is not 200 (OK), the logout was incorrect
-//        String responseCode = response.get(RESPONSE_CODE);
-//        int result = checkResponseCode(response.get(RESPONSE_CODE), "logout");
-//
-//        return (result == 0);
-//
-//    }
-
     //creates random account on CommonSense.
     // @ return map{"email", email  ;  "username", <username>  ; "password" <password> }
     public static Map<String, String> createCSAccount() throws IOException {
@@ -296,10 +271,10 @@ public class CSUtils {
             Log.w(TAG, "CommonSense" + method + "refused! Response: forbidden!");
             return -2;
         } else if ("201".equalsIgnoreCase(responseCode)) {
-            Log.e(TAG, "CommonSense" + method + "created! Response: " + responseCode);
+            Log.v(TAG, "CommonSense" + method + "created! Response: " + responseCode);
             return 1;
         } else if (!"200".equalsIgnoreCase(responseCode)) {
-            Log.w(TAG, "CommonSense" + method + "failed! Response: " + responseCode);
+            Log.v(TAG, "CommonSense" + method + "failed! Response: " + responseCode);
             return -1;
         } else {
             // received 200 response

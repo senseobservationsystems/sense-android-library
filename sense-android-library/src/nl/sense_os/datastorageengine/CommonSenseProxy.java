@@ -472,14 +472,14 @@ public class CommonSenseProxy {
             Log.w(TAG, "CommonSense" + method + "refused! Response: forbidden!");
             return -2;
         } else if ("201".equalsIgnoreCase(responseCode)) {
-            Log.e(TAG, "CommonSense" + method + "created! Response: " + responseCode);
+            Log.v(TAG, "CommonSense" + method + "created! Response: " + responseCode);
             return 1;
         } else if (!"200".equalsIgnoreCase(responseCode)) {
             Log.w(TAG, "CommonSense" + method + "failed! Response: " + responseCode);
             return -1;
         } else {
             // received 200 response
-            Log.e(TAG, "CommonSense" + method + "OK! ");
+            Log.v(TAG, "CommonSense" + method + "OK! ");
             return  0;
         }
     }
