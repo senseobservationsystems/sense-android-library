@@ -31,3 +31,5 @@ public class RealmObjectTemplate extends RealmObject {
     public int    getSessionId() { return sessionId; }
     public void   setSessionId(int sessionId) { this.sessionId = sessionId; }
 }
+
+// TODO: remove this file after we're done playing around with Realm
