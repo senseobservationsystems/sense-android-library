@@ -82,15 +82,6 @@ public class RealmDataPoint extends RealmObject {
         }
     }
 
-    public static double getDoubleValue(RealmDataPoint dataPoint) {
-        if (SensorDataPoint.DataType.DOUBLE.name().equals(dataPoint.type)) {
-            return Double.parseDouble(dataPoint.value);
-        }
-        else {
-            throw new ClassCastException("DataPoint does not contain a double value.");
-        }
-    }
-
     public static float getFloatValue(RealmDataPoint dataPoint) {
         if (SensorDataPoint.DataType.FLOAT.name().equals(dataPoint.type)) {
             return Float.parseFloat(dataPoint.value);
