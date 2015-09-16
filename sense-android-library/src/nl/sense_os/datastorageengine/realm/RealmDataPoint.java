@@ -22,52 +22,46 @@ public class RealmDataPoint extends RealmObject {
 
     public RealmDataPoint () {}
 
-    public RealmDataPoint(String id, String sensorId, boolean value, long date, boolean synced) {
+    public RealmDataPoint(String id, String sensorId, boolean value, long date) {
         this.id = id;
         this.sensorId = sensorId;
         setValue(value);
         this.date = date;
-        this.synced = synced;
     }
 
-    public RealmDataPoint(String id, String sensorId, double value, long date, boolean synced) {
+    public RealmDataPoint(String id, String sensorId, double value, long date) {
         this.id = id;
         this.sensorId = sensorId;
         setValue(value);
         this.date = date;
-        this.synced = synced;
     }
 
-    public RealmDataPoint(String id, String sensorId, float value, long date, boolean synced) {
+    public RealmDataPoint(String id, String sensorId, float value, long date) {
         this.id = id;
         this.sensorId = sensorId;
         setValue(value);
         this.date = date;
-        this.synced = synced;
     }
 
-    public RealmDataPoint(String id, String sensorId, int value, long date, boolean synced) {
+    public RealmDataPoint(String id, String sensorId, int value, long date) {
         this.id = id;
         this.sensorId = sensorId;
         setValue(value);
         this.date = date;
-        this.synced = synced;
     }
 
-    public RealmDataPoint(String id, String sensorId, JSONObject value, long date, boolean synced) {
+    public RealmDataPoint(String id, String sensorId, JSONObject value, long date) {
         this.id = id;
         this.sensorId = sensorId;
         setValue(value);
         this.date = date;
-        this.synced = synced;
     }
 
-    public RealmDataPoint(String id, String sensorId, String value, long date, boolean synced) {
+    public RealmDataPoint(String id, String sensorId, String value, long date) {
         this.id = id;
         this.sensorId = sensorId;
         setValue(value);
         this.date = date;
-        this.synced = synced;
     }
 
     public String getId() {
@@ -86,54 +80,54 @@ public class RealmDataPoint extends RealmObject {
         this.sensorId = sensorId;
     }
 
-    public boolean getBooleanValue() {
-        if (SensorDataPoint.DataType.BOOL.name().equals(this.type)) {
-            return Boolean.parseBoolean(this.value);
+    public static boolean getBooleanValue(RealmDataPoint dataPoint) {
+        if (SensorDataPoint.DataType.BOOL.name().equals(dataPoint.type)) {
+            return Boolean.parseBoolean(dataPoint.value);
         }
         else {
             throw new ClassCastException("DataPoint does not contain a boolean value.");
         }
     }
 
-    public double getDoubleValue() {
-        if (SensorDataPoint.DataType.DOUBLE.name().equals(this.type)) {
-            return Double.parseDouble(this.value);
+    public static double getDoubleValue(RealmDataPoint dataPoint) {
+        if (SensorDataPoint.DataType.DOUBLE.name().equals(dataPoint.type)) {
+            return Double.parseDouble(dataPoint.value);
         }
         else {
             throw new ClassCastException("DataPoint does not contain a double value.");
         }
     }
 
-    public float getFloatValue() {
-        if (SensorDataPoint.DataType.FLOAT.name().equals(this.type)) {
-            return Float.parseFloat(this.value);
+    public static float getFloatValue(RealmDataPoint dataPoint) {
+        if (SensorDataPoint.DataType.FLOAT.name().equals(dataPoint.type)) {
+            return Float.parseFloat(dataPoint.value);
         }
         else {
             throw new ClassCastException("DataPoint does not contain a float value.");
         }
     }
 
-    public int getIntValue() {
-        if (SensorDataPoint.DataType.INT.name().equals(this.type)) {
-            return Integer.parseInt(this.value);
+    public static int getIntValue(RealmDataPoint dataPoint) {
+        if (SensorDataPoint.DataType.INT.name().equals(dataPoint.type)) {
+            return Integer.parseInt(dataPoint.value);
         }
         else {
             throw new ClassCastException("DataPoint does not contain an int value.");
         }
     }
 
-    public JSONObject getJSONValue() throws JSONException {
-        if (SensorDataPoint.DataType.JSON.name().equals(this.type)) {
-            return new JSONObject(this.value);
+    public static JSONObject getJSONValue(RealmDataPoint dataPoint) throws JSONException {
+        if (SensorDataPoint.DataType.JSON.name().equals(dataPoint.type)) {
+            return new JSONObject(dataPoint.value);
         }
         else {
             throw new ClassCastException("DataPoint does not contain a JSON value.");
         }
     }
 
-    public String getStringValue() {
-        if (SensorDataPoint.DataType.STRING.name().equals(this.type)) {
-            return this.value;
+    public static String getStringValue(RealmDataPoint dataPoint) {
+        if (SensorDataPoint.DataType.STRING.name().equals(dataPoint.type)) {
+            return dataPoint.value;
         }
         else {
             throw new ClassCastException("DataPoint does not contain a string value.");
@@ -142,7 +136,14 @@ public class RealmDataPoint extends RealmObject {
 
     /**
      * Get a String representation of the value of the DataPoint
-     * @return
+     * In order to cast the value of the data point into the correct type, use the static
+     * functions getIntValue, getStringValue, etc:
+     *
+     *     RealmDataPoint dataPoint = new RealmDataPoint(1, 123, "the value", new Date().getTime());
+     *     String type = dataPoint.getType();                       // "STRING"
+     *     String value = RealmDataPoint.getStringValue(dataPoint); // "the value"
+     *
+     * @return Returns a string representation of the value
      */
     public String getValue() {
         return this.value;
@@ -194,7 +195,15 @@ public class RealmDataPoint extends RealmObject {
         this.synced = synced;
     }
 
-    public SensorDataPoint.DataType getType () {
-        return SensorDataPoint.DataType.valueOf(type);
+    public void setType(SensorDataPoint.DataType type) {
+        this.type = type.name();
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType () {
+        return this.type;
     }
 }

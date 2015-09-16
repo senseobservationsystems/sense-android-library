@@ -21,7 +21,7 @@ public class RealmSource extends RealmObject {
     public RealmSource(String id, String name, JSONObject meta, String uuid, String csId) {
         this.id = id;
         this.name = name;
-        setMeta(meta);
+        this.meta = meta != null ? meta.toString() : null;
         this.uuid = uuid;
         this.csId = csId;
     }
@@ -49,12 +49,23 @@ public class RealmSource extends RealmObject {
         this.uuid = uuid;
     }
 
-    public JSONObject getMeta() throws JSONException {
-        return meta != null ? new JSONObject(meta) : null;
+    /**
+     * Returns meta information as a stringified JSON object. Deserialize the string like:
+     *
+     *     meta = new JSONObject(RealmSource.getMeta()).
+     *
+     * @return stringified JSON object
+     */
+    public String getMeta() {
+        return meta;
     }
 
-    public void setMeta(JSONObject meta) {
-        this.meta = meta != null ? meta.toString() : null;
+    /**
+     * Set meta information for this source
+     * @param meta Must contain a stringified JSON object.
+     */
+    public void setMeta(String meta) {
+        this.meta = meta;
     }
 
     public String getName() {

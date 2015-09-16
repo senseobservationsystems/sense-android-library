@@ -28,7 +28,7 @@ public class RealmSensor extends RealmObject {
     public RealmSensor(String id, String name, JSONObject meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, boolean synced) {
         this.id = id;
         this.name = name;
-        setMeta(meta);
+        this.meta = meta != null ? meta.toString() : null;
         this.csUploadEnabled = csUploadEnabled;
         this.csDownloadEnabled = csDownloadEnabled;
         this.persistLocally = persistLocally;
@@ -55,12 +55,23 @@ public class RealmSensor extends RealmObject {
         this.name = name;
     }
 
-    public JSONObject getMeta() throws JSONException {
-        return meta != null ? new JSONObject(meta) : null;
+    /**
+     * Returns meta information as a stringified JSON object. Deserialize the string like:
+     *
+     *     meta = new JSONObject(RealmSource.getMeta()).
+     *
+     * @return stringified JSON object
+     */
+    public String getMeta() {
+        return meta;
     }
 
-    public void setMeta(JSONObject meta) {
-        this.meta = meta != null ? meta.toString() : null;
+    /**
+     * Set meta information for this sensor
+     * @param meta Must contain a stringified JSON object.
+     */
+    public void setMeta(String meta) {
+        this.meta = meta;
     }
 
     public boolean isCsUploadEnabled() {
@@ -103,8 +114,21 @@ public class RealmSensor extends RealmObject {
         this.sourceId = sourceId;
     }
 
-    public SensorDataPoint.DataType getdataType() {
-        return SensorDataPoint.DataType.valueOf(dataType);
+    /**
+     * Returns the string name of the data type.
+     * This is an entry from the enum SensorDataPoint.DataType
+     * @return
+     */
+    public String getDataType() {
+        return dataType;
+    }
+
+    /**
+     * Set the sensor data type.
+     * @param dataType Must be a the name of one of the enums SensorDataPoint.DataType
+     */
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
 
     public void setDataType(SensorDataPoint.DataType dataType) {
