@@ -29,13 +29,6 @@ public class RealmDataPoint extends RealmObject {
         this.date = date;
     }
 
-    public RealmDataPoint(String id, String sensorId, double value, long date) {
-        this.id = id;
-        this.sensorId = sensorId;
-        setValue(value);
-        this.date = date;
-    }
-
     public RealmDataPoint(String id, String sensorId, float value, long date) {
         this.id = id;
         this.sensorId = sensorId;
@@ -152,11 +145,6 @@ public class RealmDataPoint extends RealmObject {
     public void setValue(boolean value) {
         this.type = SensorDataPoint.DataType.BOOL.name();
         this.value = Boolean.toString(value);
-    }
-
-    public void setValue(double value) {
-        this.type = SensorDataPoint.DataType.DOUBLE.name();
-        this.value = Double.toString(value);
     }
 
     public void setValue(float value) {
