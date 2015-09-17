@@ -1,34 +1,34 @@
 package nl.sense_os.datastorageengine;
 
-import java.util.UUID;
-
-public class DataPoint {
+/**
+ * A DataPoint can hold a value and date of a specific sensor
+ *
+ * Usage:
+ *
+ *     DataPoint<String> point =
+ *         new DataPoint<String>("sensor_x", "Foo", new Date().getTime())
+ *
+ * @param <T> The value type: String, Float, Boolean, Integer, or JSONObject.
+ */
+public class DataPoint<T> {
 
     private String id = null;
     private String sensorId = null;
-    private Object value = null;
+    private T value;
     private long date = 0;
     private boolean synced = false;
 
-    public DataPoint(String sensorId, Object value, long date) {
-        this.id = UUID.randomUUID().toString();
-        this.sensorId = sensorId;
-        this.value = value;
-        this.date = date;
+    public DataPoint(String sensorId, T value, long date) {
+        setSensorId(sensorId);
+        setValue(value);
+        setDate(date);
     }
 
-    public DataPoint(String id, String sensorId, Object value, long date) {
-        this.id = id;
-        this.sensorId = sensorId;
-        this.value = value;
-        this.date = date;
-    }
-
-    public DataPoint(String sensorId, Object value, long date, boolean synced) {
-        this.sensorId = sensorId;
-        this.value = value;
-        this.date = date;
-        this.synced = synced;
+    public DataPoint(String sensorId, T value, long date, boolean synced) {
+        setSensorId(sensorId);
+        setDate(date);
+        setValue(value);
+        setSynced(synced);
     }
 
     public String getId() {
@@ -47,12 +47,12 @@ public class DataPoint {
         this.sensorId = sensorId;
     }
 
-    public Object getValue() {
-        return value;
+    public void setValue(T value) {
+        this.value = value;
     }
 
-    public void setValue(Object value) {
-        this.value = value;
+    public T getValue() {
+        return value;
     }
 
     public long getDate() {

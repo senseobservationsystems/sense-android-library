@@ -1,32 +1,88 @@
 package nl.sense_os.datastorageengine;
 
+import android.content.Context;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+import nl.sense_os.datastorageengine.realm.RealmDataPoint;
+
+
+// TODO: comment
 public class DatabaseHandler {
+
+    private Realm realm = null;
+
+    public enum SORT_ORDER {ASC, DESC};
+
+    public DatabaseHandler (Context context) {
+        realm = Realm.getInstance(context);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (realm != null) {
+            realm.close();
+            realm = null;
+        }
+    }
+
     /**
      * Add a data point to the sensor with the given sensorId.
      * Throw exceptions if it fails to add the data point.
-     * @param sensorId    The id of the sensor where to add the dataPoint
-     * @param value        value for the data point
-     * @param date         time for the data point
+     * @param dataPoint   A data point containing sensorId, value, and date
      */
-    public void addDataPoint (String sensorId, Object value, Date date) {
-        // TODO: implement
+    public void insertDataPoint (DataPoint dataPoint) {
+        RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
+
+        realm.beginTransaction();
+        realm.copyToRealm(realmDataPoint);
+        realm.commitTransaction();
     }
 
     /**
      * Get data points from the sensor with the given sensor id.
      * @param sensorId: String for the sensorID of the sensor that the data point belongs to.
-     * @param startDate: Start date of the query.
-     * @param endDate: End date of the query.
+     * @param startDate: Start date of the query, included.
+     * @param endDate: End date of the query, excluded.
      * @param limit: The maximum number of data points.
-     * @param sortOrder: Sort order, either "ASC" or "DESC"
+     * @param sortOrder: Sort order, either ASC or DESC
      * @return datapoints: An array of NSDictionary represents data points.
      */
-    public List<DataPoint> getDataPoints(String sensorId, Date startDate, Date endDate, int limit, String sortOrder) {
-        // TODO: implement
-        return null;
+    public List<DataPoint> getDataPoints(String sensorId, Date startDate, Date endDate, int limit, SORT_ORDER sortOrder) throws JSONException {
+        // query results
+        realm.beginTransaction();
+        RealmResults<RealmDataPoint> results = realm
+                .where(RealmDataPoint.class)
+                .equalTo("sensorId", sensorId)
+                .greaterThanOrEqualTo("date", startDate.getTime())
+                .lessThan("date", endDate.getTime())
+                .findAll();
+        realm.commitTransaction();
+
+        // sort
+        boolean resultsOrder = (sortOrder == SORT_ORDER.DESC )
+                ? RealmResults.SORT_ORDER_DESCENDING
+                : RealmResults.SORT_ORDER_ASCENDING;
+        results.sort("date", resultsOrder);
+
+        // limit and convert to DataPoint
+        int count = 0;
+        List<DataPoint> dataPoints = new ArrayList<>();
+        Iterator<RealmDataPoint> iterator = results.iterator();
+        while (count < limit && iterator.hasNext()) {
+            dataPoints.add(RealmDataPoint.toDataPoint(iterator.next()));
+            count++;
+        }
+        // TODO: figure out what is the most efficient way to loop over the results
+
+        return dataPoints;
     }
 
     /**
