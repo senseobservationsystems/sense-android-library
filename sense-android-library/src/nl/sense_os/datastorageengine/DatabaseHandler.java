@@ -36,7 +36,7 @@ public class DatabaseHandler {
     /**
      * This method inserts a DataPoint object into the local Realm database.
      * The typecasting to string should already be done at this point.
-     * @param datapoint	A DataPoint object that has a stringified value that will be copied
+     * @param dataPoint	A DataPoint object that has a stringified value that will be copied
      * 			into a Realm object.
      */
     public void insertDataPoint (DataPoint dataPoint) {
