@@ -99,49 +99,13 @@ public class RealmDataPoint extends RealmObject {
      * @param realmDataPoint
      * @return Returns a DataPoint
      */
-    public static DataPoint toDataPoint (RealmDataPoint realmDataPoint) throws ClassCastException, JSONException {
-        // string
-        if (DataType.STRING.name().equals(realmDataPoint.getType())) {
-            return new DataPoint<>(
-                    realmDataPoint.getSensorId(),
-                    realmDataPoint.getValue(),
-                    realmDataPoint.getDate(),
-                    realmDataPoint.isSynced());
-        }
-
-        // integer
-        if (DataType.INT.name().equals(realmDataPoint.getType())) {
-            return new DataPoint<>(
-                    realmDataPoint.getSensorId(),
-                    Integer.parseInt(realmDataPoint.getValue()),
-                    realmDataPoint.getDate());
-        }
-
-        // float
-        if (DataType.FLOAT.name().equals(realmDataPoint.getType())) {
-            return new DataPoint<>(
-                    realmDataPoint.getSensorId(),
-                    Float.parseFloat(realmDataPoint.getValue()),
-                    realmDataPoint.getDate());
-        }
-
-        // boolean
-        if (DataType.BOOL.name().equals(realmDataPoint.getType())) {
-            return new DataPoint<> (
-                    realmDataPoint.getSensorId(),
-                    Boolean.parseBoolean(realmDataPoint.getValue()),
-                    realmDataPoint.getDate());
-        }
-
-        // JSON object
-        if (DataType.JSON.name().equals(realmDataPoint.getType())) {
-            return new DataPoint<> (
-                    realmDataPoint.getSensorId(),
-                    new Object(),
-                    realmDataPoint.getDate());
-        }
-
-        throw new ClassCastException("Unknown type of DataPoint");
+    public static DataPoint toDataPoint (RealmDataPoint realmDataPoint) {
+        return new DataPoint(
+                realmDataPoint.getSensorId(),
+                realmDataPoint.getType(),
+                realmDataPoint.getValue(),
+                realmDataPoint.getDate(),
+                realmDataPoint.isSynced());
     }
 
     /**
@@ -149,71 +113,13 @@ public class RealmDataPoint extends RealmObject {
      * @param dataPoint  A DataPoint
      * @return Returns a RealmDataPoint
      */
-    public static <T> RealmDataPoint fromDataPoint (DataPoint<T> dataPoint) throws ClassCastException {
-
-        Object value = dataPoint.getValue();
-
-        // null
-        if (value == null) {
-            return new RealmDataPoint(
-                    dataPoint.getSensorId(),
-                    null,
-                    null,
-                    dataPoint.getDate(),
-                    dataPoint.isSynced());
-        }
-
-        // string
-        if (value instanceof String) {
-            return new RealmDataPoint(
-                    dataPoint.getSensorId(),
-                    DataType.STRING.name(),
-                    value.toString(),
-                    dataPoint.getDate(),
-                    dataPoint.isSynced());
-        }
-
-        // float
-        if (value instanceof Float) {
-            return new RealmDataPoint(
-                    dataPoint.getSensorId(),
-                    DataType.FLOAT.name(),
-                    value.toString(),
-                    dataPoint.getDate(),
-                    dataPoint.isSynced());
-        }
-
-        // integer
-        if (value instanceof Integer) {
-            return new RealmDataPoint(
-                    dataPoint.getSensorId(),
-                    DataType.INT.name(),
-                    value.toString(),
-                    dataPoint.getDate(),
-                    dataPoint.isSynced());
-        }
-
-        // boolean
-        if (value instanceof Boolean) {
-            return new RealmDataPoint(
-                    dataPoint.getSensorId(),
-                    DataType.BOOL.name(),
-                    value.toString(),
-                    dataPoint.getDate(),
-                    dataPoint.isSynced());
-        }
-
-        // JSON object
-        if (value instanceof JSONObject) {
-            return new RealmDataPoint(
-                    dataPoint.getSensorId(),
-                    DataType.BOOL.name(),
-                    value.toString(),
-                    dataPoint.getDate(),
-                    dataPoint.isSynced());
-        }
-
-        throw new ClassCastException("Unknown type of value in DataPoint");
+    public static RealmDataPoint fromDataPoint (DataPoint dataPoint) {
+        return new RealmDataPoint(
+                dataPoint.getSensorId(),
+                dataPoint.getType().name(),
+                dataPoint.getStringifiedValue(),
+                dataPoint.getDate(),
+                dataPoint.isSynced());
     }
 
 }
