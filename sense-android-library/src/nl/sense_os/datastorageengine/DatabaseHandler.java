@@ -34,9 +34,10 @@ public class DatabaseHandler {
     }
 
     /**
-     * Add a data point to the sensor with the given sensorId.
-     * Throw exceptions if it fails to add the data point.
-     * @param dataPoint   A data point containing sensorId, value, and date
+     * This method inserts a DataPoint object into the local Realm database.
+     * The typecasting to string should already be done at this point.
+     * @param datapoint	A DataPoint object that has a stringified value that will be copied
+     * 			into a Realm object.
      */
     public void insertDataPoint (DataPoint dataPoint) {
         RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
@@ -47,7 +48,7 @@ public class DatabaseHandler {
     }
 
     /**
-     * Get data points from the sensor with the given sensor id.
+     * Get data points from the local database with the given sensor id.
      * @param sensorId: String for the sensorID of the sensor that the data point belongs to.
      * @param startDate: Start date of the query, included.
      * @param endDate: End date of the query, excluded.
@@ -86,29 +87,48 @@ public class DatabaseHandler {
     }
 
     /**
-     * Set the meta data and the options for enabling data upload/download to Common Sense and local data persistence.
-     *
-     * @param sensorId: String for the sensorID of the sensor that the new setting should be applied to.
-     * @param options: Sensor options.
+     * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
+     * @param sensor: Sensor object containing the updated info.
      */
-    public void setSensorOptions(String sensorId, SensorOptions options) {
+    public void update(Sensor sensor) {
         // TODO: implement
-    }
+        }
+
+    // For Datapoint Class
+
+    /**
+     * Update RealmDataPoint in database with the info of the given DataPoint object. Throws an exception if it fails to updated.
+     * @param datapoint: DataPoint object containing the updated info.
+     */
+    public void  update(DataPoint datapoint )  {
+        // TODO: implement
+        }
+
+
+    // For Source Class
 
     /**
      * Store a new sensor in the local database
      * @param sensor
      */
-    public void createSensor(Sensor sensor) {
+    public void insertSensor(Sensor sensor) {
         // TODO: implement
     }
 
     /**
-     * Retrieve a sensor by its name.
-     * @param sourceId
-     * @param sensorName
-     * @return
+     * Update RLMSource in database with the info of the given Source object. Throws an exception if it fails to updated.
+     * @param source: Source object containing the updated info.
      */
+    public void update(Source source ) {
+        // TODO
+    }
+
+    /**
+     * Get a sensor
+     * @param sourceId	The ID of the source object or Null
+     * @param sensorName	The name of the sensor or Null
+     * @return sensor: sensor with the given sensor name and sourceId.
+     **/
     public Sensor getSensor(String sourceId, String sensorName) {
         //TODO: implement
         return null;
@@ -124,30 +144,26 @@ public class DatabaseHandler {
         return null;
     }
 
+
+    // For DataStorageEngine Class
+
     /**
      * Store a new source in the local database
      * @param source
      */
-    public void createSource(Source source) {
+    public void insertSource(Source source) {
         // TODO: implement
     }
 
     /**
-     * Retrieve a source by it's id
-     * @param sourceId
-     * @return
+     * Returns a list of sources based on the specified criteria.
+     * @param sourceName
+     * @param uuid
+     * @return list of source objects that correspond to the specified criteria.
      */
-    public Source getSource (String sourceId) {
+    public List<Source> getSources (String sourceName, String uuid) {
         // TODO: implement
         return null;
     }
 
-    /**
-     * Retrieve all sources
-     * @return
-     */
-    public List<Source> getSources () {
-        // TODO: implement
-        return null;
-    }
 }
