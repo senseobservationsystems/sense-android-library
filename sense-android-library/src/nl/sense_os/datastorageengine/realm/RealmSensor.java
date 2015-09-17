@@ -56,9 +56,19 @@ public class RealmSensor extends RealmObject {
     }
 
     /**
+     * Returns the meta information of a RealmSensor as JSONObject
+     * @param realmSensor
+     * @return Returns JSONObject with meta information
+     */
+    public static JSONObject getMeta (RealmSensor realmSensor) throws JSONException {
+        String meta = realmSensor.getMeta();
+        return meta != null ? new JSONObject(meta) : null;
+    }
+
+    /**
      * Returns meta information as a stringified JSON object. Deserialize the string like:
      *
-     *     meta = new JSONObject(RealmSource.getMeta()).
+     *     RealmSensor.getMeta(sensor);
      *
      * @return stringified JSON object
      */

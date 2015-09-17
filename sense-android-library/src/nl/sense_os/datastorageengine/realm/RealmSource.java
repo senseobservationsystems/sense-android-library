@@ -50,9 +50,19 @@ public class RealmSource extends RealmObject {
     }
 
     /**
+     * Returns the meta information of a RealmSource source as JSONObject
+     * @param realmSource
+     * @return Returns JSONObject with meta information
+     */
+    public static JSONObject getMeta (RealmSource realmSource) throws JSONException {
+        String meta = realmSource.getMeta();
+        return meta != null ? new JSONObject(meta) : null;
+    }
+
+    /**
      * Returns meta information as a stringified JSON object. Deserialize the string like:
      *
-     *     meta = new JSONObject(RealmSource.getMeta()).
+     *     RealmSource.getMeta(source);
      *
      * @return stringified JSON object
      */
