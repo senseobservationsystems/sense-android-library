@@ -46,10 +46,10 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
     /**
      * Close the database connection.
-     * @throws Throwable
+     * @throws Exception
      */
     @Override
-    protected void finalize() throws Throwable {
+    protected void finalize() throws Exception {
         if (realm != null) {
             realm.close();
             realm = null;
@@ -58,9 +58,9 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
     /**
      * Close the DatabaseHandler. This will neatly close the database connection to Realm.
-     * @throws Throwable
+     * @throws Exception
      */
-    public void close () throws Throwable {
+    public void close () throws Exception {
         finalize();
     }
 

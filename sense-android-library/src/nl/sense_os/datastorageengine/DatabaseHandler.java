@@ -30,7 +30,7 @@ public interface DatabaseHandler {
      * Close the DatabaseHandler. This will neatly close the database connection to Realm.
      * @throws Throwable
      */
-    public void close () throws Throwable;
+    public void close () throws Exception;
 
     /**
      * This method inserts a DataPoint object into the local Realm database.
