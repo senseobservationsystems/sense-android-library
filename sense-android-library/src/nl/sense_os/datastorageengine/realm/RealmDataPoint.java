@@ -37,8 +37,8 @@ public class RealmDataPoint extends RealmObject {
 
     public RealmDataPoint () {}
 
-    public RealmDataPoint(String id, String sensorId, String type, String value, long date, boolean synced) {
-        this.id = id;
+    public RealmDataPoint(String sensorId, String type, String value, long date, boolean synced) {
+        this.id = RealmDataPoint.buildId(sensorId, date);
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
@@ -136,10 +136,7 @@ public class RealmDataPoint extends RealmObject {
      * @return Returns a RealmDataPoint
      */
     public static RealmDataPoint fromDataPoint (DataPoint dataPoint) {
-        String id = RealmDataPoint.buildId(dataPoint.getSensorId(), dataPoint.getDate());
-
         return new RealmDataPoint(
-                id,
                 dataPoint.getSensorId(),
                 dataPoint.getType().name(),
                 dataPoint.getStringifiedValue(),
