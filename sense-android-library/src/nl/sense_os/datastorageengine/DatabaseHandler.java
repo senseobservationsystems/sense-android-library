@@ -16,7 +16,24 @@ import nl.sense_os.datastorageengine.realm.RealmSensor;
 import nl.sense_os.datastorageengine.realm.RealmSource;
 
 
-// TODO: comment
+/**
+ * DatabaseHandler handles local storage of DataPoints, Sensors, and Sources.
+ * It needs to be instantiated with an Android Context.
+ *
+ * Example usage:
+ *
+ *     DatabaseHandler dh = new DatabaseHandler(getContext());
+ *
+ *     DataPoint dataPoint = new DataPoint("mysensor", 1234, new Date().getTime());
+ *     dh.insertDataPoint(dataPoint);
+ *
+ *     long startDate = 1388534400000; // 2014-01-01
+ *     long startDate = 1420070400000; // 2015-01-01
+ *     List<DataPoint> data = dh.getDataPoints("mysensor", startDate, endDate, 1000, SORT_ORDER.ASC);
+ *
+ *     dh.close();
+ *
+ */
 public class DatabaseHandler {
 
     private Realm realm = null;
@@ -116,9 +133,23 @@ public class DatabaseHandler {
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      * @param sensor: Sensor object containing the updated info.
      */
-    public void updateSensor(Sensor sensor) {
-        // TODO: implement
-        // TODO: I think this method is not needed, insertSensor does this already. Jos
+    public void updateSensor(Sensor sensor) throws DatabaseHandlerException {
+        realm.beginTransaction();
+
+        // get the existing sensor (just to throw an error if it doesn't exist)
+        RealmSensor realmSensor = realm
+                .where(RealmSensor.class)
+                .equalTo("id", sensor.getId())
+                .findFirst();
+        
+        if (realmSensor == null) {
+            throw new DatabaseHandlerException("Cannot update sensor: sensor doesn't yet exist.");
+        }
+
+        // update the sensor
+        realm.copyToRealmOrUpdate(RealmSensor.fromSensor(sensor));
+
+        realm.commitTransaction();
     }
 
     /**
@@ -184,9 +215,23 @@ public class DatabaseHandler {
      * Throws an exception if it fails to updated.
      * @param source: Source object containing the updated info.
      */
-    public void updateSource(Source source ) {
-        // TODO
-        // TODO: I think this method is not needed, insertSource does this already. Jos
+    public void updateSource(Source source) throws DatabaseHandlerException {
+        realm.beginTransaction();
+
+        // get the existing source (just to throw an error if it doesn't exist)
+        RealmSource realmSource = realm
+                .where(RealmSource.class)
+                .equalTo("id", source.getId())
+                .findFirst();
+
+        if (realmSource == null) {
+            throw new DatabaseHandlerException("Cannot update source: source doesn't yet exist.");
+        }
+
+        // update the source
+        realm.copyToRealmOrUpdate(RealmSource.fromSource(source));
+
+        realm.commitTransaction();
     }
 
     /**

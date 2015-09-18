@@ -32,6 +32,8 @@ public class Sensor {
         this.synced = synced;
     }
 
+    // TODO: implement method to add a DataPoint
+
     public String getId() {
         return id;
     }
