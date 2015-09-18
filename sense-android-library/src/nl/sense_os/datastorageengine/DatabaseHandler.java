@@ -57,14 +57,14 @@ public class DatabaseHandler {
      * @param sortOrder: Sort order, either ASC or DESC
      * @return Returns a List with data points
      */
-    public List<DataPoint> getDataPoints(String sensorId, Date startDate, Date endDate, int limit, SORT_ORDER sortOrder) throws JSONException {
+    public List<DataPoint> getDataPoints(String sensorId, long startDate, long endDate, int limit, SORT_ORDER sortOrder) throws JSONException {
         // query results
         realm.beginTransaction();
         RealmResults<RealmDataPoint> results = realm
                 .where(RealmDataPoint.class)
                 .equalTo("sensorId", sensorId)
-                .greaterThanOrEqualTo("date", startDate.getTime())
-                .lessThan("date", endDate.getTime())
+                .greaterThanOrEqualTo("date", startDate)
+                .lessThan("date", endDate)
                 .findAll();
         realm.commitTransaction();
 
