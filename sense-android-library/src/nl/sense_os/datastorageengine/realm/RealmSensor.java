@@ -5,7 +5,8 @@ import org.json.JSONObject;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
 public class RealmSensor extends RealmObject {
 
@@ -25,16 +26,16 @@ public class RealmSensor extends RealmObject {
 
     public RealmSensor () {}
 
-    public RealmSensor(String id, String name, JSONObject meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, boolean synced) {
+    public RealmSensor(String id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String sourceId, String dataType, String csId, boolean synced) {
         this.id = id;
         this.name = name;
-        this.meta = meta != null ? meta.toString() : null;
+        this.meta = meta;
         this.csUploadEnabled = csUploadEnabled;
         this.csDownloadEnabled = csDownloadEnabled;
         this.persistLocally = persistLocally;
         this.userId = userId;
         this.sourceId = sourceId;
-        setDataType(dataType);
+        this.dataType = dataType;
         this.csId = csId;
         this.synced = synced;
     }
@@ -141,10 +142,6 @@ public class RealmSensor extends RealmObject {
         this.dataType = dataType;
     }
 
-    public void setDataType(SensorDataPoint.DataType dataType) {
-        this.dataType = dataType.name();
-    }
-
     public String getCsId() {
         return csId;
     }
@@ -160,4 +157,47 @@ public class RealmSensor extends RealmObject {
     public void setSynced(boolean synced) {
         this.synced = synced;
     }
+
+    /**
+     * Convert a RealmSensor into a Sensor
+     * @param realmSensor
+     * @return Returns a Sensor
+     */
+    public static Sensor toSensor (RealmSensor realmSensor) throws JSONException {
+        return new Sensor(
+                realmSensor.getId(),
+                realmSensor.getName(),
+                new JSONObject(realmSensor.getMeta()),
+                realmSensor.isCsUploadEnabled(),
+                realmSensor.isCsDownloadEnabled(),
+                realmSensor.isPersistLocally(),
+                realmSensor.getUserId(),
+                realmSensor.getSourceId(),
+                DataType.valueOf(realmSensor.getDataType()),
+                realmSensor.getCsId(),
+                realmSensor.isSynced()
+        );
+    }
+
+    /**
+     * Create a RealmSensor from a Sensor
+     * @param sensor  A Sensor
+     * @return Returns a RealmSensor
+     */
+    public static RealmSensor fromSensor (Sensor sensor) {
+        return new RealmSensor(
+                sensor.getId(),
+                sensor.getName(),
+                sensor.getMeta().toString(),
+                sensor.isCsUploadEnabled(),
+                sensor.isCsDownloadEnabled(),
+                sensor.isPersistLocally(),
+                sensor.getUserId(),
+                sensor.getSourceId(),
+                sensor.getdataType().name(),
+                sensor.getCsId(),
+                sensor.isSynced()
+        );
+    }
+
 }
