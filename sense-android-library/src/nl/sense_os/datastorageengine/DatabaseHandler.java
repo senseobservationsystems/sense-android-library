@@ -13,6 +13,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import nl.sense_os.datastorageengine.realm.RealmDataPoint;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
+import nl.sense_os.datastorageengine.realm.RealmSource;
 
 
 // TODO: comment
@@ -88,27 +89,13 @@ public class DatabaseHandler {
     }
 
     /**
-     * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
-     * @param sensor: Sensor object containing the updated info.
-     */
-    public void update(Sensor sensor) {
-        // TODO: implement
-        // TODO: I think this method is not needed, insertSensor does this already. Jos
-        }
-
-    // For Datapoint Class
-
-    /**
      * Update RealmDataPoint in database with the info of the given DataPoint object. Throws an exception if it fails to updated.
      * @param datapoint: DataPoint object containing the updated info.
      */
-    public void  update(DataPoint datapoint )  {
+    public void  updateSensor(DataPoint datapoint )  {
         // TODO: implement
         // TODO: I think this method is not needed, insertDataPoint does this already. Jos
-        }
-
-
-    // For Source Class
+    }
 
     /**
      * Store a new sensor in the local database
@@ -123,11 +110,12 @@ public class DatabaseHandler {
     }
 
     /**
-     * Update RLMSource in database with the info of the given Source object. Throws an exception if it fails to updated.
-     * @param source: Source object containing the updated info.
+     * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
+     * @param sensor: Sensor object containing the updated info.
      */
-    public void update(Source source ) {
-        // TODO
+    public void updateSensor(Sensor sensor) {
+        // TODO: implement
+        // TODO: I think this method is not needed, insertSensor does this already. Jos
     }
 
     /**
@@ -176,25 +164,53 @@ public class DatabaseHandler {
     }
 
 
-    // For DataStorageEngine Class
-
     /**
      * Store a new source in the local database
      * @param source
      */
     public void insertSource(Source source) {
-        // TODO: implement
+        RealmSource realmSource = RealmSource.fromSource(source);
+
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(realmSource);
+        realm.commitTransaction();
+    }
+
+    /**
+     * Update Source in database with the info of the given Source object.
+     * Throws an exception if it fails to updated.
+     * @param source: Source object containing the updated info.
+     */
+    public void updateSource(Source source ) {
+        // TODO
+        // TODO: I think this method is not needed, insertSource does this already. Jos
     }
 
     /**
      * Returns a list of sources based on the specified criteria.
-     * @param sourceName
-     * @param uuid
+     * @param sourceName    Name of the source
+     * @param uuid          Device identifier
      * @return list of source objects that correspond to the specified criteria.
      */
-    public List<Source> getSources (String sourceName, String uuid) {
-        // TODO: implement
-        return null;
+    public List<Source> getSources (String sourceName, String uuid) throws JSONException {
+        // query results
+        realm.beginTransaction();
+        RealmResults<RealmSource> results = realm
+                .where(RealmSource.class)
+                .equalTo("sourceName", sourceName)
+                .equalTo("uuid", uuid)
+                .findAll();
+        realm.commitTransaction();
+
+        // convert to Source
+        List<Source> sources = new ArrayList<>();
+        Iterator<RealmSource> iterator = results.iterator();
+        while (iterator.hasNext()) {
+            sources.add(RealmSource.toSource(iterator.next()));
+        }
+        // TODO: figure out what is the most efficient way to loop over the results
+
+        return sources;
     }
 
 }

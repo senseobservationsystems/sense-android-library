@@ -136,9 +136,11 @@ public class RealmDataPoint extends RealmObject {
      * @return Returns a RealmDataPoint
      */
     public static RealmDataPoint fromDataPoint (DataPoint dataPoint) {
+        DataType type = dataPoint.getType();
+
         return new RealmDataPoint(
                 dataPoint.getSensorId(),
-                dataPoint.getType().name(),
+                type != null ? type.name() : null,
                 dataPoint.getStringifiedValue(),
                 dataPoint.getDate(),
                 dataPoint.isSynced());

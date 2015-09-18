@@ -168,16 +168,19 @@ public class RealmSensor extends RealmObject {
      * @return Returns a Sensor
      */
     public static Sensor toSensor (RealmSensor realmSensor) throws JSONException {
+        String meta = realmSensor.getMeta();
+        String dataType = realmSensor.getDataType();
+
         return new Sensor(
                 realmSensor.getId(),
                 realmSensor.getName(),
-                new JSONObject(realmSensor.getMeta()),
+                meta != null ? new JSONObject(meta) : null,
                 realmSensor.isCsUploadEnabled(),
                 realmSensor.isCsDownloadEnabled(),
                 realmSensor.isPersistLocally(),
                 realmSensor.getUserId(),
                 realmSensor.getSourceId(),
-                DataType.valueOf(realmSensor.getDataType()),
+                dataType != null ? DataType.valueOf(dataType) : null,
                 realmSensor.getCsId(),
                 realmSensor.isSynced()
         );
@@ -189,16 +192,19 @@ public class RealmSensor extends RealmObject {
      * @return Returns a RealmSensor
      */
     public static RealmSensor fromSensor (Sensor sensor) {
+        JSONObject meta = sensor.getMeta();
+        DataType dataType = sensor.getdataType();
+
         return new RealmSensor(
                 sensor.getId(),
                 sensor.getName(),
-                sensor.getMeta().toString(),
+                meta != null ? meta.toString() : null,
                 sensor.isCsUploadEnabled(),
                 sensor.isCsDownloadEnabled(),
                 sensor.isPersistLocally(),
                 sensor.getUserId(),
                 sensor.getSourceId(),
-                sensor.getdataType().name(),
+                dataType != null ? dataType.name() : null,
                 sensor.getCsId(),
                 sensor.isSynced()
         );

@@ -8,7 +8,7 @@ public class Source {
     private String id = null;
     private String name = null;
     private JSONObject meta = null;
-    private String uuid = null; // device UUID or some other UUID
+    private String uuid = null; // device UUID or some other UUID. TODO: rename to deviceId?
     private String csId = null;
     private boolean synced = false;
 
