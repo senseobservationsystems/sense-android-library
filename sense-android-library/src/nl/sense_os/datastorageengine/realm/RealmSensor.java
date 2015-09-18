@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -13,12 +14,15 @@ public class RealmSensor extends RealmObject {
     @PrimaryKey
     private String id = null;
 
+    @Index
     private String name = null;
     private String meta = null;  // Stringified JSON object
     private boolean csUploadEnabled = false;
     private boolean csDownloadEnabled = false;
     private boolean persistLocally = true;
     private String userId = null;
+
+    @Index
     private String sourceId = null;
     private String dataType = null;  // String value of the enum SensorDataPoint.DataType
     private String csId = null;
