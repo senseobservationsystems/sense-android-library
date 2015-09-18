@@ -21,25 +21,36 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
  *     RealmDataPoint.toDataPoint()
  */
 public class RealmDataPoint extends RealmObject {
+    @PrimaryKey
+    private String id = null; // purely used to identify the data point in Realm
+
     @Index
     private String sensorId = null;
 
     private String type = null;  // String name of the enum SensorDataPoint.DataType
     private String value = null; // Stringified JSONObject of the value
 
-    @PrimaryKey
+    @Index
     private long date = 0;
 
     private boolean synced = false;
 
     public RealmDataPoint () {}
 
-    public RealmDataPoint(String sensorId, String type, String value, long date, boolean synced) {
+    public RealmDataPoint(String id, String sensorId, String type, String value, long date, boolean synced) {
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
         this.date = date;
         this.synced = synced;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getSensorId() {
@@ -95,6 +106,16 @@ public class RealmDataPoint extends RealmObject {
     }
 
     /**
+     * Build up a unique id for a DataPoint, consisting of the sensorId and the date.
+     * @param sensorId
+     * @param date
+     * @return Returns a string "<sensorId>:<date>"
+     */
+    public static String buildId (String sensorId, long date) {
+        return sensorId + ":" + date;
+    }
+
+    /**
      * Convert a RealmDataPoint into a DataPoint
      * @param realmDataPoint
      * @return Returns a DataPoint
@@ -114,7 +135,10 @@ public class RealmDataPoint extends RealmObject {
      * @return Returns a RealmDataPoint
      */
     public static RealmDataPoint fromDataPoint (DataPoint dataPoint) {
+        String id = RealmDataPoint.buildId(dataPoint.getSensorId(), dataPoint.getDate());
+
         return new RealmDataPoint(
+                id,
                 dataPoint.getSensorId(),
                 dataPoint.getType().name(),
                 dataPoint.getStringifiedValue(),
