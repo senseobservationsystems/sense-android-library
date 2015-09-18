@@ -27,12 +27,24 @@ public class DatabaseHandler {
         realm = Realm.getInstance(context);
     }
 
+    /**
+     * Close the database connection.
+     * @throws Throwable
+     */
     @Override
     protected void finalize() throws Throwable {
         if (realm != null) {
             realm.close();
             realm = null;
         }
+    }
+
+    /**
+     * Close the DatabaseHandler. This will neatly close the database connection to Realm.
+     * @throws Throwable
+     */
+    public void close () throws Throwable {
+        finalize();
     }
 
     /**
@@ -89,15 +101,6 @@ public class DatabaseHandler {
     }
 
     /**
-     * Update RealmDataPoint in database with the info of the given DataPoint object. Throws an exception if it fails to updated.
-     * @param datapoint: DataPoint object containing the updated info.
-     */
-    public void  updateSensor(DataPoint datapoint )  {
-        // TODO: implement
-        // TODO: I think this method is not needed, insertDataPoint does this already. Jos
-    }
-
-    /**
      * Store a new sensor in the local database
      * @param sensor
      */
@@ -105,7 +108,7 @@ public class DatabaseHandler {
         RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
 
         realm.beginTransaction();
-        realm.copyToRealmOrUpdate(realmSensor);
+        realm.copyToRealm(realmSensor);
         realm.commitTransaction();
     }
 
@@ -172,7 +175,7 @@ public class DatabaseHandler {
         RealmSource realmSource = RealmSource.fromSource(source);
 
         realm.beginTransaction();
-        realm.copyToRealmOrUpdate(realmSource);
+        realm.copyToRealm(realmSource);
         realm.commitTransaction();
     }
 

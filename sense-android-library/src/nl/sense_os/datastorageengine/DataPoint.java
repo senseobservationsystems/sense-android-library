@@ -161,7 +161,7 @@ public class DataPoint {
      *
      *     DataPoint dataPoint = new DataPoint("sensor-xyz", "the value", new Date().getTime());
      *     DataType type = dataPoint.getType();                     // "STRING"
-     *     String value = dataPoint.getStringValue();               // "the value"
+     *     String value = dataPoint.getStringValue();               // "\"the value\""
      *
      * @return Returns a string representation of the value
      */
