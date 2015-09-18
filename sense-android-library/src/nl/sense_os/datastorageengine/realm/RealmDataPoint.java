@@ -38,6 +38,7 @@ public class RealmDataPoint extends RealmObject {
     public RealmDataPoint () {}
 
     public RealmDataPoint(String id, String sensorId, String type, String value, long date, boolean synced) {
+        this.id = id;
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
