@@ -2,6 +2,7 @@ package nl.sense_os.datastorageengine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
@@ -22,6 +23,18 @@ public class DataPoint {
         this.value = value;
         this.date = date;
         this.synced = synced;
+    }
+
+    /**
+     * Construct a DataPoint from a JSONObject.
+     * @param obj
+     */
+    public DataPoint(JSONObject obj) throws JSONException {
+        this.sensorId   = obj.getString("sensorId");
+        this.type       = obj.getString("type");
+        this.value      = stringifyValue(obj.opt("value"));
+        this.date       = obj.getLong("date");
+        this.synced     = obj.optBoolean("synced", false);
     }
 
     public DataPoint(String sensorId, Integer value, long date) {
@@ -125,7 +138,12 @@ public class DataPoint {
 
     public String getStringValue() {
         if (DataType.STRING.name().equals(this.type)) {
-            return this.value;
+            try {
+                return unquote(this.value);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
         else {
             throw new ClassCastException("DataPoint does not contain a string value.");
@@ -173,7 +191,7 @@ public class DataPoint {
 
     public void setValue(String value) {
         this.type = DataType.STRING.name();
-        this.value = value;
+        this.value = quote(value);
     }
 
     public long getDate() {
@@ -191,5 +209,75 @@ public class DataPoint {
     public void setSynced(boolean synced) {
         this.synced = synced;
     }
+
+    /**
+     * @return Returns a JSON representation of the DataPoint.
+     */
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("sensorId", sensorId);
+            obj.put("type",     type);
+            obj.put("value",    parseValue(value));
+            obj.put("date",     date);
+            obj.put("synced",   synced);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj;
+    };
+
+    /**
+     * @return Returns a string representation of the DataPoint, a stringified JSON object.
+     */
+    public String toString() {
+      return toJSON().toString();
+    };
+
+    /**
+     * Quote a string and escape quotes.
+     * @param str
+     * @return Quoted and escaped string.
+     */
+    public static String quote(String str) {
+        return JSONObject.quote(str);
+    };
+
+    /**
+     * Unquote a quoted string, and unescape escaped characters.
+     * @param quotedStr
+     * @return
+     */
+    public static String unquote(String quotedStr) throws JSONException {
+        return (String) parseValue(quotedStr);
+    };
+
+    /**
+     * Stringify a value, like a Float, String, Int, etc.
+     * @param obj
+     * @return
+     */
+    public static String stringifyValue(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        else if (obj instanceof String) {
+            return quote((String)obj);
+        }
+        else {
+            return String.valueOf(obj);
+        }
+    };
+
+    /**
+     * Parse a stringified value (String, Float, Int, ...)
+     * @param str
+     * @return
+     */
+    public static Object parseValue(String str) throws JSONException {
+        return new JSONTokener(str).nextValue();
+    };
 
 }
