@@ -12,6 +12,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import nl.sense_os.datastorageengine.realm.RealmDataPoint;
+import nl.sense_os.datastorageengine.realm.RealmSensor;
 
 
 // TODO: comment
@@ -43,7 +44,7 @@ public class DatabaseHandler {
         RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
 
         realm.beginTransaction();
-        realm.copyToRealm(realmDataPoint);
+        realm.copyToRealmOrUpdate(realmDataPoint);
         realm.commitTransaction();
     }
 
@@ -54,7 +55,7 @@ public class DatabaseHandler {
      * @param endDate: End date of the query, excluded.
      * @param limit: The maximum number of data points.
      * @param sortOrder: Sort order, either ASC or DESC
-     * @return datapoints: An array of NSDictionary represents data points.
+     * @return Returns a List with data points
      */
     public List<DataPoint> getDataPoints(String sensorId, Date startDate, Date endDate, int limit, SORT_ORDER sortOrder) throws JSONException {
         // query results
@@ -92,6 +93,7 @@ public class DatabaseHandler {
      */
     public void update(Sensor sensor) {
         // TODO: implement
+        // TODO: I think this method is not needed, insertSensor does this already. Jos
         }
 
     // For Datapoint Class
@@ -102,6 +104,7 @@ public class DatabaseHandler {
      */
     public void  update(DataPoint datapoint )  {
         // TODO: implement
+        // TODO: I think this method is not needed, insertDataPoint does this already. Jos
         }
 
 
@@ -112,7 +115,11 @@ public class DatabaseHandler {
      * @param sensor
      */
     public void insertSensor(Sensor sensor) {
-        // TODO: implement
+        RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
+
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(realmSensor);
+        realm.commitTransaction();
     }
 
     /**
@@ -129,9 +136,18 @@ public class DatabaseHandler {
      * @param sensorName	The name of the sensor or Null
      * @return sensor: sensor with the given sensor name and sourceId.
      **/
-    public Sensor getSensor(String sourceId, String sensorName) {
-        //TODO: implement
-        return null;
+    public Sensor getSensor(String sourceId, String sensorName) throws JSONException {
+        realm.beginTransaction();
+
+        RealmSensor realmSensor = realm
+                .where(RealmSensor.class)
+                .equalTo("sourceId", sourceId)
+                .equalTo("name", sensorName)
+                .findFirst();
+
+        realm.commitTransaction();
+
+        return RealmSensor.toSensor(realmSensor);
     }
 
     /**
@@ -139,9 +155,24 @@ public class DatabaseHandler {
      * @param sourceId
      * @return
      */
-    public List<Sensor> getSensors(String sourceId) {
-        //TODO: implement
-        return null;
+    public List<Sensor> getSensors(String sourceId) throws JSONException {
+        // query results
+        realm.beginTransaction();
+        RealmResults<RealmSensor> results = realm
+                .where(RealmSensor.class)
+                .equalTo("sourceId", sourceId)
+                .findAll();
+        realm.commitTransaction();
+
+        // convert to Sensor
+        List<Sensor> sensors = new ArrayList<>();
+        Iterator<RealmSensor> iterator = results.iterator();
+        while (iterator.hasNext()) {
+            sensors.add(RealmSensor.toSensor(iterator.next()));
+        }
+        // TODO: figure out what is the most efficient way to loop over the results
+
+        return sensors;
     }
 
 
