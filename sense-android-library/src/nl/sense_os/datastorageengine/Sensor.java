@@ -1,7 +1,6 @@
 package nl.sense_os.datastorageengine;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import nl.sense_os.service.shared.SensorDataPoint;
 
