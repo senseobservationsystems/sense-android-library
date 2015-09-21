@@ -7,6 +7,7 @@ import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
 public class RealmSensor extends RealmObject {
@@ -174,14 +175,16 @@ public class RealmSensor extends RealmObject {
         return new Sensor(
                 realmSensor.getId(),
                 realmSensor.getName(),
-                meta != null ? new JSONObject(meta) : null,
-                realmSensor.isCsUploadEnabled(),
-                realmSensor.isCsDownloadEnabled(),
-                realmSensor.isPersistLocally(),
                 realmSensor.getUserId(),
                 realmSensor.getSourceId(),
                 dataType != null ? DataType.valueOf(dataType) : null,
                 realmSensor.getCsId(),
+                new SensorOptions(
+                        meta != null ? new JSONObject(meta) : null,
+                        realmSensor.isCsUploadEnabled(),
+                        realmSensor.isCsDownloadEnabled(),
+                        realmSensor.isPersistLocally()
+                ),
                 realmSensor.isSynced()
         );
     }
@@ -192,16 +195,17 @@ public class RealmSensor extends RealmObject {
      * @return Returns a RealmSensor
      */
     public static RealmSensor fromSensor (Sensor sensor) {
-        JSONObject meta = sensor.getMeta();
         DataType dataType = sensor.getdataType();
+        SensorOptions options = sensor.getOptions();
+        JSONObject meta = options != null ? options.getMeta() : null;
 
         return new RealmSensor(
                 sensor.getId(),
                 sensor.getName(),
                 meta != null ? meta.toString() : null,
-                sensor.isCsUploadEnabled(),
-                sensor.isCsDownloadEnabled(),
-                sensor.isPersistLocally(),
+                options != null ? options.isUploadEnabled() : null,
+                options != null ? options.isDownloadEnabled() : null,
+                options != null ? options.isPersist() : null,
                 sensor.getUserId(),
                 sensor.getSourceId(),
                 dataType != null ? dataType.name() : null,

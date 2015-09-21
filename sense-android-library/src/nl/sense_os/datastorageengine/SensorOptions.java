@@ -1,16 +1,19 @@
 package nl.sense_os.datastorageengine;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SensorOptions {
+public class SensorOptions implements Cloneable {
     private JSONObject meta = null;
-    private Boolean uploadEabled = null;
+    private Boolean uploadEnabled = null;
     private Boolean downloadEnabled = null;
     private Boolean persist= null;
 
-    public SensorOptions(JSONObject meta, Boolean uploadEabled, Boolean downloadEnabled, Boolean persist) {
+    public SensorOptions() {};
+
+    public SensorOptions(JSONObject meta, Boolean uploadEnabled, Boolean downloadEnabled, Boolean persist) {
         this.meta = meta;
-        this.uploadEabled = uploadEabled;
+        this.uploadEnabled = uploadEnabled;
         this.downloadEnabled = downloadEnabled;
         this.persist = persist;
     }
@@ -23,15 +26,15 @@ public class SensorOptions {
         this.meta = meta;
     }
 
-    public Boolean getUploadEabled() {
-        return uploadEabled;
+    public Boolean isUploadEnabled() {
+        return uploadEnabled;
     }
 
-    public void setUploadEabled(Boolean uploadEabled) {
-        this.uploadEabled = uploadEabled;
+    public void setUploadEnabled(Boolean uploadEnabled) {
+        this.uploadEnabled = uploadEnabled;
     }
 
-    public Boolean getDownloadEnabled() {
+    public Boolean isDownloadEnabled() {
         return downloadEnabled;
     }
 
@@ -39,11 +42,51 @@ public class SensorOptions {
         this.downloadEnabled = downloadEnabled;
     }
 
-    public Boolean getPersist() {
+    public Boolean isPersist() {
         return persist;
     }
 
     public void setPersist(Boolean persist) {
         this.persist = persist;
+    }
+
+    public SensorOptions clone () {
+        return merge(this);
+    };
+
+    /**
+     * Merge two or more options objects.
+     * The fields in `options` which are `null` will be ignored.
+     * @param options
+     * @return Returns a cloned SensorOptions object having merge the options of the provided sensors
+     */
+    public static SensorOptions merge (SensorOptions ...options) {
+        SensorOptions merged = new SensorOptions();
+
+        for (SensorOptions o : options) {
+            if (o.meta != null) {
+                try {
+                    // This should not throw an exception in practice as we're
+                    // cloning an existing, valid JSONObject.
+                    merged.meta = new JSONObject(o.meta.toString()); // create a clone of the JSON
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (o.downloadEnabled != null) {
+                merged.downloadEnabled = o.downloadEnabled;
+            }
+
+            if (o.uploadEnabled != null) {
+                merged.uploadEnabled = o.uploadEnabled;
+            }
+
+            if (o.persist != null) {
+                merged.persist = o.persist;
+            }
+        }
+
+        return merged;
     }
 }

@@ -30,6 +30,8 @@ public class DataPoint {
      * @param obj
      */
     public DataPoint(JSONObject obj) throws JSONException {
+        // TODO: if it turns out necessary, add extra validation to check if the `type` matches the type of `value`
+
         this.sensorId   = obj.getString("sensorId");
         this.type       = obj.getString("type");
         this.value      = stringifyValue(obj.opt("value"));
