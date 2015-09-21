@@ -268,7 +268,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         realm.beginTransaction();
         RealmResults<RealmSource> results = realm
                 .where(RealmSource.class)
-                .equalTo("sourceName", sourceName)
+                .equalTo("name", sourceName)
                 .equalTo("uuid", uuid)
                 .findAll();
         realm.commitTransaction();
