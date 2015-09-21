@@ -24,7 +24,7 @@ import nl.sense_os.datastorageengine.Source;
  *
  * Example usage:
  *
- *     DatabaseHandler dh = RealmDatabaseHandler.getInstance(getContext());
+ *     DatabaseHandler dh = new RealmDatabaseHandler(getContext());
  *
  *     DataPoint dataPoint = new DataPoint("mysensor", 1234, new Date().getTime());
  *     dh.insertDataPoint(dataPoint);
@@ -38,28 +38,9 @@ import nl.sense_os.datastorageengine.Source;
  */
 public class RealmDatabaseHandler implements DatabaseHandler {
 
-    private static RealmDatabaseHandler instance = null; // singleton instance
-
     private Realm realm = null;
 
-    /**
-     * Get a singleton instance of the RealmDatabaseHandler
-     * @param context   Android application context
-     * @return Returns a singleton instance
-     */
-    DatabaseHandler getInstance(Context context) {
-        if (instance == null) {
-            synchronized (RealmDatabaseHandler.class) {
-                if (instance == null) {
-                    instance = new RealmDatabaseHandler(context);
-                }
-            }
-        }
-
-        return instance;
-    };
-
-    private RealmDatabaseHandler(Context context) {
+    public RealmDatabaseHandler(Context context) {
         realm = Realm.getInstance(context);
     }
 
@@ -74,9 +55,6 @@ public class RealmDatabaseHandler implements DatabaseHandler {
             realm.close();
             realm = null;
         }
-
-        // remove pointer to singleton instance
-        instance = null;
     }
 
     /**

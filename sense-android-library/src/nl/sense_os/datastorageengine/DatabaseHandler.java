@@ -10,7 +10,7 @@ import java.util.List;
  *
  * Example usage:
  *
- *     DatabaseHandler dh = RealmDatabaseHandler.getInstance(getContext());
+ *     DatabaseHandler dh = new RealmDatabaseHandler(getContext());
  *
  *     DataPoint dataPoint = new DataPoint("mysensor", 1234, new Date().getTime());
  *     dh.insertDataPoint(dataPoint);
