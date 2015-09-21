@@ -251,7 +251,7 @@ public class DataPoint {
      * @return
      */
     public static String unquote(String quotedStr) throws JSONException {
-        return (String) parseValue(quotedStr);
+        return String.valueOf(parseValue(quotedStr));
     };
 
     /**
