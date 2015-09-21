@@ -1,10 +1,15 @@
 package nl.sense_os.datastorageengine;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 import nl.sense_os.service.shared.SensorDataPoint;
 
 public class Sensor {
+
+    private DatabaseHandler databaseHandler = null; // used to insert/get datapoints, and to update itself
 
     private String id = null;
     private String name = null;
@@ -15,7 +20,9 @@ public class Sensor {
     private SensorOptions options = new SensorOptions();
     private Boolean synced = null;
 
-    public Sensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+    public Sensor(DatabaseHandler databaseHandler, String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+        this.databaseHandler = databaseHandler;
+
         this.id = id;
         this.name = name;
         this.userId = userId;
@@ -25,8 +32,6 @@ public class Sensor {
         this.options = options;
         this.synced = synced;
     }
-
-    // TODO: implement method to add a DataPoint
 
     public String getId() {
         return id;
@@ -61,8 +66,11 @@ public class Sensor {
      * The fields in `options` which are `null` will be ignored.
      * @param options
      */
-    public void setOptions (SensorOptions options) throws JSONException {
+    public void setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
         this.options = SensorOptions.merge(this.options, options);
+
+        // store changes in the local database
+        databaseHandler.updateSensor(this);
     }
 
     /**
@@ -73,7 +81,68 @@ public class Sensor {
         return options.clone();
     }
 
-    public void setSynced(Boolean synced) {
+    public void setSynced(Boolean synced) throws DatabaseHandlerException {
         this.synced = synced;
+
+        // store changes in the local database
+        databaseHandler.updateSensor(this);
     }
+
+    /**
+     * Insert a new DataPoint to this sensor
+     * @param value
+     * @param date
+     */
+    public void insertDataPoint(boolean value, long date) {
+        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+    }
+
+    /**
+     * Insert a new DataPoint to this sensor
+     * @param value
+     * @param date
+     */
+    public void insertDataPoint(float value, long date) {
+        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+    }
+
+    /**
+     * Insert a new DataPoint to this sensor
+     * @param value
+     * @param date
+     */
+    public void insertDataPoint(int value, long date) {
+        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+    }
+
+    /**
+     * Insert a new DataPoint to this sensor
+     * @param value
+     * @param date
+     */
+    public void insertDataPoint(JSONObject value, long date) {
+        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+    }
+
+    /**
+     * Insert a new DataPoint to this sensor
+     * @param value
+     * @param date
+     */
+    public void insertDataPoint(String value, long date) {
+        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+    }
+
+    /**
+     * Get data points from this sensor from the local database
+     * @param startDate: Start date of the query, included.
+     * @param endDate: End date of the query, excluded.
+     * @param limit: The maximum number of data points.
+     * @param sortOrder: Sort order, either ASC or DESC
+     * @return Returns a List with data points
+     */
+    public List<DataPoint> getDataPoints(long startDate, long endDate, int limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException {
+        return databaseHandler.getDataPoints(id, startDate, endDate, limit, sortOrder);
+    };
+
 }

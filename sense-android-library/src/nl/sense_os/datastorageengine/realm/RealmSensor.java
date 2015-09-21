@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
+import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -168,11 +169,12 @@ public class RealmSensor extends RealmObject {
      * @param realmSensor
      * @return Returns a Sensor
      */
-    public static Sensor toSensor (RealmSensor realmSensor) throws JSONException {
+    public static Sensor toSensor (DatabaseHandler databaseHandler, RealmSensor realmSensor) throws JSONException {
         String meta = realmSensor.getMeta();
         String dataType = realmSensor.getDataType();
 
         return new Sensor(
+                databaseHandler,
                 realmSensor.getId(),
                 realmSensor.getName(),
                 realmSensor.getUserId(),

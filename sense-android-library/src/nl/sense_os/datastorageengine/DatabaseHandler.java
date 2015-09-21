@@ -4,6 +4,8 @@ import org.json.JSONException;
 
 import java.util.List;
 
+import nl.sense_os.service.shared.SensorDataPoint;
+
 
 /**
  * DatabaseHandler handles local storage of DataPoints, Sensors, and Sources.
@@ -52,10 +54,17 @@ public interface DatabaseHandler {
     public List<DataPoint> getDataPoints(String sensorId, long startDate, long endDate, int limit, SORT_ORDER sortOrder) throws JSONException;
 
     /**
-     * Store a new sensor in the local database
-     * @param sensor
+     * Create a new Sensor and store it in the local database
+     * @param id
+     * @param name
+     * @param userId
+     * @param sourceId
+     * @param dataType
+     * @param csId
+     * @param options
+     * @param synced
      */
-    public void insertSensor(Sensor sensor);
+    public void createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced);
 
     /**
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.

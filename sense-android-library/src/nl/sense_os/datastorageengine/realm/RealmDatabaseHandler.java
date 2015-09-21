@@ -14,7 +14,9 @@ import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.Source;
+import nl.sense_os.service.shared.SensorDataPoint;
 
 
 /**
@@ -119,10 +121,19 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     /**
-     * Store a new sensor in the local database
-     * @param sensor
+     * Create a new Sensor and store it in the local database
+     * @param id
+     * @param name
+     * @param userId
+     * @param sourceId
+     * @param dataType
+     * @param csId
+     * @param options
+     * @param synced
      */
-    public void insertSensor(Sensor sensor) {
+    public void createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+        Sensor sensor = new Sensor(this, id, name, userId, sourceId, dataType, csId, options, synced);
+
         RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
 
         realm.beginTransaction();
@@ -170,7 +181,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
         realm.commitTransaction();
 
-        return RealmSensor.toSensor(realmSensor);
+        return RealmSensor.toSensor(this, realmSensor);
     }
 
     /**
@@ -191,7 +202,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         List<Sensor> sensors = new ArrayList<>();
         Iterator<RealmSensor> iterator = results.iterator();
         while (iterator.hasNext()) {
-            sensors.add(RealmSensor.toSensor(iterator.next()));
+            sensors.add(RealmSensor.toSensor(this, iterator.next()));
         }
         // TODO: figure out what is the most efficient way to loop over the results
 
