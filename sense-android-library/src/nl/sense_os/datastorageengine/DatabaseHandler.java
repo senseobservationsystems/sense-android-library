@@ -55,16 +55,8 @@ public interface DatabaseHandler {
 
     /**
      * Create a new Sensor and store it in the local database
-     * @param id
-     * @param name
-     * @param userId
-     * @param sourceId
-     * @param dataType
-     * @param csId
-     * @param options
-     * @param synced
      */
-    public void createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced);
+    public Sensor createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced);
 
     /**
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
