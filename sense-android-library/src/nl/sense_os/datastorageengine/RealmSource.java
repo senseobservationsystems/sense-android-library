@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.exceptions.RealmException;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 public class RealmSource implements Source {
@@ -113,21 +114,31 @@ public class RealmSource implements Source {
     }
 
     @Override
-    public Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options) {
+    public Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options) throws DatabaseHandlerException {
         boolean synced = false;
         Sensor sensor = new RealmSensor(realm, id, name, userId, this.id, dataType, csId, options, synced);
 
         RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
 
         realm.beginTransaction();
-        realm.copyToRealm(realmSensor);
+        try {
+            realm.copyToRealm(realmSensor);
+        }
+        catch (RealmException err) {
+            if (err.toString().indexOf("Primary key constraint broken") != -1) {
+                throw new DatabaseHandlerException("Cannot create sensor. A sensor with id " + id + " already exists.");
+            }
+            else {
+                throw err;
+            }
+        }
         realm.commitTransaction();
 
         return sensor;
     }
 
     @Override
-    public Sensor getSensor(String sensorName) throws JSONException {
+    public Sensor getSensor(String sensorName) throws JSONException, DatabaseHandlerException {
         realm.beginTransaction();
 
         RealmModelSensor realmSensor = realm
@@ -137,6 +148,10 @@ public class RealmSource implements Source {
                 .findFirst();
 
         realm.commitTransaction();
+
+        if (realmSensor == null) {
+            throw new DatabaseHandlerException("Sensor not found. Sensor with name " + sensorName + " does not exist.");
+        }
 
         return RealmModelSensor.toSensor(realm, realmSensor);
     }

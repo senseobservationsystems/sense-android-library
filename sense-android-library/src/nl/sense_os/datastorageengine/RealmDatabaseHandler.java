@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.exceptions.RealmException;
 
 
 /**
@@ -65,14 +66,24 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     /**
      * Create a new source and store it in the local database
      */
-    public Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId) {
+    public Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId) throws DatabaseHandlerException {
         boolean synced = false;
         Source source = new RealmSource(realm, id, name, meta, deviceId, userId, csId, synced);
 
         RealmModelSource realmSource = RealmModelSource.fromSource(source);
 
         realm.beginTransaction();
-        realm.copyToRealm(realmSource);
+        try {
+            realm.copyToRealm(realmSource);
+        }
+        catch (RealmException err) {
+            if (err.toString().indexOf("Primary key constraint broken") != -1) {
+                throw new DatabaseHandlerException("Cannot create source. A source with id " + id + " already exists.");
+            }
+            else {
+                throw err;
+            }
+        }
         realm.commitTransaction();
 
         return source;

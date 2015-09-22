@@ -41,14 +41,14 @@ public interface Source {
     /**
      * Create a new Sensor and store it in the local database
      */
-    Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options);
+    Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options) throws DatabaseHandlerException;
 
     /**
      * Get a sensor
      * @param sensorName	The name of the sensor or Null
      * @return sensor: sensor with the given sensor name and sourceId.
      **/
-    Sensor getSensor(String sensorName) throws JSONException;
+    Sensor getSensor(String sensorName) throws JSONException, DatabaseHandlerException;
 
     /**
      * Retrieve all sensors for given source id.
