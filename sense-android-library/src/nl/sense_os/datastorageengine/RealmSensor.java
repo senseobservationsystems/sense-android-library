@@ -69,13 +69,16 @@ public class RealmSensor implements Sensor {
      * Apply options for the sensor.
      * The fields in `options` which are `null` will be ignored.
      * @param options
+     * @return Returns the applied options.
      */
-    public void setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
+    public SensorOptions setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
         this.options = SensorOptions.merge(this.options, options);
         this.synced = false; // mark as dirty
 
         // store changes in the local database
         saveChanges();
+
+        return getOptions();
     }
 
     /**

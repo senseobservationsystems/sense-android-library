@@ -27,8 +27,9 @@ public interface Sensor {
      * Apply options for the sensor.
      * The fields in `options` which are `null` will be ignored.
      * @param options
+     * @return Returns the applied options.
      */
-    void setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException;
+    SensorOptions setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException;
 
     /**
      * Retrieve a clone of the current options of the sensor.
