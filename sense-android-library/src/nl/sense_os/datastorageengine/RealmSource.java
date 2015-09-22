@@ -33,6 +33,7 @@ public class RealmSource implements Source {
 
     public void setUserId(String userId) throws DatabaseHandlerException {
         this.userId = userId;
+        this.synced = false; // mark as dirty
 
         databaseHandler.updateSource(this);
     }
@@ -43,6 +44,7 @@ public class RealmSource implements Source {
 
     public void setCsId(String csId) throws DatabaseHandlerException {
         this.csId = csId;
+        this.synced = false; // mark as dirty
 
         databaseHandler.updateSource(this);
     }
@@ -53,6 +55,7 @@ public class RealmSource implements Source {
 
     public void setDeviceId(String deviceId) throws DatabaseHandlerException {
         this.deviceId = deviceId;
+        this.synced = false; // mark as dirty
 
         databaseHandler.updateSource(this);
     }
@@ -63,6 +66,7 @@ public class RealmSource implements Source {
 
     public void setMeta(JSONObject meta) throws DatabaseHandlerException {
         this.meta = meta;
+        this.synced = false; // mark as dirty
 
         databaseHandler.updateSource(this);
     }
@@ -73,6 +77,7 @@ public class RealmSource implements Source {
 
     public void setName(String name) throws DatabaseHandlerException {
         this.name = name;
+        this.synced = false; // mark as dirty
 
         databaseHandler.updateSource(this);
     }
@@ -83,6 +88,7 @@ public class RealmSource implements Source {
 
     public void setId(String id) throws DatabaseHandlerException {
         this.id = id;
+        this.synced = false; // mark as dirty
 
         databaseHandler.updateSource(this);
     }

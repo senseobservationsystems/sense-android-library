@@ -68,6 +68,7 @@ public class RealmSensor implements Sensor {
      */
     public void setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
         this.options = SensorOptions.merge(this.options, options);
+        this.synced = false; // mark as dirty
 
         // store changes in the local database
         databaseHandler.updateSensor(this);
