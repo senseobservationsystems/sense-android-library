@@ -3,6 +3,7 @@ package nl.sense_os.datastorageengine;
 import android.content.Context;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -199,15 +200,18 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
 
     /**
-     * Store a new source in the local database
-     * @param source
+     * Create a new source and store it in the local database
      */
-    public void insertSource(Source source) {
+    public Source createSource(String id, String name, JSONObject meta, String uuid, String csId, boolean synced) {
+        Source source = new RealmSource(this, id, name, meta, uuid, csId, synced);
+
         RealmModelSource realmSource = RealmModelSource.fromSource(source);
 
         realm.beginTransaction();
         realm.copyToRealm(realmSource);
         realm.commitTransaction();
+
+        return source;
     }
 
     /**
@@ -254,7 +258,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         List<Source> sources = new ArrayList<>();
         Iterator<RealmModelSource> iterator = results.iterator();
         while (iterator.hasNext()) {
-            sources.add(RealmModelSource.toSource(iterator.next()));
+            sources.add(RealmModelSource.toSource(this, iterator.next()));
         }
         // TODO: figure out what is the most efficient way to loop over the results
 

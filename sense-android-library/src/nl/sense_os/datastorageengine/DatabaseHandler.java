@@ -1,6 +1,7 @@
 package nl.sense_os.datastorageengine;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -54,12 +55,10 @@ public interface DatabaseHandler {
      */
     List<Sensor> getSensors(String sourceId) throws JSONException;
 
-
     /**
-     * Store a new source in the local database
-     * @param source
+     * Create a new source and store it in the local database
      */
-    void insertSource(Source source);
+    Source createSource(String id, String name, JSONObject meta, String uuid, String csId, boolean synced);
 
     /**
      * Returns a list of sources based on the specified criteria.

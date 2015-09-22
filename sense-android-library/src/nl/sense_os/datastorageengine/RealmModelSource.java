@@ -111,12 +111,14 @@ public class RealmModelSource extends RealmObject {
 
     /**
      * Convert a RealmSource into a Source
+     * @param databaseHandler
      * @param realmSource
      * @return Returns a Source
      */
-    public static Source toSource (RealmModelSource realmSource) throws JSONException {
+    public static Source toSource (RealmDatabaseHandler databaseHandler, RealmModelSource realmSource) throws JSONException {
         String meta = realmSource.getMeta();
-        return new Source(
+        return new RealmSource(
+                databaseHandler,
                 realmSource.getId(),
                 realmSource.getName(),
                 meta != null ? new JSONObject(meta) : null,
