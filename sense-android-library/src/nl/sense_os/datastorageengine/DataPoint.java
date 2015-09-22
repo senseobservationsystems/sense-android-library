@@ -17,6 +17,7 @@ public class DataPoint {
     private long date = 0;
     private boolean synced = false;
 
+    // TODO: must the constructors of DataPoint become protected?
     public DataPoint(String sensorId, String type, String value, long date, boolean synced) {
         this.sensorId = sensorId;
         this.type = type;

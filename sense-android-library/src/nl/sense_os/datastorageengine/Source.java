@@ -5,6 +5,10 @@ import org.json.JSONObject;
 
 public interface Source {
 
+    String getUserId();
+
+    void setUserId(String userId) throws DatabaseHandlerException;
+
     String getCsId();
 
     void setCsId(String csId) throws DatabaseHandlerException;

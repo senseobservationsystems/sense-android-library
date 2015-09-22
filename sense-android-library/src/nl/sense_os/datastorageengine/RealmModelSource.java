@@ -18,26 +18,29 @@ public class RealmModelSource extends RealmObject {
 
     @Index
     private String uuid = null; // device UUID or some other UUID
+    private String userId = null;
     private String csId = null;
 
     private boolean synced = false;
 
     public RealmModelSource() {}
 
-    public RealmModelSource(String id, String name, JSONObject meta, String uuid, String csId, boolean synced) {
+    public RealmModelSource(String id, String name, JSONObject meta, String uuid, String userId, String csId, boolean synced) {
         this.id = id;
         this.name = name;
         this.meta = meta != null ? meta.toString() : null;
         this.uuid = uuid;
+        this.userId = userId;
         this.csId = csId;
         this.synced = synced;
     }
 
-    public RealmModelSource(String id, String name, String uuid, String csId) {
-        this.id = id;
-        this.name = name;
-        this.uuid = uuid;
-        this.csId = csId;
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getCsId() {
@@ -123,6 +126,7 @@ public class RealmModelSource extends RealmObject {
                 realmSource.getName(),
                 meta != null ? new JSONObject(meta) : null,
                 realmSource.getUuid(),
+                realmSource.getUserId(),
                 realmSource.getCsId(),
                 realmSource.isSynced()
         );
@@ -139,6 +143,7 @@ public class RealmModelSource extends RealmObject {
                 source.getName(),
                 source.getMeta(),
                 source.getUuid(),
+                source.getUserId(),
                 source.getCsId(),
                 source.isSynced()
         );

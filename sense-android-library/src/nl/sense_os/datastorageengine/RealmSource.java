@@ -11,18 +11,30 @@ public class RealmSource implements Source {
     private String name = null;
     private JSONObject meta = null;
     private String uuid = null; // device UUID or some other UUID. TODO: rename to deviceId?
+    private String userId = null;
     private String csId = null;
     private boolean synced = false;
 
-    protected RealmSource(RealmDatabaseHandler databaseHandler, String id, String name, JSONObject meta, String uuid, String csId, boolean synced) {
+    protected RealmSource(RealmDatabaseHandler databaseHandler, String id, String name, JSONObject meta, String uuid, String userId, String csId, boolean synced) {
         this.databaseHandler = databaseHandler;
 
         this.id = id;
         this.name = name;
         this.meta = meta;
         this.uuid = uuid;
+        this.userId = userId;
         this.csId = csId;
         this.synced = synced;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) throws DatabaseHandlerException {
+        this.userId = userId;
+
+        databaseHandler.updateSource(this);
     }
 
     public String getCsId() {
