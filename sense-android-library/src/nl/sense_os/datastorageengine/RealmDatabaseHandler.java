@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine.realm;
+package nl.sense_os.datastorageengine;
 
 import android.content.Context;
 
@@ -10,12 +10,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import nl.sense_os.datastorageengine.DataPoint;
-import nl.sense_os.datastorageengine.DatabaseHandler;
-import nl.sense_os.datastorageengine.DatabaseHandlerException;
-import nl.sense_os.datastorageengine.Sensor;
-import nl.sense_os.datastorageengine.SensorOptions;
-import nl.sense_os.datastorageengine.Source;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 
@@ -73,8 +67,8 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * @param dataPoint	A DataPoint object that has a stringified value that will be copied
      * 			into a Realm object.
      */
-    public void insertDataPoint (DataPoint dataPoint) {
-        RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
+    protected void insertDataPoint (DataPoint dataPoint) {
+        RealmModelDataPoint realmDataPoint = RealmModelDataPoint.fromDataPoint(dataPoint);
 
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(realmDataPoint);
@@ -90,11 +84,11 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * @param sortOrder: Sort order, either ASC or DESC
      * @return Returns a List with data points
      */
-    public List<DataPoint> getDataPoints(String sensorId, long startDate, long endDate, int limit, SORT_ORDER sortOrder) throws JSONException {
+    protected List<DataPoint> getDataPoints(String sensorId, long startDate, long endDate, int limit, SORT_ORDER sortOrder) throws JSONException {
         // query results
         realm.beginTransaction();
-        RealmResults<RealmDataPoint> results = realm
-                .where(RealmDataPoint.class)
+        RealmResults<RealmModelDataPoint> results = realm
+                .where(RealmModelDataPoint.class)
                 .equalTo("sensorId", sensorId)
                 .greaterThanOrEqualTo("date", startDate)
                 .lessThan("date", endDate)
@@ -110,9 +104,9 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         // limit and convert to DataPoint
         int count = 0;
         List<DataPoint> dataPoints = new ArrayList<>();
-        Iterator<RealmDataPoint> iterator = results.iterator();
+        Iterator<RealmModelDataPoint> iterator = results.iterator();
         while (count < limit && iterator.hasNext()) {
-            dataPoints.add(RealmDataPoint.toDataPoint(iterator.next()));
+            dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
             count++;
         }
         // TODO: figure out what is the most efficient way to loop over the results
@@ -124,9 +118,9 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * Create a new Sensor and store it in the local database
      */
     public Sensor createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
-        Sensor sensor = new Sensor(this, id, name, userId, sourceId, dataType, csId, options, synced);
+        Sensor sensor = new RealmSensor(this, id, name, userId, sourceId, dataType, csId, options, synced);
 
-        RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
+        RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
 
         realm.beginTransaction();
         realm.copyToRealm(realmSensor);
@@ -139,12 +133,12 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      * @param sensor: Sensor object containing the updated info.
      */
-    public void updateSensor(Sensor sensor) throws DatabaseHandlerException {
+    protected void updateSensor(Sensor sensor) throws DatabaseHandlerException {
         realm.beginTransaction();
 
         // get the existing sensor (just to throw an error if it doesn't exist)
-        RealmSensor realmSensor = realm
-                .where(RealmSensor.class)
+        RealmModelSensor realmSensor = realm
+                .where(RealmModelSensor.class)
                 .equalTo("id", sensor.getId())
                 .findFirst();
         
@@ -153,7 +147,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         }
 
         // update the sensor
-        realm.copyToRealmOrUpdate(RealmSensor.fromSensor(sensor));
+        realm.copyToRealmOrUpdate(RealmModelSensor.fromSensor(sensor));
 
         realm.commitTransaction();
     }
@@ -167,15 +161,15 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     public Sensor getSensor(String sourceId, String sensorName) throws JSONException {
         realm.beginTransaction();
 
-        RealmSensor realmSensor = realm
-                .where(RealmSensor.class)
+        RealmModelSensor realmSensor = realm
+                .where(RealmModelSensor.class)
                 .equalTo("sourceId", sourceId)
                 .equalTo("name", sensorName)
                 .findFirst();
 
         realm.commitTransaction();
 
-        return RealmSensor.toSensor(this, realmSensor);
+        return RealmModelSensor.toSensor(this, realmSensor);
     }
 
     /**
@@ -186,17 +180,17 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     public List<Sensor> getSensors(String sourceId) throws JSONException {
         // query results
         realm.beginTransaction();
-        RealmResults<RealmSensor> results = realm
-                .where(RealmSensor.class)
+        RealmResults<RealmModelSensor> results = realm
+                .where(RealmModelSensor.class)
                 .equalTo("sourceId", sourceId)
                 .findAll();
         realm.commitTransaction();
 
         // convert to Sensor
         List<Sensor> sensors = new ArrayList<>();
-        Iterator<RealmSensor> iterator = results.iterator();
+        Iterator<RealmModelSensor> iterator = results.iterator();
         while (iterator.hasNext()) {
-            sensors.add(RealmSensor.toSensor(this, iterator.next()));
+            sensors.add(RealmModelSensor.toSensor(this, iterator.next()));
         }
         // TODO: figure out what is the most efficient way to loop over the results
 
@@ -209,7 +203,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * @param source
      */
     public void insertSource(Source source) {
-        RealmSource realmSource = RealmSource.fromSource(source);
+        RealmModelSource realmSource = RealmModelSource.fromSource(source);
 
         realm.beginTransaction();
         realm.copyToRealm(realmSource);
@@ -221,12 +215,12 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * Throws an exception if it fails to updated.
      * @param source: Source object containing the updated info.
      */
-    public void updateSource(Source source) throws DatabaseHandlerException {
+    protected void updateSource(Source source) throws DatabaseHandlerException {
         realm.beginTransaction();
 
         // get the existing source (just to throw an error if it doesn't exist)
-        RealmSource realmSource = realm
-                .where(RealmSource.class)
+        RealmModelSource realmSource = realm
+                .where(RealmModelSource.class)
                 .equalTo("id", source.getId())
                 .findFirst();
 
@@ -235,7 +229,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         }
 
         // update the source
-        realm.copyToRealmOrUpdate(RealmSource.fromSource(source));
+        realm.copyToRealmOrUpdate(RealmModelSource.fromSource(source));
 
         realm.commitTransaction();
     }
@@ -249,8 +243,8 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     public List<Source> getSources (String sourceName, String uuid) throws JSONException {
         // query results
         realm.beginTransaction();
-        RealmResults<RealmSource> results = realm
-                .where(RealmSource.class)
+        RealmResults<RealmModelSource> results = realm
+                .where(RealmModelSource.class)
                 .equalTo("name", sourceName)
                 .equalTo("uuid", uuid)
                 .findAll();
@@ -258,9 +252,9 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
         // convert to Source
         List<Source> sources = new ArrayList<>();
-        Iterator<RealmSource> iterator = results.iterator();
+        Iterator<RealmModelSource> iterator = results.iterator();
         while (iterator.hasNext()) {
-            sources.add(RealmSource.toSource(iterator.next()));
+            sources.add(RealmModelSource.toSource(iterator.next()));
         }
         // TODO: figure out what is the most efficient way to loop over the results
 

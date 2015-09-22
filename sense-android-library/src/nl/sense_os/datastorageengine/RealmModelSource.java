@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine.realm;
+package nl.sense_os.datastorageengine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,9 +6,8 @@ import org.json.JSONObject;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
-import nl.sense_os.datastorageengine.Source;
 
-public class RealmSource extends RealmObject {
+public class RealmModelSource extends RealmObject {
 
     @PrimaryKey
     private String id = null;
@@ -23,9 +22,9 @@ public class RealmSource extends RealmObject {
 
     private boolean synced = false;
 
-    public RealmSource () {}
+    public RealmModelSource() {}
 
-    public RealmSource(String id, String name, JSONObject meta, String uuid, String csId, boolean synced) {
+    public RealmModelSource(String id, String name, JSONObject meta, String uuid, String csId, boolean synced) {
         this.id = id;
         this.name = name;
         this.meta = meta != null ? meta.toString() : null;
@@ -34,7 +33,7 @@ public class RealmSource extends RealmObject {
         this.synced = synced;
     }
 
-    public RealmSource(String id, String name, String uuid, String csId) {
+    public RealmModelSource(String id, String name, String uuid, String csId) {
         this.id = id;
         this.name = name;
         this.uuid = uuid;
@@ -62,7 +61,7 @@ public class RealmSource extends RealmObject {
      * @param realmSource
      * @return Returns JSONObject with meta information
      */
-    public static JSONObject getMeta (RealmSource realmSource) throws JSONException {
+    public static JSONObject getMeta (RealmModelSource realmSource) throws JSONException {
         String meta = realmSource.getMeta();
         return meta != null ? new JSONObject(meta) : null;
     }
@@ -115,7 +114,7 @@ public class RealmSource extends RealmObject {
      * @param realmSource
      * @return Returns a Source
      */
-    public static Source toSource (RealmSource realmSource) throws JSONException {
+    public static Source toSource (RealmModelSource realmSource) throws JSONException {
         String meta = realmSource.getMeta();
         return new Source(
                 realmSource.getId(),
@@ -132,8 +131,8 @@ public class RealmSource extends RealmObject {
      * @param source  A Source
      * @return Returns a RealmSource
      */
-    public static RealmSource fromSource (Source source) {
-        return new RealmSource(
+    public static RealmModelSource fromSource (Source source) {
+        return new RealmModelSource(
                 source.getId(),
                 source.getName(),
                 source.getMeta(),

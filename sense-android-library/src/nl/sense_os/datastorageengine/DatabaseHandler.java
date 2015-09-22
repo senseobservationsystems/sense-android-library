@@ -26,43 +26,18 @@ import nl.sense_os.service.shared.SensorDataPoint;
  */
 public interface DatabaseHandler {
 
-    public enum SORT_ORDER {ASC, DESC};
+    enum SORT_ORDER {ASC, DESC};
 
     /**
      * Close the DatabaseHandler. This will neatly close the database connection to Realm.
      * @throws Throwable
      */
-    public void close () throws Exception;
-
-    /**
-     * This method inserts a DataPoint object into the local Realm database.
-     * The typecasting to string should already be done at this point.
-     * @param dataPoint	A DataPoint object that has a stringified value that will be copied
-     * 			into a Realm object.
-     */
-    public void insertDataPoint (DataPoint dataPoint);
-
-    /**
-     * Get data points from the local database with the given sensor id.
-     * @param sensorId: String for the sensorID of the sensor that the data point belongs to.
-     * @param startDate: Start date of the query, included.
-     * @param endDate: End date of the query, excluded.
-     * @param limit: The maximum number of data points.
-     * @param sortOrder: Sort order, either ASC or DESC
-     * @return Returns a List with data points
-     */
-    public List<DataPoint> getDataPoints(String sensorId, long startDate, long endDate, int limit, SORT_ORDER sortOrder) throws JSONException;
+    void close () throws Exception;
 
     /**
      * Create a new Sensor and store it in the local database
      */
-    public Sensor createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced);
-
-    /**
-     * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
-     * @param sensor: Sensor object containing the updated info.
-     */
-    public void updateSensor(Sensor sensor) throws DatabaseHandlerException;
+    Sensor createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced);
 
     /**
      * Get a sensor
@@ -70,28 +45,21 @@ public interface DatabaseHandler {
      * @param sensorName	The name of the sensor or Null
      * @return sensor: sensor with the given sensor name and sourceId.
      **/
-    public Sensor getSensor(String sourceId, String sensorName) throws JSONException;
+    Sensor getSensor(String sourceId, String sensorName) throws JSONException;
 
     /**
      * Retrieve all sensors for given source id.
      * @param sourceId
      * @return
      */
-    public List<Sensor> getSensors(String sourceId) throws JSONException;
+    List<Sensor> getSensors(String sourceId) throws JSONException;
 
 
     /**
      * Store a new source in the local database
      * @param source
      */
-    public void insertSource(Source source);
-
-    /**
-     * Update Source in database with the info of the given Source object.
-     * Throws an exception if it fails to updated.
-     * @param source: Source object containing the updated info.
-     */
-    public void updateSource(Source source) throws DatabaseHandlerException;
+    void insertSource(Source source);
 
     /**
      * Returns a list of sources based on the specified criteria.
@@ -99,5 +67,5 @@ public interface DatabaseHandler {
      * @param uuid          Device identifier
      * @return list of source objects that correspond to the specified criteria.
      */
-    public List<Source> getSources (String sourceName, String uuid) throws JSONException;
+    List<Source> getSources (String sourceName, String uuid) throws JSONException;
 }

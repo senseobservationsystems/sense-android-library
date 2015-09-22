@@ -1,12 +1,8 @@
-package nl.sense_os.datastorageengine.realm;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package nl.sense_os.datastorageengine;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
-import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
 /**
@@ -20,7 +16,7 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
  *     RealmDataPoint.fromDataPoint()
  *     RealmDataPoint.toDataPoint()
  */
-public class RealmDataPoint extends RealmObject {
+public class RealmModelDataPoint extends RealmObject {
     @PrimaryKey
     private String id = null; // purely used to identify the data point in Realm
 
@@ -35,10 +31,10 @@ public class RealmDataPoint extends RealmObject {
 
     private boolean synced = false;
 
-    public RealmDataPoint () {}
+    public RealmModelDataPoint() {}
 
-    public RealmDataPoint(String sensorId, String type, String value, long date, boolean synced) {
-        this.id = RealmDataPoint.buildId(sensorId, date);
+    public RealmModelDataPoint(String sensorId, String type, String value, long date, boolean synced) {
+        this.id = RealmModelDataPoint.buildId(sensorId, date);
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
@@ -121,7 +117,7 @@ public class RealmDataPoint extends RealmObject {
      * @param realmDataPoint
      * @return Returns a DataPoint
      */
-    public static DataPoint toDataPoint (RealmDataPoint realmDataPoint) {
+    public static DataPoint toDataPoint (RealmModelDataPoint realmDataPoint) {
         return new DataPoint(
                 realmDataPoint.getSensorId(),
                 realmDataPoint.getType(),
@@ -135,10 +131,10 @@ public class RealmDataPoint extends RealmObject {
      * @param dataPoint  A DataPoint
      * @return Returns a RealmDataPoint
      */
-    public static RealmDataPoint fromDataPoint (DataPoint dataPoint) {
+    public static RealmModelDataPoint fromDataPoint (DataPoint dataPoint) {
         DataType type = dataPoint.getType();
 
-        return new RealmDataPoint(
+        return new RealmModelDataPoint(
                 dataPoint.getSensorId(),
                 type != null ? type.name() : null,
                 dataPoint.getStringifiedValue(),

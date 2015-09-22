@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine.realm;
+package nl.sense_os.datastorageengine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,12 +6,9 @@ import org.json.JSONObject;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
-import nl.sense_os.datastorageengine.DatabaseHandler;
-import nl.sense_os.datastorageengine.Sensor;
-import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
-public class RealmSensor extends RealmObject {
+public class RealmModelSensor extends RealmObject {
 
     @PrimaryKey
     private String id = null;
@@ -30,9 +27,9 @@ public class RealmSensor extends RealmObject {
     private String csId = null;
     private boolean synced = false;
 
-    public RealmSensor () {}
+    public RealmModelSensor() {}
 
-    public RealmSensor(String id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String sourceId, String dataType, String csId, boolean synced) {
+    public RealmModelSensor(String id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String sourceId, String dataType, String csId, boolean synced) {
         this.id = id;
         this.name = name;
         this.meta = meta;
@@ -67,7 +64,7 @@ public class RealmSensor extends RealmObject {
      * @param realmSensor
      * @return Returns JSONObject with meta information
      */
-    public static JSONObject getMeta (RealmSensor realmSensor) throws JSONException {
+    public static JSONObject getMeta (RealmModelSensor realmSensor) throws JSONException {
         String meta = realmSensor.getMeta();
         return meta != null ? new JSONObject(meta) : null;
     }
@@ -166,14 +163,15 @@ public class RealmSensor extends RealmObject {
 
     /**
      * Convert a RealmSensor into a Sensor
+     * @param databaseHandler
      * @param realmSensor
      * @return Returns a Sensor
      */
-    public static Sensor toSensor (DatabaseHandler databaseHandler, RealmSensor realmSensor) throws JSONException {
+    public static Sensor toSensor (RealmDatabaseHandler databaseHandler, RealmModelSensor realmSensor) throws JSONException {
         String meta = realmSensor.getMeta();
         String dataType = realmSensor.getDataType();
 
-        return new Sensor(
+        return new RealmSensor(
                 databaseHandler,
                 realmSensor.getId(),
                 realmSensor.getName(),
@@ -196,12 +194,12 @@ public class RealmSensor extends RealmObject {
      * @param sensor  A Sensor
      * @return Returns a RealmSensor
      */
-    public static RealmSensor fromSensor (Sensor sensor) {
+    public static RealmModelSensor fromSensor (Sensor sensor) {
         DataType dataType = sensor.getdataType();
         SensorOptions options = sensor.getOptions();
         JSONObject meta = options != null ? options.getMeta() : null;
 
-        return new RealmSensor(
+        return new RealmModelSensor(
                 sensor.getId(),
                 sensor.getName(),
                 meta != null ? meta.toString() : null,
