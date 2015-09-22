@@ -22,8 +22,8 @@ import io.realm.exceptions.RealmException;
  * Example usage:
  *
  *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext());
- *
- *     Sensor sensor = databaseHandler.getSensor(sourceId, sensorName);
+ *     Source source = databaseHandler.createSource(id, name, meta, deviceId, userId, csId);
+ *     Sensor sensor = source.getSensor(sourceId, sensorName);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
