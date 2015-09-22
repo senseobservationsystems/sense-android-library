@@ -18,7 +18,7 @@ public class Sensor {
     private SensorDataPoint.DataType dataType = null;
     private String csId = null;
     private SensorOptions options = new SensorOptions();
-    private Boolean synced = null;
+    private boolean synced = false;
 
     public Sensor(DatabaseHandler databaseHandler, String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
         this.databaseHandler = databaseHandler;
@@ -57,7 +57,7 @@ public class Sensor {
         return csId;
     }
 
-    public Boolean isSynced() {
+    public boolean isSynced() {
         return synced;
     }
 
@@ -81,7 +81,7 @@ public class Sensor {
         return options.clone();
     }
 
-    public void setSynced(Boolean synced) throws DatabaseHandlerException {
+    public void setSynced(boolean synced) throws DatabaseHandlerException {
         this.synced = synced;
 
         // store changes in the local database

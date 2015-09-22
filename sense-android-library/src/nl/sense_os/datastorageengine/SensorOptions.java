@@ -3,6 +3,11 @@ package nl.sense_os.datastorageengine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Object with sensor options.
+ * All options are optional and can be left null.
+ * When setting sensor options via Sensor.setOptions(options) the options being null are ignored.
+ */
 public class SensorOptions implements Cloneable {
     private JSONObject meta = null;
     private Boolean uploadEnabled = null;

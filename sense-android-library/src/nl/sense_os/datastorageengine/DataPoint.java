@@ -12,8 +12,8 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
 public class DataPoint {
 
     private String sensorId = null;
-    private String type;  // string name of enum SensorDataPoint.DataType
-    private String value;
+    private String type = null;  // string name of enum SensorDataPoint.DataType
+    private String value = null;
     private long date = 0;
     private boolean synced = false;
 
@@ -39,13 +39,13 @@ public class DataPoint {
         this.synced     = obj.optBoolean("synced", false);
     }
 
-    public DataPoint(String sensorId, Integer value, long date) {
+    public DataPoint(String sensorId, int value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
     }
 
-    public DataPoint(String sensorId, Float value, long date) {
+    public DataPoint(String sensorId, float value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
@@ -57,7 +57,7 @@ public class DataPoint {
         setDate(date);
     }
 
-    public DataPoint(String sensorId, Boolean value, long date) {
+    public DataPoint(String sensorId, boolean value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
@@ -69,12 +69,12 @@ public class DataPoint {
         setDate(date);
     }
 
-    public DataPoint(String sensorId, Integer value, long date, boolean synced) {
+    public DataPoint(String sensorId, int value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
 
-    public DataPoint(String sensorId, Float value, long date, boolean synced) {
+    public DataPoint(String sensorId, float value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
@@ -84,7 +84,7 @@ public class DataPoint {
         setSynced(synced);
     }
 
-    public DataPoint(String sensorId, Boolean value, long date, boolean synced) {
+    public DataPoint(String sensorId, boolean value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
@@ -102,7 +102,7 @@ public class DataPoint {
         this.sensorId = sensorId;
     }
 
-    public Boolean getBooleanValue() {
+    public boolean getBooleanValue() {
         if (DataType.BOOL.name().equals(this.type)) {
             return Boolean.parseBoolean(this.value);
         }
@@ -111,7 +111,7 @@ public class DataPoint {
         }
     }
 
-    public Float getFloatValue() {
+    public float getFloatValue() {
         if (DataType.FLOAT.name().equals(this.type)) {
             return Float.parseFloat(this.value);
         }
@@ -120,7 +120,7 @@ public class DataPoint {
         }
     }
 
-    public Integer getIntegerValue() {
+    public int getIntegerValue() {
         if (DataType.INT.name().equals(this.type)) {
             return Integer.parseInt(this.value);
         }
@@ -257,7 +257,7 @@ public class DataPoint {
     };
 
     /**
-     * Stringify a value, like a Float, String, Int, etc.
+     * Stringify a value, like a String, float, int, etc.
      * @param obj
      * @return
      */
@@ -274,7 +274,7 @@ public class DataPoint {
     };
 
     /**
-     * Parse a stringified value (String, Float, Int, ...)
+     * Parse a stringified value (String, float, int, ...)
      * @param str
      * @return
      */
