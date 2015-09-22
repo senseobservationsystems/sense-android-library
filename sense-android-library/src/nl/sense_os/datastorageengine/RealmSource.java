@@ -4,13 +4,17 @@ package nl.sense_os.datastorageengine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 public class RealmSource implements Source {
 
-    private RealmDatabaseHandler databaseHandler = null;
+    private Realm realm = null;
 
     private String id = null;
     private String name = null;
@@ -20,8 +24,8 @@ public class RealmSource implements Source {
     private String csId = null;
     private boolean synced = false;
 
-    protected RealmSource(RealmDatabaseHandler databaseHandler, String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced) {
-        this.databaseHandler = databaseHandler;
+    protected RealmSource(Realm realm, String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced) {
+        this.realm = realm;
 
         this.id = id;
         this.name = name;
@@ -40,7 +44,7 @@ public class RealmSource implements Source {
         this.userId = userId;
         this.synced = false; // mark as dirty
 
-        databaseHandler.updateSource(this);
+        saveChanges();
     }
 
     public String getCsId() {
@@ -51,7 +55,7 @@ public class RealmSource implements Source {
         this.csId = csId;
         this.synced = false; // mark as dirty
 
-        databaseHandler.updateSource(this);
+        saveChanges();
     }
 
     public String getDeviceId() {
@@ -62,7 +66,7 @@ public class RealmSource implements Source {
         this.deviceId = deviceId;
         this.synced = false; // mark as dirty
 
-        databaseHandler.updateSource(this);
+        saveChanges();
     }
 
     public JSONObject getMeta() {
@@ -73,7 +77,7 @@ public class RealmSource implements Source {
         this.meta = meta;
         this.synced = false; // mark as dirty
 
-        databaseHandler.updateSource(this);
+        saveChanges();
     }
 
     public String getName() {
@@ -84,7 +88,7 @@ public class RealmSource implements Source {
         this.name = name;
         this.synced = false; // mark as dirty
 
-        databaseHandler.updateSource(this);
+        saveChanges();
     }
 
     public String getId() {
@@ -95,7 +99,7 @@ public class RealmSource implements Source {
         this.id = id;
         this.synced = false; // mark as dirty
 
-        databaseHandler.updateSource(this);
+        saveChanges();
     }
 
     public boolean isSynced() {
@@ -105,23 +109,79 @@ public class RealmSource implements Source {
     public void setSynced(boolean synced) throws DatabaseHandlerException {
         this.synced = synced;
 
-        databaseHandler.updateSource(this);
+        saveChanges();
     }
 
     @Override
     public Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options) {
         boolean synced = false;
-        return databaseHandler.createSensor(id, name, userId, this.id, dataType, csId, options, synced);
+        Sensor sensor = new RealmSensor(realm, id, name, userId, this.id, dataType, csId, options, synced);
+
+        RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
+
+        realm.beginTransaction();
+        realm.copyToRealm(realmSensor);
+        realm.commitTransaction();
+
+        return sensor;
     }
 
     @Override
     public Sensor getSensor(String sensorName) throws JSONException {
-        return databaseHandler.getSensor(this.id, sensorName);
+        realm.beginTransaction();
+
+        RealmModelSensor realmSensor = realm
+                .where(RealmModelSensor.class)
+                .equalTo("sourceId", this.id)
+                .equalTo("name", sensorName)
+                .findFirst();
+
+        realm.commitTransaction();
+
+        return RealmModelSensor.toSensor(realm, realmSensor);
     }
 
     @Override
     public List<Sensor> getSensors() throws JSONException {
-        return databaseHandler.getSensors(this.id);
+        // query results
+        realm.beginTransaction();
+        RealmResults<RealmModelSensor> results = realm
+                .where(RealmModelSensor.class)
+                .equalTo("sourceId", this.id)
+                .findAll();
+        realm.commitTransaction();
+
+        // convert to Sensor
+        List<Sensor> sensors = new ArrayList<>();
+        Iterator<RealmModelSensor> iterator = results.iterator();
+        while (iterator.hasNext()) {
+            sensors.add(RealmModelSensor.toSensor(realm, iterator.next()));
+        }
+        // TODO: figure out what is the most efficient way to loop over the results
+
+        return sensors;
     }
 
+    /**
+     * Update Source in database with the info of the given Source object.
+     * Throws an exception if it fails to updated.
+     */
+    protected void saveChanges() throws DatabaseHandlerException {
+        realm.beginTransaction();
+
+        // get the existing source (just to throw an error if it doesn't exist)
+        RealmModelSource realmSource = realm
+                .where(RealmModelSource.class)
+                .equalTo("id", this.id)
+                .findFirst();
+
+        if (realmSource == null) {
+            throw new DatabaseHandlerException("Cannot update source: source doesn't yet exist.");
+        }
+
+        // update the source
+        realm.copyToRealmOrUpdate(RealmModelSource.fromSource(this));
+
+        realm.commitTransaction();
+    }
 }

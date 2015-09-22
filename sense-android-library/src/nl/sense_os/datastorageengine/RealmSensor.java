@@ -3,13 +3,17 @@ package nl.sense_os.datastorageengine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 public class RealmSensor implements Sensor {
 
-    private RealmDatabaseHandler databaseHandler = null; // used to insert/get datapoints, and to update itself
+    private Realm realm = null;
 
     private String id = null;
     private String name = null;
@@ -20,8 +24,8 @@ public class RealmSensor implements Sensor {
     private SensorOptions options = new SensorOptions();
     private boolean synced = false;
 
-    public RealmSensor(RealmDatabaseHandler databaseHandler, String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
-        this.databaseHandler = databaseHandler;
+    protected RealmSensor(Realm realm, String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+        this.realm = realm;
 
         this.id = id;
         this.name = name;
@@ -71,7 +75,7 @@ public class RealmSensor implements Sensor {
         this.synced = false; // mark as dirty
 
         // store changes in the local database
-        databaseHandler.updateSensor(this);
+        saveChanges();
     }
 
     /**
@@ -86,7 +90,7 @@ public class RealmSensor implements Sensor {
         this.synced = synced;
 
         // store changes in the local database
-        databaseHandler.updateSensor(this);
+        saveChanges();
     }
 
     /**
@@ -95,7 +99,7 @@ public class RealmSensor implements Sensor {
      * @param date
      */
     public void insertDataPoint(boolean value, long date) {
-        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+        insertDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -104,7 +108,7 @@ public class RealmSensor implements Sensor {
      * @param date
      */
     public void insertDataPoint(float value, long date) {
-        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+        insertDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -113,7 +117,7 @@ public class RealmSensor implements Sensor {
      * @param date
      */
     public void insertDataPoint(int value, long date) {
-        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+        insertDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -122,7 +126,7 @@ public class RealmSensor implements Sensor {
      * @param date
      */
     public void insertDataPoint(JSONObject value, long date) {
-        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+        insertDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -131,7 +135,43 @@ public class RealmSensor implements Sensor {
      * @param date
      */
     public void insertDataPoint(String value, long date) {
-        databaseHandler.insertDataPoint(new DataPoint(id, value, date));
+        insertDataPoint(new DataPoint(id, value, date));
+    }
+
+    /**
+     * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
+     */
+    protected void saveChanges() throws DatabaseHandlerException {
+        realm.beginTransaction();
+
+        // get the existing sensor (just to throw an error if it doesn't exist)
+        RealmModelSensor realmSensor = realm
+                .where(RealmModelSensor.class)
+                .equalTo("id", this.id)
+                .findFirst();
+
+        if (realmSensor == null) {
+            throw new DatabaseHandlerException("Cannot update sensor: sensor doesn't yet exist.");
+        }
+
+        // update the sensor
+        realm.copyToRealmOrUpdate(RealmModelSensor.fromSensor(this));
+
+        realm.commitTransaction();
+    }
+
+    /**
+     * This method inserts a DataPoint object into the local Realm database.
+     * The typecasting to string should already be done at this point.
+     * @param dataPoint	A DataPoint object that has a stringified value that will be copied
+     * 			into a Realm object.
+     */
+    protected void insertDataPoint (DataPoint dataPoint) {
+        RealmModelDataPoint realmDataPoint = RealmModelDataPoint.fromDataPoint(dataPoint);
+
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(realmDataPoint);
+        realm.commitTransaction();
     }
 
     /**
@@ -143,7 +183,32 @@ public class RealmSensor implements Sensor {
      * @return Returns a List with data points
      */
     public List<DataPoint> getDataPoints(long startDate, long endDate, int limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException {
-        return databaseHandler.getDataPoints(id, startDate, endDate, limit, sortOrder);
-    };
+        // query results
+        realm.beginTransaction();
+        RealmResults<RealmModelDataPoint> results = realm
+                .where(RealmModelDataPoint.class)
+                .equalTo("sensorId", this.id)
+                .greaterThanOrEqualTo("date", startDate)
+                .lessThan("date", endDate)
+                .findAll();
+        realm.commitTransaction();
 
+        // sort
+        boolean resultsOrder = (sortOrder == DatabaseHandler.SORT_ORDER.DESC )
+                ? RealmResults.SORT_ORDER_DESCENDING
+                : RealmResults.SORT_ORDER_ASCENDING;
+        results.sort("date", resultsOrder);
+
+        // limit and convert to DataPoint
+        int count = 0;
+        List<DataPoint> dataPoints = new ArrayList<>();
+        Iterator<RealmModelDataPoint> iterator = results.iterator();
+        while (count < limit && iterator.hasNext()) {
+            dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
+            count++;
+        }
+        // TODO: figure out what is the most efficient way to loop over the results
+
+        return dataPoints;
+    };
 }

@@ -3,6 +3,7 @@ package nl.sense_os.datastorageengine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
@@ -114,14 +115,14 @@ public class RealmModelSource extends RealmObject {
 
     /**
      * Convert a RealmSource into a Source
-     * @param databaseHandler
+     * @param realm
      * @param realmSource
      * @return Returns a Source
      */
-    public static Source toSource (RealmDatabaseHandler databaseHandler, RealmModelSource realmSource) throws JSONException {
+    public static Source toSource (Realm realm, RealmModelSource realmSource) throws JSONException {
         String meta = realmSource.getMeta();
         return new RealmSource(
-                databaseHandler,
+                realm,
                 realmSource.getId(),
                 realmSource.getName(),
                 meta != null ? new JSONObject(meta) : null,
