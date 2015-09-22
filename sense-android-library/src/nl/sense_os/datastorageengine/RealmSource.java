@@ -1,7 +1,12 @@
 package nl.sense_os.datastorageengine;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
+
+import nl.sense_os.service.shared.SensorDataPoint;
 
 public class RealmSource implements Source {
 
@@ -101,6 +106,21 @@ public class RealmSource implements Source {
         this.synced = synced;
 
         databaseHandler.updateSource(this);
+    }
+
+    @Override
+    public Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+        return databaseHandler.createSensor(id, name, userId, this.id, dataType, csId, options, synced);
+    }
+
+    @Override
+    public Sensor getSensor(String sensorName) throws JSONException {
+        return databaseHandler.getSensor(this.id, sensorName);
+    }
+
+    @Override
+    public List<Sensor> getSensors() throws JSONException {
+        return databaseHandler.getSensors(this.id);
     }
 
 }

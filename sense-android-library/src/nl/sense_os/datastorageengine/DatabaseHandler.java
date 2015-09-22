@@ -37,26 +37,6 @@ public interface DatabaseHandler {
     void close () throws Exception;
 
     /**
-     * Create a new Sensor and store it in the local database
-     */
-    Sensor createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced);
-
-    /**
-     * Get a sensor
-     * @param sourceId	The ID of the source object or Null
-     * @param sensorName	The name of the sensor or Null
-     * @return sensor: sensor with the given sensor name and sourceId.
-     **/
-    Sensor getSensor(String sourceId, String sensorName) throws JSONException;
-
-    /**
-     * Retrieve all sensors for given source id.
-     * @param sourceId
-     * @return
-     */
-    List<Sensor> getSensors(String sourceId) throws JSONException;
-
-    /**
      * Create a new source and store it in the local database
      */
     Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced);

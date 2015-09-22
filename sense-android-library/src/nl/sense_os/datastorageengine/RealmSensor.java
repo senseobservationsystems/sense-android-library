@@ -14,7 +14,7 @@ public class RealmSensor implements Sensor {
     private String id = null;
     private String name = null;
     private String userId = null;
-    private String sourceId = null;
+    private String sourceId = null;   // corresponds Source.id
     private SensorDataPoint.DataType dataType = null;
     private String csId = null;
     private SensorOptions options = new SensorOptions();

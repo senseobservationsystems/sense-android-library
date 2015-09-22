@@ -119,7 +119,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     /**
      * Create a new Sensor and store it in the local database
      */
-    public Sensor createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+    protected Sensor createSensor(String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
         Sensor sensor = new RealmSensor(this, id, name, userId, sourceId, dataType, csId, options, synced);
 
         RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
@@ -160,7 +160,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * @param sensorName	The name of the sensor or Null
      * @return sensor: sensor with the given sensor name and sourceId.
      **/
-    public Sensor getSensor(String sourceId, String sensorName) throws JSONException {
+    protected Sensor getSensor(String sourceId, String sensorName) throws JSONException {
         realm.beginTransaction();
 
         RealmModelSensor realmSensor = realm
@@ -179,7 +179,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
      * @param sourceId
      * @return
      */
-    public List<Sensor> getSensors(String sourceId) throws JSONException {
+    protected List<Sensor> getSensors(String sourceId) throws JSONException {
         // query results
         realm.beginTransaction();
         RealmResults<RealmModelSensor> results = realm
