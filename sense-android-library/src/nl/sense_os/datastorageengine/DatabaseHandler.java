@@ -13,16 +13,17 @@ import nl.sense_os.service.shared.SensorDataPoint;
  *
  * Example usage:
  *
- *     DatabaseHandler dh = new RealmDatabaseHandler(getContext());
+ *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext());
  *
- *     DataPoint dataPoint = new DataPoint("mysensor", 1234, new Date().getTime());
- *     dh.insertDataPoint(dataPoint);
+ *     Sensor sensor = databaseHandler.getSensor(sourceId, sensorName);
+ *
+ *     sensor.insertDataPoint(1234, new Date().getTime());
  *
  *     long startDate = 1388534400000; // 2014-01-01
  *     long startDate = 1420070400000; // 2015-01-01
- *     List<DataPoint> data = dh.getDataPoints("mysensor", startDate, endDate, 1000, SORT_ORDER.ASC);
+ *     List<DataPoint> data = sensor.getDataPoints(startDate, endDate, 1000, SORT_ORDER.ASC);
  *
- *     dh.close();
+ *     databaseHandler.close();
  *
  */
 public interface DatabaseHandler {
