@@ -203,7 +203,8 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     /**
      * Create a new source and store it in the local database
      */
-    public Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced) {
+    public Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId) {
+        boolean synced = false;
         Source source = new RealmSource(this, id, name, meta, deviceId, userId, csId, synced);
 
         RealmModelSource realmSource = RealmModelSource.fromSource(source);

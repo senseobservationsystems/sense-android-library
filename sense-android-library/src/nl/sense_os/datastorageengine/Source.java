@@ -41,7 +41,7 @@ public interface Source {
     /**
      * Create a new Sensor and store it in the local database
      */
-    Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced);
+    Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options);
 
     /**
      * Get a sensor

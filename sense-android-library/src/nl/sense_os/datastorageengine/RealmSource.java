@@ -109,7 +109,8 @@ public class RealmSource implements Source {
     }
 
     @Override
-    public Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+    public Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options) {
+        boolean synced = false;
         return databaseHandler.createSensor(id, name, userId, this.id, dataType, csId, options, synced);
     }
 

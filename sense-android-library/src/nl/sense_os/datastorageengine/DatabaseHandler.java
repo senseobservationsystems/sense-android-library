@@ -39,7 +39,7 @@ public interface DatabaseHandler {
     /**
      * Create a new source and store it in the local database
      */
-    Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced);
+    Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId);
 
     /**
      * Returns a list of sources based on the specified criteria.
