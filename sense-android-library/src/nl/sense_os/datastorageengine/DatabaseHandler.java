@@ -59,13 +59,13 @@ public interface DatabaseHandler {
     /**
      * Create a new source and store it in the local database
      */
-    Source createSource(String id, String name, JSONObject meta, String uuid, String csId, boolean synced);
+    Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced);
 
     /**
      * Returns a list of sources based on the specified criteria.
      * @param sourceName    Name of the source
-     * @param uuid          Device identifier
+     * @param deviceId      Device identifier
      * @return list of source objects that correspond to the specified criteria.
      */
-    List<Source> getSources (String sourceName, String uuid) throws JSONException;
+    List<Source> getSources (String sourceName, String deviceId) throws JSONException;
 }

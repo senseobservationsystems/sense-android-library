@@ -13,9 +13,9 @@ public interface Source {
 
     void setCsId(String csId) throws DatabaseHandlerException;
 
-    String getUuid();
+    String getDeviceId();
 
-    void setUuid(String uuid) throws DatabaseHandlerException;
+    void setDeviceId(String deviceId) throws DatabaseHandlerException;
 
     JSONObject getMeta();
 

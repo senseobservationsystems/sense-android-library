@@ -203,8 +203,8 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     /**
      * Create a new source and store it in the local database
      */
-    public Source createSource(String id, String name, JSONObject meta, String uuid, String csId, boolean synced) {
-        Source source = new RealmSource(this, id, name, meta, uuid, csId, synced);
+    public Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced) {
+        Source source = new RealmSource(this, id, name, meta, deviceId, userId, csId, synced);
 
         RealmModelSource realmSource = RealmModelSource.fromSource(source);
 
@@ -242,16 +242,16 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     /**
      * Returns a list of sources based on the specified criteria.
      * @param sourceName    Name of the source
-     * @param uuid          Device identifier
+     * @param deviceId      Device identifier
      * @return list of source objects that correspond to the specified criteria.
      */
-    public List<Source> getSources (String sourceName, String uuid) throws JSONException {
+    public List<Source> getSources (String sourceName, String deviceId) throws JSONException {
         // query results
         realm.beginTransaction();
         RealmResults<RealmModelSource> results = realm
                 .where(RealmModelSource.class)
                 .equalTo("name", sourceName)
-                .equalTo("uuid", uuid)
+                .equalTo("deviceId", deviceId)
                 .findAll();
         realm.commitTransaction();
 

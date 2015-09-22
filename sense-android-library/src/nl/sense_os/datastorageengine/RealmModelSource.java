@@ -17,7 +17,7 @@ public class RealmModelSource extends RealmObject {
     private String meta = null; // stringified JSON object
 
     @Index
-    private String uuid = null; // device UUID or some other UUID
+    private String deviceId = null; // device UUID or some other UUID
     private String userId = null;
     private String csId = null;
 
@@ -25,11 +25,11 @@ public class RealmModelSource extends RealmObject {
 
     public RealmModelSource() {}
 
-    public RealmModelSource(String id, String name, JSONObject meta, String uuid, String userId, String csId, boolean synced) {
+    public RealmModelSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId, boolean synced) {
         this.id = id;
         this.name = name;
         this.meta = meta != null ? meta.toString() : null;
-        this.uuid = uuid;
+        this.deviceId = deviceId;
         this.userId = userId;
         this.csId = csId;
         this.synced = synced;
@@ -51,12 +51,12 @@ public class RealmModelSource extends RealmObject {
         this.csId = csId;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     /**
@@ -125,7 +125,7 @@ public class RealmModelSource extends RealmObject {
                 realmSource.getId(),
                 realmSource.getName(),
                 meta != null ? new JSONObject(meta) : null,
-                realmSource.getUuid(),
+                realmSource.getDeviceId(),
                 realmSource.getUserId(),
                 realmSource.getCsId(),
                 realmSource.isSynced()
@@ -142,7 +142,7 @@ public class RealmModelSource extends RealmObject {
                 source.getId(),
                 source.getName(),
                 source.getMeta(),
-                source.getUuid(),
+                source.getDeviceId(),
                 source.getUserId(),
                 source.getCsId(),
                 source.isSynced()
