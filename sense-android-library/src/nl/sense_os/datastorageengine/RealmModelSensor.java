@@ -23,14 +23,14 @@ public class RealmModelSensor extends RealmObject {
     private String userId = null;
 
     @Index
-    private String sourceId = null;
+    private String source = null;
     private String dataType = null;  // String value of the enum SensorDataPoint.DataType
     private String csId = null;
     private boolean synced = false;
 
     public RealmModelSensor() {}
 
-    public RealmModelSensor(String id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String sourceId, String dataType, String csId, boolean synced) {
+    public RealmModelSensor(String id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, String csId, boolean synced) {
         this.id = id;
         this.name = name;
         this.meta = meta;
@@ -38,7 +38,7 @@ public class RealmModelSensor extends RealmObject {
         this.csDownloadEnabled = csDownloadEnabled;
         this.persistLocally = persistLocally;
         this.userId = userId;
-        this.sourceId = sourceId;
+        this.source = source;
         this.dataType = dataType;
         this.csId = csId;
         this.synced = synced;
@@ -121,18 +121,17 @@ public class RealmModelSensor extends RealmObject {
         this.userId = userId;
     }
 
-    public String getSourceId() {
-        return sourceId;
+    public String getSource() {
+        return source;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     /**
      * Returns the string name of the data type.
      * This is an entry from the enum SensorDataPoint.DataType
-     * @return
      */
     public String getDataType() {
         return dataType;
@@ -177,7 +176,7 @@ public class RealmModelSensor extends RealmObject {
                 realmSensor.getId(),
                 realmSensor.getName(),
                 realmSensor.getUserId(),
-                realmSensor.getSourceId(),
+                realmSensor.getSource(),
                 dataType != null ? DataType.valueOf(dataType) : null,
                 realmSensor.getCsId(),
                 new SensorOptions(
@@ -208,7 +207,7 @@ public class RealmModelSensor extends RealmObject {
                 options != null ? options.isDownloadEnabled() : null,
                 options != null ? options.isPersist() : null,
                 sensor.getUserId(),
-                sensor.getSourceId(),
+                sensor.getSource(),
                 dataType != null ? dataType.name() : null,
                 sensor.getCsId(),
                 sensor.isSynced()

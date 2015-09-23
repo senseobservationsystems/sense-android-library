@@ -18,19 +18,19 @@ public class RealmSensor implements Sensor {
     private String id = null;
     private String name = null;
     private String userId = null;
-    private String sourceId = null;   // corresponds Source.id
+    private String source = null;
     private SensorDataPoint.DataType dataType = null;
     private String csId = null;
     private SensorOptions options = new SensorOptions();
     private boolean synced = false;
 
-    protected RealmSensor(Realm realm, String id, String name, String userId, String sourceId, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+    protected RealmSensor(Realm realm, String id, String name, String userId, String source, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
         this.realm = realm;
 
         this.id = id;
         this.name = name;
         this.userId = userId;
-        this.sourceId = sourceId;
+        this.source = source;
         this.dataType = dataType;
         this.csId = csId;
         this.options = options;
@@ -49,8 +49,8 @@ public class RealmSensor implements Sensor {
         return userId;
     }
 
-    public String getSourceId() {
-        return sourceId;
+    public String getSource() {
+        return source;
     }
 
     public SensorDataPoint.DataType getDataType() {
@@ -59,6 +59,13 @@ public class RealmSensor implements Sensor {
 
     public String getCsId() {
         return csId;
+    }
+
+    public void setCsId(String csId) throws DatabaseHandlerException {
+        this.csId = csId;
+
+        // store changes in the local database
+        saveChanges();
     }
 
     public boolean isSynced() {

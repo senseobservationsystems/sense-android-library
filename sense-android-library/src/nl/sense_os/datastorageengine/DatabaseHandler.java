@@ -14,8 +14,7 @@ import nl.sense_os.service.shared.SensorDataPoint;
  * Example usage:
  *
  *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext(), userId);
- *     Source source = databaseHandler.createSource(name, meta, deviceId, csId);
- *     Sensor sensor = source.getSensor(sourceId, sensorName);
+ *     Sensor sensor = source.getSensor(sensorName);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
@@ -37,15 +36,21 @@ public interface DatabaseHandler {
     void close () throws Exception;
 
     /**
-     * Create a new source and store it in the local database
+     * Create a new Sensor and store it in the local database
      */
-    Source createSource(String name, String deviceId, JSONObject meta) throws DatabaseHandlerException;
+    Sensor createSensor(String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException;
 
     /**
-     * Returns a list of sources based on the specified criteria.
-     * @param name          Name of the source
-     * @param deviceId      Device identifier
-     * @return list of source objects that correspond to the specified criteria.
+     * Get a sensor
+     * @param name	The name of the sensor or Null
+     * @return sensor: sensor with the given sensor name and source.
+     **/
+    Sensor getSensor(String name) throws JSONException, DatabaseHandlerException;
+
+    /**
+     * Retrieve all sensors of this user
+     * @return
      */
-    List<Source> getSources (String name, String deviceId) throws JSONException;
+    List<Sensor> getSensors() throws JSONException;
+
 }

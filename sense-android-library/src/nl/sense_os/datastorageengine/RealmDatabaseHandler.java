@@ -13,6 +13,7 @@ import java.util.UUID;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
+import nl.sense_os.service.shared.SensorDataPoint;
 
 
 /**
@@ -23,8 +24,7 @@ import io.realm.exceptions.RealmException;
  * Example usage:
  *
  *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext(), userId);
- *     Source source = databaseHandler.createSource(name, deviceId, meta);
- *     Sensor sensor = source.getSensor(sourceId, sensorName);
+ *     Sensor sensor = source.getSensor(sensorName);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
@@ -39,10 +39,13 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
     private Realm realm = null;
     private String userId = null;
+    private String source = android.os.Build.MODEL; // for example "HTC Desire"
 
     public RealmDatabaseHandler(Context context, String userId) {
         realm = Realm.getInstance(context);
         this.userId = userId;
+
+        // TODO: determine source, like "Nexus 5"
     }
 
     public Realm getRealm() {
@@ -74,24 +77,22 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         finalize();
     }
 
-    /**
-     * Create a new source and store it in the local database
-     */
-    public Source createSource(String name, String deviceId, JSONObject meta) throws DatabaseHandlerException {
-        String id = UUID.randomUUID().toString();
-        String csId = null; // must be filled out by the database syncer
+    @Override
+    public Sensor createSensor(String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
+        String id = UUID.randomUUID().toString();  // TODO: change to auto increment
+        String csId = null;  // must be filled out by the database syncer
         boolean synced = false;
-        Source source = new RealmSource(realm, id, name, meta, deviceId, userId, csId, synced);
+        Sensor sensor = new RealmSensor(realm, id, name, userId, this.source, dataType, csId, options, synced);
 
-        RealmModelSource realmSource = RealmModelSource.fromSource(source);
+        RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
 
         realm.beginTransaction();
         try {
-            realm.copyToRealm(realmSource);
+            realm.copyToRealm(realmSensor);
         }
         catch (RealmException err) {
             if (err.toString().indexOf("Primary key constraint broken") != -1) {
-                throw new DatabaseHandlerException("Cannot create source. A source with id " + id + " already exists.");
+                throw new DatabaseHandlerException("Cannot create sensor. A sensor with id " + id + " already exists.");
             }
             else {
                 throw err;
@@ -99,33 +100,47 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         }
         realm.commitTransaction();
 
-        return source;
+        return sensor;
     }
 
-    /**
-     * Returns a list of sources based on the specified criteria.
-     * @param name          Name of the source
-     * @param deviceId      Device identifier
-     * @return list of source objects that correspond to the specified criteria.
-     */
-    public List<Source> getSources (String name, String deviceId) throws JSONException {
+    @Override
+    public Sensor getSensor(String name) throws JSONException, DatabaseHandlerException {
+        realm.beginTransaction();
+
+        RealmModelSensor realmSensor = realm
+                .where(RealmModelSensor.class)
+                .equalTo("source", this.source)
+                .equalTo("name", name)
+                .findFirst();
+
+        realm.commitTransaction();
+
+        if (realmSensor == null) {
+            throw new DatabaseHandlerException("Sensor not found. Sensor with name " + name + " does not exist.");
+        }
+
+        return RealmModelSensor.toSensor(realm, realmSensor);
+    }
+
+    @Override
+    public List<Sensor> getSensors() throws JSONException {
         // query results
         realm.beginTransaction();
-        RealmResults<RealmModelSource> results = realm
-                .where(RealmModelSource.class)
-                .equalTo("name", name)
-                .equalTo("deviceId", deviceId)
+        RealmResults<RealmModelSensor> results = realm
+                .where(RealmModelSensor.class)
+                .equalTo("source", this.source)
                 .findAll();
         realm.commitTransaction();
 
-        // convert to Source
-        List<Source> sources = new ArrayList<>();
-        Iterator<RealmModelSource> iterator = results.iterator();
+        // convert to Sensor
+        List<Sensor> sensors = new ArrayList<>();
+        Iterator<RealmModelSensor> iterator = results.iterator();
         while (iterator.hasNext()) {
-            sources.add(RealmModelSource.toSource(realm, iterator.next()));
+            sensors.add(RealmModelSensor.toSensor(realm, iterator.next()));
         }
         // TODO: figure out what is the most efficient way to loop over the results
 
-        return sources;
+        return sensors;
     }
+
 }

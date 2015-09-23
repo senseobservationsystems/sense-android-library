@@ -15,7 +15,7 @@ public interface Sensor {
 
     String getUserId();
 
-    String getSourceId();
+    String getSource();
 
     SensorDataPoint.DataType getDataType();
 
