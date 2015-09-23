@@ -196,7 +196,7 @@ public class RealmModelSensor extends RealmObject {
      * @return Returns a RealmSensor
      */
     public static RealmModelSensor fromSensor (Sensor sensor) {
-        DataType dataType = sensor.getdataType();
+        DataType dataType = sensor.getDataType();
         SensorOptions options = sensor.getOptions();
         JSONObject meta = options != null ? options.getMeta() : null;
 

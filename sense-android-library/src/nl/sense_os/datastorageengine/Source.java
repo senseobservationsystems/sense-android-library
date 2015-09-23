@@ -12,8 +12,6 @@ public interface Source {
 
     String getUserId();
 
-    void setUserId(String userId) throws DatabaseHandlerException;
-
     String getCsId();
 
     void setCsId(String csId) throws DatabaseHandlerException;
@@ -32,8 +30,6 @@ public interface Source {
 
     String getId();
 
-    void setId(String id) throws DatabaseHandlerException;
-
     boolean isSynced();
 
     void setSynced(boolean synced) throws DatabaseHandlerException;
@@ -41,14 +37,14 @@ public interface Source {
     /**
      * Create a new Sensor and store it in the local database
      */
-    Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options) throws DatabaseHandlerException;
+    Sensor createSensor(String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException;
 
     /**
      * Get a sensor
-     * @param sensorName	The name of the sensor or Null
+     * @param name	The name of the sensor or Null
      * @return sensor: sensor with the given sensor name and sourceId.
      **/
-    Sensor getSensor(String sensorName) throws JSONException, DatabaseHandlerException;
+    Sensor getSensor(String name) throws JSONException, DatabaseHandlerException;
 
     /**
      * Retrieve all sensors for given source id.

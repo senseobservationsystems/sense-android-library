@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -21,8 +22,8 @@ import io.realm.exceptions.RealmException;
  *
  * Example usage:
  *
- *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext());
- *     Source source = databaseHandler.createSource(id, name, meta, deviceId, userId, csId);
+ *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext(), userId);
+ *     Source source = databaseHandler.createSource(name, deviceId, meta);
  *     Sensor sensor = source.getSensor(sourceId, sensorName);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
@@ -37,9 +38,19 @@ import io.realm.exceptions.RealmException;
 public class RealmDatabaseHandler implements DatabaseHandler {
 
     private Realm realm = null;
+    private String userId = null;
 
-    public RealmDatabaseHandler(Context context) {
+    public RealmDatabaseHandler(Context context, String userId) {
         realm = Realm.getInstance(context);
+        this.userId = userId;
+    }
+
+    public Realm getRealm() {
+        return realm;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     /**
@@ -66,7 +77,9 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     /**
      * Create a new source and store it in the local database
      */
-    public Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId) throws DatabaseHandlerException {
+    public Source createSource(String name, String deviceId, JSONObject meta) throws DatabaseHandlerException {
+        String id = UUID.randomUUID().toString();
+        String csId = null; // must be filled out by the database syncer
         boolean synced = false;
         Source source = new RealmSource(realm, id, name, meta, deviceId, userId, csId, synced);
 
@@ -91,16 +104,16 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
     /**
      * Returns a list of sources based on the specified criteria.
-     * @param sourceName    Name of the source
+     * @param name          Name of the source
      * @param deviceId      Device identifier
      * @return list of source objects that correspond to the specified criteria.
      */
-    public List<Source> getSources (String sourceName, String deviceId) throws JSONException {
+    public List<Source> getSources (String name, String deviceId) throws JSONException {
         // query results
         realm.beginTransaction();
         RealmResults<RealmModelSource> results = realm
                 .where(RealmModelSource.class)
-                .equalTo("name", sourceName)
+                .equalTo("name", name)
                 .equalTo("deviceId", deviceId)
                 .findAll();
         realm.commitTransaction();

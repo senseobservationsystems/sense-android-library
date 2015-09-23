@@ -53,7 +53,7 @@ public class RealmSensor implements Sensor {
         return sourceId;
     }
 
-    public SensorDataPoint.DataType getdataType() {
+    public SensorDataPoint.DataType getDataType() {
         return dataType;
     }
 

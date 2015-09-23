@@ -13,8 +13,8 @@ import nl.sense_os.service.shared.SensorDataPoint;
  *
  * Example usage:
  *
- *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext());
- *     Source source = databaseHandler.createSource(id, name, meta, deviceId, userId, csId);
+ *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext(), userId);
+ *     Source source = databaseHandler.createSource(name, meta, deviceId, csId);
  *     Sensor sensor = source.getSensor(sourceId, sensorName);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
@@ -39,13 +39,13 @@ public interface DatabaseHandler {
     /**
      * Create a new source and store it in the local database
      */
-    Source createSource(String id, String name, JSONObject meta, String deviceId, String userId, String csId) throws DatabaseHandlerException;
+    Source createSource(String name, String deviceId, JSONObject meta) throws DatabaseHandlerException;
 
     /**
      * Returns a list of sources based on the specified criteria.
-     * @param sourceName    Name of the source
+     * @param name          Name of the source
      * @param deviceId      Device identifier
      * @return list of source objects that correspond to the specified criteria.
      */
-    List<Source> getSources (String sourceName, String deviceId) throws JSONException;
+    List<Source> getSources (String name, String deviceId) throws JSONException;
 }

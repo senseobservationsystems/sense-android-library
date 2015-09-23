@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -39,13 +40,6 @@ public class RealmSource implements Source {
 
     public String getUserId() {
         return userId;
-    }
-
-    public void setUserId(String userId) throws DatabaseHandlerException {
-        this.userId = userId;
-        this.synced = false; // mark as dirty
-
-        saveChanges();
     }
 
     public String getCsId() {
@@ -96,13 +90,6 @@ public class RealmSource implements Source {
         return id;
     }
 
-    public void setId(String id) throws DatabaseHandlerException {
-        this.id = id;
-        this.synced = false; // mark as dirty
-
-        saveChanges();
-    }
-
     public boolean isSynced() {
         return synced;
     }
@@ -114,7 +101,9 @@ public class RealmSource implements Source {
     }
 
     @Override
-    public Sensor createSensor(String id, String name, String userId, SensorDataPoint.DataType dataType, String csId, SensorOptions options) throws DatabaseHandlerException {
+    public Sensor createSensor(String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
+        String id = UUID.randomUUID().toString();
+        String csId = null;  // must be filled out by the database syncer
         boolean synced = false;
         Sensor sensor = new RealmSensor(realm, id, name, userId, this.id, dataType, csId, options, synced);
 
@@ -138,19 +127,19 @@ public class RealmSource implements Source {
     }
 
     @Override
-    public Sensor getSensor(String sensorName) throws JSONException, DatabaseHandlerException {
+    public Sensor getSensor(String name) throws JSONException, DatabaseHandlerException {
         realm.beginTransaction();
 
         RealmModelSensor realmSensor = realm
                 .where(RealmModelSensor.class)
                 .equalTo("sourceId", this.id)
-                .equalTo("name", sensorName)
+                .equalTo("name", name)
                 .findFirst();
 
         realm.commitTransaction();
 
         if (realmSensor == null) {
-            throw new DatabaseHandlerException("Sensor not found. Sensor with name " + sensorName + " does not exist.");
+            throw new DatabaseHandlerException("Sensor not found. Sensor with name " + name + " does not exist.");
         }
 
         return RealmModelSensor.toSensor(realm, realmSensor);
