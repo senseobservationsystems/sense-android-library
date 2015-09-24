@@ -233,7 +233,7 @@ public class RealmSensor implements Sensor {
             // find the max id of the existing sensors
             realm.beginTransaction();
             auto_increment = realm
-                    .where(RealmModelDataPoint.class)
+                    .where(RealmModelSensor.class)
                     .findAll()
                     .max("id")
                     .longValue();

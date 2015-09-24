@@ -39,7 +39,6 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
     private Realm realm = null;
     private String userId = null;
-    private String source = android.os.Build.MODEL; // for example "HTC Desire"
 
     public RealmDatabaseHandler(Context context, String userId) {
         realm = Realm.getInstance(context);
@@ -78,11 +77,11 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public Sensor createSensor(String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
+    public Sensor createSensor(String source, String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
         long id = RealmSensor.generateId(realm);
         String csId = null;  // must be filled out by the database syncer
         boolean synced = false;
-        Sensor sensor = new RealmSensor(realm, id, name, userId, this.source, dataType, csId, options, synced);
+        Sensor sensor = new RealmSensor(realm, id, name, userId, source, dataType, csId, options, synced);
 
         RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
 
@@ -104,12 +103,13 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public Sensor getSensor(String name) throws JSONException, DatabaseHandlerException {
+    public Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException {
         realm.beginTransaction();
 
         RealmModelSensor realmSensor = realm
                 .where(RealmModelSensor.class)
-                .equalTo("source", this.source)
+                .equalTo("userId", userId)
+                .equalTo("source", source)
                 .equalTo("name", name)
                 .findFirst();
 
@@ -128,7 +128,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         realm.beginTransaction();
         RealmResults<RealmModelSensor> results = realm
                 .where(RealmModelSensor.class)
-                .equalTo("source", this.source)
+                .equalTo("userId", userId)
                 .findAll();
         realm.commitTransaction();
 

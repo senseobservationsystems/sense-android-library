@@ -38,14 +38,15 @@ public interface DatabaseHandler {
     /**
      * Create a new Sensor and store it in the local database
      */
-    Sensor createSensor(String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException;
+    Sensor createSensor(String source, String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException;
 
     /**
      * Get a sensor
-     * @param name	The name of the sensor or Null
+     * @param source  Name of the source
+     * @param name	  The name of the sensor
      * @return sensor: sensor with the given sensor name and source.
      **/
-    Sensor getSensor(String name) throws JSONException, DatabaseHandlerException;
+    Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException;
 
     /**
      * Retrieve all sensors of this user
