@@ -15,7 +15,7 @@ public class RealmSensor implements Sensor {
 
     private Realm realm = null;
 
-    private String id = null;
+    private long id = -1;
     private String name = null;
     private String userId = null;
     private String source = null;
@@ -24,7 +24,7 @@ public class RealmSensor implements Sensor {
     private SensorOptions options = new SensorOptions();
     private boolean synced = false;
 
-    protected RealmSensor(Realm realm, String id, String name, String userId, String source, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+    protected RealmSensor(Realm realm, long id, String name, String userId, String source, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
         this.realm = realm;
 
         this.id = id;
@@ -37,7 +37,7 @@ public class RealmSensor implements Sensor {
         this.synced = synced;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
@@ -221,4 +221,27 @@ public class RealmSensor implements Sensor {
 
         return dataPoints;
     };
+
+    /**
+     * Generate an auto incremented id for a new Sensor
+     * @param realm  Realm instance. Only used the first time to determine the max id
+     *               of the existing sensors.
+     * @return Returns an auto incremented id
+     */
+    public static long generateId (Realm realm) {
+        if (auto_increment == -1) {
+            // find the max id of the existing sensors
+            realm.beginTransaction();
+            auto_increment = realm
+                    .where(RealmModelDataPoint.class)
+                    .findAll()
+                    .max("id")
+                    .longValue();
+            realm.commitTransaction();
+        }
+
+        return ++auto_increment;
+    }
+
+    protected static long auto_increment = -1; // -1 means not yet loaded
 }

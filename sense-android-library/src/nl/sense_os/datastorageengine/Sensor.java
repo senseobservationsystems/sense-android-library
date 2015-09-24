@@ -9,7 +9,7 @@ import nl.sense_os.service.shared.SensorDataPoint;
 
 public interface Sensor {
 
-    String getId();
+    long getId();
 
     String getName();
 

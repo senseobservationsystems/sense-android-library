@@ -12,7 +12,7 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
 public class RealmModelSensor extends RealmObject {
 
     @PrimaryKey
-    private String id = null;
+    private long id = -1; // only used to locally keep a relation between Sensor and DataPoints
 
     @Index
     private String name = null;
@@ -30,7 +30,7 @@ public class RealmModelSensor extends RealmObject {
 
     public RealmModelSensor() {}
 
-    public RealmModelSensor(String id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, String csId, boolean synced) {
+    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, String csId, boolean synced) {
         this.id = id;
         this.name = name;
         this.meta = meta;
@@ -44,11 +44,11 @@ public class RealmModelSensor extends RealmObject {
         this.synced = synced;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

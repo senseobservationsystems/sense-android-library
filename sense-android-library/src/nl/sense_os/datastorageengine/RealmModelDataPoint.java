@@ -18,10 +18,10 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
  */
 public class RealmModelDataPoint extends RealmObject {
     @PrimaryKey
-    private String id = null; // purely used to identify the data point in Realm
+    private String id = null; // Compound key purely used to identify the data point in Realm
 
     @Index
-    private String sensorId = null;
+    private long sensorId = -1;
 
     private String type = null;  // String name of the enum SensorDataPoint.DataType
     private String value = null; // Stringified JSONObject of the value
@@ -33,8 +33,8 @@ public class RealmModelDataPoint extends RealmObject {
 
     public RealmModelDataPoint() {}
 
-    public RealmModelDataPoint(String sensorId, String type, String value, long date, boolean synced) {
-        this.id = RealmModelDataPoint.buildId(sensorId, date);
+    public RealmModelDataPoint(long sensorId, String type, String value, long date, boolean synced) {
+        this.id = RealmModelDataPoint.getCompoundKey(sensorId, date);
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
@@ -50,11 +50,11 @@ public class RealmModelDataPoint extends RealmObject {
         this.id = id;
     }
 
-    public String getSensorId() {
+    public long getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(String sensorId) {
+    public void setSensorId(long sensorId) {
         this.sensorId = sensorId;
     }
 
@@ -108,7 +108,7 @@ public class RealmModelDataPoint extends RealmObject {
      * @param date
      * @return Returns a string "<sensorId>:<date>"
      */
-    public static String buildId (String sensorId, long date) {
+    public static String getCompoundKey (long sensorId, long date) {
         return sensorId + ":" + date;
     }
 

@@ -79,7 +79,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
     @Override
     public Sensor createSensor(String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
-        String id = UUID.randomUUID().toString();  // TODO: change to auto increment
+        long id = RealmSensor.generateId(realm);
         String csId = null;  // must be filled out by the database syncer
         boolean synced = false;
         Sensor sensor = new RealmSensor(realm, id, name, userId, this.source, dataType, csId, options, synced);

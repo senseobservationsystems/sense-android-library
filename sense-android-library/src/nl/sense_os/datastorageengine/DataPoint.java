@@ -11,14 +11,14 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
  */
 public class DataPoint {
 
-    private String sensorId = null;
+    private long sensorId = -1;
     private String type = null;  // string name of enum SensorDataPoint.DataType
     private String value = null;
     private long date = 0;
     private boolean synced = false;
 
     // TODO: must the constructors of DataPoint become protected?
-    public DataPoint(String sensorId, String type, String value, long date, boolean synced) {
+    public DataPoint(long sensorId, String type, String value, long date, boolean synced) {
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
@@ -33,73 +33,73 @@ public class DataPoint {
     public DataPoint(JSONObject obj) throws JSONException {
         // TODO: if it turns out necessary, add extra validation to check if the `type` matches the type of `value`
 
-        this.sensorId   = obj.getString("sensorId");
+        this.sensorId   = obj.getLong("sensorId");
         this.type       = obj.getString("type");
         this.value      = stringifyValue(obj.opt("value"));
         this.date       = obj.getLong("date");
         this.synced     = obj.optBoolean("synced", false);
     }
 
-    public DataPoint(String sensorId, int value, long date) {
+    public DataPoint(long sensorId, int value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
     }
 
-    public DataPoint(String sensorId, float value, long date) {
+    public DataPoint(long sensorId, float value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
     }
 
-    public DataPoint(String sensorId, String value, long date) {
+    public DataPoint(long sensorId, String value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
     }
 
-    public DataPoint(String sensorId, boolean value, long date) {
+    public DataPoint(long sensorId, boolean value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
     }
 
-    public DataPoint(String sensorId, JSONObject value, long date) {
+    public DataPoint(long sensorId, JSONObject value, long date) {
         setSensorId(sensorId);
         setValue(value);
         setDate(date);
     }
 
-    public DataPoint(String sensorId, int value, long date, boolean synced) {
+    public DataPoint(long sensorId, int value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
 
-    public DataPoint(String sensorId, float value, long date, boolean synced) {
+    public DataPoint(long sensorId, float value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
 
-    public DataPoint(String sensorId, String value, long date, boolean synced) {
+    public DataPoint(long sensorId, String value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
 
-    public DataPoint(String sensorId, boolean value, long date, boolean synced) {
+    public DataPoint(long sensorId, boolean value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
 
-    public DataPoint(String sensorId, JSONObject value, long date, boolean synced) {
+    public DataPoint(long sensorId, JSONObject value, long date, boolean synced) {
         this(sensorId, value, date);
         setSynced(synced);
     }
 
-    public String getSensorId() {
+    public long getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(String sensorId) {
+    public void setSensorId(long sensorId) {
         this.sensorId = sensorId;
     }
 
