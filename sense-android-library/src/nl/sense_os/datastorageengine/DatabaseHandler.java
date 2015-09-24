@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Set;
 
 import nl.sense_os.service.shared.SensorDataPoint;
 
@@ -49,9 +50,14 @@ public interface DatabaseHandler {
     Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException;
 
     /**
-     * Retrieve all sensors of this user
+     * Retrieve all sensors of the current user
      * @return
      */
     List<Sensor> getSensors() throws JSONException;
 
+    /**
+     * Retrieve a list with all sources of the current user
+     * @return
+     */
+    List<String> getSources();
 }

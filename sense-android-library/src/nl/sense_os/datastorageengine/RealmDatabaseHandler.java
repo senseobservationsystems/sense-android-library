@@ -6,8 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import io.realm.Realm;
@@ -143,4 +145,23 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         return sensors;
     }
 
+    @Override
+    public List<String> getSources() {
+        // query results
+        realm.beginTransaction();
+        RealmResults<RealmModelSensor> results = realm
+                .where(RealmModelSensor.class)
+                .equalTo("userId", userId)
+                .findAll();
+        realm.commitTransaction();
+
+        // extract the list with sensors
+        Set<String> sources = new HashSet<>();
+        Iterator<RealmModelSensor> iterator = results.iterator();
+        while (iterator.hasNext()) {
+            sources.add(iterator.next().getSource());
+        }
+
+        return new ArrayList<>(sources);
+    }
 }
