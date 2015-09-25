@@ -215,7 +215,7 @@ public class RealmSensor implements Sensor {
      *               of the existing sensors.
      * @return Returns an auto incremented id
      */
-    public static long generateId (Realm realm) {
+    public static synchronized long generateId (Realm realm) {
         if (auto_increment == -1) {
             // find the max id of the existing sensors
             realm.beginTransaction();
