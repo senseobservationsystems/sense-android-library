@@ -3,14 +3,12 @@ package nl.sense_os.datastorageengine;
 import android.content.Context;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -91,7 +89,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
             realm.copyToRealm(realmSensor);
         }
         catch (RealmException err) {
-            if (err.toString().indexOf("Primary key constraint broken") != -1) {
+            if (err.toString().contains("Primary key constraint broken")) {
                 throw new DatabaseHandlerException("Cannot create sensor. A sensor with name \"" + name + "\" and source \"" + source + "\" already exists.");
             }
             else {
