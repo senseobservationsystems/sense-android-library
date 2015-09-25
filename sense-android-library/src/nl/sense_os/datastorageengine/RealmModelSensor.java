@@ -11,7 +11,12 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
 public class RealmModelSensor extends RealmObject {
 
+    // compoundKey is used purely for Realm, to prevent duplicate sensors.
+    // it's built up from the sensors `source` and `name`.
     @PrimaryKey
+    private String compoundKey = null;
+
+    @Index
     private long id = -1; // only used to locally keep a relation between Sensor and DataPoints
 
     @Index
@@ -31,6 +36,8 @@ public class RealmModelSensor extends RealmObject {
     public RealmModelSensor() {}
 
     public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, String csId, boolean synced) {
+        this.compoundKey = getCompoundKey(source, name);
+
         this.id = id;
         this.name = name;
         this.meta = meta;
@@ -42,6 +49,14 @@ public class RealmModelSensor extends RealmObject {
         this.dataType = dataType;
         this.csId = csId;
         this.synced = synced;
+    }
+
+    public String getCompoundKey() {
+        return compoundKey;
+    }
+
+    public void setCompoundKey(String compoundKey) {
+        this.compoundKey = compoundKey;
     }
 
     public long getId() {
@@ -58,6 +73,7 @@ public class RealmModelSensor extends RealmObject {
 
     public void setName(String name) {
         this.name = name;
+        this.compoundKey = getCompoundKey(source, name);
     }
 
     /**
@@ -127,6 +143,7 @@ public class RealmModelSensor extends RealmObject {
 
     public void setSource(String source) {
         this.source = source;
+        this.compoundKey = getCompoundKey(source, name);
     }
 
     /**
@@ -159,6 +176,16 @@ public class RealmModelSensor extends RealmObject {
 
     public void setSynced(boolean synced) {
         this.synced = synced;
+    }
+
+    /**
+     * Create a unique id for a Sensor, consisting of the source and name.
+     * @param source
+     * @param name
+     * @return Returns a string "<source>:<name>"
+     */
+    public static String getCompoundKey (String source, String name) {
+        return source + ":" + name;
     }
 
     /**

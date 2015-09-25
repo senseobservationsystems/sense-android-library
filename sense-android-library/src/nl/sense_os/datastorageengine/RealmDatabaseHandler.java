@@ -93,7 +93,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         }
         catch (RealmException err) {
             if (err.toString().indexOf("Primary key constraint broken") != -1) {
-                throw new DatabaseHandlerException("Cannot create sensor. A sensor with id " + id + " already exists.");
+                throw new DatabaseHandlerException("Cannot create sensor. A sensor with name \"" + name + "\" and source \"" + source + "\" already exists.");
             }
             else {
                 throw err;

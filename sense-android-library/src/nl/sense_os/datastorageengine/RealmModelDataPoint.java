@@ -103,7 +103,7 @@ public class RealmModelDataPoint extends RealmObject {
     }
 
     /**
-     * Build up a unique id for a DataPoint, consisting of the sensorId and the date.
+     * Create a unique id for a DataPoint, consisting of the sensorId and the date.
      * @param sensorId
      * @param date
      * @return Returns a string "<sensorId>:<date>"

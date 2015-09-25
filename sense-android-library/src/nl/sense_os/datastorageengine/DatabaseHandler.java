@@ -37,7 +37,7 @@ public interface DatabaseHandler {
     void close () throws Exception;
 
     /**
-     * Create a new Sensor and store it in the local database
+     * Create a new Sensor and store it in the local database.
      */
     Sensor createSensor(String source, String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException;
 
