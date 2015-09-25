@@ -81,9 +81,8 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     @Override
     public Sensor createSensor(String source, String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
         long id = RealmSensor.generateId(realm);
-        String csId = null;  // must be filled out by the database syncer
         boolean synced = false;
-        Sensor sensor = new RealmSensor(realm, id, name, userId, source, dataType, csId, options, synced);
+        Sensor sensor = new RealmSensor(realm, id, name, userId, source, dataType, options, synced);
 
         RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
 

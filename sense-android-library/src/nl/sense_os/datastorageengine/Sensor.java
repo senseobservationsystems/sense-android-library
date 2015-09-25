@@ -19,8 +19,6 @@ public interface Sensor {
 
     SensorDataPoint.DataType getDataType();
 
-    String getCsId();
-
     boolean isSynced();
 
     /**

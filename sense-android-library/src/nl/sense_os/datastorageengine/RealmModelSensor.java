@@ -30,12 +30,11 @@ public class RealmModelSensor extends RealmObject {
     @Index
     private String source = null;
     private String dataType = null;  // String value of the enum SensorDataPoint.DataType
-    private String csId = null;
     private boolean synced = false;
 
     public RealmModelSensor() {}
 
-    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, String csId, boolean synced) {
+    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, boolean synced) {
         this.compoundKey = getCompoundKey(source, name);
 
         this.id = id;
@@ -47,7 +46,6 @@ public class RealmModelSensor extends RealmObject {
         this.userId = userId;
         this.source = source;
         this.dataType = dataType;
-        this.csId = csId;
         this.synced = synced;
     }
 
@@ -162,14 +160,6 @@ public class RealmModelSensor extends RealmObject {
         this.dataType = dataType;
     }
 
-    public String getCsId() {
-        return csId;
-    }
-
-    public void setCsId(String csId) {
-        this.csId = csId;
-    }
-
     public boolean isSynced() {
         return synced;
     }
@@ -205,7 +195,6 @@ public class RealmModelSensor extends RealmObject {
                 realmSensor.getUserId(),
                 realmSensor.getSource(),
                 dataType != null ? DataType.valueOf(dataType) : null,
-                realmSensor.getCsId(),
                 new SensorOptions(
                         meta != null ? new JSONObject(meta) : null,
                         realmSensor.isCsUploadEnabled(),
@@ -236,7 +225,6 @@ public class RealmModelSensor extends RealmObject {
                 sensor.getUserId(),
                 sensor.getSource(),
                 dataType != null ? dataType.name() : null,
-                sensor.getCsId(),
                 sensor.isSynced()
         );
     }

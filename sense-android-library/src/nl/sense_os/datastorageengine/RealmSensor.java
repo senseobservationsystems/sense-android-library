@@ -20,11 +20,10 @@ public class RealmSensor implements Sensor {
     private String userId = null;
     private String source = null;
     private SensorDataPoint.DataType dataType = null;
-    private String csId = null;
     private SensorOptions options = new SensorOptions();
     private boolean synced = false;
 
-    protected RealmSensor(Realm realm, long id, String name, String userId, String source, SensorDataPoint.DataType dataType, String csId, SensorOptions options, boolean synced) {
+    protected RealmSensor(Realm realm, long id, String name, String userId, String source, SensorDataPoint.DataType dataType, SensorOptions options, boolean synced) {
         this.realm = realm;
 
         this.id = id;
@@ -32,7 +31,6 @@ public class RealmSensor implements Sensor {
         this.userId = userId;
         this.source = source;
         this.dataType = dataType;
-        this.csId = csId;
         this.options = options;
         this.synced = synced;
     }
@@ -55,17 +53,6 @@ public class RealmSensor implements Sensor {
 
     public SensorDataPoint.DataType getDataType() {
         return dataType;
-    }
-
-    public String getCsId() {
-        return csId;
-    }
-
-    public void setCsId(String csId) throws DatabaseHandlerException {
-        this.csId = csId;
-
-        // store changes in the local database
-        saveChanges();
     }
 
     public boolean isSynced() {
