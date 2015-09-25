@@ -80,7 +80,7 @@ public class RealmSensor implements Sensor {
      */
     public SensorOptions setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
         this.options = SensorOptions.merge(this.options, options);
-        this.synced = false; // mark as dirty
+        this.synced = false; // mark as dirty    TODO: is it desired behavior to set synced to false?
 
         // store changes in the local database
         saveChanges();
