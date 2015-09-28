@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import nl.sense_os.service.shared.SensorDataPoint;
 
@@ -185,32 +186,7 @@ public class RealmSensor implements Sensor {
 
         // query results
         realm.beginTransaction();
-        RealmResults<RealmModelDataPoint> results;
-        if(startDate != null && endDate != null){
-            results = realm
-                    .where(RealmModelDataPoint.class)
-                    .equalTo("sensorId", this.id)
-                    .greaterThanOrEqualTo("date", startDate.longValue())
-                    .lessThan("date", endDate.longValue())
-                    .findAll();
-        }else if(startDate == null && endDate != null){
-            results = realm
-                    .where(RealmModelDataPoint.class)
-                    .equalTo("sensorId", this.id)
-                    .lessThan("date", endDate.longValue())
-                    .findAll();
-        }else if(endDate == null && startDate != null){
-            results = realm
-                    .where(RealmModelDataPoint.class)
-                    .equalTo("sensorId", this.id)
-                    .greaterThanOrEqualTo("date", startDate.longValue())
-                    .findAll();
-        }else{
-            results = realm
-                    .where(RealmModelDataPoint.class)
-                    .equalTo("sensorId", this.id)
-                    .findAll();
-        }
+        RealmResults<RealmModelDataPoint> results = queryFromRealm(startDate, endDate);
         realm.commitTransaction();
 
         // sort
@@ -220,21 +196,7 @@ public class RealmSensor implements Sensor {
         results.sort("date", resultsOrder);
 
         // limit and convert to DataPoint
-        int count = 0;
-        List<DataPoint> dataPoints = new ArrayList<>();
-        Iterator<RealmModelDataPoint> iterator = results.iterator();
-        if(limit == null){
-            while(iterator.hasNext()){
-                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
-                count++;
-            }
-
-        }else{
-            while (count < limit && iterator.hasNext()) {
-                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
-                count++;
-            }
-        }
+        List<DataPoint> dataPoints = setLimitToResult(results, limit);
         // TODO: figure out what is the most efficient way to loop over the results
         return dataPoints;
     };
@@ -261,4 +223,38 @@ public class RealmSensor implements Sensor {
     }
 
     protected static long auto_increment = -1; // -1 means not yet loaded
+
+    // Helper function for getDataPoints
+    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate){
+
+        RealmQuery<RealmModelDataPoint> query = realm
+                                                .where(RealmModelDataPoint.class)
+                                                .equalTo("sensorId", this.id);
+        if(startDate != null)
+            query.greaterThanOrEqualTo("date", startDate.longValue());
+        if(endDate != null)
+            query.lessThan("date", endDate.longValue());
+
+        RealmResults<RealmModelDataPoint> results = query.findAll();
+
+        return results;
+    }
+
+    // Helper function for getDataPoints
+    private  List<DataPoint> setLimitToResult(RealmResults<RealmModelDataPoint> results,Integer limit){
+        List<DataPoint> dataPoints = new ArrayList<>();
+        Iterator<RealmModelDataPoint> iterator = results.iterator();
+        int count = 0;
+
+        if(limit == null){
+            while(iterator.hasNext())
+                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
+        }else{
+            while(count < limit && iterator.hasNext()){
+                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
+                count++;
+            }
+        }
+        return dataPoints;
+    }
 }
