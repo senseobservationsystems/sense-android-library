@@ -95,8 +95,8 @@ public class RealmSensor implements Sensor {
      * @param value
      * @param date
      */
-    public void insertDataPoint(boolean value, long date) {
-        insertDataPoint(new DataPoint(id, value, date));
+    public void insertOrUpdateDataPoint(boolean value, long date) {
+        insertOrUpdateDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -104,8 +104,8 @@ public class RealmSensor implements Sensor {
      * @param value
      * @param date
      */
-    public void insertDataPoint(float value, long date) {
-        insertDataPoint(new DataPoint(id, value, date));
+    public void insertOrUpdateDataPoint(float value, long date) {
+        insertOrUpdateDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -113,8 +113,8 @@ public class RealmSensor implements Sensor {
      * @param value
      * @param date
      */
-    public void insertDataPoint(int value, long date) {
-        insertDataPoint(new DataPoint(id, value, date));
+    public void insertOrUpdateDataPoint(int value, long date) {
+        insertOrUpdateDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -122,8 +122,8 @@ public class RealmSensor implements Sensor {
      * @param value
      * @param date
      */
-    public void insertDataPoint(JSONObject value, long date) {
-        insertDataPoint(new DataPoint(id, value, date));
+    public void insertOrUpdateDataPoint(JSONObject value, long date) {
+        insertOrUpdateDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -131,8 +131,8 @@ public class RealmSensor implements Sensor {
      * @param value
      * @param date
      */
-    public void insertDataPoint(String value, long date) {
-        insertDataPoint(new DataPoint(id, value, date));
+    public void insertOrUpdateDataPoint(String value, long date) {
+        insertOrUpdateDataPoint(new DataPoint(id, value, date));
     }
 
     /**
@@ -163,7 +163,7 @@ public class RealmSensor implements Sensor {
      * @param dataPoint	A DataPoint object that has a stringified value that will be copied
      * 			into a Realm object.
      */
-    protected void insertDataPoint (DataPoint dataPoint) {
+    protected void insertOrUpdateDataPoint (DataPoint dataPoint) {
         RealmModelDataPoint realmDataPoint = RealmModelDataPoint.fromDataPoint(dataPoint);
 
         realm.beginTransaction();
@@ -173,21 +173,44 @@ public class RealmSensor implements Sensor {
 
     /**
      * Get data points from this sensor from the local database
-     * @param startDate: Start date of the query, included.
-     * @param endDate: End date of the query, excluded.
-     * @param limit: The maximum number of data points.
+     * @param startDate: Start date of the query, included. Null means there is no check for the start Date.
+     * @param endDate: End date of the query, excluded. Null means there is no check for the end Date.
+     * @param limit: The maximum number of data points. Null means no limit.
      * @param sortOrder: Sort order, either ASC or DESC
      * @return Returns a List with data points
      */
-    public List<DataPoint> getDataPoints(long startDate, long endDate, int limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException {
+    public List<DataPoint> getDataPoints(Long startDate, Long endDate, Integer limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException, DatabaseHandlerException {
+        if(limit != null && limit <= 0)
+            throw new DatabaseHandlerException("Invalid input of limit value");
+
         // query results
         realm.beginTransaction();
-        RealmResults<RealmModelDataPoint> results = realm
-                .where(RealmModelDataPoint.class)
-                .equalTo("sensorId", this.id)
-                .greaterThanOrEqualTo("date", startDate)
-                .lessThan("date", endDate)
-                .findAll();
+        RealmResults<RealmModelDataPoint> results;
+        if(startDate != null && endDate != null){
+            results = realm
+                    .where(RealmModelDataPoint.class)
+                    .equalTo("sensorId", this.id)
+                    .greaterThanOrEqualTo("date", startDate.longValue())
+                    .lessThan("date", endDate.longValue())
+                    .findAll();
+        }else if(startDate == null && endDate != null){
+            results = realm
+                    .where(RealmModelDataPoint.class)
+                    .equalTo("sensorId", this.id)
+                    .lessThan("date", endDate.longValue())
+                    .findAll();
+        }else if(endDate == null && startDate != null){
+            results = realm
+                    .where(RealmModelDataPoint.class)
+                    .equalTo("sensorId", this.id)
+                    .greaterThanOrEqualTo("date", startDate.longValue())
+                    .findAll();
+        }else{
+            results = realm
+                    .where(RealmModelDataPoint.class)
+                    .equalTo("sensorId", this.id)
+                    .findAll();
+        }
         realm.commitTransaction();
 
         // sort
@@ -200,12 +223,19 @@ public class RealmSensor implements Sensor {
         int count = 0;
         List<DataPoint> dataPoints = new ArrayList<>();
         Iterator<RealmModelDataPoint> iterator = results.iterator();
-        while (count < limit && iterator.hasNext()) {
-            dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
-            count++;
+        if(limit == null){
+            while(iterator.hasNext()){
+                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
+                count++;
+            }
+
+        }else{
+            while (count < limit && iterator.hasNext()) {
+                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
+                count++;
+            }
         }
         // TODO: figure out what is the most efficient way to loop over the results
-
         return dataPoints;
     };
 

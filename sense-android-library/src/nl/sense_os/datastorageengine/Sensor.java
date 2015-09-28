@@ -42,35 +42,35 @@ public interface Sensor {
      * @param value
      * @param date
      */
-    void insertDataPoint(boolean value, long date);
+    void insertOrUpdateDataPoint(boolean value, long date);
 
     /**
      * Insert a new DataPoint to this sensor
      * @param value
      * @param date
      */
-    void insertDataPoint(float value, long date);
+    void insertOrUpdateDataPoint(float value, long date);
 
     /**
      * Insert a new DataPoint to this sensor
      * @param value
      * @param date
      */
-    void insertDataPoint(int value, long date);
+    void insertOrUpdateDataPoint(int value, long date);
 
     /**
      * Insert a new DataPoint to this sensor
      * @param value
      * @param date
      */
-    void insertDataPoint(JSONObject value, long date);
+    void insertOrUpdateDataPoint(JSONObject value, long date);
 
     /**
      * Insert a new DataPoint to this sensor
      * @param value
      * @param date
      */
-    void insertDataPoint(String value, long date);
+    void insertOrUpdateDataPoint(String value, long date);
 
     /**
      * Get data points from this sensor from the local database
@@ -80,6 +80,6 @@ public interface Sensor {
      * @param sortOrder: Sort order, either ASC or DESC
      * @return Returns a List with data points
      */
-    List<DataPoint> getDataPoints(long startDate, long endDate, int limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException;
+    List<DataPoint> getDataPoints(Long startDate, Long endDate, Integer limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException, DatabaseHandlerException;
 
 }

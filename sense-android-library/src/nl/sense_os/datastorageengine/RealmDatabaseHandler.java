@@ -122,12 +122,13 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public List<Sensor> getSensors() throws JSONException {
+    public List<Sensor> getSensors(String source) throws JSONException {
         // query results
         realm.beginTransaction();
         RealmResults<RealmModelSensor> results = realm
                 .where(RealmModelSensor.class)
                 .equalTo("userId", userId)
+                .equalTo("source", source)
                 .findAll();
         realm.commitTransaction();
 
