@@ -17,20 +17,22 @@ import nl.sense_os.service.shared.SensorDataPoint;
 
 
 /**
- * RealmDatabaseHandler handles local storage of DataPoints, Sensors, and Sources.
+ * RealmDatabaseHandler handles local storage of DataPoints and Sensors.
  * It stores the data in a local Realm database.
  * It needs to be instantiated with an Android Context.
  *
  * Example usage:
  *
  *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext(), userId);
- *     Sensor sensor = source.getSensor(sensorName);
+ *     Sensor sensor = databaseHandler.createSensor(sourceName,sensorName,dataType,sensorOptions);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
  *     long startDate = 1388534400000; // 2014-01-01
- *     long startDate = 1420070400000; // 2015-01-01
+ *     long endDate = 1420070400000; // 2015-01-01
  *     List<DataPoint> data = sensor.getDataPoints(startDate, endDate, 1000, SORT_ORDER.ASC);
+ *
+ *     Sensor returnedSensor = databaseHandler.getSensor(sourceName,sensorName);
  *
  *     databaseHandler.close();
  *
