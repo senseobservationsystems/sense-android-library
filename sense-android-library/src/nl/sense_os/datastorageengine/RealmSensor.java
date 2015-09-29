@@ -225,7 +225,7 @@ public class RealmSensor implements Sensor {
     protected static long auto_increment = -1; // -1 means not yet loaded
 
     // Helper function for getDataPoints
-    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate){
+    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate) throws DatabaseHandlerException{
 
         RealmQuery<RealmModelDataPoint> query = realm
                                                 .where(RealmModelDataPoint.class)
@@ -234,6 +234,8 @@ public class RealmSensor implements Sensor {
             query.greaterThanOrEqualTo("date", startDate.longValue());
         if(endDate != null)
             query.lessThan("date", endDate.longValue());
+        if(startDate != null && endDate != null && startDate >= endDate)
+            throw new DatabaseHandlerException("startDate is the same as or later than the endDate");
 
         RealmResults<RealmModelDataPoint> results = query.findAll();
 
