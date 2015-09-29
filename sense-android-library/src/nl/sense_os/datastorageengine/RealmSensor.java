@@ -202,6 +202,31 @@ public class RealmSensor implements Sensor {
     };
 
     /**
+     * This method deletes DataPoints from the local Realm database.
+     * Only the DataPoints that are synced to CommonSense can be deleted.
+     * If startDate is null it means the deletion does not have start boundary.
+     * If endDate is null it means the deletion does not have end boundary.
+     * If both are null, this means all the DataPoints related to this Sensor
+     * will be deleted from the local Realm database.
+     */
+    public void deleteDataPoints(Long startDate, Long endDate){
+
+                RealmQuery<RealmModelDataPoint> query = realm
+                        .where(RealmModelDataPoint.class)
+                        .equalTo("sensorId", this.id);
+                if (startDate != null)
+                    query.greaterThanOrEqualTo("date", startDate.longValue());
+                if (endDate != null)
+                    query.lessThan("date", endDate.longValue());
+                query.equalTo("synced",true);
+                RealmResults<RealmModelDataPoint> results = query.findAll();
+
+                realm.beginTransaction();
+                results.clear();
+                realm.commitTransaction();
+    }
+
+    /**
      * Generate an auto incremented id for a new Sensor
      * @param realm  Realm instance. Only used the first time to determine the max id
      *               of the existing sensors.

@@ -82,4 +82,13 @@ public interface Sensor {
      */
     List<DataPoint> getDataPoints(Long startDate, Long endDate, Integer limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException, DatabaseHandlerException;
 
+    /**
+     *  Delete DataPoints from this sensor,
+     *  the DataPoint can only be deleted with synced set to true.
+     *  If both startDate and endDate are null,
+     *  all DataPoints belongs to this sensor will be deleted.
+     *  @param startDate the start date (included) to delete the DataPoints from this sensor. Null means it is not specified.
+     *  @param endDate the end date (excluded) to delete the DataPoints from this sensor. Null means it is not specified.
+     */
+    void deleteDataPoints(Long startDate, Long endDate);
 }
