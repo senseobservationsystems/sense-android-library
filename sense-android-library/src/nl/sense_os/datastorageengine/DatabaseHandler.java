@@ -50,13 +50,13 @@ public interface DatabaseHandler {
     /**
      * Retrieve all sensors connected to the given source of the current user
      * @param source the name of the source
-     * @return
+     * @return a list of sensor attached to the given source
      */
     List<Sensor> getSensors(String source) throws JSONException;
 
     /**
      * Retrieve a list with all sources of the current user
-     * @return
+     * @return a list of source name in String
      */
     List<String> getSources();
 }

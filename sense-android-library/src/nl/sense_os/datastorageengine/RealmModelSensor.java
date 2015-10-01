@@ -225,7 +225,7 @@ public class RealmModelSensor extends RealmObject {
                 sensor.getUserId(),
                 sensor.getSource(),
                 dataType != null ? dataType.name() : null,
-                sensor.isSynced()
+                sensor.isCsDataPointsDownloaded()
         );
     }
 

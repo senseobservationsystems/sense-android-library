@@ -29,17 +29,19 @@ public class RealmModelDataPoint extends RealmObject {
     @Index
     private long date = 0;
 
-    private boolean synced = false;
+    private boolean existsInCS = false;
+    private boolean requiresDeletionInCS = false;
 
     public RealmModelDataPoint() {}
 
-    public RealmModelDataPoint(long sensorId, String type, String value, long date, boolean synced) {
+    public RealmModelDataPoint(long sensorId, String type, String value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
         this.id = RealmModelDataPoint.getCompoundKey(sensorId, date);
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
         this.date = date;
-        this.synced = synced;
+        this.existsInCS = existsInCS;
+        this.requiresDeletionInCS = requiresDeletionInCS;
     }
 
     public String getId() {
@@ -82,13 +84,17 @@ public class RealmModelDataPoint extends RealmObject {
         this.date = date;
     }
 
-    public boolean isSynced() {
-        return synced;
+    public boolean getExistsInCS() {
+        return existsInCS;
     }
 
-    public void setSynced(boolean synced) {
-        this.synced = synced;
+    public void setExistsInCS(boolean existsInCS) {
+        this.existsInCS = existsInCS;
     }
+
+    public boolean getRequiresDeletionInCS() { return requiresDeletionInCS; }
+
+    public void setRequiresDeletionInCS(boolean requiresDeletionInCS) { this.requiresDeletionInCS = requiresDeletionInCS;}
 
     public void setType(DataType type) {
         this.type = type.name();
@@ -123,7 +129,8 @@ public class RealmModelDataPoint extends RealmObject {
                 realmDataPoint.getType(),
                 realmDataPoint.getValue(),
                 realmDataPoint.getDate(),
-                realmDataPoint.isSynced());
+                realmDataPoint.getExistsInCS(),
+                realmDataPoint.getRequiresDeletionInCS());
     }
 
     /**
@@ -139,7 +146,8 @@ public class RealmModelDataPoint extends RealmObject {
                 type != null ? type.name() : null,
                 dataPoint.getStringifiedValue(),
                 dataPoint.getDate(),
-                dataPoint.isSynced());
+                dataPoint.existsInCS(),
+                dataPoint.isRequiresDeletionInCS());
     }
 
 }

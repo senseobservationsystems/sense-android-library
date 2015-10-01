@@ -45,8 +45,6 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     public RealmDatabaseHandler(Context context, String userId) {
         realm = Realm.getInstance(context);
         this.userId = userId;
-
-        // TODO: determine source, like "Nexus 5"
     }
 
     public Realm getRealm() {

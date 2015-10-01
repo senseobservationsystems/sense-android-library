@@ -15,15 +15,17 @@ public class DataPoint {
     private String type = null;  // string name of enum SensorDataPoint.DataType
     private String value = null;
     private long date = 0;
-    private boolean synced = false;
+    private boolean existsInCS = false;
+    private boolean requiresDeletionInCS = false;
 
     // TODO: must the constructors of DataPoint become protected?
-    public DataPoint(long sensorId, String type, String value, long date, boolean synced) {
+    public DataPoint(long sensorId, String type, String value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
         this.date = date;
-        this.synced = synced;
+        this.existsInCS = existsInCS;
+        this.requiresDeletionInCS = requiresDeletionInCS;
     }
 
     /**
@@ -37,7 +39,8 @@ public class DataPoint {
         this.type       = obj.getString("type");
         this.value      = stringifyValue(obj.opt("value"));
         this.date       = obj.getLong("date");
-        this.synced     = obj.optBoolean("synced", false);
+        this.existsInCS = obj.optBoolean("existsInCS", false);
+        this.requiresDeletionInCS = obj.optBoolean("requiresDeletionInCS", false);
     }
 
     public DataPoint(long sensorId, int value, long date) {
@@ -70,29 +73,34 @@ public class DataPoint {
         setDate(date);
     }
 
-    public DataPoint(long sensorId, int value, long date, boolean synced) {
+    public DataPoint(long sensorId, int value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
         this(sensorId, value, date);
-        setSynced(synced);
+        setExistsInCS(existsInCS);
+        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, float value, long date, boolean synced) {
+    public DataPoint(long sensorId, float value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
         this(sensorId, value, date);
-        setSynced(synced);
+        setExistsInCS(existsInCS);
+        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, String value, long date, boolean synced) {
+    public DataPoint(long sensorId, String value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
         this(sensorId, value, date);
-        setSynced(synced);
+        setExistsInCS(existsInCS);
+        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, boolean value, long date, boolean synced) {
+    public DataPoint(long sensorId, boolean value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
         this(sensorId, value, date);
-        setSynced(synced);
+        setExistsInCS(existsInCS);
+        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, JSONObject value, long date, boolean synced) {
+    public DataPoint(long sensorId, JSONObject value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
         this(sensorId, value, date);
-        setSynced(synced);
+        setExistsInCS(existsInCS);
+        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
     public long getSensorId() {
@@ -205,12 +213,20 @@ public class DataPoint {
         this.date = date;
     }
 
-    public boolean isSynced() {
-        return synced;
+    public boolean existsInCS() {
+        return existsInCS;
     }
 
-    public void setSynced(boolean synced) {
-        this.synced = synced;
+    public void setExistsInCS(boolean existsInCS) {
+        this.existsInCS = existsInCS;
+    }
+
+    public boolean isRequiresDeletionInCS() {
+        return requiresDeletionInCS;
+    }
+
+    public void setRequiresDeletionInCS(boolean requiresDeletionInCS) {
+        this.requiresDeletionInCS = requiresDeletionInCS;
     }
 
     /**
@@ -224,7 +240,8 @@ public class DataPoint {
             obj.put("type",     type);
             obj.put("value",    parseValue(value));
             obj.put("date",     date);
-            obj.put("synced",   synced);
+            obj.put("existsInCS", existsInCS);
+            obj.put("requiresDeletionInCS", requiresDeletionInCS);
         } catch (JSONException e) {
             e.printStackTrace();
         }

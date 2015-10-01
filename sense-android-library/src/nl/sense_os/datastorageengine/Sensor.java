@@ -19,7 +19,7 @@ public interface Sensor {
 
     SensorDataPoint.DataType getDataType();
 
-    boolean isSynced();
+    boolean isCsDataPointsDownloaded();
 
     /**
      * Apply options for the sensor.
@@ -35,7 +35,7 @@ public interface Sensor {
      */
     SensorOptions getOptions ();
 
-    void setSynced(boolean synced) throws DatabaseHandlerException;
+    void setCsDataPointsDownloaded(boolean csDataPointsDownloaded) throws DatabaseHandlerException;
 
     /**
      * Insert a new DataPoint to this sensor
@@ -74,13 +74,16 @@ public interface Sensor {
 
     /**
      * Get data points from this sensor from the local database
-     * @param startDate: Start date of the query, included.
-     * @param endDate: End date of the query, excluded.
-     * @param limit: The maximum number of data points.
-     * @param sortOrder: Sort order, either ASC or DESC
+     * @param queryOptions: options for the query of dataPoints.
+     * queryOptions.startDate: Start date of the query, included.
+     * queryOptions.endDate: End date of the query, excluded.
+     * queryOptions.limit: The maximum number of data points.
+     * queryOptions.sortOrder: Sort order, either ASC or DESC
+     * queryOptions.existsInCS: required existsInCS status of the dataPoint
+     * queryOptions.requireDeletionInCS: required requireDeletionInCS status of the dataPoint
      * @return Returns a List with data points
      */
-    List<DataPoint> getDataPoints(Long startDate, Long endDate, Integer limit, DatabaseHandler.SORT_ORDER sortOrder) throws JSONException, DatabaseHandlerException;
+    List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException;
 
     /**
      *  Delete DataPoints from this sensor,
