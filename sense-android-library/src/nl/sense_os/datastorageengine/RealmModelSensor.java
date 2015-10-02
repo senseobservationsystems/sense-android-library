@@ -30,11 +30,11 @@ public class RealmModelSensor extends RealmObject {
     @Index
     private String source = null;
     private String dataType = null;  // String value of the enum SensorDataPoint.DataType
-    private boolean synced = false;
+    private boolean csDataPointsDownloaded = false;
 
     public RealmModelSensor() {}
 
-    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, boolean synced) {
+    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, boolean csDataPointsDownloaded) {
         this.compoundKey = getCompoundKey(name, source, userId);
 
         this.id = id;
@@ -46,7 +46,7 @@ public class RealmModelSensor extends RealmObject {
         this.userId = userId;
         this.source = source;
         this.dataType = dataType;
-        this.synced = synced;
+        this.csDataPointsDownloaded = csDataPointsDownloaded;
     }
 
     public String getCompoundKey() {
@@ -160,12 +160,12 @@ public class RealmModelSensor extends RealmObject {
         this.dataType = dataType;
     }
 
-    public boolean isSynced() {
-        return synced;
+    public boolean isCsDataPointsDownloaded() {
+        return csDataPointsDownloaded;
     }
 
-    public void setSynced(boolean synced) {
-        this.synced = synced;
+    public void setCsDataPointsDownloaded(boolean csDataPointsDownloaded) {
+        this.csDataPointsDownloaded = csDataPointsDownloaded;
     }
 
     /**
@@ -201,7 +201,7 @@ public class RealmModelSensor extends RealmObject {
                         realmSensor.isCsDownloadEnabled(),
                         realmSensor.isPersistLocally()
                 ),
-                realmSensor.isSynced()
+                realmSensor.isCsDataPointsDownloaded()
         );
     }
 

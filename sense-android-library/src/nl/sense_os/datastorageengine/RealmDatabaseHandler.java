@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -122,14 +123,16 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public List<Sensor> getSensors(String source) throws JSONException {
+    public List<Sensor> getSensors(String source, Boolean csDataPointsDownloaded) throws JSONException {
         // query results
         realm.beginTransaction();
-        RealmResults<RealmModelSensor> results = realm
+        RealmQuery<RealmModelSensor> query = realm
                 .where(RealmModelSensor.class)
                 .equalTo("userId", userId)
-                .equalTo("source", source)
-                .findAll();
+                .equalTo("source", source);
+        if(csDataPointsDownloaded != null)
+                query.equalTo("csDataPointsDownloaded", csDataPointsDownloaded);
+        RealmResults<RealmModelSensor> results = query.findAll();
         realm.commitTransaction();
 
         // convert to Sensor

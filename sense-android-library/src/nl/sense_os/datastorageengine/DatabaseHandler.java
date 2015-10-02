@@ -50,9 +50,10 @@ public interface DatabaseHandler {
     /**
      * Retrieve all sensors connected to the given source of the current user
      * @param source the name of the source
+     * @param csDataPointsDownloaded the field status for query. Null means do not need to query this field.
      * @return a list of sensor attached to the given source
      */
-    List<Sensor> getSensors(String source) throws JSONException;
+    List<Sensor> getSensors(String source, Boolean csDataPointsDownloaded) throws JSONException;
 
     /**
      * Retrieve a list with all sources of the current user
