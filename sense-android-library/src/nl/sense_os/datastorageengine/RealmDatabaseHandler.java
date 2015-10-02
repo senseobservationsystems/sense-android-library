@@ -123,16 +123,14 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public List<Sensor> getSensors(String source, Boolean csDataPointsDownloaded) throws JSONException {
+    public List<Sensor> getSensors(String source) throws JSONException {
         // query results
         realm.beginTransaction();
-        RealmQuery<RealmModelSensor> query = realm
+        RealmResults<RealmModelSensor> results = realm
                 .where(RealmModelSensor.class)
                 .equalTo("userId", userId)
-                .equalTo("source", source);
-        if(csDataPointsDownloaded != null)
-                query.equalTo("csDataPointsDownloaded", csDataPointsDownloaded);
-        RealmResults<RealmModelSensor> results = query.findAll();
+                .equalTo("source", source)
+                .findAll();
         realm.commitTransaction();
 
         // convert to Sensor
