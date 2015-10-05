@@ -10,15 +10,13 @@ public class QueryOptions implements Cloneable{
     private Integer limit = null;
     private DatabaseHandler.SORT_ORDER sortOrder = null;
     private Boolean existsInCS= null;
-    private Boolean requiresDeletionInCS = null;
 
     public QueryOptions() {};
 
-    public QueryOptions(Long startDate, Long endDate, Boolean existsInCS, Boolean requiresDeletionInCS, Integer limit, DatabaseHandler.SORT_ORDER sortOrder){
+    public QueryOptions(Long startDate, Long endDate, Boolean existsInCS, Integer limit, DatabaseHandler.SORT_ORDER sortOrder){
         this.startDate = startDate;
         this.endDate = endDate;
         this.existsInCS = existsInCS;
-        this.requiresDeletionInCS = requiresDeletionInCS;
         this.limit = limit;
         this.sortOrder = sortOrder;
     }
@@ -34,10 +32,6 @@ public class QueryOptions implements Cloneable{
     public Boolean getExistsInCS() { return existsInCS; }
 
     public void setExistsInCS(Boolean existsInCS) { this.existsInCS = existsInCS; }
-
-    public Boolean getRequiresDeletionInCS() { return requiresDeletionInCS; }
-
-    public void setRequiresDeletionInCS(Boolean requiresDeletionInCS) { this.requiresDeletionInCS = requiresDeletionInCS; }
 
     public Integer getLimit() { return limit; }
 
@@ -64,8 +58,6 @@ public class QueryOptions implements Cloneable{
                 merged.endDate = o.endDate;
             if(o.existsInCS != null)
                 merged.existsInCS = o.existsInCS;
-            if(o.requiresDeletionInCS != null)
-                merged.requiresDeletionInCS = o.requiresDeletionInCS;
             if(o.limit != null)
                 merged.limit = o.limit;
             if(o.sortOrder != null)

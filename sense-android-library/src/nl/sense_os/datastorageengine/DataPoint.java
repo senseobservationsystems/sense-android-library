@@ -16,16 +16,14 @@ public class DataPoint {
     private String value = null;
     private long date = 0;
     private boolean existsInCS = false;
-    private boolean requiresDeletionInCS = false;
 
     // TODO: must the constructors of DataPoint become protected?
-    public DataPoint(long sensorId, String type, String value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
+    public DataPoint(long sensorId, String type, String value, long date, boolean existsInCS) {
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
         this.date = date;
         this.existsInCS = existsInCS;
-        this.requiresDeletionInCS = requiresDeletionInCS;
     }
 
     /**
@@ -40,7 +38,6 @@ public class DataPoint {
         this.value      = stringifyValue(obj.opt("value"));
         this.date       = obj.getLong("date");
         this.existsInCS = obj.optBoolean("existsInCS", false);
-        this.requiresDeletionInCS = obj.optBoolean("requiresDeletionInCS", false);
     }
 
     public DataPoint(long sensorId, int value, long date) {
@@ -73,34 +70,29 @@ public class DataPoint {
         setDate(date);
     }
 
-    public DataPoint(long sensorId, int value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
+    public DataPoint(long sensorId, int value, long date, boolean existsInCS) {
         this(sensorId, value, date);
         setExistsInCS(existsInCS);
-        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, float value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
+    public DataPoint(long sensorId, float value, long date, boolean existsInCS) {
         this(sensorId, value, date);
         setExistsInCS(existsInCS);
-        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, String value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
+    public DataPoint(long sensorId, String value, long date, boolean existsInCS) {
         this(sensorId, value, date);
         setExistsInCS(existsInCS);
-        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, boolean value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
+    public DataPoint(long sensorId, boolean value, long date, boolean existsInCS) {
         this(sensorId, value, date);
         setExistsInCS(existsInCS);
-        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
-    public DataPoint(long sensorId, JSONObject value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
+    public DataPoint(long sensorId, JSONObject value, long date, boolean existsInCS) {
         this(sensorId, value, date);
         setExistsInCS(existsInCS);
-        setRequiresDeletionInCS(requiresDeletionInCS);
     }
 
     public long getSensorId() {
@@ -221,14 +213,6 @@ public class DataPoint {
         this.existsInCS = existsInCS;
     }
 
-    public boolean isRequiresDeletionInCS() {
-        return requiresDeletionInCS;
-    }
-
-    public void setRequiresDeletionInCS(boolean requiresDeletionInCS) {
-        this.requiresDeletionInCS = requiresDeletionInCS;
-    }
-
     /**
      * @return Returns a JSON representation of the DataPoint.
      */
@@ -241,7 +225,6 @@ public class DataPoint {
             obj.put("value",    parseValue(value));
             obj.put("date",     date);
             obj.put("existsInCS", existsInCS);
-            obj.put("requiresDeletionInCS", requiresDeletionInCS);
         } catch (JSONException e) {
             e.printStackTrace();
         }

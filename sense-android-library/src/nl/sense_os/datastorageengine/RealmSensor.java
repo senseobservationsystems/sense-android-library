@@ -188,7 +188,7 @@ public class RealmSensor implements Sensor {
         }
         // query results
         realm.beginTransaction();
-        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInCS(), queryOptions.getRequiresDeletionInCS());
+        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInCS());
         realm.commitTransaction();
 
         // sort
@@ -205,23 +205,11 @@ public class RealmSensor implements Sensor {
 
     /**
      * This method deletes DataPoints from the local Realm database.
-     * Only the DataPoints that are already stored in CommonSense can be deleted.
-     * @param startDate If startDate is null,  the deletion does not have start boundary.
-     * @param endDate If endDate is null, the deletion does not have end boundary.
-     * @param onlySynced true for deleting only where existsInCS is true. false for deleting regardless of existsInCS.
+     * QueryOptions.limit and QueryOptions.sortOrder are not considered during the query.
+     * @param queryOptions: options for the query of dataPoints that need to be deleted.
      */
-    public void deleteDataPoints(Long startDate, Long endDate, boolean onlySynced){
-        RealmQuery<RealmModelDataPoint> query = realm
-            .where(RealmModelDataPoint.class)
-            .equalTo("sensorId", this.id);
-        if (startDate != null)
-            query.greaterThanOrEqualTo("date", startDate.longValue());
-        if (endDate != null)
-            query.lessThan("date", endDate.longValue());
-        if(onlySynced != false)
-            query.equalTo("existsInCS",true);
-        RealmResults<RealmModelDataPoint> results = query.findAll();
-
+    public void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException{
+        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInCS());
         realm.beginTransaction();
         results.clear();
         realm.commitTransaction();
@@ -251,7 +239,7 @@ public class RealmSensor implements Sensor {
     protected static long auto_increment = -1; // -1 means not yet loaded
 
     // Helper function for getDataPoints
-    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate, Boolean existsInCS, Boolean requireDeletionInCS) throws DatabaseHandlerException{
+    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate, Boolean existsInCS) throws DatabaseHandlerException{
 
         RealmQuery<RealmModelDataPoint> query = realm
                                                 .where(RealmModelDataPoint.class)
@@ -264,8 +252,6 @@ public class RealmSensor implements Sensor {
             throw new DatabaseHandlerException("startDate is the same as or later than the endDate");
         if(existsInCS != null)
             query.equalTo("existsInCS", existsInCS);
-        if(requireDeletionInCS != null)
-            query.equalTo("requireDeletionInCS", requireDeletionInCS);
 
         RealmResults<RealmModelDataPoint> results = query.findAll();
 
@@ -273,7 +259,7 @@ public class RealmSensor implements Sensor {
     }
 
     // Helper function for getDataPoints
-    private  List<DataPoint> setLimitToResult(RealmResults<RealmModelDataPoint> results,Integer limit){
+    private  List<DataPoint>  setLimitToResult(RealmResults<RealmModelDataPoint> results,Integer limit){
         List<DataPoint> dataPoints = new ArrayList<>();
         Iterator<RealmModelDataPoint> iterator = results.iterator();
         int count = 0;

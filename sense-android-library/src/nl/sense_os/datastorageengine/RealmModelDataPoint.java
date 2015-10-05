@@ -30,18 +30,15 @@ public class RealmModelDataPoint extends RealmObject {
     private long date = 0;
 
     private boolean existsInCS = false;
-    private boolean requiresDeletionInCS = false;
-
     public RealmModelDataPoint() {}
 
-    public RealmModelDataPoint(long sensorId, String type, String value, long date, boolean existsInCS, boolean requiresDeletionInCS) {
+    public RealmModelDataPoint(long sensorId, String type, String value, long date, boolean existsInCS) {
         this.id = RealmModelDataPoint.getCompoundKey(sensorId, date);
         this.sensorId = sensorId;
         this.type = type;
         this.value = value;
         this.date = date;
         this.existsInCS = existsInCS;
-        this.requiresDeletionInCS = requiresDeletionInCS;
     }
 
     public String getId() {
@@ -92,10 +89,6 @@ public class RealmModelDataPoint extends RealmObject {
         this.existsInCS = existsInCS;
     }
 
-    public boolean getRequiresDeletionInCS() { return requiresDeletionInCS; }
-
-    public void setRequiresDeletionInCS(boolean requiresDeletionInCS) { this.requiresDeletionInCS = requiresDeletionInCS;}
-
     public void setType(DataType type) {
         this.type = type.name();
     }
@@ -129,8 +122,7 @@ public class RealmModelDataPoint extends RealmObject {
                 realmDataPoint.getType(),
                 realmDataPoint.getValue(),
                 realmDataPoint.getDate(),
-                realmDataPoint.getExistsInCS(),
-                realmDataPoint.getRequiresDeletionInCS());
+                realmDataPoint.getExistsInCS());
     }
 
     /**
@@ -146,8 +138,7 @@ public class RealmModelDataPoint extends RealmObject {
                 type != null ? type.name() : null,
                 dataPoint.getStringifiedValue(),
                 dataPoint.getDate(),
-                dataPoint.existsInCS(),
-                dataPoint.isRequiresDeletionInCS());
+                dataPoint.existsInCS());
     }
 
 }

@@ -86,13 +86,14 @@ public interface Sensor {
     List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException;
 
     /**
-     *  Delete DataPoints from this sensor,
-     *  the DataPoint can only be deleted with synced set to true.
-     *  If both startDate and endDate are null,
-     *  all DataPoints belongs to this sensor will be selected.
-     *  @param startDate the start date (included) to delete the DataPoints from this sensor. Null means it is not specified.
-     *  @param endDate the end date (excluded) to delete the DataPoints from this sensor. Null means it is not specified.
-     *  @param onlySynced true fore deleting only where existsInCS is true. false for deleting regardless of existsInCS.
+     * Delete DataPoints from this sensor,
+     * @param queryOptions: options for the query of dataPoints that need to be deleted.
+     * queryOptions.startDate: Start date of the query, included.
+     * queryOptions.endDate: End date of the query, excluded.
+     * queryOptions.limit: it is not used for this method.
+     * queryOptions.sortOrder: it is not used for this method.
+     * queryOptions.existsInCS: required existsInCS status of the dataPoint
+     * queryOptions.requireDeletionInCS: required requireDeletionInCS status of the dataPoint
      */
-    void deleteDataPoints(Long startDate, Long endDate, boolean onlySynced);
+    void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException;
 }
