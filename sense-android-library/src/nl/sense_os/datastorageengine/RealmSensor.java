@@ -68,7 +68,6 @@ public class RealmSensor implements Sensor {
      */
     public SensorOptions setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
         this.options = SensorOptions.merge(this.options, options);
-        this.csDataPointsDownloaded = false; // mark as dirty    TODO: is it desired behavior to set csDataPointsDownloaded to false?
 
         // store changes in the local database
         saveChanges();
@@ -207,27 +206,25 @@ public class RealmSensor implements Sensor {
     /**
      * This method deletes DataPoints from the local Realm database.
      * Only the DataPoints that are already stored in CommonSense can be deleted.
-     * @param startDate If startDate is null it means the deletion does not have start boundary.
-     * @param endDate If endDate is null it means the deletion does not have end boundary.
-     * If both are null, this means all the DataPoints related to this Sensor
-     * will be deleted from the local Realm database.
+     * @param startDate If startDate is null,  the deletion does not have start boundary.
+     * @param endDate If endDate is null, the deletion does not have end boundary.
+     * @param onlySynced true for deleting only where existsInCS is true. false for deleting regardless of existsInCS.
      */
-    public void deleteDataPoints(Long startDate, Long endDate){
+    public void deleteDataPoints(Long startDate, Long endDate, boolean onlySynced){
+        RealmQuery<RealmModelDataPoint> query = realm
+            .where(RealmModelDataPoint.class)
+            .equalTo("sensorId", this.id);
+        if (startDate != null)
+            query.greaterThanOrEqualTo("date", startDate.longValue());
+        if (endDate != null)
+            query.lessThan("date", endDate.longValue());
+        if(onlySynced != false)
+            query.equalTo("existsInCS",true);
+        RealmResults<RealmModelDataPoint> results = query.findAll();
 
-                RealmQuery<RealmModelDataPoint> query = realm
-                        .where(RealmModelDataPoint.class)
-                        .equalTo("sensorId", this.id);
-                if (startDate != null)
-                    query.greaterThanOrEqualTo("date", startDate.longValue());
-                if (endDate != null)
-                    query.lessThan("date", endDate.longValue());
-                // Todo: Mark as not completed, maybe need to change it later
-                query.equalTo("existsInCS",true);
-                RealmResults<RealmModelDataPoint> results = query.findAll();
-
-                realm.beginTransaction();
-                results.clear();
-                realm.commitTransaction();
+        realm.beginTransaction();
+        results.clear();
+        realm.commitTransaction();
     }
 
     /**

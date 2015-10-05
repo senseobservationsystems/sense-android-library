@@ -221,7 +221,7 @@ public class RealmModelSensor extends RealmObject {
                 meta != null ? meta.toString() : null,
                 options != null ? options.isUploadEnabled() : null,
                 options != null ? options.isDownloadEnabled() : null,
-                options != null ? options.isPersist() : null,
+                options != null ? options.isPersistLocally() : null,
                 sensor.getUserId(),
                 sensor.getSource(),
                 dataType != null ? dataType.name() : null,

@@ -12,15 +12,15 @@ public class SensorOptions implements Cloneable {
     private JSONObject meta = null;
     private Boolean uploadEnabled = null;
     private Boolean downloadEnabled = null;
-    private Boolean persist= null;
+    private Boolean persistLocally = null;
 
     public SensorOptions() {};
 
-    public SensorOptions(JSONObject meta, Boolean uploadEnabled, Boolean downloadEnabled, Boolean persist) {
+    public SensorOptions(JSONObject meta, Boolean uploadEnabled, Boolean downloadEnabled, Boolean persistLocally) {
         this.meta = meta;
         this.uploadEnabled = uploadEnabled;
         this.downloadEnabled = downloadEnabled;
-        this.persist = persist;
+        this.persistLocally = persistLocally;
     }
 
     public JSONObject getMeta() {
@@ -47,12 +47,12 @@ public class SensorOptions implements Cloneable {
         this.downloadEnabled = downloadEnabled;
     }
 
-    public Boolean isPersist() {
-        return persist;
+    public Boolean isPersistLocally() {
+        return persistLocally;
     }
 
-    public void setPersist(Boolean persist) {
-        this.persist = persist;
+    public void setPersistLocally(Boolean persistLocally) {
+        this.persistLocally = persistLocally;
     }
 
     public SensorOptions clone () {
@@ -87,8 +87,8 @@ public class SensorOptions implements Cloneable {
                 merged.uploadEnabled = o.uploadEnabled;
             }
 
-            if (o.persist != null) {
-                merged.persist = o.persist;
+            if (o.persistLocally != null) {
+                merged.persistLocally = o.persistLocally;
             }
         }
 
