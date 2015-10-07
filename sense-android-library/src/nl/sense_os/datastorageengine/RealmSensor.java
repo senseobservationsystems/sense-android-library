@@ -192,7 +192,7 @@ public class RealmSensor implements Sensor {
         realm.commitTransaction();
 
         // sort
-        boolean resultsOrder = (queryOptions.getSortOrder() == DatabaseHandler.SORT_ORDER.DESC )
+        boolean resultsOrder = (queryOptions.getSortOrder() == QueryOptions.SORT_ORDER.DESC )
                 ? RealmResults.SORT_ORDER_DESCENDING
                 : RealmResults.SORT_ORDER_ASCENDING;
         results.sort("date", resultsOrder);

@@ -25,9 +25,6 @@ import nl.sense_os.service.shared.SensorDataPoint;
  *
  */
 public interface DatabaseHandler {
-
-    enum SORT_ORDER {ASC, DESC};
-
     /**
      * Close the DatabaseHandler. This will neatly close the database connection to Realm.
      * @throws Throwable

@@ -1,19 +1,31 @@
 package nl.sense_os.datastorageengine;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Object with query options for DataPoint.
  * All options are optional and can be left null.
  */
 public class QueryOptions implements Cloneable{
+
+    enum SORT_ORDER {ASC, DESC};
+    enum INTERVAL {MINUTE, HOUR, DAY, WEEK};
+
     private Long startDate = null;
     private Long endDate = null;
     private Integer limit = null;
-    private DatabaseHandler.SORT_ORDER sortOrder = null;
+
+    private INTERVAL interval = null;
+    private SORT_ORDER sortOrder = null;
     private Boolean existsInCS= null;
 
     public QueryOptions() {};
 
-    public QueryOptions(Long startDate, Long endDate, Boolean existsInCS, Integer limit, DatabaseHandler.SORT_ORDER sortOrder){
+    public QueryOptions(Long startDate, Long endDate, Boolean existsInCS, Integer limit, SORT_ORDER sortOrder){
         this.startDate = startDate;
         this.endDate = endDate;
         this.existsInCS = existsInCS;
@@ -37,9 +49,17 @@ public class QueryOptions implements Cloneable{
 
     public void setLimit(Integer limit) { this.limit = limit; }
 
-    public DatabaseHandler.SORT_ORDER getSortOrder() { return sortOrder; }
+    public INTERVAL getInterval() {
+        return interval;
+    }
 
-    public void setSortOrder(DatabaseHandler.SORT_ORDER sortOrder) { this.sortOrder = sortOrder; }
+    public void setInterval(INTERVAL interval) {
+        this.interval = interval;
+    }
+
+    public SORT_ORDER getSortOrder() { return sortOrder; }
+
+    public void setSortOrder(SORT_ORDER sortOrder) { this.sortOrder = sortOrder; }
 
     public QueryOptions clone() { return merge(this); }
 
@@ -64,6 +84,28 @@ public class QueryOptions implements Cloneable{
                 merged.sortOrder = o.sortOrder;
         }
         return merged;
+    }
+
+    /**
+     * Create a query parameter string like "?start_date=123&end_date=456&limit=1000&sort=asc".
+     * Query options with null values are ignored.
+     * @return
+     */
+    public String toQueryParams () {
+        Map<String, String> params = new HashMap<>();
+
+        if (startDate != null) {params.put("start_date", startDate.toString()); }
+        if (endDate != null)   {params.put("end_date",   endDate.toString()); }
+        if (limit != null)     {params.put("limit",      limit.toString()); }
+        if (interval != null)  {params.put("interval",   interval.name().toLowerCase()); }
+        if (sortOrder != null) {params.put("sort",       interval.name().toLowerCase()); }
+
+        String queryParams = "";
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            String separator = queryParams.isEmpty() ? "?" : "&";
+            queryParams += separator + entry.getKey() + "=" + entry.getValue();
+        }
+        return queryParams;
     }
 
 }
