@@ -12,8 +12,8 @@ import java.util.Map;
  */
 public class QueryOptions implements Cloneable{
 
-    enum SORT_ORDER {ASC, DESC};
-    enum INTERVAL {MINUTE, HOUR, DAY, WEEK};
+    public enum SORT_ORDER {ASC, DESC};
+    public enum INTERVAL {MINUTE, HOUR, DAY, WEEK};
 
     private Long startDate = null;
     private Long endDate = null;
