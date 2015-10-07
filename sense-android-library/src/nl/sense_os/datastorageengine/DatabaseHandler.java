@@ -56,4 +56,25 @@ public interface DatabaseHandler {
      * @return a list of source name in String
      */
     List<String> getSources();
+
+    /**
+     * Store the content of deletion request for data points in the local storage
+     * @param sensorName the name of the sensor
+     * @param source the source name of the sensor
+     * @param startDate the start date to delete the data points
+     * @param endDate the end date to delete the data points
+     */
+    void createDataDeletionRequest(String sensorName, String source, Long startDate, Long endDate) throws DatabaseHandlerException;
+
+    /**
+     * Get the list of data deletion requests from local storage
+     * @return the list of data deletion requests
+     */
+    List<DataDeletionRequest> getDataDeletionRequests();
+
+    /**
+     * Delete the DataDeletionRequest from local storage by querying uuid.
+     * @param uuid
+     */
+    void deleteDataDeletionRequest(String uuid);
 }

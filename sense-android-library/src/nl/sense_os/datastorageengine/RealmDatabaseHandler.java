@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -162,5 +161,61 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         }
 
         return new ArrayList<>(sources);
+    }
+
+    @Override
+    public void createDataDeletionRequest(String sensorName, String source, Long startDate, Long endDate) throws DatabaseHandlerException{
+        if(startDate == null){
+            startDate = Long.valueOf(-1);
+        }
+        if(endDate == null){
+            endDate = Long.valueOf(-1);
+        }
+        DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, sensorName, source, startDate,endDate);
+        realm.beginTransaction();
+        try {
+            realm.copyToRealm(dataDeletionRequest);
+        }
+        catch (RealmException err) {
+            if (err.toString().contains("Primary key constraint broken")) {
+                throw new DatabaseHandlerException("Cannot create DataDeletionRequest. uuid already exists.");
+            }
+            else {
+                throw err;
+            }
+        }
+        realm.commitTransaction();
+    }
+
+    @Override
+    public List<DataDeletionRequest> getDataDeletionRequests(){
+        // query results
+        realm.beginTransaction();
+        RealmResults<DataDeletionRequest> results = realm
+                .where(DataDeletionRequest.class)
+                .equalTo("userId", userId)
+                .findAll();
+        realm.commitTransaction();
+
+        List<DataDeletionRequest> dataDeletionRequests = new ArrayList<>();
+        Iterator<DataDeletionRequest> iterator = results.iterator();
+        while (iterator.hasNext()) {
+            dataDeletionRequests.add(iterator.next());
+        }
+        return dataDeletionRequests;
+
+
+    }
+
+    @Override
+    public void deleteDataDeletionRequest(String uuid){
+        realm.beginTransaction();
+        RealmResults<DataDeletionRequest> result = realm
+                .where(DataDeletionRequest.class)
+                .equalTo("userId", userId)
+                .equalTo("uuid", uuid)
+                .findAll();
+        result.clear();
+        realm.commitTransaction();
     }
 }

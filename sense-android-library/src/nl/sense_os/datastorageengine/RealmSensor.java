@@ -183,8 +183,9 @@ public class RealmSensor implements Sensor {
      */
       public List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException {
         if(queryOptions.getLimit() != null) {
-            if(queryOptions.getLimit() <= 0)
+            if(queryOptions.getLimit() <= 0) {
                 throw new DatabaseHandlerException("Invalid input of limit value");
+            }
         }
         // query results
         realm.beginTransaction();
@@ -244,14 +245,18 @@ public class RealmSensor implements Sensor {
         RealmQuery<RealmModelDataPoint> query = realm
                                                 .where(RealmModelDataPoint.class)
                                                 .equalTo("sensorId", this.id);
-        if(startDate != null)
+        if(startDate != null) {
             query.greaterThanOrEqualTo("date", startDate.longValue());
-        if(endDate != null)
+        }
+        if(endDate != null) {
             query.lessThan("date", endDate.longValue());
-        if(startDate != null && endDate != null && startDate >= endDate)
+        }
+        if(startDate != null && endDate != null && startDate >= endDate) {
             throw new DatabaseHandlerException("startDate is the same as or later than the endDate");
-        if(existsInCS != null)
+        }
+        if(existsInCS != null) {
             query.equalTo("existsInCS", existsInCS);
+        }
 
         RealmResults<RealmModelDataPoint> results = query.findAll();
 
@@ -265,8 +270,9 @@ public class RealmSensor implements Sensor {
         int count = 0;
 
         if(limit == null){
-            while(iterator.hasNext())
+            while(iterator.hasNext()) {
                 dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
+            }
         }else{
             while(count < limit && iterator.hasNext()){
                 dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
