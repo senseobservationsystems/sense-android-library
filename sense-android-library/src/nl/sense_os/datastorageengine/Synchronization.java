@@ -9,6 +9,8 @@ public abstract class Synchronization {
 
     public void returnResultAndInsert(JSONArray result){}
 
+    public void returnFinalResult(Object result) {}
+
     public void andExecute(){}
 
     public void andExecute(Sensor sensor){}

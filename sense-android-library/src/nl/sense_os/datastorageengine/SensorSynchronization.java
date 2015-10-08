@@ -24,6 +24,7 @@ public class SensorSynchronization extends Synchronization {
 
     @Override
     public void returnResultAndInsert(JSONArray sensorList) {
+
         try{
             for(int i = 0; i < sensorList.length(); i++){
                 JSONObject sensorFromRemote = sensorList.getJSONObject(i);
@@ -35,6 +36,7 @@ public class SensorSynchronization extends Synchronization {
         }
         //todo: need a callback from DSE & APP for sensor, now it is a print instead
         System.out.println("End of the get sensor tasks: Remote sensors are inserted in local storage ");
+
         List<Sensor> sensorListInLocal = new ArrayList<>();
         try {
             //TODO: how to specify the source here ???

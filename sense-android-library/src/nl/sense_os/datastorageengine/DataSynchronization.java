@@ -33,7 +33,7 @@ public class DataSynchronization extends Synchronization {
         }catch(JSONException e) { }
 
         System.out.println("End of the inset data point for a sensor: Remote data inserted in local storage ");
-        //todo: mark the sensor
+        //todo: where to mark the sensor
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DataSynchronization extends Synchronization {
         ExecutorService es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         DataCallBack worker = new DataCallBack(this, proxy);
         worker.setSensor(sensor);
-        final Future future = es.submit(worker);
+        es.submit(worker);
 
     }
 }
