@@ -42,35 +42,7 @@ public interface Sensor {
      * @param value
      * @param date
      */
-    void insertOrUpdateDataPoint(boolean value, long date);
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    void insertOrUpdateDataPoint(float value, long date);
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    void insertOrUpdateDataPoint(int value, long date);
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    void insertOrUpdateDataPoint(JSONObject value, long date);
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    void insertOrUpdateDataPoint(String value, long date);
+    void insertOrUpdateDataPoint(Object value, long date);
 
     /**
      * Get data points from this sensor from the local database

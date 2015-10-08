@@ -95,43 +95,7 @@ public class RealmSensor implements Sensor {
      * @param value
      * @param date
      */
-    public void insertOrUpdateDataPoint(boolean value, long date) {
-        insertOrUpdateDataPoint(new DataPoint(id, value, date));
-    }
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    public void insertOrUpdateDataPoint(float value, long date) {
-        insertOrUpdateDataPoint(new DataPoint(id, value, date));
-    }
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    public void insertOrUpdateDataPoint(int value, long date) {
-        insertOrUpdateDataPoint(new DataPoint(id, value, date));
-    }
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    public void insertOrUpdateDataPoint(JSONObject value, long date) {
-        insertOrUpdateDataPoint(new DataPoint(id, value, date));
-    }
-
-    /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param date
-     */
-    public void insertOrUpdateDataPoint(String value, long date) {
+    public void insertOrUpdateDataPoint(Object value, long date) {
         insertOrUpdateDataPoint(new DataPoint(id, value, date));
     }
 
@@ -164,6 +128,9 @@ public class RealmSensor implements Sensor {
      * 			into a Realm object.
      */
     protected void insertOrUpdateDataPoint (DataPoint dataPoint) {
+        // TODO: validate whether the value type of dataPoint matches the data type of the sensor
+
+
         RealmModelDataPoint realmDataPoint = RealmModelDataPoint.fromDataPoint(dataPoint);
 
         realm.beginTransaction();
@@ -264,7 +231,7 @@ public class RealmSensor implements Sensor {
     }
 
     // Helper function for getDataPoints
-    private  List<DataPoint>  setLimitToResult(RealmResults<RealmModelDataPoint> results,Integer limit){
+    private  List<DataPoint>  setLimitToResult(RealmResults<RealmModelDataPoint> results,Integer limit) throws JSONException {
         List<DataPoint> dataPoints = new ArrayList<>();
         Iterator<RealmModelDataPoint> iterator = results.iterator();
         int count = 0;
