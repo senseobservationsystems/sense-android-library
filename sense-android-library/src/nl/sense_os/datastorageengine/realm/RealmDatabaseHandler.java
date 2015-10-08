@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine;
+package nl.sense_os.datastorageengine.realm;
 
 import android.content.Context;
 
@@ -13,6 +13,12 @@ import java.util.Set;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
+import nl.sense_os.datastorageengine.DataDeletionRequest;
+import nl.sense_os.datastorageengine.DatabaseHandler;
+import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorOptions;
+import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 
@@ -78,8 +84,8 @@ public class RealmDatabaseHandler implements DatabaseHandler {
 
     @Override
     public Sensor createSensor(String source, String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
-        long id = RealmSensor.generateId(realm);
-        boolean synced = false;
+        final long id = RealmSensor.generateId(realm);
+        final boolean synced = false;
         Sensor sensor = new RealmSensor(realm, id, name, userId, source, dataType, options, synced);
 
         RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
@@ -166,10 +172,10 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     @Override
     public void createDataDeletionRequest(String sensorName, String source, Long startDate, Long endDate) throws DatabaseHandlerException{
         if(startDate == null){
-            startDate = Long.valueOf(-1);
+            startDate = -1l;
         }
         if(endDate == null){
-            endDate = Long.valueOf(-1);
+            endDate = -1l;
         }
         DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, sensorName, source, startDate,endDate);
         realm.beginTransaction();

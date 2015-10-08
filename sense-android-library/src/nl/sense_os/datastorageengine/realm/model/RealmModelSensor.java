@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine;
+package nl.sense_os.datastorageengine.realm.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +7,9 @@ import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
+import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorOptions;
+import nl.sense_os.datastorageengine.realm.RealmSensor;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
 public class RealmModelSensor extends RealmObject {

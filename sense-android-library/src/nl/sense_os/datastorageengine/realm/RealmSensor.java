@@ -1,7 +1,6 @@
-package nl.sense_os.datastorageengine;
+package nl.sense_os.datastorageengine.realm;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,6 +9,13 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import nl.sense_os.datastorageengine.DataPoint;
+import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.QueryOptions;
+import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorOptions;
+import nl.sense_os.datastorageengine.realm.model.RealmModelDataPoint;
+import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 
 public class RealmSensor implements Sensor {
@@ -24,7 +30,7 @@ public class RealmSensor implements Sensor {
     private SensorOptions options = new SensorOptions();
     private boolean csDataPointsDownloaded = false;
 
-    protected RealmSensor(Realm realm, long id, String name, String userId, String source, SensorDataPoint.DataType dataType, SensorOptions options, boolean csDataPointsDownloaded) {
+    public RealmSensor(Realm realm, long id, String name, String userId, String source, SensorDataPoint.DataType dataType, SensorOptions options, boolean csDataPointsDownloaded) {
         this.realm = realm;
 
         this.id = id;

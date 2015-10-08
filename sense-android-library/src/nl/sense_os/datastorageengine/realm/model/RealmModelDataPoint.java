@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine;
+package nl.sense_os.datastorageengine.realm.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +7,7 @@ import org.json.JSONTokener;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
+import nl.sense_os.datastorageengine.DataPoint;
 
 /**
  * The class RealmDataPoint contains a serializable form of DataPoint, suited for storing
