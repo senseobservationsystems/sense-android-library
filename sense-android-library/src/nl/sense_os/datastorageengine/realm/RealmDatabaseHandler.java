@@ -17,9 +17,9 @@ import nl.sense_os.datastorageengine.DataDeletionRequest;
 import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
-import nl.sense_os.service.shared.SensorDataPoint;
 
 
 /**
@@ -30,7 +30,7 @@ import nl.sense_os.service.shared.SensorDataPoint;
  * Example usage:
  *
  *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext(), userId);
- *     Sensor sensor = databaseHandler.createSensor(sourceName,sensorName,dataType,sensorOptions);
+ *     Sensor sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
@@ -83,10 +83,10 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public Sensor createSensor(String source, String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException {
+    public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
         final long id = RealmSensor.generateId(realm);
         final boolean synced = false;
-        Sensor sensor = new RealmSensor(realm, id, name, userId, source, dataType, options, synced);
+        Sensor sensor = new RealmSensor(realm, id, name, userId, source, options, synced);
 
         RealmModelSensor realmSensor = RealmModelSensor.fromSensor(sensor);
 
@@ -108,7 +108,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException {
+    public Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException, SensorException {
         realm.beginTransaction();
 
         RealmModelSensor realmSensor = realm
@@ -128,7 +128,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public List<Sensor> getSensors(String source) throws JSONException {
+    public List<Sensor> getSensors(String source) throws JSONException, SensorException {
         // query results
         realm.beginTransaction();
         RealmResults<RealmModelSensor> results = realm

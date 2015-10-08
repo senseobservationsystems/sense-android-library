@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import nl.sense_os.service.shared.SensorDataPoint;
-
 
 public class SensorSynchronization extends Synchronization {
     private SensorDataProxy proxy;
@@ -29,10 +27,14 @@ public class SensorSynchronization extends Synchronization {
             for(int i = 0; i < sensorList.length(); i++){
                 JSONObject sensorFromRemote = sensorList.getJSONObject(i);
                 SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, false, false);
-                databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), SensorDataPoint.DataType.FLOAT, sensorOptions);
+                databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
             }
-        }catch(DatabaseHandlerException e){
-        }catch(JSONException e) {
+        } catch(DatabaseHandlerException e){
+            e.printStackTrace();
+        } catch(JSONException e) {
+            e.printStackTrace();
+        } catch (SensorException e) {
+            e.printStackTrace();
         }
         //todo: need a callback from DSE & APP for sensor, now it is a print instead
         System.out.println("End of the get sensor tasks: Remote sensors are inserted in local storage ");
@@ -41,7 +43,10 @@ public class SensorSynchronization extends Synchronization {
         try {
             //TODO: how to specify the source here ???
             sensorListInLocal = databaseHandler.getSensors("source");
-        }catch(JSONException e){
+        } catch(JSONException e){
+            e.printStackTrace();
+        } catch (SensorException e) {
+            e.printStackTrace();
         }
         // Start data syncing for all sensors
         for(Sensor sensor: sensorListInLocal){

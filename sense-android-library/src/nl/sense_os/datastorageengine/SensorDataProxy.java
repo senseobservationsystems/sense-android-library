@@ -306,7 +306,7 @@ public class SensorDataProxy {
      *            IOException is thrown when the inputStream has errors.
      * @return Returns a Response containing response code, body, and response headers.
      */
-    protected Response request(String method, URL url, JSONObject body) throws IOException, HttpResponseException {
+    protected Response request(String method, URL url, JSONObject body) throws IOException {
         return request(method, url, body.toString());
     }
 
@@ -320,7 +320,7 @@ public class SensorDataProxy {
      *            IOException is thrown when the inputStream has errors.
      * @return Returns a Response containing response code, body, and response headers.
      */
-    protected Response request(String method, URL url, JSONArray body) throws IOException, HttpResponseException {
+    protected Response request(String method, URL url, JSONArray body) throws IOException {
         return request(method, url, body.toString());
     }
 
@@ -333,7 +333,7 @@ public class SensorDataProxy {
      *            IOException is thrown when the inputStream has errors.
      * @return Returns a Response containing response code, body, and response headers.
      */
-    protected Response request(String method, URL url) throws IOException, HttpResponseException {
+    protected Response request(String method, URL url) throws IOException {
         final String body = "";
         return request(method, url, body);
     }
@@ -348,9 +348,11 @@ public class SensorDataProxy {
      *            IOException is thrown when the inputStream has errors.
      * @return Returns a Response containing response code, body, and response headers.
      */
-    protected Response request(String method, URL url, String body) throws IOException, HttpResponseException {
+    protected Response request(String method, URL url, String body) throws IOException {
         Log.d(TAG, "request method=" + method + " url=" + url.toString());
         HttpURLConnection urlConnection = null;
+
+        // TODO: use a library like https://github.com/kevinsawicki/http-request instead of our own baked request method
 
         // validate whether both sessionId and appKey are set
         if (sessionId == null) {

@@ -4,8 +4,6 @@ import org.json.JSONException;
 
 import java.util.List;
 
-import nl.sense_os.service.shared.SensorDataPoint;
-
 
 /**
  * DatabaseHandler handles local storage of DataPoints and Sensors.
@@ -34,7 +32,7 @@ public interface DatabaseHandler {
     /**
      * Create a new Sensor and store it in the local database.
      */
-    Sensor createSensor(String source, String name, SensorDataPoint.DataType dataType, SensorOptions options) throws DatabaseHandlerException;
+    Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException;
 
     /**
      * Get a sensor
@@ -42,14 +40,14 @@ public interface DatabaseHandler {
      * @param name	  The name of the sensor
      * @return sensor: sensor with the given sensor name and source.
      **/
-    Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException;
+    Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException, SensorException;
 
     /**
      * Retrieve all sensors connected to the given source of the current user
      * @param source the name of the source
      * @return a list of sensor attached to the given source
      */
-    List<Sensor> getSensors(String source) throws JSONException;
+    List<Sensor> getSensors(String source) throws JSONException, SensorException;
 
     /**
      * Retrieve a list with all sources of the current user

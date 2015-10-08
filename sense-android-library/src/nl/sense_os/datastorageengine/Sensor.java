@@ -17,7 +17,7 @@ public interface Sensor {
 
     String getSource();
 
-    SensorDataPoint.DataType getDataType();
+    String getDataType();
 
     boolean isCsDataPointsDownloaded();
 
@@ -42,7 +42,7 @@ public interface Sensor {
      * @param value
      * @param date
      */
-    void insertOrUpdateDataPoint(Object value, long date);
+    void insertOrUpdateDataPoint(Object value, long date) throws SensorException;
 
     /**
      * Get data points from this sensor from the local database

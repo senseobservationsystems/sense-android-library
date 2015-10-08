@@ -30,7 +30,11 @@ public class DataSynchronization extends Synchronization {
                 JSONObject dataFromRemote = dataList.getJSONObject(i);
                 sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"),dataFromRemote.getLong("date"));
             }
-        }catch(JSONException e) { }
+        } catch(JSONException e) {
+            e.printStackTrace();
+        } catch (SensorException e) {
+            e.printStackTrace();
+        }
 
         System.out.println("End of the inset data point for a sensor: Remote data inserted in local storage ");
         //todo: where to mark the sensor

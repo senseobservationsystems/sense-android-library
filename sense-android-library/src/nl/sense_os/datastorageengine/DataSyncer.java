@@ -71,8 +71,10 @@ public class DataSyncer {
         JSONArray sensorList = new JSONArray();
         try {
             sensorList = proxy.getSensors();
-        }catch(IOException e){
-        }catch(JSONException e){
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(JSONException e){
+            e.printStackTrace();
         }
 
         //Step 2: insert sensors into local storage
@@ -80,10 +82,14 @@ public class DataSyncer {
             for(int i = 0; i < sensorList.length(); i++){
                 JSONObject sensorFromRemote = sensorList.getJSONObject(i);
                 SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, false, false);
-                databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), SensorDataPoint.DataType.FLOAT, sensorOptions);
+                databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
             }
-        }catch(DatabaseHandlerException e){
-        }catch(JSONException e) {
+        } catch(DatabaseHandlerException e){
+            e.printStackTrace();
+        } catch(JSONException e) {
+            e.printStackTrace();
+        } catch (SensorException e) {
+            e.printStackTrace();
         }
 
         //todo: need a callback from DSE & APP for sensor, now it is a print instead
@@ -94,7 +100,10 @@ public class DataSyncer {
         try {
             //TODO: how to specify the source here ???
             sensorListInLocal = databaseHandler.getSensors("source");
-        }catch(JSONException e){
+        } catch(JSONException e){
+            e.printStackTrace();
+        } catch (SensorException e) {
+            e.printStackTrace();
         }
 
         //Step 4: Start data syncing for all sensors
@@ -103,19 +112,25 @@ public class DataSyncer {
             try {
                 // todo: can default QueryOptions be used here ？
                 dataList = proxy.getSensorData(sensor.getSource(),sensor.getName(),new QueryOptions());
-            }catch(IOException e){
-            }catch(JSONException e){
+            } catch(IOException e){
+                e.printStackTrace();
+            } catch(JSONException e){
+                e.printStackTrace();
             }
             try{
                 for(int i = 0; i < dataList.length(); i++){
                     JSONObject dataFromRemote = dataList.getJSONObject(i);
                     sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"),dataFromRemote.getLong("date"));
                 }
-            }catch(JSONException e) {
+            } catch(JSONException e) {
+                e.printStackTrace();
+            } catch (SensorException e) {
+                e.printStackTrace();
             }
             try {
                 sensor.setCsDataPointsDownloaded(true);
             } catch (DatabaseHandlerException e) {
+                e.printStackTrace();
             }
         }
     }

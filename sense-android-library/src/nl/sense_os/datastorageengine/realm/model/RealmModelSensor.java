@@ -8,6 +8,7 @@ import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
@@ -32,12 +33,11 @@ public class RealmModelSensor extends RealmObject {
 
     @Index
     private String source = null;
-    private String dataType = null;  // String value of the enum SensorDataPoint.DataType
     private boolean csDataPointsDownloaded = false;
 
     public RealmModelSensor() {}
 
-    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, String dataType, boolean csDataPointsDownloaded) {
+    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, boolean csDataPointsDownloaded) {
         this.compoundKey = getCompoundKey(name, source, userId);
 
         this.id = id;
@@ -48,7 +48,6 @@ public class RealmModelSensor extends RealmObject {
         this.persistLocally = persistLocally;
         this.userId = userId;
         this.source = source;
-        this.dataType = dataType;
         this.csDataPointsDownloaded = csDataPointsDownloaded;
     }
 
@@ -147,22 +146,6 @@ public class RealmModelSensor extends RealmObject {
         this.compoundKey = getCompoundKey(name, source, userId);
     }
 
-    /**
-     * Returns the string name of the data type.
-     * This is an entry from the enum SensorDataPoint.DataType
-     */
-    public String getDataType() {
-        return dataType;
-    }
-
-    /**
-     * Set the sensor data type.
-     * @param dataType Must be a the name of one of the enums SensorDataPoint.DataType
-     */
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
-
     public boolean isCsDataPointsDownloaded() {
         return csDataPointsDownloaded;
     }
@@ -187,9 +170,8 @@ public class RealmModelSensor extends RealmObject {
      * @param realmSensor
      * @return Returns a Sensor
      */
-    public static Sensor toSensor (Realm realm, RealmModelSensor realmSensor) throws JSONException {
+    public static Sensor toSensor (Realm realm, RealmModelSensor realmSensor) throws JSONException, SensorException {
         String meta = realmSensor.getMeta();
-        String dataType = realmSensor.getDataType();
 
         return new RealmSensor(
                 realm,
@@ -197,7 +179,6 @@ public class RealmModelSensor extends RealmObject {
                 realmSensor.getName(),
                 realmSensor.getUserId(),
                 realmSensor.getSource(),
-                dataType != null ? DataType.valueOf(dataType) : null,
                 new SensorOptions(
                         meta != null ? new JSONObject(meta) : null,
                         realmSensor.isCsUploadEnabled(),
@@ -214,7 +195,6 @@ public class RealmModelSensor extends RealmObject {
      * @return Returns a RealmSensor
      */
     public static RealmModelSensor fromSensor (Sensor sensor) {
-        DataType dataType = sensor.getDataType();
         SensorOptions options = sensor.getOptions();
         JSONObject meta = options != null ? options.getMeta() : null;
 
@@ -227,7 +207,6 @@ public class RealmModelSensor extends RealmObject {
                 options != null ? options.isPersistLocally() : null,
                 sensor.getUserId(),
                 sensor.getSource(),
-                dataType != null ? dataType.name() : null,
                 sensor.isCsDataPointsDownloaded()
         );
     }

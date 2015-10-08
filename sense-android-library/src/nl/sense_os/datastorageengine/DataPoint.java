@@ -175,12 +175,12 @@ public class DataPoint {
         }
 
         return obj;
-    };
+    }
 
     /**
      * @return Returns a string representation of the DataPoint, a stringified JSON object.
      */
     public String toString() {
       return toJSON().toString();
-    };
+    }
 }

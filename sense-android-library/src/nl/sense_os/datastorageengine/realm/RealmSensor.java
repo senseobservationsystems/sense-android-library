@@ -13,10 +13,11 @@ import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
+import nl.sense_os.datastorageengine.SensorTypes;
 import nl.sense_os.datastorageengine.realm.model.RealmModelDataPoint;
 import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
-import nl.sense_os.service.shared.SensorDataPoint;
 
 public class RealmSensor implements Sensor {
 
@@ -26,18 +27,21 @@ public class RealmSensor implements Sensor {
     private String name = null;
     private String userId = null;
     private String source = null;
-    private SensorDataPoint.DataType dataType = null;
     private SensorOptions options = new SensorOptions();
     private boolean csDataPointsDownloaded = false;
 
-    public RealmSensor(Realm realm, long id, String name, String userId, String source, SensorDataPoint.DataType dataType, SensorOptions options, boolean csDataPointsDownloaded) {
+    public RealmSensor(Realm realm, long id, String name, String userId, String source, SensorOptions options, boolean csDataPointsDownloaded) throws SensorException {
+        // validate if the sensor name is valid
+        if (SensorTypes.getSensorType(name) == null) {
+            throw new SensorException("Unknown sensor name '" + name + "'.");
+        }
+
         this.realm = realm;
 
         this.id = id;
         this.name = name;
         this.userId = userId;
         this.source = source;
-        this.dataType = dataType;
         this.options = options;
         this.csDataPointsDownloaded = csDataPointsDownloaded;
     }
@@ -58,8 +62,8 @@ public class RealmSensor implements Sensor {
         return source;
     }
 
-    public SensorDataPoint.DataType getDataType() {
-        return dataType;
+    public String getDataType() {
+        return SensorTypes.getSensorType(name);
     }
 
     public boolean isCsDataPointsDownloaded() {
@@ -101,7 +105,7 @@ public class RealmSensor implements Sensor {
      * @param value
      * @param date
      */
-    public void insertOrUpdateDataPoint(Object value, long date) {
+    public void insertOrUpdateDataPoint(Object value, long date) throws SensorException {
         insertOrUpdateDataPoint(new DataPoint(id, value, date));
     }
 
@@ -133,9 +137,9 @@ public class RealmSensor implements Sensor {
      * @param dataPoint	A DataPoint object that has a stringified value that will be copied
      * 			into a Realm object.
      */
-    protected void insertOrUpdateDataPoint (DataPoint dataPoint) {
-        // TODO: validate whether the value type of dataPoint matches the data type of the sensor
-
+    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorException {
+        // validate whether the value type of dataPoint matches the data type of the sensor
+        SensorTypes.validate(name, dataPoint);
 
         RealmModelDataPoint realmDataPoint = RealmModelDataPoint.fromDataPoint(dataPoint);
 
