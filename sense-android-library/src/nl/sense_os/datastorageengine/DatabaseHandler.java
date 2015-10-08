@@ -8,12 +8,12 @@ import nl.sense_os.service.shared.SensorDataPoint;
 
 
 /**
- * DatabaseHandler handles local storage of DataPoints, Sensors, and Sources.
+ * DatabaseHandler handles local storage of DataPoints and Sensors.
  *
  * Example usage:
  *
  *     DatabaseHandler databaseHandler = new RealmDatabaseHandler(getContext(), userId);
- *     Sensor sensor = source.getSensor(sensorName);
+ *     Sensor sensor = databaseHandler.createSensor(sourceName,sensorName,dataType,sensorOptions);
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
