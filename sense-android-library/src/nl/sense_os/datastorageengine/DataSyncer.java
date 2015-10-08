@@ -38,20 +38,13 @@ public class DataSyncer {
         this.proxy = new SensorDataProxy(server, appKey, sessionId);
     }
 
-    public void initialize(){
-        Future future = LoginSyncing();
-        try{
-            future.get();
-
-            //todo: need a callback from DSE & APP for data, now it is a print instead
-            System.out.println("End of the insert sensor date tasks: Remote data for all sensors are inserted in local storage ");
-        }catch(InterruptedException e){
-        }catch(ExecutionException e) {
-        }
+    public void initialize() throws InterruptedException, ExecutionException{
+        LoginSyncing().get();
+        //todo: need a callback from DSE & APP for data, now it is a print instead
+        System.out.println("End of the insert sensor date tasks: Remote data for all sensors are inserted in local storage ");
 
     }
     public Future LoginSyncing(){
-        //new SensorSynchronization(proxy,databaseHandler).andExecute();
         ExecutorService es = Executors.newFixedThreadPool(1);
         return es.submit(new Callable() {
             public Object call() throws Exception {
@@ -62,75 +55,59 @@ public class DataSyncer {
         });
     }
 
-    public void execSync(){}
+    public void execScheduler() throws InterruptedException, ExecutionException{
+        synchronize().get();
+        //todo: callback needed ?
+    }
+
+    public Future synchronize(){
+        ExecutorService es = Executors.newFixedThreadPool(1);
+        return es.submit(new Callable() {
+            public Object call() throws Exception {
+                deletionInRemote();
+                //TODO: need a return type or not ?
+                downloadFromRemote();
+                uploadToRemote();
+                cleanUpLocalStorage();
+                return null;
+            }
+        });
+    }
 
     public void deletionInRemote(){}
 
-    public void downloadFromRemote(){
+    public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException {
         //Step 1: download sensors from remote
-        JSONArray sensorList = new JSONArray();
-        try {
-            sensorList = proxy.getSensors();
-        } catch(IOException e){
-            e.printStackTrace();
-        } catch(JSONException e){
-            e.printStackTrace();
-        }
+        JSONArray sensorList = proxy.getSensors();
 
         //Step 2: insert sensors into local storage
-        try{
-            for(int i = 0; i < sensorList.length(); i++){
-                JSONObject sensorFromRemote = sensorList.getJSONObject(i);
-                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, false, false);
+        for(int i = 0; i < sensorList.length(); i++) {
+            JSONObject sensorFromRemote = sensorList.getJSONObject(i);
+            SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, false, false);
+            try {
                 databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
+            //TODO: this could happen when a sensor has already been created locally during the initialization or previous syncing.
+            } catch (DatabaseHandlerException e) {
+                e.printStackTrace();
             }
-        } catch(DatabaseHandlerException e){
-            e.printStackTrace();
-        } catch(JSONException e) {
-            e.printStackTrace();
-        } catch (SensorException e) {
-            e.printStackTrace();
         }
-
         //todo: need a callback from DSE & APP for sensor, now it is a print instead
         System.out.println("End of the get sensor tasks: Remote sensors are inserted in local storage ");
 
         //Step 3: get the sensors from local storage
-        List<Sensor> sensorListInLocal = new ArrayList<>();
-        try {
-            //TODO: how to specify the source here ???
-            sensorListInLocal = databaseHandler.getSensors("source");
-        } catch(JSONException e){
-            e.printStackTrace();
-        } catch (SensorException e) {
-            e.printStackTrace();
-        }
+        //TODO: how to specify the source here ???
+        List<Sensor> sensorListInLocal = databaseHandler.getSensors("source");
 
         //Step 4: Start data syncing for all sensors
-        for(Sensor sensor: sensorListInLocal){
-            JSONArray dataList = new JSONArray();
-            try {
+        if(!sensorListInLocal.isEmpty()) {
+            for (Sensor sensor : sensorListInLocal) {
                 // todo: can default QueryOptions be used here ？
-                dataList = proxy.getSensorData(sensor.getSource(),sensor.getName(),new QueryOptions());
-            } catch(IOException e){
-                e.printStackTrace();
-            } catch(JSONException e){
-                e.printStackTrace();
-            }
-            try{
-                for(int i = 0; i < dataList.length(); i++){
+                JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
+                for (int i = 0; i < dataList.length(); i++) {
                     JSONObject dataFromRemote = dataList.getJSONObject(i);
-                    sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"),dataFromRemote.getLong("date"));
+                    sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"), dataFromRemote.getLong("date"));
                 }
-            } catch(JSONException e) {
-                e.printStackTrace();
-            } catch (SensorException e) {
-                e.printStackTrace();
-            }
-            try {
                 sensor.setCsDataPointsDownloaded(true);
-            } catch (DatabaseHandlerException e) {
-                e.printStackTrace();
             }
         }
     }
