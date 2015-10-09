@@ -14,11 +14,10 @@ public class QueryOptions implements Cloneable{
 
     private Long startDate = null;
     private Long endDate = null;
-    private Integer limit = null;
-
-    private INTERVAL interval = null;
-    private SORT_ORDER sortOrder = null;
     private Boolean existsInCS= null;
+    private Integer limit = null;
+    private SORT_ORDER sortOrder = null;
+    private INTERVAL interval = null;
 
     public QueryOptions() {};
 
