@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">sense-android-library-test</string>
+    <string name="title_activity_main">sense-android-library-test</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- status bar notification -->
+    <string name="stat_notify_title">Sense Android Library Test</string>
+    
+</resources>
