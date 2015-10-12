@@ -25,11 +25,14 @@ import nl.sense_os.datastorageengine.realm.RealmDatabaseHandler;
  */
 public class DataSyncer {
 
-    private DatabaseHandler databaseHandler = null;
     private SensorDataProxy proxy = null;
+    private Context context;
+    private String userId;
+    private final String SOURCE = "sense-android";
 
     public DataSyncer(Context context, String userId, SensorDataProxy.SERVER server, String appKey, String sessionId){
-        this.databaseHandler = new RealmDatabaseHandler(context, userId);
+        this.context = context;
+        this.userId = userId;
         this.proxy = new SensorDataProxy(server, appKey, sessionId);
     }
 
@@ -71,6 +74,7 @@ public class DataSyncer {
     }
 
     public void deletionInRemote() throws IOException{
+        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
         List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
 
@@ -93,6 +97,7 @@ public class DataSyncer {
     }
 
     public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException {
+        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors();
 
@@ -112,14 +117,12 @@ public class DataSyncer {
         System.out.println("End of the get sensor tasks: Remote sensors are inserted in local storage ");
 
         //Step 3: get the sensors from local storage
-        //TODO: how to specify the source here ???
-        List<Sensor> sensorListInLocal = databaseHandler.getSensors("source");
+        List<Sensor> sensorListInLocal = databaseHandler.getSensors(SOURCE);
 
         //Step 4: Start data syncing for all sensors
         if(!sensorListInLocal.isEmpty()) {
             for (Sensor sensor : sensorListInLocal) {
                 if(sensor.getOptions().isDownloadEnabled() && !sensor.isCsDataPointsDownloaded()) {
-                    // todo: can default QueryOptions be used here ？
                     JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
                     for (int i = 0; i < dataList.length(); i++) {
                         JSONObject dataFromRemote = dataList.getJSONObject(i);
@@ -132,9 +135,9 @@ public class DataSyncer {
     }
 
     public void uploadToRemote() throws JSONException, SensorException, DatabaseHandlerException, IOException {
+        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
-        //TODO: specify the source
-        List<Sensor> rawSensorList = databaseHandler.getSensors("source");
+        List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
         //Step 2: filter the sensor and its data and upload to remote, mark existsInCS to true afterwards
         /** Data structure of the sensor
@@ -172,9 +175,9 @@ public class DataSyncer {
     }
 
     public void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException{
+        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
-        //TODO: specify the source
-        List<Sensor> rawSensorList = databaseHandler.getSensors("source");
+        List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
         //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
         for(Sensor sensor: rawSensorList){
