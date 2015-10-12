@@ -2,6 +2,7 @@ package nl.sense_os.datastorageengine;
 
 import android.content.Context;
 
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ public class DataSyncer {
     private SensorDataProxy proxy = null;
     private Context context;
     private String userId;
-    private final String SOURCE = "sense-android";
+    public final static String SOURCE = "sense-android";
 
     public DataSyncer(Context context, String userId, SensorDataProxy.SERVER server, String appKey, String sessionId){
         this.context = context;
@@ -96,21 +97,23 @@ public class DataSyncer {
         }
     }
 
-    public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException {
+    public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
         DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors();
 
         //Step 2: insert sensors into local storage
-        for(int i = 0; i < sensorList.length(); i++) {
-            JSONObject sensorFromRemote = sensorList.getJSONObject(i);
-            //TODO: set csDownloadEnabled to true for sensors downloaded from remote
-            SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
-            try {
-                databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
-            //TODO: this could happen when a sensor has already been created locally during the initialization or previous syncing.
-            } catch (DatabaseHandlerException e) {
-                e.printStackTrace();
+        if(sensorList.length() !=0 ) {
+            for (int i = 0; i < sensorList.length(); i++) {
+                JSONObject sensorFromRemote = sensorList.getJSONObject(i);
+                //TODO: set csDownloadEnabled to true for sensors downloaded from remote
+                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
+                try {
+                    databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
+                    //TODO: this could happen when a sensor has already been created locally during the initialization or previous syncing.
+                } catch (DatabaseHandlerException e) {
+                    e.printStackTrace();
+                }
             }
         }
         //todo: need a callback from DSE & APP for sensor, now it is a print instead
