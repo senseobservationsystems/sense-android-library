@@ -24,8 +24,8 @@ public class SensorDataProxy {
 
     public enum SERVER {LIVE, STAGING};
 
-    public static final String BASE_URL_LIVE    = "https://api.sense-os.nl";
-    public static final String BASE_URL_STAGING = "http://api.staging.sense-os.nl";
+    public static final String BASE_URL_LIVE = "https://sensor-api.sense-os.nl";
+    public static final String BASE_URL_STAGING = "http://sensor-api.staging.sense-os.nl";
 
     private String baseUrl = null;
     private String appKey = null;
@@ -89,8 +89,7 @@ public class SensorDataProxy {
      * @param sensorName     The sensor name, for example "accelerometer"
      * @return Returns the sensor
      */
-    public JSONObject getSensor(final String sourceName, final String sensorName)
-            throws JSONException, IOException {
+    public JSONObject getSensor(final String sourceName, final String sensorName) throws JSONException, IOException {
         return request("GET", sensorUrl(sourceName, sensorName)).toJSONObject();
     }
 
@@ -103,8 +102,11 @@ public class SensorDataProxy {
      * @param sensorName     The sensor name, for example "accelerometer"
      * @param meta           JSON object with meta data
      */
-    public void updateSensor(final String sourceName, final String sensorName, final JSONObject meta) throws IOException {
-        request("PUT", sensorUrl(sourceName, sensorName));
+    public void updateSensor(final String sourceName, final String sensorName, final JSONObject meta) throws IOException, JSONException {
+        JSONObject body = new JSONObject();
+        body.put("meta", meta);
+
+        request("PUT", sensorUrl(sourceName, sensorName), body);
     }
 
     /**
@@ -147,11 +149,27 @@ public class SensorDataProxy {
      * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
      */
     public void putSensorData(final String sourceName, final String sensorName, JSONArray data) throws JSONException, IOException {
+        putSensorData(sourceName, sensorName, data, null);
+    }
+
+    /**
+     * Create or update sensor data for a single sensor.
+     * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
+     * the sensor does not exist, or when the data contains invalid entries.
+     * @param sourceName     The source name, for example "sense-ios",
+     *                       "sense-android", "fitbit", ...
+     * @param sensorName     The sensor name, for example "accelerometer"
+     * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
+     * @param meta           Optional field to store meta information. Can be left null
+     */
+    public void putSensorData(final String sourceName, final String sensorName, JSONArray data, JSONObject meta) throws JSONException, IOException {
         // create an array with one sensor data object
         JSONArray requestBody = new JSONArray();
-        requestBody.put(createSensorDataObject(sourceName, sensorName, data));
+        requestBody.put(createSensorDataObject(sourceName, sensorName, data, meta));
 
-        putSensorData(requestBody);
+        // FIXME: use putSensorData(requestBody) as soon as that's supported by the back-end
+//        putSensorData(requestBody);
+        request("PUT", sensorDataUrl(sourceName, sensorName), requestBody);
     }
 
     /**
@@ -168,6 +186,7 @@ public class SensorDataProxy {
      *                        {
      *                          source_name: string,
      *                          sensor_name, string,
+     *                          meta: JSON,   // optional
      *                          data: [
      *                            {date: number, value: JSON},
      *                            // ...
@@ -197,15 +216,41 @@ public class SensorDataProxy {
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
      * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
+     * @param meta           Optional field to store meta information. Can be left null
      */
-    public static JSONObject createSensorDataObject (final String sourceName, final String sensorName, JSONArray data) throws JSONException {
+    public static JSONObject createSensorDataObject (final String sourceName, final String sensorName, JSONArray data, JSONObject meta) throws JSONException {
         JSONObject sensorData = new JSONObject();
 
         sensorData.put("source_name", sourceName);
         sensorData.put("sensor_name", sensorName);
+        if (meta != null) {
+            sensorData.put("meta", meta);
+        }
         sensorData.put("data", data);
 
         return sensorData;
+    }
+
+    /**
+     * Helper function to create a JSONObject with the following structure:
+     *
+     *     {
+     *       source_name: string,
+     *       sensor_name, string,
+     *       data: [
+     *         {date: number, value: JSON},
+     *         ...
+     *       ]
+     *     }
+     *
+     * This helper function can be used to prepare the data for putSensorData.
+     * @param sourceName     The source name, for example "sense-ios",
+     *                       "sense-android", "fitbit", ...
+     * @param sensorName     The sensor name, for example "accelerometer"
+     * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
+     */
+    public static JSONObject createSensorDataObject (final String sourceName, final String sensorName, JSONArray data) throws JSONException {
+        return createSensorDataObject(sourceName, sensorName, data, null);
     }
 
     /**

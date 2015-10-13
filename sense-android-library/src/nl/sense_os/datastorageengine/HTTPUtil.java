@@ -40,7 +40,7 @@ public class HTTPUtil {
      * @return Returns a Response containing response code, body, and response headers.
      */
     public static Response request(String method, URL url, String body, Map<String, String> headers) throws IOException {
-        Log.d(TAG, "request method=" + method + " url=" + url.toString());
+        Log.d(TAG, "request method=" + method + ", url=" + url + ", body=\n" + body);
         HttpURLConnection urlConnection = null;
 
         // TODO: use a library like https://github.com/kevinsawicki/http-request instead of our own baked request method
@@ -62,7 +62,7 @@ public class HTTPUtil {
 
             // set request method
             if(method != null) {
-                urlConnection.setRequestMethod(method);
+                urlConnection.setRequestMethod(method.toUpperCase());
             }
 
             // set headers
@@ -131,13 +131,14 @@ public class HTTPUtil {
 
             // validate response code, throw an exception when not 200
             int responseCode = urlConnection.getResponseCode();
-            Log.d(TAG, "response code=" + responseCode);
+            Log.d(TAG, "response code=" + responseCode + ", body length=" + responseBody.length());
+            Log.d(TAG, "response body=\n" + responseBody.toString());
             if (responseCode != 200) {
                 try {
                     // we expect the body to be a JSONObject like {"code": number, "reason": string}
                     JSONObject errorBody = new JSONObject(responseBody.toString());
                     throw new HttpResponseException(
-                            errorBody.getInt("code"),
+                            errorBody.optInt("code", responseCode),
                             errorBody.getString("reason"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -169,6 +170,7 @@ public class HTTPUtil {
         public Map<String, List<String>> headers = new HashMap<>();
 
         public JSONObject toJSONObject() throws JSONException {
+            Log.d("body", body);
             return new JSONObject(body);
         }
 

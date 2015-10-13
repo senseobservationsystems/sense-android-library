@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+// TODO: rename class SensorTypes to SensorProfiles
 public class SensorTypes {
     protected static final Map<String, String> sensorDataTypes;
     static
