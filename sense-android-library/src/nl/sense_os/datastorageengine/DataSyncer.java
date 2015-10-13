@@ -14,6 +14,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import nl.sense_os.datastorageengine.realm.RealmDatabaseHandler;
 
@@ -28,39 +31,73 @@ public class DataSyncer {
     private SensorDataProxy proxy = null;
     private Context context;
     private String userId;
-    private final String SOURCE = "sense-android";
+    private ScheduledExecutorService service;
+    //Default value of syncing period, 30 mins in milliseconds
+    public static long SYNC_RATE = 1800000L;
+    // Default value of persistPeriod, 31 days in milliseconds
+    //TODO: should it be public, should SYNC_RATE and persistPeriod have setter and getter methods
+    private long persistPeriod = 2678400000L;
+    private ScheduledFuture<?> scheduledFuture;
+    public final static String SOURCE = "sense-android";
 
-    public DataSyncer(Context context, String userId, SensorDataProxy.SERVER server, String appKey, String sessionId){
+    public DataSyncer(Context context, String userId, SensorDataProxy.SERVER server, String appKey, String sessionId, Long persistPeriod){
         this.context = context;
         this.userId = userId;
+        this.service = Executors.newSingleThreadScheduledExecutor();
+
+        //Null for default value of persistPeriod
+        if(persistPeriod != null){
+            this.persistPeriod = persistPeriod;
+        }
+
         this.proxy = new SensorDataProxy(server, appKey, sessionId);
     }
 
-    public void initialize() throws InterruptedException, ExecutionException{
-        loginSyncing().get();
-        //todo: need a callback from DSE & APP for data, now it is a print instead
-        System.out.println("End of the insert sensor date tasks: Remote data for all sensors are inserted in local storage ");
+    public class Task implements Runnable {
+        @Override
+        public void run() {
+            try {
+                synchronize();
+            }catch(InterruptedException e){
+                e.printStackTrace();
+            }catch (ExecutionException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void enablePeriodicSync(){
+        enablePeriodicSync(SYNC_RATE);
+    }
+
+    public void enablePeriodicSync(long syncRate){
+        scheduledFuture = service.scheduleAtFixedRate(new Task(), 0, syncRate, TimeUnit.MILLISECONDS);
+    }
+
+    public void disablePeriodicSync(){
+        scheduledFuture.cancel(false);
+    }
+
+    public void login() throws InterruptedException, ExecutionException{
+        loginAsync().get();
 
     }
-    public Future loginSyncing(){
+    public Future loginAsync(){
         ExecutorService es = Executors.newFixedThreadPool(1);
         return es.submit(new Callable() {
             public Object call() throws Exception {
-                //TODO: need a return type ?
-                downloadFromRemote();
+                downloadSensorProfile();
                 return null;
             }
         });
     }
 
-    public void execScheduler() throws InterruptedException, ExecutionException{
-        synchronize().get();
-        //todo: callback needed ?
-        System.out.println("End of periodic syncing ");
+    public void synchronize() throws InterruptedException, ExecutionException{
+        synchronizeAsync().get();
 
     }
 
-    public Future synchronize(){
+    public Future synchronizeAsync(){
         ExecutorService es = Executors.newFixedThreadPool(1);
         return es.submit(new Callable() {
             public Object call() throws Exception {
@@ -73,6 +110,11 @@ public class DataSyncer {
         });
     }
 
+    public void downloadSensorProfile(){
+        //TODO
+        //proxy.downloadSensorList();
+
+    }
     public void deletionInRemote() throws IOException{
         DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
@@ -96,25 +138,21 @@ public class DataSyncer {
         }
     }
 
-    public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException {
+    public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
         DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: download sensors from remote
-        JSONArray sensorList = proxy.getSensors();
+        JSONArray sensorList = proxy.getSensors(SOURCE);
 
         //Step 2: insert sensors into local storage
-        for(int i = 0; i < sensorList.length(); i++) {
-            JSONObject sensorFromRemote = sensorList.getJSONObject(i);
-            //TODO: set csDownloadEnabled to true for sensors downloaded from remote
-            SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
-            try {
-                databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
-            //TODO: this could happen when a sensor has already been created locally during the initialization or previous syncing.
-            } catch (DatabaseHandlerException e) {
-                e.printStackTrace();
+        if(sensorList.length() !=0 ) {
+            for (int i = 0; i < sensorList.length(); i++) {
+                JSONObject sensorFromRemote = sensorList.getJSONObject(i);
+                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
+                if(!databaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))){
+                    databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
+                }
             }
         }
-        //todo: need a callback from DSE & APP for sensor, now it is a print instead
-        System.out.println("End of the get sensor tasks: Remote sensors are inserted in local storage ");
 
         //Step 3: get the sensors from local storage
         List<Sensor> sensorListInLocal = databaseHandler.getSensors(SOURCE);
@@ -159,14 +197,14 @@ public class DataSyncer {
 
                 JSONArray dataArray = new JSONArray();
                 for(DataPoint dataPoint: dataPoints){
-                    JSONObject meta = new JSONObject();
-                    meta.put("date",dataPoint.getDate());
-                    //TODO: verify the value type
-                    meta.put("value",dataPoint.getValueAsJSONObject());
-                    dataArray.put(meta);
+                    JSONObject jsonDataPoint = new JSONObject();
+                    jsonDataPoint.put("date", dataPoint.getDate());
+                    jsonDataPoint.put("value", dataPoint.getValue());
+                    dataArray.put(jsonDataPoint);
                 }
                 proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray);
-                //TODO: set existsInCS to true after putSensorData, if error occurs in remote, then may have duplicate data upload next time
+                //TODO: merge into one request
+                proxy.updateSensor(sensor.getSource(),sensor.getName(),sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInCS(true);
                 }
@@ -181,8 +219,7 @@ public class DataSyncer {
 
         //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
         for(Sensor sensor: rawSensorList){
-            //TODO: manually set the period to one month, waiting for dse configuration
-            Long persistenceBoundary = new Date().getTime() - 1000*60*60*24*31;
+            Long persistenceBoundary = new Date().getTime() - persistPeriod;
             if(sensor.getOptions().isUploadEnabled()){
                 if(sensor.getOptions().isPersistLocally()){
                    sensor.deleteDataPoints(new QueryOptions(null,persistenceBoundary,true, null, QueryOptions.SORT_ORDER.ASC));

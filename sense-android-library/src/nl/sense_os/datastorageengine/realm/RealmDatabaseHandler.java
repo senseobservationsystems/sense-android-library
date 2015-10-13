@@ -49,7 +49,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     private String userId = null;
 
     public RealmDatabaseHandler(Context context, String userId) {
-        realm = Realm.getInstance(context);
+        this.realm = Realm.getInstance(context);
         this.userId = userId;
     }
 
@@ -127,6 +127,23 @@ public class RealmDatabaseHandler implements DatabaseHandler {
         return RealmModelSensor.toSensor(realm, realmSensor);
     }
 
+    @Override
+    public boolean hasSensor(String source, String name) {
+        realm.beginTransaction();
+        RealmModelSensor realmSensor = realm
+                .where(RealmModelSensor.class)
+                .equalTo("userId", userId)
+                .equalTo("source", source)
+                .equalTo("name", name)
+                .findFirst();
+        realm.commitTransaction();
+
+        if(realmSensor != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
     @Override
     public List<Sensor> getSensors(String source) throws JSONException, SensorException {
         // query results
