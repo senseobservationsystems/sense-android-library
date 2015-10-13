@@ -30,7 +30,7 @@ public class TestDataSyncer extends AndroidTestCase{
         userId = newUser.get("id");
         appKey =  csUtils.APP_KEY;
         sessionId= csUtils.loginUser(newUser.get("username"), newUser.get("password"));
-        dataSyncer = new DataSyncer(getContext(), userId, SensorDataProxy.SERVER.STAGING, appKey, sessionId, null, 86400000L);
+        dataSyncer = new DataSyncer(getContext(), userId, SensorDataProxy.SERVER.STAGING, appKey, sessionId, 86400000L);
 
         //Instantiate the proxy and and a data point of a sensor to remote
         //Step 1: create a proxy
