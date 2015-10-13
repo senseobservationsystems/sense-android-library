@@ -15,7 +15,7 @@ import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
-import nl.sense_os.datastorageengine.SensorTypes;
+import nl.sense_os.datastorageengine.SensorProfiles;
 import nl.sense_os.datastorageengine.realm.model.RealmModelDataPoint;
 import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
 
@@ -32,7 +32,7 @@ public class RealmSensor implements Sensor {
 
     public RealmSensor(Realm realm, long id, String name, String userId, String source, SensorOptions options, boolean csDataPointsDownloaded) throws SensorException {
         // validate if the sensor name is valid
-        if (SensorTypes.getSensorType(name) == null) {
+        if (SensorProfiles.getSensorType(name) == null) {
             throw new SensorException("Unknown sensor name '" + name + "'.");
         }
 
@@ -63,7 +63,7 @@ public class RealmSensor implements Sensor {
     }
 
     public String getDataType() {
-        return SensorTypes.getSensorType(name);
+        return SensorProfiles.getSensorType(name);
     }
 
     public boolean isCsDataPointsDownloaded() {
@@ -139,7 +139,7 @@ public class RealmSensor implements Sensor {
      */
     protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorException {
         // validate whether the value type of dataPoint matches the data type of the sensor
-        SensorTypes.validate(name, dataPoint);
+        SensorProfiles.validate(name, dataPoint);
 
         RealmModelDataPoint realmDataPoint = RealmModelDataPoint.fromDataPoint(dataPoint);
 

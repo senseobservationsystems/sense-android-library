@@ -20,7 +20,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     private static final String TAG = "TestSensorDataProxy";
 
     Map<String, String> user;
-    String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // dev, android, Brightr ASML
+    String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
     String sessionId;
     String sourceName = "sense-android";
     CSUtils csUtils = new CSUtils(false);
