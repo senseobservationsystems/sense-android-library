@@ -128,6 +128,23 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
+    public boolean hasSensor(String source, String name) {
+        realm.beginTransaction();
+        RealmModelSensor realmSensor = realm
+                .where(RealmModelSensor.class)
+                .equalTo("userId", userId)
+                .equalTo("source", source)
+                .equalTo("name", name)
+                .findFirst();
+        realm.commitTransaction();
+
+        if(realmSensor != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    @Override
     public List<Sensor> getSensors(String source) throws JSONException, SensorException {
         // query results
         realm.beginTransaction();

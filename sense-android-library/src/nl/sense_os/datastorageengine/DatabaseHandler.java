@@ -43,6 +43,14 @@ public interface DatabaseHandler {
     Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException, SensorException;
 
     /**
+     * Check if a sensor is already created in local storage
+     * @param source  Name of the source
+     * @param name	  The name of the sensor
+     * @return boolean: true if the sensor exists in local storage, and vice versa.
+     **/
+    boolean hasSensor(String source, String name);
+
+    /**
      * Retrieve all sensors connected to the given source of the current user
      * @param source the name of the source
      * @return a list of sensor attached to the given source
