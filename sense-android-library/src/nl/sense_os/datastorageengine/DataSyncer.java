@@ -202,9 +202,7 @@ public class DataSyncer {
                     jsonDataPoint.put("value", dataPoint.getValue());
                     dataArray.put(jsonDataPoint);
                 }
-                proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray);
-                //TODO: merge into one request
-                proxy.updateSensor(sensor.getSource(),sensor.getName(),sensor.getOptions().getMeta());
+                proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray,sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInCS(true);
                 }
