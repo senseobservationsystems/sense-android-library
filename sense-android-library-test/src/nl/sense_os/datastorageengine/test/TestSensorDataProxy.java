@@ -42,7 +42,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         csUtils.deleteAccount(user.get("username"), user.get("password"),user.get("id"));
     }
 
-    public void testGetSensors() throws IOException, RuntimeException, JSONException {
+    public void _testGetSensors() throws IOException, RuntimeException, JSONException {
         Log.d(TAG, "testGetSensors");
 
         JSONArray sensors = proxy.getSensors();
@@ -50,7 +50,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         assertEquals("Sensor list must be empty", 0, sensors.length());
     }
 
-    public void testUpdateSensor() throws IOException, RuntimeException, JSONException {
+    public void _testUpdateSensor() throws IOException, RuntimeException, JSONException {
         Log.d(TAG, "testUpdateSensor");
 
         String sensorName = "accelerometer";
@@ -70,11 +70,13 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
         String sensorName = "time_active";
         JSONArray data = new JSONArray();
-        data.put(new JSONObject("{\"date\":1444739042200,\"value\":2}"));
-        data.put(new JSONObject("{\"date\":1444739042300,\"value\":3}"));
-        data.put(new JSONObject("{\"date\":1444739042400,\"value\":4}"));
+        data.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
+        data.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
+        data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
 
-        proxy.putSensorData(sourceName, sensorName, data);
+        JSONObject meta = new JSONObject();
+
+        proxy.putSensorData(sourceName, sensorName, data, meta);
 
         JSONArray retrievedData = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
 

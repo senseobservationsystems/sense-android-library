@@ -163,12 +163,9 @@ public class SensorDataProxy {
      * @param meta           Optional field to store meta information. Can be left null
      */
     public void putSensorData(final String sourceName, final String sensorName, JSONArray data, JSONObject meta) throws JSONException, IOException {
-        // create an array with one sensor data object
-        JSONArray requestBody = new JSONArray();
-        requestBody.put(createSensorDataObject(sourceName, sensorName, data, meta));
+        // create one sensor data object
+        JSONObject requestBody = createSensorDataObject(sourceName, sensorName, data, meta);
 
-        // FIXME: use putSensorData(requestBody) as soon as that's supported by the back-end
-//        putSensorData(requestBody);
         request("PUT", sensorDataUrl(sourceName, sensorName), requestBody);
     }
 
@@ -373,6 +370,8 @@ public class SensorDataProxy {
 
     /**
      * Perform an HTTP request to the Sensor data API.
+     * Will automatically add headers with application key and session id,
+     * and sends the content type
      *
      * @param method The request method, such as POST or GET.
      * @param url Complete URL to perform request to.
@@ -396,6 +395,7 @@ public class SensorDataProxy {
         Map<String,String> headers = new HashMap<>();
         headers.put("APPLICATION-KEY", appKey);
         headers.put("SESSION-ID", sessionId);
+        headers.put("Content-Type", "application/json");
 
         return HTTPUtil.request(method, url, headers, body);
     }

@@ -46,7 +46,8 @@ public class HTTPUtil {
         // TODO: use a library like https://github.com/kevinsawicki/http-request instead of our own baked request method
 
         try {
-            final boolean compress = true;
+            // FIXME: set compress true again as soon as the backend supports it
+            final boolean compress = false;
             // open new URL connection channel.
             if ("https".equals(url.getProtocol().toLowerCase(Locale.ENGLISH))) {
                 HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
