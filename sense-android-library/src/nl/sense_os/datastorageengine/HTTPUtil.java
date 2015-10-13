@@ -33,13 +33,13 @@ public class HTTPUtil {
      *
      * @param method The request method, such as POST or GET.
      * @param url Complete URL to perform request to.
-     * @param body Content for the request. Optional.
      * @param headers Map with headers. Optional.
+     * @param body Content for the request. Optional.
      * @throws IOException
      *            IOException is thrown when the inputStream has errors.
      * @return Returns a Response containing response code, body, and response headers.
      */
-    public static Response request(String method, URL url, String body, Map<String, String> headers) throws IOException {
+    public static Response request(String method, URL url, Map<String, String> headers, String body) throws IOException {
         Log.d(TAG, "request method=" + method + ", url=" + url + ", body=\n" + body);
         HttpURLConnection urlConnection = null;
 

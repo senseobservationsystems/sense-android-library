@@ -385,8 +385,6 @@ public class SensorDataProxy {
         Log.d(TAG, "request method=" + method + " url=" + url.toString());
         HttpURLConnection urlConnection = null;
 
-        // TODO: use a library like https://github.com/kevinsawicki/http-request instead of our own baked request method
-
         // validate whether both sessionId and appKey are set
         if (sessionId == null) {
             throw new IllegalArgumentException("SessionId is null");
@@ -399,7 +397,7 @@ public class SensorDataProxy {
         headers.put("APPLICATION-KEY", appKey);
         headers.put("SESSION-ID", sessionId);
 
-        return HTTPUtil.request(method, url, body, headers);
+        return HTTPUtil.request(method, url, headers, body);
     }
 
 }
