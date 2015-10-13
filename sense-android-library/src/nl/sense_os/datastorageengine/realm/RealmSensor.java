@@ -203,12 +203,13 @@ public class RealmSensor implements Sensor {
         if (auto_increment == -1) {
             // find the max id of the existing sensors
             realm.beginTransaction();
-            auto_increment = realm
+            Number max = realm
                     .where(RealmModelSensor.class)
                     .findAll()
-                    .max("id")
-                    .longValue();
+                    .max("id");
             realm.commitTransaction();
+
+            auto_increment = max != null ? max.longValue() : 0;
         }
 
         return ++auto_increment;

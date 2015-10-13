@@ -20,7 +20,7 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.google.android.gms:play-services:7.8.0'
-    compile 'io.realm:realm-android:0.82.2'
+    compile 'io.realm:realm-android:0.83.0'
     compile files('libs/gcm.jar', 'libs/cordova-3.6.4.jar', 'libs/sqlcipher.jar')
 
     testCompile 'junit:junit:4.12'
