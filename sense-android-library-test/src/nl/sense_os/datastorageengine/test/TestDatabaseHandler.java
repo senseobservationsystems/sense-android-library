@@ -166,7 +166,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
         DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
-        assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getStringValue());
+        assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsString());
     }
 
     public void testInsertDataPointSucceededWithBooleanValue() throws JSONException, DatabaseHandlerException, SensorException {

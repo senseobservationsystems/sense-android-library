@@ -131,7 +131,7 @@ public class DataPoint {
         throw new ClassCastException("Cannot cast value to JSONObject");
     }
 
-    public String getStringValue() {
+    public String getValueAsString() {
         if (value instanceof String) {
             return (String) value;
         } else {
