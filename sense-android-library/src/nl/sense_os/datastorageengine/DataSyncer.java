@@ -9,14 +9,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import nl.sense_os.datastorageengine.realm.RealmDatabaseHandler;
@@ -34,21 +33,17 @@ public class DataSyncer {
     private String userId;
     private ScheduledExecutorService service;
     //Default value of syncing period, 30 mins in milliseconds
-    private long syncRate = 1800000L;
+    public static long SYNC_RATE = 1800000L;
     // Default value of persistPeriod, 31 days in milliseconds
+    //TODO: should it be public, should SYNC_RATE and persistPeriod have setter and getter methods
     private long persistPeriod = 2678400000L;
+    private ScheduledFuture<?> scheduledFuture;
     public final static String SOURCE = "sense-android";
 
-    public DataSyncer(Context context, String userId, SensorDataProxy.SERVER server, String appKey, String sessionId, Long syncRate, Long persistPeriod){
+    public DataSyncer(Context context, String userId, SensorDataProxy.SERVER server, String appKey, String sessionId, Long persistPeriod){
         this.context = context;
         this.userId = userId;
         this.service = Executors.newSingleThreadScheduledExecutor();
-
-        //TODO: do we need to set the rate here, or only when enablePeriodicSync is called
-        //Null for default value of syncRate
-        if(syncRate != null){
-            this.syncRate = syncRate;
-        }
 
         //Null for default value of persistPeriod
         if(persistPeriod != null){
@@ -56,19 +51,6 @@ public class DataSyncer {
         }
 
         this.proxy = new SensorDataProxy(server, appKey, sessionId);
-    }
-
-    public class SyncTask extends TimerTask {
-        @Override
-        public void run() {
-            try {
-                synchronize();
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }catch (ExecutionException e){
-                e.printStackTrace();
-            }
-        }
     }
 
     public class Task implements Runnable {
@@ -85,9 +67,16 @@ public class DataSyncer {
     }
 
     public void enablePeriodicSync(){
-        service.scheduleAtFixedRate(new Task(), 0, syncRate, TimeUnit.MILLISECONDS);
+        enablePeriodicSync(SYNC_RATE);
     }
 
+    public void enablePeriodicSync(long syncRate){
+        scheduledFuture = service.scheduleAtFixedRate(new Task(), 0, syncRate, TimeUnit.MILLISECONDS);
+    }
+
+    public void disablePeriodicSync(){
+        scheduledFuture.cancel(false);
+    }
 
     public void login() throws InterruptedException, ExecutionException{
         loginAsync().get();
@@ -97,7 +86,7 @@ public class DataSyncer {
         ExecutorService es = Executors.newFixedThreadPool(1);
         return es.submit(new Callable() {
             public Object call() throws Exception {
-                downloadSensorList();
+                downloadSensorProfile();
                 return null;
             }
         });
@@ -121,7 +110,7 @@ public class DataSyncer {
         });
     }
 
-    public void downloadSensorList(){
+    public void downloadSensorProfile(){
         //TODO
         //proxy.downloadSensorList();
 
@@ -129,7 +118,6 @@ public class DataSyncer {
     public void deletionInRemote() throws IOException{
         DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
-        //TODO: shall we pass the source name here
         List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
 
         //Step 2: delete the data in remote and delete the request in local storage
@@ -153,8 +141,7 @@ public class DataSyncer {
     public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
         DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: download sensors from remote
-        //TODO: specify source name or not
-        JSONArray sensorList = proxy.getSensors();
+        JSONArray sensorList = proxy.getSensors(SOURCE);
 
         //Step 2: insert sensors into local storage
         if(sensorList.length() !=0 ) {
@@ -216,7 +203,7 @@ public class DataSyncer {
                     dataArray.put(jsonDataPoint);
                 }
                 proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray);
-                //TODO: shall we put update meta here
+                //TODO: merge into one request
                 proxy.updateSensor(sensor.getSource(),sensor.getName(),sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInCS(true);

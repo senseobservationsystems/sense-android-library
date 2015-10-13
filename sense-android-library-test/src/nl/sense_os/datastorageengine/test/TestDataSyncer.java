@@ -30,14 +30,13 @@ public class TestDataSyncer extends AndroidTestCase{
         userId = newUser.get("id");
         appKey =  csUtils.APP_KEY;
         sessionId= csUtils.loginUser(newUser.get("username"), newUser.get("password"));
-        dataSyncer = new DataSyncer(getContext(), userId, SensorDataProxy.SERVER.STAGING, appKey, sessionId, 86400000L);
+        dataSyncer = new DataSyncer(getContext(), userId, SensorDataProxy.SERVER.STAGING, appKey, sessionId, null, 86400000L);
 
-        //Create a sensor and a data point in local storage and then upload to remote for initialization test
+        //Instantiate the proxy and and a data point of a sensor to remote
         //Step 1: create a proxy
         SensorDataProxy proxy = new SensorDataProxy(SensorDataProxy.SERVER.STAGING, appKey, sessionId);
-        //Step 2: create a sensot in remote. //TODO: It is not possible
 
-        //Step 3: create a sensot data in remote
+        //Step 2: create a sensor data point in remote
         Date dateType = new Date();
         int value = 0;
         long date = dateType.getTime();
@@ -46,7 +45,7 @@ public class TestDataSyncer extends AndroidTestCase{
             meta.put("date",date);
             meta.put("value",value);
             dataArray.put(meta);
-
+        //TODO: waiting for the implementation in backend
         proxy.putSensorData(DataSyncer.SOURCE,"noise_sensor",dataArray);
 
     }

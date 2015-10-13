@@ -49,7 +49,7 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     private String userId = null;
 
     public RealmDatabaseHandler(Context context, String userId) {
-        realm = Realm.getInstance(context);
+        this.realm = Realm.getInstance(context);
         this.userId = userId;
     }
 
