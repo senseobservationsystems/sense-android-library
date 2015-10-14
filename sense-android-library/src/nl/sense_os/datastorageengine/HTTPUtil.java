@@ -43,7 +43,7 @@ public class HTTPUtil {
      * @return Returns a Response containing response code, body, and response headers.
      */
     public static Response request(String method, URL url, Map<String, String> headers, String body) throws IOException {
-        Log.d(TAG, "request method=" + method + ", url=" + url + ", body=\n" + body);
+        Log.d(TAG, "request method=" + method + ", url=" + url);
         HttpURLConnection urlConnection = null;
 
         // TODO: use a library like https://github.com/kevinsawicki/http-request instead of our own baked request method
@@ -134,14 +134,15 @@ public class HTTPUtil {
             // validate response code, throw an exception when not 200
             int responseCode = urlConnection.getResponseCode();
             Log.d(TAG, "response code=" + responseCode + ", body length=" + responseBody.length());
-            Log.d(TAG, "response body=\n" + responseBody.toString());
-            if (responseCode != 200) {
+            if (responseCode != 200 && responseCode != 201) {
                 try {
                     // we expect the body to be a JSONObject like {"code": number, "reason": string}
+                    Log.d(TAG, "request body=\n" + body);
+                    Log.d(TAG, "response body=\n" + responseBody.toString());
                     JSONObject errorBody = new JSONObject(responseBody.toString());
                     throw new HttpResponseException(
                             errorBody.optInt("code", responseCode),
-                            errorBody.getString("reason"));
+                            errorBody.optString("reason", errorBody.optString("message")));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

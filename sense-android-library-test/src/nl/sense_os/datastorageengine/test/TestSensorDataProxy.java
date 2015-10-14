@@ -32,7 +32,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     SensorDataProxy proxy;
     CSUtils csUtils;
 
-    public  void setUp () throws IOException {
+    public void setUp () throws IOException {
         Log.d(TAG, "setUp");
 
         csUtils = new CSUtils(false); // staging server
@@ -133,14 +133,16 @@ public class TestSensorDataProxy extends AndroidTestCase {
         // create a sensor by putting a meta field
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-        proxy.updateSensor(sourceName, sensorName, meta);
+        JSONObject updated = proxy.updateSensor(sourceName, sensorName, meta);
 
-        // test if we get the created sensor back
-        JSONObject sensor = proxy.getSensor(sourceName, sensorName);
         JSONObject expected = new JSONObject();
         expected.put("source_name", sourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
+        JSONAssert.assertEquals(expected, updated, false);
+
+        // test if we get the created sensor back
+        JSONObject sensor = proxy.getSensor(sourceName, sensorName);
         JSONAssert.assertEquals(expected, sensor, false);
     }
 
@@ -206,7 +208,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         Log.d(TAG, "testUpdateNonExistingSensor");
 
         try {
-            String nonExistingSensorName = "accelerometer";
+            String nonExistingSensorName = "star_counter";
             JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
             proxy.updateSensor(sourceName, nonExistingSensorName, meta);
 
@@ -240,10 +242,10 @@ public class TestSensorDataProxy extends AndroidTestCase {
     public void testDeleteSensor () throws IOException, JSONException {
         Log.d(TAG, "testDeleteSensor");
 
-        // update first time (will create the sensor
+        // update first time (will create the sensor)
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-        JSONObject updated = proxy.updateSensor(sourceName, sensorName, meta);
+        proxy.updateSensor(sourceName, sensorName, meta);
 
         // sensor list must contain 1 sensor
         JSONArray sensors = proxy.getSensors();
