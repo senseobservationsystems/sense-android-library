@@ -30,12 +30,15 @@ public class TestSensorDataProxy extends AndroidTestCase {
     String sessionId;
     String sourceName = "sense-android";
     SensorDataProxy proxy;
+    CSUtils csUtils;
 
     public  void setUp () throws IOException {
         Log.d(TAG, "setUp");
 
-        user = CSUtils.createCSAccount();
-        sessionId = CSUtils.loginUser(user.get("username"), user.get("password"));
+        csUtils = new CSUtils(false); // staging server
+
+        user = csUtils.createCSAccount();
+        sessionId = csUtils.loginUser(user.get("username"), user.get("password"));
 
         proxy = new SensorDataProxy(server, appKey, sessionId);
     }
@@ -43,7 +46,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     public void tearDown() throws IOException {
         Log.d(TAG, "tearDown");
 
-        CSUtils.deleteAccount(user.get("username"), user.get("password"),user.get("id"));
+        csUtils.deleteAccount(user.get("username"), user.get("password"),user.get("id"));
     }
 
     public void testInvalidAppKey () {

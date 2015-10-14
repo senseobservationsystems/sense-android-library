@@ -78,7 +78,7 @@ public class CSUtils {
      *                      A subclass of RuntimeException, NullPointerException is thrown when session id returned from server is null.
      * @return				Session ID. Will be null if the call fails.
      */
-    public static String loginUser( String username, String password) throws IOException, RuntimeException
+    public String loginUser( String username, String password) throws IOException, RuntimeException
     {
         if(username == null || username.isEmpty() || password == null || password.isEmpty())
             throw new IllegalArgumentException("invalid input of username or password");
@@ -105,7 +105,7 @@ public class CSUtils {
 
     //creates random account on CommonSense.
     // @ return map{"email", email  ;  "username", <username>  ; "password" <password> }
-    public static Map<String, String> createCSAccount() throws IOException {
+    public Map<String, String> createCSAccount() throws IOException {
 
         HttpURLConnection urlConnection = null;
         HashMap<String, String> response = new HashMap<String, String>();
@@ -240,7 +240,7 @@ public class CSUtils {
 
     }
 
-    public static boolean deleteAccount(String userName, String passWord,String userId){
+    public boolean deleteAccount(String userName, String passWord,String userId){
 
         CommonSenseProxy csProxy = new CommonSenseProxy(false,  APP_KEY);
 
@@ -266,7 +266,7 @@ public class CSUtils {
      * @result	The integer value of the result
      *
      */
-    public static int checkResponseCode(String responseCode, String method){
+    public int checkResponseCode(String responseCode, String method){
         if ("403".equalsIgnoreCase(responseCode)) {
             Log.w(TAG, "CommonSense" + method + "refused! Response: forbidden!");
             return -2;
@@ -300,7 +300,7 @@ public class CSUtils {
      *         all response headers.
      */
 
-    private static Map<String, String> request( String urlString,
+    private Map<String, String> request( String urlString,
                                                 JSONObject content, String sessionID, String requestMethod) throws IOException {
 
         HttpURLConnection urlConnection = null;
