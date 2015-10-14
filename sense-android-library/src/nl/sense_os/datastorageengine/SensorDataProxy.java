@@ -60,6 +60,16 @@ public class SensorDataProxy {
     }
 
     /**
+     * Get all sensor profiles
+     * Throws an exception when no sessionId is set or when the sessionId is not valid.
+     * @return Returns an array with sensor profiles, structured like:
+     *         [{sensor_name: string, data_type: JSON}, ...]
+     */
+    public JSONArray getSensorProfiles() throws JSONException, IOException {
+        return request("GET", new URL(baseUrl + "/sensor_profiles")).toJSONArray();
+    }
+
+    /**
      * Get all sensors of the currently logged in user
      * Throws an exception when no sessionId is set or when the sessionId is not valid.
      * @return Returns an array with sensors
@@ -101,12 +111,15 @@ public class SensorDataProxy {
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
      * @param meta           JSON object with meta data
+     * @return               Returns the sensor object
      */
-    public void updateSensor(final String sourceName, final String sensorName, final JSONObject meta) throws IOException, JSONException {
+    public JSONObject updateSensor(final String sourceName, final String sensorName, final JSONObject meta) throws IOException, JSONException {
         JSONObject body = new JSONObject();
         body.put("meta", meta);
 
-        request("PUT", sensorUrl(sourceName, sensorName), body);
+        HTTPUtil.Response res = request("PUT", sensorUrl(sourceName, sensorName), body);
+
+        return res.toJSONArray().getJSONObject(0);
     }
 
     /**
@@ -136,7 +149,7 @@ public class SensorDataProxy {
      */
     public JSONArray getSensorData(final String sourceName, final String sensorName, final QueryOptions queryOptions) throws IOException, JSONException {
         URL url = new URL(sensorDataUrl(sourceName, sensorName).toString() + queryOptions.toQueryParams());
-        return request("GET", url).toJSONArray();
+        return request("GET", url).toJSONObject().getJSONArray("data");
     }
 
     /**

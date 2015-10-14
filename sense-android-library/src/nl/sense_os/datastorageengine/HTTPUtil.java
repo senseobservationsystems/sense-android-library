@@ -28,6 +28,9 @@ import javax.net.ssl.HttpsURLConnection;
 public class HTTPUtil {
     private static final String TAG = "HTTPUtil";
 
+    // FIXME: set COMPRESS true again as soon as the backend supports it
+    protected static boolean COMPRESS = false;
+
     /**
      * Perform an HTTP request to the Sensor data API.
      *
@@ -46,8 +49,6 @@ public class HTTPUtil {
         // TODO: use a library like https://github.com/kevinsawicki/http-request instead of our own baked request method
 
         try {
-            // FIXME: set compress true again as soon as the backend supports it
-            final boolean compress = false;
             // open new URL connection channel.
             if ("https".equals(url.getProtocol().toLowerCase(Locale.ENGLISH))) {
                 HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
@@ -82,7 +83,7 @@ public class HTTPUtil {
                 urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
                 // send content
                 DataOutputStream printout;
-                if (compress) {
+                if (COMPRESS) {
                     // do not set content size
                     // use chunked transfer mode instead
                     urlConnection.setChunkedStreamingMode(0);
