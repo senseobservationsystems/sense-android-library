@@ -118,6 +118,17 @@ public class DbHelper extends SQLiteOpenHelper {
             sb.append(", " + DataPoint.TRANSMIT_STATE + " INTEGER");
             sb.append(");");
             db.execSQL(sb.toString());
+
+            // create combined index for SENSOR_NAME and TIMESTAMP with DESC order
+            String createIndexSensorTime = "CREATE INDEX IF NOT EXISTS sensorTime ON " +
+                    DbHelper.TABLE +"("+ DataPoint.SENSOR_NAME+ "," + DataPoint.TIMESTAMP + " DESC);";
+            db.execSQL(createIndexSensorTime);
+
+            // create combined index for SENSOR_NAME and SENSOR_DESCRIPTION (a.k.a device_type) and TIMESTAMP with DESC order
+            String createIndexSensorDeviceTime = "CREATE INDEX IF NOT EXISTS sensorDeviceTime ON " +
+                    DbHelper.TABLE +"("+ DataPoint.SENSOR_NAME+ "," + DataPoint.SENSOR_DESCRIPTION + "," + DataPoint.TIMESTAMP + " DESC);";
+            db.execSQL(createIndexSensorDeviceTime);
+
         } catch (SQLiteException e) {
             Log.w(TAG, "Error creating database. Maybe the table is already there", e);
         }
