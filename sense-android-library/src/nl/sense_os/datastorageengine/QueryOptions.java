@@ -94,7 +94,7 @@ public class QueryOptions implements Cloneable{
         if (endDate != null)   {params.put("end_date",   endDate.toString()); }
         if (limit != null)     {params.put("limit",      limit.toString()); }
         if (interval != null)  {params.put("interval",   interval.name().toLowerCase()); }
-        if (sortOrder != null) {params.put("sort",       interval.name().toLowerCase()); }
+        if (sortOrder != null) {params.put("sort",       sortOrder.name().toLowerCase()); }
 
         String queryParams = "";
         for (Map.Entry<String, String> entry : params.entrySet()) {

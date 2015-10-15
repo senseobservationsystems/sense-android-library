@@ -119,7 +119,7 @@ public class SensorDataProxy {
 
         HTTPUtil.Response res = request("PUT", sensorUrl(sourceName, sensorName), body);
 
-        return res.toJSONArray().getJSONObject(0);
+        return res.toJSONObject();
     }
 
     /**
@@ -177,9 +177,11 @@ public class SensorDataProxy {
      */
     public void putSensorData(final String sourceName, final String sensorName, JSONArray data, JSONObject meta) throws JSONException, IOException {
         // create one sensor data object
-        JSONObject requestBody = createSensorDataObject(sourceName, sensorName, data, meta);
+        JSONObject sensor = createSensorDataObject(sourceName, sensorName, data, meta);
+        JSONArray requestBody = new JSONArray();
+        requestBody.put(sensor);
 
-        request("PUT", sensorDataUrl(sourceName, sensorName), requestBody);
+        request("PUT", sensorDataUrl(), requestBody);
     }
 
     /**
@@ -326,7 +328,7 @@ public class SensorDataProxy {
      */
     protected URL sensorDataUrl(String sourceName, String sensorName)
             throws UnsupportedEncodingException, MalformedURLException {
-        return new URL(baseUrl + "/sensors/" + HTTPUtil.encode(sourceName) + "/" + HTTPUtil.encode(sensorName) + "/data");
+        return new URL(baseUrl + "/sensor_data/" + HTTPUtil.encode(sourceName) + "/" + HTTPUtil.encode(sensorName));
     }
 
     /**
@@ -336,7 +338,7 @@ public class SensorDataProxy {
      * @throws MalformedURLException
      */
     protected URL sensorDataUrl() throws UnsupportedEncodingException, MalformedURLException {
-        return new URL(baseUrl + "/sensors/data");
+        return new URL(baseUrl + "/sensor_data");
     }
 
     /**
@@ -377,7 +379,7 @@ public class SensorDataProxy {
      * @return Returns a Response containing response code, body, and response headers.
      */
     protected HTTPUtil.Response request(String method, URL url) throws IOException {
-        final String body = "";
+        final String body = null;
         return request(method, url, body);
     }
 
@@ -408,7 +410,14 @@ public class SensorDataProxy {
         Map<String,String> headers = new HashMap<>();
         headers.put("APPLICATION-KEY", appKey);
         headers.put("SESSION-ID", sessionId);
-        headers.put("Content-Type", "application/json");
+
+        // When no charset is given in the Content-Type header "ISO-8859-1" should be
+        // assumed (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7.1).
+        // Because we're uploading UTF-8 the charset should be set to UTF-8.
+        if (body != null && !body.isEmpty()) {
+            headers.put("Content-Type", "application/json; charset=utf-8");
+        }
+        headers.put("Accept", "application/json");
 
         return HTTPUtil.request(method, url, headers, body);
     }

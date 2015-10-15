@@ -60,7 +60,6 @@ public class HTTPUtil {
             // some parameters
             urlConnection.setUseCaches(false);
             urlConnection.setInstanceFollowRedirects(false);
-            urlConnection.setRequestProperty("Accept", "application/json");
 
             // set request method
             if(method != null) {
@@ -75,12 +74,14 @@ public class HTTPUtil {
             }
 
             // send content
-            if (body != null) {
-                urlConnection.setDoOutput(true);
-                // When no charset is given in the Content-Type header "ISO-8859-1" should be
-                // assumed (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7.1).
-                // Because we're uploading UTF-8 the charset should be set to UTF-8.
-                urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            if (body != null && !body.isEmpty()) {
+                urlConnection.setDoOutput(true); // WARNING: this will change the request method to POST
+
+                // set request method again as setDoOutput overrides it with POST in Android 4.0 and newer
+                if(method != null) {
+                    urlConnection.setRequestMethod(method.toUpperCase());
+                }
+
                 // send content
                 DataOutputStream printout;
                 if (COMPRESS) {

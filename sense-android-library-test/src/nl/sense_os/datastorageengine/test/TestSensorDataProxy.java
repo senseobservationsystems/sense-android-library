@@ -124,7 +124,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         sensor.put("sensor_name", sensorName);
         sensor.put("meta", meta);
         expected.put(sensor);
-        JSONAssert.assertEquals(expected, sensors1, false);
+        JSONAssert.assertEquals(expected, sensors1, true);
     }
 
     public void testGetSensor () throws IOException, JSONException {
@@ -139,11 +139,11 @@ public class TestSensorDataProxy extends AndroidTestCase {
         expected.put("source_name", sourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
-        JSONAssert.assertEquals(expected, updated, false);
+        JSONAssert.assertEquals(expected, updated, true);
 
         // test if we get the created sensor back
         JSONObject sensor = proxy.getSensor(sourceName, sensorName);
-        JSONAssert.assertEquals(expected, sensor, false);
+        JSONAssert.assertEquals(expected, sensor, true);
     }
 
     public void testGetNonExistingSensor () {
@@ -191,17 +191,17 @@ public class TestSensorDataProxy extends AndroidTestCase {
         expected.put("source_name", sourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
-        JSONAssert.assertEquals(expected, updated, false);
+        JSONAssert.assertEquals(expected, updated, true);
 
         // update again
         JSONObject meta2 = new JSONObject("{\"the whether\":\"is nice\"}");
         JSONObject updated2 = proxy.updateSensor(sourceName, sensorName, meta2);
 
         JSONObject expected2 = new JSONObject();
-        expected.put("source_name", sourceName);
-        expected.put("sensor_name", sensorName);
-        expected.put("meta", meta2);
-        JSONAssert.assertEquals(expected2, updated2, false);
+        expected2.put("source_name", sourceName);
+        expected2.put("sensor_name", sensorName);
+        expected2.put("meta", meta2);
+        JSONAssert.assertEquals(expected2, updated2, true);
     }
 
     public void testUpdateNonExistingSensor () {
@@ -255,7 +255,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         sensor.put("sensor_name", sensorName);
         sensor.put("meta", meta);
         expected.put(sensor);
-        JSONAssert.assertEquals(expected, sensors, false);
+        JSONAssert.assertEquals(expected, sensors, true);
 
         // delete the sensor
         proxy.deleteSensor(sourceName, sensorName);
@@ -263,7 +263,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         // sensor list must be empty again
         JSONArray sensors2 = proxy.getSensors();
         JSONArray expected2 = new JSONArray();
-        JSONAssert.assertEquals(expected2, sensors2, false);
+        JSONAssert.assertEquals(expected2, sensors2, true);
     }
 
     public void testDeleteNonExistingSensor () {
@@ -313,16 +313,22 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
         // get sensor data
         JSONArray retrievedData = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
-        JSONAssert.assertEquals(data, retrievedData, false);
+        JSONArray expected = new JSONArray();
+        // TODO: order is DESC by default, should this be ASC?
+        expected.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
+        expected.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
+        expected.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
+        JSONAssert.assertEquals(expected, retrievedData, true);
 
         // get limited sensor data
         QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
         options.setLimit(2);
         JSONArray limitedData = proxy.getSensorData(sourceName, sensorName, options);
-        JSONArray expected = new JSONArray();
-        expected.put(data.get(0));
-        expected.put(data.get(1));
-        JSONAssert.assertEquals(expected, limitedData, false);
+        JSONArray expected2 = new JSONArray();
+        expected2.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
+        expected2.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
+        JSONAssert.assertEquals(expected2, limitedData, true);
     }
 
     public void testPutSensorDataWithMeta() throws IOException, RuntimeException, JSONException {
@@ -344,14 +350,16 @@ public class TestSensorDataProxy extends AndroidTestCase {
         expected.put("source_name", sourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
-        JSONAssert.assertEquals(expected, sensor, false);
+        JSONAssert.assertEquals(expected, sensor, true);
 
         // get sensor data
-        JSONArray retrievedData = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
-        JSONAssert.assertEquals(data, retrievedData, false);
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        JSONArray retrievedData = proxy.getSensorData(sourceName, sensorName, options);
+        JSONAssert.assertEquals(data, retrievedData, true);
     }
 
-    public void testPutMultipleSensors() throws IOException, RuntimeException, JSONException {
+    public void testPutMultipleSensorData() throws IOException, RuntimeException, JSONException {
         Log.d(TAG, "testPutMultipleSensors");
 
         String sensorName1 = "time_active";
@@ -380,27 +388,29 @@ public class TestSensorDataProxy extends AndroidTestCase {
         JSONObject expected1 = new JSONObject();
         expected1.put("source_name", sourceName);
         expected1.put("sensor_name", sensorName1);
-        expected1.put("meta", null);
-        JSONAssert.assertEquals(expected1, sensor1, false);
+        expected1.put("meta", new JSONObject());
+        JSONAssert.assertEquals(expected1, sensor1retrieved, true);
 
         // get sensor1 data
-        JSONArray retrievedData1 = proxy.getSensorData(sourceName, sensorName1, new QueryOptions());
-        JSONAssert.assertEquals(data1, retrievedData1, false);
-        
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        JSONArray retrievedData1 = proxy.getSensorData(sourceName, sensorName1, options);
+        JSONAssert.assertEquals(data1, retrievedData1, true);
+
         // get sensor2
         JSONObject sensor2retrieved = proxy.getSensor(sourceName, sensorName2);
         JSONObject expected2 = new JSONObject();
         expected2.put("source_name", sourceName);
         expected2.put("sensor_name", sensorName2);
-        expected2.put("meta", null);
-        JSONAssert.assertEquals(expected2, sensor2, false);
+        expected2.put("meta", new JSONObject());
+        JSONAssert.assertEquals(expected2, sensor2retrieved, true);
 
         // get sensor2 data
-        JSONArray retrievedData2 = proxy.getSensorData(sourceName, sensorName2, new QueryOptions());
-        JSONAssert.assertEquals(data2, retrievedData2, false);
+        JSONArray retrievedData2 = proxy.getSensorData(sourceName, sensorName2, options);
+        JSONAssert.assertEquals(data2, retrievedData2, true);
     }
 
-    public void testPutMultipleSensorsInvalidSource() throws IOException, RuntimeException, JSONException {
+    public void testPutMultipleSensorDataInvalidSource() throws IOException, RuntimeException, JSONException {
         Log.d(TAG, "testPutMultipleSensorsInvalidSource");
 
         try {
@@ -480,7 +490,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         expected.put("sensor_name", sensorName);
         expected.put("data", data);
 
-        JSONAssert.assertEquals(expected, actual, false);
+        JSONAssert.assertEquals(expected, actual, true);
     }
 
     public void testCreateSensorDataObjectWithMeta() throws IOException, RuntimeException, JSONException {
@@ -505,7 +515,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         expected.put("data", data);
         expected.put("meta", meta);
 
-        JSONAssert.assertEquals(expected, actual, false);
+        JSONAssert.assertEquals(expected, actual, true);
     }
 
     public void testDeleteSensorData() throws IOException, RuntimeException, JSONException {
@@ -534,7 +544,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         data.put(new JSONObject("{\"time\":1444739042200,\"value\":1}"));
         data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
         data.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
-        JSONAssert.assertEquals(expected, actual, false);
+        JSONAssert.assertEquals(expected, actual, true);
     }
 
     public void testDeleteSensorDataInvalidSource() throws IOException, RuntimeException, JSONException {
