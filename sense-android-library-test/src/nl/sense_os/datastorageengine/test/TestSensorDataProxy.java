@@ -479,7 +479,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
         // create sensor data
         JSONArray data = new JSONArray();
-        data.put(new JSONObject("{\"time\":1444739042200,\"value\":1}"));
+        data.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
         data.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
         data.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
         data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
@@ -488,7 +488,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
         // delete sensor data
         long startTime = 1444739042200l;  // time of point with value 2
-        long endTime = 1444739042400l;    // time of point with value 4
+        long endTime   = 1444739042400l;  // time of point with value 4
         proxy.deleteSensorData(sourceName, sensorName, startTime, endTime);
 
         // see whether point 2 and 3 are deleted
@@ -497,7 +497,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
         JSONArray actual = proxy.getSensorData(sourceName, sensorName, options);
         JSONArray expected = new JSONArray();
-        data.put(new JSONObject("{\"time\":1444739042200,\"value\":1}"));
+        data.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
         data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
         data.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
         JSONAssert.assertEquals(expected, actual, true);
