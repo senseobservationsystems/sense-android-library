@@ -497,9 +497,9 @@ public class TestSensorDataProxy extends AndroidTestCase {
         options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
         JSONArray actual = proxy.getSensorData(sourceName, sensorName, options);
         JSONArray expected = new JSONArray();
-        data.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
-        data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
-        data.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
+        expected.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
+        expected.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
+        expected.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
         JSONAssert.assertEquals(expected, actual, true);
     }
 
