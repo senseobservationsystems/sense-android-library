@@ -492,8 +492,10 @@ public class TestSensorDataProxy extends AndroidTestCase {
         proxy.deleteSensorData(sourceName, sensorName, startTime, endTime);
 
         // see whether point 2 and 3 are deleted
-        // (not point 4, endTime itself should be execluded)
-        JSONArray actual = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        // (not point 4, endTime itself should be excluded)
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        JSONArray actual = proxy.getSensorData(sourceName, sensorName, options);
         JSONArray expected = new JSONArray();
         data.put(new JSONObject("{\"time\":1444739042200,\"value\":1}"));
         data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
