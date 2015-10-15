@@ -33,8 +33,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     CSUtils csUtils;
 
     public void setUp () throws IOException {
-        Log.d(TAG, "setUp");
-
         csUtils = new CSUtils(false); // staging server
 
         user = csUtils.createCSAccount();
@@ -44,14 +42,10 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void tearDown() throws IOException {
-        Log.d(TAG, "tearDown");
-
         csUtils.deleteAccount(user.get("username"), user.get("password"),user.get("id"));
     }
 
     public void testInvalidAppKey () {
-        Log.d(TAG, "testInvalidAppKey");
-
         // create a proxy with invalid appKey
         String invalidAppKey = "uh oh";
         SensorDataProxy proxy2 = new SensorDataProxy(server, invalidAppKey, sessionId);
@@ -71,8 +65,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testInvalidSessionId () {
-        Log.d(TAG, "testInvalidSessionId");
-
         // create a proxy with invalid appKey
         String invalidSessionId = "no go";
         SensorDataProxy proxy2 = new SensorDataProxy(server, appKey, invalidSessionId);
@@ -92,8 +84,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testGetSensorProfiles () throws JSONException, IOException {
-        Log.d(TAG, "testGetSensorProfiles");
-
         JSONArray profiles = proxy.getSensorProfiles();
         assertTrue("Should return an empty sensor list", profiles.length() > 0);
 
@@ -105,8 +95,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testGetSensors () throws IOException, JSONException {
-        Log.d(TAG, "testGetSensors");
-
         // initially we should have no sensors
         JSONArray sensors = proxy.getSensors();
         assertEquals("Should return an empty sensor list", 0, sensors.length());
@@ -128,8 +116,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testGetSensor () throws IOException, JSONException {
-        Log.d(TAG, "testGetSensor");
-
         // create a sensor by putting a meta field
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
@@ -147,8 +133,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testGetNonExistingSensor () {
-        Log.d(TAG, "testGetNonExistingSensor");
-
         try {
             String nonExistingSensorName = "accelerometer";
             proxy.getSensor(sourceName, nonExistingSensorName);
@@ -180,8 +164,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testUpdateSensor () throws IOException, JSONException {
-        Log.d(TAG, "testUpdateSensor");
-
         // update first time (will create the sensor
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
@@ -205,8 +187,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testUpdateNonExistingSensor () {
-        Log.d(TAG, "testUpdateNonExistingSensor");
-
         try {
             String nonExistingSensorName = "star_counter";
             JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
@@ -222,8 +202,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testUpdateSensorInvalidSource () {
-        Log.d(TAG, "testUpdateSensorInvalidSource");
-
         try {
             String nonExistingSourceName = "foo";
             String sensorName = "accelerometer";
@@ -240,8 +218,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testDeleteSensor () throws IOException, JSONException {
-        Log.d(TAG, "testDeleteSensor");
-
         // update first time (will create the sensor)
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
@@ -267,8 +243,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testDeleteNonExistingSensor () {
-        Log.d(TAG, "testDeleteNonExistingSensor");
-
         try {
             String nonExistingSensorName = "accelerometer";
             proxy.deleteSensor(sourceName, nonExistingSensorName);
@@ -283,8 +257,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testDeleteSensorInvalidSource () {
-        Log.d(TAG, "testDeleteSensorInvalidSource");
-
         try {
             String nonExistingSourceName = "foo";
             String sensorName = "accelerometer";
@@ -300,8 +272,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testPutAndGetSensorData() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testPutAndGetSensorData");
-
         String sensorName = "time_active";
         JSONArray data = new JSONArray();
         data.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
@@ -332,8 +302,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testPutSensorDataWithMeta() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testPutSensorDataWithMeta");
-
         String sensorName = "time_active";
         JSONArray data = new JSONArray();
         data.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
@@ -360,8 +328,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testPutMultipleSensorData() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testPutMultipleSensors");
-
         String sensorName1 = "time_active";
         JSONArray data1 = new JSONArray();
         data1.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
@@ -411,8 +377,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testPutMultipleSensorDataInvalidSource() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testPutMultipleSensorsInvalidSource");
-
         try {
             String nonExistingSourceName = "nonono";
             String sensorName = "time_active";
@@ -435,8 +399,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testGetNonExistingSensorData() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testGetNonExistingSensorData");
-
         try {
             String nonExistingSensorName = "real_time_world_population";
 
@@ -453,8 +415,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testGetSensorDataInvalidSource() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testGetSensorDataInvalidSource");
-
         try {
             String invalidSourceName = "sense_blackberry";
             String sensorName = "accelerometer";
@@ -472,8 +432,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testCreateSensorDataObject() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testCreateSensorDataObject");
-
         String sourceName = "the_source";
         String sensorName = "the_sensor";
 
@@ -494,8 +452,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testCreateSensorDataObjectWithMeta() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testCreateSensorDataObjectWithMeta");
-
         String sourceName = "the_source";
         String sensorName = "the_sensor";
 
@@ -519,8 +475,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testDeleteSensorData() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testDeleteSensorData");
-
         String sensorName = "time_active";
 
         // create sensor data
@@ -548,8 +502,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testDeleteSensorDataInvalidSource() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testDeleteSensorDataInvalidSource");
-
         try {
             String invalidSourceName = "imaginary";
             String sensorName = "accelerometer";
@@ -567,8 +519,6 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testDeleteNonExistingSensorData() throws IOException, RuntimeException, JSONException {
-        Log.d(TAG, "testDeleteNonExistingSensorData");
-
         try {
             String nonExistingSensorName = "foo";
 
