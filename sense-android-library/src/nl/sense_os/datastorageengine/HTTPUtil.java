@@ -135,7 +135,8 @@ public class HTTPUtil {
             // validate response code, throw an exception when not 200
             int responseCode = urlConnection.getResponseCode();
             Log.d(TAG, "response code=" + responseCode + ", body length=" + responseBody.length());
-            if (responseCode != 200 && responseCode != 201) {
+            // TODO: handle redirections (responseCode 3xx)
+            if (responseCode < 200 || responseCode >= 300) { // range [200-300) is ok
                 try {
                     // we expect the body to be a JSONObject like {"code": number, "reason": string}
                     Log.d(TAG, "request body=\n" + body);
