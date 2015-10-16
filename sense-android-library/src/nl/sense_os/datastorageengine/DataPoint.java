@@ -11,19 +11,13 @@ public class DataPoint {
     private long sensorId = -1;
     private Object value = null;
     private long date = 0;
-    private boolean existsInCS = false;
+    private boolean existsInRemote = false;
 
-    public DataPoint(long sensorId, Object value, long date, boolean existsInCS) {
+    public DataPoint(long sensorId, Object value, long date, boolean existsInRemote) {
         this.sensorId = sensorId;
         this.value = value;
         this.date = date;
-        this.existsInCS = existsInCS;
-    }
-
-    public DataPoint(long sensorId, Object value, long date) {
-        this.sensorId = sensorId;
-        this.value = value;
-        this.date = date;
+        this.existsInRemote = existsInRemote;
     }
 
     /**
@@ -34,7 +28,7 @@ public class DataPoint {
         this.sensorId   = obj.getLong("sensorId");
         this.value      = obj.opt("value");
         this.date       = obj.getLong("date");
-        this.existsInCS = obj.optBoolean("existsInCS", false);
+        this.existsInRemote = obj.optBoolean("existsInRemote", false);
     }
 
     public long getSensorId() {
@@ -152,11 +146,11 @@ public class DataPoint {
     }
 
     public boolean existsInCS() {
-        return existsInCS;
+        return existsInRemote;
     }
 
-    public void setExistsInCS(boolean existsInCS) {
-        this.existsInCS = existsInCS;
+    public void setExistsInRemote(boolean existsInRemote) {
+        this.existsInRemote = existsInRemote;
     }
 
     /**
@@ -169,7 +163,7 @@ public class DataPoint {
             obj.put("sensorId", sensorId);
             obj.put("value",    value);
             obj.put("date",     date);
-            obj.put("existsInCS", existsInCS);
+            obj.put("existsInRemote", existsInRemote);
         } catch (JSONException e) {
             e.printStackTrace();
         }

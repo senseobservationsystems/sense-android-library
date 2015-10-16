@@ -14,17 +14,17 @@ public class QueryOptions implements Cloneable{
 
     private Long startDate = null;
     private Long endDate = null;
-    private Boolean existsInCS= null;
+    private Boolean existsInRemote = null;
     private Integer limit = null;
     private SORT_ORDER sortOrder = null;
     private INTERVAL interval = null;
 
     public QueryOptions() {};
 
-    public QueryOptions(Long startDate, Long endDate, Boolean existsInCS, Integer limit, SORT_ORDER sortOrder){
+    public QueryOptions(Long startDate, Long endDate, Boolean existsInRemote, Integer limit, SORT_ORDER sortOrder){
         this.startDate = startDate;
         this.endDate = endDate;
-        this.existsInCS = existsInCS;
+        this.existsInRemote = existsInRemote;
         this.limit = limit;
         this.sortOrder = sortOrder;
     }
@@ -37,9 +37,9 @@ public class QueryOptions implements Cloneable{
 
     public void setEndDate(Long endDate) { this.endDate = endDate; }
 
-    public Boolean getExistsInCS() { return existsInCS; }
+    public Boolean getExistsInRemote() { return existsInRemote; }
 
-    public void setExistsInCS(Boolean existsInCS) { this.existsInCS = existsInCS; }
+    public void setExistsInRemote(Boolean existsInRemote) { this.existsInRemote = existsInRemote; }
 
     public Integer getLimit() { return limit; }
 
@@ -72,8 +72,8 @@ public class QueryOptions implements Cloneable{
                 merged.startDate = o.startDate;
             if(o.endDate != null)
                 merged.endDate = o.endDate;
-            if(o.existsInCS != null)
-                merged.existsInCS = o.existsInCS;
+            if(o.existsInRemote != null)
+                merged.existsInRemote = o.existsInRemote;
             if(o.limit != null)
                 merged.limit = o.limit;
             if(o.sortOrder != null)

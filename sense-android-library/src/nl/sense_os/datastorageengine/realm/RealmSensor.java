@@ -28,9 +28,9 @@ public class RealmSensor implements Sensor {
     private String userId = null;
     private String source = null;
     private SensorOptions options = new SensorOptions();
-    private boolean csDataPointsDownloaded = false;
+    private boolean remoteDataPointsDownloaded = false;
 
-    public RealmSensor(Realm realm, long id, String name, String userId, String source, SensorOptions options, boolean csDataPointsDownloaded) throws SensorException {
+    public RealmSensor(Realm realm, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException {
         // validate if the sensor name is valid
         if (SensorProfiles.getSensorType(name) == null) {
             throw new SensorException("Unknown sensor name '" + name + "'.");
@@ -43,7 +43,7 @@ public class RealmSensor implements Sensor {
         this.userId = userId;
         this.source = source;
         this.options = options;
-        this.csDataPointsDownloaded = csDataPointsDownloaded;
+        this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
     }
 
     public long getId() {
@@ -66,8 +66,8 @@ public class RealmSensor implements Sensor {
         return SensorProfiles.getSensorType(name);
     }
 
-    public boolean isCsDataPointsDownloaded() {
-        return csDataPointsDownloaded;
+    public boolean isRemoteDataPointsDownloaded() {
+        return remoteDataPointsDownloaded;
     }
 
     /**
@@ -93,8 +93,8 @@ public class RealmSensor implements Sensor {
         return options.clone();
     }
 
-    public void setCsDataPointsDownloaded(boolean csDataPointsDownloaded) throws DatabaseHandlerException {
-        this.csDataPointsDownloaded = csDataPointsDownloaded;
+    public void setRemoteDataPointsDownloaded(boolean remoteDataPointsDownloaded) throws DatabaseHandlerException {
+        this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
 
         // store changes in the local database
         saveChanges();
@@ -106,9 +106,18 @@ public class RealmSensor implements Sensor {
      * @param date
      */
     public void insertOrUpdateDataPoint(Object value, long date) throws SensorException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, date));
+        insertOrUpdateDataPoint(new DataPoint(id, value, date,false));
     }
 
+    /**
+     * Insert a new DataPoint to this sensor
+     * @param value
+     * @param date
+     * @param existsInRemote
+     */
+    public void insertOrUpdateDataPoint(Object value, long date, boolean existsInRemote) throws SensorException {
+        insertOrUpdateDataPoint(new DataPoint(id, value, date, existsInRemote));
+    }
     /**
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      */
@@ -154,8 +163,8 @@ public class RealmSensor implements Sensor {
      * endDate: End date of the query, excluded. Null means there is no check for the end Date.
      * limit: The maximum number of data points. Null means no limit.
      * sortOrder: Sort order, either ASC or DESC
-     * existsInCS: the field status to query. Null means the not query this field
-     * requiresDeletionInCS : the field status to query. Null means the not query this field
+     * existsInRemote: the field status to query. Null means the not query this field
+     * interval: one of  the INTERVAL {MINUTE, HOUR, DAY, WEEK}
      * @return Returns a List with data points
      */
       public List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException {
@@ -166,7 +175,7 @@ public class RealmSensor implements Sensor {
         }
         // query results
         realm.beginTransaction();
-        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInCS());
+        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInRemote());
         realm.commitTransaction();
 
         // sort
@@ -187,7 +196,7 @@ public class RealmSensor implements Sensor {
      * @param queryOptions: options for the query of dataPoints that need to be deleted.
      */
     public void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException{
-        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInCS());
+        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInRemote());
         realm.beginTransaction();
         results.clear();
         realm.commitTransaction();
@@ -218,7 +227,7 @@ public class RealmSensor implements Sensor {
     protected static long auto_increment = -1; // -1 means not yet loaded
 
     // Helper function for getDataPoints
-    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate, Boolean existsInCS) throws DatabaseHandlerException{
+    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate, Boolean existsInRemote) throws DatabaseHandlerException{
 
         RealmQuery<RealmModelDataPoint> query = realm
                                                 .where(RealmModelDataPoint.class)
@@ -232,8 +241,8 @@ public class RealmSensor implements Sensor {
         if(startDate != null && endDate != null && startDate >= endDate) {
             throw new DatabaseHandlerException("startDate is the same as or later than the endDate");
         }
-        if(existsInCS != null) {
-            query.equalTo("existsInCS", existsInCS);
+        if(existsInRemote != null) {
+            query.equalTo("existsInRemote", existsInRemote);
         }
 
         RealmResults<RealmModelDataPoint> results = query.findAll();

@@ -31,16 +31,16 @@ public class RealmModelDataPoint extends RealmObject {
     @Index
     private long date = -1;
 
-    private boolean existsInCS = false;
+    private boolean existsInRemote = false;
 
     public RealmModelDataPoint() {}
 
-    public RealmModelDataPoint(long sensorId, String value, long date, boolean existsInCS) {
+    public RealmModelDataPoint(long sensorId, String value, long date, boolean existsInRemote) {
         this.id = RealmModelDataPoint.getCompoundKey(sensorId, date);
         this.sensorId = sensorId;
         this.value = value;
         this.date = date;
-        this.existsInCS = existsInCS;
+        this.existsInRemote = existsInRemote;
     }
 
     public String getId() {
@@ -75,12 +75,12 @@ public class RealmModelDataPoint extends RealmObject {
         this.date = date;
     }
 
-    public boolean getExistsInCS() {
-        return existsInCS;
+    public boolean getExistsInRemote() {
+        return existsInRemote;
     }
 
-    public void setExistsInCS(boolean existsInCS) {
-        this.existsInCS = existsInCS;
+    public void setExistsInRemote(boolean existsInRemote) {
+        this.existsInRemote = existsInRemote;
     }
 
     /**
@@ -103,7 +103,7 @@ public class RealmModelDataPoint extends RealmObject {
                 realmDataPoint.getSensorId(),
                 parseValue(realmDataPoint.getValue()),
                 realmDataPoint.getDate(),
-                realmDataPoint.getExistsInCS());
+                realmDataPoint.getExistsInRemote());
     }
 
     /**

@@ -679,7 +679,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
-            dp.setExistsInCS(true);
+            dp.setExistsInRemote(true);
             realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
@@ -720,7 +720,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
-            dp.setExistsInCS(true);
+            dp.setExistsInRemote(true);
             realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
@@ -762,7 +762,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
-            dp.setExistsInCS(true);
+            dp.setExistsInRemote(true);
             realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
@@ -804,7 +804,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
-            dp.setExistsInCS(true);
+            dp.setExistsInRemote(true);
             realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
@@ -917,8 +917,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensorNumber++;
 
         boolean downloaded = true;
-        sensor.setCsDataPointsDownloaded(downloaded);
-        assertEquals("Incorrect synced status of the Realm Sensor object", downloaded, sensor.isCsDataPointsDownloaded());
+        sensor.setRemoteDataPointsDownloaded(downloaded);
+        assertEquals("Incorrect synced status of the Realm Sensor object", downloaded, sensor.isRemoteDataPointsDownloaded());
 
         RealmResults<RealmModelSensor> resultList= realm.where(RealmModelSensor.class)
                 .equalTo("name", sensorName)
@@ -927,7 +927,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
         Sensor resultSensor = RealmModelSensor.toSensor(realm, resultList.first());
-        assertEquals("Incorrect userId of the Realm Sensor object", downloaded, resultSensor.isCsDataPointsDownloaded());
+        assertEquals("Incorrect userId of the Realm Sensor object", downloaded, resultSensor.isRemoteDataPointsDownloaded());
     }
 
 
@@ -953,7 +953,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         assertEquals("This is not the expected sensor status of csDownloadEnabled", sensorOptions.isDownloadEnabled(), resultSensor.getOptions().isDownloadEnabled());
         assertEquals("This is not the expected sensor status of persistLocally", sensorOptions.isPersistLocally(), resultSensor.getOptions().isPersistLocally());
         assertEquals("This is not the expected sensor UserId", sensor.getUserId(), resultSensor.getUserId());
-        assertEquals("This is not the expected sensor status of synced", sensor.isCsDataPointsDownloaded(), resultSensor.isCsDataPointsDownloaded());
+        assertEquals("This is not the expected sensor status of synced", sensor.isRemoteDataPointsDownloaded(), resultSensor.isRemoteDataPointsDownloaded());
     }
 
     public void testGetSensorFailedWithInvalidSensor() throws JSONException, DatabaseHandlerException, SensorException {

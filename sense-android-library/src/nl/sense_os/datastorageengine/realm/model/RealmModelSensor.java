@@ -11,7 +11,6 @@ import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
-import nl.sense_os.service.shared.SensorDataPoint.DataType;
 
 public class RealmModelSensor extends RealmObject {
 
@@ -26,29 +25,29 @@ public class RealmModelSensor extends RealmObject {
     @Index
     private String name = null;
     private String meta = null;  // Stringified JSON object
-    private boolean csUploadEnabled = false;
-    private boolean csDownloadEnabled = false;
+    private boolean remoteUploadEnabled = false;
+    private boolean remoteDownloadEnabled = false;
     private boolean persistLocally = true;
     private String userId = null;
 
     @Index
     private String source = null;
-    private boolean csDataPointsDownloaded = false;
+    private boolean remoteDataPointsDownloaded = false;
 
     public RealmModelSensor() {}
 
-    public RealmModelSensor(long id, String name, String meta, boolean csUploadEnabled, boolean csDownloadEnabled, boolean persistLocally, String userId, String source, boolean csDataPointsDownloaded) {
+    public RealmModelSensor(long id, String name, String meta, boolean remoteUploadEnabled, boolean remoteDownloadEnabled, boolean persistLocally, String userId, String source, boolean remoteDataPointsDownloaded) {
         this.compoundKey = getCompoundKey(name, source, userId);
 
         this.id = id;
         this.name = name;
         this.meta = meta;
-        this.csUploadEnabled = csUploadEnabled;
-        this.csDownloadEnabled = csDownloadEnabled;
+        this.remoteUploadEnabled = remoteUploadEnabled;
+        this.remoteDownloadEnabled = remoteDownloadEnabled;
         this.persistLocally = persistLocally;
         this.userId = userId;
         this.source = source;
-        this.csDataPointsDownloaded = csDataPointsDownloaded;
+        this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
     }
 
     public String getCompoundKey() {
@@ -105,20 +104,20 @@ public class RealmModelSensor extends RealmObject {
         this.meta = meta;
     }
 
-    public boolean isCsUploadEnabled() {
-        return csUploadEnabled;
+    public boolean isRemoteUploadEnabled() {
+        return remoteUploadEnabled;
     }
 
-    public void setCsUploadEnabled(boolean csUploadEnabled) {
-        this.csUploadEnabled = csUploadEnabled;
+    public void setRemoteUploadEnabled(boolean remoteUploadEnabled) {
+        this.remoteUploadEnabled = remoteUploadEnabled;
     }
 
-    public boolean isCsDownloadEnabled() {
-        return csDownloadEnabled;
+    public boolean isRemoteDownloadEnabled() {
+        return remoteDownloadEnabled;
     }
 
-    public void setCsDownloadEnabled(boolean csDownloadEnabled) {
-        this.csDownloadEnabled = csDownloadEnabled;
+    public void setRemoteDownloadEnabled(boolean remoteDownloadEnabled) {
+        this.remoteDownloadEnabled = remoteDownloadEnabled;
     }
 
     public boolean isPersistLocally() {
@@ -146,12 +145,12 @@ public class RealmModelSensor extends RealmObject {
         this.compoundKey = getCompoundKey(name, source, userId);
     }
 
-    public boolean isCsDataPointsDownloaded() {
-        return csDataPointsDownloaded;
+    public boolean isRemoteDataPointsDownloaded() {
+        return remoteDataPointsDownloaded;
     }
 
-    public void setCsDataPointsDownloaded(boolean csDataPointsDownloaded) {
-        this.csDataPointsDownloaded = csDataPointsDownloaded;
+    public void setRemoteDataPointsDownloaded(boolean remoteDataPointsDownloaded) {
+        this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
     }
 
     /**
@@ -181,11 +180,11 @@ public class RealmModelSensor extends RealmObject {
                 realmSensor.getSource(),
                 new SensorOptions(
                         meta != null ? new JSONObject(meta) : null,
-                        realmSensor.isCsUploadEnabled(),
-                        realmSensor.isCsDownloadEnabled(),
+                        realmSensor.isRemoteUploadEnabled(),
+                        realmSensor.isRemoteDownloadEnabled(),
                         realmSensor.isPersistLocally()
                 ),
-                realmSensor.isCsDataPointsDownloaded()
+                realmSensor.isRemoteDataPointsDownloaded()
         );
     }
 
@@ -207,7 +206,7 @@ public class RealmModelSensor extends RealmObject {
                 options != null ? options.isPersistLocally() : null,
                 sensor.getUserId(),
                 sensor.getSource(),
-                sensor.isCsDataPointsDownloaded()
+                sensor.isRemoteDataPointsDownloaded()
         );
     }
 

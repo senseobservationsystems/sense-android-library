@@ -31,6 +31,7 @@ public class DataSyncer {
     private SensorDataProxy proxy = null;
     private Context context;
     private String userId;
+    private boolean periodicSyncEnabled = false;
     private ScheduledExecutorService service;
     //Default value of syncing period, 30 mins in milliseconds
     public static long SYNC_RATE = 1800000L;
@@ -40,7 +41,7 @@ public class DataSyncer {
     private ScheduledFuture<?> scheduledFuture;
     public final static String SOURCE = "sense-android";
 
-    public DataSyncer(Context context, String userId, SensorDataProxy.SERVER server, String appKey, String sessionId, Long persistPeriod){
+    public DataSyncer(Context context, String userId, SensorDataProxy proxy, Long persistPeriod){
         this.context = context;
         this.userId = userId;
         this.service = Executors.newSingleThreadScheduledExecutor();
@@ -49,8 +50,7 @@ public class DataSyncer {
         if(persistPeriod != null){
             this.persistPeriod = persistPeriod;
         }
-
-        this.proxy = new SensorDataProxy(server, appKey, sessionId);
+        this.proxy = proxy;
     }
 
     public class Task implements Runnable {
@@ -67,22 +67,26 @@ public class DataSyncer {
     }
 
     public void enablePeriodicSync(){
-        enablePeriodicSync(SYNC_RATE);
+        if(!periodicSyncEnabled) {
+            enablePeriodicSync(SYNC_RATE);
+            periodicSyncEnabled = true;
+        }
     }
 
     public void enablePeriodicSync(long syncRate){
-        scheduledFuture = service.scheduleAtFixedRate(new Task(), 0, syncRate, TimeUnit.MILLISECONDS);
+        scheduledFuture = service.scheduleWithFixedDelay(new Task(), 0, syncRate, TimeUnit.MILLISECONDS);
     }
 
     public void disablePeriodicSync(){
         scheduledFuture.cancel(false);
+        periodicSyncEnabled = false;
     }
 
-    public void login() throws InterruptedException, ExecutionException{
-        loginAsync().get();
+    public void initializeSensorProfile() throws InterruptedException, ExecutionException{
+        initializeSensorProfileAsync().get();
 
     }
-    public Future loginAsync(){
+    public Future initializeSensorProfileAsync(){
         ExecutorService es = Executors.newFixedThreadPool(1);
         return es.submit(new Callable() {
             public Object call() throws Exception {
@@ -94,7 +98,6 @@ public class DataSyncer {
 
     public void synchronize() throws InterruptedException, ExecutionException{
         synchronizeAsync().get();
-
     }
 
     public Future synchronizeAsync(){
@@ -115,6 +118,7 @@ public class DataSyncer {
         //proxy.downloadSensorList();
 
     }
+
     public void deletionInRemote() throws IOException{
         DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
@@ -123,16 +127,7 @@ public class DataSyncer {
         //Step 2: delete the data in remote and delete the request in local storage
         if(!dataDeletionRequests.isEmpty()){
             for(DataDeletionRequest request : dataDeletionRequests){
-                // take care of -1 for null
-                Long startTime = null;
-                Long endTime = null;
-                if(request.getStartDate() != -1){
-                    startTime = request.getStartDate();
-                }
-                if(request.getEndDate() != -1){
-                    endTime = request.getEndDate();
-                }
-                proxy.deleteSensorData(request.getSourceName(),request.getSensorName(),startTime,endTime);
+                proxy.deleteSensorData(request.getSourceName(),request.getSensorName(),request.getStartDate(),request.getEndDate());
                 databaseHandler.deleteDataDeletionRequest(request.getUuid());
             }
         }
@@ -160,13 +155,13 @@ public class DataSyncer {
         //Step 4: Start data syncing for all sensors
         if(!sensorListInLocal.isEmpty()) {
             for (Sensor sensor : sensorListInLocal) {
-                if(sensor.getOptions().isDownloadEnabled() && !sensor.isCsDataPointsDownloaded()) {
+                if(sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
                     JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
                     for (int i = 0; i < dataList.length(); i++) {
                         JSONObject dataFromRemote = dataList.getJSONObject(i);
                         sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"), dataFromRemote.getLong("date"));
                     }
-                    sensor.setCsDataPointsDownloaded(true);
+                    sensor.setRemoteDataPointsDownloaded(true);
                 }
             }
         }
@@ -204,7 +199,8 @@ public class DataSyncer {
                 }
                 proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray,sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
-                    dataPoint.setExistsInCS(true);
+                    dataPoint.setExistsInRemote(true);
+
                 }
             }
         }

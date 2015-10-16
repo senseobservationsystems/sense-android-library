@@ -19,7 +19,7 @@ public interface Sensor {
 
     String getDataType();
 
-    boolean isCsDataPointsDownloaded();
+    boolean isRemoteDataPointsDownloaded();
 
     /**
      * Apply options for the sensor.
@@ -35,14 +35,20 @@ public interface Sensor {
      */
     SensorOptions getOptions ();
 
-    void setCsDataPointsDownloaded(boolean csDataPointsDownloaded) throws DatabaseHandlerException;
-
+    void setRemoteDataPointsDownloaded(boolean remoteDataPointsDownloaded) throws DatabaseHandlerException;
     /**
      * Insert a new DataPoint to this sensor
      * @param value
      * @param date
      */
     void insertOrUpdateDataPoint(Object value, long date) throws SensorException;
+    /**
+     * Insert a new DataPoint to this sensor
+     * @param value
+     * @param date
+     * @param exsitedInRemote
+     */
+    void insertOrUpdateDataPoint(Object value, long date, boolean exsitedInRemote) throws SensorException;
 
     /**
      * Get data points from this sensor from the local database
@@ -51,8 +57,8 @@ public interface Sensor {
      * queryOptions.endDate: End date of the query, excluded.
      * queryOptions.limit: The maximum number of data points.
      * queryOptions.sortOrder: Sort order, either ASC or DESC
-     * queryOptions.existsInCS: required existsInCS status of the dataPoint
-     * queryOptions.requireDeletionInCS: required requireDeletionInCS status of the dataPoint
+     * queryOptions.existsInRemote: required existsInRemote status of the dataPoint
+     * queryOptions.interval: one of  the INTERVAL {MINUTE, HOUR, DAY, WEEK}
      * @return Returns a List with data points
      */
     List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException;

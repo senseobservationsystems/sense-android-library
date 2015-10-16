@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import nl.sense_os.datastorageengine.DataSyncer;
+import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.SensorDataProxy;
+import nl.sense_os.datastorageengine.realm.RealmDatabaseHandler;
 
 /**
  * Created by fei on 09/10/15.
@@ -30,23 +32,20 @@ public class TestDataSyncer extends AndroidTestCase{
         userId = newUser.get("id");
         appKey =  csUtils.APP_KEY;
         sessionId= csUtils.loginUser(newUser.get("username"), newUser.get("password"));
-        dataSyncer = new DataSyncer(getContext(), userId, SensorDataProxy.SERVER.STAGING, appKey, sessionId, 86400000L);
-
-        //Instantiate the proxy and and a data point of a sensor to remote
-        //Step 1: create a proxy
         SensorDataProxy proxy = new SensorDataProxy(SensorDataProxy.SERVER.STAGING, appKey, sessionId);
+        dataSyncer = new DataSyncer(getContext(), userId,proxy, 86400000L);
 
-        //Step 2: create a sensor data point in remote
-        Date dateType = new Date();
-        int value = 0;
-        long date = dateType.getTime();
-        JSONArray dataArray = new JSONArray();
-            JSONObject meta = new JSONObject();
-            meta.put("date",date);
-            meta.put("value",value);
-            dataArray.put(meta);
-        //TODO: waiting for the implementation in backend
-        proxy.putSensorData(DataSyncer.SOURCE,"noise_sensor",dataArray);
+        // add a data point of a sensor to remote
+//        Date dateType = new Date();
+//        int value = 0;
+//        long date = dateType.getTime();
+//        JSONArray dataArray = new JSONArray();
+//            JSONObject meta = new JSONObject();
+//            meta.put("date",date);
+//            meta.put("value",value);
+//            dataArray.put(meta);
+//        //TODO: no sensor is created in backend
+//        proxy.putSensorData(DataSyncer.SOURCE,"noise_sensor",dataArray);
 
     }
 
@@ -57,7 +56,7 @@ public class TestDataSyncer extends AndroidTestCase{
 
     public void testInitializeSucceeded() throws InterruptedException, ExecutionException {
         //TODO: how to test the asynchronous process, or lose of the internet
-        dataSyncer.login();
+        dataSyncer.initializeSensorProfile();
     }
 
     public void testExecSchedulerSucceeded() throws InterruptedException, ExecutionException {
