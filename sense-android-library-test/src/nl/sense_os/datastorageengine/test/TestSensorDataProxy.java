@@ -90,7 +90,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         List keys = toArrayList(profiles.getJSONObject(0).keys());
         Collections.sort(keys);
         assertEquals("Should contain two entries", 2, keys.size());
-        assertEquals("Should contain two entries", "data_type", keys.get(0));
+        assertEquals("Should contain two entries", "data_structure", keys.get(0));
         assertEquals("Should contain two entries", "sensor_name", keys.get(1));
     }
 
@@ -210,7 +210,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
-            assertEquals("Should throw a not found exception", 404, e.getStatusCode());
+            assertEquals("Should throw a bad request exception", 400, e.getStatusCode());
         } catch (JSONException | IOException e) {
             e.printStackTrace();
             fail("Wrong exception thrown");
@@ -391,7 +391,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
-            assertEquals("Should throw a not found exception", 404, e.getStatusCode());
+            assertEquals("Should throw a bad request exception", 400, e.getStatusCode());
         } catch (IOException e) {
             e.printStackTrace();
             fail("Wrong exception thrown");
