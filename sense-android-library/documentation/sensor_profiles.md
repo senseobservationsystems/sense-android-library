@@ -2,9 +2,10 @@
 # Sensor Profiles {#sensor_profiles}
 
 ## App sensors
-App sensors have data that is used in the apps (Brightr or Goalie).
+The App sensors have data that is used in the apps (Brightr or Goalie).
 
-### mental_resilience_sensor
+### mental_resilience
+*renamed from mental_resilience_sensor*
 ~~~
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -96,7 +97,7 @@ Debug sensors are used for debuggin the platform libraries.
   ]
 }
 ~~~
-### geofence_sensor_visit_location
+### geofence_visit_location
 *renamed from geofence_sensor_VISIT_LOCATION*
 
 ~~~
@@ -105,69 +106,6 @@ Debug sensors are used for debuggin the platform libraries.
   "type": "object",
   "properties": {
     "accuracy": {
-       "description": "The average location accuracy in meters",
-      "type": "number"
-    },
-    "altitude": {
-      "description": "The average altitude in meters above the WGS 84 reference ellipsoid.",
-      "type": "integer"
-    },
-    "bearing": {
-      "description": "The average bearing in degrees",
-      "type": "integer"
-    },
-    "distance from fence": {
-      "description": "The distance from the fence in meters",
-      "type": "number"
-    },
-    "distance from goal": {
-      "description": "The distance from the goal location in meters",
-      "type": "number"
-    },
-    "latitude": {
-      "description": "The filtered latitude in degrees",
-      "type": "number"
-    },
-    "longitude": {
-      "description": "The filtered longitude in degrees",
-      "type": "number"
-    },
-    "out of range": {
-      "description": "Whether the current location is in side or outside the fence",
-      "type": "integer"
-    },
-    "provider": {
-      "description": "The location provider, e.g. GPS, NETWORK or FUSED",
-      "type": "string"
-    },
-    "speed": {
-      "description": "The speed in meters/second over ground.",
-      "type": "integer"
-    }
-  },
-  "required": [
-    "accuracy",
-    "altitude",
-    "bearing",
-    "distance from fence",
-    "distance from goal",
-    "latitude",
-    "longitude",
-    "out of range",
-    "provider",
-    "speed"
-  ]
-}
-~~~
-
-### geofence_sensor_agoraphobia
-*renamed from geofence_sensor_AGORAPHOBIA*
-~~~
-{
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "type": "object",
-  "properties": {
-        "accuracy": {
        "description": "The average location accuracy in meters",
       "type": "number"
     },
@@ -235,7 +173,7 @@ Data from raw sensors is stored in the back-end to replay the data and improve t
   "properties": {
     "lux": {
       "description": "The illuminance in lx",
-      "type": "integer"
+      "type": "number"
     }
   },
   "required": [
@@ -244,7 +182,8 @@ Data from raw sensors is stored in the back-end to replay the data and improve t
 }
 ~~~
 
-### noise_sensor
+### noise
+*renamed from noise_sensor*
 ~~~
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -260,18 +199,23 @@ Data from raw sensors is stored in the back-end to replay the data and improve t
   "type": "object",
   "properties": {
     "ssid": {
+      "description": "The name of the detected wifi device",
       "type": "string"
     },
     "bssid": {
+      "description": "The mac address of the detected wifi device",
       "type": "string"
     },
     "frequency": {
+      "description": "The signal frequency of the detected wifi device",
       "type": "integer"
     },
     "rssi": {
+      "description": "The signal strength of the detected wifi device",
       "type": "integer"
     },
     "capabilities": {
+      "description": "The capabilities of the detected wifi device, e.g. encryption, WPS",
       "type": "string"
     }
   },
@@ -287,24 +231,31 @@ Data from raw sensors is stored in the back-end to replay the data and improve t
   "type": "object",
   "properties": {
     "longitude": {
+      "description": "The longitude in degrees",
       "type": "number"
     },
     "latitude": {
+      "description": "The latitude in degrees",
       "type": "number"
     },
     "altitude": {
+      "description": "altitude in meters above the WGS 84 reference ellipsoid.",
       "type": "number"
     },
     "accuracy": {
+      "description": "accuracy in meters",
       "type": "number"
     },
     "speed": {
+      "description": "The speed in meters/second over ground.",
       "type": "number"
     },
     "bearing": {
+      "description": "The average bearing in degrees",
       "type": "number"
     },
     "provider": {
+      "description": "The location provider, e.g. GPS, NETWORK or FUSED",
       "type": "string"
     }
   },
@@ -323,12 +274,15 @@ Data from raw sensors is stored in the back-end to replay the data and improve t
   "type": "object",
   "properties": {
     "x-axis": {
+      "description": "The acceleration force applied on the x-axis in m/s2",
       "type": "number"
     },
     "y-axis": {
+      "description": "The acceleration force applied on the y-axis in m/s2",
       "type": "number"
     },
     "z-axis": {
+      "description": "The acceleration force applied on the z-axis in m/s2",
       "type": "number"
     }
   },
@@ -340,57 +294,72 @@ Data from raw sensors is stored in the back-end to replay the data and improve t
 }
 ~~~
 
-### battery_sensor
+### battery
+*renamed from battery_sensor*
 ~~~
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
     "status": {
+      "description": "The status of the battery, e.g. charging, discharging, full",
       "type": "string"
     },
     "level": {
+      "description": "The battery level in percentage.",
       "type": "integer"
     }
   },
   "required": [
-    "status",
     "level"
   ]
 }
-### screen_activity
+~~~
+### screen
+*renamed from screen_activity*
 ~~~
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "screen": {
-      "type": "string"
+    "status": {
+      "description": "The status of the screen, e.g. on or off",
+      "enum": [ "on", "off"]
     }
   },
   "required": [
-    "screen"
+    "status"
   ]
 }
 ~~~
+*changed key name from screen to status*   
+
 ### proximity
 ~~~
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The proximity to an object in cm",
   "type": "number",
 }
 ~~~
 
-### call_state
+### call
+*renamed from call_state*
 ~~~
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
     "state": {
-      "type": "string"
+      "description": "The state of the phone",
+      "enum": ["idle", "dialing", "ringing", "calling"]
     },
     "incomingNumber": {
+      "description": "The phone number of the in comming call",
+      "type": "string"
+    },
+    "outgoingNumber": {
+      "description": "The phone number of the out going call",
       "type": "string"
     }
   },
@@ -404,6 +373,7 @@ Data from raw sensors is stored in the back-end to replay the data and improve t
 ~~~
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The time physically active in seconds",
   "type": "number",
 }
 ~~~
