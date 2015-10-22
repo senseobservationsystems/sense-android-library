@@ -131,11 +131,11 @@ These sensors contain data which is stored in the back-end to improve the curren
       "enum": ["idle", "dialing", "ringing", "calling"]
     },
     "incomingNumber": {
-      "description": "The phone number of the in comming call",
+      "description": "The phone number of the in-comming call",
       "type": "string"
     },
     "outgoingNumber": {
-      "description": "The phone number of the out going call",
+      "description": "The phone number of the out-going call",
       "type": "string"
     }
   },
@@ -149,7 +149,7 @@ These sensors contain data which is stored in the back-end to improve the curren
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "The illuminance in lx",
+  "description": "The illuminance in lux",
   "type": "number"
 }
 ~~~
@@ -381,11 +381,11 @@ Debug sensors are used for debuggin the platform libraries.
     },
     "hours": {
       "description" : "The number of actual sleep hours",
-      "type": "integer"
+      "type": "number"
     },
     "start_date": {
       "description" : "The start time of the sleep period in epoch seconds",
-      "type": "integer"
+      "type": "number"
     }
   },
   "required": [
@@ -396,6 +396,7 @@ Debug sensors are used for debuggin the platform libraries.
 }
 ~~~
 *changed the sleepTime key to hours, end_date and start_date to end_time and start_time resp.*
+*changed the type of the property history_based from integer to boolean*
 
 ### sleep_estimate
 *renamed from sleep_time_estimate*
@@ -410,7 +411,7 @@ Debug sensors are used for debuggin the platform libraries.
     },
     "history_based": {
       "description" : "Whether the sleep value is based on the history or on the actual sleep period",
-      "enum": [0, 1]
+      "type": "boolean"
     },
     "metadata": {
       "type": "object",
@@ -431,11 +432,11 @@ Debug sensors are used for debuggin the platform libraries.
     },
     "hours": {
       "description" : "The number of actual sleep hours",
-      "type": "integer"
+      "type": "number"
     },
     "start_time": {
       "description" : "The start time of the sleep period in epoch seconds",
-      "type": "integer"
+      "type": "number"
     }
   },
   "required": [
@@ -445,9 +446,8 @@ Debug sensors are used for debuggin the platform libraries.
   ]
 }
 ~~~
-*changed the sleepTime key to hours, end_date and start_date to end_time and start_time resp.*
-
-
+*changed the property sleepTime to hours, end_date and start_date to end_time and start_time resp.*
+*changed the type of the property history_based from integer to boolean*
 
 ## Deprecated sensors
 Sensors that output data that will not be stored in the back-end.
