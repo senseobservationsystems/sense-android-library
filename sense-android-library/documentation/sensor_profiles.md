@@ -1,10 +1,10 @@
-[TOC]
-# Sensor Profiles {#sensor_profiles}
+# Sensor Profiles
 
-## App sensors
+# App sensors {#app_sensors}
 The App sensors have data that is used in the apps (Brightr or Goalie).
 
-### mental_resilience
+## mental_resilience {#mental_resilience}
+
 *renamed from mental_resilience_sensor*
 ~~~json
 {
@@ -47,7 +47,8 @@ The App sensors have data that is used in the apps (Brightr or Goalie).
 }
 ~~~
 
-### time_zone
+## time_zone {#time_zone}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -68,10 +69,11 @@ The App sensors have data that is used in the apps (Brightr or Goalie).
 }
 ~~~
 
-## Sensing Library sensors
+# Sensing Library sensors {#sensing_library_sensors}
 These sensors contain data which is stored in the back-end to improve the current cortex modules.
 
-### accelerometer
+## accelerometer {#accelerometer}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -98,7 +100,8 @@ These sensors contain data which is stored in the back-end to improve the curren
 }
 ~~~
 
-### battery
+## battery {#battery}
+
 *renamed from battery_sensor*
 ~~~json
 {
@@ -110,8 +113,8 @@ These sensors contain data which is stored in the back-end to improve the curren
       "type": "string"
     },
     "level": {
-      "description": "The battery level in percentage.",
-      "type": "integer"
+      "description": "The battery level in percentage",
+      "type": "number"
     }
   },
   "required": [
@@ -119,7 +122,8 @@ These sensors contain data which is stored in the back-end to improve the curren
   ]
 }
 ~~~
-### call
+## call {#call}
+
 *renamed from call_state*
 ~~~json
 {
@@ -144,7 +148,7 @@ These sensors contain data which is stored in the back-end to improve the curren
   ]
 }
 ~~~
-### light
+## light {#light}
 
 ~~~json
 {
@@ -156,7 +160,8 @@ These sensors contain data which is stored in the back-end to improve the curren
 
 *removed inner object with key lux*
 
-### noise
+## noise {#noise}
+
 *renamed from noise_sensor*
 ~~~json
 {
@@ -166,7 +171,8 @@ These sensors contain data which is stored in the back-end to improve the curren
 }
 ~~~
 
-### position
+## position {#position}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -210,7 +216,8 @@ These sensors contain data which is stored in the back-end to improve the curren
 }
 ~~~
 
-### proximity
+## proximity {#proximity}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -219,7 +226,8 @@ These sensors contain data which is stored in the back-end to improve the curren
 }
 ~~~
 
-### screen
+## screen {#screen}
+
 *renamed from screen_activity*
 ~~~json
 {
@@ -230,7 +238,8 @@ These sensors contain data which is stored in the back-end to improve the curren
 ~~~
 *removed inner object with the key-name: screen*
 
-### wifi_scan
+## wifi_scan {#wifi_scan}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -264,10 +273,11 @@ These sensors contain data which is stored in the back-end to improve the curren
 ~~~
 
 
-## Debug sensors
+# Debug sensors {#debug_sensors}
 Debug sensors are used for debuggin the platform libraries.
 
-### app_info
+## app_info {#app_info}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -314,7 +324,8 @@ Debug sensors are used for debuggin the platform libraries.
 ~~~
 *The property key sense_platform_version (iOS only) is changed to sense_library_version*
 
-### cortex_log
+## cortex_log {#cortex_log}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -341,7 +352,8 @@ Debug sensors are used for debuggin the platform libraries.
 }
 ~~~
 
-### time_active
+## time_active {#time_active}
+
 ~~~json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -351,7 +363,8 @@ Debug sensors are used for debuggin the platform libraries.
 ~~~
 
 
-### sleep
+## sleep {#sleep}
+
 *renamed from sleep_time*
 ~~~json
 {
@@ -395,10 +408,11 @@ Debug sensors are used for debuggin the platform libraries.
   ]
 }
 ~~~
-*changed the sleepTime key to hours, end_date and start_date to end_time and start_time resp.*
+*changed the sleepTime key to hours, end_date and start_date to end_time and start_time resp.*<br>
 *changed the type of the property history_based from integer to boolean*
 
-### sleep_estimate
+## sleep_estimate {#sleep_estimate}
+
 *renamed from sleep_time_estimate*
 ~~~json
 {
@@ -446,10 +460,10 @@ Debug sensors are used for debuggin the platform libraries.
   ]
 }
 ~~~
-*changed the property sleepTime to hours, end_date and start_date to end_time and start_time resp.*
+*changed the property sleepTime to hours, end_date and start_date to end_time and start_time resp.*<br>
 *changed the type of the property history_based from integer to boolean*
 
-## Deprecated sensors
+# Deprecated sensors {#deprecated_sensors}
 Sensors that output data that will not be stored in the back-end.
 
 Debug ouput of the coaches is stored in sensors but is not needed:
