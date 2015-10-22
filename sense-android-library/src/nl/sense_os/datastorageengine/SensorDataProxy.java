@@ -93,7 +93,7 @@ public class SensorDataProxy {
      * Get a sensor of the currently logged in user by it's source name
      * and sensor name.
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
-     * the sensor does not exist.
+     * the source or sensor name is invalid.
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
@@ -106,7 +106,7 @@ public class SensorDataProxy {
     /**
      * Update a sensors `meta` object. Will override the old `meta` object.
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
-     * the sensor does not exist.
+     * the source or sensor name is invalid.
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
@@ -125,7 +125,7 @@ public class SensorDataProxy {
     /**
      * Delete a sensor including all its data
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
-     * the sensor does not exist.
+     * the source or sensor name is invalid.
      *
      * WARNING: this is a dangerous method! Use with care. Or better: don't use it at all.
      *
@@ -140,7 +140,7 @@ public class SensorDataProxy {
     /**
      * Get sensor data.
      * Throws an exception when no sessionId is set, when the sessionId is not valid, when
-     * the sensor does not exist, or when the queryOptions are invalid.
+     * the source or sensor name is invalid, or when the queryOptions are invalid.
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
@@ -155,7 +155,7 @@ public class SensorDataProxy {
     /**
      * Create or update sensor data for a single sensor.
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
-     * the sensor does not exist, or when the data contains invalid entries.
+     * the source or sensor name is invalid, or when the data contains invalid entries.
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
@@ -168,7 +168,7 @@ public class SensorDataProxy {
     /**
      * Create or update sensor data for a single sensor.
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
-     * the sensor does not exist, or when the data contains invalid entries.
+     * the source or sensor name is invalid, or when the data contains invalid entries.
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
@@ -191,7 +191,7 @@ public class SensorDataProxy {
      * each sensor.
      *
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
-     * the sensor does not exist, or when the data contains invalid entries.
+     * the source or sensor name is invalid, or when the data contains invalid entries.
      * @param sensorsData   Array with sensor data of multiple sensors, structured as:
      *
      *                      [
@@ -268,7 +268,7 @@ public class SensorDataProxy {
     /**
      * Delete sensor data.
      * Throws an exception when no sessionId is set, when the sessionId is not valid, when
-     * the sensor does not exist, or when startTime or endTime are invalid.
+     * the source or sensor name is invalid, or when startTime or endTime are invalid.
      *
      * WARNING: this is a dangerous method, use with care.
      *
