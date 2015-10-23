@@ -31,6 +31,7 @@ public class DataSyncer {
     private SensorDataProxy proxy = null;
     private Context context;
     private String userId;
+    private DatabaseHandler databaseHandler;
     private boolean periodicSyncEnabled = false;
     private ScheduledExecutorService service;
     //Default value of syncing period, 30 mins in milliseconds
@@ -42,8 +43,9 @@ public class DataSyncer {
     public final static String SOURCE = "sense-android";
 
     public DataSyncer(Context context, String userId, SensorDataProxy proxy, Long persistPeriod){
-        this.context = context;
-        this.userId = userId;
+//        this.context = context;
+//        this.userId = userId;
+        this.databaseHandler = new RealmDatabaseHandler(context, userId);
         this.service = Executors.newSingleThreadScheduledExecutor();
 
         //Null for default value of persistPeriod
@@ -66,6 +68,10 @@ public class DataSyncer {
         }
     }
 
+    public boolean isPeriodicSyncEnabled() {
+        return this.periodicSyncEnabled;
+    }
+
     public void enablePeriodicSync(){
         if(!periodicSyncEnabled) {
             enablePeriodicSync(SYNC_RATE);
@@ -82,11 +88,11 @@ public class DataSyncer {
         periodicSyncEnabled = false;
     }
 
-    public void initializeSensorProfile() throws InterruptedException, ExecutionException{
-        initializeSensorProfileAsync().get();
+    public void initialize() throws InterruptedException, ExecutionException{
+        initializeAsync().get();
 
     }
-    public Future initializeSensorProfileAsync(){
+    public Future initializeAsync(){
         ExecutorService es = Executors.newFixedThreadPool(1);
         return es.submit(new Callable() {
             public Object call() throws Exception {
@@ -120,7 +126,7 @@ public class DataSyncer {
     }
 
     public void deletionInRemote() throws IOException{
-        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
         List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
 
@@ -134,7 +140,7 @@ public class DataSyncer {
     }
 
     public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
-        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors(SOURCE);
 
@@ -168,7 +174,7 @@ public class DataSyncer {
     }
 
     public void uploadToRemote() throws JSONException, SensorException, DatabaseHandlerException, IOException {
-        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
@@ -200,14 +206,13 @@ public class DataSyncer {
                 proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray,sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInRemote(true);
-
                 }
             }
         }
     }
 
     public void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException{
-        DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
