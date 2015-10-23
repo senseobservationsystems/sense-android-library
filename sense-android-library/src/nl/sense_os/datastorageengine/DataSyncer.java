@@ -133,7 +133,7 @@ public class DataSyncer {
         //Step 2: delete the data in remote and delete the request in local storage
         if(!dataDeletionRequests.isEmpty()){
             for(DataDeletionRequest request : dataDeletionRequests){
-                proxy.deleteSensorData(request.getSourceName(),request.getSensorName(),request.getStartDate(),request.getEndDate());
+                proxy.deleteSensorData(request.getSourceName(),request.getSensorName(),request.getStartTime(),request.getEndTime());
                 databaseHandler.deleteDataDeletionRequest(request.getUuid());
             }
         }
@@ -165,7 +165,7 @@ public class DataSyncer {
                     JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
                     for (int i = 0; i < dataList.length(); i++) {
                         JSONObject dataFromRemote = dataList.getJSONObject(i);
-                        sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"), dataFromRemote.getLong("date"));
+                        sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"), dataFromRemote.getLong("time"));
                     }
                     sensor.setRemoteDataPointsDownloaded(true);
                 }
@@ -185,7 +185,7 @@ public class DataSyncer {
          *      source_name: string,
          *      sensor_name, string,
          *      data: [
-         *              {date: number, value: JSON},
+         *              {time: number, value: JSON},
          *               ...
          *            ]
          *   },
@@ -199,7 +199,7 @@ public class DataSyncer {
                 JSONArray dataArray = new JSONArray();
                 for(DataPoint dataPoint: dataPoints){
                     JSONObject jsonDataPoint = new JSONObject();
-                    jsonDataPoint.put("date", dataPoint.getDate());
+                    jsonDataPoint.put("time", dataPoint.getTime());
                     jsonDataPoint.put("value", dataPoint.getValue());
                     dataArray.put(jsonDataPoint);
                 }

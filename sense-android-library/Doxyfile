@@ -1004,7 +1004,7 @@ HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
 
 # If the HTML_TIMESTAMP tag is set to YES then the footer of each generated HTML 
-# page will contain the date and time when the page was generated. Setting 
+# page will contain the date and date when the page was generated. Setting
 # this to NO can help when comparing the output of multiple runs.
 
 HTML_TIMESTAMP         = YES

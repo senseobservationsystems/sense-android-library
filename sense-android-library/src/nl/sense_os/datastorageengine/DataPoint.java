@@ -4,19 +4,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * A DataPoint can hold a single data point of for a sensor: a date and a value.
+ * A DataPoint can hold a single data point of for a sensor: a time and a value.
  */
 public class DataPoint {
 
     private long sensorId = -1;
     private Object value = null;
-    private long date = 0;
+    private long time = 0;
     private boolean existsInRemote = false;
 
-    public DataPoint(long sensorId, Object value, long date, boolean existsInRemote) {
+    public DataPoint(long sensorId, Object value, long time, boolean existsInRemote) {
         this.sensorId = sensorId;
         this.value = value;
-        this.date = date;
+        this.time = time;
         this.existsInRemote = existsInRemote;
     }
 
@@ -27,7 +27,7 @@ public class DataPoint {
     public DataPoint(JSONObject obj) throws JSONException {
         this.sensorId   = obj.getLong("sensorId");
         this.value      = obj.opt("value");
-        this.date       = obj.getLong("date");
+        this.time = obj.getLong("time");
         this.existsInRemote = obj.optBoolean("existsInRemote", false);
     }
 
@@ -137,12 +137,12 @@ public class DataPoint {
         this.value = value;
     }
 
-    public long getDate() {
-        return date;
+    public long getTime() {
+        return time;
     }
 
-    public void setDate(long date) {
-        this.date = date;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public boolean existsInCS() {
@@ -162,7 +162,7 @@ public class DataPoint {
         try {
             obj.put("sensorId", sensorId);
             obj.put("value",    value);
-            obj.put("date",     date);
+            obj.put("time", time);
             obj.put("existsInRemote", existsInRemote);
         } catch (JSONException e) {
             e.printStackTrace();

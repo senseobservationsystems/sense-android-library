@@ -14,18 +14,18 @@ public class DataDeletionRequest extends RealmObject {
     private String sensorName = null;
     @Index
     private String sourceName = null;
-    private Long startDate = null;
-    private Long endDate = null;
+    private Long startTime = null;
+    private Long endTime = null;
 
     public DataDeletionRequest() {}
 
-    public DataDeletionRequest(String userId, String sensorName, String sourceName, long startDate, long endDate) {
+    public DataDeletionRequest(String userId, String sensorName, String sourceName, long startTime, long endTime) {
         this.uuid = UUID.randomUUID().toString();
         this.userId = userId;
         this.sensorName = sensorName;
         this.sourceName = sourceName;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public String getUuid() { return uuid; }
@@ -48,11 +48,11 @@ public class DataDeletionRequest extends RealmObject {
 
     public void setSourceName(String sourceName) { this.sourceName = sourceName; }
 
-    public Long getStartDate() { return startDate; }
+    public Long getStartTime() { return startTime; }
 
-    public void setStartDate(Long startDate) { this.startDate = startDate; }
+    public void setStartTime(Long startTime) { this.startTime = startTime; }
 
-    public Long getEndDate() { return endDate; }
+    public Long getEndTime() { return endTime; }
 
-    public void setEndDate(Long endDate) { this.endDate = endDate; }
+    public void setEndTime(Long endTime) { this.endTime = endTime; }
 }

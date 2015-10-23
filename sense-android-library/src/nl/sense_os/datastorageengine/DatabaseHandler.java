@@ -15,9 +15,9 @@ import java.util.List;
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
- *     long startDate = 1388534400000; // 2014-01-01
- *     long startDate = 1420070400000; // 2015-01-01
- *     List<DataPoint> data = sensor.getDataPoints(startDate, endDate, 1000, SORT_ORDER.ASC);
+ *     long startTime = 1388534400000; // 2014-01-01
+ *     long startTime = 1420070400000; // 2015-01-01
+ *     List<DataPoint> data = sensor.getDataPoints(startTime, endTime, 1000, SORT_ORDER.ASC);
  *
  *     databaseHandler.close();
  *
@@ -67,10 +67,10 @@ public interface DatabaseHandler {
      * Store the content of deletion request for data points in the local storage
      * @param sensorName the name of the sensor
      * @param source the source name of the sensor
-     * @param startDate the start date to delete the data points
-     * @param endDate the end date to delete the data points
+     * @param startTime the start date to delete the data points
+     * @param endTime the end date to delete the data points
      */
-    void createDataDeletionRequest(String sensorName, String source, Long startDate, Long endDate) throws DatabaseHandlerException;
+    void createDataDeletionRequest(String sensorName, String source, Long startTime, Long endTime) throws DatabaseHandlerException;
 
     /**
      * Get the list of data deletion requests from local storage

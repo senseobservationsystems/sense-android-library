@@ -12,8 +12,8 @@ public class QueryOptions implements Cloneable{
     public enum SORT_ORDER {ASC, DESC};
     public enum INTERVAL {MINUTE, HOUR, DAY, WEEK};
 
-    private Long startDate = null;
-    private Long endDate = null;
+    private Long startTime = null;
+    private Long endTime = null;
     private Boolean existsInRemote = null;
     private Integer limit = null;
     private SORT_ORDER sortOrder = null;
@@ -21,21 +21,21 @@ public class QueryOptions implements Cloneable{
 
     public QueryOptions() {};
 
-    public QueryOptions(Long startDate, Long endDate, Boolean existsInRemote, Integer limit, SORT_ORDER sortOrder){
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public QueryOptions(Long startTime, Long endTime, Boolean existsInRemote, Integer limit, SORT_ORDER sortOrder){
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.existsInRemote = existsInRemote;
         this.limit = limit;
         this.sortOrder = sortOrder;
     }
 
-    public Long getStartDate() { return startDate; }
+    public Long getStartTime() { return startTime; }
 
-    public void setStartDate(Long startDate) { this.startDate = startDate; }
+    public void setStartTime(Long startTime) { this.startTime = startTime; }
 
-    public Long getEndDate() { return endDate; }
+    public Long getEndTime() { return endTime; }
 
-    public void setEndDate(Long endDate) { this.endDate = endDate; }
+    public void setEndTime(Long endTime) { this.endTime = endTime; }
 
     public Boolean getExistsInRemote() { return existsInRemote; }
 
@@ -68,10 +68,10 @@ public class QueryOptions implements Cloneable{
     public static QueryOptions merge(QueryOptions... options) {
         QueryOptions merged = new QueryOptions();
         for(QueryOptions o: options){
-            if(o.startDate != null)
-                merged.startDate = o.startDate;
-            if(o.endDate != null)
-                merged.endDate = o.endDate;
+            if(o.startTime != null)
+                merged.startTime = o.startTime;
+            if(o.endTime != null)
+                merged.endTime = o.endTime;
             if(o.existsInRemote != null)
                 merged.existsInRemote = o.existsInRemote;
             if(o.limit != null)
@@ -83,15 +83,15 @@ public class QueryOptions implements Cloneable{
     }
 
     /**
-     * Create a query parameter string like "?start_date=123&end_date=456&limit=1000&sort=asc".
+     * Create a query parameter string like "?start_time=123&end_time=456&limit=1000&sort=asc".
      * Query options with null values are ignored.
      * @return
      */
     public String toQueryParams () {
         Map<String, String> params = new HashMap<>();
 
-        if (startDate != null) {params.put("start_date", startDate.toString()); }
-        if (endDate != null)   {params.put("end_date",   endDate.toString()); }
+        if (startTime != null) {params.put("start_time", startTime.toString()); }
+        if (endTime != null)   {params.put("end_time",   endTime.toString()); }
         if (limit != null)     {params.put("limit",      limit.toString()); }
         if (interval != null)  {params.put("interval",   interval.name().toLowerCase()); }
         if (sortOrder != null) {params.put("sort",       sortOrder.name().toLowerCase()); }

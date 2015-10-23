@@ -349,8 +349,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
-        assertEquals("Incorrect data point by using ASC sorting", date1, dataPointList.get(0).getDate());
-        assertEquals("Incorrect data point by using ASC sorting", date2, dataPointList.get(1).getDate());
+        assertEquals("Incorrect data point by using ASC sorting", date1, dataPointList.get(0).getTime());
+        assertEquals("Incorrect data point by using ASC sorting", date2, dataPointList.get(1).getTime());
     }
 
     public void testGetDataPointsSucceededWithOutOfBoundLimit() throws JSONException, DatabaseHandlerException, SensorException {
@@ -389,8 +389,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints, listSize);
-        assertEquals("Incorrect data point by using ASC sorting", date1, dataPointList.get(0).getDate());
-        assertEquals("Incorrect data point by using ASC sorting", date2, dataPointList.get(1).getDate());
+        assertEquals("Incorrect data point by using ASC sorting", date1, dataPointList.get(0).getTime());
+        assertEquals("Incorrect data point by using ASC sorting", date2, dataPointList.get(1).getTime());
     }
 
     public void testGetDataPointsSucceededWithNullStartDate() throws JSONException, DatabaseHandlerException, SensorException {
@@ -424,7 +424,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
         for(int i=0; i<limit; i++){
-            assertEquals("Incorrect data point by using ASC sorting", date[i], dataPointList.get(i).getDate());
+            assertEquals("Incorrect data point by using ASC sorting", date[i], dataPointList.get(i).getTime());
         }
     }
 
@@ -459,7 +459,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
         for(int i=9; i>limit-1; i--){
-            assertEquals("Incorrect data point by using DESC sorting", date[i], dataPointList.get(numberOfDataPoints-1-i).getDate());
+            assertEquals("Incorrect data point by using DESC sorting", date[i], dataPointList.get(numberOfDataPoints-1-i).getTime());
         }
     }
 
@@ -493,7 +493,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints, listSize);
         for(int i=0; i<numberOfDataPoints; i++){
-            assertEquals("Incorrect data point by using ASC sorting", date[i], dataPointList.get(i).getDate());
+            assertEquals("Incorrect data point by using ASC sorting", date[i], dataPointList.get(i).getTime());
         }
     }
 
@@ -527,7 +527,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints, listSize);
         for(int i=0; i<numberOfDataPoints; i++){
-            assertEquals("Incorrect data point by using ASC sorting", date[i], dataPointList.get(i).getDate());
+            assertEquals("Incorrect data point by using ASC sorting", date[i], dataPointList.get(i).getTime());
         }
     }
 
@@ -604,8 +604,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
-        assertEquals("Incorrect data point by using ASC sorting", date3, dataPointList.get(0).getDate());
-        assertEquals("Incorrect data point by using ASC sorting", date2, dataPointList.get(1).getDate());
+        assertEquals("Incorrect data point by using ASC sorting", date3, dataPointList.get(0).getTime());
+        assertEquals("Incorrect data point by using ASC sorting", date2, dataPointList.get(1).getTime());
     }
 
     // Test the case that end date is before start date
@@ -730,7 +730,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
-        assertEquals("Wrong Date of the DataPoint", date[numberToDelete], dataPointList.get(0).getDate());
+        assertEquals("Wrong Date of the DataPoint", date[numberToDelete], dataPointList.get(0).getTime());
     }
 
     // Delete DataPoints with null endDate
@@ -772,7 +772,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.DESC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
-        assertEquals("Wrong Date of the DataPoint", date[numberToDelete-1], dataPointList.get(0).getDate());
+        assertEquals("Wrong Date of the DataPoint", date[numberToDelete-1], dataPointList.get(0).getTime());
     }
 
     // Delete DataPoints with null startDate and endDate

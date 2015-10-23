@@ -103,20 +103,20 @@ public class RealmSensor implements Sensor {
     /**
      * Insert a new DataPoint to this sensor
      * @param value
-     * @param date
+     * @param time
      */
-    public void insertOrUpdateDataPoint(Object value, long date) throws SensorException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, date,false));
+    public void insertOrUpdateDataPoint(Object value, long time) throws SensorException {
+        insertOrUpdateDataPoint(new DataPoint(id, value, time,false));
     }
 
     /**
      * Insert a new DataPoint to this sensor
      * @param value
-     * @param date
+     * @param time
      * @param existsInRemote
      */
-    public void insertOrUpdateDataPoint(Object value, long date, boolean existsInRemote) throws SensorException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, date, existsInRemote));
+    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws SensorException {
+        insertOrUpdateDataPoint(new DataPoint(id, value, time, existsInRemote));
     }
     /**
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
@@ -175,14 +175,14 @@ public class RealmSensor implements Sensor {
         }
         // query results
         realm.beginTransaction();
-        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInRemote());
+        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
         realm.commitTransaction();
 
         // sort
         boolean resultsOrder = (queryOptions.getSortOrder() == QueryOptions.SORT_ORDER.DESC )
                 ? RealmResults.SORT_ORDER_DESCENDING
                 : RealmResults.SORT_ORDER_ASCENDING;
-        results.sort("date", resultsOrder);
+        results.sort("time", resultsOrder);
 
         // limit and convert to DataPoint
         List<DataPoint> dataPoints = setLimitToResult(results, queryOptions.getLimit());
@@ -196,7 +196,7 @@ public class RealmSensor implements Sensor {
      * @param queryOptions: options for the query of dataPoints that need to be deleted.
      */
     public void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException{
-        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartDate(), queryOptions.getEndDate(), queryOptions.getExistsInRemote());
+        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
         realm.beginTransaction();
         results.clear();
         realm.commitTransaction();
@@ -233,10 +233,10 @@ public class RealmSensor implements Sensor {
                                                 .where(RealmModelDataPoint.class)
                                                 .equalTo("sensorId", this.id);
         if(startDate != null) {
-            query.greaterThanOrEqualTo("date", startDate.longValue());
+            query.greaterThanOrEqualTo("time", startDate.longValue());
         }
         if(endDate != null) {
-            query.lessThan("date", endDate.longValue());
+            query.lessThan("time", endDate.longValue());
         }
         if(startDate != null && endDate != null && startDate >= endDate) {
             throw new DatabaseHandlerException("startDate is the same as or later than the endDate");

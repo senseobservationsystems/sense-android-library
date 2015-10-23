@@ -187,14 +187,14 @@ public class RealmDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public void createDataDeletionRequest(String sensorName, String source, Long startDate, Long endDate) throws DatabaseHandlerException{
-        if(startDate == null){
-            startDate = -1l;
+    public void createDataDeletionRequest(String sensorName, String source, Long startTime, Long endTime) throws DatabaseHandlerException{
+        if(startTime == null){
+            startTime = -1l;
         }
-        if(endDate == null){
-            endDate = -1l;
+        if(endTime == null){
+            endTime = -1l;
         }
-        DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, sensorName, source, startDate,endDate);
+        DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, sensorName, source, startTime,endTime);
         realm.beginTransaction();
         try {
             realm.copyToRealm(dataDeletionRequest);

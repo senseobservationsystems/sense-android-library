@@ -145,7 +145,7 @@ public class SensorDataProxy {
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
      * @param queryOptions   Query options to set start and end time, and to sort and limit the data
-     * @return Returns the sensor data, structured as `[{date: long, value: JSON}, ...]`
+     * @return Returns the sensor data, structured as `[{time: long, value: JSON}, ...]`
      */
     public JSONArray getSensorData(final String sourceName, final String sensorName, final QueryOptions queryOptions) throws IOException, JSONException {
         URL url = new URL(sensorDataUrl(sourceName, sensorName).toString() + queryOptions.toQueryParams());
@@ -159,7 +159,7 @@ public class SensorDataProxy {
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
-     * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
+     * @param data           Array with data points, structured as `[{time: long, value: JSON}, ...]`
      */
     public void putSensorData(final String sourceName, final String sensorName, JSONArray data) throws JSONException, IOException {
         putSensorData(sourceName, sensorName, data, null);
@@ -172,7 +172,7 @@ public class SensorDataProxy {
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
-     * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
+     * @param data           Array with data points, structured as `[{time: long, value: JSON}, ...]`
      * @param meta           Optional field to store meta information. Can be left null
      */
     public void putSensorData(final String sourceName, final String sensorName, JSONArray data, JSONObject meta) throws JSONException, IOException {
@@ -200,7 +200,7 @@ public class SensorDataProxy {
      *                          sensor_name, string,
      *                          meta: JSON,   // optional
      *                          data: [
-     *                            {date: number, value: JSON},
+     *                            {time: number, value: JSON},
      *                            // ...
      *                          ]
      *                        },
@@ -218,7 +218,7 @@ public class SensorDataProxy {
      *       source_name: string,
      *       sensor_name, string,
      *       data: [
-     *         {date: number, value: JSON},
+     *         {time: number, value: JSON},
      *         ...
      *       ]
      *     }
@@ -227,7 +227,7 @@ public class SensorDataProxy {
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
-     * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
+     * @param data           Array with data points, structured as `[{time: long, value: JSON}, ...]`
      * @param meta           Optional field to store meta information. Can be left null
      */
     public static JSONObject createSensorDataObject (final String sourceName, final String sensorName, JSONArray data, JSONObject meta) throws JSONException {
@@ -250,7 +250,7 @@ public class SensorDataProxy {
      *       source_name: string,
      *       sensor_name, string,
      *       data: [
-     *         {date: number, value: JSON},
+     *         {time: number, value: JSON},
      *         ...
      *       ]
      *     }
