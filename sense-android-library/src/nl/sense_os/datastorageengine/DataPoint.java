@@ -145,7 +145,7 @@ public class DataPoint {
         this.time = time;
     }
 
-    public boolean existsInCS() {
+    public boolean existsInRemote() {
         return existsInRemote;
     }
 

@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A proxy class to handle create, read, update, and delete of sensors and
+ * A proxy class to handle create, get, update, and delete of sensors and
  * sensor data in the cloud using the Sensor REST API.
  * Does not contain functionality like logging in or creating an account.
  */
@@ -63,7 +63,7 @@ public class SensorDataProxy {
      * Get all sensor profiles
      * Throws an exception when no sessionId is set or when the sessionId is not valid.
      * @return Returns an array with sensor profiles, structured like:
-     *         [{sensor_name: string, data_type: JSON}, ...]
+     *         [{sensor_name: string, data_structure: JSON}, ...]
      */
     public JSONArray getSensorProfiles() throws JSONException, IOException {
         return request("GET", new URL(baseUrl + "/sensor_profiles")).toJSONArray();
@@ -104,7 +104,7 @@ public class SensorDataProxy {
     }
 
     /**
-     * Update a sensors `meta` object. Will override the old `meta` object.
+     * Update a sensor's `meta` field. Will override the old `meta` field.
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
      * the source or sensor name is invalid.
      * @param sourceName     The source name, for example "sense-ios",
@@ -187,7 +187,7 @@ public class SensorDataProxy {
     /**
      * Create or update a sensor data of multiple sensors at once.
      *
-     * The helper function `createSensorDataObject` can be used to build the JSONObjects for
+     * The helper function `createSensorDataObject` can be used to build the JSONObject for
      * each sensor.
      *
      * Throws an exception when no sessionId is set, when the sessionId is not valid, or when
@@ -259,7 +259,7 @@ public class SensorDataProxy {
      * @param sourceName     The source name, for example "sense-ios",
      *                       "sense-android", "fitbit", ...
      * @param sensorName     The sensor name, for example "accelerometer"
-     * @param data           Array with data points, structured as `[{date: long, value: JSON}, ...]`
+     * @param data           Array with data points, structured as `[{time: long, value: JSON}, ...]`
      */
     public static JSONObject createSensorDataObject (final String sourceName, final String sensorName, JSONArray data) throws JSONException {
         return createSensorDataObject(sourceName, sensorName, data, null);

@@ -70,7 +70,7 @@ public interface Sensor {
      * queryOptions.endDate: End date of the query, excluded.
      * queryOptions.limit: it is not used for this method.
      * queryOptions.sortOrder: it is not used for this method.
-     * queryOptions.existsInCS: required existsInCS status of the dataPoint
+     * queryOptions.existsInRemote: required existsInRemote status of the dataPoint
      * queryOptions.requireDeletionInCS: required requireDeletionInCS status of the dataPoint
      */
     void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException;

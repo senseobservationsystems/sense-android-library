@@ -85,7 +85,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
     public void testGetSensorProfiles () throws JSONException, IOException {
         JSONArray profiles = proxy.getSensorProfiles();
-        assertTrue("Should return an empty sensor list", profiles.length() > 0);
+        assertTrue("Should not return an empty sensor list", profiles.length() > 0);
 
         List keys = toArrayList(profiles.getJSONObject(0).keys());
         Collections.sort(keys);
@@ -164,7 +164,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testUpdateSensor () throws IOException, JSONException {
-        // update first time (will create the sensor
+        // update first time (will create the sensor)
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
         JSONObject updated = proxy.updateSensor(sourceName, sensorName, meta);
@@ -194,7 +194,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
-            assertEquals("Should throw a not found exception", 404, e.getStatusCode());
+            assertEquals("Should throw a bad request exception", 400, e.getStatusCode());
         } catch (JSONException | IOException e) {
             e.printStackTrace();
             fail("Wrong exception thrown");
@@ -335,7 +335,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         data1.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
         JSONObject sensor1 = proxy.createSensorDataObject(sourceName, sensorName1, data1);
 
-        String sensorName2 = "noise_sensor";
+        String sensorName2 = "light";
         JSONArray data2 = new JSONArray();
         data2.put(new JSONObject("{\"time\":1444814218000,\"value\":6}"));
         data2.put(new JSONObject("{\"time\":1444814219000,\"value\":7}"));

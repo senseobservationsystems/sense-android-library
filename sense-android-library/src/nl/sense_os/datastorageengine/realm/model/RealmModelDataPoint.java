@@ -116,7 +116,7 @@ public class RealmModelDataPoint extends RealmObject {
                 dataPoint.getSensorId(),
                 stringifyValue(dataPoint.getValue()),
                 dataPoint.getTime(),
-                dataPoint.existsInCS());
+                dataPoint.existsInRemote());
     }
 
     /**

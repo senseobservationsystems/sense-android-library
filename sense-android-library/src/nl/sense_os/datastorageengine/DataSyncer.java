@@ -178,7 +178,7 @@ public class DataSyncer {
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
-        //Step 2: filter the sensor and its data and upload to remote, mark existsInCS to true afterwards
+        //Step 2: filter the sensor and its data and upload to remote, mark existsInRemote to true afterwards
         /** Data structure of the sensor
          * [
          *  {
@@ -206,6 +206,7 @@ public class DataSyncer {
                 proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray,sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInRemote(true);
+                    sensor.insertOrUpdateDataPoint(dataPoint.getValue(),dataPoint.getTime(),dataPoint.existsInRemote());
                 }
             }
         }
