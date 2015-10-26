@@ -2,17 +2,11 @@ package nl.sense_os.datastorageengine.test;
 
 import android.test.AndroidTestCase;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import nl.sense_os.datastorageengine.DataSyncer;
-import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.SensorDataProxy;
-import nl.sense_os.datastorageengine.realm.RealmDatabaseHandler;
 
 /**
  * Created by fei on 09/10/15.

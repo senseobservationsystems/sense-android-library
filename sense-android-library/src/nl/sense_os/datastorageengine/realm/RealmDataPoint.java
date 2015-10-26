@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine.realm.model;
+package nl.sense_os.datastorageengine.realm;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +19,7 @@ import nl.sense_os.datastorageengine.DataPoint;
  *     RealmDataPoint.fromDataPoint()
  *     RealmDataPoint.toDataPoint()
  */
-public class RealmModelDataPoint extends RealmObject {
+public class RealmDataPoint extends RealmObject {
     @PrimaryKey
     private String id = null; // Compound key purely used to identify the data point in Realm
 
@@ -33,10 +33,10 @@ public class RealmModelDataPoint extends RealmObject {
 
     private boolean existsInRemote = false;
 
-    public RealmModelDataPoint() {}
+    public RealmDataPoint() {}
 
-    public RealmModelDataPoint(long sensorId, String value, long date, boolean existsInRemote) {
-        this.id = RealmModelDataPoint.getCompoundKey(sensorId, date);
+    public RealmDataPoint(long sensorId, String value, long date, boolean existsInRemote) {
+        this.id = RealmDataPoint.getCompoundKey(sensorId, date);
         this.sensorId = sensorId;
         this.value = value;
         this.date = date;
@@ -98,7 +98,7 @@ public class RealmModelDataPoint extends RealmObject {
      * @param realmDataPoint
      * @return Returns a DataPoint
      */
-    public static DataPoint toDataPoint (RealmModelDataPoint realmDataPoint) throws JSONException {
+    public static DataPoint toDataPoint (RealmDataPoint realmDataPoint) throws JSONException {
         return new DataPoint(
                 realmDataPoint.getSensorId(),
                 parseValue(realmDataPoint.getValue()),
@@ -111,8 +111,8 @@ public class RealmModelDataPoint extends RealmObject {
      * @param dataPoint  A DataPoint
      * @return Returns a RealmDataPoint
      */
-    public static RealmModelDataPoint fromDataPoint (DataPoint dataPoint) {
-        return new RealmModelDataPoint(
+    public static RealmDataPoint fromDataPoint (DataPoint dataPoint) {
+        return new RealmDataPoint(
                 dataPoint.getSensorId(),
                 stringifyValue(dataPoint.getValue()),
                 dataPoint.getTime(),

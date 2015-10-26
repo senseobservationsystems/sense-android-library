@@ -194,7 +194,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
-            assertEquals("Should throw a bad request exception", 400, e.getStatusCode());
+            assertEquals("Should throw a not found exception", 400, e.getStatusCode());
         } catch (JSONException | IOException e) {
             e.printStackTrace();
             fail("Wrong exception thrown");
