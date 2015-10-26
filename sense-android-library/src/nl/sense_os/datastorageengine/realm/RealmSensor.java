@@ -1,271 +1,212 @@
 package nl.sense_os.datastorageengine.realm;
 
 import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import org.json.JSONObject;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
-import nl.sense_os.datastorageengine.DataPoint;
-import nl.sense_os.datastorageengine.DatabaseHandlerException;
-import nl.sense_os.datastorageengine.QueryOptions;
+import io.realm.RealmObject;
+import io.realm.annotations.Index;
+import io.realm.annotations.PrimaryKey;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
-import nl.sense_os.datastorageengine.SensorProfiles;
-import nl.sense_os.datastorageengine.realm.model.RealmModelDataPoint;
-import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
 
-public class RealmSensor implements Sensor {
+public class RealmSensor extends RealmObject {
 
-    private Realm realm = null;
+    // compoundKey is used purely for Realm, to prevent duplicate sensors.
+    // it's built up from the sensors `name`, `source` and `userId`.
+    @PrimaryKey
+    private String compoundKey = null;
 
-    private long id = -1;
+    @Index
+    private long id = -1; // only used to locally keep a relation between Sensor and DataPoints
+
+    @Index
     private String name = null;
+    private String meta = null;  // Stringified JSON object
+    private boolean remoteUploadEnabled = false;
+    private boolean remoteDownloadEnabled = false;
+    private boolean persistLocally = true;
     private String userId = null;
+
+    @Index
     private String source = null;
-    private SensorOptions options = new SensorOptions();
     private boolean remoteDataPointsDownloaded = false;
 
-    public RealmSensor(Realm realm, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException {
-        // validate if the sensor name is valid
-        if (SensorProfiles.getSensorType(name) == null) {
-            throw new SensorException("Unknown sensor name '" + name + "'.");
-        }
+    public RealmSensor() {}
 
-        this.realm = realm;
+    public RealmSensor(long id, String name, String meta, boolean remoteUploadEnabled, boolean remoteDownloadEnabled, boolean persistLocally, String userId, String source, boolean remoteDataPointsDownloaded) {
+        this.compoundKey = getCompoundKey(name, source, userId);
 
         this.id = id;
         this.name = name;
+        this.meta = meta;
+        this.remoteUploadEnabled = remoteUploadEnabled;
+        this.remoteDownloadEnabled = remoteDownloadEnabled;
+        this.persistLocally = persistLocally;
         this.userId = userId;
         this.source = source;
-        this.options = options;
         this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
+    }
+
+    public String getCompoundKey() {
+        return compoundKey;
+    }
+
+    public void setCompoundKey(String compoundKey) {
+        this.compoundKey = compoundKey;
     }
 
     public long getId() {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        this.compoundKey = getCompoundKey(name, source, userId);
+    }
+
+    /**
+     * Returns the meta information of a RealmSensor as JSONObject
+     * @param realmSensor
+     * @return Returns JSONObject with meta information
+     */
+    public static JSONObject getMeta (RealmSensor realmSensor) throws JSONException {
+        String meta = realmSensor.getMeta();
+        return meta != null ? new JSONObject(meta) : null;
+    }
+
+    /**
+     * Returns meta information as a stringified JSON object. Deserialize the string like:
+     *
+     *     RealmSensor.getMeta(sensor);
+     *
+     * @return stringified JSON object
+     */
+    public String getMeta() {
+        return meta;
+    }
+
+    /**
+     * Set meta information for this sensor
+     * @param meta Must contain a stringified JSON object.
+     */
+    public void setMeta(String meta) {
+        this.meta = meta;
+    }
+
+    public boolean isRemoteUploadEnabled() {
+        return remoteUploadEnabled;
+    }
+
+    public void setRemoteUploadEnabled(boolean remoteUploadEnabled) {
+        this.remoteUploadEnabled = remoteUploadEnabled;
+    }
+
+    public boolean isRemoteDownloadEnabled() {
+        return remoteDownloadEnabled;
+    }
+
+    public void setRemoteDownloadEnabled(boolean remoteDownloadEnabled) {
+        this.remoteDownloadEnabled = remoteDownloadEnabled;
+    }
+
+    public boolean isPersistLocally() {
+        return persistLocally;
+    }
+
+    public void setPersistLocally(boolean persistLocally) {
+        this.persistLocally = persistLocally;
     }
 
     public String getUserId() {
         return userId;
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getSource() {
         return source;
     }
 
-    public String getDataType() {
-        return SensorProfiles.getSensorType(name);
+    public void setSource(String source) {
+        this.source = source;
+        this.compoundKey = getCompoundKey(name, source, userId);
     }
 
     public boolean isRemoteDataPointsDownloaded() {
         return remoteDataPointsDownloaded;
     }
 
-    /**
-     * Apply options for the sensor.
-     * The fields in `options` which are `null` will be ignored.
-     * @param options
-     * @return Returns the applied options.
-     */
-    public SensorOptions setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
-        this.options = SensorOptions.merge(this.options, options);
-
-        // store changes in the local database
-        saveChanges();
-
-        return getOptions();
-    }
-
-    /**
-     * Retrieve a clone of the current options of the sensor.
-     * @return options
-     */
-    public SensorOptions getOptions () {
-        return options.clone();
-    }
-
-    public void setRemoteDataPointsDownloaded(boolean remoteDataPointsDownloaded) throws DatabaseHandlerException {
+    public void setRemoteDataPointsDownloaded(boolean remoteDataPointsDownloaded) {
         this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
-
-        // store changes in the local database
-        saveChanges();
     }
 
     /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param time
+     * Create a unique id for a Sensor, consisting of the source and name.
+     * @param source
+     * @param name
+     * @return Returns a string "<name>:<source>:<userId>"
      */
-    public void insertOrUpdateDataPoint(Object value, long time) throws SensorException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, time,false));
+    public static String getCompoundKey (String name, String source, String userId) {
+        return name + ":" + source + ":" + userId;
     }
 
     /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param time
-     * @param existsInRemote
+     * Convert a RealmSensor into a Sensor
+     * @param realm
+     * @param realmSensor
+     * @return Returns a Sensor
      */
-    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws SensorException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, time, existsInRemote));
-    }
-    /**
-     * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
-     */
-    protected void saveChanges() throws DatabaseHandlerException {
-        realm.beginTransaction();
+    public static Sensor toSensor (Realm realm, RealmSensor realmSensor) throws JSONException, SensorException {
+        String meta = realmSensor.getMeta();
 
-        // get the existing sensor (just to throw an error if it doesn't exist)
-        RealmModelSensor realmSensor = realm
-                .where(RealmModelSensor.class)
-                .equalTo("id", this.id)
-                .findFirst();
-
-        if (realmSensor == null) {
-            throw new DatabaseHandlerException("Cannot update sensor: sensor doesn't yet exist.");
-        }
-
-        // update the sensor
-        realm.copyToRealmOrUpdate(RealmModelSensor.fromSensor(this));
-
-        realm.commitTransaction();
+        return new Sensor(
+                realm,
+                realmSensor.getId(),
+                realmSensor.getName(),
+                realmSensor.getUserId(),
+                realmSensor.getSource(),
+                new SensorOptions(
+                        meta != null ? new JSONObject(meta) : null,
+                        realmSensor.isRemoteUploadEnabled(),
+                        realmSensor.isRemoteDownloadEnabled(),
+                        realmSensor.isPersistLocally()
+                ),
+                realmSensor.isRemoteDataPointsDownloaded()
+        );
     }
 
     /**
-     * This method inserts a DataPoint object into the local Realm database.
-     * The typecasting to string should already be done at this point.
-     * @param dataPoint	A DataPoint object that has a stringified value that will be copied
-     * 			into a Realm object.
+     * Create a RealmSensor from a Sensor
+     * @param sensor  A Sensor
+     * @return Returns a RealmSensor
      */
-    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorException {
-        // validate whether the value type of dataPoint matches the data type of the sensor
-        SensorProfiles.validate(name, dataPoint);
+    public static RealmSensor fromSensor (Sensor sensor) {
+        SensorOptions options = sensor.getOptions();
+        JSONObject meta = options != null ? options.getMeta() : null;
 
-        RealmModelDataPoint realmDataPoint = RealmModelDataPoint.fromDataPoint(dataPoint);
-
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(realmDataPoint);
-        realm.commitTransaction();
+        return new RealmSensor(
+                sensor.getId(),
+                sensor.getName(),
+                meta != null ? meta.toString() : null,
+                options != null ? options.isUploadEnabled() : null,
+                options != null ? options.isDownloadEnabled() : null,
+                options != null ? options.isPersistLocally() : null,
+                sensor.getUserId(),
+                sensor.getSource(),
+                sensor.isRemoteDataPointsDownloaded()
+        );
     }
 
-    /**
-     * Get data points from this sensor from the local database
-     * startTime: Start date of the query, included. Null means there is no check for the start Date.
-     * endTime: End date of the query, excluded. Null means there is no check for the end Date.
-     * limit: The maximum number of data points. Null means no limit.
-     * sortOrder: Sort order, either ASC or DESC
-     * existsInRemote: the field status to query. Null means the not query this field
-     * interval: one of  the INTERVAL {MINUTE, HOUR, DAY, WEEK}
-     * @return Returns a List with data points
-     */
-      public List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException {
-        if(queryOptions.getLimit() != null) {
-            if(queryOptions.getLimit() <= 0) {
-                throw new DatabaseHandlerException("Invalid input of limit value");
-            }
-        }
-        // query results
-        realm.beginTransaction();
-        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
-        realm.commitTransaction();
-
-        // sort
-        boolean resultsOrder = (queryOptions.getSortOrder() == QueryOptions.SORT_ORDER.DESC )
-                ? RealmResults.SORT_ORDER_DESCENDING
-                : RealmResults.SORT_ORDER_ASCENDING;
-        results.sort("time", resultsOrder);
-
-        // limit and convert to DataPoint
-        List<DataPoint> dataPoints = setLimitToResult(results, queryOptions.getLimit());
-        // TODO: figure out what is the most efficient way to loop over the results
-        return dataPoints;
-    };
-
-    /**
-     * This method deletes DataPoints from the local Realm database.
-     * QueryOptions.limit and QueryOptions.sortOrder are not considered during the query.
-     * @param queryOptions: options for the query of dataPoints that need to be deleted.
-     */
-    public void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException{
-        RealmResults<RealmModelDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
-        realm.beginTransaction();
-        results.clear();
-        realm.commitTransaction();
-    }
-
-    /**
-     * Generate an auto incremented id for a new Sensor
-     * @param realm  Realm instance. Only used the first time to determine the max id
-     *               of the existing sensors.
-     * @return Returns an auto incremented id
-     */
-    public static synchronized long generateId (Realm realm) {
-        if (auto_increment == -1) {
-            // find the max id of the existing sensors
-            realm.beginTransaction();
-            Number max = realm
-                    .where(RealmModelSensor.class)
-                    .findAll()
-                    .max("id");
-            realm.commitTransaction();
-
-            auto_increment = max != null ? max.longValue() : 0;
-        }
-
-        return ++auto_increment;
-    }
-
-    protected static long auto_increment = -1; // -1 means not yet loaded
-
-    // Helper function for getDataPoints
-    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startTime, Long endTime, Boolean existsInRemote) throws DatabaseHandlerException{
-
-        RealmQuery<RealmModelDataPoint> query = realm
-                                                .where(RealmModelDataPoint.class)
-                                                .equalTo("sensorId", this.id);
-        if(startTime != null) {
-            query.greaterThanOrEqualTo("time", startTime.longValue());
-        }
-        if(endTime != null) {
-            query.lessThan("time", endTime.longValue());
-        }
-        if(startTime != null && endTime != null && startTime >= endTime) {
-            throw new DatabaseHandlerException("startTime is the same as or later than the endTime");
-        }
-        if(existsInRemote != null) {
-            query.equalTo("existsInRemote", existsInRemote);
-        }
-
-        RealmResults<RealmModelDataPoint> results = query.findAll();
-
-        return results;
-    }
-
-    // Helper function for getDataPoints
-    private  List<DataPoint>  setLimitToResult(RealmResults<RealmModelDataPoint> results,Integer limit) throws JSONException {
-        List<DataPoint> dataPoints = new ArrayList<>();
-        Iterator<RealmModelDataPoint> iterator = results.iterator();
-        int count = 0;
-
-        if(limit == null){
-            while(iterator.hasNext()) {
-                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
-            }
-        }else{
-            while(count < limit && iterator.hasNext()){
-                dataPoints.add(RealmModelDataPoint.toDataPoint(iterator.next()));
-                count++;
-            }
-        }
-        return dataPoints;
-    }
 }

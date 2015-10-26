@@ -16,26 +16,23 @@ import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.SensorException;
-import nl.sense_os.datastorageengine.realm.RealmDatabaseHandler;
-import nl.sense_os.datastorageengine.realm.model.RealmModelDataPoint;
-import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
+import nl.sense_os.datastorageengine.DatabaseHandler;
+import nl.sense_os.datastorageengine.realm.RealmDataPoint;
+import nl.sense_os.datastorageengine.realm.RealmSensor;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorOptions;
 
-/**
- * Created by fei on 10/09/15.
- */
 public class TestDatabaseHandler extends AndroidTestCase {
 
     protected Realm realm;
     private RealmConfiguration testConfig;
-    private RealmDatabaseHandler databaseHandler;
+    private DatabaseHandler databaseHandler;
     private String userId = "userId";
     String newUserId = "newUserId";
     private Sensor sensor;
     private Date dateType;
     private SensorOptions sensorOptions;
-    private RealmDatabaseHandler newDatabaseHandler;
+    private DatabaseHandler newDatabaseHandler;
 
     @Override
     protected void setUp () throws Exception {
@@ -43,8 +40,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
         testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
         realm = Realm.getInstance(testConfig);
-        databaseHandler = new RealmDatabaseHandler(getContext(),userId);
-        newDatabaseHandler = new RealmDatabaseHandler(getContext(),newUserId);
+        databaseHandler = new DatabaseHandler(getContext(),userId);
+        newDatabaseHandler = new DatabaseHandler(getContext(),newUserId);
     }
 
     @Override
@@ -97,13 +94,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor.insertOrUpdateDataPoint(value,date);
         numberOfDataPoints++;
 
-        RealmResults<RealmModelDataPoint> resultList= realm.where(RealmModelDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
                                                       .equalTo("date", date)
                                                       .findAll();
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
-        DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
+        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
         assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsInteger());
     }
 
@@ -128,13 +125,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor.insertOrUpdateDataPoint(value,date);
         numberOfDataPoints++;
 
-        RealmResults<RealmModelDataPoint> resultList= realm.where(RealmModelDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
                 .equalTo("date", date)
                 .findAll();
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
-        DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
+        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
         assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsFloat());
     }
 
@@ -159,13 +156,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor.insertOrUpdateDataPoint(value,date);
         numberOfDataPoints++;
 
-        RealmResults<RealmModelDataPoint> resultList= realm.where(RealmModelDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
                 .equalTo("date", date)
                 .findAll();
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
-        DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
+        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
         assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsString());
     }
 
@@ -190,13 +187,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor.insertOrUpdateDataPoint(value,date);
         numberOfDataPoints++;
 
-        RealmResults<RealmModelDataPoint> resultList= realm.where(RealmModelDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
                 .equalTo("date", date)
                 .findAll();
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
-        DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
+        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
         assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsBoolean());
     }
 
@@ -224,13 +221,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor.insertOrUpdateDataPoint(value,date);
         numberOfDataPoints++;
 
-        RealmResults<RealmModelDataPoint> resultList= realm.where(RealmModelDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
                 .equalTo("date", date)
                 .findAll();
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
-        DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
+        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
         assertEquals("Incorrect value of the Realm DataPoint object", value.toString(), resultDataPoint.getValueAsJSONObject().toString());
     }
 
@@ -259,14 +256,14 @@ public class TestDatabaseHandler extends AndroidTestCase {
         value = 1;
         sensor.insertOrUpdateDataPoint(value,date);
 
-        RealmResults<RealmModelDataPoint> resultList= realm.where(RealmModelDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
                                                       .equalTo("date", date)
                                                       .findAll();
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
-        DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
+        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
         assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsInteger());
     }
 
@@ -299,16 +296,16 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor.insertOrUpdateDataPoint(value1,date);
         numberOfDataPoints++;
 
-        RealmResults<RealmModelDataPoint> resultList= realm.where(RealmModelDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
                 .equalTo("date", date)
                 .findAll();
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
 
-        DataPoint resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.first());
+        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
         assertEquals("Incorrect sensorId of the Realm DataPoint object", value, resultDataPoint.getValueAsInteger());
-        resultDataPoint = RealmModelDataPoint.toDataPoint(resultList.last());
+        resultDataPoint = RealmDataPoint.toDataPoint(resultList.last());
         assertEquals("Incorrect sensorId of the Realm DataPoint object", value1, resultDataPoint.getValueAsInteger());
     }
 
@@ -680,7 +677,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
+            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
 
@@ -721,7 +718,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
+            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
 
@@ -763,7 +760,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
+            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
 
@@ -805,7 +802,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         realm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmModelDataPoint.fromDataPoint(dp));
+            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
         }
         realm.commitTransaction();
 
@@ -832,14 +829,14 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
         sensorNumber++;
 
-        RealmResults<RealmModelSensor> resultList= realm.where(RealmModelSensor.class)
+        RealmResults<RealmSensor> resultList= realm.where(RealmSensor.class)
                 .equalTo("userId", userId)
                 .findAll();
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
 
-        Sensor resultSensor = RealmModelSensor.toSensor(realm,resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(realm, resultList.first());
         assertEquals("Incorrect name of the Realm Sensor object", sensorName, resultSensor.getName());
         assertEquals("Incorrect source of the Realm Sensor object", sourceName, resultSensor.getSource());
         assertEquals("Incorrect sensorOptions meta of the Realm Sensor object", sensorOptions.getMeta().toString(), resultSensor.getOptions().getMeta().toString());
@@ -891,13 +888,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
         sensor.setOptions(sensorOptions);
 
-        RealmResults<RealmModelSensor> resultList= realm.where(RealmModelSensor.class)
+        RealmResults<RealmSensor> resultList= realm.where(RealmSensor.class)
                 .equalTo("name", sensorName)
                 .findAll();
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
-        Sensor resultSensor = RealmModelSensor.toSensor(realm, resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(realm, resultList.first());
         assertEquals("Incorrect options of the Realm Sensor object", sensorMeta.toString(), resultSensor.getOptions().getMeta().toString());
     }
 
@@ -920,13 +917,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor.setRemoteDataPointsDownloaded(downloaded);
         assertEquals("Incorrect synced status of the Realm Sensor object", downloaded, sensor.isRemoteDataPointsDownloaded());
 
-        RealmResults<RealmModelSensor> resultList= realm.where(RealmModelSensor.class)
+        RealmResults<RealmSensor> resultList= realm.where(RealmSensor.class)
                 .equalTo("name", sensorName)
                 .findAll();
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
-        Sensor resultSensor = RealmModelSensor.toSensor(realm, resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(realm, resultList.first());
         assertEquals("Incorrect userId of the Realm Sensor object", downloaded, resultSensor.isRemoteDataPointsDownloaded());
     }
 

@@ -18,8 +18,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import nl.sense_os.datastorageengine.realm.RealmDatabaseHandler;
-
 /**
  * DataSyncer handles the synchronization between the local storage and CommonSense.
  * The syncing process is handled automatically and periodically, thus the external
@@ -45,7 +43,7 @@ public class DataSyncer {
     public DataSyncer(Context context, String userId, SensorDataProxy proxy, Long persistPeriod){
 //        this.context = context;
 //        this.userId = userId;
-        this.databaseHandler = new RealmDatabaseHandler(context, userId);
+        this.databaseHandler = new DatabaseHandler(context, userId);
         this.service = Executors.newSingleThreadScheduledExecutor();
 
         //Null for default value of persistPeriod
@@ -126,7 +124,7 @@ public class DataSyncer {
     }
 
     public void deletionInRemote() throws IOException{
-        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
         List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
 
@@ -140,7 +138,7 @@ public class DataSyncer {
     }
 
     public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
-        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors(SOURCE);
 
@@ -174,7 +172,7 @@ public class DataSyncer {
     }
 
     public void uploadToRemote() throws JSONException, SensorException, DatabaseHandlerException, IOException {
-        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
@@ -212,7 +210,7 @@ public class DataSyncer {
     }
 
     public void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException{
-        //DatabaseHandler databaseHandler = new RealmDatabaseHandler(context, userId);
+        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
