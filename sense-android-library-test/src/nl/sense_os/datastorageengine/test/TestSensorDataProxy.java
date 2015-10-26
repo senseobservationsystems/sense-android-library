@@ -335,7 +335,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         data1.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
         JSONObject sensor1 = proxy.createSensorDataObject(sourceName, sensorName1, data1);
 
-        String sensorName2 = "noise_sensor";
+        String sensorName2 = "noise";
         JSONArray data2 = new JSONArray();
         data2.put(new JSONObject("{\"time\":1444814218000,\"value\":6}"));
         data2.put(new JSONObject("{\"time\":1444814219000,\"value\":7}"));
