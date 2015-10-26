@@ -34,9 +34,9 @@ import nl.sense_os.datastorageengine.realm.model.RealmModelSensor;
  *
  *     sensor.insertDataPoint(1234, new Date().getTime());
  *
- *     long startDate = 1388534400000; // 2014-01-01
- *     long endDate = 1420070400000; // 2015-01-01
- *     List<DataPoint> data = sensor.getDataPoints(startDate, endDate, 1000, SORT_ORDER.ASC);
+ *     long startTime = 1388534400000; // 2014-01-01
+ *     long endTime = 1420070400000; // 2015-01-01
+ *     List<DataPoint> data = sensor.getDataPoints(startTime, endTime, 1000, SORT_ORDER.ASC);
  *
  *     Sensor returnedSensor = databaseHandler.getSensor(sourceName,sensorName);
  *

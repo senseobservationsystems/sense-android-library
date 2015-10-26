@@ -53,8 +53,8 @@ public interface Sensor {
     /**
      * Get data points from this sensor from the local database
      * @param queryOptions: options for the query of dataPoints.
-     * queryOptions.startDate: Start date of the query, included.
-     * queryOptions.endDate: End date of the query, excluded.
+     * queryOptions.startTime: Start date of the query, included.
+     * queryOptions.endTime: End date of the query, excluded.
      * queryOptions.limit: The maximum number of data points.
      * queryOptions.sortOrder: Sort order, either ASC or DESC
      * queryOptions.existsInRemote: required existsInRemote status of the dataPoint
@@ -66,8 +66,8 @@ public interface Sensor {
     /**
      * Delete DataPoints from this sensor,
      * @param queryOptions: options for the query of dataPoints that need to be deleted.
-     * queryOptions.startDate: Start date of the query, included.
-     * queryOptions.endDate: End date of the query, excluded.
+     * queryOptions.startTime: Start date of the query, included.
+     * queryOptions.endTime: End date of the query, excluded.
      * queryOptions.limit: it is not used for this method.
      * queryOptions.sortOrder: it is not used for this method.
      * queryOptions.existsInCS: required existsInCS status of the dataPoint

@@ -393,7 +393,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         assertEquals("Incorrect data point by using ASC sorting", date2, dataPointList.get(1).getTime());
     }
 
-    public void testGetDataPointsSucceededWithNullStartDate() throws JSONException, DatabaseHandlerException, SensorException {
+    public void testGetDataPointsSucceededWithNullStartTime() throws JSONException, DatabaseHandlerException, SensorException {
         String sourceName = "samsung";
         String sensorName = "noise_sensor";
         JSONObject sensorMeta = new JSONObject();
@@ -428,7 +428,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         }
     }
 
-    public void testGetDataPointsSucceededWithNullEndDate() throws JSONException, DatabaseHandlerException, SensorException {
+    public void testGetDataPointsSucceededWithNullEndTime() throws JSONException, DatabaseHandlerException, SensorException {
         String sourceName = "samsung";
         String sensorName = "noise_sensor";
         JSONObject sensorMeta = new JSONObject();
@@ -646,11 +646,11 @@ public class TestDatabaseHandler extends AndroidTestCase {
             int listSize = dataPointList.size();
             assertEquals("Incorrect number of data points", 0, listSize);
         }catch(DatabaseHandlerException e){
-            assertEquals("Wrong DatabaseHandlerException", "startDate is the same as or later than the endDate", e.getMessage());
+            assertEquals("Wrong DatabaseHandlerException", "startTime is the same as or later than the endTime", e.getMessage());
         }
     }
 
-    // Delete DataPoints with Specified startDate and endDate
+    // Delete DataPoints with Specified startTime and endTime
     public void testDeleteDataPointsSucceededWithTwoSpecifiedDates() throws JSONException, DatabaseHandlerException, SensorException {
         String sourceName = "samsung";
         String sensorName = "noise_sensor";
@@ -691,8 +691,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
     }
 
-    // Delete DataPoints with null startDate
-    public void testDeleteDataPointsSucceededWithNullStartDate() throws JSONException, DatabaseHandlerException, SensorException {
+    // Delete DataPoints with null startTime
+    public void testDeleteDataPointsSucceededWithNullStartTime() throws JSONException, DatabaseHandlerException, SensorException {
         String sourceName = "samsung";
         String sensorName = "noise_sensor";
         JSONObject sensorMeta = new JSONObject();
@@ -733,8 +733,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
         assertEquals("Wrong Date of the DataPoint", date[numberToDelete], dataPointList.get(0).getTime());
     }
 
-    // Delete DataPoints with null endDate
-    public void testDeleteDataPointsSucceededWithNullEndDate() throws JSONException, DatabaseHandlerException, SensorException {
+    // Delete DataPoints with null endTime
+    public void testDeleteDataPointsSucceededWithNullEndTime() throws JSONException, DatabaseHandlerException, SensorException {
         String sourceName = "samsung";
         String sensorName = "noise_sensor";
         JSONObject sensorMeta = new JSONObject();
@@ -775,7 +775,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         assertEquals("Wrong Date of the DataPoint", date[numberToDelete-1], dataPointList.get(0).getTime());
     }
 
-    // Delete DataPoints with null startDate and endDate
+    // Delete DataPoints with null startTime and endTime
     public void testDeleteDataPointsSucceededWithNullDates() throws JSONException, DatabaseHandlerException, SensorException {
         String sourceName = "samsung";
         String sensorName = "noise_sensor";

@@ -159,8 +159,8 @@ public class RealmSensor implements Sensor {
 
     /**
      * Get data points from this sensor from the local database
-     * startDate: Start date of the query, included. Null means there is no check for the start Date.
-     * endDate: End date of the query, excluded. Null means there is no check for the end Date.
+     * startTime: Start date of the query, included. Null means there is no check for the start Date.
+     * endTime: End date of the query, excluded. Null means there is no check for the end Date.
      * limit: The maximum number of data points. Null means no limit.
      * sortOrder: Sort order, either ASC or DESC
      * existsInRemote: the field status to query. Null means the not query this field
@@ -227,19 +227,19 @@ public class RealmSensor implements Sensor {
     protected static long auto_increment = -1; // -1 means not yet loaded
 
     // Helper function for getDataPoints
-    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startDate, Long endDate, Boolean existsInRemote) throws DatabaseHandlerException{
+    private RealmResults<RealmModelDataPoint> queryFromRealm(Long startTime, Long endTime, Boolean existsInRemote) throws DatabaseHandlerException{
 
         RealmQuery<RealmModelDataPoint> query = realm
                                                 .where(RealmModelDataPoint.class)
                                                 .equalTo("sensorId", this.id);
-        if(startDate != null) {
-            query.greaterThanOrEqualTo("time", startDate.longValue());
+        if(startTime != null) {
+            query.greaterThanOrEqualTo("time", startTime.longValue());
         }
-        if(endDate != null) {
-            query.lessThan("time", endDate.longValue());
+        if(endTime != null) {
+            query.lessThan("time", endTime.longValue());
         }
-        if(startDate != null && endDate != null && startDate >= endDate) {
-            throw new DatabaseHandlerException("startDate is the same as or later than the endDate");
+        if(startTime != null && endTime != null && startTime >= endTime) {
+            throw new DatabaseHandlerException("startTime is the same as or later than the endTime");
         }
         if(existsInRemote != null) {
             query.equalTo("existsInRemote", existsInRemote);
