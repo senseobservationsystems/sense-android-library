@@ -94,7 +94,7 @@ public class DataSyncer {
         ExecutorService es = Executors.newFixedThreadPool(1);
         return es.submit(new Callable() {
             public Object call() throws Exception {
-                downloadSensorProfile();
+                downloadSensorProfiles();
                 return null;
             }
         });
@@ -117,10 +117,12 @@ public class DataSyncer {
         });
     }
 
-    public void downloadSensorProfile(){
-        //TODO
-        //proxy.downloadSensorList();
-
+    public void downloadSensorProfiles () throws JSONException, IOException, DatabaseHandlerException {
+        JSONArray sensorProfiles = proxy.getSensorProfiles();
+        for(int i = 0; i< sensorProfiles.length(); i++) {
+            JSONObject sensorProfile = sensorProfiles.getJSONObject(i);
+            databaseHandler.createSensorProfile(sensorProfile.getString("sensor_name"), sensorProfile.getString("data_structure"));
+        }
     }
 
     public void deletionInRemote() throws IOException{

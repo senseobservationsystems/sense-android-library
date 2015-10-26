@@ -86,6 +86,11 @@ public class TestSensorDataProxy extends AndroidTestCase {
     public void testGetSensorProfiles () throws JSONException, IOException {
         JSONArray profiles = proxy.getSensorProfiles();
         assertTrue("Should not return an empty sensor list", profiles.length() > 0);
+        assertEquals("The number of sensors in total is wrong", 16,  profiles.length());
+        //TODO:get the profiles
+        for (int i = 0; i < profiles.length(); i++) {
+            System.out.println("the profile" + profiles.get(i).toString());
+        }
 
         List keys = toArrayList(profiles.getJSONObject(0).keys());
         Collections.sort(keys);

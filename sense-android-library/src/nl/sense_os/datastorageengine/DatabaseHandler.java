@@ -75,7 +75,22 @@ public class DatabaseHandler {
     public void close () throws Exception {
         finalize();
     }
-
+    public void createSensorProfile(String sensorName, String dataStructure) throws DatabaseHandlerException {
+        SensorProfile sensorProfile = new SensorProfile(sensorName, dataStructure);
+        realm.beginTransaction();
+        try {
+            realm.copyToRealm(sensorProfile);
+        }
+        catch (RealmException err) {
+            if (err.toString().contains("Primary key constraint broken")) {
+                throw new DatabaseHandlerException("Cannot create sensorPorfile. A sensor with name " + sensorName  + " already exists.");
+            }
+            else {
+                throw err;
+            }
+        }
+        realm.commitTransaction();
+    }
     public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
         final long id = Sensor.generateId(realm);
         final boolean synced = false;
