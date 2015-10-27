@@ -7,7 +7,7 @@ This does not require the usage of the SenseService and Senseplatform for sensin
 Functionality:  
 * Create user
 * Login user
-* Join a group
+* Join a group (public and private)
 * Create a custom sensor
 * Share a sensor with a group
 * Store data for a sensor

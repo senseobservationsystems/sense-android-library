@@ -698,6 +698,71 @@ public class SenseApi {
     }
 
     /**
+     * Joins a group
+     *
+     * @param context
+     *            Context for getting preferences
+     * @param groupId
+     *            Id of the group to join
+     * @param password
+     *            Password of the group to join
+     * @return true if joined successfully, false otherwise
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     */
+    public static boolean joinPrivateGroup(Context context, String groupId, String password) throws JSONException,
+            IOException {
+        if (null == sAuthPrefs) {
+            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
+        }
+        if (null == sMainPrefs) {
+            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        }
+
+        String cookie;
+        try {
+            cookie = getCookie(context);
+        } catch (IllegalAccessException e) {
+            cookie = null;
+        }
+        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
+
+        // get userId
+        String userId = getUser(context).getString("id");
+
+        String url = devMode ? SenseUrls.GROUP_USERS_DEV : SenseUrls.GROUP_USERS;
+        url = url.replaceFirst("%1", groupId);
+
+        // create JSON object to POST
+        final JSONObject data = new JSONObject();
+        final JSONArray users = new JSONArray();
+        final JSONObject item = new JSONObject();
+        final JSONObject user = new JSONObject();
+        user.put("id", userId);
+        item.put("user", user);
+        item.put("access_password", password);
+        users.put(item);
+        data.put("users", users);
+
+        // perform actual request
+        Map<String, String> response = SenseApi.request(context, url, data, cookie);
+
+        String responseCode = response.get(RESPONSE_CODE);
+        boolean result = false;
+        if ("201".equalsIgnoreCase(responseCode)) {
+            result = true;
+        } else {
+            Log.w(TAG, "Failed to join group! Response code: " + responseCode + "Response: "
+                    + response);
+            result = false;
+        }
+
+        return result;
+    }
+
+    /**
      * Tries to log in at CommonSense using the supplied username and password. After login, the
      * cookie containing the session ID is stored in the preferences.
      * 

@@ -28,11 +28,12 @@ public class StoreAndSyncData {
         setSyncRateOften(context);
         startDataSyncer(context);
         boolean success = createSensor(context);
-        success &= shareSensor(context);
+        success &= shareSensor(context, SetupUser.publicGroupID);
+        success &= shareSensor(context, SetupUser.privateGroupID);
         return success;
     }
 
-    public static boolean shareSensor(Context context)
+    public static boolean shareSensor(Context context, String groupID)
     {
         boolean success = true;
         try {
@@ -41,9 +42,9 @@ public class StoreAndSyncData {
             String sensorID =  SenseApi.getSensorId(context, sensorName, description, dataType, deviceUUID);
             Log.d(TAG, "SensorID:"+sensorID);
             if(sensorID != null)
-                success &= SenseApi.shareSensor(context, sensorID, SetupUser.publicGroupID);
+                success &= SenseApi.shareSensor(context, sensorID, groupID);
             if(!success)
-                throw new RuntimeException("Error sharing sensor id: "+sensorID+" to the public group");
+                throw new RuntimeException("Error sharing sensor id: "+sensorID+" to group: "+groupID);
         } catch (Exception e) {
             String message = e.getMessage() != null? e.getMessage() : e.toString();
             Log.e(TAG,message);

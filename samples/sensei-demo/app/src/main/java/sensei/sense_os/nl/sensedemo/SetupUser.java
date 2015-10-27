@@ -18,12 +18,15 @@ public class SetupUser {
     public final static String email = "spam+ce_"+uniqueID+"@sense-os.nl";
     public final static String password = SenseApi.hashPassword("Test1234");
     public final static String publicGroupID = "2924";
+    public final static String privateGroupID = "24776";
+    public final static String privateGroupPassword = SenseApi.hashPassword("test");
 
     public static boolean setup(Context context)
     {
         boolean success = createUser(context);
         success &= login(context);
         success &= joinPublicGroup(context);
+        success &= joinPrivateGroup(context);
         return success;
     }
 
@@ -66,6 +69,20 @@ public class SetupUser {
     {
         try {
             if(SenseApi.joinGroup(context, publicGroupID))
+                return true;
+            throw new RuntimeException("Error joining public group");
+        }
+        catch(Exception e) {
+            String message = e.getMessage() != null? e.getMessage() : e.toString();
+            Log.e(TAG, message);
+            return false;
+        }
+    }
+
+    public static boolean joinPrivateGroup(Context context)
+    {
+        try {
+            if(SenseApi.joinPrivateGroup(context, privateGroupID, privateGroupPassword))
                 return true;
             throw new RuntimeException("Error joining public group");
         }
