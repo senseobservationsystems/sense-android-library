@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import nl.sense_os.service.ServiceStateHelper;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 
@@ -52,6 +53,7 @@ public class SetupUser {
             if(result != 0){
                 throw new RuntimeException("Error login user: "+result);
             }
+            ServiceStateHelper.getInstance(context).setLoggedIn(true);
             return true;
         } catch(Exception e) {
             String message = e.getMessage() != null? e.getMessage() : e.toString();

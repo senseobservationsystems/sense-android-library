@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
                 // store sensor data
                 StoreAndSyncData.storeSensorData(MainActivity.this, "OK");
                 // upload the data immediately
-                StoreAndSyncData.flushData(MainActivity.this);
+                StoreAndSyncData.flushData(MainActivity.this); // comment to use the 1 minute sync interval
             }
         }).start();
     }

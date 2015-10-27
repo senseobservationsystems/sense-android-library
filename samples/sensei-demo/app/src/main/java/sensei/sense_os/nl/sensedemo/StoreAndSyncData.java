@@ -120,6 +120,10 @@ public class StoreAndSyncData {
         mainPrefs.edit().putString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.OFTEN).commit();
     }
 
+    /**
+     * Clear the preferences of the previous user
+     * @param context
+     */
     public static void clearSensePreferences(Context context)
     {
         SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
