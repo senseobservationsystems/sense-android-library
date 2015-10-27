@@ -1,0 +1,3 @@
+include ':app'
+include ':sense-android-library'
+project(':sense-android-library').projectDir = new File('../../../sense-android-library/sense-android-library')

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SenseiDemo</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_sense_new_data">nl.sense_os.sensei.NEW_DATA</string>
+    <string name="action_sense_send_data">nl.sense_os.sensei.SEND_DATA</string>
+    <string name="local_storage_authority">nl.sense_os.sensei.LocalStorage</string>
+    <string name="action_sense_service">nl.sense_os.sensei.SENSE_SERVICE</string>
+</resources>
