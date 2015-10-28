@@ -11,11 +11,19 @@ var hierarchy =
     [ "nl.sense_os.service.ambience.CameraLightValue.CameraLightValueCallback", "interfacenl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value_1_1_camera_light_value_callback.html", [
       [ "nl.sense_os.service.ambience.CameraLightSensor.NewCameraLightValue", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor_1_1_new_camera_light_value.html", null ]
     ] ],
+    [ "Cloneable", null, [
+      [ "nl.sense_os.datastorageengine.QueryOptions", "classnl_1_1sense__os_1_1datastorageengine_1_1_query_options.html", null ],
+      [ "nl.sense_os.datastorageengine.SensorOptions", "classnl_1_1sense__os_1_1datastorageengine_1_1_sensor_options.html", null ]
+    ] ],
+    [ "nl.sense_os.datastorageengine.CommonSenseProxy", "classnl_1_1sense__os_1_1datastorageengine_1_1_common_sense_proxy.html", null ],
     [ "nl.sense_os.service.ctrl.Controller", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_controller.html", [
       [ "nl.sense_os.service.ctrl.CtrlDefault", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_default.html", null ],
       [ "nl.sense_os.service.ctrl.CtrlExtended", "classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended.html", null ]
     ] ],
     [ "nl.sense_os.service.external_sensors.CRC8", "classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_c_r_c8.html", null ],
+    [ "nl.sense_os.datastorageengine.DatabaseHandler", "interfacenl_1_1sense__os_1_1datastorageengine_1_1_database_handler.html", [
+      [ "nl.sense_os.datastorageengine.RealmDatabaseHandler", "classnl_1_1sense__os_1_1datastorageengine_1_1_realm_database_handler.html", null ]
+    ] ],
     [ "nl.sense_os.service.subscription.DataConsumer", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_consumer.html", [
       [ "nl.sense_os.service.motion.EpilepsySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_epilepsy_sensor.html", null ],
       [ "nl.sense_os.service.motion.FallDetector", "classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html", null ],
@@ -23,6 +31,7 @@ var hierarchy =
       [ "nl.sense_os.service.motion.MotionEnergySensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_energy_sensor.html", null ],
       [ "nl.sense_os.service.motion.StandardMotionSensor", "classnl_1_1sense__os_1_1service_1_1motion_1_1_standard_motion_sensor.html", null ]
     ] ],
+    [ "nl.sense_os.datastorageengine.DataPoint", "classnl_1_1sense__os_1_1datastorageengine_1_1_data_point.html", null ],
     [ "nl.sense_os.service.subscription.DataProducer", "interfacenl_1_1sense__os_1_1service_1_1subscription_1_1_data_producer.html", [
       [ "nl.sense_os.service.subscription.BaseDataProducer", "classnl_1_1sense__os_1_1service_1_1subscription_1_1_base_data_producer.html", [
         [ "nl.sense_os.service.ambience.AutoCalibratedNoiseSensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_auto_calibrated_noise_sensor.html", null ],
@@ -68,6 +77,9 @@ var hierarchy =
     [ "nl.sense_os.service.deviceprox.DeviceProximity", "classnl_1_1sense__os_1_1service_1_1deviceprox_1_1_device_proximity.html", null ],
     [ "nl.sense_os.service.constants.SensePrefs.Main.DevProx", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_dev_prox.html", null ],
     [ "nl.sense_os.service.EncryptionHelper", "classnl_1_1sense__os_1_1service_1_1_encryption_helper.html", null ],
+    [ "Exception", null, [
+      [ "nl.sense_os.datastorageengine.DatabaseHandlerException", "classnl_1_1sense__os_1_1datastorageengine_1_1_database_handler_exception.html", null ]
+    ] ],
     [ "nl.sense_os.service.constants.SensePrefs.Main.External", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_external.html", null ],
     [ "nl.sense_os.service.feedback.FeedbackManager", "classnl_1_1sense__os_1_1service_1_1feedback_1_1_feedback_manager.html", null ],
     [ "nl.sense_os.service.ctrl.CtrlExtended.Flag", "enumnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended_1_1_flag.html", null ],
@@ -161,6 +173,9 @@ var hierarchy =
     ] ],
     [ "nl.sense_os.service.constants.SenseStatusCodes", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_status_codes.html", null ],
     [ "nl.sense_os.service.constants.SenseUrls", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_urls.html", null ],
+    [ "nl.sense_os.datastorageengine.Sensor", "interfacenl_1_1sense__os_1_1datastorageengine_1_1_sensor.html", [
+      [ "nl.sense_os.datastorageengine.RealmSensor", "classnl_1_1sense__os_1_1datastorageengine_1_1_realm_sensor.html", null ]
+    ] ],
     [ "nl.sense_os.service.constants.SensorData", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data.html", null ],
     [ "nl.sense_os.service.commonsense.senddata.BufferTransmitHandler.SensorDataEntry", "classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_buffer_transmit_handler_1_1_sensor_data_entry.html", null ],
     [ "nl.sense_os.service.shared.SensorDataPoint", "classnl_1_1sense__os_1_1service_1_1shared_1_1_sensor_data_point.html", null ],
@@ -177,6 +192,7 @@ var hierarchy =
     [ "nl.sense_os.service.constants.SensePrefs.SensorSpecifics", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_sensor_specifics.html", null ],
     [ "nl.sense_os.service.ServiceStateHelper", "classnl_1_1sense__os_1_1service_1_1_service_state_helper.html", null ],
     [ "nl.sense_os.service.provider.SNTP", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html", null ],
+    [ "nl.sense_os.datastorageengine.DatabaseHandler.SORT_ORDER", "enumnl_1_1sense__os_1_1datastorageengine_1_1_database_handler_1_1_s_o_r_t___o_r_d_e_r.html", null ],
     [ "nl.sense_os.service.storage.SQLiteStorage", "classnl_1_1sense__os_1_1service_1_1storage_1_1_s_q_lite_storage.html", null ],
     [ "nl.sense_os.service.external_sensors.NewOBD2DeviceConnector.State", "enumnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector_1_1_state.html", null ],
     [ "nl.sense_os.service.constants.SensePrefs.Status", "classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_status.html", null ],
@@ -277,6 +293,10 @@ var hierarchy =
     ] ],
     [ "PreviewCallback", null, [
       [ "nl.sense_os.service.ambience.CameraLightValue.CameraPreviewCallback", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_value_1_1_camera_preview_callback.html", null ]
+    ] ],
+    [ "RealmObject", null, [
+      [ "nl.sense_os.datastorageengine.RealmModelDataPoint", "classnl_1_1sense__os_1_1datastorageengine_1_1_realm_model_data_point.html", null ],
+      [ "nl.sense_os.datastorageengine.RealmModelSensor", "classnl_1_1sense__os_1_1datastorageengine_1_1_realm_model_sensor.html", null ]
     ] ],
     [ "SensorEventListener", null, [
       [ "nl.sense_os.service.ambience.HumiditySensor", "classnl_1_1sense__os_1_1service_1_1ambience_1_1_humidity_sensor.html", null ],

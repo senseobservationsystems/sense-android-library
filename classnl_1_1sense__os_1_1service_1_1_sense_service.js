@@ -47,6 +47,7 @@ var classnl_1_1sense__os_1_1service_1_1_sense_service =
     [ "locationHandler", "classnl_1_1sense__os_1_1service_1_1_sense_service.html#a37485a053d36b85633e754dd7a6d73ee", null ],
     [ "locListener", "classnl_1_1sense__os_1_1service_1_1_sense_service.html#a61d561e340e7f21f3be4926255e32778", null ],
     [ "magneticFieldSensor", "classnl_1_1sense__os_1_1service_1_1_sense_service.html#a9edc7e82e26383bd17f392baa7aa9e0b", null ],
+    [ "mLocalStorage", "classnl_1_1sense__os_1_1service_1_1_sense_service.html#a269fd6b9d5ad2ac46daecb0ba1b1dbb2", null ],
     [ "motionHandler", "classnl_1_1sense__os_1_1service_1_1_sense_service.html#ad74e78f281170ffde22b66329ee1f360", null ],
     [ "motionSensor", "classnl_1_1sense__os_1_1service_1_1_sense_service.html#a156f9aee308548aa712a27f9b828d83c", null ],
     [ "mSubscrMgr", "classnl_1_1sense__os_1_1service_1_1_sense_service.html#ac38248d4c0cddc4bbb9d93f305cf8dfc", null ],

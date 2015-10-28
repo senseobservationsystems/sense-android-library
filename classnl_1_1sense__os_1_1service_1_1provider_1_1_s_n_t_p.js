@@ -1,13 +1,16 @@
 var classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p =
 [
-    [ "getInstance", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a1136edc1c6ce5ca775abb3c0cdbffe01", null ],
+    [ "disableTimeSimulation", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a2fc66920193844aec959f6a44192b0b1", null ],
+    [ "getInstance", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a189b46d0304a5b659c0699be2e231b98", null ],
     [ "getNtpTime", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a601338ad58f00e568385d4c2ac3b3877", null ],
     [ "getNtpTimeReference", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#add9c401767dc784afa3028f181a080eb", null ],
     [ "getRoundTripTime", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a1eff0a438c2455e90cc5633a1e77478d", null ],
     [ "getTime", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a206c767701d6cd6a0204b45c5ab25a36", null ],
+    [ "isSimulatingTime", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#aed123ec62d8ece5cf7feb64fdd6d55f2", null ],
     [ "read32", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#aabe2bd1887b58d7e351f769a2b8ddd8d", null ],
     [ "readTimeStamp", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a38f8668a0732b6ae31d1f82619486ed2", null ],
     [ "requestTime", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a3d23ddefb99e05c315749e66e4567bb2", null ],
+    [ "setCurrentSimulationTime", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a1c9cb55b94628932d03d5d3f61780b46", null ],
     [ "writeTimeStamp", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a988878df774c973fb3828472c2199fc8", null ],
     [ "clockOffset", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a081a2c6c23137dc03f99ded3d165063c", null ],
     [ "HOST_ASIA", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a78b6c4efb2209d0702632f3ff220c401", null ],
@@ -28,5 +31,6 @@ var classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p =
     [ "RECEIVE_TIME_OFFSET", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a81337675f4669cddf470dfe53083c44f", null ],
     [ "sntp", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a24301823a655dec8015814a1f418a17f", null ],
     [ "TAG", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#aea411ea875402d0fdae9101b8b50b0b1", null ],
-    [ "TRANSMIT_TIME_OFFSET", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a316a90de24f8becdfff3a61a31f9ecb5", null ]
+    [ "TRANSMIT_TIME_OFFSET", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a316a90de24f8becdfff3a61a31f9ecb5", null ],
+    [ "useSimulateTime", "classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#ab84ac581438d8b7b2d91d83bbea5d1f5", null ]
 ];

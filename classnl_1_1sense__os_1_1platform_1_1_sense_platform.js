@@ -18,6 +18,7 @@ var classnl_1_1sense__os_1_1platform_1_1_sense_platform =
     [ "getLocalData", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a43047a71997efb2f8b594ef1082bb435", null ],
     [ "getLocalData", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#aa00a7b4a3461c7c1a46f387a0189151e", null ],
     [ "getLocalData", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#ae63f14aaa2e51a68f07b24dd151899fb", null ],
+    [ "getLocalData", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a12eb2f3b1adb5235c4b91014e239a09f", null ],
     [ "getLocalData", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a6b53f1a3caa1585eba33c2c111fafdd5", null ],
     [ "getNewDataAction", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#ae1330113c32bd8c1cef5b7fb0ede685c", null ],
     [ "getService", "classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a36951a951eaf184579e4f9b7ddfdd99b", null ],

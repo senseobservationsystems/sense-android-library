@@ -6,6 +6,7 @@ var searchData=
   ['configuration',['configuration',['../namespacenl_1_1sense__os_1_1service_1_1configuration.html',1,'nl::sense_os::service']]],
   ['constants',['constants',['../namespacenl_1_1sense__os_1_1service_1_1constants.html',1,'nl::sense_os::service']]],
   ['ctrl',['ctrl',['../namespacenl_1_1sense__os_1_1service_1_1ctrl.html',1,'nl::sense_os::service']]],
+  ['datastorageengine',['datastorageengine',['../namespacenl_1_1sense__os_1_1datastorageengine.html',1,'nl::sense_os']]],
   ['deviceprox',['deviceprox',['../namespacenl_1_1sense__os_1_1service_1_1deviceprox.html',1,'nl::sense_os::service']]],
   ['external_5fsensors',['external_sensors',['../namespacenl_1_1sense__os_1_1service_1_1external__sensors.html',1,'nl::sense_os::service']]],
   ['feedback',['feedback',['../namespacenl_1_1sense__os_1_1service_1_1feedback.html',1,'nl::sense_os::service']]],

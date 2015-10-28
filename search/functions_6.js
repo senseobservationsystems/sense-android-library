@@ -6,6 +6,7 @@ var searchData=
   ['fft',['FFT',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a19c6ad0d870f2c36e9f1daf6447f5b05',1,'nl.sense_os.service.ambience.FFT.FFT(int timeSize, float sampleRate)'],['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_f_f_t.html#a215f1f11a4ec8b9bc0509d2e9b9702eb',1,'nl.sense_os.service.ambience.FFT.fft()']]],
   ['filetransmithandler',['FileTransmitHandler',['../classnl_1_1sense__os_1_1service_1_1commonsense_1_1senddata_1_1_file_transmit_handler.html#a3aa014894c6056dbc4e9d362d295a49d',1,'nl::sense_os::service::commonsense::senddata::FileTransmitHandler']]],
   ['fillspectrum',['fillSpectrum',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a60006479c5cc16361584cf428f4fb288',1,'nl::sense_os::service::ambience::FourierTransform']]],
+  ['finalize',['finalize',['../classnl_1_1sense__os_1_1datastorageengine_1_1_realm_database_handler.html#a34f6cb35aeda7fdb1f8def908dc868c2',1,'nl::sense_os::datastorageengine::RealmDatabaseHandler']]],
   ['fixcomparesigns',['fixCompareSigns',['../classnl_1_1sense__os_1_1service_1_1storage_1_1_parser_utils.html#aaf4f057f8a38dd87d43ed6de2df45cb1',1,'nl::sense_os::service::storage::ParserUtils']]],
   ['flushbuffer',['flushBuffer',['../classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin.html#a02b6f104178b80b1ccfd7d9a8465f20c',1,'com::phonegap::plugins::sense::SensePlugin']]],
   ['flushdata',['flushData',['../classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#af779e918099a7ede25020ad8d1e1a88b',1,'nl::sense_os::platform::SensePlatform']]],
@@ -14,5 +15,7 @@ var searchData=
   ['fouriertransform',['FourierTransform',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#ab73a1c1d44ac6f0bc8a403c9965854ad',1,'nl::sense_os::service::ambience::FourierTransform']]],
   ['freefall',['freeFall',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_fall_detector.html#a34b62c97d0a27d9d79430047db113778',1,'nl::sense_os::service::motion::FallDetector']]],
   ['freqtoindex',['freqToIndex',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_fourier_transform.html#a13a20ed8725f8c206aa11d426f376c7b',1,'nl::sense_os::service::ambience::FourierTransform']]],
+  ['fromdatapoint',['fromDataPoint',['../classnl_1_1sense__os_1_1datastorageengine_1_1_realm_model_data_point.html#a95f58cae980d88cf183385501fd5d371',1,'nl::sense_os::datastorageengine::RealmModelDataPoint']]],
+  ['fromsensor',['fromSensor',['../classnl_1_1sense__os_1_1datastorageengine_1_1_realm_model_sensor.html#a5ebb3ec4243d8e7206f9e025ea2a44be',1,'nl::sense_os::datastorageengine::RealmModelSensor']]],
   ['fusedlocationsensor',['FusedLocationSensor',['../classnl_1_1sense__os_1_1service_1_1location_1_1_fused_location_sensor.html#a9a245d4a86ea2b3a1cce4b0bee002115',1,'nl::sense_os::service::location::FusedLocationSensor']]]
 ];

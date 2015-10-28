@@ -1,102 +1,3 @@
-var NAVTREE =
-[
-  [ "Sense Android Library", "index.html", [
-    [ "Architecture Overview", "md_documentation_architecture.html", null ],
-    [ "Getting Started", "md_documentation_getting_started.html", null ],
-    [ "AndroidManifest", "md_documentation_manifest.html", [
-      [ "Permissions", "md_documentation_manifest.html#permissions", null ],
-      [ "Features", "md_documentation_manifest.html#features", null ],
-      [ "Services", "md_documentation_manifest.html#services", null ],
-      [ "Implicit SenseService Binding", "md_documentation_manifest.html#implicitbinding", null ],
-      [ "Google Play Service", "md_documentation_manifest.html#googleplayservices", null ]
-    ] ],
-    [ "Message Handler", "md_documentation_msg_handler.html", [
-      [ "Store Data from Sensor", "md_documentation_msg_handler.html#store_data", null ],
-      [ "Transmit Sensor Data to CommonSense", "md_documentation_msg_handler.html#transmit_data", null ]
-    ] ],
-    [ "SensePlatform", "md_documentation_sense_platform.html", [
-      [ "User management", "md_documentation_sense_platform.html#user_management", [
-        [ "Encrypted credentials", "md_documentation_sense_platform.html#encrypted_credentials", null ]
-      ] ],
-      [ "Sensor data", "md_documentation_sense_platform.html#sensor_data", [
-        [ "Sensor data storage", "md_documentation_sense_platform.html#sensor_data_storage", null ],
-        [ "Sensor data access", "md_documentation_sense_platform.html#sensor_data_retrieval", null ],
-        [ "Flusing data", "md_documentation_sense_platform.html#flusing_Data", null ]
-      ] ]
-    ] ],
-    [ "Sense Service", "md_documentation_sense_service.html", [
-      [ "Binding", "md_documentation_sense_service.html#binding", null ],
-      [ "Manage Main and Sensor Groups", "md_documentation_sense_service.html#manage_main_sensor_groups", null ],
-      [ "Background service", "md_documentation_sense_service.html#background_service", null ],
-      [ "Start Broadcast", "md_documentation_sense_service.html#start_broadcast", null ],
-      [ "AliveChecker", "md_documentation_sense_service.html#alive_checker", null ]
-    ] ],
-    [ "Sensors", "md_documentation_sensors.html", [
-      [ "Sense Sensor", "md_documentation_sensors.html#sense_sensor", null ],
-      [ "Base Sensor", "md_documentation_sensors.html#base_sensor", null ],
-      [ "Periodic Polling Sensor", "md_documentation_sensors.html#periodic_polling_sensor", null ],
-      [ "Periodic Poll Alarm Receiver", "md_documentation_sensors.html#periodic_poll_alarm_receiver", null ],
-      [ "Sensor groups", "md_documentation_sensors.html#sense_sensor_groups", null ],
-      [ "Sensor Data Structure", "md_documentation_sensors.html#sensor_data_structure", null ]
-    ] ],
-    [ "Settings", "md_documentation_settings.html", [
-      [ "Access settings through SenseServiceStub", "md_documentation_settings.html#access_settings", null ],
-      [ "Sample and sync rate", "md_documentation_settings.html#sample_sync_rate", null ],
-      [ "Settings list", "md_documentation_settings.html#settings_list", null ]
-    ] ],
-    [ "Data Storage", "md_documentation_storage.html", [
-      [ "Sensor registration", "md_documentation_storage.html#sensor_registration", null ],
-      [ "Local Storage", "md_documentation_storage.html#local_storage", [
-        [ "SQLite Database", "md_documentation_storage.html#sqlite_database", null ],
-        [ "In RAM & In Flash Storage", "md_documentation_storage.html#RAM_and_Flash_storage", null ],
-        [ "Retention Rate", "md_documentation_storage.html#retention_rate", null ]
-      ] ]
-    ] ],
-    [ "Data Subscription", "md_documentation_subscription.html", [
-      [ "Subscription Manager", "md_documentation_subscription.html#subscription_manager", null ],
-      [ "Data Producer", "md_documentation_subscription.html#data_producer", null ],
-      [ "Data Consumer", "md_documentation_subscription.html#data_consumer", null ]
-    ] ],
-    [ "Deprecated List", "deprecated.html", null ],
-    [ "Packages", null, [
-      [ "Packages", "namespaces.html", "namespaces" ]
-    ] ],
-    [ "Classes", null, [
-      [ "Class List", "annotated.html", "annotated" ],
-      [ "Class Index", "classes.html", null ],
-      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
-      [ "Class Members", "functions.html", [
-        [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Variables", "functions_vars.html", "functions_vars" ],
-        [ "Enumerator", "functions_eval.html", null ]
-      ] ]
-    ] ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ]
-    ] ]
-  ] ]
-];
-
-var NAVTREEINDEX =
-[
-"_abstract_state_monitor_8java.html",
-"classcom_1_1phonegap_1_1plugins_1_1sense_1_1_sense_plugin_1_1_actions.html#a8d0aac463a69a3915dd158848d8053a6",
-"classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a6fb7cfe38b9a82cdcc792a50c50f35e1",
-"classnl_1_1sense__os_1_1service_1_1ambience_1_1_noise_sensor_1_1_noise_burst_sensor.html#aa83511fd6c8092af6e298c0038628033",
-"classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main.html",
-"classnl_1_1sense__os_1_1service_1_1constants_1_1_sensor_data_1_1_sensor_names.html#a4bab0035fceb34fe19c1745faf412a81",
-"classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_new_o_b_d2_device_connector.html#aa695b1087cc5c5d11a05ac612d50c816",
-"classnl_1_1sense__os_1_1service_1_1external__sensors_1_1_zephyr_bio_harness_1_1_update_thread.html#ab6c2f1ecf4d0d84e3659374b5f376a29",
-"classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_burst_sensor.html",
-"classnl_1_1sense__os_1_1service_1_1provider_1_1_s_n_t_p.html#a38f8668a0732b6ae31d1f82619486ed2",
-"dir_363b92f6af5a1a8530d2b493f37ef944.html"
-];
-
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
 var navTreeSubIndices = new Array();
 
 function getData(varName)
@@ -117,6 +18,21 @@ function stripPath2(uri)
   var s = uri.substring(i+1);
   var m = uri.substring(0,i+1).match(/\/d\w\/d\w\w\/$/);
   return m ? uri.substring(i-6) : s;
+}
+
+function hashValue()
+{
+  return $(location).attr('hash').substring(1).replace(/[^\w\-]/g,'');
+}
+
+function hashUrl()
+{
+  return '#'+hashValue();
+}
+
+function pathName()
+{
+  return $(location).attr('pathname').replace(/[^-A-Za-z0-9+&@#/%?=~_|!:,.;\(\)]/g, '');
 }
 
 function localStorageSupported()
@@ -141,7 +57,7 @@ function deleteLink()
 {
   if (localStorageSupported()) {
     window.localStorage.setItem('navpath','');
-  } 
+  }
 }
 
 function cachedLink()
@@ -189,7 +105,7 @@ function createIndent(o,domNode,node,level)
     node.expandToggle.onclick = function() {
       if (node.expanded) {
         $(node.getChildrenUL()).slideUp("fast");
-        node.plus_img.src = node.relpath+"ftv2pnode.png";
+        node.plus_img.src = node.relpath+"arrowright.png";
         node.expanded = false;
       } else {
         expandNode(o, node, false, false);
@@ -197,7 +113,7 @@ function createIndent(o,domNode,node,level)
     }
     node.expandToggle.appendChild(imgNode);
     domNode.appendChild(node.expandToggle);
-    imgNode.src = node.relpath+"ftv2pnode.png";
+    imgNode.src = node.relpath+"arrowright.png";
   } else {
     var span = document.createElement("span");
     span.style.display = 'inline-block';
@@ -213,11 +129,13 @@ var animationInProgress = false;
 function gotoAnchor(anchor,aname,updateLocation)
 {
   var pos, docContent = $('#doc-content');
-  if (anchor.parent().attr('class')=='memItemLeft' ||
-      anchor.parent().attr('class')=='fieldtype' ||
-      anchor.parent().is(':header')) 
+  var ancParent = $(anchor.parent());
+  if (ancParent.hasClass('memItemLeft') ||
+      ancParent.hasClass('fieldname') ||
+      ancParent.hasClass('fieldtype') ||
+      ancParent.is(':header'))
   {
-    pos = anchor.parent().position().top;
+    pos = ancParent.position().top;
   } else if (anchor.position()) {
     pos = anchor.position().top;
   }
@@ -275,7 +193,7 @@ function newNode(o, po, text, link, childrenData, lastNode)
     a.className = stripPath(link.replace('#',':'));
     if (link.indexOf('#')!=-1) {
       var aname = '#'+link.split('#')[1];
-      var srcPage = stripPath($(location).attr('pathname'));
+      var srcPage = stripPath(pathName());
       var targetPage = stripPath(link.split('#')[0]);
       a.href = srcPage!=targetPage ? url : "javascript:void(0)"; 
       a.onclick = function(){
@@ -351,9 +269,9 @@ function expandNode(o, node, imm, showRoot)
         $(node.getChildrenUL()).slideDown("fast");
       }
       if (node.isLast) {
-        node.plus_img.src = node.relpath+"ftv2mlastnode.png";
+        node.plus_img.src = node.relpath+"arrowdown.png";
       } else {
-        node.plus_img.src = node.relpath+"ftv2mnode.png";
+        node.plus_img.src = node.relpath+"arrowdown.png";
       }
       node.expanded = true;
     }
@@ -369,14 +287,13 @@ function glowEffect(n,duration)
 
 function highlightAnchor()
 {
-  var aname = $(location).attr('hash');
+  var aname = hashUrl();
   var anchor = $(aname);
   if (anchor.parent().attr('class')=='memItemLeft'){
-    var rows = $('.memberdecls tr[class$="'+
-               window.location.hash.substring(1)+'"]');
+    var rows = $('.memberdecls tr[class$="'+hashValue()+'"]');
     glowEffect(rows.children(),300); // member without details
-  } else if (anchor.parents().slice(2).prop('tagName')=='TR') {
-    glowEffect(anchor.parents('div.memitem'),1000); // enum value
+  } else if (anchor.parent().attr('class')=='fieldname'){
+    glowEffect(anchor.parent().parent(),1000); // enum value
   } else if (anchor.parent().attr('class')=='fieldtype'){
     glowEffect(anchor.parent().parent(),1000); // struct field
   } else if (anchor.parent().is(":header")) {
@@ -391,7 +308,7 @@ function selectAndHighlight(hash,n)
 {
   var a;
   if (hash) {
-    var link=stripPath($(location).attr('pathname'))+':'+hash.substring(1);
+    var link=stripPath(pathName())+':'+hash.substring(1);
     a=$('.item a[class$="'+link+'"]');
   }
   if (a && a.length) {
@@ -424,11 +341,7 @@ function showNode(o, node, index, hash)
         getNode(o, node);
       }
       $(node.getChildrenUL()).css({'display':'block'});
-      if (node.isLast) {
-        node.plus_img.src = node.relpath+"ftv2mlastnode.png";
-      } else {
-        node.plus_img.src = node.relpath+"ftv2mnode.png";
-      }
+      node.plus_img.src = node.relpath+"arrowdown.png";
       node.expanded = true;
       var n = node.children[o.breadcrumbs[index]];
       if (index+1<o.breadcrumbs.length) {
@@ -502,14 +415,13 @@ function navTo(o,root,hash,relpath)
   if (link) {
     var parts = link.split('#');
     root = parts[0];
-    if (parts.length>1) hash = '#'+parts[1];
+    if (parts.length>1) hash = '#'+parts[1].replace(/[^\w\-]/g,'');
     else hash='';
   }
   if (hash.match(/^#l\d+$/)) {
     var anchor=$('a[name='+hash.substring(1)+']');
     glowEffect(anchor.parent(),1000); // line number
     hash=''; // strip line number anchors
-    //root=root.replace(/_source\./,'.'); // source link to doc link
   }
   var url=root+hash;
   var i=-1;
@@ -543,7 +455,7 @@ function toggleSyncButton(relpath)
   if (navSync.hasClass('sync')) {
     navSync.removeClass('sync');
     showSyncOff(navSync,relpath);
-    storeLink(stripPath2($(location).attr('pathname'))+$(location).attr('hash'));
+    storeLink(stripPath2(pathName())+hashUrl());
   } else {
     navSync.addClass('sync');
     showSyncOn(navSync,relpath);
@@ -567,7 +479,7 @@ function initNavTree(toroot,relpath)
   o.node.expanded = false;
   o.node.isLast = true;
   o.node.plus_img = document.createElement("img");
-  o.node.plus_img.src = relpath+"ftv2pnode.png";
+  o.node.plus_img.src = relpath+"arrowright.png";
   o.node.plus_img.width = 16;
   o.node.plus_img.height = 22;
 
@@ -583,7 +495,7 @@ function initNavTree(toroot,relpath)
   }
 
   $(window).load(function(){
-    navTo(o,toroot,window.location.hash,relpath);
+    navTo(o,toroot,hashUrl(),relpath);
     showRoot();
   });
 
@@ -591,21 +503,20 @@ function initNavTree(toroot,relpath)
      if (window.location.hash && window.location.hash.length>1){
        var a;
        if ($(location).attr('hash')){
-         var clslink=stripPath($(location).attr('pathname'))+':'+
-                               $(location).attr('hash').substring(1);
-         a=$('.item a[class$="'+clslink+'"]');
+         var clslink=stripPath(pathName())+':'+hashValue();
+         a=$('.item a[class$="'+clslink.replace(/</g,'\\3c ')+'"]');
        }
        if (a==null || !$(a).parent().parent().hasClass('selected')){
          $('.item').removeClass('selected');
          $('.item').removeAttr('id');
        }
-       var link=stripPath2($(location).attr('pathname'));
-       navTo(o,link,$(location).attr('hash'),relpath);
+       var link=stripPath2(pathName());
+       navTo(o,link,hashUrl(),relpath);
      } else if (!animationInProgress) {
        $('#doc-content').scrollTop(0);
        $('.item').removeClass('selected');
        $('.item').removeAttr('id');
-       navTo(o,toroot,window.location.hash,relpath);
+       navTo(o,toroot,hashUrl(),relpath);
      }
   })
 }

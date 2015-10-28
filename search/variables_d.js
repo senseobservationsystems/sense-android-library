@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['name',['name',['../classnl_1_1sense__os_1_1datastorageengine_1_1_realm_model_sensor.html#a151f9f8ce6a14f9a4e118e207010b2b2',1,'nl.sense_os.datastorageengine.RealmModelSensor.name()'],['../classnl_1_1sense__os_1_1datastorageengine_1_1_realm_sensor.html#afb6925936b72362c2208f4c69c076cd2',1,'nl.sense_os.datastorageengine.RealmSensor.name()']]],
   ['network',['NETWORK',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_location.html#ac508b74aa905320b156f336645ce31e7',1,'nl.sense_os.service.constants.SensePrefs.Main.Location.NETWORK()'],['../classnl_1_1sense__os_1_1service_1_1ctrl_1_1_ctrl_extended.html#aeb71a496aeb0b79a8e172bbe453ba06f',1,'nl.sense_os.service.ctrl.CtrlExtended.NETWORK()']]],
   ['nextexecution',['nextExecution',['../classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler_1_1_task.html#ae79635abf4bee6015c2efe88bf23d80f',1,'nl::sense_os::service::scheduler::Scheduler::Task']]],
   ['nfc',['NFC',['../classnl_1_1sense__os_1_1service_1_1constants_1_1_sense_prefs_1_1_main_1_1_dev_prox.html#a673a93063f1beee8e26ec5debcb8b636',1,'nl::sense_os::service::constants::SensePrefs::Main::DevProx']]],

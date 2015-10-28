@@ -1,6 +1,7 @@
 var searchData=
 [
   ['unbindfromsenseservice',['unbindFromSenseService',['../classnl_1_1sense__os_1_1platform_1_1_sense_platform.html#a9cc27bc4e6977c8a683eaabc670605f6',1,'nl::sense_os::platform::SensePlatform']]],
+  ['unquote',['unquote',['../classnl_1_1sense__os_1_1datastorageengine_1_1_data_point.html#aa18b1dff0a28ce0ee5f1564a86550768',1,'nl::sense_os::datastorageengine::DataPoint']]],
   ['unregister',['unregister',['../classnl_1_1sense__os_1_1service_1_1scheduler_1_1_scheduler.html#aab85308205a7415cf38ce2b54d52b503',1,'nl::sense_os::service::scheduler::Scheduler']]],
   ['unregisterproducer',['unregisterProducer',['../classnl_1_1sense__os_1_1service_1_1subscription_1_1_subscription_manager.html#adb89852f26f3e03517e36a6f973b2dcf',1,'nl::sense_os::service::subscription::SubscriptionManager']]],
   ['unregistersensors',['unregisterSensors',['../classnl_1_1sense__os_1_1service_1_1motion_1_1_motion_sensor.html#a7eac32dac44107797a06fb34da39320a',1,'nl::sense_os::service::motion::MotionSensor']]],
@@ -9,6 +10,7 @@ var searchData=
   ['updateandsendcameralightvalues',['UpdateAndSendCameraLightValues',['../classnl_1_1sense__os_1_1service_1_1ambience_1_1_camera_light_sensor_1_1_update_and_send_camera_light_values.html#a0635184ae628c6a5f3c8cc37e4085dc4',1,'nl::sense_os::service::ambience::CameraLightSensor::UpdateAndSendCameraLightValues']]],
   ['updatecenter',['updateCenter',['../classnl_1_1sense__os_1_1service_1_1location_1_1_traveled_distance_estimator.html#a9ca6f5a816dba7391b828f444be1a8cb',1,'nl::sense_os::service::location::TraveledDistanceEstimator']]],
   ['updateconfiguration',['updateConfiguration',['../classnl_1_1sense__os_1_1service_1_1push_1_1_g_c_m_receiver.html#a7e4f54a50e7caf906248ff1e9a94c8ec',1,'nl::sense_os::service::push::GCMReceiver']]],
+  ['updateencryption',['updateEncryption',['../classnl_1_1sense__os_1_1service_1_1storage_1_1_db_helper.html#a7e516ca98ba00849faedd289a9ee55e9',1,'nl::sense_os::service::storage::DbHelper']]],
   ['updatenotification',['updateNotification',['../classnl_1_1sense__os_1_1service_1_1_service_state_helper.html#a0233f91e8b113e0d8c1fff6bb8fc9d36',1,'nl::sense_os::service::ServiceStateHelper']]],
   ['updatesamplingrate',['updateSamplingRate',['../classnl_1_1sense__os_1_1service_1_1configuration_1_1_configuration_service.html#a0308e5c60699a3e18107dde1721480c7',1,'nl::sense_os::service::configuration::ConfigurationService']]],
   ['updatestate',['updateState',['../classnl_1_1sense__os_1_1service_1_1states_1_1_abstract_state_monitor.html#adf0edccc7634a33b8c59063cb6e9e76a',1,'nl.sense_os.service.states.AbstractStateMonitor.updateState()'],['../classnl_1_1sense__os_1_1service_1_1states_1_1_epi_state_monitor.html#a788da6a77ef20f9d1c52420cad1b7f96',1,'nl.sense_os.service.states.EpiStateMonitor.updateState()']]],

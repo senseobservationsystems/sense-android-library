@@ -2,6 +2,7 @@ var classnl_1_1sense__os_1_1service_1_1_sense_service_stub =
 [
     [ "SenseServiceStub", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a8b2043ac2af20ec7f6e25e3f3580efd8", null ],
     [ "changeLogin", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a519528dee87149754e0acb31b6d71f90", null ],
+    [ "checkValidLogKey", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#adda8384fbd8751a73a3a72f159e73331", null ],
     [ "getCookie", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#adcf90dd743085dc028b555905688e27a", null ],
     [ "getPrefBool", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a95ac652ccc1005accea0a2b339b6817d", null ],
     [ "getPrefFloat", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#aae1ba283f76aac05e614c257ab559965", null ],
@@ -26,6 +27,7 @@ var classnl_1_1sense__os_1_1service_1_1_sense_service_stub =
     [ "toggleMotion", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#acae185ca8388454e0251cdf2f85010d2", null ],
     [ "togglePhoneState", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a6953412d02acb96595dc2da97b6019c1", null ],
     [ "togglePopQuiz", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a97423b73804e13702c4274e5f0624a07", null ],
+    [ "INVISIBLE_LOGS", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a4a4bf0bf1e0cc05bafa0a285044e3152", null ],
     [ "service", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#a2baaabc43ba584cdf6ccb8cad63b2502", null ],
     [ "TAG", "classnl_1_1sense__os_1_1service_1_1_sense_service_stub.html#ab4aab15819d741dad169c6ccba7c571f", null ]
 ];
