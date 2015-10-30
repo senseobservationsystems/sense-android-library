@@ -2,16 +2,8 @@ package nl.sense_os.datastorageengine;
 
 import android.content.Context;
 
-import org.everit.json.schema.Schema;
-import org.everit.json.schema.loader.SchemaLoader;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -255,14 +247,14 @@ public class DatabaseHandler {
     }
 
 
-    public void validate(String sensorName, String value) throws IOException, JSONException {
-        SensorProfile sensorProfile = realm
-                .where(SensorProfile.class)
-                .equalTo("sensorName", sensorName)
-                .findFirst();
-        JSONObject rawSchema = new JSONObject(sensorProfile.getDataStructure());
-        Schema schema = SchemaLoader.load(rawSchema);
-        schema.validate(new JSONObject(value));
-    }
+//    public void validate(String sensorName, String value) throws IOException, JSONException {
+//        SensorProfile sensorProfile = realm
+//                .where(SensorProfile.class)
+//                .equalTo("sensorName", sensorName)
+//                .findFirst();
+//        JSONObject rawSchema = new JSONObject(sensorProfile.getDataStructure());
+//        Schema schema = SchemaLoader.load(rawSchema);
+//        schema.validate(new JSONObject(value));
+//    }
 
 }
