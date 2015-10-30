@@ -10,6 +10,7 @@ import java.util.Map;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
@@ -25,9 +26,6 @@ public class TestSensorProfiles  extends AndroidTestCase {
 
     Map<String, String> user;
     String userId;
-    SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
-    String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
-    String sessionId;
     String sourceName = "sense-android";
     SensorDataProxy proxy;
     DataSyncer dataSyncer;
@@ -44,16 +42,17 @@ public class TestSensorProfiles  extends AndroidTestCase {
         user = csUtils.createCSAccount();
         userId = user.get("id");
 
-        sessionId = csUtils.loginUser(user.get("username"), user.get("password"));
+        DSEConstants.SESSION_ID = csUtils.loginUser(user.get("username"), user.get("password"));
+        DSEConstants.APP_KEY = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
 
         testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
         realm = Realm.getInstance(testConfig);
         databaseHandler = new DatabaseHandler(getContext(),userId);
 
-        proxy = new SensorDataProxy(server, appKey, sessionId);
+        proxy = new SensorDataProxy();
 
-        dataSyncer = new DataSyncer(getContext(), userId,proxy, null);
+        dataSyncer = new DataSyncer(getContext(),proxy);
         dataSyncer.downloadSensorProfiles();
         results = realm.where(SensorProfile.class).findAll();
         results.sort("sensorName", RealmResults.SORT_ORDER_ASCENDING);
@@ -84,7 +83,6 @@ public class TestSensorProfiles  extends AndroidTestCase {
     public void testSensorAccelerometer() throws Exception {
         SensorProfile sensorProfile = results.get(0);
         String sensorName = "accelerometer";
-        //TODO: Need to add "data_structure"
         String dataStructure = "{\"sensor_name\":\"accelerometer\",\"data_structure\":\"{\\\"$schema\\\": \\\"http:\\/\\/json-schema.org\\/draft-04\\/schema#\\\",\\\"type\\\": \\\"object\\\",\\\"properties\\\": {\\\"x-axis\\\": {\\\"description\\\": \\\"The acceleration force applied on the x-axis in m\\/s2\\\", \\\"type\\\": \\\"number\\\"}, \\\"y-axis\\\": { \\\"description\\\": \\\"The acceleration force applied on the y-axis in m\\/s2\\\", \\\"type\\\": \\\"number\\\"}, \\\"z-axis\\\": {\\\"description\\\": \\\"The acceleration force applied on the z-axis in m\\/s2\\\", \\\"type\\\": \\\"number\\\" } }, \\\"required\\\": [\\\"x-axis\\\",\\\"y-axis\\\",\\\"z-axis\\\"]}\"}";
         assertEquals(sensorName, sensorProfile.getSensorName());
         assertEquals(dataStructure, sensorProfile.getDataStructure());

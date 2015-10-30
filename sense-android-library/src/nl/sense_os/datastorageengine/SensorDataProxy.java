@@ -22,7 +22,7 @@ import java.util.Map;
 public class SensorDataProxy {
     private static final String TAG = "SensorDataProxy";
 
-    public enum SERVER {LIVE, STAGING};
+    //public enum SERVER {LIVE, STAGING};
 
     public static final String BASE_URL_LIVE = "https://sensor-api.sense-os.nl";
     public static final String BASE_URL_STAGING = "http://sensor-api.staging.sense-os.nl";
@@ -33,14 +33,11 @@ public class SensorDataProxy {
 
     /**
      * Create a sensor data proxy.
-     * @param server     Select whether to use the live or staging server.
-     * @param appKey     Application key, identifying the application in the REST API.
-     * @param sessionId  The session id of the current user.
      */
-    public SensorDataProxy(SERVER server, String appKey, String sessionId) {
-        this.baseUrl = (server == SERVER.LIVE) ? BASE_URL_LIVE : BASE_URL_STAGING;
-        this.appKey = appKey;
-        this.sessionId = sessionId;
+    public SensorDataProxy() {
+        this.baseUrl = (DSEConstants.CURRENT_SERVER == DSEConstants.SERVER.LIVE) ? BASE_URL_LIVE : BASE_URL_STAGING;
+        this.appKey = DSEConstants.APP_KEY;
+        this.sessionId = DSEConstants.SESSION_ID;
     }
 
     /**

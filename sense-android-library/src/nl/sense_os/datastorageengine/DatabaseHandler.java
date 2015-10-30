@@ -93,6 +93,20 @@ public class DatabaseHandler {
         realm.commitTransaction();
     }
 
+    public boolean hasSensorProfile(String sensorName) {
+        realm.beginTransaction();
+        SensorProfile sensorProfile = realm
+                .where(SensorProfile.class)
+                .equalTo("userId", userId)
+                .equalTo("sensorName", sensorName)
+                .findFirst();
+        realm.commitTransaction();
+        if(sensorProfile != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
         final long id = Sensor.generateId(realm);
         final boolean synced = false;

@@ -23,28 +23,17 @@ public class DataSyncer {
 
     private SensorDataProxy proxy = null;
     private Context context;
-    private String userId;
     private DatabaseHandler databaseHandler;
     private boolean periodicSyncEnabled = false;
     private DataSyncerAlarmReceiver alarm;
-    // Default value of persistPeriod, 31 days in milliseconds
-    //TODO: should it be public, should SYNC_RATE and persistPeriod have setter and getter methods
-    private long persistPeriod = 2678400000L;
     private ScheduledFuture<?> scheduledFuture;
     public final static String SOURCE = "sense-android";
 
 
-    public DataSyncer(Context context, String userId, SensorDataProxy proxy, Long persistPeriod){
+    public DataSyncer(Context context,SensorDataProxy proxy){
 //        this.context = context;
-//        this.userId = userId;
-        this.databaseHandler = new DatabaseHandler(context, userId);
-        //TODO:
+        this.databaseHandler = new DatabaseHandler(context, DSEConstants.USER_ID);
         this.alarm = new DataSyncerAlarmReceiver();
-
-        //Null for default value of persistPeriod
-        if(persistPeriod != null){
-            this.persistPeriod = persistPeriod;
-        }
         this.proxy = proxy;
     }
 
@@ -59,7 +48,7 @@ public class DataSyncer {
         protected void onHandleIntent(Intent intent)
         {
             try
-            {  //TODO: Real stuff here
+            {
                 deletionInRemote();
                 downloadFromRemote();
                 uploadToRemote();
@@ -85,12 +74,9 @@ public class DataSyncer {
         }
     }
 
-    public void enablePeriodicSync(long syncRate){
-        if(!periodicSyncEnabled) {
-            alarm.setSyncRate(syncRate);
-            alarm.setAlarm(context);
-            periodicSyncEnabled = true;
-        }
+    public void disablePeriodicSync(){
+        alarm.cancelAlarm(context);
+        periodicSyncEnabled = false;
     }
 
     public void initialize() throws JSONException, IOException, DatabaseHandlerException{
@@ -101,7 +87,9 @@ public class DataSyncer {
         JSONArray sensorProfiles = proxy.getSensorProfiles();
         for(int i = 0; i< sensorProfiles.length(); i++) {
             JSONObject sensorProfile = sensorProfiles.getJSONObject(i);
-            databaseHandler.createSensorProfile(sensorProfile.getString("sensor_name"), sensorProfile.toString());
+            if(!databaseHandler.hasSensorProfile(sensorProfile.getString("sensor_name"))) {
+                databaseHandler.createSensorProfile(sensorProfile.getString("sensor_name"), sensorProfile.toString());
+            }
         }
     }
 
@@ -199,7 +187,7 @@ public class DataSyncer {
 
         //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
         for(Sensor sensor: rawSensorList){
-            Long persistenceBoundary = new Date().getTime() - persistPeriod;
+            Long persistenceBoundary = new Date().getTime() - DSEConstants.PERSIST_PERIOD;
             if(sensor.getOptions().isUploadEnabled()){
                 if(sensor.getOptions().isPersistLocally()){
                    sensor.deleteDataPoints(new QueryOptions(null,persistenceBoundary,true, null, QueryOptions.SORT_ORDER.ASC));

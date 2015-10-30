@@ -5,6 +5,7 @@ import android.test.AndroidTestCase;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.SensorDataProxy;
 
@@ -14,7 +15,6 @@ import nl.sense_os.datastorageengine.SensorDataProxy;
 public class TestDataSyncer extends AndroidTestCase{
     private CSUtils csUtils;
     private Map<String, String> newUser;
-    private String userId;
     private String appKey;
     private String sessionId;
     private DataSyncer dataSyncer;
@@ -23,11 +23,12 @@ public class TestDataSyncer extends AndroidTestCase{
     protected void setUp () throws Exception {
         csUtils = new CSUtils(false);
         newUser = csUtils.createCSAccount();
-        userId = newUser.get("id");
-        appKey =  csUtils.APP_KEY;
-        sessionId= csUtils.loginUser(newUser.get("username"), newUser.get("password"));
-        SensorDataProxy proxy = new SensorDataProxy(SensorDataProxy.SERVER.STAGING, appKey, sessionId);
-        dataSyncer = new DataSyncer(getContext(), userId,proxy, 86400000L);
+        DSEConstants.USER_ID = newUser.get("id");
+        DSEConstants.APP_KEY =  csUtils.APP_KEY;
+        DSEConstants.CURRENT_SERVER = DSEConstants.SERVER.STAGING;
+        DSEConstants.SESSION_ID = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
+        SensorDataProxy proxy = new SensorDataProxy();
+        dataSyncer = new DataSyncer(getContext(),proxy);
 
         // add a data point of a sensor to remote
 //        Date dateType = new Date();
@@ -54,6 +55,6 @@ public class TestDataSyncer extends AndroidTestCase{
 //    }
 
     public void testExecSchedulerSucceeded() throws InterruptedException, ExecutionException {
-        dataSyncer.synchronize();
+        dataSyncer.enablePeriodicSync();
     }
 }
