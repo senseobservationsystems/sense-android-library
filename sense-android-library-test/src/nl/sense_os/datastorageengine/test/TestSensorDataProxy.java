@@ -10,14 +10,12 @@ import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import nl.sense_os.datastorageengine.HTTPUtil;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.SensorDataProxy;
 
@@ -87,16 +85,13 @@ public class TestSensorDataProxy extends AndroidTestCase {
         JSONArray profiles = proxy.getSensorProfiles();
         assertTrue("Should not return an empty sensor list", profiles.length() > 0);
         assertEquals("The number of sensors in total is wrong", 16,  profiles.length());
-        //TODO:get the profiles
-        for (int i = 0; i < profiles.length(); i++) {
-            System.out.println("the profile" + profiles.get(i).toString());
+        for(int i = 0; i< profiles.length();i++){
+            System.out.println(profiles.get(i).toString());
         }
-
         List keys = toArrayList(profiles.getJSONObject(0).keys());
         Collections.sort(keys);
         assertEquals("Should contain two entries", 2, keys.size());
-        assertEquals("Should contain two entries", "data_structure", keys.get(0));
-        assertEquals("Should contain two entries", "sensor_name", keys.get(1));
+
     }
 
     public void testGetSensors () throws IOException, JSONException {

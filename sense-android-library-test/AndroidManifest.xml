@@ -24,7 +24,8 @@
 
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:name="android.support.multidex.MultiDexApplication">
         <uses-library android:name="android.test.runner" />
 
         <activity
@@ -35,6 +36,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name="nl.sense_os.datastorageengine.DataSyncerAlarmReceiver"></receiver>
+        <receiver android:name="nl.sense_os.datastorageengine.DataSyncerBootReciver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <service android:name="nl.sense_os.datastorageengine.DataSyncer$PeriodicSyncService" />
 
     </application>
 

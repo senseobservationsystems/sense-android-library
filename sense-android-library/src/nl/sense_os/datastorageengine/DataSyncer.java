@@ -1,6 +1,8 @@
 package nl.sense_os.datastorageengine;
 
+import android.app.IntentService;
 import android.content.Context;
+import android.content.Intent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,14 +11,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * DataSyncer handles the synchronization between the local storage and CommonSense.
@@ -31,20 +26,20 @@ public class DataSyncer {
     private String userId;
     private DatabaseHandler databaseHandler;
     private boolean periodicSyncEnabled = false;
-    private ScheduledExecutorService service;
-    //Default value of syncing period, 30 mins in milliseconds
-    public static long SYNC_RATE = 1800000L;
+    private DataSyncerAlarmReceiver alarm;
     // Default value of persistPeriod, 31 days in milliseconds
     //TODO: should it be public, should SYNC_RATE and persistPeriod have setter and getter methods
     private long persistPeriod = 2678400000L;
     private ScheduledFuture<?> scheduledFuture;
     public final static String SOURCE = "sense-android";
 
+
     public DataSyncer(Context context, String userId, SensorDataProxy proxy, Long persistPeriod){
 //        this.context = context;
 //        this.userId = userId;
         this.databaseHandler = new DatabaseHandler(context, userId);
-        this.service = Executors.newSingleThreadScheduledExecutor();
+        //TODO:
+        this.alarm = new DataSyncerAlarmReceiver();
 
         //Null for default value of persistPeriod
         if(persistPeriod != null){
@@ -53,16 +48,28 @@ public class DataSyncer {
         this.proxy = proxy;
     }
 
-    public class Task implements Runnable {
+    public class PeriodicSyncService extends IntentService {
+        public static final String TAG = "PeriodicSyncHandlerService";
+        public PeriodicSyncService()
+        {
+            super(TAG);
+        }
+
         @Override
-        public void run() {
-            try {
-                synchronize();
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }catch (ExecutionException e){
-                e.printStackTrace();
+        protected void onHandleIntent(Intent intent)
+        {
+            try
+            {  //TODO: Real stuff here
+                deletionInRemote();
+                downloadFromRemote();
+                uploadToRemote();
+                cleanUpLocalStorage();
+            }catch(Exception e)
+            {
+                e.getStackTrace();
             }
+            // Release the wake lock provided by the BroadcastReceiver.
+            DataSyncerAlarmReceiver.completeWakefulIntent(intent);
         }
     }
 
@@ -71,57 +78,30 @@ public class DataSyncer {
     }
 
     public void enablePeriodicSync(){
+        // the default sync rate is set in DSEAlarmReceiver
         if(!periodicSyncEnabled) {
-            enablePeriodicSync(SYNC_RATE);
+            alarm.setAlarm(context);
             periodicSyncEnabled = true;
         }
     }
 
     public void enablePeriodicSync(long syncRate){
-        scheduledFuture = service.scheduleWithFixedDelay(new Task(), 0, syncRate, TimeUnit.MILLISECONDS);
+        if(!periodicSyncEnabled) {
+            alarm.setSyncRate(syncRate);
+            alarm.setAlarm(context);
+            periodicSyncEnabled = true;
+        }
     }
 
-    public void disablePeriodicSync(){
-        scheduledFuture.cancel(false);
-        periodicSyncEnabled = false;
-    }
-
-    public void initialize() throws InterruptedException, ExecutionException{
-        initializeAsync().get();
-
-    }
-    public Future initializeAsync(){
-        ExecutorService es = Executors.newFixedThreadPool(1);
-        return es.submit(new Callable() {
-            public Object call() throws Exception {
-                downloadSensorProfiles();
-                return null;
-            }
-        });
-    }
-
-    public void synchronize() throws InterruptedException, ExecutionException{
-        synchronizeAsync().get();
-    }
-
-    public Future synchronizeAsync(){
-        ExecutorService es = Executors.newFixedThreadPool(1);
-        return es.submit(new Callable() {
-            public Object call() throws Exception {
-                deletionInRemote();
-                downloadFromRemote();
-                uploadToRemote();
-                cleanUpLocalStorage();
-                return null;
-            }
-        });
+    public void initialize() throws JSONException, IOException, DatabaseHandlerException{
+        downloadSensorProfiles();
     }
 
     public void downloadSensorProfiles () throws JSONException, IOException, DatabaseHandlerException {
         JSONArray sensorProfiles = proxy.getSensorProfiles();
         for(int i = 0; i< sensorProfiles.length(); i++) {
             JSONObject sensorProfile = sensorProfiles.getJSONObject(i);
-            databaseHandler.createSensorProfile(sensorProfile.getString("sensor_name"), sensorProfile.getString("data_structure"));
+            databaseHandler.createSensorProfile(sensorProfile.getString("sensor_name"), sensorProfile.toString());
         }
     }
 

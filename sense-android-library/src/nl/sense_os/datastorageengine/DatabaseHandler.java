@@ -2,8 +2,16 @@ package nl.sense_os.datastorageengine;
 
 import android.content.Context;
 
-import org.json.JSONException;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,6 +83,7 @@ public class DatabaseHandler {
     public void close () throws Exception {
         finalize();
     }
+
     public void createSensorProfile(String sensorName, String dataStructure) throws DatabaseHandlerException {
         SensorProfile sensorProfile = new SensorProfile(sensorName, dataStructure);
         realm.beginTransaction();
@@ -91,6 +100,7 @@ public class DatabaseHandler {
         }
         realm.commitTransaction();
     }
+
     public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
         final long id = Sensor.generateId(realm);
         final boolean synced = false;
@@ -243,4 +253,16 @@ public class DatabaseHandler {
         result.clear();
         realm.commitTransaction();
     }
+
+
+    public void validate(String sensorName, String value) throws IOException, JSONException {
+        SensorProfile sensorProfile = realm
+                .where(SensorProfile.class)
+                .equalTo("sensorName", sensorName)
+                .findFirst();
+        JSONObject rawSchema = new JSONObject(sensorProfile.getDataStructure());
+        Schema schema = SchemaLoader.load(rawSchema);
+        schema.validate(new JSONObject(value));
+    }
+
 }

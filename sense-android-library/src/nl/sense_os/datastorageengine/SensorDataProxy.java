@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A proxy class to handle create, get, update, and delete of sensors and
+ * A proxy class to handle create, read, update, and delete of sensors and
  * sensor data in the cloud using the Sensor REST API.
  * Does not contain functionality like logging in or creating an account.
  */
