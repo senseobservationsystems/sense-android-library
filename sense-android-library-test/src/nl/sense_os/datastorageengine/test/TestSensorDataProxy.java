@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.SensorDataProxy;
 
@@ -23,9 +24,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     private static final String TAG = "TestSensorDataProxy";
 
     Map<String, String> user;
-    SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
     String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
-    String sessionId;
     String sourceName = "sense-android";
     SensorDataProxy proxy;
     CSUtils csUtils;
@@ -34,9 +33,12 @@ public class TestSensorDataProxy extends AndroidTestCase {
         csUtils = new CSUtils(false); // staging server
 
         user = csUtils.createCSAccount();
-        sessionId = csUtils.loginUser(user.get("username"), user.get("password"));
 
-        proxy = new SensorDataProxy(server, appKey, sessionId);
+        DSEConstants.APP_KEY = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
+        DSEConstants.CURRENT_SERVER = DSEConstants.SERVER.STAGING;
+        DSEConstants.SESSION_ID = csUtils.loginUser(user.get("username"), user.get("password"));
+
+        proxy = new SensorDataProxy();
     }
 
     public void tearDown() throws IOException {
@@ -45,8 +47,8 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
     public void testInvalidAppKey () {
         // create a proxy with invalid appKey
-        String invalidAppKey = "uh oh";
-        SensorDataProxy proxy2 = new SensorDataProxy(server, invalidAppKey, sessionId);
+        DSEConstants.APP_KEY = "uh oh";
+        SensorDataProxy proxy2 = new SensorDataProxy();
 
         try {
             // should fail because of invalid app key
@@ -64,8 +66,8 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
     public void testInvalidSessionId () {
         // create a proxy with invalid appKey
-        String invalidSessionId = "no go";
-        SensorDataProxy proxy2 = new SensorDataProxy(server, appKey, invalidSessionId);
+        DSEConstants.SESSION_ID = "no go";
+        SensorDataProxy proxy2 = new SensorDataProxy();
 
         try {
             // should fail because of invalid session id

@@ -16,8 +16,7 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
     private AlarmManager alarmMgr;
     // The pending intent that is triggered when the alarm fires.
     private PendingIntent alarmIntent;
-    //Default value of syncing period, 30 mins in milliseconds
-    public static long SYNC_RATE = 1800000L;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -32,7 +31,7 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, DataSyncerAlarmReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         //TODO: configure the period here
-        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0, SYNC_RATE, alarmIntent);
+        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0, DSEConstants.SYNC_RATE, alarmIntent);
 
         ComponentName receiver = new ComponentName(context, DataSyncerBootReciver.class);
         PackageManager pm = context.getPackageManager();
@@ -58,9 +57,4 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
                 PackageManager.DONT_KILL_APP);
     }
 
-    public void setSyncRate(long syncRate) {
-        SYNC_RATE = syncRate;
-    }
-
-    public long getSyncRate() { return SYNC_RATE; }
 }
