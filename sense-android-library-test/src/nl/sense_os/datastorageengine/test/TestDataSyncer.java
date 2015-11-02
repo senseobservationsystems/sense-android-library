@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.DataSyncer;
+import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.SensorDataProxy;
 
 /**
@@ -15,20 +16,21 @@ import nl.sense_os.datastorageengine.SensorDataProxy;
 public class TestDataSyncer extends AndroidTestCase{
     private CSUtils csUtils;
     private Map<String, String> newUser;
-    private String appKey;
+    SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
+    private String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
     private String sessionId;
     private DataSyncer dataSyncer;
+
 
     @Override
     protected void setUp () throws Exception {
         csUtils = new CSUtils(false);
         newUser = csUtils.createCSAccount();
-        DSEConstants.USER_ID = newUser.get("id");
-        DSEConstants.APP_KEY =  csUtils.APP_KEY;
-        DSEConstants.CURRENT_SERVER = DSEConstants.SERVER.STAGING;
-        DSEConstants.SESSION_ID = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
-        SensorDataProxy proxy = new SensorDataProxy();
-        dataSyncer = new DataSyncer(getContext(),proxy);
+        String userId = newUser.get("id");
+        sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
+        DatabaseHandler databaseHandler = new DatabaseHandler(getContext(), userId);
+        SensorDataProxy proxy = new SensorDataProxy(server, appKey, sessionId);
+        dataSyncer = new DataSyncer(getContext(), databaseHandler, proxy);
 
         // add a data point of a sensor to remote
 //        Date dateType = new Date();
