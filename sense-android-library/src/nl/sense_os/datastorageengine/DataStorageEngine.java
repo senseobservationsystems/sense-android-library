@@ -3,6 +3,7 @@ package nl.sense_os.datastorageengine;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class DataStorageEngine {
     private String mUserID;
     private String mSessionID;
     private String mAPPKey;
+    private List<DataStorageEngineDelegate> mDelegates;
 
     private final static String PREFERENCE_NAME = "data_storage_engine";
     /** the key for the session_id preference */
@@ -50,6 +52,7 @@ public class DataStorageEngine {
     {
         mContext = context;
         mOptions = new DSEOptions();
+        mDelegates = new ArrayList();
         initialize();
     }
 
@@ -187,7 +190,7 @@ public class DataStorageEngine {
      * Returns all the sources attached to the current user
      * @return List<String> The sources attached to the current user
      **/
-    List<String> getSources(){
+    public List<String> getSources(){
         return mDataStorageEngine.getSources();
     }
 
@@ -199,11 +202,50 @@ public class DataStorageEngine {
      * @param endTime The start time in epoch milliseconds
      *
      **/
-    void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
+    public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
         for(String source : getSources()){
             for(Sensor sensor : getSensors(source)){
                 sensor.deleteDataPoints(new QueryOptions(startTime, endTime, null, null, null));
             }
         }
+    }
+
+    /**
+     * Flushes the local data to Common Sense
+     * The results will be returned via the DataStorageEngineDelegate in onFlushCompleted
+     */
+    public void flushData()
+    {
+        // TODO implement upload with status result via the DataStoreEngineDelegate
+        //mDataSyncer.uploadToRemote();
+    }
+
+    /**
+     * Adds a DataStorageEngineDelegate to the lists of delegates to receive updates about the status of the DataStorageEngine
+     * @param delegate The DataStorageEngineDelegate to receive updates in
+     */
+    public void addDelegate(DataStorageEngineDelegate delegate)
+    {
+        if(!mDelegates.contains(delegate))
+            mDelegates.add(delegate);
+    }
+
+    /**
+     * Remove a DataStorageEngineDelegate from the list of delegates to receive updates about the status of the DataStorageEngine
+     * @param delegate The DataStorageEngineDelegate to remove from the list
+     */
+    public void removeDelegate(DataStorageEngineDelegate delegate)
+    {
+        if(mDelegates.contains(delegate))
+            mDelegates.remove(delegate);
+    }
+
+    /**
+     * Get the delegates
+     * @return The registered DataStorageEngine delegates
+     */
+    List<DataStorageEngineDelegate> getDelegate()
+    {
+        return mDelegates;
     }
 }
