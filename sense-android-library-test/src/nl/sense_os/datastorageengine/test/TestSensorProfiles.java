@@ -55,7 +55,7 @@ public class TestSensorProfiles  extends AndroidTestCase {
         proxy = new SensorDataProxy(server, appKey, sessionId);
 
         dataSyncer = new DataSyncer(getContext(), databaseHandler, proxy);
-        dataSyncer.downloadSensorProfiles();
+        dataSyncer.initialize();
         results = realm.where(SensorProfile.class).findAll();
         results.sort("sensorName", RealmResults.SORT_ORDER_ASCENDING);
 

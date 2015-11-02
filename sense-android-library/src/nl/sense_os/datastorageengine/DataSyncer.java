@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * DataSyncer handles the synchronization between the local storage and CommonSense.
@@ -48,16 +49,11 @@ public class DataSyncer {
         }
 
         @Override
-        protected void onHandleIntent(Intent intent)
-        {
-            try
-            {
-                deletionInRemote();
-                downloadFromRemote();
-                uploadToRemote();
-                cleanUpLocalStorage();
-            }catch(Exception e)
-            {
+        protected void onHandleIntent(Intent intent) {
+            try {
+                sync();
+            }
+            catch(Exception e) {
                 e.getStackTrace();
             }
             // Release the wake lock provided by the BroadcastReceiver.
@@ -82,11 +78,43 @@ public class DataSyncer {
         periodicSyncEnabled = false;
     }
 
+    /**
+     * Initialize the DataSyncer.
+     * This will download the actual list with sensor profiles from remote.
+     * @throws JSONException
+     * @throws IOException
+     * @throws DatabaseHandlerException
+     */
     public void initialize() throws JSONException, IOException, DatabaseHandlerException{
         downloadSensorProfiles();
     }
 
-    public void downloadSensorProfiles () throws JSONException, IOException, DatabaseHandlerException {
+    /**
+     * Synchronize data in local and remote storage.
+     * Is executed synchronously.
+     * @throws IOException
+     * @throws DatabaseHandlerException
+     * @throws SensorException
+     * @throws JSONException
+     */
+    public void sync() throws IOException, DatabaseHandlerException, SensorException, JSONException {
+        // TODO: check whether there is no sync in progress currently, if so throw an exception
+        deletionInRemote();
+        downloadFromRemote();
+        uploadToRemote();
+        cleanUpLocalStorage();
+    }
+
+    /**
+     * Synchronize data in local and remote storage.
+     * Is executed synchronously.
+     */
+    public Future syncAsync() {
+        // TODO: implement syncAsync
+        return null;
+    }
+
+    protected void downloadSensorProfiles () throws JSONException, IOException, DatabaseHandlerException {
         JSONArray sensorProfiles = proxy.getSensorProfiles();
         for(int i = 0; i< sensorProfiles.length(); i++) {
             JSONObject sensorProfile = sensorProfiles.getJSONObject(i);
@@ -96,7 +124,7 @@ public class DataSyncer {
         }
     }
 
-    public void deletionInRemote() throws IOException{
+    protected void deletionInRemote() throws IOException{
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
         List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
@@ -110,7 +138,7 @@ public class DataSyncer {
         }
     }
 
-    public void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
+    protected void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors(SOURCE);
@@ -144,7 +172,7 @@ public class DataSyncer {
         }
     }
 
-    public void uploadToRemote() throws JSONException, SensorException, DatabaseHandlerException, IOException {
+    protected void uploadToRemote() throws JSONException, SensorException, DatabaseHandlerException, IOException {
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
@@ -183,7 +211,7 @@ public class DataSyncer {
         }
     }
 
-    public void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException{
+    protected void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException{
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
