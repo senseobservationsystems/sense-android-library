@@ -3,8 +3,14 @@ package nl.sense_os.datastorageengine;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.List;
+
 /**
- * Created by ted on 10/29/15.
+ * This class provides the main interface for creating sensors and sources and setting storage engine specific properties.
+
+ All the Data Storage Engine updates are delivered to the associated delegate object, which is a custom object that you provide. For information about the delegate methods you use to receive events, see DataStorageEngineDelegate interface/protocol.
+ *
+ * Created by ted@sense-os.nl on 10/29/15.
  */
 public class DataStorageEngine {
     private DatabaseHandler mDatabaseHandler;
@@ -63,9 +69,8 @@ public class DataStorageEngine {
     /**
      * Returns enum DSEStatus indicating status of DSE.
      * The value could be either AWAITING_CREDENTIALS, AWAITING_SENSOR_PROFILES, READY.
-     *
      **/
-    DSEStatus getStatus()
+    public DSEStatus getStatus()
     {
         if(!hasCredentials())
             return DSEStatus.AWAITING_CREDENTIALS;
@@ -77,7 +82,7 @@ public class DataStorageEngine {
      * Set the options DataStorageOption
      * Options with a null value will be unchanged.
      */
-    void setOptions(DSEOptions options)
+    public void setOptions(DSEOptions options)
     {
         DSEOptions oldOptions = mOptions;
         mOptions = options;
@@ -128,17 +133,18 @@ public class DataStorageEngine {
         // TODO enable encryption on the database
         mSensorDataProxy = new SensorDataProxy(mOptions.backendEnvironment, mAPPKey, mSessionID);
         // TODO disable periodic sync
-        //if(mDataSyncer != null)
-        //    mDataSyncer.disablePeriodicSync();
-        // TOODO enable/disable encryption
-        mDataSyncer = new DataSyncer(mContext, mUserID, mSensorDataProxy, persistPeriod);
+        if(mDataSyncer != null)
+            mDataSyncer.disablePeriodicSync();
+        // TODO enable/disable encryption
+        mDataSyncer = new DataSyncer(mContext, mDatabaseHandler,mSensorDataProxy);
+        // TODO set the persist period in the DataSyncer
     }
 
     /**
      * Check whether the credentials have been set.
      * @return If the credentials have been set, it returns true, otherwise false.
      */
-    public boolean hasCredentials(){
+    boolean hasCredentials(){
         return mHasCredentials;
     }
 
@@ -146,5 +152,58 @@ public class DataStorageEngine {
         if(mSharedPreferences == null)
             mSharedPreferences = mContext.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return mSharedPreferences;
+    }
+
+    /**
+     * Create a new sensor in database and backend if it does not already exist. Throw exception if it already exists. If it has been created, return the object.
+     * an object.
+     * @param source The source name (e.g accelerometer)
+     * @param name The sensor name (e.g accelerometer)
+     * @param options The sensor options
+     * @return sensor object
+     **/
+    public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
+        return mDatabaseHandler.createSensor(source, name, options);
+    }
+
+    /**
+     * Returns a specific sensor by name and the source it belongs to
+     * @param source The name of the source
+     * @param sensorName The name of the sensor
+     **/
+    public Sensor getSensor(String source, String sensorName){
+        return mDataStorageEngine.getSensor(source, sensorName);
+    }
+
+    /**
+     * Returns all the sensors connected to the given source
+     * @return List<Sensor> The sensors connected to the given source
+     **/
+    public List<Sensor> getSensors(String source){
+        return mDataStorageEngine.getSensors(source);
+    }
+
+    /**
+     * Returns all the sources attached to the current user
+     * @return List<String> The sources attached to the current user
+     **/
+    List<String> getSources(){
+        return mDataStorageEngine.getSources();
+    }
+
+    /**
+     * Delete data from Local Storage and Common Sense.
+     * DataPoints will be immediately removed locally, and an event (class DeletionCriteria)
+     * is scheduled for the next synchronization round to delete them from Common Sense.
+     * @param startTime The start time in epoch milliseconds
+     * @param endTime The start time in epoch milliseconds
+     *
+     **/
+    void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
+        for(String source : getSources()){
+            for(Sensor sensor : getSensors(source)){
+                sensor.deleteDataPoints(new QueryOptions(startTime, endTime, null, null, null));
+            }
+        }
     }
 }

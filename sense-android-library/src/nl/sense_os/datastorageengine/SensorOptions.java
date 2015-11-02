@@ -78,7 +78,6 @@ public class SensorOptions implements Cloneable {
                     e.printStackTrace();
                 }
             }
-
             if (o.downloadEnabled != null) {
                 merged.downloadEnabled = o.downloadEnabled;
             }
@@ -91,7 +90,6 @@ public class SensorOptions implements Cloneable {
                 merged.persistLocally = o.persistLocally;
             }
         }
-
         return merged;
     }
 }
