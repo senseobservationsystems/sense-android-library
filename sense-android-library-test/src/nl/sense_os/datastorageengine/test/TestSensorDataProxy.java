@@ -24,7 +24,9 @@ public class TestSensorDataProxy extends AndroidTestCase {
     private static final String TAG = "TestSensorDataProxy";
 
     Map<String, String> user;
+    SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
     String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
+    String sessionId;
     String sourceName = "sense-android";
     SensorDataProxy proxy;
     CSUtils csUtils;
@@ -33,12 +35,9 @@ public class TestSensorDataProxy extends AndroidTestCase {
         csUtils = new CSUtils(false); // staging server
 
         user = csUtils.createCSAccount();
+        sessionId = csUtils.loginUser(user.get("username"), user.get("password"));
 
-        DSEConstants.APP_KEY = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
-        DSEConstants.CURRENT_SERVER = DSEConstants.SERVER.STAGING;
-        DSEConstants.SESSION_ID = csUtils.loginUser(user.get("username"), user.get("password"));
-
-        proxy = new SensorDataProxy();
+        proxy = new SensorDataProxy(server, appKey, sessionId);
     }
 
     public void tearDown() throws IOException {
@@ -47,8 +46,8 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
     public void testInvalidAppKey () {
         // create a proxy with invalid appKey
-        DSEConstants.APP_KEY = "uh oh";
-        SensorDataProxy proxy2 = new SensorDataProxy();
+        String invalidAppKey = "uh oh";
+        SensorDataProxy proxy2 = new SensorDataProxy(server, invalidAppKey, sessionId);
 
         try {
             // should fail because of invalid app key
@@ -66,8 +65,8 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
     public void testInvalidSessionId () {
         // create a proxy with invalid appKey
-        DSEConstants.SESSION_ID = "no go";
-        SensorDataProxy proxy2 = new SensorDataProxy();
+        String invalidSessionId = "no go";
+        SensorDataProxy proxy2 = new SensorDataProxy(server, appKey, invalidSessionId);
 
         try {
             // should fail because of invalid session id
@@ -86,7 +85,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     public void testGetSensorProfiles () throws JSONException, IOException {
         JSONArray profiles = proxy.getSensorProfiles();
         assertTrue("Should not return an empty sensor list", profiles.length() > 0);
-        assertEquals("The number of sensors in total is wrong", 16,  profiles.length());
+        assertEquals("The number of sensors in total is wrong", 16, profiles.length());
         for(int i = 0; i< profiles.length();i++){
             System.out.println(profiles.get(i).toString());
         }

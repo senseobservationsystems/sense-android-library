@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ScheduledFuture;
 
 /**
  * DataSyncer handles the synchronization between the local storage and CommonSense.
@@ -26,15 +25,19 @@ public class DataSyncer {
     private DatabaseHandler databaseHandler;
     private boolean periodicSyncEnabled = false;
     private DataSyncerAlarmReceiver alarm;
-    private ScheduledFuture<?> scheduledFuture;
     public final static String SOURCE = "sense-android";
 
-
-    public DataSyncer(Context context,SensorDataProxy proxy){
-//        this.context = context;
-        this.databaseHandler = new DatabaseHandler(context, DSEConstants.USER_ID);
-        this.alarm = new DataSyncerAlarmReceiver();
+    /**
+     * Create a new DataSyncer
+     * @param context          Android context
+     * @param databaseHandler  A DatabaseHandler for local data storage
+     * @param proxy            A proxy for remote data storage (in the Sensor API)
+     */
+    public DataSyncer(Context context, DatabaseHandler databaseHandler, SensorDataProxy proxy){
+        this.context = context;
+        this.databaseHandler = databaseHandler;
         this.proxy = proxy;
+        this.alarm = new DataSyncerAlarmReceiver();
     }
 
     public class PeriodicSyncService extends IntentService {
@@ -174,7 +177,7 @@ public class DataSyncer {
                 proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray,sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInRemote(true);
-                    sensor.insertOrUpdateDataPoint(dataPoint.getValue(),dataPoint.getTime(),dataPoint.existsInRemote());
+                    sensor.insertOrUpdateDataPoint(dataPoint.getValue(), dataPoint.getTime(), dataPoint.existsInRemote());
                 }
             }
         }

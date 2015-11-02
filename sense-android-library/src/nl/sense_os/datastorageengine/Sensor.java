@@ -175,7 +175,7 @@ public class Sensor {
         boolean resultsOrder = (queryOptions.getSortOrder() == QueryOptions.SORT_ORDER.DESC )
                 ? RealmResults.SORT_ORDER_DESCENDING
                 : RealmResults.SORT_ORDER_ASCENDING;
-        results.sort("time", resultsOrder);
+        results.sort("date", resultsOrder);
 
         // limit and convert to DataPoint
         List<DataPoint> dataPoints = setLimitToResult(results, queryOptions.getLimit());
@@ -226,10 +226,10 @@ public class Sensor {
                                                 .where(RealmDataPoint.class)
                                                 .equalTo("sensorId", this.id);
         if(startTime != null) {
-            query.greaterThanOrEqualTo("time", startTime.longValue());
+            query.greaterThanOrEqualTo("date", startTime.longValue());
         }
         if(endTime != null) {
-            query.lessThan("time", endTime.longValue());
+            query.lessThan("date", endTime.longValue());
         }
         if(startTime != null && endTime != null && startTime >= endTime) {
             throw new DatabaseHandlerException("startTime is the same as or later than the endTime");

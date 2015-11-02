@@ -27,6 +27,9 @@ public class TestSensorProfiles  extends AndroidTestCase {
     Map<String, String> user;
     String userId;
     String sourceName = "sense-android";
+    SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
+    String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
+    String sessionId;
     SensorDataProxy proxy;
     DataSyncer dataSyncer;
     CSUtils csUtils;
@@ -42,17 +45,16 @@ public class TestSensorProfiles  extends AndroidTestCase {
         user = csUtils.createCSAccount();
         userId = user.get("id");
 
-        DSEConstants.SESSION_ID = csUtils.loginUser(user.get("username"), user.get("password"));
-        DSEConstants.APP_KEY = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
+        sessionId = csUtils.loginUser(user.get("username"), user.get("password"));
 
         testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
         realm = Realm.getInstance(testConfig);
         databaseHandler = new DatabaseHandler(getContext(),userId);
 
-        proxy = new SensorDataProxy();
+        proxy = new SensorDataProxy(server, appKey, sessionId);
 
-        dataSyncer = new DataSyncer(getContext(),proxy);
+        dataSyncer = new DataSyncer(getContext(), databaseHandler, proxy);
         dataSyncer.downloadSensorProfiles();
         results = realm.where(SensorProfile.class).findAll();
         results.sort("sensorName", RealmResults.SORT_ORDER_ASCENDING);
