@@ -39,18 +39,15 @@ import nl.sense_os.datastorageengine.realm.RealmSensor;
  */
 public class DatabaseHandler {
 
+    private Context context = null;
     private Realm realm = null;
     private String userId = null;
 
     public DatabaseHandler(Context context, String userId) {
+        this.context = context;
         this.realm = Realm.getInstance(context);
         this.userId = userId;
     }
-
-    public Realm getRealm() {
-        return realm;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -79,7 +76,7 @@ public class DatabaseHandler {
     public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
         final long id = Sensor.generateId(realm);
         final boolean synced = false;
-        Sensor sensor = new Sensor(realm, id, name, userId, source, options, synced);
+        Sensor sensor = new Sensor(context, id, name, userId, source, options, synced);
 
         RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
 
@@ -116,7 +113,7 @@ public class DatabaseHandler {
             throw new DatabaseHandlerException("Sensor not found. Sensor with name " + name + " does not exist.");
         }
 
-        return RealmSensor.toSensor(realm, realmSensor);
+        return RealmSensor.toSensor(context, realmSensor);
     }
 
     public boolean hasSensor(String source, String name) {
@@ -150,7 +147,7 @@ public class DatabaseHandler {
         List<Sensor> sensors = new ArrayList<>();
         Iterator<RealmSensor> iterator = results.iterator();
         while (iterator.hasNext()) {
-            sensors.add(RealmSensor.toSensor(realm, iterator.next()));
+            sensors.add(RealmSensor.toSensor(context, iterator.next()));
         }
         // TODO: figure out what is the most efficient way to loop over the results
 

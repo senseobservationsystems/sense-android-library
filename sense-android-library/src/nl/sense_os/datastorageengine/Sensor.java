@@ -1,6 +1,9 @@
 package nl.sense_os.datastorageengine;
 
+import android.content.Context;
+
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +18,7 @@ import nl.sense_os.datastorageengine.realm.RealmSensor;
 public class Sensor {
 
     private Realm realm = null;
+    private SensorProfiles profiles = null;
 
     private long id = -1;
     private String name = null;
@@ -23,13 +27,14 @@ public class Sensor {
     private SensorOptions options = new SensorOptions();
     private boolean remoteDataPointsDownloaded = false;
 
-    public Sensor(Realm realm, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException {
+    public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException {
         // validate if the sensor name is valid
         if (SensorProfiles.getSensorType(name) == null) {
             throw new SensorException("Unknown sensor name '" + name + "'.");
         }
 
-        this.realm = realm;
+        this.realm = Realm.getInstance(context);
+        this.profiles = SensorProfiles.getInstance(context);
 
         this.id = id;
         this.name = name;
@@ -37,6 +42,19 @@ public class Sensor {
         this.source = source;
         this.options = options;
         this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
+    }
+
+    /**
+     * Close the database connection.
+     * @throws Exception
+     */
+    @Override
+    protected void finalize() throws Exception {
+        // close realm
+        if (realm != null) {
+            realm.close();
+            realm = null;
+        }
     }
 
     public long getId() {
@@ -55,8 +73,8 @@ public class Sensor {
         return source;
     }
 
-    public String getDataType() {
-        return SensorProfiles.getSensorType(name);
+    public JSONObject getProfile() throws SensorProfileException, JSONException {
+        return profiles.getSensorProfile(name);
     }
 
     public boolean isRemoteDataPointsDownloaded() {
@@ -141,7 +159,7 @@ public class Sensor {
      */
     protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorProfileException {
         // validate whether the value type of dataPoint matches the data type of the sensor
-        SensorProfiles.validate(name, dataPoint);
+        profiles.validate(name, dataPoint);
 
         RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
 

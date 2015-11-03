@@ -1,5 +1,7 @@
 package nl.sense_os.datastorageengine.realm;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -164,15 +166,15 @@ public class RealmSensor extends RealmObject {
 
     /**
      * Convert a RealmSensor into a Sensor
-     * @param realm
+     * @param context
      * @param realmSensor
      * @return Returns a Sensor
      */
-    public static Sensor toSensor (Realm realm, RealmSensor realmSensor) throws JSONException, SensorException {
+    public static Sensor toSensor (Context context, RealmSensor realmSensor) throws JSONException, SensorException {
         String meta = realmSensor.getMeta();
 
         return new Sensor(
-                realm,
+                context,
                 realmSensor.getId(),
                 realmSensor.getName(),
                 realmSensor.getUserId(),

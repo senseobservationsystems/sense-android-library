@@ -837,7 +837,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
 
-        Sensor resultSensor = RealmSensor.toSensor(realm, resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(getContext(), resultList.first());
         assertEquals("Incorrect name of the Realm Sensor object", sensorName, resultSensor.getName());
         assertEquals("Incorrect source of the Realm Sensor object", sourceName, resultSensor.getSource());
         assertEquals("Incorrect sensorOptions meta of the Realm Sensor object", sensorOptions.getMeta().toString(), resultSensor.getOptions().getMeta().toString());
@@ -895,7 +895,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
-        Sensor resultSensor = RealmSensor.toSensor(realm, resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(getContext(), resultList.first());
         assertEquals("Incorrect options of the Realm Sensor object", sensorMeta.toString(), resultSensor.getOptions().getMeta().toString());
     }
 
@@ -924,7 +924,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
-        Sensor resultSensor = RealmSensor.toSensor(realm, resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(getContext(), resultList.first());
         assertEquals("Incorrect userId of the Realm Sensor object", downloaded, resultSensor.isRemoteDataPointsDownloaded());
     }
 
