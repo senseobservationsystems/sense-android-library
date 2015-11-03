@@ -113,15 +113,6 @@ public class DataSyncer {
         cleanUpLocalStorage();
     }
 
-    /**
-     * Synchronize data in local and remote storage.
-     * Is executed synchronously.
-     */
-    public Future syncAsync() {
-        // TODO: implement syncAsync
-        return null;
-    }
-
     protected void downloadSensorProfiles () throws JSONException, IOException, SensorProfileException {
         JSONArray profiles = proxy.getSensorProfiles();
 
