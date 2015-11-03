@@ -28,13 +28,14 @@ public class Sensor {
     private boolean remoteDataPointsDownloaded = false;
 
     public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException {
+        this.profiles = SensorProfiles.getInstance(context);
+
         // validate if the sensor name is valid
-        if (SensorProfiles.getSensorType(name) == null) {
+        if (profiles.hasSensorProfile(name)) {
             throw new SensorException("Unknown sensor name '" + name + "'.");
         }
 
         this.realm = Realm.getInstance(context);
-        this.profiles = SensorProfiles.getInstance(context);
 
         this.id = id;
         this.name = name;
@@ -116,7 +117,7 @@ public class Sensor {
      * @param value
      * @param time
      */
-    public void insertOrUpdateDataPoint(Object value, long time) throws SensorProfileException {
+    public void insertOrUpdateDataPoint(Object value, long time) throws SensorProfileException, JSONException {
         insertOrUpdateDataPoint(new DataPoint(id, value, time,false));
     }
 
@@ -126,9 +127,10 @@ public class Sensor {
      * @param time
      * @param existsInRemote
      */
-    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws SensorProfileException {
+    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws SensorProfileException, JSONException {
         insertOrUpdateDataPoint(new DataPoint(id, value, time, existsInRemote));
     }
+
     /**
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      */
@@ -157,7 +159,7 @@ public class Sensor {
      * @param dataPoint	A DataPoint object that has a stringified value that will be copied
      * 			into a Realm object.
      */
-    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorProfileException {
+    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorProfileException, JSONException {
         // validate whether the value type of dataPoint matches the data type of the sensor
         profiles.validate(name, dataPoint);
 
@@ -263,7 +265,7 @@ public class Sensor {
 
     // Helper function for getDataPoints
     private  List<DataPoint>  setLimitToResult(RealmResults<RealmDataPoint> results,Integer limit) throws JSONException {
-        List<DataPoint> dataPoints = new ArrayList<>();
+        List<DataPoint> dataPoints = new ArrayList<DataPoint>();
         Iterator<RealmDataPoint> iterator = results.iterator();
         int count = 0;
 
