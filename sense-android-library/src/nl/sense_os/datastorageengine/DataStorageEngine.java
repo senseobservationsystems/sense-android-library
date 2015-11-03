@@ -1,7 +1,6 @@
 package nl.sense_os.datastorageengine;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -114,7 +113,7 @@ public class DataStorageEngine {
         DSEOptions oldOptions = mOptions;
         mOptions = options;
         // if the options have change initialize the DSE
-        if(oldOptions.equals(options))
+        if(!oldOptions.equals(options))
             initialize();
     }
 
@@ -161,13 +160,17 @@ public class DataStorageEngine {
             return;
 
         mDatabaseHandler = new DatabaseHandler(mContext, mUserID);
-        // TODO enable encryption on the database
+        //mDatabaseHandler.enableEncryption(mOptions.enableEncryption);
+        if(mOptions.enableEncryption != null && mOptions.enableEncryption) {
+            // TODO enable encryption on the database
+            // mDatabaseHandler.setEncryptionKey(mOptions.encryptionKey);
+        }
         mSensorDataProxy = new SensorDataProxy(mOptions.backendEnvironment, mAPPKey, mSessionID);
         if(mDataSyncer != null)
             mDataSyncer.disablePeriodicSync();
         mDataSyncer = new DataSyncer(mContext, mDatabaseHandler,mSensorDataProxy);
         // TODO set the persist period in the DataSyncer
-        long persistPeriod = mOptions.localPersistancePeriod;
+        //mDataSyncer.setPersistPeriod(mOptions.localPersistancePeriod);
         try {
             // execute the initialization of the DataSyncer asynchronously
             mExecutorService.execute(mInitTask);
@@ -182,13 +185,13 @@ public class DataStorageEngine {
     private FutureTask<Boolean> mInitTask = new FutureTask<>(new Callable<Boolean>() {
         public Boolean call() throws Exception {
             try {
-                // TODO what to do when there is no internet?
                 mDataSyncer.initialize();
                 mExecutorService.execute(mDownloadSensorsTask);
                 mInitialized = true;
                 return true;
             }catch(Exception e)
             {
+                // TODO what to do when it fails?
                 Log.e(TAG, "Error initializing the DataSyncer", e);
                 return false;
             }
@@ -337,7 +340,7 @@ public class DataStorageEngine {
      * Receive an update when the DataStorageEngine has done it's initialization
      * @return A Future<boolean> which will return the status of the initialization of the DataStorageEngine.
      */
-    public Future<Boolean> onInitialized()
+    public Future<Boolean> onReady()
     {
         return mInitTask;
     }

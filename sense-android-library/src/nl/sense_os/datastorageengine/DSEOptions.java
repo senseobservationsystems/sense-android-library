@@ -5,12 +5,12 @@ package nl.sense_os.datastorageengine;
  */
 public class DSEOptions {
     /**
-     * The amount of milliseconds between the upload sessions
+     * The number of milliseconds between the upload sessions
      * The default is DSEConstants.SYNC_RATE
      */
     public Integer uploadInterval = null;
     /**
-     * The amount of seconds to persist the data locally
+     * The number of seconds to persist the data locally
      * The default value is DSEConstants.PERSIST_PERIOD
      */
     public Long localPersistancePeriod = null;
@@ -25,7 +25,7 @@ public class DSEOptions {
      */
     public SensorDataProxy.SERVER backendEnvironment = null;
     /**
-     * The key for encryption for the local storage
+     * The encryption key for the local storage
      **/
     public Boolean encryptionKey = null;
 
