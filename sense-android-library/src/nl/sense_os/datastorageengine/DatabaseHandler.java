@@ -76,37 +76,6 @@ public class DatabaseHandler {
         finalize();
     }
 
-    public void createSensorProfile(String sensorName, String dataStructure) throws DatabaseHandlerException {
-        SensorProfile sensorProfile = new SensorProfile(sensorName, dataStructure);
-        realm.beginTransaction();
-        try {
-            realm.copyToRealm(sensorProfile);
-        }
-        catch (RealmException err) {
-            if (err.toString().contains("Primary key constraint broken")) {
-                throw new DatabaseHandlerException("Cannot create sensorPorfile. A sensor with name " + sensorName  + " already exists.");
-            }
-            else {
-                throw err;
-            }
-        }
-        realm.commitTransaction();
-    }
-
-    public boolean hasSensorProfile(String sensorName) {
-        realm.beginTransaction();
-        SensorProfile sensorProfile = realm
-                .where(SensorProfile.class)
-                .equalTo("userId", userId)
-                .equalTo("sensorName", sensorName)
-                .findFirst();
-        realm.commitTransaction();
-        if(sensorProfile != null){
-            return true;
-        }else{
-            return false;
-        }
-    }
     public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
         final long id = Sensor.generateId(realm);
         final boolean synced = false;
@@ -245,8 +214,6 @@ public class DatabaseHandler {
             dataDeletionRequests.add(iterator.next());
         }
         return dataDeletionRequests;
-
-
     }
 
     public void deleteDataDeletionRequest(String uuid){
@@ -259,16 +226,4 @@ public class DatabaseHandler {
         result.clear();
         realm.commitTransaction();
     }
-
-
-//    public void validate(String sensorName, String value) throws IOException, JSONException {
-//        SensorProfile sensorProfile = realm
-//                .where(SensorProfile.class)
-//                .equalTo("sensorName", sensorName)
-//                .findFirst();
-//        JSONObject rawSchema = new JSONObject(sensorProfile.getDataStructure());
-//        Schema schema = SchemaLoader.load(rawSchema);
-//        schema.validate(new JSONObject(value));
-//    }
-
 }

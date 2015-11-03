@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.SensorDataProxy;
 

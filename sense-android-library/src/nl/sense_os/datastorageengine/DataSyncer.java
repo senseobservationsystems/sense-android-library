@@ -3,6 +3,7 @@ package nl.sense_os.datastorageengine;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,10 +21,12 @@ import java.util.concurrent.Future;
  *
  */
 public class DataSyncer {
+    private static final String TAG = "DataSyncer";
 
     private SensorDataProxy proxy = null;
     private Context context;
     private DatabaseHandler databaseHandler;
+    private SensorProfiles sensorProfiles;
     private boolean periodicSyncEnabled = false;
     private DataSyncerAlarmReceiver alarm;
     public final static String SOURCE = "sense-android";
@@ -37,6 +40,7 @@ public class DataSyncer {
     public DataSyncer(Context context, DatabaseHandler databaseHandler, SensorDataProxy proxy){
         this.context = context;
         this.databaseHandler = databaseHandler;
+        this.sensorProfiles = SensorProfiles.getInstance(context);
         this.proxy = proxy;
         this.alarm = new DataSyncerAlarmReceiver();
     }
@@ -78,14 +82,18 @@ public class DataSyncer {
         periodicSyncEnabled = false;
     }
 
+    public SensorProfiles getSensorProfiles() {
+        return this.sensorProfiles;
+    }
+
     /**
      * Initialize the DataSyncer.
      * This will download the actual list with sensor profiles from remote.
      * @throws JSONException
      * @throws IOException
-     * @throws DatabaseHandlerException
+     * @throws SensorProfileException
      */
-    public void initialize() throws JSONException, IOException, DatabaseHandlerException{
+    public void initialize() throws JSONException, IOException, SensorProfileException {
         downloadSensorProfiles();
     }
 
@@ -97,7 +105,7 @@ public class DataSyncer {
      * @throws SensorException
      * @throws JSONException
      */
-    public void sync() throws IOException, DatabaseHandlerException, SensorException, JSONException {
+    public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException {
         // TODO: check whether there is no sync in progress currently, if so throw an exception
         deletionInRemote();
         downloadFromRemote();
@@ -114,17 +122,26 @@ public class DataSyncer {
         return null;
     }
 
-    protected void downloadSensorProfiles () throws JSONException, IOException, DatabaseHandlerException {
-        JSONArray sensorProfiles = proxy.getSensorProfiles();
-        for(int i = 0; i< sensorProfiles.length(); i++) {
-            JSONObject sensorProfile = sensorProfiles.getJSONObject(i);
-            if(!databaseHandler.hasSensorProfile(sensorProfile.getString("sensor_name"))) {
-                databaseHandler.createSensorProfile(sensorProfile.getString("sensor_name"), sensorProfile.toString());
+    protected void downloadSensorProfiles () throws JSONException, IOException, SensorProfileException {
+        JSONArray profiles = proxy.getSensorProfiles();
+
+        for(int i = 0; i< profiles.length(); i++) {
+            JSONObject profile = profiles.getJSONObject(i);
+            Log.d(TAG, "Sensor profile " + i + ": " + profile.toString());
+
+            try {
+                sensorProfiles.createOrUpdateSensorProfile(profile.getString("sensor_name"), profile.getJSONObject("data_structure"));
+            }
+            catch (Exception err) {
+                Log.e(TAG, "Error parsing sensor profile: ", err);
+                err.printStackTrace();
             }
         }
+
+        Log.d(TAG, "Sensor profiles downloaded. Number of sensors: " + profiles.length());
     }
 
-    protected void deletionInRemote() throws IOException{
+    protected void deletionInRemote() throws IOException {
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
         List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
@@ -138,7 +155,7 @@ public class DataSyncer {
         }
     }
 
-    protected void downloadFromRemote() throws IOException, JSONException, SensorException, DatabaseHandlerException{
+    protected void downloadFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException{
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors(SOURCE);
@@ -172,7 +189,7 @@ public class DataSyncer {
         }
     }
 
-    protected void uploadToRemote() throws JSONException, SensorException, DatabaseHandlerException, IOException {
+    protected void uploadToRemote() throws JSONException, SensorException, SensorProfileException, DatabaseHandlerException, IOException {
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);

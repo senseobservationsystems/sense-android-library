@@ -98,7 +98,7 @@ public class Sensor {
      * @param value
      * @param time
      */
-    public void insertOrUpdateDataPoint(Object value, long time) throws SensorException {
+    public void insertOrUpdateDataPoint(Object value, long time) throws SensorProfileException {
         insertOrUpdateDataPoint(new DataPoint(id, value, time,false));
     }
 
@@ -108,7 +108,7 @@ public class Sensor {
      * @param time
      * @param existsInRemote
      */
-    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws SensorException {
+    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws SensorProfileException {
         insertOrUpdateDataPoint(new DataPoint(id, value, time, existsInRemote));
     }
     /**
@@ -139,7 +139,7 @@ public class Sensor {
      * @param dataPoint	A DataPoint object that has a stringified value that will be copied
      * 			into a Realm object.
      */
-    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorException {
+    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorProfileException {
         // validate whether the value type of dataPoint matches the data type of the sensor
         SensorProfiles.validate(name, dataPoint);
 
