@@ -12,6 +12,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmDataPoint;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
 
@@ -210,18 +211,31 @@ public class Sensor {
     };
 
     /**
-     * This method deletes DataPoints from the local Realm database.
-     * QueryOptions.limit and QueryOptions.sortOrder are not considered during the query.
-     * @param queryOptions: options for the query of dataPoints that need to be deleted.
-     */
-    public void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException{
+     * Delete data from the Local Storage and Common Sense for this sensor
+     * DataPoints will be immediately removed locally, and an event (class DataDeletionRequest)
+     * is scheduled for the next synchronization round to delete them from Common Sense.
+     * @param startTime The start time in epoch milliseconds
+     * @param endTime The end time in epoch milliseconds
+     * @trhows DatabaseHandlerException when the local deletion of sensor data for a sensor fails
+     **/
+    public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
         Realm realm = Realm.getInstance(context);
         try {
-            RealmResults<RealmDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
+            if (startTime == null) {
+                startTime = -1l;
+            }
+            if (endTime == null) {
+                endTime = -1l;
+            }
+            DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, name, source, startTime, endTime);
 
             realm.beginTransaction();
-            results.clear();
-            realm.commitTransaction();
+            try {
+                realm.copyToRealm(dataDeletionRequest);
+                realm.commitTransaction();
+            } catch (RealmPrimaryKeyConstraintException err) {
+                throw new DatabaseHandlerException("Error adding delete data request for \"" + name + "\" and source \"" + source + "\".");
+            }
         }
         finally {
             realm.close();

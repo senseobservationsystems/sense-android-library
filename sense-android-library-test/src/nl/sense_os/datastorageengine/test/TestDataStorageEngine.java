@@ -110,7 +110,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         sensor.insertOrUpdateDataPoint(value, date4);
 
         /** READ */
-        QueryOptions queryOptions = new QueryOptions(date, date3, null, 2, QueryOptions.SORT_ORDER.DESC);
+        QueryOptions queryOptions = new QueryOptions(date, date4, null, 2, QueryOptions.SORT_ORDER.DESC);
         List<DataPoint> dataPoints = sensor.getDataPoints(queryOptions);
         // check the limit, and the date range
         assertEquals(2, dataPoints.size());
@@ -124,13 +124,13 @@ public class TestDataStorageEngine extends AndroidTestCase{
         Integer updatedValue = 20;
         sensor.insertOrUpdateDataPoint(updatedValue, date4);
         // get the updated value
-        queryOptions = new QueryOptions(date4, date4, null, 2, QueryOptions.SORT_ORDER.ASC);
+        queryOptions = new QueryOptions(date4, null, null, 1, QueryOptions.SORT_ORDER.ASC);
         assertEquals(updatedValue, sensor.getDataPoints(queryOptions).get(0).getValue());
 
         /** DELETE */
-        // delete the last 2 data points
-        queryOptions = new QueryOptions(date, date4, null, 2, QueryOptions.SORT_ORDER.DESC);
-        sensor.deleteDataPoints(queryOptions);
+        // delete the last 2 data points, only the date is used with delete
+        queryOptions = new QueryOptions(date3, date4+1, null, null, null);
+        dataStorageEngine.deleteDataPoints(date3, date4+1);
         // get the first rest with the same query, should return the first 2 in reversed order
         dataPoints = sensor.getDataPoints(queryOptions);
         assertEquals(date2, dataPoints.get(0).getTime());

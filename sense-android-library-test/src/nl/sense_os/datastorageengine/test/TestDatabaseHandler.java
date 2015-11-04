@@ -679,7 +679,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         realm.commitTransaction();
 
         int numberToDelete = 5;
-        sensor.deleteDataPoints(new QueryOptions(date[0], date[numberToDelete], true, null, QueryOptions.SORT_ORDER.ASC));
+        sensor.deleteDataPoints(date[0], date[numberToDelete]);
         dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
@@ -720,7 +720,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         realm.commitTransaction();
 
         int numberToDelete = 5;
-        sensor.deleteDataPoints(new QueryOptions(null, date[numberToDelete], true, null,QueryOptions.SORT_ORDER.ASC));
+        sensor.deleteDataPoints(null, date[numberToDelete]);
         dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
@@ -762,7 +762,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         realm.commitTransaction();
 
         int numberToDelete = 5;
-        sensor.deleteDataPoints(new QueryOptions(date[numberToDelete], null, true, null, QueryOptions.SORT_ORDER.ASC));
+        sensor.deleteDataPoints(date[numberToDelete], null);
         dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.DESC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
@@ -803,7 +803,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         }
         realm.commitTransaction();
 
-        sensor.deleteDataPoints(new QueryOptions(null, null, true, null, QueryOptions.SORT_ORDER.ASC));
+        sensor.deleteDataPoints(null, null);
         dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.DESC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", 0, listSize);

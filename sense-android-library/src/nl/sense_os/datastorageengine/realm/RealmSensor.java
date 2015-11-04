@@ -37,15 +37,21 @@ public class RealmSensor extends RealmObject {
 
     public RealmSensor() {}
 
-    public RealmSensor(long id, String name, String meta, boolean remoteUploadEnabled, boolean remoteDownloadEnabled, boolean persistLocally, String userId, String source, boolean remoteDataPointsDownloaded) {
+    public RealmSensor(long id, String name, String meta, Boolean remoteUploadEnabled, Boolean remoteDownloadEnabled, Boolean persistLocally, String userId, String source, Boolean remoteDataPointsDownloaded) {
         this.compoundKey = getCompoundKey(name, source, userId);
 
         this.id = id;
         this.name = name;
         this.meta = meta;
-        this.remoteUploadEnabled = remoteUploadEnabled;
-        this.remoteDownloadEnabled = remoteDownloadEnabled;
-        this.persistLocally = persistLocally;
+        if(remoteUploadEnabled != null) {
+            this.remoteUploadEnabled = remoteUploadEnabled;
+        }
+        if(remoteDownloadEnabled != null) {
+            this.remoteDownloadEnabled = remoteDownloadEnabled;
+        }
+        if(persistLocally != null) {
+            this.persistLocally = persistLocally;
+        }
         this.userId = userId;
         this.source = source;
         this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;

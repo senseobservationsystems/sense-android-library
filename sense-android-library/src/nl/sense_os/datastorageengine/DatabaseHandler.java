@@ -185,7 +185,7 @@ public class DatabaseHandler {
                 realm.copyToRealm(dataDeletionRequest);
                 realm.commitTransaction();
             } catch (RealmPrimaryKeyConstraintException err) {
-                throw new DatabaseHandlerException("Cannot create sensor. A sensor with name \"" + sensorName + "\" and source \"" + source + "\" already exists.");
+                throw new DatabaseHandlerException("Error adding delete data request for \"" + sensorName + "\" and source \"" + source + "\".");
             }
         }
         finally {
