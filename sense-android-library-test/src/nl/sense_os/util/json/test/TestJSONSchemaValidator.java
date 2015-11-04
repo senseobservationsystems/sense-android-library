@@ -1,4 +1,4 @@
-package nl.sense_os.util.json.test.validator;
+package nl.sense_os.util.json.test;
 
 import junit.framework.TestCase;
 
@@ -21,6 +21,11 @@ public class TestJSONSchemaValidator extends TestCase {
         catch (SchemaException e) {
             assertEquals("Unknown schema property 'foobar'", e.getMessage());
         }
+    }
+
+    public void testDescriptionProperty () throws JSONException, SchemaException {
+        // should allow (ignore) "description"
+        new JSONSchemaValidator(new JSONObject("{\"description\":\"bla bla bla\"}"));
     }
 
     public void testValidateString () throws JSONException, ValidationException, SchemaException {

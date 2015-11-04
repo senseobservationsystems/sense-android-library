@@ -12,6 +12,8 @@ import io.realm.annotations.PrimaryKey;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
+import nl.sense_os.datastorageengine.SensorProfileException;
+import nl.sense_os.util.json.SchemaException;
 
 public class RealmSensor extends RealmObject {
 
@@ -176,7 +178,7 @@ public class RealmSensor extends RealmObject {
      * @param realmSensor
      * @return Returns a Sensor
      */
-    public static Sensor toSensor (Context context, RealmSensor realmSensor) throws JSONException, SensorException {
+    public static Sensor toSensor (Context context, RealmSensor realmSensor) throws JSONException, SensorException, SensorProfileException, SchemaException {
         String meta = realmSensor.getMeta();
 
         return new Sensor(

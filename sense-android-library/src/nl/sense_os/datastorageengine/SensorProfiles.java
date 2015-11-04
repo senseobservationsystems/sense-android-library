@@ -6,26 +6,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmSensorProfile;
 
 public class SensorProfiles {
-    private static HashMap<Context, SensorProfiles> singletons = new HashMap<>(); // a singleton for every context (just 1 in practice)
-
     private Context context = null;
 
-    public static synchronized SensorProfiles getInstance(Context context) {
-        if (!singletons.containsKey(context)) {
-            singletons.put(context, new SensorProfiles(context));
-        }
-        return singletons.get(context);
-    }
-
-    private SensorProfiles(Context context) {
+    public SensorProfiles(Context context) {
         this.context = context;
-        // TODO: load all profiles from Realm, keep them in memory
     }
 
     public void createSensorProfile(String sensorName, JSONObject profile) throws SensorProfileException {
@@ -97,18 +88,5 @@ public class SensorProfiles {
         finally {
             realm.close();
         }
-    }
-
-    /**
-     * Validate whether a value has the correct type for the specified sensor.
-     * Throws an exception when the type of value is not valid, else remains silent.
-     * @param sensorName
-     * @param value
-     */
-    public void validate (String sensorName, Object value) throws JSONException, SensorProfileException {
-        // TODO: implement validate
-//        JSONObject rawSchema = getSensorProfile(sensorName);
-//        Schema schema = SchemaLoader.load(rawSchema);
-//        schema.validate(value);
     }
 }

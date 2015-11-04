@@ -14,8 +14,8 @@ import java.util.Set;
 /**
  * A minimal JSON Schema Validator for Java.
  *
- * Supported types:                 "array", "boolean", "integer", "number", "null", "object", "string"
- * Supported JSON schema features: "properties", "items", "required", "type", "enum"
+ * Supported types:                "array", "boolean", "integer", "number", "null", "object", "string"
+ * Supported JSON schema features: "properties", "items", "required", "type", "enum", "description"
  *
  * Example usage:
  *
@@ -28,7 +28,7 @@ import java.util.Set;
  */
 public class JSONSchemaValidator {
     protected static final Set<String> KNOWN_FIELDS =
-            new HashSet<>(Arrays.asList(new String[]{"$schema", "properties", "items", "required", "type", "enum"}));
+            new HashSet<>(Arrays.asList(new String[]{"$schema", "properties", "items", "required", "type", "enum", "description"}));
     protected static final Set<String> VALID_TYPES =
             new HashSet<>(Arrays.asList(new String[]{"array", "boolean", "integer", "number", "null", "object", "string"}));
 

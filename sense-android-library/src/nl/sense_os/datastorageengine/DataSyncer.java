@@ -14,6 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
+
 /**
  * DataSyncer handles the synchronization between the local storage and CommonSense.
  * The syncing process is handled automatically and periodically, thus the external
@@ -40,7 +43,7 @@ public class DataSyncer {
     public DataSyncer(Context context, DatabaseHandler databaseHandler, SensorDataProxy proxy){
         this.context = context;
         this.databaseHandler = databaseHandler;
-        this.sensorProfiles = SensorProfiles.getInstance(context);
+        this.sensorProfiles = new SensorProfiles(context);
         this.proxy = proxy;
         this.alarm = new DataSyncerAlarmReceiver();
     }
@@ -100,12 +103,8 @@ public class DataSyncer {
     /**
      * Synchronize data in local and remote storage.
      * Is executed synchronously.
-     * @throws IOException
-     * @throws DatabaseHandlerException
-     * @throws SensorException
-     * @throws JSONException
      */
-    public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException {
+    public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
         // TODO: check whether there is no sync in progress currently, if so throw an exception
         deletionInRemote();
         downloadFromRemote();
@@ -146,7 +145,7 @@ public class DataSyncer {
         }
     }
 
-    protected void downloadFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException{
+    protected void downloadFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors(SOURCE);
@@ -180,7 +179,7 @@ public class DataSyncer {
         }
     }
 
-    protected void uploadToRemote() throws JSONException, SensorException, SensorProfileException, DatabaseHandlerException, IOException {
+    protected void uploadToRemote() throws JSONException, SensorException, SensorProfileException, DatabaseHandlerException, IOException, SchemaException, ValidationException {
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
@@ -219,7 +218,7 @@ public class DataSyncer {
         }
     }
 
-    protected void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException{
+    protected void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);

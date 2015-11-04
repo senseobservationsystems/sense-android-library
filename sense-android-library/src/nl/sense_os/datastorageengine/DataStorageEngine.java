@@ -12,6 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
+
 /**
  * This class provides the main interface for creating sensors and sources and setting storage engine specific properties.
  * Created by ted@sense-os.nl on 10/29/15.
@@ -247,7 +250,7 @@ public class DataStorageEngine {
      * @throws DatabaseHandlerException when the sensor already exists
      * @throws SensorException, when the sensor name is not valid
      **/
-    public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException, IllegalStateException{
+    public Sensor createSensor(String source, String name, SensorOptions options) throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         return mDatabaseHandler.createSensor(source, name, options);
@@ -259,7 +262,7 @@ public class DataStorageEngine {
      * @param sensorName The name of the sensor
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
-    public Sensor getSensor(String source, String sensorName) throws DatabaseHandlerException, SensorException, JSONException {
+    public Sensor getSensor(String source, String sensorName) throws DatabaseHandlerException, SensorException, JSONException, SensorProfileException, SchemaException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         return mDatabaseHandler.getSensor(source, sensorName);
@@ -270,7 +273,7 @@ public class DataStorageEngine {
      * @return List<Sensor> The sensors connected to the given source
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
-    public List<Sensor> getSensors(String source) throws JSONException, SensorException {
+    public List<Sensor> getSensors(String source) throws JSONException, SensorException, SensorProfileException, SchemaException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         return mDatabaseHandler.getSensors(source);
@@ -295,7 +298,7 @@ public class DataStorageEngine {
      * @param endTime The start time in epoch milliseconds
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
-    public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException, JSONException, SensorException {
+    public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException, JSONException, SensorException, SensorProfileException, SchemaException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         for(String source : getSources()){
@@ -333,7 +336,7 @@ public class DataStorageEngine {
      * @throws JSONException, DatabaseHandlerException, SensorException, IOException, SensorProfileException when the data flush fails
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      */
-    public void flushData() throws JSONException, DatabaseHandlerException, SensorException, IOException, SensorProfileException {
+    public void flushData() throws SensorProfileException, SensorException, IOException, JSONException, SchemaException, DatabaseHandlerException, ValidationException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         mDataSyncer.sync();

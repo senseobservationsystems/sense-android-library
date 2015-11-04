@@ -17,6 +17,7 @@ import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.datastorageengine.SensorProfiles;
 import nl.sense_os.datastorageengine.SensorDataProxy;
+import nl.sense_os.util.json.JSONSchemaValidator;
 
 public class TestSensorProfiles  extends AndroidTestCase {
 
@@ -60,8 +61,27 @@ public class TestSensorProfiles  extends AndroidTestCase {
         JSONObject profile = dataSyncer.getSensorProfiles().getSensorProfile(sensorName);
         JSONAssert.assertEquals(expectedProfile, profile, true);
 
+        JSONSchemaValidator validator = new JSONSchemaValidator(profile);
+
         JSONObject value = new JSONObject("{\"x-axis\":6.6, \"y-axis\":6.7,\"z-axis\":6.8}");
-        dataSyncer.getSensorProfiles().validate(sensorName, value);
+        validator.validate(value);
+
+        try {
+            validator.validate(new JSONObject("{\"x-axis\":6.6, \"y-axis\":6.7}"));
+            fail("should throw an exception");
+        }
+        catch (Exception e) {
+            assertEquals("Required property 'z-axis' missing", e.getMessage());
+        }
+
+        try {
+            validator.validate(new JSONObject("{\"x-axis\":6.6, \"y-axis\":6.7, \"z-axis\":\"6.8\"}"));
+            fail("should throw an exception");
+        }
+        catch (Exception e) {
+            assertEquals("Invalid type. number expected for property 'z-axis'", e.getMessage());
+        }
+
     }
 
 //    public void testSensorAppInfo() throws Exception {

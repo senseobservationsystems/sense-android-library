@@ -15,11 +15,15 @@ import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmDataPoint;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
+import nl.sense_os.util.json.JSONSchemaValidator;
+import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
 
 public class Sensor {
 
     private Context context = null;
-    private SensorProfiles profiles = null;
+    private JSONObject profile = null;
+    private JSONSchemaValidator validator = null;
 
     private long id = -1;
     private String name = null;
@@ -28,14 +32,10 @@ public class Sensor {
     private SensorOptions options = new SensorOptions();
     private boolean remoteDataPointsDownloaded = false;
 
-    public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException {
+    public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException, SensorProfileException, JSONException, SchemaException {
         this.context = context;
-        this.profiles = SensorProfiles.getInstance(context);
-
-        // validate if the sensor name is valid
-        if (!profiles.hasSensorProfile(name)) {
-            throw new SensorException("Unknown sensor name '" + name + "'.");
-        }
+        this.profile = new SensorProfiles(context).getSensorProfile(name);
+        this.validator = new JSONSchemaValidator(this.profile);
 
         this.id = id;
         this.name = name;
@@ -62,7 +62,7 @@ public class Sensor {
     }
 
     public JSONObject getProfile() throws SensorProfileException, JSONException {
-        return profiles.getSensorProfile(name);
+        return profile;
     }
 
     public boolean isRemoteDataPointsDownloaded() {
@@ -104,7 +104,7 @@ public class Sensor {
      * @param value
      * @param time
      */
-    public void insertOrUpdateDataPoint(Object value, long time) throws SensorProfileException, JSONException {
+    public void insertOrUpdateDataPoint(Object value, long time) throws ValidationException, JSONException {
         insertOrUpdateDataPoint(new DataPoint(id, value, time, false));
     }
 
@@ -114,7 +114,7 @@ public class Sensor {
      * @param time
      * @param existsInRemote
      */
-    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws SensorProfileException, JSONException {
+    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws ValidationException, JSONException {
         insertOrUpdateDataPoint(new DataPoint(id, value, time, existsInRemote));
     }
 
@@ -152,14 +152,12 @@ public class Sensor {
      * @param dataPoint	A DataPoint object that has a stringified value that will be copied
      * 			into a Realm object.
      */
-    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorProfileException, JSONException {
+    protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws ValidationException, JSONException {
         Realm realm = Realm.getInstance(context);
         try {
-            // validate whether the value type of dataPoint matches the data type of the sensor
-            profiles.validate(name, dataPoint);
+            validator.validate(dataPoint.getValue());
 
             RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
-
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(realmDataPoint);
             realm.commitTransaction();

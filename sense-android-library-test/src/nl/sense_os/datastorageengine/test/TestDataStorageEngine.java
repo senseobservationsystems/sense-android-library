@@ -20,6 +20,8 @@ import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
+import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
 
 /**
  * Created by ted on 10/29/15.
@@ -65,7 +67,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         csUtils.deleteAccount(newUser.get("username"), newUser.get("password"), newUser.get("id"));
     }
 
-    public void testCRUSensor() throws InterruptedException, ExecutionException, TimeoutException, DatabaseHandlerException, SensorException, JSONException {
+    public void testCRUSensor() throws InterruptedException, ExecutionException, TimeoutException, DatabaseHandlerException, SensorException, JSONException, SensorProfileException, SchemaException {
         /** CREATE */
         // check the create sensor
         Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
@@ -94,7 +96,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         // TODO should we be able to delete a sensor?
     }
 
-    public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException {
+    public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
         /** CREATE */
         // check the create sensor
         Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());

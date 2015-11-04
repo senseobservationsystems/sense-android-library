@@ -14,6 +14,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
+import nl.sense_os.util.json.SchemaException;
 
 
 /**
@@ -50,7 +51,7 @@ public class DatabaseHandler {
         return userId;
     }
 
-    public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
+    public Sensor createSensor(String source, String name, SensorOptions options) throws SensorProfileException, SchemaException, JSONException, SensorException, DatabaseHandlerException {
         Realm realm = Realm.getInstance(context);
         try {
             final long id = Sensor.generateId(realm);
@@ -73,7 +74,7 @@ public class DatabaseHandler {
         }
     }
 
-    public Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException, SensorException {
+    public Sensor getSensor(String source, String name) throws SensorProfileException, SchemaException, SensorException, JSONException, DatabaseHandlerException {
         Realm realm = Realm.getInstance(context);
         try {
             realm.beginTransaction();
@@ -117,7 +118,7 @@ public class DatabaseHandler {
         }
     }
 
-    public List<Sensor> getSensors(String source) throws JSONException, SensorException {
+    public List<Sensor> getSensors(String source) throws JSONException, SensorException, SensorProfileException, SchemaException {
         Realm realm = Realm.getInstance(context);
         try {
             // query results
