@@ -47,9 +47,9 @@ public class DataSyncer {
 
     public class PeriodicSyncService extends IntentService {
         public static final String TAG = "PeriodicSyncHandlerService";
-        public PeriodicSyncService()
-        {
-            super(TAG);
+
+        public PeriodicSyncService(String name) {
+            super(name);
         }
 
         @Override
