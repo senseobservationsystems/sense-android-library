@@ -32,7 +32,7 @@ public class Sensor {
         this.profiles = SensorProfiles.getInstance(context);
 
         // validate if the sensor name is valid
-        if (profiles.hasSensorProfile(name)) {
+        if (!profiles.hasSensorProfile(name)) {
             throw new SensorException("Unknown sensor name '" + name + "'.");
         }
 

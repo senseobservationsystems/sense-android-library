@@ -25,7 +25,7 @@ public class DataStorageEngine {
     /** The proxy for the actual data transfer with the back-end */
     private SensorDataProxy mSensorDataProxy;
     /** Static singleton instance of the DataStorageEngine */
-    private static DataStorageEngine mDataStorageEngine;
+    //private static DataStorageEngine mDataStorageEngine;
     /** Context needed for the DataSyncer */
     private Context mContext;
     /** Ephemeral credentials set status */
@@ -57,36 +57,36 @@ public class DataStorageEngine {
      * Private constructor of the DataStorageEngine
      * @param context The Android context
      */
-    private DataStorageEngine(Context context)
+    public DataStorageEngine(Context context)
     {
         mContext = context;
         mOptions = new DSEOptions();
         mExecutorService = Executors.newFixedThreadPool(1);
     }
 
-    /**
-     * Creates a singleton DataStorageEngine instance if it does not exists already
-     * @param context An Android context
-     * @return a static instance of the DataStorageEngine
-     */
-    public synchronized static DataStorageEngine getInstance(Context context)
-    {
-        if(mDataStorageEngine == null) {
-            mDataStorageEngine = new DataStorageEngine(context);
-        }
-        return mDataStorageEngine;
-    }
-
-    /**
-     * Get an initialized DataStorageEngine
-     * @return an Initialed DataStorageEngine
-     * @throws RuntimeException When the DataStorageEngine has not been initialized with a context.
-     */
-    public static DataStorageEngine getInstance()throws RuntimeException{
-        if(mDataStorageEngine == null)
-            throw new RuntimeException("The DataStorageEngine should be initialized with a context first");
-        return mDataStorageEngine;
-    }
+//    /**
+//     * Creates a singleton DataStorageEngine instance if it does not exists already
+//     * @param context An Android context
+//     * @return a static instance of the DataStorageEngine
+//     */
+//    public synchronized static DataStorageEngine getInstance(Context context)
+//    {
+//        if(mDataStorageEngine == null) {
+//            mDataStorageEngine = new DataStorageEngine(context);
+//        }
+//        return mDataStorageEngine;
+//    }
+//
+//    /**
+//     * Get an initialized DataStorageEngine
+//     * @return an Initialed DataStorageEngine
+//     * @throws RuntimeException When the DataStorageEngine has not been initialized with a context.
+//     */
+//    public static DataStorageEngine getInstance()throws RuntimeException{
+//        if(mDataStorageEngine == null)
+//            throw new RuntimeException("The DataStorageEngine should be initialized with a context first");
+//        return mDataStorageEngine;
+//    }
 
 
     /**
@@ -186,7 +186,10 @@ public class DataStorageEngine {
         public Boolean call() throws Exception {
             try {
                 mDataSyncer.initialize();
+                // when the initialization is done download the sensors
                 mExecutorService.execute(mDownloadSensorsTask);
+                // and download the sensor data
+                mExecutorService.execute(mDownloadSensorDataTask);
                 mInitialized = true;
                 return true;
             }catch(Exception e)
@@ -256,10 +259,10 @@ public class DataStorageEngine {
      * @param sensorName The name of the sensor
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
-    public Sensor getSensor(String source, String sensorName){
+    public Sensor getSensor(String source, String sensorName) throws DatabaseHandlerException, SensorException, JSONException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
-        return mDataStorageEngine.getSensor(source, sensorName);
+        return mDatabaseHandler.getSensor(source, sensorName);
     }
 
     /**
@@ -267,10 +270,10 @@ public class DataStorageEngine {
      * @return List<Sensor> The sensors connected to the given source
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
-    public List<Sensor> getSensors(String source){
+    public List<Sensor> getSensors(String source) throws JSONException, SensorException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
-        return mDataStorageEngine.getSensors(source);
+        return mDatabaseHandler.getSensors(source);
     }
 
     /**
@@ -281,7 +284,7 @@ public class DataStorageEngine {
     public List<String> getSources(){
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
-        return mDataStorageEngine.getSources();
+        return mDatabaseHandler.getSources();
     }
 
     /**
@@ -292,7 +295,7 @@ public class DataStorageEngine {
      * @param endTime The start time in epoch milliseconds
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
-    public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
+    public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException, JSONException, SensorException {
         if(getStatus() != DSEStatus.READY)
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         for(String source : getSources()){
