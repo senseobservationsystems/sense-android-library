@@ -41,18 +41,14 @@ public class TestDatabaseHandler extends AndroidTestCase {
         testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
         realm = Realm.getInstance(testConfig);
-        databaseHandler = new DatabaseHandler(getContext(),userId);
-        newDatabaseHandler = new DatabaseHandler(getContext(),newUserId);
+
+        databaseHandler = new DatabaseHandler(getContext(), userId);
+        newDatabaseHandler = new DatabaseHandler(getContext(), newUserId);
     }
 
     @Override
     protected void tearDown () throws Exception {
-        databaseHandler.close();
-        newDatabaseHandler.close();
-        if (realm != null) {
-            realm.close();
-        }
-
+        realm.close();
     }
 
     /****Unit tests of  Sensor Class****/

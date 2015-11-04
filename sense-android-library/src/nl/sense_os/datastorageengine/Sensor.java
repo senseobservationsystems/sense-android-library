@@ -17,7 +17,7 @@ import nl.sense_os.datastorageengine.realm.RealmSensor;
 
 public class Sensor {
 
-    private Realm realm = null;
+    private Context context = null;
     private SensorProfiles profiles = null;
 
     private long id = -1;
@@ -28,6 +28,7 @@ public class Sensor {
     private boolean remoteDataPointsDownloaded = false;
 
     public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException {
+        this.context = context;
         this.profiles = SensorProfiles.getInstance(context);
 
         // validate if the sensor name is valid
@@ -35,27 +36,12 @@ public class Sensor {
             throw new SensorException("Unknown sensor name '" + name + "'.");
         }
 
-        this.realm = Realm.getInstance(context);
-
         this.id = id;
         this.name = name;
         this.userId = userId;
         this.source = source;
         this.options = options;
         this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
-    }
-
-    /**
-     * Close the database connection.
-     * @throws Exception
-     */
-    @Override
-    protected void finalize() throws Exception {
-        // close realm
-        if (realm != null) {
-            realm.close();
-            realm = null;
-        }
     }
 
     public long getId() {
@@ -118,7 +104,7 @@ public class Sensor {
      * @param time
      */
     public void insertOrUpdateDataPoint(Object value, long time) throws SensorProfileException, JSONException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, time,false));
+        insertOrUpdateDataPoint(new DataPoint(id, value, time, false));
     }
 
     /**
@@ -135,22 +121,28 @@ public class Sensor {
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      */
     protected void saveChanges() throws DatabaseHandlerException {
-        realm.beginTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            realm.beginTransaction();
 
-        // get the existing sensor (just to throw an error if it doesn't exist)
-        RealmSensor realmSensor = realm
-                .where(RealmSensor.class)
-                .equalTo("id", this.id)
-                .findFirst();
+            // get the existing sensor (just to throw an error if it doesn't exist)
+            RealmSensor realmSensor = realm
+                    .where(RealmSensor.class)
+                    .equalTo("id", this.id)
+                    .findFirst();
 
-        if (realmSensor == null) {
-            throw new DatabaseHandlerException("Cannot update sensor: sensor doesn't yet exist.");
+            if (realmSensor == null) {
+                throw new DatabaseHandlerException("Cannot update sensor: sensor doesn't yet exist.");
+            }
+
+            // update the sensor
+            realm.copyToRealmOrUpdate(RealmSensor.fromSensor(this));
+
+            realm.commitTransaction();
         }
-
-        // update the sensor
-        realm.copyToRealmOrUpdate(RealmSensor.fromSensor(this));
-
-        realm.commitTransaction();
+        finally {
+            realm.close();
+        }
     }
 
     /**
@@ -160,14 +152,20 @@ public class Sensor {
      * 			into a Realm object.
      */
     protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws SensorProfileException, JSONException {
-        // validate whether the value type of dataPoint matches the data type of the sensor
-        profiles.validate(name, dataPoint);
+        Realm realm = Realm.getInstance(context);
+        try {
+            // validate whether the value type of dataPoint matches the data type of the sensor
+            profiles.validate(name, dataPoint);
 
-        RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
+            RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
 
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(realmDataPoint);
-        realm.commitTransaction();
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(realmDataPoint);
+            realm.commitTransaction();
+        }
+        finally {
+            realm.close();
+        }
     }
 
     /**
@@ -180,27 +178,35 @@ public class Sensor {
      * interval: one of  the INTERVAL {MINUTE, HOUR, DAY, WEEK}
      * @return Returns a List with data points
      */
-      public List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException {
-        if(queryOptions.getLimit() != null) {
-            if(queryOptions.getLimit() <= 0) {
-                throw new DatabaseHandlerException("Invalid input of limit value");
-            }
-        }
+    public List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException {
         // query results
-        realm.beginTransaction();
-        RealmResults<RealmDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            if(queryOptions.getLimit() != null) {
+                if(queryOptions.getLimit() <= 0) {
+                    throw new DatabaseHandlerException("Invalid input of limit value");
+                }
+            }
 
-        // sort
-        boolean resultsOrder = (queryOptions.getSortOrder() == QueryOptions.SORT_ORDER.DESC )
-                ? RealmResults.SORT_ORDER_DESCENDING
-                : RealmResults.SORT_ORDER_ASCENDING;
-        results.sort("date", resultsOrder);
+            realm.beginTransaction();
+            RealmResults<RealmDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
+            realm.commitTransaction();
 
-        // limit and convert to DataPoint
-        List<DataPoint> dataPoints = setLimitToResult(results, queryOptions.getLimit());
-        // TODO: figure out what is the most efficient way to loop over the results
-        return dataPoints;
+            // sort
+            boolean resultsOrder = (queryOptions.getSortOrder() == QueryOptions.SORT_ORDER.DESC )
+                    ? RealmResults.SORT_ORDER_DESCENDING
+                    : RealmResults.SORT_ORDER_ASCENDING;
+            results.sort("date", resultsOrder);
+
+            // limit and convert to DataPoint
+            List<DataPoint> dataPoints = setLimitToResult(results, queryOptions.getLimit());
+            // TODO: figure out what is the most efficient way to loop over the results
+
+            return dataPoints;
+        }
+        finally {
+            realm.close();
+        }
     };
 
     /**
@@ -209,10 +215,17 @@ public class Sensor {
      * @param queryOptions: options for the query of dataPoints that need to be deleted.
      */
     public void deleteDataPoints(QueryOptions queryOptions) throws DatabaseHandlerException{
-        RealmResults<RealmDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
-        realm.beginTransaction();
-        results.clear();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            RealmResults<RealmDataPoint> results = queryFromRealm(queryOptions.getStartTime(), queryOptions.getEndTime(), queryOptions.getExistsInRemote());
+
+            realm.beginTransaction();
+            results.clear();
+            realm.commitTransaction();
+        }
+        finally {
+            realm.close();
+        }
     }
 
     /**
@@ -241,26 +254,31 @@ public class Sensor {
 
     // Helper function for getDataPoints
     private RealmResults<RealmDataPoint> queryFromRealm(Long startTime, Long endTime, Boolean existsInRemote) throws DatabaseHandlerException{
+        Realm realm = Realm.getInstance(context);
+        try {
+            RealmQuery<RealmDataPoint> query = realm
+                                                    .where(RealmDataPoint.class)
+                                                    .equalTo("sensorId", this.id);
+            if(startTime != null) {
+                query.greaterThanOrEqualTo("date", startTime.longValue());
+            }
+            if(endTime != null) {
+                query.lessThan("date", endTime.longValue());
+            }
+            if(startTime != null && endTime != null && startTime >= endTime) {
+                throw new DatabaseHandlerException("startTime is the same as or later than the endTime");
+            }
+            if(existsInRemote != null) {
+                query.equalTo("existsInRemote", existsInRemote);
+            }
 
-        RealmQuery<RealmDataPoint> query = realm
-                                                .where(RealmDataPoint.class)
-                                                .equalTo("sensorId", this.id);
-        if(startTime != null) {
-            query.greaterThanOrEqualTo("date", startTime.longValue());
-        }
-        if(endTime != null) {
-            query.lessThan("date", endTime.longValue());
-        }
-        if(startTime != null && endTime != null && startTime >= endTime) {
-            throw new DatabaseHandlerException("startTime is the same as or later than the endTime");
-        }
-        if(existsInRemote != null) {
-            query.equalTo("existsInRemote", existsInRemote);
-        }
+            RealmResults<RealmDataPoint> results = query.findAll();
 
-        RealmResults<RealmDataPoint> results = query.findAll();
-
-        return results;
+            return results;
+        }
+        finally {
+            realm.close();
+        }
     }
 
     // Helper function for getDataPoints

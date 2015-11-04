@@ -12,7 +12,7 @@ import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.exceptions.RealmException;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
 
 
@@ -40,187 +40,196 @@ import nl.sense_os.datastorageengine.realm.RealmSensor;
 public class DatabaseHandler {
 
     private Context context = null;
-    private Realm realm = null;
     private String userId = null;
 
     public DatabaseHandler(Context context, String userId) {
         this.context = context;
-        this.realm = Realm.getInstance(context);
         this.userId = userId;
     }
     public String getUserId() {
         return userId;
     }
 
-    /**
-     * Close the database connection.
-     * @throws Exception
-     */
-    @Override
-    protected void finalize() throws Exception {
-        // close realm
-        if (realm != null) {
-            realm.close();
-            realm = null;
-        }
-    }
-
-    /**
-     * Close the DatabaseHandler. This will neatly close the database connection to Realm.
-     * @throws Exception
-     */
-    public void close () throws Exception {
-        finalize();
-    }
-
     public Sensor createSensor(String source, String name, SensorOptions options) throws DatabaseHandlerException, SensorException {
-        final long id = Sensor.generateId(realm);
-        final boolean synced = false;
-        Sensor sensor = new Sensor(context, id, name, userId, source, options, synced);
-
-        RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
-
-        realm.beginTransaction();
+        Realm realm = Realm.getInstance(context);
         try {
-            realm.copyToRealm(realmSensor);
-        }
-        catch (RealmException err) {
-            if (err.toString().contains("Primary key constraint broken")) {
+            final long id = Sensor.generateId(realm);
+            final boolean synced = false;
+            Sensor sensor = new Sensor(context, id, name, userId, source, options, synced);
+
+            RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
+
+            realm.beginTransaction();
+            try {
+                realm.copyToRealm(realmSensor);
+                realm.commitTransaction();
+            } catch (RealmPrimaryKeyConstraintException err) {
                 throw new DatabaseHandlerException("Cannot create sensor. A sensor with name \"" + name + "\" and source \"" + source + "\" already exists.");
             }
-            else {
-                throw err;
-            }
-        }
-        realm.commitTransaction();
 
-        return sensor;
+            return sensor;
+        } finally {
+            realm.close();
+        }
     }
 
     public Sensor getSensor(String source, String name) throws JSONException, DatabaseHandlerException, SensorException {
-        realm.beginTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            realm.beginTransaction();
 
-        RealmSensor realmSensor = realm
-                .where(RealmSensor.class)
-                .equalTo("userId", userId)
-                .equalTo("source", source)
-                .equalTo("name", name)
-                .findFirst();
+            RealmSensor realmSensor = realm
+                    .where(RealmSensor.class)
+                    .equalTo("userId", userId)
+                    .equalTo("source", source)
+                    .equalTo("name", name)
+                    .findFirst();
 
-        realm.commitTransaction();
+            realm.commitTransaction();
 
-        if (realmSensor == null) {
-            throw new DatabaseHandlerException("Sensor not found. Sensor with name " + name + " does not exist.");
+            if (realmSensor == null) {
+                throw new DatabaseHandlerException("Sensor not found. Sensor with name " + name + " does not exist.");
+            }
+
+            return RealmSensor.toSensor(context, realmSensor);
         }
-
-        return RealmSensor.toSensor(context, realmSensor);
+        finally {
+            realm.close();
+        }
     }
 
     public boolean hasSensor(String source, String name) {
-        realm.beginTransaction();
-        RealmSensor realmSensor = realm
-                .where(RealmSensor.class)
-                .equalTo("userId", userId)
-                .equalTo("source", source)
-                .equalTo("name", name)
-                .findFirst();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            realm.beginTransaction();
+            RealmSensor realmSensor = realm
+                    .where(RealmSensor.class)
+                    .equalTo("userId", userId)
+                    .equalTo("source", source)
+                    .equalTo("name", name)
+                    .findFirst();
+            realm.commitTransaction();
 
-        if(realmSensor != null){
-            return true;
-        }else{
-            return false;
+            return (realmSensor != null);
+        }
+        finally {
+            realm.close();
         }
     }
 
     public List<Sensor> getSensors(String source) throws JSONException, SensorException {
-        // query results
-        realm.beginTransaction();
-        RealmResults<RealmSensor> results = realm
-                .where(RealmSensor.class)
-                .equalTo("userId", userId)
-                .equalTo("source", source)
-                .findAll();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            // query results
+            realm.beginTransaction();
+            RealmResults<RealmSensor> results = realm
+                    .where(RealmSensor.class)
+                    .equalTo("userId", userId)
+                    .equalTo("source", source)
+                    .findAll();
+            realm.commitTransaction();
 
-        // convert to Sensor
-        List<Sensor> sensors = new ArrayList<>();
-        Iterator<RealmSensor> iterator = results.iterator();
-        while (iterator.hasNext()) {
-            sensors.add(RealmSensor.toSensor(context, iterator.next()));
+            // convert to Sensor
+            List<Sensor> sensors = new ArrayList<>();
+            Iterator<RealmSensor> iterator = results.iterator();
+            while (iterator.hasNext()) {
+                sensors.add(RealmSensor.toSensor(context, iterator.next()));
+            }
+            // TODO: figure out what is the most efficient way to loop over the results
+
+            return sensors;
         }
-        // TODO: figure out what is the most efficient way to loop over the results
-
-        return sensors;
+        finally {
+            realm.close();
+        }
     }
 
     public List<String> getSources() {
-        // query results
-        realm.beginTransaction();
-        RealmResults<RealmSensor> results = realm
-                .where(RealmSensor.class)
-                .equalTo("userId", userId)
-                .findAll();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            // query results
+            realm.beginTransaction();
+            RealmResults<RealmSensor> results = realm
+                    .where(RealmSensor.class)
+                    .equalTo("userId", userId)
+                    .findAll();
+            realm.commitTransaction();
 
-        // extract the list with sensors
-        Set<String> sources = new HashSet<>();
-        Iterator<RealmSensor> iterator = results.iterator();
-        while (iterator.hasNext()) {
-            sources.add(iterator.next().getSource());
+            // extract the list with sensors
+            Set<String> sources = new HashSet<>();
+            Iterator<RealmSensor> iterator = results.iterator();
+            while (iterator.hasNext()) {
+                sources.add(iterator.next().getSource());
+            }
+
+            return new ArrayList<>(sources);
         }
-
-        return new ArrayList<>(sources);
+        finally {
+            realm.close();
+        }
     }
 
     public void createDataDeletionRequest(String sensorName, String source, Long startTime, Long endTime) throws DatabaseHandlerException{
-        if(startTime == null){
-            startTime = -1l;
-        }
-        if(endTime == null){
-            endTime = -1l;
-        }
-        DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, sensorName, source, startTime,endTime);
-        realm.beginTransaction();
+        Realm realm = Realm.getInstance(context);
         try {
-            realm.copyToRealm(dataDeletionRequest);
-        }
-        catch (RealmException err) {
-            if (err.toString().contains("Primary key constraint broken")) {
-                throw new DatabaseHandlerException("Cannot create DataDeletionRequest. uuid already exists.");
+            if (startTime == null) {
+                startTime = -1l;
             }
-            else {
-                throw err;
+            if (endTime == null) {
+                endTime = -1l;
+            }
+            DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, sensorName, source, startTime, endTime);
+
+            realm.beginTransaction();
+            try {
+                realm.copyToRealm(dataDeletionRequest);
+                realm.commitTransaction();
+            } catch (RealmPrimaryKeyConstraintException err) {
+                throw new DatabaseHandlerException("Cannot create sensor. A sensor with name \"" + sensorName + "\" and source \"" + source + "\" already exists.");
             }
         }
-        realm.commitTransaction();
+        finally {
+            realm.close();
+        }
     }
 
     public List<DataDeletionRequest> getDataDeletionRequests(){
-        // query results
-        realm.beginTransaction();
-        RealmResults<DataDeletionRequest> results = realm
-                .where(DataDeletionRequest.class)
-                .equalTo("userId", userId)
-                .findAll();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            // query results
+            realm.beginTransaction();
+            RealmResults<DataDeletionRequest> results = realm
+                    .where(DataDeletionRequest.class)
+                    .equalTo("userId", userId)
+                    .findAll();
+            realm.commitTransaction();
 
-        List<DataDeletionRequest> dataDeletionRequests = new ArrayList<>();
-        Iterator<DataDeletionRequest> iterator = results.iterator();
-        while (iterator.hasNext()) {
-            dataDeletionRequests.add(iterator.next());
+            List<DataDeletionRequest> dataDeletionRequests = new ArrayList<>();
+            Iterator<DataDeletionRequest> iterator = results.iterator();
+            while (iterator.hasNext()) {
+                dataDeletionRequests.add(iterator.next());
+            }
+            return dataDeletionRequests;
         }
-        return dataDeletionRequests;
+        finally {
+            realm.close();
+        }
     }
 
     public void deleteDataDeletionRequest(String uuid){
-        realm.beginTransaction();
-        RealmResults<DataDeletionRequest> result = realm
-                .where(DataDeletionRequest.class)
-                .equalTo("userId", userId)
-                .equalTo("uuid", uuid)
-                .findAll();
-        result.clear();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            realm.beginTransaction();
+            RealmResults<DataDeletionRequest> result = realm
+                    .where(DataDeletionRequest.class)
+                    .equalTo("userId", userId)
+                    .equalTo("uuid", uuid)
+                    .findAll();
+            result.clear();
+            realm.commitTransaction();
+        }
+        finally {
+            realm.close();
+        }
     }
 }

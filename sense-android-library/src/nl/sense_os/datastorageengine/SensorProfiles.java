@@ -2,22 +2,19 @@ package nl.sense_os.datastorageengine;
 
 import android.content.Context;
 
-//import org.everit.json.schema.Schema;
-//import org.everit.json.schema.ValidationException;
-//import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
 import io.realm.Realm;
-import io.realm.exceptions.RealmException;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmSensorProfile;
 
 public class SensorProfiles {
     private static HashMap<Context, SensorProfiles> singletons = new HashMap<>(); // a singleton for every context (just 1 in practice)
 
-    private Realm realm = null;
+    private Context context = null;
 
     public static synchronized SensorProfiles getInstance(Context context) {
         if (!singletons.containsKey(context)) {
@@ -27,73 +24,78 @@ public class SensorProfiles {
     }
 
     private SensorProfiles(Context context) {
-        this.realm = Realm.getInstance(context);
-
+        this.context = context;
         // TODO: load all profiles from Realm, keep them in memory
     }
 
-    /**
-     * Close the database connection.
-     */
-    @Override
-    protected void finalize() throws IllegalStateException {
-        // close realm
-        if (realm != null) {
-            realm.close();
-            realm = null;
-        }
-    }
-
     public void createSensorProfile(String sensorName, JSONObject profile) throws SensorProfileException {
-        RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
-        realm.beginTransaction();
-
+        Realm realm = Realm.getInstance(context);
         try {
-            realm.copyToRealm(realmSensorProfile);
-        }
-        catch (RealmException err) {
-            if (err.toString().contains("Primary key constraint broken")) {
-                throw new SensorProfileException("Cannot create sensorPorfile. A sensor with name " + sensorName  + " already exists.");
-            }
-            else {
-                throw err;
-            }
-        }
+            RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
 
-        realm.commitTransaction();
+            realm.beginTransaction();
+            try {
+                realm.copyToRealm(realmSensorProfile);
+                realm.commitTransaction();
+            } catch (RealmPrimaryKeyConstraintException err) {
+                throw new SensorProfileException("Cannot create sensorPorfile. A sensor with name " + sensorName + " already exists.");
+            }
+        }
+        finally {
+            realm.close();
+        }
     }
 
     public void createOrUpdateSensorProfile(String sensorName, JSONObject profile) throws SensorProfileException {
-        RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(realmSensorProfile);
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
+
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(realmSensorProfile);
+            realm.commitTransaction();
+        }
+        finally {
+            realm.close();
+        }
     }
 
     public boolean hasSensorProfile(String sensorName) {
-        realm.beginTransaction();
-        RealmSensorProfile realmSensorProfile = realm
-                .where(RealmSensorProfile.class)
-                .equalTo("sensorName", sensorName)
-                .findFirst();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            realm.beginTransaction();
+            RealmSensorProfile realmSensorProfile = realm
+                    .where(RealmSensorProfile.class)
+                    .equalTo("sensorName", sensorName)
+                    .findFirst();
+            realm.commitTransaction();
 
-        return (realmSensorProfile != null);
+            return (realmSensorProfile != null);
+        }
+        finally {
+            realm.close();
+        }
     }
 
     public JSONObject getSensorProfile(String sensorName) throws SensorProfileException, JSONException {
-        realm.beginTransaction();
-        RealmSensorProfile realmSensorProfile = realm
-                .where(RealmSensorProfile.class)
-                .equalTo("sensorName", sensorName)
-                .findFirst();
-        realm.commitTransaction();
+        Realm realm = Realm.getInstance(context);
+        try {
+            realm.beginTransaction();
+            RealmSensorProfile realmSensorProfile = realm
+                    .where(RealmSensorProfile.class)
+                    .equalTo("sensorName", sensorName)
+                    .findFirst();
+            realm.commitTransaction();
 
-        if (realmSensorProfile != null) {
-            return RealmSensorProfile.getProfileAsJSONObject(realmSensorProfile);
+            if (realmSensorProfile != null) {
+                return RealmSensorProfile.getProfileAsJSONObject(realmSensorProfile);
+            }
+            else {
+                throw new SensorProfileException("Sensor profile not found. Sensor name: '" + sensorName  + "'");
+            }
         }
-        else {
-            throw new SensorProfileException("Sensor profile not found. Sensor name: '" + sensorName  + "'");
+        finally {
+            realm.close();
         }
     }
 
