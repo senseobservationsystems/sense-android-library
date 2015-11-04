@@ -229,13 +229,13 @@ public class DataSyncer {
             Long persistenceBoundary = new Date().getTime() - DSEConstants.PERSIST_PERIOD;
             if(sensor.getOptions().isUploadEnabled()){
                 if(sensor.getOptions().isPersistLocally()){
-                   sensor.deleteDataPoints(new QueryOptions(null,persistenceBoundary,true, null, QueryOptions.SORT_ORDER.ASC));
+                   sensor.deleteDataPoints(null,persistenceBoundary);
                 }else{
-                    sensor.deleteDataPoints(new QueryOptions(null,null, true, null, QueryOptions.SORT_ORDER.ASC));
+                    sensor.deleteDataPoints(null,null);
                 }
             }else{
                 if(sensor.getOptions().isPersistLocally()){
-                    sensor.deleteDataPoints(new QueryOptions(null, persistenceBoundary, null, null, QueryOptions.SORT_ORDER.ASC));
+                    sensor.deleteDataPoints(null, persistenceBoundary);
                 }
             }
         }

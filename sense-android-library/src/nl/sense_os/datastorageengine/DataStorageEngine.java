@@ -300,7 +300,7 @@ public class DataStorageEngine {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         for(String source : getSources()){
             for(Sensor sensor : getSensors(source)){
-                sensor.deleteDataPoints(new QueryOptions(startTime, endTime, null, null, null));
+                sensor.deleteDataPoints(startTime, endTime);
             }
         }
     }
