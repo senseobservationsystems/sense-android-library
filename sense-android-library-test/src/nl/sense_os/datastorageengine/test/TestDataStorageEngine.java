@@ -129,9 +129,9 @@ public class TestDataStorageEngine extends AndroidTestCase{
 
         /** DELETE */
         // delete the last 2 data points, only the date is used with delete
-        queryOptions = new QueryOptions(date3, date4+1, null, null, null);
         dataStorageEngine.deleteDataPoints(date3, date4+1);
         // get the first rest with the same query, should return the first 2 in reversed order
+        queryOptions = new QueryOptions(date, date4+1, null, null, QueryOptions.SORT_ORDER.DESC);
         dataPoints = sensor.getDataPoints(queryOptions);
         assertEquals(date2, dataPoints.get(0).getTime());
         assertEquals(date, dataPoints.get(1).getTime());

@@ -221,21 +221,24 @@ public class Sensor {
     public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
         Realm realm = Realm.getInstance(context);
         try {
-            if (startTime == null) {
-                startTime = -1l;
-            }
-            if (endTime == null) {
-                endTime = -1l;
-            }
-            DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, name, source, startTime, endTime);
+            Long startTimeRequest = startTime == null? -1l: startTime;
+            Long endTimeRequest  = endTime == null? -1l: startTime;
+            // Add the delete data request for deleting data from the backend
+            DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, name, source, startTimeRequest, endTimeRequest);
 
             realm.beginTransaction();
-            try {
-                realm.copyToRealm(dataDeletionRequest);
-                realm.commitTransaction();
-            } catch (RealmPrimaryKeyConstraintException err) {
-                throw new DatabaseHandlerException("Error adding delete data request for \"" + name + "\" and source \"" + source + "\".");
-            }
+            realm.copyToRealm(dataDeletionRequest);
+            realm.commitTransaction();
+
+            // Delete the local data
+            RealmResults<RealmDataPoint> results = queryFromRealm(startTime, endTime, null);
+
+            realm.beginTransaction();
+            results.clear();
+            realm.commitTransaction();
+
+        } catch (RealmPrimaryKeyConstraintException err) {
+            throw new DatabaseHandlerException("Error adding delete data request for \"" + name + "\" and source \"" + source + "\".");
         }
         finally {
             realm.close();
