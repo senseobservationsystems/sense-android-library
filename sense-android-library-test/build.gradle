@@ -4,10 +4,25 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.2.1'
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.getkeepsafe.dexcount'
+/**
+ * To see the output of dexcount (number of methods), run:
+ *
+ *     $ cd /sense-android-library-test
+ *     $ ./gradlew assembleDebug
+ *
+ * Halfway the output you will see something like:
+ *
+ *     Total methods in sense-android-library-test-debug.apk: 30911
+ *     Total fields in sense-android-library-test-debug.apk:  14077
+ *
+ * A detailed report is available in /build/outputs/dexcount/debug.txt
+ */
 
 repositories {
     jcenter()
