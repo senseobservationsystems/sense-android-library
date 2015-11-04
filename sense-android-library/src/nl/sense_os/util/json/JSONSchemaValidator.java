@@ -121,7 +121,7 @@ public class JSONSchemaValidator {
             throw createInvalidTypeError(type);
         }
 
-        if ("integer".equals(type) && (!(object instanceof Number) || ((Number)object).intValue() != object)) {
+        if ("integer".equals(type) && (!(object instanceof Number) || !object.equals(((Number)object).intValue()))) {
             throw createInvalidTypeError(type);
         }
 
