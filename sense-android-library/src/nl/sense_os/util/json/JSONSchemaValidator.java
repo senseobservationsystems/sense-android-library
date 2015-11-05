@@ -122,7 +122,7 @@ public class JSONSchemaValidator {
             throw createInvalidTypeError(type);
         }
 
-        if ("integer".equals(type) && (!(object instanceof Number) || !object.equals(((Number)object).intValue()))) {
+        if ("integer".equals(type) && !isInteger(object)) {
             throw createInvalidTypeError(type);
         }
 
@@ -224,5 +224,19 @@ public class JSONSchemaValidator {
         }
 
         return description;
+    }
+
+    /**
+     * Check of given object is an integer number
+     * @param object
+     * @return
+     */
+    protected boolean isInteger(Object object) {
+        if (!(object instanceof Number)) {
+            return false;
+        }
+
+        Number number = (Number) object;
+        return number.equals(number.longValue());
     }
 }
