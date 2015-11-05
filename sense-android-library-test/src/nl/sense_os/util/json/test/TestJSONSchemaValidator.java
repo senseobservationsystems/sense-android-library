@@ -19,7 +19,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (SchemaException e) {
-            assertEquals("Unknown schema property 'foobar'", e.getMessage());
+            assertEquals("Unknown schema property 'foobar'.", e.getMessage());
         }
     }
 
@@ -38,7 +38,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid type. string expected", e.getMessage());
+            assertEquals("Invalid type. string expected.", e.getMessage());
         }
 
         try {
@@ -46,7 +46,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid type. string expected", e.getMessage());
+            assertEquals("Invalid type. string expected.", e.getMessage());
         }
     }
 
@@ -62,7 +62,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid value 44. Expected any of [42,null,\"hello\"]", e.getMessage());
+            assertEquals("Invalid value 44. Expected any of [42,null,\"hello\"].", e.getMessage());
         }
 
         try {
@@ -70,7 +70,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid value foo. Expected any of [42,null,\"hello\"]", e.getMessage());
+            assertEquals("Invalid value foo. Expected any of [42,null,\"hello\"].", e.getMessage());
         }
     }
 
@@ -85,7 +85,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Required property 'age' missing", e.getMessage());
+            assertEquals("Required property 'age' missing.", e.getMessage());
         }
 
         try {
@@ -93,7 +93,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Required property 'name' missing", e.getMessage());
+            assertEquals("Required property 'name' missing.", e.getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid type. integer expected for property 'age'", e.getMessage());
+            assertEquals("Invalid type for property 'age'. integer expected.", e.getMessage());
         }
 
         try {
@@ -119,7 +119,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid type. string expected for property 'name'", e.getMessage());
+            assertEquals("Invalid type for property 'name'. string expected.", e.getMessage());
         }
     }
 
@@ -133,7 +133,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid type. string expected for property 'city'", e.getMessage());
+            assertEquals("Invalid type for property 'city'. string expected.", e.getMessage());
         }
 
         try {
@@ -141,7 +141,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Required property 'street' missing", e.getMessage());
+            assertEquals("Required property 'street' missing.", e.getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid type. string expected", e.getMessage());
+            assertEquals("Invalid type at index 1. string expected.", e.getMessage());
         }
 
         try {
@@ -165,7 +165,7 @@ public class TestJSONSchemaValidator extends TestCase {
             fail("should throw an exception");
         }
         catch (Exception e) {
-            assertEquals("Invalid type. string expected", e.getMessage());
+            assertEquals("Invalid type at index 0. string expected.", e.getMessage());
         }
     }
 
