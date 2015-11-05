@@ -98,12 +98,13 @@ public class DataStorageEngine {
      **/
     public synchronized DSEStatus getStatus()
     {
-        if(!mHasCredentials)
+        if(!mHasCredentials) {
             return DSEStatus.AWAITING_CREDENTIALS;
-        else if(mInitialized)
+        } else if(mInitialized) {
             return DSEStatus.READY;
-        else
+        } else {
             return DSEStatus.AWAITING_SENSOR_PROFILES;
+        }
     }
 
     /**
@@ -116,8 +117,9 @@ public class DataStorageEngine {
         DSEOptions oldOptions = mOptions;
         mOptions = options;
         // if the options have change initialize the DSE
-        if(!oldOptions.equals(options))
+        if(!oldOptions.equals(options)) {
             initialize();
+        }
     }
 
     /**
@@ -131,16 +133,20 @@ public class DataStorageEngine {
      **/
     public void setCredentials(String sessionID, String userId, String appKey) throws IllegalArgumentException
     {
-        if(sessionID == null || sessionID.length() == 0 )
+        if(sessionID == null || sessionID.length() == 0 ) {
             throw new IllegalArgumentException("missing sessionID");
-        if(userId == null || userId.length() == 0 )
+        }
+        if(userId == null || userId.length() == 0 ) {
             throw new IllegalArgumentException("missing userID");
-        if(appKey == null || appKey.length() == 0 )
+        }
+        if(appKey == null || appKey.length() == 0 ) {
             throw new IllegalArgumentException("missing appKey");
+        }
 
         boolean credentialsUpdated = false;
-        if(!mUserID.equals(userId) || !mSessionID.equals(sessionID) || !mAPPKey.equals(appKey))
-            credentialsUpdated =true;
+        if(!mUserID.equals(userId) || !mSessionID.equals(sessionID) || !mAPPKey.equals(appKey)) {
+            credentialsUpdated = true;
+        }
 
         mUserID = userId;
         mSessionID = sessionID;
@@ -148,8 +154,9 @@ public class DataStorageEngine {
 
         // the credentials have been set, start the initialization
         mHasCredentials = true;
-        if(credentialsUpdated)
+        if(credentialsUpdated) {
             initialize();
+        }
     }
 
     /**
@@ -159,8 +166,9 @@ public class DataStorageEngine {
     private synchronized void initialize()
     {
         // if there are no credentials wait with the initialization
-        if(!mHasCredentials)
+        if(!mHasCredentials) {
             return;
+        }
 
         mDatabaseHandler = new DatabaseHandler(mContext, mUserID);
         //mDatabaseHandler.enableEncryption(mOptions.enableEncryption);
@@ -169,8 +177,9 @@ public class DataStorageEngine {
             // mDatabaseHandler.setEncryptionKey(mOptions.encryptionKey);
         }
         mSensorDataProxy = new SensorDataProxy(mOptions.backendEnvironment, mAPPKey, mSessionID);
-        if(mDataSyncer != null)
+        if(mDataSyncer != null) {
             mDataSyncer.disablePeriodicSync();
+        }
         mDataSyncer = new DataSyncer(mContext, mDatabaseHandler,mSensorDataProxy);
         // TODO set the persist period in the DataSyncer
         //mDataSyncer.setPersistPeriod(mOptions.localPersistancePeriod);
@@ -195,8 +204,7 @@ public class DataStorageEngine {
                 mExecutorService.execute(mDownloadSensorDataTask);
                 mInitialized = true;
                 return true;
-            }catch(Exception e)
-            {
+            } catch(Exception e) {
                 // TODO what to do when it fails?
                 Log.e(TAG, "Error initializing the DataSyncer", e);
                 return false;
@@ -214,8 +222,7 @@ public class DataStorageEngine {
                 // TODO what to do when there is already a sync
                 mDataSyncer.sync();
                 return true;
-            }catch(Exception e)
-            {
+            } catch(Exception e) {
                 Log.e(TAG, "Error doing the initial sync on the DataSyncer", e);
                 return false;
             }
@@ -232,8 +239,7 @@ public class DataStorageEngine {
                 // TODO what to do when there is already a sync
                 mDataSyncer.sync();
                 return true;
-            }catch(Exception e)
-            {
+            } catch(Exception e) {
                 Log.e(TAG, "Error doing the initial sync on the DataSyncer", e);
                 return false;
             }
@@ -251,8 +257,9 @@ public class DataStorageEngine {
      * @throws SensorException, when the sensor name is not valid
      **/
     public Sensor createSensor(String source, String name, SensorOptions options) throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException {
-        if(getStatus() != DSEStatus.READY)
+        if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
+        }
         return mDatabaseHandler.createSensor(source, name, options);
     }
 
@@ -263,8 +270,9 @@ public class DataStorageEngine {
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
     public Sensor getSensor(String source, String sensorName) throws DatabaseHandlerException, SensorException, JSONException, SensorProfileException, SchemaException {
-        if(getStatus() != DSEStatus.READY)
+        if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
+        }
         return mDatabaseHandler.getSensor(source, sensorName);
     }
 
@@ -274,8 +282,9 @@ public class DataStorageEngine {
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
     public List<Sensor> getSensors(String source) throws JSONException, SensorException, SensorProfileException, SchemaException {
-        if(getStatus() != DSEStatus.READY)
+        if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
+        }
         return mDatabaseHandler.getSensors(source);
     }
 
@@ -285,8 +294,9 @@ public class DataStorageEngine {
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
     public List<String> getSources(){
-        if(getStatus() != DSEStatus.READY)
+        if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
+        }
         return mDatabaseHandler.getSources();
     }
 
@@ -299,8 +309,9 @@ public class DataStorageEngine {
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
     public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException, JSONException, SensorException, SensorProfileException, SchemaException {
-        if(getStatus() != DSEStatus.READY)
+        if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
+        }
         for(String source : getSources()){
             for(Sensor sensor : getSensors(source)){
                 sensor.deleteDataPoints(startTime, endTime);
@@ -316,13 +327,13 @@ public class DataStorageEngine {
         return mExecutorService.submit(new Callable<Boolean>() {
             public Boolean call() throws Exception {
                 try {
-                    if(getStatus() != DSEStatus.READY)
+                    if(getStatus() != DSEStatus.READY) {
                         throw new IllegalStateException("The DataStorageEngine is not ready yet");
+                    }
 
                     mDataSyncer.sync();
                     return true;
-                }catch(Exception e)
-                {
+                } catch(Exception e) {
                     Log.e(TAG, "Error flushing data", e);
                     return false;
                 }
@@ -337,8 +348,9 @@ public class DataStorageEngine {
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      */
     public void flushData() throws SensorProfileException, SensorException, IOException, JSONException, SchemaException, DatabaseHandlerException, ValidationException {
-        if(getStatus() != DSEStatus.READY)
+        if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
+        }
         mDataSyncer.sync();
     }
 
@@ -346,8 +358,7 @@ public class DataStorageEngine {
      * Receive an update when the DataStorageEngine has done it's initialization
      * @return A Future<boolean> which will return the status of the initialization of the DataStorageEngine.
      */
-    public Future<Boolean> onReady()
-    {
+    public Future<Boolean> onReady() {
         return mInitTask;
     }
 
@@ -355,8 +366,7 @@ public class DataStorageEngine {
      * Receive an update when the sensors have been downloaded
      * @return A Future<boolean> which will return the status of the sensor download process of the DataStorageEngine.
      */
-    public Future<Boolean> onSensorsDownloaded()
-    {
+    public Future<Boolean> onSensorsDownloaded() {
         return mDownloadSensorsTask;
     }
 
@@ -364,8 +374,7 @@ public class DataStorageEngine {
      * Receive an update when the sensor data has been downloaded
      * @return A Future<boolean> which will return the status of the sensor data download process of the DataStorageEngine.
      */
-    public Future<Boolean> onSensorDataDownloaded()
-    {
+    public Future<Boolean> onSensorDataDownloaded(){
         return mDownloadSensorDataTask;
     }
 }
