@@ -18,6 +18,7 @@ import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.datastorageengine.DatabaseHandler;
+import nl.sense_os.datastorageengine.SensorProfiles;
 import nl.sense_os.datastorageengine.realm.RealmDataPoint;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
 import nl.sense_os.datastorageengine.Sensor;
@@ -46,6 +47,18 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         databaseHandler = new DatabaseHandler(getContext(), userId);
         newDatabaseHandler = new DatabaseHandler(getContext(), newUserId);
+
+        // Create a few sensor profiles by hand, so we don't have to fetch them from the server via SensorDataProxy
+        SensorProfiles profiles = new SensorProfiles(getContext());
+
+        profiles.createSensorProfile("noise",
+                new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"description\": \"The Ambient noise in decibel\",\"type\": \"number\"}"));
+
+        profiles.createSensorProfile("accelerometer",
+                new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"type\": \"object\",\"properties\": {\"x-axis\": {\"description\": \"The acceleration force applied on the x-axis in m\\/s2\", \"type\": \"number\"}, \"y-axis\": { \"description\": \"The acceleration force applied on the y-axis in m\\/s2\", \"type\": \"number\"}, \"z-axis\": {\"description\": \"The acceleration force applied on the z-axis in m\\/s2\", \"type\": \"number\" } }, \"required\": [\"x-axis\",\"y-axis\",\"z-axis\"]}"));
+
+        profiles.createSensorProfile("light",
+                new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"description\": \"The illuminance in lux\",\"type\": \"number\"}"));
     }
 
     @Override
@@ -57,7 +70,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testDifferentUserIdWithSameSensorAndSourceName() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -68,135 +81,35 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
 
-        Sensor newSensor = newDatabaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        Sensor newSensor = newDatabaseHandler.createSensor(sourceName, sensorName, sensorOptions);
 
     }
 
-    public void testInsertDataPointSucceededWithIntegerValue() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
-        String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
-        JSONObject sensorMeta = new JSONObject();
-        sensorMeta.put("sensor_description", "sensor_description");
-        sensorMeta.put("display_name", "display_name");
-        boolean csUploadEnabled = true;
-        boolean csDownloadEnabled = true;
-        boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+    public void testInsertDataPointFailedWithInvalidValue() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
+        try {
+            Sensor noise = databaseHandler.createSensor("sense-android","noise", new SensorOptions());
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+            noise.insertOrUpdateDataPoint("hello world", new Date().getTime());
+            fail("Should throw an exception");
+        }
+        catch (ValidationException err) {
+            assertEquals("Invalid type. number expected.", err.getMessage());
+        }
 
-        dateType = new Date();
-        int value = 0;
-        long date = dateType.getTime();
-        int numberOfDataPoints = 0;
+        try {
+            Sensor accelerometer = databaseHandler.createSensor("sense-android","accelerometer", new SensorOptions());
 
-        sensor.insertOrUpdateDataPoint(value,date);
-        numberOfDataPoints++;
+            JSONObject value = new JSONObject("{\"x-axis\":2,\"y-axis\":3.4}");
+            accelerometer.insertOrUpdateDataPoint(value, new Date().getTime());
+            fail("Should throw an exception");
+        }
+        catch (ValidationException err) {
+            assertEquals("Required property 'z-axis' missing.", err.getMessage());
+        }
 
-        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
-                                                      .equalTo("date", date)
-                                                      .findAll();
-        int listSize = resultList.size();
-        assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
-
-        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
-        assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsInteger());
     }
 
-    public void testInsertDataPointSucceededWithFloatValue() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
-        String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
-        JSONObject sensorMeta = new JSONObject();
-        sensorMeta.put("sensor_description", "sensor_description");
-        sensorMeta.put("display_name", "display_name");
-        boolean csUploadEnabled = true;
-        boolean csDownloadEnabled = true;
-        boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
-
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
-
-        dateType = new Date();
-        float value = 2.30f;
-        long date = dateType.getTime();
-        int numberOfDataPoints = 0;
-
-        sensor.insertOrUpdateDataPoint(value,date);
-        numberOfDataPoints++;
-
-        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
-                .equalTo("date", date)
-                .findAll();
-        int listSize = resultList.size();
-        assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
-
-        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
-        assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsFloat());
-    }
-
-    public void testInsertDataPointSucceededWithStringValue() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
-        String sourceName = "sense-android";
-        String sensorName = "sleep_time";
-        JSONObject sensorMeta = new JSONObject();
-        sensorMeta.put("sensor_description", "sensor_description");
-        sensorMeta.put("display_name", "display_name");
-        boolean csUploadEnabled = true;
-        boolean csDownloadEnabled = true;
-        boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
-
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
-
-        dateType = new Date();
-        String value = "Hi, Datapoint";
-        long date = dateType.getTime();
-        int numberOfDataPoints = 0;
-
-        sensor.insertOrUpdateDataPoint(value,date);
-        numberOfDataPoints++;
-
-        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
-                .equalTo("date", date)
-                .findAll();
-        int listSize = resultList.size();
-        assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
-
-        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
-        assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsString());
-    }
-
-    public void testInsertDataPointSucceededWithBooleanValue() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
-        String sourceName = "sense-android";
-        String sensorName = "screen activity";
-        JSONObject sensorMeta = new JSONObject();
-        sensorMeta.put("sensor_description", "sensor_description");
-        sensorMeta.put("display_name", "display_name");
-        boolean csUploadEnabled = true;
-        boolean csDownloadEnabled = true;
-        boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
-
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
-
-        dateType = new Date();
-        boolean value = false;
-        long date = dateType.getTime();
-        int numberOfDataPoints = 0;
-
-        sensor.insertOrUpdateDataPoint(value,date);
-        numberOfDataPoints++;
-
-        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
-                .equalTo("date", date)
-                .findAll();
-        int listSize = resultList.size();
-        assertEquals("Incorrect number of the Realm DataPoint object", numberOfDataPoints, listSize);
-
-        DataPoint resultDataPoint = RealmDataPoint.toDataPoint(resultList.first());
-        assertEquals("Incorrect value of the Realm DataPoint object", value, resultDataPoint.getValueAsBoolean());
-    }
-
-    public void testInsertDataPointSucceededWithJsonValue() throws JSONException, DatabaseHandlerException, SensorException, SchemaException, ValidationException, SensorProfileException {
+    public void testInsertDataPointSucceededWithJsonObject() throws JSONException, DatabaseHandlerException, SensorException, SchemaException, ValidationException, SensorProfileException {
         String sourceName = "sense-android";
         String sensorName = "accelerometer";
         JSONObject sensorMeta = new JSONObject();
@@ -211,9 +124,9 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         dateType = new Date();
         JSONObject value = new JSONObject();
-        value.put("x", 9.1);
-        value.put("y",8.9);
-        value.put("z", 7.2);
+        value.put("x-axis", 9.1);
+        value.put("y-axis",8.9);
+        value.put("z-axis", 7.2);
         long date = dateType.getTime();
         int numberOfDataPoints = 0;
 
@@ -233,7 +146,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Insert a datapoint, and make an update of value. Realm is expected only to update the same object with new value.
     public void testInsertDatePointSucceededWithDuplicateDataPoint() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -269,7 +182,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Insert two datapoints with same date but with different sensorId
     public void testInsertDatePointSucceededWithTwoSensorsHavingSameDate() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -311,7 +224,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Get the datapoints with asc sort order
     public void testGetDataPointsSucceededWithASC() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -351,7 +264,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetDataPointsSucceededWithOutOfBoundLimit() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -391,7 +304,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetDataPointsSucceededWithNullStartTime() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -426,7 +339,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetDataPointsSucceededWithNullEndTime() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -461,7 +374,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetDataPointsSucceededWithNullLimit() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -495,7 +408,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetDataPointsSucceededWithNullParams() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -530,7 +443,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetDataPointsWithInvalidLimit() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -566,7 +479,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Get the datapoints with desc sort order
     public void testGetDataPointsSucceededWithDESC() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -607,7 +520,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Test the case that end date is before start date
     public void testGetDataPointsFailedWithReverseDates() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -649,7 +562,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Delete DataPoints with Specified startTime and endTime
     public void testDeleteDataPointsSucceededWithTwoSpecifiedDates() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -690,7 +603,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Delete DataPoints with null startTime
     public void testDeleteDataPointsSucceededWithNullStartTime() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -732,7 +645,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Delete DataPoints with null endTime
     public void testDeleteDataPointsSucceededWithNullEndTime() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -774,7 +687,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     // Delete DataPoints with null startTime and endTime
     public void testDeleteDataPointsSucceededWithNullDates() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -815,7 +728,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testCreateSensorSucceeded() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -847,7 +760,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testCreateSensorFailedWithDuplicateCreation() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject meta = new JSONObject();
         meta.put("sensor_description","sensor_description");
         meta.put("display_name","display_name");
@@ -870,7 +783,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testSetOptionsSucceeded() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -899,7 +812,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testSetSyncedSucceeded() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -929,7 +842,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetSensorSucceeded() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -954,7 +867,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetSensorFailedWithInvalidSensor() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -976,7 +889,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetSensorsSucceeded() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");
@@ -989,7 +902,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
         sensorNumber++;
 
-        String sensorName1 = "visits";
+        String sensorName1 = "light";
 
         sensor = databaseHandler.createSensor(sourceName,sensorName1,sensorOptions);
         sensorNumber++;
@@ -1011,7 +924,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetSourcesSucceeded() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         String sourceName = "sense-android";
-        String sensorName = "noise_sensor";
+        String sensorName = "noise";
         JSONObject sensorMeta = new JSONObject();
         sensorMeta.put("sensor_description", "sensor_description");
         sensorMeta.put("display_name", "display_name");

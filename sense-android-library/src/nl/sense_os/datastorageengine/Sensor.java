@@ -220,7 +220,7 @@ public class Sensor {
         Realm realm = Realm.getInstance(context);
         try {
             Long startTimeRequest = startTime == null? -1l: startTime;
-            Long endTimeRequest  = endTime == null? -1l: startTime;
+            Long endTimeRequest  = endTime == null? -1l: endTime;
             // Add the delete data request for deleting data from the backend
             DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, name, source, startTimeRequest, endTimeRequest);
 

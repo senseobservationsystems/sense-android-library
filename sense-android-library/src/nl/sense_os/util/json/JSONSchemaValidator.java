@@ -35,6 +35,7 @@ public class JSONSchemaValidator {
     private List<Object> enumz = null;
     private List<String> required = null;
     private String name = null;
+    private Integer index = null; // used when iterating over the items of an array
     private String type = null;
     private JSONSchemaValidator items; // for arrays
     private List<JSONSchemaValidator> properties; // for objects
@@ -47,7 +48,7 @@ public class JSONSchemaValidator {
             type = schema.getString("type");
 
             if (!VALID_TYPES.contains(type)) {
-                throw new SchemaException("Invalid type '" + type + "', choose from: " + VALID_TYPES.toString());
+                throw new SchemaException("Invalid type '" + type + "', choose from: " + VALID_TYPES.toString() + ".");
             }
         }
 
@@ -143,10 +144,7 @@ public class JSONSchemaValidator {
     }
 
     protected ValidationException createInvalidTypeError(String type) {
-        String msg = name != null
-                ? ("Invalid type. " + type + " expected for property '" + name + "'")
-                : ("Invalid type. " + type + " expected");
-        return new ValidationException(msg);
+        return new ValidationException("Invalid type" + describeLocation() + ". " + type + " expected.");
     }
 
     protected void validateProperties (JSONObject object) throws JSONException, ValidationException {
@@ -159,9 +157,10 @@ public class JSONSchemaValidator {
 
     protected void validateItems (JSONArray array) throws JSONException, ValidationException {
         for (int i = 0; i < array.length(); i++) {
-            // TODO: more detailed error, give array index or a complete path
+            items.index = i;
             items.validate(array.get(i));
         }
+        items.index = null; // reset to null again
     }
 
     protected void validateEnum (Object object) throws JSONException, ValidationException {
@@ -178,17 +177,13 @@ public class JSONSchemaValidator {
             }
         }
 
-        String msg = name != null
-                ? ("Invalid value " + object + " for property '" + name + "'. Expected any of " + new JSONArray(enumz).toString())
-                : ("Invalid value " + object + ". Expected any of " + new JSONArray(enumz).toString());
-
-        throw new ValidationException(msg);
+        throw new ValidationException("Invalid value " + object + describeLocation() + ". Expected any of " + new JSONArray(enumz).toString() + ".");
     }
 
     protected void validateRequired (JSONObject object) throws JSONException, ValidationException {
         for (String name : required) {
             if (!object.has(name)) {
-                throw new ValidationException("Required property '" + name + "' missing");
+                throw new ValidationException("Required property '" + name + "' missing.");
             }
         }
     }
@@ -205,8 +200,29 @@ public class JSONSchemaValidator {
             String key = keys.next();
 
             if (!KNOWN_FIELDS.contains(key)) {
-                throw new SchemaException("Unknown schema property '" + key + "'");
+                throw new SchemaException("Unknown schema property '" + key + "'.");
             }
         }
+    }
+
+    /**
+     * Describe the location of the current property, returns a string like:
+     *     ""
+     *     " for property 'age'"
+     *     " at index 12"
+     * @return
+     */
+    protected String describeLocation () {
+        String description = "";
+
+        if (name != null) {
+            description += " for property '" + name + "'";
+        }
+
+        if (index != null) {
+            description += " at index " + index;
+        }
+
+        return description;
     }
 }
