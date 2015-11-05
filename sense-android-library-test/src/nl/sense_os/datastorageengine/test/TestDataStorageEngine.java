@@ -96,7 +96,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         // Test Flush data
         // TODO check why the flush crashes with an error in sync saying that the database is closed
         // java.lang.IllegalStateException: This Realm instance has already been closed, making it unusable.
-        //dataStorageEngine.flushData();
+        dataStorageEngine.flushData();
     }
 
     public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException, IOException {
@@ -142,7 +142,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         assertEquals(date, dataPoints.get(1).getTime());
 
         // Test Flush data
-       // dataStorageEngine.flushData();
+        dataStorageEngine.flushData();
     }
 
     /** Helper function for comparing sensors */
