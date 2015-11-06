@@ -51,13 +51,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         // Create a few sensor profiles by hand, so we don't have to fetch them from the server via SensorDataProxy
         SensorProfiles profiles = new SensorProfiles(getContext());
 
-        profiles.createSensorProfile("noise",
+        profiles.create("noise",
                 new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"description\": \"The Ambient noise in decibel\",\"type\": \"number\"}"));
 
-        profiles.createSensorProfile("accelerometer",
+        profiles.create("accelerometer",
                 new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"type\": \"object\",\"properties\": {\"x-axis\": {\"description\": \"The acceleration force applied on the x-axis in m\\/s2\", \"type\": \"number\"}, \"y-axis\": { \"description\": \"The acceleration force applied on the y-axis in m\\/s2\", \"type\": \"number\"}, \"z-axis\": {\"description\": \"The acceleration force applied on the z-axis in m\\/s2\", \"type\": \"number\" } }, \"required\": [\"x-axis\",\"y-axis\",\"z-axis\"]}"));
 
-        profiles.createSensorProfile("light",
+        profiles.create("light",
                 new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"description\": \"The illuminance in lux\",\"type\": \"number\"}"));
     }
 

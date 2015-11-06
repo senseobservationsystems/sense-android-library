@@ -34,7 +34,7 @@ public class Sensor {
 
     public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException, SensorProfileException, JSONException, SchemaException {
         this.context = context;
-        this.profile = new SensorProfiles(context).getSensorProfile(name);
+        this.profile = new SensorProfiles(context).get(name);
         this.validator = new JSONSchemaValidator(this.profile);
 
         this.id = id;

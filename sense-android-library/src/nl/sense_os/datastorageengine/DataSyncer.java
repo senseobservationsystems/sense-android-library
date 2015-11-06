@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
@@ -120,7 +119,7 @@ public class DataSyncer {
             Log.d(TAG, "Sensor profile " + i + ": " + profile.toString());
 
             try {
-                sensorProfiles.createOrUpdateSensorProfile(profile.getString("sensor_name"), profile.getJSONObject("data_structure"));
+                sensorProfiles.createOrUpdate(profile.getString("sensor_name"), profile.getJSONObject("data_structure"));
             }
             catch (Exception err) {
                 Log.e(TAG, "Error parsing sensor profile: ", err);

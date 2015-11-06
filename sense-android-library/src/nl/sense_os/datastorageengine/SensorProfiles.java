@@ -19,7 +19,7 @@ public class SensorProfiles {
         this.context = context;
     }
 
-    public void createSensorProfile(String sensorName, JSONObject profile) throws SensorProfileException {
+    public void create(String sensorName, JSONObject profile) throws SensorProfileException {
         Realm realm = Realm.getInstance(context);
         try {
             RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
@@ -37,7 +37,7 @@ public class SensorProfiles {
         }
     }
 
-    public void createOrUpdateSensorProfile(String sensorName, JSONObject profile) throws SensorProfileException {
+    public void createOrUpdate(String sensorName, JSONObject profile) throws SensorProfileException {
         Realm realm = Realm.getInstance(context);
         try {
             RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
@@ -51,7 +51,7 @@ public class SensorProfiles {
         }
     }
 
-    public boolean hasSensorProfile(String sensorName) {
+    public boolean has(String sensorName) {
         Realm realm = Realm.getInstance(context);
         try {
             realm.beginTransaction();
@@ -68,7 +68,7 @@ public class SensorProfiles {
         }
     }
 
-    public JSONObject getSensorProfile(String sensorName) throws SensorProfileException, JSONException {
+    public JSONObject get(String sensorName) throws SensorProfileException, JSONException {
         Realm realm = Realm.getInstance(context);
         try {
             realm.beginTransaction();
