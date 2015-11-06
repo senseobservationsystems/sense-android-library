@@ -14,8 +14,11 @@ import java.util.Set;
 /**
  * A minimal JSON Schema Validator for Java.
  *
- * Supported types:                "array", "boolean", "integer", "number", "null", "object", "string"
- * Supported JSON schema features: "properties", "items", "required", "type", "enum", "description"
+ * Supported types:
+ *     "array", "boolean", "integer", "number", "null", "object", "string"
+ *
+ * Supported JSON schema features:
+ *     "properties", "items", "required", "type", "enum", "description"
  *
  * Example usage:
  *
@@ -24,6 +27,11 @@ import java.util.Set;
  *
  *     validator.validate(new JSONObject("{\"name\":\"Jo\",\"age\":18}"));      // ok
  *     validator.validate(new JSONObject("{\"name\":\"Jo\",\"age\":\"18\"}"));  // throws ValidationException "Invalid type. integer expected for property 'age'"
+ *
+ * Relevant docs:
+ *     http://json-schema.org/documentation.html
+ *     http://json-schema.org/latest/json-schema-core.html
+ *     http://json-schema.org/latest/json-schema-validation.html
  *
  */
 public class JSONSchemaValidator {
@@ -189,9 +197,9 @@ public class JSONSchemaValidator {
     }
 
     /**
-     * Check if the schema does not contain unknown properties. If the schema contains unknown
-     * properties, and exception is thrown
-     * @param schema
+     * Check if the schema does not contain unknown properties.
+     * If the schema contains unknown properties, and exception is thrown
+     * @param schema  A JSONObject containing a JSON schema
      * @throws SchemaException
      */
     protected void validateSchema (JSONObject schema) throws SchemaException {
@@ -206,11 +214,11 @@ public class JSONSchemaValidator {
     }
 
     /**
-     * Describe the location of the current property, returns a string like:
+     * Describe the location of the current property.
+     * @return Returns a description like:
      *     ""
      *     " for property 'age'"
      *     " at index 12"
-     * @return
      */
     protected String describeLocation () {
         String description = "";
@@ -228,8 +236,8 @@ public class JSONSchemaValidator {
 
     /**
      * Check of given object is an integer number
-     * @param object
-     * @return
+     * @param object  An object, can be anything including null.
+     * @return        Returns true when object is an integer number
      */
     protected boolean isInteger(Object object) {
         if (!(object instanceof Number)) {
