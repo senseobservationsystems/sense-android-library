@@ -94,8 +94,6 @@ public class TestDataStorageEngine extends AndroidTestCase{
         // TODO should we be able to delete a sensor?
 
         // Test Flush data
-        // TODO check why the flush crashes with an error in sync saying that the database is closed
-        // java.lang.IllegalStateException: This Realm instance has already been closed, making it unusable.
         dataStorageEngine.flushData();
     }
 
