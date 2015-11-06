@@ -42,7 +42,10 @@ public class DataStorageEngine {
     private String mSessionID = "";
     private String mAPPKey = "";
 
-    private ExecutorService mExecutorService;
+    /** Handles data syncer actions asynchronously */
+    private ExecutorService mDataSyncerExecutorService;
+    /** Handles the AsyncCallback function calls */
+    private ExecutorService mCallBackExecutorService;
 
     /**
      * The possible statuses of the DataStorageEngine
@@ -64,7 +67,8 @@ public class DataStorageEngine {
     {
         mContext = context;
         mOptions = new DSEOptions();
-        mExecutorService = Executors.newFixedThreadPool(1);
+        mDataSyncerExecutorService = Executors.newSingleThreadExecutor();
+        mCallBackExecutorService = Executors.newCachedThreadPool();
     }
 
 //    /**
@@ -185,7 +189,7 @@ public class DataStorageEngine {
         //mDataSyncer.setPersistPeriod(mOptions.localPersistancePeriod);
         try {
             // execute the initialization of the DataSyncer asynchronously
-            mExecutorService.execute(mInitTask);
+            mDataSyncerExecutorService.execute(mInitTask);
         } catch (Exception e) {
             Log.e(TAG, "Error initializing the DataSyncer", e);
         }
@@ -199,9 +203,9 @@ public class DataStorageEngine {
             try {
                 mDataSyncer.initialize();
                 // when the initialization is done download the sensors
-                mExecutorService.execute(mDownloadSensorsTask);
+                mDataSyncerExecutorService.execute(mDownloadSensorsTask);
                 // and download the sensor data
-                mExecutorService.execute(mDownloadSensorDataTask);
+                mDataSyncerExecutorService.execute(mDownloadSensorDataTask);
                 mInitialized = true;
                 return true;
             } catch(Exception e) {
@@ -320,11 +324,11 @@ public class DataStorageEngine {
     }
 
     /**
-     * Flushes the local data to Common Sense asynchronously
+     * Flushes the local data to Common Sense
      * @return A future which will return the status of the flush action as Boolean via Future.get()
      */
-    public Future<Boolean> flushDataAsync() {
-        return mExecutorService.submit(new Callable<Boolean>() {
+    public Future<Boolean> flushData() {
+        return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
             public Boolean call() throws Exception {
                 try {
                     if(getStatus() != DSEStatus.READY) {
@@ -342,16 +346,12 @@ public class DataStorageEngine {
     }
 
     /**
-     * Flushes the local data to Common Sense synchronously
-     * It uses a blocking flush and performs network operations on the current thread
-     * @throws JSONException, DatabaseHandlerException, SensorException, IOException, SensorProfileException when the data flush fails
-     * @throws IllegalStateException when the DataStorageEngine is not ready yet
+     * Flushes the local data to Common Sense
+     * Receive a one time notification when the DataStorage engine has done the data flush
+     * @param asyncCallback The AsynchronousCall back to receive the status of the data flush in
      */
-    public void flushData() throws SensorProfileException, SensorException, IOException, JSONException, SchemaException, DatabaseHandlerException, ValidationException {
-        if(getStatus() != DSEStatus.READY) {
-            throw new IllegalStateException("The DataStorageEngine is not ready yet");
-        }
-        mDataSyncer.sync();
+    public void flushData(AsyncCallback asyncCallback) {
+        getResultAsync(flushData(), asyncCallback);
     }
 
     /**
@@ -363,6 +363,15 @@ public class DataStorageEngine {
     }
 
     /**
+     * Receive a one time notification when the DataStorageEngine has done it's initialization
+     * @param asyncCallback The AsynchronousCall back to receive the status of the initialization in
+     */
+    public void onReady(AsyncCallback asyncCallback)
+    {
+        getResultAsync(onReady(), asyncCallback);
+    }
+
+    /**
      * Receive an update when the sensors have been downloaded
      * @return A Future<boolean> which will return the status of the sensor download process of the DataStorageEngine.
      */
@@ -371,10 +380,51 @@ public class DataStorageEngine {
     }
 
     /**
+     * Receive a one time notification when the sensors have been downloaded
+     * @param asyncCallback The AsynchronousCall which will return the status of the sensor download process of the DataStorageEngine.
+     */
+    public void onSensorsDownloaded(AsyncCallback asyncCallback)
+    {
+        getResultAsync(onSensorsDownloaded(), asyncCallback);
+    }
+
+    /**
      * Receive an update when the sensor data has been downloaded
      * @return A Future<boolean> which will return the status of the sensor data download process of the DataStorageEngine.
      */
     public Future<Boolean> onSensorDataDownloaded(){
         return mDownloadSensorDataTask;
+    }
+
+    /**
+     * Receive a one time notification when the sensor data has been downloaded
+     * @param asyncCallback The AsynchronousCall which will return the status of the sensor data download process of the DataStorageEngine.
+     */
+    public void onSensorDataDownloaded(AsyncCallback asyncCallback)
+    {
+        getResultAsync(onSensorDataDownloaded(), asyncCallback);
+    }
+
+    /**
+     * Returns the result from a future via the AsyncCallback
+     * @param future The future to get the result from
+     * @param callback The AsyncCallback to receive the result in
+     */
+    protected void getResultAsync(final Future<Boolean> future, final AsyncCallback callback)
+    {
+        mCallBackExecutorService.submit(new Callable() {
+            public Object call() throws Exception {
+                try {
+                    if(future.get())
+                        callback.onSuccess();
+                    else
+                        callback.onFailure(null);
+                } catch(Exception e) {
+                    Log.e(TAG, "Error getting async result from future", e);
+                    callback.onFailure(e);
+                }
+                return null;
+            }
+        });
     }
 }
