@@ -102,6 +102,8 @@ public class TestJSONSchemaValidator extends TestCase {
 
         validator.validate(new JSONObject());
         validator.validate(new JSONObject("{\"name\":\"Jo\",\"age\":18}"));
+        validator.validate(new JSONObject("{\"name\":\"Jo\",\"age\":18.0}"));
+        validator.validate(new JSONObject("{\"name\":\"Jo\",\"age\":3000000000}")); // this number must be cast into a long (int can hold about 2.15e+9
 
         // should ignore unknown field
         validator.validate(new JSONObject("{\"foo\":\"bar\"}"));

@@ -240,11 +240,13 @@ public class JSONSchemaValidator {
      * @return        Returns true when object is an integer number
      */
     protected boolean isInteger(Object object) {
-        if (!(object instanceof Number)) {
-            return false;
-        }
+        if (!(object instanceof Number)) return false;
+        if (  object instanceof Integer) return true;
+        if (  object instanceof Long)    return true;
+        if (  object instanceof Byte)    return true;
 
+        // Float, Double, Short
         Number number = (Number) object;
-        return number.equals(number.longValue());
+        return number.equals(number.intValue());
     }
 }
