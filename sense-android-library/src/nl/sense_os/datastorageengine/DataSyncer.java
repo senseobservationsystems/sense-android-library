@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -167,12 +168,22 @@ public class DataSyncer {
         if(!sensorListInLocal.isEmpty()) {
             for (Sensor sensor : sensorListInLocal) {
                 if(sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
-                    JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
-                    for (int i = 0; i < dataList.length(); i++) {
-                        JSONObject dataFromRemote = dataList.getJSONObject(i);
-                        sensor.insertOrUpdateDataPoint(dataFromRemote.getJSONObject("value"), dataFromRemote.getLong("time"));
+                    try {
+                        JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
+                        for (int i = 0; i < dataList.length(); i++) {
+                            JSONObject dataFromRemote = dataList.getJSONObject(i);
+                            sensor.insertOrUpdateDataPoint(dataFromRemote.get("value"), dataFromRemote.getLong("time"));
+                        }
+                        sensor.setRemoteDataPointsDownloaded(true);
                     }
-                    sensor.setRemoteDataPointsDownloaded(true);
+                    catch (HttpResponseException err) {
+                        if (err.getStatusCode() == 404) { // Resource not found
+                            // ignore this error: the sensor doesn't yet exist remotely, no problem
+                        }
+                        else {
+                            throw err;
+                        }
+                    }
                 }
             }
         }

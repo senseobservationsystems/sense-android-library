@@ -89,4 +89,22 @@ public class SensorProfiles {
             realm.close();
         }
     }
+
+    /**
+     * Get the number of sensor profiles
+     * @return Returns the number of profiles
+     */
+    public long size() {
+        Realm realm = Realm.getInstance(context);
+        try {
+            realm.beginTransaction();
+            long count = realm.where(RealmSensorProfile.class).count();
+            realm.commitTransaction();
+
+            return count;
+        }
+        finally {
+            realm.close();
+        }
+    }
 }
