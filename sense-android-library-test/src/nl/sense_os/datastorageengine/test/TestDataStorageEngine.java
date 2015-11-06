@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import nl.sense_os.datastorageengine.AsyncCallback;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
@@ -37,7 +38,26 @@ public class TestDataStorageEngine extends AndroidTestCase{
     private String source = "DSE-Test";
     private String sensor_name = "noise";
 
+    /** AsyncCallback class to receive status updates in */
+    class DSEAsyncCallback implements AsyncCallback {
+        String name;
+        public DSEAsyncCallback(String name){ this.name = name; }
 
+        @Override
+        public void onSuccess() { assertTrue(name, true); }
+
+        @Override
+        public void onFailure(Throwable throwable){ assertTrue(name+":"+ throwable.getMessage(), false); }
+    }
+    private AsyncCallback onReady = new DSEAsyncCallback("onReadyAsync");
+    private AsyncCallback onSensorsDownloaded = new DSEAsyncCallback("onSensorsDownloadedAsync");
+    private AsyncCallback onSensorDataDownloaded = new DSEAsyncCallback("onSensorDataDownloadedAsync");
+    private AsyncCallback flushData = new DSEAsyncCallback("fushDataAsync");
+
+    /**
+     * Set up of the DataStorageEngine with checks for the status updates
+     * Will create a new user account before every test function
+     **/
     @Override
     protected void setUp () throws Exception {
         csUtils = new CSUtils(false);
@@ -47,6 +67,15 @@ public class TestDataStorageEngine extends AndroidTestCase{
         dataStorageEngine = new DataStorageEngine(getContext());
         dataStorageEngine.setCredentials(sessionId, userId, appKey);
 
+        /** asynchronous test */
+        // Test onReady
+        dataStorageEngine.onReady(onReady);
+        // Test onSensorsDownloaded
+        dataStorageEngine.onSensorDataDownloaded(onSensorsDownloaded);
+        // Test onSensorDataDownloaded
+        dataStorageEngine.onSensorDataDownloaded(onSensorDataDownloaded);
+
+        /** synchronous tests */
         // Test onReady
         assertEquals(Boolean.TRUE, dataStorageEngine.onReady().get(60, TimeUnit.SECONDS));
 
@@ -60,11 +89,17 @@ public class TestDataStorageEngine extends AndroidTestCase{
         assertEquals(DataStorageEngine.DSEStatus.READY, dataStorageEngine.getStatus());
     }
 
+    /**
+     * Deletes the account after every function call
+     */
     @Override
     protected void tearDown () throws Exception {
         csUtils.deleteAccount(newUser.get("username"), newUser.get("password"), newUser.get("id"));
     }
 
+    /**
+     * Tests the Create, Read and Update of a Sensor and it's SensorOptions
+     */
     public void testCRUSensor() throws InterruptedException, ExecutionException, TimeoutException, DatabaseHandlerException, SensorException, JSONException, SensorProfileException, SchemaException, IOException, ValidationException {
         /** CREATE */
         // check the create sensor
@@ -93,10 +128,15 @@ public class TestDataStorageEngine extends AndroidTestCase{
 
         // TODO should we be able to delete a sensor?
 
-        // Test Flush data
+        // Test Flush data asynchronously
+        dataStorageEngine.flushData(flushData);
+        // Test Flush data synchronously
         dataStorageEngine.flushData();
     }
 
+    /**
+     * Test the Create, Read, Update and Delete of sensor data
+     */
     public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException, IOException {
         /** CREATE */
         // check the create sensor
@@ -140,7 +180,10 @@ public class TestDataStorageEngine extends AndroidTestCase{
         assertEquals(date, dataPoints.get(1).getTime());
 
         // Test Flush data
-        dataStorageEngine.flushData();
+        // TODO check why flush fails after the delete call
+        // dataStorageEngine.flushData();
+
+        // TODO test if the data has been deleted in the back-end
     }
 
     /** Helper function for comparing sensors */

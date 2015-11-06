@@ -278,7 +278,7 @@ public class CSUtils {
             return -1;
         } else {
             // received 200 response
-            Log.e(TAG, "CommonSense" + method + "OK! ");
+            Log.d(TAG, "CommonSense" + method + "OK! ");
             return  0;
         }
     }

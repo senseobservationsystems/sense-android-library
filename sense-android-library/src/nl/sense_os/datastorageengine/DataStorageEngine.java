@@ -324,10 +324,10 @@ public class DataStorageEngine {
     }
 
     /**
-     * Flushes the local data to Common Sense asynchronously
+     * Flushes the local data to Common Sense
      * @return A future which will return the status of the flush action as Boolean via Future.get()
      */
-    public Future<Boolean> flushDataAsync() {
+    public Future<Boolean> flushData() {
         return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
             public Boolean call() throws Exception {
                 try {
@@ -346,16 +346,12 @@ public class DataStorageEngine {
     }
 
     /**
-     * Flushes the local data to Common Sense synchronously
-     * It uses a blocking flush and performs network operations on the current thread
-     * @throws JSONException, DatabaseHandlerException, SensorException, IOException, SensorProfileException when the data flush fails
-     * @throws IllegalStateException when the DataStorageEngine is not ready yet
+     * Flushes the local data to Common Sense
+     * Receive a one time notification when the DataStorage engine has done the data flush
+     * @param asyncCallback The AsynchronousCall back to receive the status of the data flush in
      */
-    public void flushData() throws SensorProfileException, SensorException, IOException, JSONException, SchemaException, DatabaseHandlerException, ValidationException {
-        if(getStatus() != DSEStatus.READY) {
-            throw new IllegalStateException("The DataStorageEngine is not ready yet");
-        }
-        mDataSyncer.sync();
+    public void flushData(AsyncCallback asyncCallback) {
+        getResultAsync(flushData(), asyncCallback);
     }
 
     /**
