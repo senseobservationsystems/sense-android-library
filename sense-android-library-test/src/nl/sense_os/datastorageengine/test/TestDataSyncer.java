@@ -16,6 +16,7 @@ import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
@@ -425,8 +426,59 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expectedRemote, actualRemote, true);
     }
 
+    public void testCleanupOldData() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        long day = 1000 * 60 * 60 * 24; // in milliseconds
 
-    // TODO: test removal of old data (older than PERSIST_PERIOD) from local database
+        // change the persistence period to 2 days
+        long originalPeriod = DSEConstants.PERSIST_PERIOD;
+        DSEConstants.PERSIST_PERIOD = 2 * day;
+
+        try {
+            long time1 = new Date().getTime() - 4 * day;
+            long time2 = new Date().getTime() - day;
+            int value1 = 12;
+            int value2 = 23;
+
+            // create a local sensor with a data point
+            String sensorName = "noise";
+            SensorOptions options = new SensorOptions();
+            options.setUploadEnabled(true);
+            options.setDownloadEnabled(false);
+            Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+            noise.insertOrUpdateDataPoint(value1, time1);
+            noise.insertOrUpdateDataPoint(value2, time2);
+
+            // synchronize (should remove old data
+            dataSyncer.sync();
+
+            // local should have one data point left
+            List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
+            assertEquals("should contain zero data points", 1, actualLocal.size());
+            assertEquals("should have the right time", time2, actualLocal.get(0).getTime());
+            assertEquals("should have the right value", value2, actualLocal.get(0).getValueAsInteger());
+
+            // remote should now have both data points
+            QueryOptions queryOptions = new QueryOptions();
+            queryOptions.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+            JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, queryOptions);
+            JSONArray expectedRemote = new JSONArray();
+            JSONObject p1 = new JSONObject()
+                    .put("time", time1)
+                    .put("value", value1);
+            expectedRemote.put(p1);
+            JSONObject p2 = new JSONObject()
+                    .put("time", time2)
+                    .put("value", value2);
+            expectedRemote.put(p2);
+            JSONAssert.assertEquals(expectedRemote, actualRemote, true);
+        }
+        finally {
+            // restore the original period
+            DSEConstants.PERSIST_PERIOD = originalPeriod;
+        }
+
+    }
+
     // TODO: test scheduler: start/stop/execute
     // TODO: test whether sync cannot run twice at the same time (lock not yet implemented!)
     // TODO: test deleting data
