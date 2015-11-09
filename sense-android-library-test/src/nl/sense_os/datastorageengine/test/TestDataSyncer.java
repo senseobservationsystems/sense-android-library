@@ -1,6 +1,7 @@
 package nl.sense_os.datastorageengine.test;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONArray;
@@ -29,7 +30,9 @@ import nl.sense_os.datastorageengine.SensorProfiles;
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
 
-public class TestDataSyncer extends AndroidTestCase{
+public class TestDataSyncer extends AndroidTestCase {
+    private String TAG = "TestDataSyncer";
+
     private CSUtils csUtils;
     private Map<String, String> newUser;
     SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
@@ -147,8 +150,82 @@ public class TestDataSyncer extends AndroidTestCase{
         assertEquals("Local data point should contain the right time", time, dataPoint2.getTime());
     }
 
-    // TODO: test syncing of sensor meta data from local to remote
-    // TODO: test syncing of sensor meta data from remote to local
+    public void testSyncMetaDataLocalToRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        // create a sensor with meta data
+        String sensorName = "noise";
+        JSONObject meta = new JSONObject("{\"hello\":\"world\"}");
+        SensorOptions options = new SensorOptions();
+        options.setMeta(meta);
+        options.setUploadEnabled(true);
+        options.setDownloadEnabled(true);
+        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        JSONAssert.assertEquals(meta, noise.getOptions().getMeta(), true);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // get the sensor from remote
+        JSONObject expected = new JSONObject();
+        expected.put("source_name", sourceName);
+        expected.put("sensor_name", sensorName);
+        expected.put("meta", meta);
+        JSONObject actual = proxy.getSensor(sourceName, sensorName);
+        JSONAssert.assertEquals(expected, actual, true);
+    }
+
+    public void testSyncMetaDataRemoteToLocal() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        // create remote sensor with meta data
+        String sensorName = "noise";
+        JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
+        JSONObject expected2 = new JSONObject();
+        expected2.put("source_name", sourceName);
+        expected2.put("sensor_name", sensorName);
+        expected2.put("meta", meta);
+        JSONObject actual2 = proxy.updateSensor(sourceName, sensorName, meta);
+        JSONAssert.assertEquals(expected2, actual2, true);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // local sensor should be created and need to have the meta from remote
+        Sensor noise = databaseHandler.getSensor(sourceName, sensorName);
+        JSONAssert.assertEquals(meta, noise.getOptions().getMeta(), true);
+    }
+
+    public void testSyncMetaDataConflict() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        // create a local sensor with meta data
+        String sensorName = "noise";
+        JSONObject metaLocal = new JSONObject("{\"created_by\":\"local\"}");
+        SensorOptions options = new SensorOptions();
+        options.setMeta(metaLocal);
+        options.setUploadEnabled(true);
+        options.setDownloadEnabled(true);
+        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        JSONAssert.assertEquals(metaLocal, noise.getOptions().getMeta(), true);
+
+        // create remote sensor with meta data
+        JSONObject metaRemote = new JSONObject("{\"created_by\":\"remote\"}");
+        JSONObject expected2 = new JSONObject();
+        expected2.put("source_name", sourceName);
+        expected2.put("sensor_name", sensorName);
+        expected2.put("meta", metaRemote);
+        JSONObject actual2 = proxy.updateSensor(sourceName, sensorName, metaRemote);
+        JSONAssert.assertEquals(expected2, actual2, true);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // remote meta should be overridden by local
+        JSONAssert.assertEquals(metaLocal, noise.getOptions().getMeta(), true);
+        JSONObject actual3 = proxy.getSensor(sourceName, sensorName);
+        JSONObject expected3 = new JSONObject();
+        expected3.put("source_name", sourceName);
+        expected3.put("sensor_name", sensorName);
+        expected3.put("meta", metaLocal);
+        JSONAssert.assertEquals(expected3, actual3, true);
+    }
+
+
     // TODO: test syncing of duplicate data (locally updated data should override remote data)
     // TODO: test deleting data
     // TODO: test scheduler: start/stop/execute

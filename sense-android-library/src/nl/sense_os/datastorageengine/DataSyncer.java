@@ -139,6 +139,7 @@ public class DataSyncer {
         //Step 2: delete the data in remote and delete the request in local storage
         if(!dataDeletionRequests.isEmpty()){
             for(DataDeletionRequest request : dataDeletionRequests){
+                // FIXME: request.getSourceName() throws an exception as this needs Realm which is already closed.
                 proxy.deleteSensorData(request.getSourceName(),request.getSensorName(),request.getStartTime(),request.getEndTime());
                 databaseHandler.deleteDataDeletionRequest(request.getUuid());
             }
