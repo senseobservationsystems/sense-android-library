@@ -42,6 +42,7 @@ public class TestDataSyncer extends AndroidTestCase {
     private DatabaseHandler databaseHandler;
     private SensorDataProxy proxy;
     private DataSyncer dataSyncer;
+    private SensorProfiles sensorProfiles;
 
     @Override
     protected void setUp () throws Exception {
@@ -55,6 +56,7 @@ public class TestDataSyncer extends AndroidTestCase {
         sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
         databaseHandler = new DatabaseHandler(getContext(), userId);
         proxy = new SensorDataProxy(server, appKey, sessionId);
+        sensorProfiles = new SensorProfiles(getContext());
         dataSyncer = new DataSyncer(getContext(), databaseHandler, proxy);
         dataSyncer.initialize();
     }
@@ -70,16 +72,15 @@ public class TestDataSyncer extends AndroidTestCase {
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
 
-        SensorProfiles profiles = dataSyncer.getSensorProfiles();
-        assertEquals("Should contain zero profiles", 0, profiles.size());
-        assertFalse("Should not contain a profile", profiles.has("noise"));
+        assertEquals("Should contain zero profiles", 0, sensorProfiles.size());
+        assertFalse("Should not contain a profile", sensorProfiles.has("noise"));
 
         dataSyncer.initialize();
-        assertTrue("Should contain profiles", profiles.size() > 0);
-        assertTrue("Should contain a profile", profiles.has("noise"));
+        assertTrue("Should contain profiles", sensorProfiles.size() > 0);
+        assertTrue("Should contain a profile", sensorProfiles.has("noise"));
     }
 
-    public void testSyncLocalToRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testLocalToRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
@@ -114,7 +115,7 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(point, remotePoints2.getJSONObject(0), true);
     }
 
-    public void testSyncRemoteToLocal() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testRemoteToLocal() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
@@ -150,7 +151,7 @@ public class TestDataSyncer extends AndroidTestCase {
         assertEquals("Local data point should contain the right time", time, dataPoint2.getTime());
     }
 
-    public void testSyncMetaDataLocalToRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testMetaDataLocalToRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         // create a sensor with meta data
         String sensorName = "noise";
         JSONObject meta = new JSONObject("{\"hello\":\"world\"}");
@@ -173,7 +174,7 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expected, actual, true);
     }
 
-    public void testSyncMetaDataRemoteToLocal() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testMetaDataRemoteToLocal() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         // create remote sensor with meta data
         String sensorName = "noise";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
@@ -192,7 +193,7 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(meta, noise.getOptions().getMeta(), true);
     }
 
-    public void testSyncMetaDataConflict() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testMetaDataConflict() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         // create a local sensor with meta data
         String sensorName = "noise";
         JSONObject metaLocal = new JSONObject("{\"created_by\":\"local\"}");
@@ -225,7 +226,7 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expected3, actual3, true);
     }
 
-    public void testSyncDataConflicts() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testDataConflicts() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         long time = new Date().getTime();
 
         // create a local sensor with a data point
@@ -263,7 +264,7 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expectedRemote, actualRemote, true);
     }
 
-    public void testSyncDataUploadOnly() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testDataUploadOnly() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         long time1 = new Date().getTime();
         long time2 = new Date().getTime() + 1;
 
@@ -308,7 +309,7 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expectedRemote, actualRemote, true);
     }
 
-    public void testSyncDataDownloadOnly() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testDataDownloadOnly() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         long time1 = new Date().getTime();
         long time2 = new Date().getTime() + 1;
 
@@ -345,7 +346,7 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expectedRemote, actualRemote, true);
     }
 
-    public void testSyncNoUploadNoDownload() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+    public void testNoUploadNoDownload() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         long time1 = new Date().getTime();
         long time2 = new Date().getTime() + 1;
 
@@ -425,10 +426,10 @@ public class TestDataSyncer extends AndroidTestCase {
     }
 
 
-    // TODO: test deleting data
+    // TODO: test removal of old data (older than PERSIST_PERIOD) from local database
     // TODO: test scheduler: start/stop/execute
     // TODO: test whether sync cannot run twice at the same time (lock not yet implemented!)
-    // TODO: test removal of old data (older than PERSIST_PERIOD) from local database
+    // TODO: test deleting data
 
 
 }

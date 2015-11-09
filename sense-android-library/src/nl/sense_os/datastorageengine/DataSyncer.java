@@ -85,10 +85,6 @@ public class DataSyncer {
         periodicSyncEnabled = false;
     }
 
-    public SensorProfiles getSensorProfiles() {
-        return this.sensorProfiles;
-    }
-
     /**
      * Initialize the DataSyncer.
      * This will download the actual list with sensor profiles from remote.
