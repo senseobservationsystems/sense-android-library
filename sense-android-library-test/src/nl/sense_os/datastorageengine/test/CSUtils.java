@@ -23,8 +23,6 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import nl.sense_os.datastorageengine.CommonSenseProxy;
-
 /**
  * Created by ronald on 24-8-15.
  */
@@ -241,8 +239,6 @@ public class CSUtils {
     }
 
     public boolean deleteAccount(String userName, String passWord,String userId){
-
-        CommonSenseProxy csProxy = new CommonSenseProxy(false,  APP_KEY);
 
         try {
             String sessionId = loginUser(userName, passWord);
