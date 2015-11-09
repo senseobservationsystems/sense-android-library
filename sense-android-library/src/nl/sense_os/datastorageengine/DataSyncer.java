@@ -107,8 +107,8 @@ public class DataSyncer {
     public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
         // TODO: check whether there is no sync in progress currently, if so throw an exception
         deletionInRemote();
-        downloadFromRemote();
         uploadToRemote();
+        downloadFromRemote();
         cleanUpLocalStorage();
     }
 
@@ -170,6 +170,7 @@ public class DataSyncer {
             for (Sensor sensor : sensorListInLocal) {
                 if(sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
                     try {
+                        // FIXME: specify the interval for which to retrieve the data, and set the limit to infinity
                         JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
                         for (int i = 0; i < dataList.length(); i++) {
                             JSONObject dataFromRemote = dataList.getJSONObject(i);
@@ -241,7 +242,7 @@ public class DataSyncer {
                 if(sensor.getOptions().isPersistLocally()){
                    sensor.deleteDataPoints(null,persistenceBoundary);
                 }else{
-                    sensor.deleteDataPoints(null,null);
+                    sensor.deleteDataPoints(null,null); // delete all
                 }
             }else{
                 if(sensor.getOptions().isPersistLocally()){

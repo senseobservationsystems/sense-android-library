@@ -225,15 +225,210 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expected3, actual3, true);
     }
 
+    public void testSyncDataConflicts() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        long time = new Date().getTime();
 
-    // TODO: test syncing of duplicate data (locally updated data should override remote data)
+        // create a local sensor with a data point
+        String sensorName = "noise";
+        SensorOptions options = new SensorOptions();
+        options.setUploadEnabled(true);
+        options.setDownloadEnabled(true);
+        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        noise.insertOrUpdateDataPoint(12, time);
+
+        // create remote sensor with a different data point
+        JSONObject dataPoint = new JSONObject();
+        dataPoint.put("time", time);
+        dataPoint.put("value", 42);
+        JSONArray data = new JSONArray();
+        data.put(dataPoint);
+        proxy.putSensorData(sourceName, sensorName, data);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // local should still have the value 12
+        List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
+        assertEquals("should contain 1 data point", 1, actualLocal.size());
+        assertEquals("should have the right time", time, actualLocal.get(0).getTime());
+        assertEquals("should have the right value", 12, actualLocal.get(0).getValueAsInteger());
+
+        // remote value should now be overridden with the local value 12
+        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONObject remoteDataPoint = new JSONObject();
+        remoteDataPoint.put("time", time);
+        remoteDataPoint.put("value", 12);
+        JSONArray expectedRemote = new JSONArray();
+        expectedRemote.put(remoteDataPoint);
+        JSONAssert.assertEquals(expectedRemote, actualRemote, true);
+    }
+
+    public void testSyncDataUploadOnly() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        long time1 = new Date().getTime();
+        long time2 = new Date().getTime() + 1;
+
+        // create a local sensor with a data point
+        String sensorName = "noise";
+        SensorOptions options = new SensorOptions();
+        options.setUploadEnabled(true);
+        options.setDownloadEnabled(false);
+        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        noise.insertOrUpdateDataPoint(12, time1);
+
+        // create remote sensor with a different data point at a different time
+        JSONObject dataPoint = new JSONObject();
+        dataPoint.put("time", time2);
+        dataPoint.put("value", 42);
+        JSONArray data = new JSONArray();
+        data.put(dataPoint);
+        proxy.putSensorData(sourceName, sensorName, data);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // local should still have the value 12
+        List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
+        assertEquals("should contain 1 data point", 1, actualLocal.size());
+        assertEquals("should have the right time", time1, actualLocal.get(0).getTime());
+        assertEquals("should have the right value", 12, actualLocal.get(0).getValueAsInteger());
+
+        // remote should now have both data points
+        QueryOptions queryOptions = new QueryOptions();
+        queryOptions.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, queryOptions);
+        JSONArray expectedRemote = new JSONArray();
+        JSONObject p1 = new JSONObject()
+            .put("time", time1)
+            .put("value", 12);
+        expectedRemote.put(p1);
+        JSONObject p2 = new JSONObject()
+            .put("time", time2)
+            .put("value", 42);
+        expectedRemote.put(p2);
+        JSONAssert.assertEquals(expectedRemote, actualRemote, true);
+    }
+
+    public void testSyncDataDownloadOnly() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        long time1 = new Date().getTime();
+        long time2 = new Date().getTime() + 1;
+
+        // create a local sensor with a data point
+        String sensorName = "noise";
+        SensorOptions options = new SensorOptions();
+        options.setUploadEnabled(false);
+        options.setDownloadEnabled(true);
+        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        noise.insertOrUpdateDataPoint(12, time1);
+
+        // create remote sensor with a different data point at a different time
+        JSONObject dataPoint = new JSONObject();
+        dataPoint.put("time", time2);
+        dataPoint.put("value", 42);
+        JSONArray data = new JSONArray();
+        data.put(dataPoint);
+        proxy.putSensorData(sourceName, sensorName, data);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // local should have both values
+        List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
+        assertEquals("should contain 2 data points", 2, actualLocal.size());
+        assertEquals("should have the right time", time1, actualLocal.get(0).getTime());
+        assertEquals("should have the right value", 12, actualLocal.get(0).getValueAsInteger());
+        assertEquals("should have the right time", time2, actualLocal.get(1).getTime());
+        assertEquals("should have the right value", 42, actualLocal.get(1).getValueAsInteger());
+
+        // remote value should still have one data point
+        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray expectedRemote = data;
+        JSONAssert.assertEquals(expectedRemote, actualRemote, true);
+    }
+
+    public void testSyncNoUploadNoDownload() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        long time1 = new Date().getTime();
+        long time2 = new Date().getTime() + 1;
+
+        // create a local sensor with a data point
+        String sensorName = "noise";
+        SensorOptions options = new SensorOptions();
+        options.setUploadEnabled(false);
+        options.setDownloadEnabled(false);
+        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        noise.insertOrUpdateDataPoint(12, time1);
+
+        // create remote sensor with a different data point at a different time
+        JSONObject dataPoint = new JSONObject();
+        dataPoint.put("time", time2);
+        dataPoint.put("value", 42);
+        JSONArray data = new JSONArray();
+        data.put(dataPoint);
+        proxy.putSensorData(sourceName, sensorName, data);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // local should still have the value 12
+        List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
+        assertEquals("should contain 1 data point", 1, actualLocal.size());
+        assertEquals("should have the right time", time1, actualLocal.get(0).getTime());
+        assertEquals("should have the right value", 12, actualLocal.get(0).getValueAsInteger());
+
+        // remote should still have the value 42
+        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray expectedRemote = data;
+        JSONAssert.assertEquals(expectedRemote, actualRemote, true);
+    }
+
+    public void testNoPersistLocally() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        long time1 = new Date().getTime();
+        long time2 = new Date().getTime() + 1;
+
+        // create a local sensor with a data point
+        String sensorName = "noise";
+        SensorOptions options = new SensorOptions();
+        options.setUploadEnabled(true);
+        options.setDownloadEnabled(true); // should be ignored when persistLocally is false
+        options.setPersistLocally(false);
+        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        noise.insertOrUpdateDataPoint(12, time1);
+
+        // create remote sensor with a different data point at a different time
+        JSONObject dataPoint = new JSONObject();
+        dataPoint.put("time", time2);
+        dataPoint.put("value", 42);
+        JSONArray data = new JSONArray();
+        data.put(dataPoint);
+        proxy.putSensorData(sourceName, sensorName, data);
+
+        // synchronize with remote
+        dataSyncer.sync();
+
+        // local should have no data left
+        List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
+        assertEquals("should contain zero data points", 0, actualLocal.size());
+
+        // remote should now have both data points
+        QueryOptions queryOptions = new QueryOptions();
+        queryOptions.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, queryOptions);
+        JSONArray expectedRemote = new JSONArray();
+        JSONObject p1 = new JSONObject()
+                .put("time", time1)
+                .put("value", 12);
+        expectedRemote.put(p1);
+        JSONObject p2 = new JSONObject()
+                .put("time", time2)
+                .put("value", 42);
+        expectedRemote.put(p2);
+        JSONAssert.assertEquals(expectedRemote, actualRemote, true);
+    }
+
+
     // TODO: test deleting data
     // TODO: test scheduler: start/stop/execute
     // TODO: test whether sync cannot run twice at the same time (lock not yet implemented!)
     // TODO: test removal of old data (older than PERSIST_PERIOD) from local database
-    // TODO: test syncing for sensors with different settings for uploadEnabled (true/false)
-    // TODO: test syncing for sensors with different settings for downloadEnabled (true/false)
-    // TODO: test syncing for sensors with different settings for persistLocally (true/false)
 
 
 }
