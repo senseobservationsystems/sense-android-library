@@ -61,8 +61,8 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     /**
-     * Set sync rate. After changing the sync rate, the alarm receiver must be started again
-     * using setAlarm.
+     * Set sync rate.
+     * After changing the sync rate, the alarm receiver must be started again using setAlarm.
      * @param syncRate Sync rate in milliseconds (1800000 (= 30 minutes) by default)
      */
     public void setSyncRate(long syncRate) {

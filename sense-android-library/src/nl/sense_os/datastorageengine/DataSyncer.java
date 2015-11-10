@@ -345,6 +345,7 @@ public class DataSyncer {
 
     /**
      * Set sync rate
+     * After changing the sync rate, the scheduler must be started again enablePeriodicSync.
      * @param syncRate Sync rate in milliseconds (1800000 (= 30 minutes) by default)
      */
     public void setSyncRate(long syncRate) {

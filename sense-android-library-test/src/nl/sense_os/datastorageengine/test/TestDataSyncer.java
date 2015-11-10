@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -509,6 +512,69 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expected, progress, true);
     }
 
+    public void testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
+        long originalSyncRate = mDataSyncer.getSyncRate();
+        long syncRate = 1000 * 5; // 5 seconds
+
+        try {
+            mDataSyncer.setSyncRate(syncRate);
+            mDataSyncer.enablePeriodicSync();
+
+            String sensorName = "noise";
+            Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, new SensorOptions());
+
+            long value1 = 1;
+            long time1 = new Date().getTime();
+            noise.insertOrUpdateDataPoint(value1, time1);
+
+            List<DataPoint> dataPoints = noise.getDataPoints(new QueryOptions());
+            assertEquals("Should contain 1 data points", 1, dataPoints.size());
+            DataPoint point = dataPoints.get(0);
+            assertFalse("DataPoint should not yet exist in remote", point.existsInRemote());
+
+            Thread.sleep(syncRate * 2); // wait for twice the sync rate, syncing should be done by then
+
+            // by now, the data point should have been synced
+            List<DataPoint> dataPoints2 = noise.getDataPoints(new QueryOptions());
+            assertTrue("DataPoint should exist in remote", dataPoints2.get(0).existsInRemote());
+            JSONArray array = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
+            assertEquals("Remote should contain 1 data point", 1, array.length());
+
+            // stop syncing
+            mDataSyncer.disablePeriodicSync();
+
+            Thread.sleep(syncRate); // wait another the sync rate period, be sure there is no sync in progress
+
+            // create a second data point
+            long value2 = 2;
+            long time2 = time1 + 1;
+            noise.insertOrUpdateDataPoint(value2, time2);
+
+            List<DataPoint> dataPoints3 = noise.getDataPoints(new QueryOptions());
+            assertEquals("Should contain 2 data points", 2, dataPoints3.size());
+            assertEquals("DataPoint 1 should have the right value", value1, dataPoints3.get(0).getValueAsInteger());
+            assertEquals("DataPoint 2 should have the right value", value2, dataPoints3.get(1).getValueAsInteger());
+            assertTrue("DataPoint 1 should exist in remote", dataPoints3.get(0).existsInRemote());
+            assertFalse("DataPoint 2 should NOT exist in remote", dataPoints3.get(1).existsInRemote());
+
+            Thread.sleep(syncRate * 2); // wait for twice the sync rate
+
+            // sync should not have been executed (it is stopped)
+            List<DataPoint> dataPoints4 = noise.getDataPoints(new QueryOptions());
+            assertEquals("Should contain 2 data points", 2, dataPoints4.size());
+            assertEquals("DataPoint 1 should have the right value", value1, dataPoints4.get(0).getValueAsInteger());
+            assertEquals("DataPoint 2 should have the right value", value2, dataPoints4.get(1).getValueAsInteger());
+            assertTrue("DataPoint 1 should exist in remote", dataPoints4.get(0).existsInRemote());
+            assertFalse("DataPoint 2 should NOT exist in remote", dataPoints4.get(1).existsInRemote());
+        }
+        finally {
+            // restore settings
+            mDataSyncer.disablePeriodicSync();
+            mDataSyncer.setSyncRate(originalSyncRate);
+        }
+    }
+
+
     // TODO: test the four cases for cleaning up old data (currently there's only one)
 
     // TODO: test scheduler: start/stop/execute
@@ -516,5 +582,6 @@ public class TestDataSyncer extends AndroidTestCase {
     // TODO: test deleting data
     // TODO: test setSyncRate
 
+    // TODO: implement and test DataSyncer.onError
 
 }
