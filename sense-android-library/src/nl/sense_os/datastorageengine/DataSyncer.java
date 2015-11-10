@@ -327,4 +327,19 @@ public class DataSyncer {
         void onCleanupCompleted();
     }
 
+    /**
+     * Get the current sync rate
+     * @return Returns the sync rate in milliseconds
+     */
+    public long getSyncRate() {
+        return mAlarm.getSyncRate();
+    }
+
+    /**
+     * Set sync rate
+     * @param syncRate Sync rate in milliseconds (1800000 (= 30 minutes) by default)
+     */
+    public void setSyncRate(long syncRate) {
+        this.mAlarm.setSyncRate(syncRate);
+    }
 }
