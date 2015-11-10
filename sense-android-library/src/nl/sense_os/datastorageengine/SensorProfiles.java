@@ -5,8 +5,15 @@ import android.content.Context;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import io.realm.Realm;
+import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
+import nl.sense_os.datastorageengine.realm.RealmSensor;
 import nl.sense_os.datastorageengine.realm.RealmSensorProfile;
 
 public class SensorProfiles {
@@ -81,6 +88,27 @@ public class SensorProfiles {
             else {
                 throw new SensorProfileException("Sensor profile not found. Sensor name: '" + sensorName  + "'");
             }
+        }
+        finally {
+            realm.close();
+        }
+    }
+
+    public Set<String> getSensorNames() throws SensorProfileException, JSONException {
+        Realm realm = Realm.getInstance(mContext);
+        try {
+            realm.beginTransaction();
+
+            RealmResults<RealmSensorProfile> results = realm.where(RealmSensorProfile.class).findAll();
+            realm.commitTransaction();
+
+            Set<String> sensorNames = new HashSet<>();
+            Iterator<RealmSensorProfile> iterator = results.iterator();
+            while (iterator.hasNext()) {
+                sensorNames.add(iterator.next().getSensorName());
+            }
+
+            return sensorNames;
         }
         finally {
             realm.close();

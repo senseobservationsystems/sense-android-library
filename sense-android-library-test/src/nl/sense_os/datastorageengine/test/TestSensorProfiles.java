@@ -6,7 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -48,6 +51,14 @@ public class TestSensorProfiles  extends AndroidTestCase {
 
     public void tearDown() throws Exception {
         mCsUtils.deleteAccount(mUser.get("username"), mUser.get("password"), mUser.get("id"));
+    }
+
+    // TODO: test SensorProfiles.create
+    // TODO: test SensorProfiles.createOrUpdate
+
+    public void testHasSensorAccelerometer() throws Exception {
+        String sensorName = "accelerometer";
+        assertTrue("Should have an accelermoeter profiles", mSensorProfiles.has(sensorName));
     }
 
     public void testSensorAccelerometer() throws Exception {
@@ -176,5 +187,18 @@ public class TestSensorProfiles  extends AndroidTestCase {
 
         JSONObject profile = mSensorProfiles.get(sensorName);
         JSONAssert.assertEquals(expectedProfile, profile, true);
+    }
+
+    public void testNumberOfProfiles() throws Exception {
+        assertEquals("Should contain 16 profiles", 16, mSensorProfiles.size());
+    }
+
+    public void testGetSensorNames() throws Exception {
+        Set<String> expected = new HashSet<String>(Arrays.asList(
+                "accelerometer", "app_info", "battery", "call", "cortex_log", "light",
+                "mental_resilience", "noise", "position", "proximity", "screen",
+                "sleep", "sleep_estimate", "time_active", "time_zone", "wifi_scan"));
+
+        assertEquals("Should returns all sensorNames", expected, mSensorProfiles.getSensorNames());
     }
 }
