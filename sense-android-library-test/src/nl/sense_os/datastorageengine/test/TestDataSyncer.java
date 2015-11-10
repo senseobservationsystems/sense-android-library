@@ -15,7 +15,6 @@ import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
@@ -33,59 +32,59 @@ import nl.sense_os.util.json.ValidationException;
 public class TestDataSyncer extends AndroidTestCase {
     private String TAG = "TestDataSyncer";
 
-    private CSUtils csUtils;
-    private Map<String, String> newUser;
-    SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
-    private String sourceName = "sense-android";
-    private String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
-    private String sessionId;
-    private DatabaseHandler databaseHandler;
-    private SensorDataProxy proxy;
-    private DataSyncer dataSyncer;
-    private SensorProfiles sensorProfiles;
+    private CSUtils mCsUtils;
+    private Map<String, String> mNewUser;
+    SensorDataProxy.SERVER mServer = SensorDataProxy.SERVER.STAGING;
+    private String mSourceName = "sense-android";
+    private String mAppKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
+    private String mSessionId;
+    private DatabaseHandler mDatabaseHandler;
+    private SensorDataProxy mProxy;
+    private DataSyncer mDataSyncer;
+    private SensorProfiles mSensorProfiles;
 
     @Override
     protected void setUp () throws Exception {
-        // remove old realm data
+        // remove old mRealm data
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
 
-        csUtils = new CSUtils(false);
-        newUser = csUtils.createCSAccount();
-        String userId = newUser.get("id");
-        sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
-        databaseHandler = new DatabaseHandler(getContext(), userId);
-        proxy = new SensorDataProxy(server, appKey, sessionId);
-        sensorProfiles = new SensorProfiles(getContext());
-        dataSyncer = new DataSyncer(getContext(), databaseHandler, proxy);
-        dataSyncer.initialize();
+        mCsUtils = new CSUtils(false);
+        mNewUser = mCsUtils.createCSAccount();
+        String userId = mNewUser.get("id");
+        mSessionId = mCsUtils.loginUser(mNewUser.get("username"), mNewUser.get("password"));
+        mDatabaseHandler = new DatabaseHandler(getContext(), userId);
+        mProxy = new SensorDataProxy(mServer, mAppKey, mSessionId);
+        mSensorProfiles = new SensorProfiles(getContext());
+        mDataSyncer = new DataSyncer(getContext(), mDatabaseHandler, mProxy);
+        mDataSyncer.initialize();
     }
 
     @Override
     protected void tearDown () throws Exception {
-        csUtils.deleteAccount(newUser.get("username"), newUser.get("password"), newUser.get("id"));
+        mCsUtils.deleteAccount(mNewUser.get("username"), mNewUser.get("password"), mNewUser.get("id"));
     }
 
     public void testInitialize() throws IOException, JSONException, SensorProfileException {
-        // clear realm again for this specific unit tests
+        // clear mRealm again for this specific unit tests
         // (for all other tests, dataSyncer is already initialized)
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
 
-        assertEquals("Should contain zero profiles", 0, sensorProfiles.size());
-        assertFalse("Should not contain a profile", sensorProfiles.has("noise"));
+        assertEquals("Should contain zero profiles", 0, mSensorProfiles.size());
+        assertFalse("Should not contain a profile", mSensorProfiles.has("noise"));
 
-        dataSyncer.initialize();
-        assertTrue("Should contain profiles", sensorProfiles.size() > 0);
-        assertTrue("Should contain a profile", sensorProfiles.has("noise"));
+        mDataSyncer.initialize();
+        assertTrue("Should contain profiles", mSensorProfiles.size() > 0);
+        assertTrue("Should contain a profile", mSensorProfiles.has("noise"));
     }
 
     public void testLocalToRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(true);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
 
         // create a local data point
         int value = 123;
@@ -96,7 +95,7 @@ public class TestDataSyncer extends AndroidTestCase {
         assertEquals("Should contain one local data point", 1, localPoints.size());
 
         try {
-            proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+            mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
             fail("Should throw an exception");
         }
         catch (HttpResponseException err) {
@@ -104,10 +103,10 @@ public class TestDataSyncer extends AndroidTestCase {
         }
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // remote should now contain the data point
-        JSONArray remotePoints2 = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray remotePoints2 = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
         assertEquals("Should contain 1 remote data point", 1, remotePoints2.length());
         JSONObject point = new JSONObject();
         point.put("time", time);
@@ -119,8 +118,8 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(true);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
 
         // create a remote data point
         int value = 123;
@@ -130,9 +129,9 @@ public class TestDataSyncer extends AndroidTestCase {
         dataPoint.put("value", value);
         JSONArray dataPoints = new JSONArray();
         dataPoints.put(dataPoint);
-        proxy.putSensorData(sourceName, sensorName, dataPoints);
+        mProxy.putSensorData(mSourceName, sensorName, dataPoints);
 
-        JSONArray remotePoints = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray remotePoints = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
         assertEquals("Should contain 1 remote data point", 1, remotePoints.length());
         JSONAssert.assertEquals(dataPoints, remotePoints, true);
 
@@ -141,7 +140,7 @@ public class TestDataSyncer extends AndroidTestCase {
         assertEquals("Should contain no local data points", 0, localPoints1.size());
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // should not 1 local data point
         List<DataPoint> localPoints2 = noise.getDataPoints(new QueryOptions());
@@ -158,19 +157,19 @@ public class TestDataSyncer extends AndroidTestCase {
         SensorOptions options = new SensorOptions();
         options.setMeta(meta);
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(true);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         JSONAssert.assertEquals(meta, noise.getOptions().getMeta(), true);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // get the sensor from remote
         JSONObject expected = new JSONObject();
-        expected.put("source_name", sourceName);
+        expected.put("source_name", mSourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
-        JSONObject actual = proxy.getSensor(sourceName, sensorName);
+        JSONObject actual = mProxy.getSensor(mSourceName, sensorName);
         JSONAssert.assertEquals(expected, actual, true);
     }
 
@@ -179,17 +178,17 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
         JSONObject expected2 = new JSONObject();
-        expected2.put("source_name", sourceName);
+        expected2.put("source_name", mSourceName);
         expected2.put("sensor_name", sensorName);
         expected2.put("meta", meta);
-        JSONObject actual2 = proxy.updateSensor(sourceName, sensorName, meta);
+        JSONObject actual2 = mProxy.updateSensor(mSourceName, sensorName, meta);
         JSONAssert.assertEquals(expected2, actual2, true);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // local sensor should be created and need to have the meta from remote
-        Sensor noise = databaseHandler.getSensor(sourceName, sensorName);
+        Sensor noise = mDatabaseHandler.getSensor(mSourceName, sensorName);
         JSONAssert.assertEquals(meta, noise.getOptions().getMeta(), true);
     }
 
@@ -200,27 +199,27 @@ public class TestDataSyncer extends AndroidTestCase {
         SensorOptions options = new SensorOptions();
         options.setMeta(metaLocal);
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(true);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         JSONAssert.assertEquals(metaLocal, noise.getOptions().getMeta(), true);
 
         // create remote sensor with meta data
         JSONObject metaRemote = new JSONObject("{\"created_by\":\"remote\"}");
         JSONObject expected2 = new JSONObject();
-        expected2.put("source_name", sourceName);
+        expected2.put("source_name", mSourceName);
         expected2.put("sensor_name", sensorName);
         expected2.put("meta", metaRemote);
-        JSONObject actual2 = proxy.updateSensor(sourceName, sensorName, metaRemote);
+        JSONObject actual2 = mProxy.updateSensor(mSourceName, sensorName, metaRemote);
         JSONAssert.assertEquals(expected2, actual2, true);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // remote meta should be overridden by local
         JSONAssert.assertEquals(metaLocal, noise.getOptions().getMeta(), true);
-        JSONObject actual3 = proxy.getSensor(sourceName, sensorName);
+        JSONObject actual3 = mProxy.getSensor(mSourceName, sensorName);
         JSONObject expected3 = new JSONObject();
-        expected3.put("source_name", sourceName);
+        expected3.put("source_name", mSourceName);
         expected3.put("sensor_name", sensorName);
         expected3.put("meta", metaLocal);
         JSONAssert.assertEquals(expected3, actual3, true);
@@ -233,8 +232,8 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(true);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time);
 
         // create remote sensor with a different data point
@@ -243,10 +242,10 @@ public class TestDataSyncer extends AndroidTestCase {
         dataPoint.put("value", 42);
         JSONArray data = new JSONArray();
         data.put(dataPoint);
-        proxy.putSensorData(sourceName, sensorName, data);
+        mProxy.putSensorData(mSourceName, sensorName, data);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // local should still have the value 12
         List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
@@ -255,7 +254,7 @@ public class TestDataSyncer extends AndroidTestCase {
         assertEquals("should have the right value", 12, actualLocal.get(0).getValueAsInteger());
 
         // remote value should now be overridden with the local value 12
-        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray actualRemote = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
         JSONObject remoteDataPoint = new JSONObject();
         remoteDataPoint.put("time", time);
         remoteDataPoint.put("value", 12);
@@ -272,8 +271,8 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(false);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(false);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
 
         // create remote sensor with a different data point at a different time
@@ -282,10 +281,10 @@ public class TestDataSyncer extends AndroidTestCase {
         dataPoint.put("value", 42);
         JSONArray data = new JSONArray();
         data.put(dataPoint);
-        proxy.putSensorData(sourceName, sensorName, data);
+        mProxy.putSensorData(mSourceName, sensorName, data);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // local should still have the value 12
         List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
@@ -296,7 +295,7 @@ public class TestDataSyncer extends AndroidTestCase {
         // remote should now have both data points
         QueryOptions queryOptions = new QueryOptions();
         queryOptions.setSortOrder(QueryOptions.SORT_ORDER.ASC);
-        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, queryOptions);
+        JSONArray actualRemote = mProxy.getSensorData(mSourceName, sensorName, queryOptions);
         JSONArray expectedRemote = new JSONArray();
         JSONObject p1 = new JSONObject()
             .put("time", time1)
@@ -317,8 +316,8 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(false);
-        options.setmDownloadEnabled(true);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(true);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
 
         // create remote sensor with a different data point at a different time
@@ -327,10 +326,10 @@ public class TestDataSyncer extends AndroidTestCase {
         dataPoint.put("value", 42);
         JSONArray data = new JSONArray();
         data.put(dataPoint);
-        proxy.putSensorData(sourceName, sensorName, data);
+        mProxy.putSensorData(mSourceName, sensorName, data);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // local should have both values
         List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
@@ -341,7 +340,7 @@ public class TestDataSyncer extends AndroidTestCase {
         assertEquals("should have the right value", 42, actualLocal.get(1).getValueAsInteger());
 
         // remote value should still have one data point
-        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray actualRemote = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
         JSONArray expectedRemote = data;
         JSONAssert.assertEquals(expectedRemote, actualRemote, true);
     }
@@ -354,8 +353,8 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(false);
-        options.setmDownloadEnabled(false);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(false);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
 
         // create remote sensor with a different data point at a different time
@@ -364,10 +363,10 @@ public class TestDataSyncer extends AndroidTestCase {
         dataPoint.put("value", 42);
         JSONArray data = new JSONArray();
         data.put(dataPoint);
-        proxy.putSensorData(sourceName, sensorName, data);
+        mProxy.putSensorData(mSourceName, sensorName, data);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // local should still have the value 12
         List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
@@ -376,7 +375,7 @@ public class TestDataSyncer extends AndroidTestCase {
         assertEquals("should have the right value", 12, actualLocal.get(0).getValueAsInteger());
 
         // remote should still have the value 42
-        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray actualRemote = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
         JSONArray expectedRemote = data;
         JSONAssert.assertEquals(expectedRemote, actualRemote, true);
     }
@@ -389,9 +388,9 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true); // should be ignored when persistLocally is false
+        options.setDownloadEnabled(true); // should be ignored when persistLocally is false
         options.setPersistLocally(false);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
 
         // create remote sensor with a different data point at a different time
@@ -400,10 +399,10 @@ public class TestDataSyncer extends AndroidTestCase {
         dataPoint.put("value", 42);
         JSONArray data = new JSONArray();
         data.put(dataPoint);
-        proxy.putSensorData(sourceName, sensorName, data);
+        mProxy.putSensorData(mSourceName, sensorName, data);
 
         // synchronize with remote
-        dataSyncer.sync();
+        mDataSyncer.sync();
 
         // local should have no data left
         List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
@@ -412,7 +411,7 @@ public class TestDataSyncer extends AndroidTestCase {
         // remote should now have both data points
         QueryOptions queryOptions = new QueryOptions();
         queryOptions.setSortOrder(QueryOptions.SORT_ORDER.ASC);
-        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, queryOptions);
+        JSONArray actualRemote = mProxy.getSensorData(mSourceName, sensorName, queryOptions);
         JSONArray expectedRemote = new JSONArray();
         JSONObject p1 = new JSONObject()
                 .put("time", time1)
@@ -429,7 +428,7 @@ public class TestDataSyncer extends AndroidTestCase {
         final long DAY = 1000 * 60 * 60 * 24; // in milliseconds
 
         // change the persistence period to 2 days
-        DataSyncer dataSyncer = new DataSyncer(getContext(), databaseHandler, proxy);
+        DataSyncer dataSyncer = new DataSyncer(getContext(), mDatabaseHandler, mProxy);
         dataSyncer.setPersistPeriod(2 * DAY);
 
         long time1 = new Date().getTime() - 4 * DAY;
@@ -441,8 +440,8 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(false);
-        Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
+        options.setDownloadEnabled(false);
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(value1, time1);
         noise.insertOrUpdateDataPoint(value2, time2);
 
@@ -458,7 +457,7 @@ public class TestDataSyncer extends AndroidTestCase {
         // remote should now have both data points
         QueryOptions queryOptions = new QueryOptions();
         queryOptions.setSortOrder(QueryOptions.SORT_ORDER.ASC);
-        JSONArray actualRemote = proxy.getSensorData(sourceName, sensorName, queryOptions);
+        JSONArray actualRemote = mProxy.getSensorData(mSourceName, sensorName, queryOptions);
         JSONArray expectedRemote = new JSONArray();
         JSONObject p1 = new JSONObject()
                 .put("time", time1)
@@ -474,7 +473,7 @@ public class TestDataSyncer extends AndroidTestCase {
     public void testProgressCallback() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         final JSONArray progress = new JSONArray();
 
-        dataSyncer.sync(new DataSyncer.ProgressCallback() {
+        mDataSyncer.sync(new DataSyncer.ProgressCallback() {
             @Override
             public void onDeletionCompleted() {
                 progress.put("onDeletionCompleted");
@@ -486,8 +485,13 @@ public class TestDataSyncer extends AndroidTestCase {
             }
 
             @Override
-            public void onDownloadCompleted() {
-                progress.put("onDownloadCompleted");
+            public void onDownloadSensorsCompleted() {
+                progress.put("onDownloadSensorsCompleted");
+            }
+
+            @Override
+            public void onDownloadSensorDataCompleted() {
+                progress.put("onDownloadSensorDataCompleted");
             }
 
             @Override
@@ -499,7 +503,8 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONArray expected = new JSONArray()
                 .put("onDeletionCompleted")
                 .put("onUploadCompeted")
-                .put("onDownloadCompleted")
+                .put("onDownloadSensorsCompleted")
+                .put("onDownloadSensorDataCompleted")
                 .put("onCleanupCompleted");
         JSONAssert.assertEquals(expected, progress, true);
     }
@@ -509,6 +514,7 @@ public class TestDataSyncer extends AndroidTestCase {
     // TODO: test scheduler: start/stop/execute
     // TODO: test whether sync cannot run twice at the same time (lock not yet implemented!)
     // TODO: test deleting data
+    // TODO: test setSyncRate
 
 
 }

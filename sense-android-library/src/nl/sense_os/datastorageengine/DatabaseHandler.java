@@ -48,7 +48,7 @@ public class DatabaseHandler {
         this.mContext = context;
         this.mUserId = userId;
     }
-    public String getmUserId() {
+    public String getUserId() {
         return mUserId;
     }
 

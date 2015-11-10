@@ -22,31 +22,31 @@ import nl.sense_os.datastorageengine.SensorDataProxy;
 public class TestSensorDataProxy extends AndroidTestCase {
     private static final String TAG = "TestSensorDataProxy";
 
-    Map<String, String> user;
-    SensorDataProxy.SERVER server = SensorDataProxy.SERVER.STAGING;
-    String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
-    String sessionId;
-    String sourceName = "sense-android";
-    SensorDataProxy proxy;
-    CSUtils csUtils;
+    Map<String, String> mUser;
+    SensorDataProxy.SERVER mServer = SensorDataProxy.SERVER.STAGING;
+    String mAppKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
+    String mSessionId;
+    String mSourceName = "sense-android";
+    SensorDataProxy mProxy;
+    CSUtils mCsUtils;
 
     public void setUp () throws IOException {
-        csUtils = new CSUtils(false); // staging server
+        mCsUtils = new CSUtils(false); // staging server
 
-        user = csUtils.createCSAccount();
-        sessionId = csUtils.loginUser(user.get("username"), user.get("password"));
+        mUser = mCsUtils.createCSAccount();
+        mSessionId = mCsUtils.loginUser(mUser.get("username"), mUser.get("password"));
 
-        proxy = new SensorDataProxy(server, appKey, sessionId);
+        mProxy = new SensorDataProxy(mServer, mAppKey, mSessionId);
     }
 
     public void tearDown() throws IOException {
-        csUtils.deleteAccount(user.get("username"), user.get("password"),user.get("id"));
+        mCsUtils.deleteAccount(mUser.get("username"), mUser.get("password"), mUser.get("id"));
     }
 
     public void testInvalidAppKey () {
         // create a proxy with invalid appKey
         String invalidAppKey = "uh oh";
-        SensorDataProxy proxy2 = new SensorDataProxy(server, invalidAppKey, sessionId);
+        SensorDataProxy proxy2 = new SensorDataProxy(mServer, invalidAppKey, mSessionId);
 
         try {
             // should fail because of invalid app key
@@ -65,7 +65,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     public void testInvalidSessionId () {
         // create a proxy with invalid appKey
         String invalidSessionId = "no go";
-        SensorDataProxy proxy2 = new SensorDataProxy(server, appKey, invalidSessionId);
+        SensorDataProxy proxy2 = new SensorDataProxy(mServer, mAppKey, invalidSessionId);
 
         try {
             // should fail because of invalid session id
@@ -82,7 +82,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testGetSensorProfiles () throws JSONException, IOException {
-        JSONArray profiles = proxy.getSensorProfiles();
+        JSONArray profiles = mProxy.getSensorProfiles();
         assertTrue("Should not return an empty sensor list", profiles.length() > 0);
         assertEquals("The number of sensors in total is wrong", 16, profiles.length());
         for(int i = 0; i< profiles.length();i++){
@@ -96,19 +96,19 @@ public class TestSensorDataProxy extends AndroidTestCase {
 
     public void testGetSensors () throws IOException, JSONException {
         // initially we should have no sensors
-        JSONArray sensors = proxy.getSensors();
+        JSONArray sensors = mProxy.getSensors();
         assertEquals("Should return an empty sensor list", 0, sensors.length());
 
         // create a sensor by putting a meta field
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-        proxy.updateSensor(sourceName, sensorName, meta);
+        mProxy.updateSensor(mSourceName, sensorName, meta);
 
         // test if we get the created sensor back
-        JSONArray sensors1 = proxy.getSensors();
+        JSONArray sensors1 = mProxy.getSensors();
         JSONArray expected = new JSONArray();
         JSONObject sensor = new JSONObject();
-        sensor.put("source_name", sourceName);
+        sensor.put("source_name", mSourceName);
         sensor.put("sensor_name", sensorName);
         sensor.put("meta", meta);
         expected.put(sensor);
@@ -119,23 +119,23 @@ public class TestSensorDataProxy extends AndroidTestCase {
         // create a sensor by putting a meta field
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-        JSONObject updated = proxy.updateSensor(sourceName, sensorName, meta);
+        JSONObject updated = mProxy.updateSensor(mSourceName, sensorName, meta);
 
         JSONObject expected = new JSONObject();
-        expected.put("source_name", sourceName);
+        expected.put("source_name", mSourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
         JSONAssert.assertEquals(expected, updated, true);
 
         // test if we get the created sensor back
-        JSONObject sensor = proxy.getSensor(sourceName, sensorName);
+        JSONObject sensor = mProxy.getSensor(mSourceName, sensorName);
         JSONAssert.assertEquals(expected, sensor, true);
     }
 
     public void testGetNonExistingSensor () {
         try {
             String nonExistingSensorName = "accelerometer";
-            proxy.getSensor(sourceName, nonExistingSensorName);
+            mProxy.getSensor(mSourceName, nonExistingSensorName);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -152,7 +152,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         try {
             String nonExistingSourceName = "foo";
             String sensorName = "accelerometer";
-            proxy.getSensor(nonExistingSourceName, sensorName);
+            mProxy.getSensor(nonExistingSourceName, sensorName);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -167,20 +167,20 @@ public class TestSensorDataProxy extends AndroidTestCase {
         // update first time (will create the sensor)
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-        JSONObject updated = proxy.updateSensor(sourceName, sensorName, meta);
+        JSONObject updated = mProxy.updateSensor(mSourceName, sensorName, meta);
 
         JSONObject expected = new JSONObject();
-        expected.put("source_name", sourceName);
+        expected.put("source_name", mSourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
         JSONAssert.assertEquals(expected, updated, true);
 
         // update again
         JSONObject meta2 = new JSONObject("{\"the whether\":\"is nice\"}");
-        JSONObject updated2 = proxy.updateSensor(sourceName, sensorName, meta2);
+        JSONObject updated2 = mProxy.updateSensor(mSourceName, sensorName, meta2);
 
         JSONObject expected2 = new JSONObject();
-        expected2.put("source_name", sourceName);
+        expected2.put("source_name", mSourceName);
         expected2.put("sensor_name", sensorName);
         expected2.put("meta", meta2);
         JSONAssert.assertEquals(expected2, updated2, true);
@@ -190,7 +190,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         try {
             String nonExistingSensorName = "star_counter";
             JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-            proxy.updateSensor(sourceName, nonExistingSensorName, meta);
+            mProxy.updateSensor(mSourceName, nonExistingSensorName, meta);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -206,7 +206,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
             String nonExistingSourceName = "foo";
             String sensorName = "accelerometer";
             JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-            proxy.updateSensor(nonExistingSourceName, sensorName, meta);
+            mProxy.updateSensor(nonExistingSourceName, sensorName, meta);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -221,23 +221,23 @@ public class TestSensorDataProxy extends AndroidTestCase {
         // update first time (will create the sensor)
         String sensorName = "accelerometer";
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
-        proxy.updateSensor(sourceName, sensorName, meta);
+        mProxy.updateSensor(mSourceName, sensorName, meta);
 
         // sensor list must contain 1 sensor
-        JSONArray sensors = proxy.getSensors();
+        JSONArray sensors = mProxy.getSensors();
         JSONArray expected = new JSONArray();
         JSONObject sensor = new JSONObject();
-        sensor.put("source_name", sourceName);
+        sensor.put("source_name", mSourceName);
         sensor.put("sensor_name", sensorName);
         sensor.put("meta", meta);
         expected.put(sensor);
         JSONAssert.assertEquals(expected, sensors, true);
 
         // delete the sensor
-        proxy.deleteSensor(sourceName, sensorName);
+        mProxy.deleteSensor(mSourceName, sensorName);
 
         // sensor list must be empty again
-        JSONArray sensors2 = proxy.getSensors();
+        JSONArray sensors2 = mProxy.getSensors();
         JSONArray expected2 = new JSONArray();
         JSONAssert.assertEquals(expected2, sensors2, true);
     }
@@ -245,7 +245,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     public void testDeleteNonExistingSensor () {
         try {
             String nonExistingSensorName = "accelerometer";
-            proxy.deleteSensor(sourceName, nonExistingSensorName);
+            mProxy.deleteSensor(mSourceName, nonExistingSensorName);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -260,7 +260,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         try {
             String nonExistingSourceName = "foo";
             String sensorName = "accelerometer";
-            proxy.deleteSensor(nonExistingSourceName, sensorName);
+            mProxy.deleteSensor(nonExistingSourceName, sensorName);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -279,10 +279,10 @@ public class TestSensorDataProxy extends AndroidTestCase {
         data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
 
         // put sensor data
-        proxy.putSensorData(sourceName, sensorName, data);
+        mProxy.putSensorData(mSourceName, sensorName, data);
 
         // get sensor data
-        JSONArray retrievedData = proxy.getSensorData(sourceName, sensorName, new QueryOptions());
+        JSONArray retrievedData = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
         JSONArray expected = new JSONArray();
         // TODO: order is DESC by default, should this be ASC?
         expected.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
@@ -294,7 +294,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         QueryOptions options = new QueryOptions();
         options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
         options.setLimit(2);
-        JSONArray limitedData = proxy.getSensorData(sourceName, sensorName, options);
+        JSONArray limitedData = mProxy.getSensorData(mSourceName, sensorName, options);
         JSONArray expected2 = new JSONArray();
         expected2.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
         expected2.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
@@ -310,12 +310,12 @@ public class TestSensorDataProxy extends AndroidTestCase {
         JSONObject meta = new JSONObject("{\"foo\":\"bar\"}");
 
         // put sensor data
-        proxy.putSensorData(sourceName, sensorName, data, meta);
+        mProxy.putSensorData(mSourceName, sensorName, data, meta);
 
         // get sensor
-        JSONObject sensor = proxy.getSensor(sourceName, sensorName);
+        JSONObject sensor = mProxy.getSensor(mSourceName, sensorName);
         JSONObject expected = new JSONObject();
-        expected.put("source_name", sourceName);
+        expected.put("source_name", mSourceName);
         expected.put("sensor_name", sensorName);
         expected.put("meta", meta);
         JSONAssert.assertEquals(expected, sensor, true);
@@ -323,7 +323,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
         // get sensor data
         QueryOptions options = new QueryOptions();
         options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
-        JSONArray retrievedData = proxy.getSensorData(sourceName, sensorName, options);
+        JSONArray retrievedData = mProxy.getSensorData(mSourceName, sensorName, options);
         JSONAssert.assertEquals(data, retrievedData, true);
     }
 
@@ -333,26 +333,26 @@ public class TestSensorDataProxy extends AndroidTestCase {
         data1.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
         data1.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
         data1.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
-        JSONObject sensor1 = proxy.createSensorDataObject(sourceName, sensorName1, data1);
+        JSONObject sensor1 = mProxy.createSensorDataObject(mSourceName, sensorName1, data1);
 
         String sensorName2 = "light";
         JSONArray data2 = new JSONArray();
         data2.put(new JSONObject("{\"time\":1444814218000,\"value\":6}"));
         data2.put(new JSONObject("{\"time\":1444814219000,\"value\":7}"));
         data2.put(new JSONObject("{\"time\":1444814220000,\"value\":8}"));
-        JSONObject sensor2 = proxy.createSensorDataObject(sourceName, sensorName2, data2);
+        JSONObject sensor2 = mProxy.createSensorDataObject(mSourceName, sensorName2, data2);
 
         JSONArray sensors = new JSONArray();
         sensors.put(sensor1);
         sensors.put(sensor2);
 
         // put sensor data of multiple sensors. isn't it aaaawesome
-        proxy.putSensorData(sensors);
+        mProxy.putSensorData(sensors);
 
         // get sensor1
-        JSONObject sensor1retrieved = proxy.getSensor(sourceName, sensorName1);
+        JSONObject sensor1retrieved = mProxy.getSensor(mSourceName, sensorName1);
         JSONObject expected1 = new JSONObject();
-        expected1.put("source_name", sourceName);
+        expected1.put("source_name", mSourceName);
         expected1.put("sensor_name", sensorName1);
         expected1.put("meta", new JSONObject());
         JSONAssert.assertEquals(expected1, sensor1retrieved, true);
@@ -360,19 +360,19 @@ public class TestSensorDataProxy extends AndroidTestCase {
         // get sensor1 data
         QueryOptions options = new QueryOptions();
         options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
-        JSONArray retrievedData1 = proxy.getSensorData(sourceName, sensorName1, options);
+        JSONArray retrievedData1 = mProxy.getSensorData(mSourceName, sensorName1, options);
         JSONAssert.assertEquals(data1, retrievedData1, true);
 
         // get sensor2
-        JSONObject sensor2retrieved = proxy.getSensor(sourceName, sensorName2);
+        JSONObject sensor2retrieved = mProxy.getSensor(mSourceName, sensorName2);
         JSONObject expected2 = new JSONObject();
-        expected2.put("source_name", sourceName);
+        expected2.put("source_name", mSourceName);
         expected2.put("sensor_name", sensorName2);
         expected2.put("meta", new JSONObject());
         JSONAssert.assertEquals(expected2, sensor2retrieved, true);
 
         // get sensor2 data
-        JSONArray retrievedData2 = proxy.getSensorData(sourceName, sensorName2, options);
+        JSONArray retrievedData2 = mProxy.getSensorData(mSourceName, sensorName2, options);
         JSONAssert.assertEquals(data2, retrievedData2, true);
     }
 
@@ -387,7 +387,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
             data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
 
             // put sensor data, should fail
-            proxy.putSensorData(nonExistingSourceName, sensorName, data);
+            mProxy.putSensorData(nonExistingSourceName, sensorName, data);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -403,7 +403,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
             String nonExistingSensorName = "real_time_world_population";
 
             // get sensor data, should fail
-            proxy.getSensorData(sourceName, nonExistingSensorName, new QueryOptions());
+            mProxy.getSensorData(mSourceName, nonExistingSensorName, new QueryOptions());
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -420,7 +420,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
             String sensorName = "accelerometer";
 
             // get sensor data, should fail
-            proxy.getSensorData(invalidSourceName, sensorName, new QueryOptions());
+            mProxy.getSensorData(invalidSourceName, sensorName, new QueryOptions());
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -432,7 +432,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testCreateSensorDataObject() throws IOException, RuntimeException, JSONException {
-        String sourceName = "the_source";
+        String mSourceName = "the_source";
         String sensorName = "the_sensor";
 
         JSONArray data = new JSONArray();
@@ -441,10 +441,10 @@ public class TestSensorDataProxy extends AndroidTestCase {
         data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
 
 
-        JSONObject actual = proxy.createSensorDataObject(sourceName, sensorName, data);
+        JSONObject actual = mProxy.createSensorDataObject(mSourceName, sensorName, data);
 
         JSONObject expected = new JSONObject();
-        expected.put("source_name", sourceName);
+        expected.put("source_name", mSourceName);
         expected.put("sensor_name", sensorName);
         expected.put("data", data);
 
@@ -452,7 +452,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     }
 
     public void testCreateSensorDataObjectWithMeta() throws IOException, RuntimeException, JSONException {
-        String sourceName = "the_source";
+        String mSourceName = "the_source";
         String sensorName = "the_sensor";
 
         JSONArray data = new JSONArray();
@@ -463,10 +463,10 @@ public class TestSensorDataProxy extends AndroidTestCase {
         JSONObject meta = new JSONObject();
         meta.put("foo", "bar");
 
-        JSONObject actual = proxy.createSensorDataObject(sourceName, sensorName, data, meta);
+        JSONObject actual = mProxy.createSensorDataObject(mSourceName, sensorName, data, meta);
 
         JSONObject expected = new JSONObject();
-        expected.put("source_name", sourceName);
+        expected.put("source_name", mSourceName);
         expected.put("sensor_name", sensorName);
         expected.put("data", data);
         expected.put("meta", meta);
@@ -484,18 +484,18 @@ public class TestSensorDataProxy extends AndroidTestCase {
         data.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
         data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
         data.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
-        proxy.putSensorData(sourceName, sensorName, data);
+        mProxy.putSensorData(mSourceName, sensorName, data);
 
         // delete sensor data
         long startTime = 1444739042200l;  // time of point with value 2
         long endTime   = 1444739042400l;  // time of point with value 4
-        proxy.deleteSensorData(sourceName, sensorName, startTime, endTime);
+        mProxy.deleteSensorData(mSourceName, sensorName, startTime, endTime);
 
         // see whether point 2 and 3 are deleted
         // (not point 4, endTime itself should be excluded)
         QueryOptions options = new QueryOptions();
         options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
-        JSONArray actual = proxy.getSensorData(sourceName, sensorName, options);
+        JSONArray actual = mProxy.getSensorData(mSourceName, sensorName, options);
         JSONArray expected = new JSONArray();
         expected.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
         expected.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
@@ -509,7 +509,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
             String sensorName = "accelerometer";
 
             // delete sensor data, should fail
-            proxy.deleteSensorData(invalidSourceName, sensorName, 0l, 1l);
+            mProxy.deleteSensorData(invalidSourceName, sensorName, 0l, 1l);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {
@@ -525,7 +525,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
             String nonExistingSensorName = "foo";
 
             // delete sensor data, should fail
-            proxy.deleteSensorData(sourceName, nonExistingSensorName, 0l, 1l);
+            mProxy.deleteSensorData(mSourceName, nonExistingSensorName, 0l, 1l);
 
             fail("Missing exception");
         } catch (HttpResponseException e) {

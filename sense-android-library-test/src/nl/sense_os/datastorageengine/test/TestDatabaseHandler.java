@@ -28,25 +28,24 @@ import nl.sense_os.util.json.ValidationException;
 
 public class TestDatabaseHandler extends AndroidTestCase {
 
-    protected Realm realm;
-    private RealmConfiguration testConfig;
-    private DatabaseHandler databaseHandler;
-    private String userId = "userId";
-    String newUserId = "newUserId";
-    private Sensor sensor;
-    private Date dateType;
-    private SensorOptions sensorOptions;
-    private DatabaseHandler newDatabaseHandler;
+    protected Realm mRealm;
+    private RealmConfiguration mTestConfig;
+    private DatabaseHandler mDatabaseHandler;
+    private String mUserId = "mUserId";
+    String mNewUserId = "mNewUserId";
+    private Sensor mSensor;
+    private SensorOptions mSensorOptions;
+    private DatabaseHandler mNewDatabaseHandler; // TODO: remove this mNewDatabaseHandler
 
     @Override
     protected void setUp () throws Exception {
 
-        testConfig = new RealmConfiguration.Builder(getContext()).build();
-        Realm.deleteRealm(testConfig);
-        realm = Realm.getInstance(testConfig);
+        mTestConfig = new RealmConfiguration.Builder(getContext()).build();
+        Realm.deleteRealm(mTestConfig);
+        mRealm = Realm.getInstance(mTestConfig);
 
-        databaseHandler = new DatabaseHandler(getContext(), userId);
-        newDatabaseHandler = new DatabaseHandler(getContext(), newUserId);
+        mDatabaseHandler = new DatabaseHandler(getContext(), mUserId);
+        mNewDatabaseHandler = new DatabaseHandler(getContext(), mNewUserId);
 
         // Create a few sensor profiles by hand, so we don't have to fetch them from the server via SensorDataProxy
         SensorProfiles profiles = new SensorProfiles(getContext());
@@ -63,7 +62,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     @Override
     protected void tearDown () throws Exception {
-        realm.close();
+        mRealm.close();
     }
 
     /****Unit tests of  Sensor Class****/
@@ -77,17 +76,17 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        Sensor newSensor = newDatabaseHandler.createSensor(sourceName, sensorName, sensorOptions);
+        Sensor newSensor = mNewDatabaseHandler.createSensor(sourceName, sensorName, mSensorOptions);
 
     }
 
     public void testInsertDataPointFailedWithInvalidValue() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException, ValidationException {
         try {
-            Sensor noise = databaseHandler.createSensor("sense-android","noise", new SensorOptions());
+            Sensor noise = mDatabaseHandler.createSensor("sense-android","noise", new SensorOptions());
 
             noise.insertOrUpdateDataPoint("hello world", new Date().getTime());
             fail("Should throw an exception");
@@ -97,7 +96,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         }
 
         try {
-            Sensor accelerometer = databaseHandler.createSensor("sense-android","accelerometer", new SensorOptions());
+            Sensor accelerometer = mDatabaseHandler.createSensor("sense-android","accelerometer", new SensorOptions());
 
             JSONObject value = new JSONObject("{\"x-axis\":2,\"y-axis\":3.4}");
             accelerometer.insertOrUpdateDataPoint(value, new Date().getTime());
@@ -118,22 +117,21 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
+        long date = new Date().getTime();
         JSONObject value = new JSONObject();
         value.put("x-axis", 9.1);
-        value.put("y-axis",8.9);
+        value.put("y-axis", 8.9);
         value.put("z-axis", 7.2);
-        long date = dateType.getTime();
         int numberOfDataPoints = 0;
 
-        sensor.insertOrUpdateDataPoint(value,date);
+        mSensor.insertOrUpdateDataPoint(value, date);
         numberOfDataPoints++;
 
-        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= mRealm.where(RealmDataPoint.class)
                 .equalTo("date", date)
                 .findAll();
         int listSize = resultList.size();
@@ -153,22 +151,21 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long date = dateType.getTime();
+        long date = new Date().getTime();
         int numberOfDataPoints = 0;
 
-        sensor.insertOrUpdateDataPoint(value,date);
+        mSensor.insertOrUpdateDataPoint(value, date);
         numberOfDataPoints++;
 
         value = 1;
-        sensor.insertOrUpdateDataPoint(value,date);
+        mSensor.insertOrUpdateDataPoint(value, date);
 
-        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= mRealm.where(RealmDataPoint.class)
                                                       .equalTo("date", date)
                                                       .findAll();
 
@@ -189,26 +186,25 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long date = dateType.getTime();
+        long date = new Date().getTime();
         int numberOfDataPoints = 0;
 
-        sensor.insertOrUpdateDataPoint(value,date);
+        mSensor.insertOrUpdateDataPoint(value, date);
         numberOfDataPoints++;
         String newSourceName = "sony";
         String newSensorName = "light";
-        sensor = databaseHandler.createSensor(newSourceName,newSensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(newSourceName,newSensorName,mSensorOptions);
 
         int value1 = 1;
-        sensor.insertOrUpdateDataPoint(value1,date);
+        mSensor.insertOrUpdateDataPoint(value1, date);
         numberOfDataPoints++;
 
-        RealmResults<RealmDataPoint> resultList= realm.where(RealmDataPoint.class)
+        RealmResults<RealmDataPoint> resultList= mRealm.where(RealmDataPoint.class)
                 .equalTo("date", date)
                 .findAll();
 
@@ -231,30 +227,29 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long date1 = dateType.getTime();
+        long date1 = new Date().getTime();
         int numberOfDataPoints = 0;
 
-        sensor.insertOrUpdateDataPoint(value,date1);
+        mSensor.insertOrUpdateDataPoint(value, date1);
         numberOfDataPoints++;
 
         long date2 = date1 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date2);
+        mSensor.insertOrUpdateDataPoint(value, date2);
         numberOfDataPoints++;
 
         long date3 = date2 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date3);
+        mSensor.insertOrUpdateDataPoint(value, date3);
         numberOfDataPoints++;
 
         int limit = numberOfDataPoints - 1;
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(date1, date3+1, null, limit, QueryOptions.SORT_ORDER.ASC));
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(date1, date3+1, null, limit, QueryOptions.SORT_ORDER.ASC));
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
@@ -271,30 +266,29 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long date1 = dateType.getTime();
+        long date1 = new Date().getTime();
         int numberOfDataPoints = 0;
 
-        sensor.insertOrUpdateDataPoint(value,date1);
+        mSensor.insertOrUpdateDataPoint(value, date1);
         numberOfDataPoints++;
 
         long date2 = date1 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date2);
+        mSensor.insertOrUpdateDataPoint(value, date2);
         numberOfDataPoints++;
 
         long date3 = date2 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date3);
+        mSensor.insertOrUpdateDataPoint(value, date3);
         numberOfDataPoints++;
 
         int limit = numberOfDataPoints + 1;
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(date1, date3+1, null, limit, QueryOptions.SORT_ORDER.ASC));
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(date1, date3+1, null, limit, QueryOptions.SORT_ORDER.ASC));
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints, listSize);
@@ -311,24 +305,23 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
         int limit = 5;
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, date[9]+1, null, limit, QueryOptions.SORT_ORDER.ASC));
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(null, date[9]+1, null, limit, QueryOptions.SORT_ORDER.ASC));
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
@@ -346,24 +339,23 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
         int limit = 5;
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(date[0], null, null, limit, QueryOptions.SORT_ORDER.DESC));
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(date[0], null, null, limit, QueryOptions.SORT_ORDER.DESC));
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
@@ -381,23 +373,22 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(date[0], date[9]+1, null, null, QueryOptions.SORT_ORDER.ASC));
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(date[0], date[9]+1, null, null, QueryOptions.SORT_ORDER.ASC));
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints, listSize);
@@ -415,23 +406,22 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, null, QueryOptions.SORT_ORDER.ASC));
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, null, QueryOptions.SORT_ORDER.ASC));
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints, listSize);
@@ -450,27 +440,26 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long date1 = dateType.getTime();
+        long date1 = new Date().getTime();
 
-        sensor.insertOrUpdateDataPoint(value,date1);
+        mSensor.insertOrUpdateDataPoint(value, date1);
 
         long date2 = date1 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date2);
+        mSensor.insertOrUpdateDataPoint(value, date2);
 
         long date3 = date2 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date3);
+        mSensor.insertOrUpdateDataPoint(value, date3);
 
         int limit = -1;
         try {
-            sensor.getDataPoints(new QueryOptions(date1, date3 + 1, null, limit, QueryOptions.SORT_ORDER.ASC));
+            mSensor.getDataPoints(new QueryOptions(date1, date3 + 1, null, limit, QueryOptions.SORT_ORDER.ASC));
         }catch(DatabaseHandlerException e){
             assertEquals("Wrong DatabaseHandlerException messge", "Invalid input of limit value", e.getMessage());
         }
@@ -486,30 +475,29 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long date1 = dateType.getTime();
+        long date1 = new Date().getTime();
         int numberOfDataPoints = 0;
 
-        sensor.insertOrUpdateDataPoint(value,date1);
+        mSensor.insertOrUpdateDataPoint(value, date1);
         numberOfDataPoints++;
 
         long date2 = date1 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date2);
+        mSensor.insertOrUpdateDataPoint(value, date2);
         numberOfDataPoints++;
 
         long date3 = date2 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date3);
+        mSensor.insertOrUpdateDataPoint(value, date3);
         numberOfDataPoints++;
 
         int limit = numberOfDataPoints - 1;
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(date1, date3+1, null, limit, QueryOptions.SORT_ORDER.DESC));
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(date1, date3+1, null, limit, QueryOptions.SORT_ORDER.DESC));
 
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", limit, listSize);
@@ -527,31 +515,30 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long date1 = dateType.getTime();
+        long date1 = new Date().getTime();
         int numberOfDataPoints = 0;
 
-        sensor.insertOrUpdateDataPoint(value,date1);
+        mSensor.insertOrUpdateDataPoint(value, date1);
         numberOfDataPoints++;
 
         long date2 = date1 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date2);
+        mSensor.insertOrUpdateDataPoint(value, date2);
         numberOfDataPoints++;
 
         long date3 = date2 + 1000;
 
-        sensor.insertOrUpdateDataPoint(value,date3);
+        mSensor.insertOrUpdateDataPoint(value, date3);
         numberOfDataPoints++;
 
         int limit = numberOfDataPoints - 1;
         try {
-            List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(date3, date1, null, limit, QueryOptions.SORT_ORDER.ASC));
+            List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(date3, date1, null, limit, QueryOptions.SORT_ORDER.ASC));
             int listSize = dataPointList.size();
             assertEquals("Incorrect number of data points", 0, listSize);
         }catch(DatabaseHandlerException e){
@@ -569,33 +556,32 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
-        realm.beginTransaction();
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
+        mRealm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
+            mRealm.copyToRealmOrUpdate(RealmDataPoint.fromDataPoint(dp));
         }
-        realm.commitTransaction();
+        mRealm.commitTransaction();
 
         int numberToDelete = 5;
-        sensor.deleteDataPoints(date[0], date[numberToDelete]);
-        dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
+        mSensor.deleteDataPoints(date[0], date[numberToDelete]);
+        dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
     }
@@ -610,33 +596,32 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
-        realm.beginTransaction();
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
+        mRealm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
+            mRealm.copyToRealmOrUpdate(RealmDataPoint.fromDataPoint(dp));
         }
-        realm.commitTransaction();
+        mRealm.commitTransaction();
 
         int numberToDelete = 5;
-        sensor.deleteDataPoints(null, date[numberToDelete]);
-        dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
+        mSensor.deleteDataPoints(null, date[numberToDelete]);
+        dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
         assertEquals("Wrong Date of the DataPoint", date[numberToDelete], dataPointList.get(0).getTime());
@@ -652,33 +637,32 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
-        realm.beginTransaction();
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
+        mRealm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
+            mRealm.copyToRealmOrUpdate(RealmDataPoint.fromDataPoint(dp));
         }
-        realm.commitTransaction();
+        mRealm.commitTransaction();
 
         int numberToDelete = 5;
-        sensor.deleteDataPoints(date[numberToDelete], null);
-        dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.DESC));
+        mSensor.deleteDataPoints(date[numberToDelete], null);
+        dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.DESC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", numberOfDataPoints - numberToDelete, listSize);
         assertEquals("Wrong Date of the DataPoint", date[numberToDelete-1], dataPointList.get(0).getTime());
@@ -694,32 +678,31 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        dateType = new Date();
         int value = 0;
-        long time = dateType.getTime();
+        long time = new Date().getTime();
         int numberOfDataPoints = 10;
 
         long date[] = new long[numberOfDataPoints];
 
         for(int i=0; i<numberOfDataPoints; i++){
             date[i] = time + 1000 + i;
-            sensor.insertOrUpdateDataPoint(value,date[i]);
+            mSensor.insertOrUpdateDataPoint(value,date[i]);
         }
 
-        List<DataPoint> dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
-        realm.beginTransaction();
+        List<DataPoint> dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.ASC));
+        mRealm.beginTransaction();
         for(DataPoint dp: dataPointList){
             dp.setExistsInRemote(true);
-            realm.copyToRealmOrUpdate( RealmDataPoint.fromDataPoint(dp));
+            mRealm.copyToRealmOrUpdate(RealmDataPoint.fromDataPoint(dp));
         }
-        realm.commitTransaction();
+        mRealm.commitTransaction();
 
-        sensor.deleteDataPoints(null, null);
-        dataPointList = sensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.DESC));
+        mSensor.deleteDataPoints(null, null);
+        dataPointList = mSensor.getDataPoints(new QueryOptions(null, null, null, numberOfDataPoints, QueryOptions.SORT_ORDER.DESC));
         int listSize = dataPointList.size();
         assertEquals("Incorrect number of data points", 0, listSize);
     }
@@ -735,14 +718,14 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
         int sensorNumber = 0;
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
         sensorNumber++;
 
-        RealmResults<RealmSensor> resultList= realm.where(RealmSensor.class)
-                .equalTo("userId", userId)
+        RealmResults<RealmSensor> resultList= mRealm.where(RealmSensor.class)
+                .equalTo("userId", mUserId)
                 .findAll();
 
         int listSize = resultList.size();
@@ -751,11 +734,11 @@ public class TestDatabaseHandler extends AndroidTestCase {
         Sensor resultSensor = RealmSensor.toSensor(getContext(), resultList.first());
         assertEquals("Incorrect name of the Realm Sensor object", sensorName, resultSensor.getName());
         assertEquals("Incorrect source of the Realm Sensor object", sourceName, resultSensor.getSource());
-        assertEquals("Incorrect sensorOptions meta of the Realm Sensor object", sensorOptions.getMeta().toString(), resultSensor.getOptions().getMeta().toString());
-        assertEquals("Incorrect sensorOptions isUploadEnabled of the Realm Sensor object", sensorOptions.isUploadEnabled(), resultSensor.getOptions().isUploadEnabled());
-        assertEquals("Incorrect sensorOptions isDownloadEnabled of the Realm Sensor object", sensorOptions.isDownloadEnabled(), resultSensor.getOptions().isDownloadEnabled());
-        assertEquals("Incorrect sensorOptions isPersistLocally of the Realm Sensor object", sensorOptions.isPersistLocally(), resultSensor.getOptions().isPersistLocally());
-        assertEquals("Incorrect userId of the Realm Sensor object", userId, resultSensor.getUserId());
+        assertEquals("Incorrect sensorOptions meta of the Realm Sensor object", mSensorOptions.getMeta().toString(), resultSensor.getOptions().getMeta().toString());
+        assertEquals("Incorrect sensorOptions isUploadEnabled of the Realm Sensor object", mSensorOptions.isUploadEnabled(), resultSensor.getOptions().isUploadEnabled());
+        assertEquals("Incorrect sensorOptions isDownloadEnabled of the Realm Sensor object", mSensorOptions.isDownloadEnabled(), resultSensor.getOptions().isDownloadEnabled());
+        assertEquals("Incorrect sensorOptions isPersistLocally of the Realm Sensor object", mSensorOptions.isPersistLocally(), resultSensor.getOptions().isPersistLocally());
+        assertEquals("Incorrect userId of the Realm Sensor object", mUserId, resultSensor.getUserId());
     }
 
     public void testCreateSensorFailedWithDuplicateCreation() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
@@ -767,13 +750,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(meta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(meta,csUploadEnabled,csDownloadEnabled,persistLocally);
         int sensorNumber = 0;
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName, sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName, mSensorOptions);
         sensorNumber++;
         try {
-            sensor = databaseHandler.createSensor(sourceName,sensorName, sensorOptions);
+            mSensor = mDatabaseHandler.createSensor(sourceName,sensorName, mSensorOptions);
             sensorNumber++;
         }catch(DatabaseHandlerException e){
             assertEquals("Wrong DatabaseHandlerException", "Cannot create sensor. A sensor with name \"" + sensorName + "\" and source \"" + sourceName + "\" already exists.", e.getMessage());
@@ -790,17 +773,17 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
         int sensorNumber = 0;
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
         sensorNumber++;
 
         sensorMeta.put("sensor_description", "sensor_description1");
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
-        sensor.setOptions(sensorOptions);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensor.setOptions(mSensorOptions);
 
-        RealmResults<RealmSensor> resultList= realm.where(RealmSensor.class)
+        RealmResults<RealmSensor> resultList= mRealm.where(RealmSensor.class)
                 .equalTo("name", sensorName)
                 .findAll();
 
@@ -819,17 +802,17 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
         int sensorNumber = 0;
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
         sensorNumber++;
 
         boolean downloaded = true;
-        sensor.setRemoteDataPointsDownloaded(downloaded);
-        assertEquals("Incorrect synced status of the Realm Sensor object", downloaded, sensor.isRemoteDataPointsDownloaded());
+        mSensor.setRemoteDataPointsDownloaded(downloaded);
+        assertEquals("Incorrect synced status of the Realm Sensor object", downloaded, mSensor.isRemoteDataPointsDownloaded());
 
-        RealmResults<RealmSensor> resultList= realm.where(RealmSensor.class)
+        RealmResults<RealmSensor> resultList= mRealm.where(RealmSensor.class)
                 .equalTo("name", sensorName)
                 .findAll();
 
@@ -849,20 +832,20 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
-        Sensor resultSensor = databaseHandler.getSensor(sourceName,sensorName);
+        Sensor resultSensor = mDatabaseHandler.getSensor(sourceName,sensorName);
 
-        assertEquals("This is not the expected sensorId", sensor.getId(), resultSensor.getId());
-        assertEquals("This is not the expected sensor name", sensor.getName(), resultSensor.getName());
-        assertEquals("This is not the expected sensor meta", sensorOptions.getMeta().toString(),resultSensor.getOptions().getMeta().toString());
-        assertEquals("This is not the expected sensor status of csUploadEnabled", sensorOptions.isUploadEnabled(), resultSensor.getOptions().isUploadEnabled());
-        assertEquals("This is not the expected sensor status of csDownloadEnabled", sensorOptions.isDownloadEnabled(), resultSensor.getOptions().isDownloadEnabled());
-        assertEquals("This is not the expected sensor status of persistLocally", sensorOptions.isPersistLocally(), resultSensor.getOptions().isPersistLocally());
-        assertEquals("This is not the expected sensor UserId", sensor.getUserId(), resultSensor.getUserId());
-        assertEquals("This is not the expected sensor status of synced", sensor.isRemoteDataPointsDownloaded(), resultSensor.isRemoteDataPointsDownloaded());
+        assertEquals("This is not the expected sensorId", mSensor.getId(), resultSensor.getId());
+        assertEquals("This is not the expected mSensor name", mSensor.getName(), resultSensor.getName());
+        assertEquals("This is not the expected mSensor meta", mSensorOptions.getMeta().toString(),resultSensor.getOptions().getMeta().toString());
+        assertEquals("This is not the expected mSensor status of csUploadEnabled", mSensorOptions.isUploadEnabled(), resultSensor.getOptions().isUploadEnabled());
+        assertEquals("This is not the expected mSensor status of csDownloadEnabled", mSensorOptions.isDownloadEnabled(), resultSensor.getOptions().isDownloadEnabled());
+        assertEquals("This is not the expected mSensor status of persistLocally", mSensorOptions.isPersistLocally(), resultSensor.getOptions().isPersistLocally());
+        assertEquals("This is not the expected mSensor UserId", mSensor.getUserId(), resultSensor.getUserId());
+        assertEquals("This is not the expected mSensor status of synced", mSensor.isRemoteDataPointsDownloaded(), resultSensor.isRemoteDataPointsDownloaded());
     }
 
     public void testGetSensorFailedWithInvalidSensor() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
@@ -874,13 +857,13 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
 
         String fakeName = "light_sensor";
         try {
-            databaseHandler.getSensor(sourceName,fakeName);
+            mDatabaseHandler.getSensor(sourceName, fakeName);
         }catch(DatabaseHandlerException e){
             assertEquals("Wrong DatabaseHandlerException Message","Sensor not found. Sensor with name " + fakeName + " does not exist." , e.getMessage());
         }
@@ -896,30 +879,30 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
         int sensorNumber = 0;
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
         sensorNumber++;
 
         String sensorName1 = "light";
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName1,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName1,mSensorOptions);
         sensorNumber++;
 
-        List<Sensor> resultSensor = databaseHandler.getSensors(sourceName);
+        List<Sensor> resultSensor = mDatabaseHandler.getSensors(sourceName);
 
         int listSize = resultSensor.size();
-        assertEquals("Incorrect number of the sensor object", sensorNumber, listSize);
-        assertEquals("Incorrect name of the Realm sensor object", sensorName, resultSensor.get(0).getName());
-        assertEquals("Incorrect name of the Realm sensor object", sensorName1, resultSensor.get(1).getName());
+        assertEquals("Incorrect number of the mSensor object", sensorNumber, listSize);
+        assertEquals("Incorrect name of the Realm mSensor object", sensorName, resultSensor.get(0).getName());
+        assertEquals("Incorrect name of the Realm mSensor object", sensorName1, resultSensor.get(1).getName());
     }
 
     public void testGetSensorsWithZeroResult() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
-        List<Sensor> resultSensor = databaseHandler.getSensors("sense-android");
+        List<Sensor> resultSensor = mDatabaseHandler.getSensors("sense-android");
 
         int listSize = resultSensor.size();
-        assertEquals("Incorrect number of the sensor object", 0, listSize);
+        assertEquals("Incorrect number of the mSensor object", 0, listSize);
     }
 
     public void testGetSourcesSucceeded() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
@@ -931,17 +914,17 @@ public class TestDatabaseHandler extends AndroidTestCase {
         boolean csUploadEnabled = true;
         boolean csDownloadEnabled = true;
         boolean persistLocally = true;
-        sensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
+        mSensorOptions = new SensorOptions(sensorMeta,csUploadEnabled,csDownloadEnabled,persistLocally);
         int sourceNumber = 0;
 
-        sensor = databaseHandler.createSensor(sourceName,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName,sensorName,mSensorOptions);
         sourceNumber++;
 
         String sourceName1 = "sony";
-        sensor = databaseHandler.createSensor(sourceName1,sensorName,sensorOptions);
+        mSensor = mDatabaseHandler.createSensor(sourceName1,sensorName,mSensorOptions);
         sourceNumber++;
 
-        List<String> returnSources = databaseHandler.getSources();
+        List<String> returnSources = mDatabaseHandler.getSources();
 
         int listSize = returnSources.size();
         assertEquals("Incorrect number of the source object", sourceNumber, listSize);
@@ -951,66 +934,66 @@ public class TestDatabaseHandler extends AndroidTestCase {
     public void testGetSourcesWithZeroResult() throws JSONException, DatabaseHandlerException{
         int sourceNumber = 0;
 
-        List<String> returnSources = databaseHandler.getSources();
+        List<String> returnSources = mDatabaseHandler.getSources();
         int listSize = returnSources.size();
         assertEquals("Incorrect number of the source object", sourceNumber, listSize);
     }
 
     public void testCreateDataDeletionRequestSucceeded() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        databaseHandler.createDataDeletionRequest("light","sony",new Date().getTime(),new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest("light", "sony", new Date().getTime(), new Date().getTime());
         numberOfRequest++;
-        databaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(),new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(),new Date().getTime());
         numberOfRequest++;
 
-        RealmResults<RealmDataDeletionRequest> resultList= realm.where(RealmDataDeletionRequest.class)
-                .equalTo("userId", databaseHandler.getmUserId())
+        RealmResults<RealmDataDeletionRequest> resultList= mRealm.where(RealmDataDeletionRequest.class)
+                .equalTo("userId", mDatabaseHandler.getUserId())
                 .findAll();
         assertEquals("Incorrect number of the deletion requests", numberOfRequest, resultList.size());
     }
 
     public void testCreateDataDeletionRequestSucceededWithNullDate() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        databaseHandler.createDataDeletionRequest("light","sony", null, new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest("light", "sony", null, new Date().getTime());
         numberOfRequest++;
-        databaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(), null);
+        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc", new Date().getTime(), null);
         numberOfRequest++;
-        databaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
+        mDatabaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
         numberOfRequest++;
 
-        RealmResults<RealmDataDeletionRequest> resultList = realm.where(RealmDataDeletionRequest.class)
-                .equalTo("userId", databaseHandler.getmUserId())
+        RealmResults<RealmDataDeletionRequest> resultList = mRealm.where(RealmDataDeletionRequest.class)
+                .equalTo("userId", mDatabaseHandler.getUserId())
                 .findAll();
         assertEquals("Incorrect number of the deletion requests", numberOfRequest, resultList.size());
     }
 
     public void testGetDataDeletionRequestSucceeded() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        databaseHandler.createDataDeletionRequest("light","sony", null, new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest("light","sony", null, new Date().getTime());
         numberOfRequest++;
-        databaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(), null);
+        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(), null);
         numberOfRequest++;
-        databaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
+        mDatabaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
         numberOfRequest++;
 
-        List<RealmDataDeletionRequest> resultList = databaseHandler.getDataDeletionRequests();
+        List<RealmDataDeletionRequest> resultList = mDatabaseHandler.getDataDeletionRequests();
         assertEquals("Incorrect number of the deletion requests", numberOfRequest, resultList.size());
     }
 
     public void testDeleteDataDeletionRequestSucceeded() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        databaseHandler.createDataDeletionRequest("light","sony", null, new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest("light","sony", null, new Date().getTime());
         numberOfRequest++;
-        databaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(), null);
+        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(), null);
         numberOfRequest++;
-        databaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
+        mDatabaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
         numberOfRequest++;
 
-        List<RealmDataDeletionRequest> resultList = databaseHandler.getDataDeletionRequests();
+        List<RealmDataDeletionRequest> resultList = mDatabaseHandler.getDataDeletionRequests();
         for(RealmDataDeletionRequest request: resultList){
-            databaseHandler.deleteDataDeletionRequest(request.getUuid());
+            mDatabaseHandler.deleteDataDeletionRequest(request.getUuid());
             numberOfRequest--;
-            List<RealmDataDeletionRequest> newResultList = databaseHandler.getDataDeletionRequests();
+            List<RealmDataDeletionRequest> newResultList = mDatabaseHandler.getDataDeletionRequests();
             assertEquals("Incorrect number of the deletion requests", numberOfRequest, newResultList.size());
         }
     }

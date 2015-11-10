@@ -43,7 +43,7 @@ public class SensorOptions implements Cloneable {
         return mDownloadEnabled;
     }
 
-    public void setmDownloadEnabled(Boolean mDownloadEnabled) {
+    public void setDownloadEnabled(Boolean mDownloadEnabled) {
         this.mDownloadEnabled = mDownloadEnabled;
     }
 

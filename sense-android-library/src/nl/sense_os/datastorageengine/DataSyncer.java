@@ -83,7 +83,7 @@ public class DataSyncer {
     }
 
     public void disablePeriodicSync(){
-        mAlarm.cancelAlarm(mContext);
+        mAlarm.cancelAlarm();
         mPeriodicSyncEnabled = false;
     }
 
@@ -119,9 +119,15 @@ public class DataSyncer {
         }
 
         // Step 3
-        downloadFromRemote();
+        downloadSensorsFromRemote();
         if (progressCallback != null) {
-            progressCallback.onDownloadCompleted();
+            progressCallback.onDownloadSensorsCompleted();
+        }
+
+        // Step 4
+        downloadSensorDataFromRemote();
+        if (progressCallback != null) {
+            progressCallback.onDownloadSensorDataCompleted();
         }
 
         // Step 4
@@ -173,7 +179,7 @@ public class DataSyncer {
         }
     }
 
-    protected void downloadFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
+    protected void downloadSensorsFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
         //Step 1: download sensors from remote
         JSONArray sensorList = mProxy.getSensors(SOURCE);
 
@@ -187,11 +193,13 @@ public class DataSyncer {
                 }
             }
         }
+    }
 
-        //Step 3: get the sensors from local storage
+    protected void downloadSensorDataFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
+        //Step 1: get the sensors from local storage
         List<Sensor> sensorListInLocal = mDatabaseHandler.getSensors(SOURCE);
 
-        //Step 4: Start data syncing for all sensors
+        //Step 2: Start data syncing for all sensors
         if(!sensorListInLocal.isEmpty()) {
             for (Sensor sensor : sensorListInLocal) {
                 if(sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
@@ -299,8 +307,9 @@ public class DataSyncer {
      *
      *   1. onDeletionCompleted
      *   2. onUploadCompeted
-     *   3. onDownloadCompleted
-     *   4. onCleanupCompleted
+     *   3. onDownloadSensorsCompleted
+     *   4. onDownloadSensorDataCompleted
+     *   5. onCleanupCompleted
      *
      */
     public interface ProgressCallback {
@@ -316,9 +325,14 @@ public class DataSyncer {
         void onUploadCompeted();
 
         /**
-         * Callback called after all remote data is downloaded to local
+         * Callback called after all remote sensors (not their data) are downloaded to local
          */
-        void onDownloadCompleted();
+        void onDownloadSensorsCompleted();
+
+        /**
+         * Callback called after all remote sensor data is downloaded to local
+         */
+        void onDownloadSensorDataCompleted();
 
         /**
          * Callback called after all outdated local data is cleaned up. Data is kept locally for a
@@ -327,4 +341,19 @@ public class DataSyncer {
         void onCleanupCompleted();
     }
 
+    /**
+     * Get the current sync rate
+     * @return Returns the sync rate in milliseconds
+     */
+    public long getSyncRate() {
+        return mAlarm.getSyncRate();
+    }
+
+    /**
+     * Set sync rate
+     * @param syncRate Sync rate in milliseconds (1800000 (= 30 minutes) by default)
+     */
+    public void setSyncRate(long syncRate) {
+        this.mAlarm.setSyncRate(syncRate);
+    }
 }
