@@ -34,6 +34,7 @@ public class DataSyncer {
     private SensorProfiles mSensorProfiles;
     private boolean mPeriodicSyncEnabled = false;
     private DataSyncerAlarmReceiver mAlarm;
+    private long mPersistPeriod = 2678400000L; // 31 days in milliseconds
 
     /**
      * Create a new DataSyncer
@@ -260,7 +261,7 @@ public class DataSyncer {
 
         //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
         for(Sensor sensor: rawSensorList){
-            Long persistenceBoundary = new Date().getTime() - DSEConstants.PERSIST_PERIOD;
+            Long persistenceBoundary = new Date().getTime() - mPersistPeriod;
             if(sensor.getOptions().isUploadEnabled()){
                 if(sensor.getOptions().isPersistLocally()){
                    sensor.deleteDataPoints(null,persistenceBoundary);
@@ -273,6 +274,22 @@ public class DataSyncer {
                 }
             }
         }
+    }
+
+    /**
+     * Get the persist period, the period for which sensor data is kept in the local database.
+     * @return Returns the persist period in milliseconds
+     */
+    public long getPersistPeriod() {
+        return mPersistPeriod;
+    }
+
+    /**
+     * Set the persist period, the period for which sensor data is kept in the local database.
+     * @param persistPeriod   The persist period in milliseconds, 2678400000 (=31 days) by default.
+     */
+    public void setPersistPeriod(long persistPeriod) {
+        this.mPersistPeriod = persistPeriod;
     }
 
     /**
