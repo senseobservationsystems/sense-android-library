@@ -15,7 +15,6 @@ import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import nl.sense_os.datastorageengine.DSEConstants;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
@@ -46,7 +45,7 @@ public class TestDataSyncer extends AndroidTestCase {
 
     @Override
     protected void setUp () throws Exception {
-        // remove old realm data
+        // remove old mRealm data
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
 
@@ -67,7 +66,7 @@ public class TestDataSyncer extends AndroidTestCase {
     }
 
     public void testInitialize() throws IOException, JSONException, SensorProfileException {
-        // clear realm again for this specific unit tests
+        // clear mRealm again for this specific unit tests
         // (for all other tests, dataSyncer is already initialized)
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
@@ -84,7 +83,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
+        options.setDownloadEnabled(true);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
 
         // create a local data point
@@ -119,7 +118,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
+        options.setDownloadEnabled(true);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
 
         // create a remote data point
@@ -158,7 +157,7 @@ public class TestDataSyncer extends AndroidTestCase {
         SensorOptions options = new SensorOptions();
         options.setMeta(meta);
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
+        options.setDownloadEnabled(true);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         JSONAssert.assertEquals(meta, noise.getOptions().getMeta(), true);
 
@@ -200,7 +199,7 @@ public class TestDataSyncer extends AndroidTestCase {
         SensorOptions options = new SensorOptions();
         options.setMeta(metaLocal);
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
+        options.setDownloadEnabled(true);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         JSONAssert.assertEquals(metaLocal, noise.getOptions().getMeta(), true);
 
@@ -233,7 +232,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true);
+        options.setDownloadEnabled(true);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time);
 
@@ -272,7 +271,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(false);
+        options.setDownloadEnabled(false);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
 
@@ -317,7 +316,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(false);
-        options.setmDownloadEnabled(true);
+        options.setDownloadEnabled(true);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
 
@@ -354,7 +353,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(false);
-        options.setmDownloadEnabled(false);
+        options.setDownloadEnabled(false);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
 
@@ -389,7 +388,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(true); // should be ignored when persistLocally is false
+        options.setDownloadEnabled(true); // should be ignored when persistLocally is false
         options.setPersistLocally(false);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(12, time1);
@@ -441,7 +440,7 @@ public class TestDataSyncer extends AndroidTestCase {
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
-        options.setmDownloadEnabled(false);
+        options.setDownloadEnabled(false);
         Sensor noise = databaseHandler.createSensor(sourceName, sensorName, options);
         noise.insertOrUpdateDataPoint(value1, time1);
         noise.insertOrUpdateDataPoint(value2, time2);
