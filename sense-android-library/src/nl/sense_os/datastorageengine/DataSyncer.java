@@ -234,6 +234,27 @@ public class DataSyncer {
         }
     }
 
+    protected void cleanupLocal() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
+        //Step 1: get all the sensors of this source in local storage
+        List<Sensor> rawSensorList = mDatabaseHandler.getSensors(SOURCE);
+
+        //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
+        for(Sensor sensor: rawSensorList){
+            Long persistenceBoundary = new Date().getTime() - mPersistPeriod;
+            if(sensor.getOptions().isUploadEnabled()){
+                if(sensor.getOptions().isPersistLocally()){
+                    sensor.deleteDataPoints(null,persistenceBoundary);
+                }else{
+                    sensor.deleteDataPoints(null,null); // delete all
+                }
+            }else{
+                if(sensor.getOptions().isPersistLocally()){
+                    sensor.deleteDataPoints(null, persistenceBoundary);
+                }
+            }
+        }
+    }
+
     protected void uploadToRemote() throws JSONException, SensorException, SensorProfileException, DatabaseHandlerException, IOException, SchemaException, ValidationException {
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = mDatabaseHandler.getSensors(SOURCE);
@@ -267,27 +288,6 @@ public class DataSyncer {
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInRemote(true);
                     sensor.insertOrUpdateDataPoint(dataPoint.getValue(), dataPoint.getTime(), dataPoint.existsInRemote());
-                }
-            }
-        }
-    }
-
-    protected void cleanupLocal() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
-        //Step 1: get all the sensors of this source in local storage
-        List<Sensor> rawSensorList = mDatabaseHandler.getSensors(SOURCE);
-
-        //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
-        for(Sensor sensor: rawSensorList){
-            Long persistenceBoundary = new Date().getTime() - mPersistPeriod;
-            if(sensor.getOptions().isUploadEnabled()){
-                if(sensor.getOptions().isPersistLocally()){
-                   sensor.deleteDataPoints(null,persistenceBoundary);
-                }else{
-                    sensor.deleteDataPoints(null,null); // delete all
-                }
-            }else{
-                if(sensor.getOptions().isPersistLocally()){
-                    sensor.deleteDataPoints(null, persistenceBoundary);
                 }
             }
         }

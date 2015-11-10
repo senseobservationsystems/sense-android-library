@@ -143,9 +143,9 @@ public class TestDataStorageEngine extends AndroidTestCase{
         // TODO should we be able to delete a sensor?
 
         // Test Flush data asynchronously
-        dataStorageEngine.flushData(flushData);
+        dataStorageEngine.syncData(flushData);
         // Test Flush data synchronously
-        assertEquals(Boolean.TRUE, dataStorageEngine.flushData().get(60, TimeUnit.SECONDS));
+        assertEquals(Boolean.TRUE, dataStorageEngine.syncData().get(60, TimeUnit.SECONDS));
     }
 
     /**
@@ -194,7 +194,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         assertEquals(date, dataPoints.get(1).getTime());
 
         // Test Flush data
-        assertEquals(Boolean.TRUE, dataStorageEngine.flushData().get(60, TimeUnit.SECONDS));
+        assertEquals(Boolean.TRUE, dataStorageEngine.syncData().get(60, TimeUnit.SECONDS));
     }
 
     /** Helper function for comparing sensors */

@@ -7,7 +7,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,11 +14,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 import nl.sense_os.util.json.SchemaException;
-import nl.sense_os.util.json.ValidationException;
 
 /**
  * This class provides the main interface for creating sensors and sources and setting storage engine specific properties.
+ *
  * Created by ted@sense-os.nl on 10/29/15.
+ * Copyright (c) 2015 Sense Observation Systems BV. All rights reserved.
  */
 public class DataStorageEngine {
     private static final String TAG = "DataStorageEngine";
@@ -29,6 +29,8 @@ public class DataStorageEngine {
     private DataSyncer mDataSyncer;
     /** The proxy for the actual data transfer with the back-end */
     private SensorDataProxy mSensorDataProxy;
+    /** Synchronous DataSyncer progress monitor */
+    private DataSyncerProgressMonitor mDataSyncerProgress;
     /** Static singleton instance of the DataStorageEngine */
     //private static DataStorageEngine mDataStorageEngine;
     /** Context needed for the DataSyncer */
@@ -49,9 +51,6 @@ public class DataStorageEngine {
     /** Handles the AsyncCallback function calls */
     private ExecutorService mCallBackExecutorService;
 
-    /** DataSyncer result of the Dataprogress callback with status last known status */
-    private DataSyncerProgressCallback mDataSyncerProgress;
-
     /**
      * The possible statuses of the DataStorageEngine
      * AWAITING_CREDENTIALS = there are not credentials set, setCredentials needs to be called
@@ -65,7 +64,7 @@ public class DataStorageEngine {
     }
 
     /**
-     * Private constructor of the DataStorageEngine
+     * Constructor of the DataStorageEngine
      * @param context The Android context
      */
     public DataStorageEngine(Context context)
@@ -74,9 +73,10 @@ public class DataStorageEngine {
         mOptions = new DSEOptions();
         mDataSyncerExecutorService = Executors.newSingleThreadExecutor();
         mCallBackExecutorService = Executors.newCachedThreadPool();
-        mDataSyncerProgress = new DataSyncerProgressCallback();
+        mDataSyncerProgress = new DataSyncerProgressMonitor();
     }
 
+//TODO see if a singleton construction is needed
 //    /**
 //     * Creates a singleton DataStorageEngine instance if it does not exists already
 //     * @param context An Android context
@@ -96,11 +96,11 @@ public class DataStorageEngine {
 //     * @throws RuntimeException When the DataStorageEngine has not been initialized with a context.
 //     */
 //    public static DataStorageEngine getInstance()throws RuntimeException{
-//        if(mDataStorageEngine == null)
+//        if(mDataStorageEngine == null) {
 //            throw new RuntimeException("The DataStorageEngine should be initialized with a context first");
+//        }
 //        return mDataStorageEngine;
 //    }
-
 
     /**
      * Returns enum DSEStatus indicating status of DSE.
@@ -180,17 +180,22 @@ public class DataStorageEngine {
         if(!mHasCredentials) {
             return;
         }
-
+        // reset the initialized status
+        mInitialized = false;
+        // create a new database handler instance
         mDatabaseHandler = new DatabaseHandler(mContext, mUserID);
         //mDatabaseHandler.enableEncryption(mOptions.enableEncryption);
         if(mOptions.enableEncryption != null && mOptions.enableEncryption) {
             // TODO enable encryption on the database. See https://realm.io/docs/java/latest/#encryption
             // mDatabaseHandler.setEncryptionKey(mOptions.encryptionKey);
         }
+        // create a new sensor data proxy instance
         mSensorDataProxy = new SensorDataProxy(mOptions.backendEnvironment, mAPPKey, mSessionID);
+        // disable the period syncing of the previous data syncer
         if(mDataSyncer != null) {
             mDataSyncer.disablePeriodicSync();
         }
+        // create a new data syncer instance
         mDataSyncer = new DataSyncer(mContext, mDatabaseHandler,mSensorDataProxy);
         if(mOptions.localPersistancePeriod != null) {
             mDataSyncer.setPersistPeriod(mOptions.localPersistancePeriod);
@@ -200,7 +205,8 @@ public class DataStorageEngine {
     }
 
     /**
-     * The FutureTask that performs the DataSyncer initialization
+     * The FutureTask that performs the DataSyncer initialization (sensor profile downloading)
+     * When this task is successful then the status of the DSE will be READY
      */
     private FutureTask<Boolean> mInitTask = new FutureTask<>(new Callable<Boolean>() {
         public Boolean call() throws JSONException, IOException, SensorProfileException {
@@ -234,14 +240,13 @@ public class DataStorageEngine {
     }
 
     /**
-     * The FutureTask that performs the initial data download in the DataSyncer
+     * The FutureTask that performs the initial sensors and sensor data download in the DataSyncer.
+     * This task will initialize mDataSyncerProgress and set any received exception via mDataSyncerProgress.setLastException.
      */
     private FutureTask<Boolean> mDataSync = new FutureTask<>(new Callable<Boolean>() {
         public Boolean call() throws Exception {
             try {
-                // TODO what to do when there is no internet?
-                // TODO what to do when there is already a sync
-                mDataSyncerProgress.init();
+                mDataSyncerProgress.reset();
                 mDataSyncer.sync(mDataSyncerProgress);
                 return true;
             } catch(Exception e) {
@@ -265,11 +270,11 @@ public class DataStorageEngine {
                         if (mDataSyncerProgress.getIsDownloadSensorsCompleted()) {
                             return true;
                         }
-                        // it probably failed, throw the last known exception
+                        // it failed, throw the last known exception
                         if (mDataSyncerProgress.getLastException() != null) {
                             throw mDataSyncerProgress.getLastException();
                         }
-                        // else wait for it to be finished
+                        // no update yet, wait for it...
                         mDataSyncerProgress.isDownloadSensorsCompletedMonitor.wait();
                     }
                 }
@@ -293,17 +298,17 @@ public class DataStorageEngine {
     public Future<Boolean> onSensorDataDownloaded() {
         return mCallBackExecutorService.submit(new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                synchronized (mDataSyncerProgress.isDownloadSensorDataCompletedMonitor){
-                    while(true) {
+                synchronized (mDataSyncerProgress.isDownloadSensorDataCompletedMonitor) {
+                    while (true) {
                         // the data has already been been downloaded
                         if (mDataSyncerProgress.getIsDownloadSensorDataCompleted()) {
                             return true;
                         }
-                        // it probably failed, throw the last known exception
+                        // it failed, throw the last known exception
                         if (mDataSyncerProgress.getLastException() != null) {
                             throw mDataSyncerProgress.getLastException();
                         }
-                        // else wait for it to be finished
+                        // no update yet, wait for it...
                         mDataSyncerProgress.isDownloadSensorDataCompletedMonitor.wait();
                     }
                 }
@@ -318,6 +323,59 @@ public class DataStorageEngine {
     public void onSensorDataDownloaded(AsyncCallback asyncCallback)
     {
         getResultAsync(onSensorDataDownloaded(), asyncCallback);
+    }
+
+    /**
+     * Synchronizes the local and remote data
+     * @return A future which will return the status of the data synchronization action as Boolean via Future.get()
+     */
+    public Future<Boolean> syncData() {
+        return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                try {
+                    if (getStatus() != DSEStatus.READY) {
+                        throw new IllegalStateException("The DataStorageEngine is not ready yet");
+                    }
+                    mDataSyncer.sync();
+                    return true;
+                } catch (Exception e) {
+                    Log.e(TAG, "Error flushing data", e);
+                    throw e;
+                }
+            }
+        });
+    }
+
+    /**
+     * Synchronizes the local and remote data
+     * Receive a one time notification when the DataStorage engine has done the data synchronization
+     * @param asyncCallback The AsynchronousCall back to receive the status of the data synchronization in
+     */
+    public void syncData(AsyncCallback asyncCallback) {
+        getResultAsync(syncData(), asyncCallback);
+    }
+
+    /**
+     * Returns the result from a future via the AsyncCallback
+     * @param future The future to get the result from
+     * @param callback The AsyncCallback to receive the result in
+     */
+    protected void getResultAsync(final Future<Boolean> future, final AsyncCallback callback)
+    {
+        mCallBackExecutorService.submit(new Callable() {
+            public Object call() throws Exception {
+                try {
+                    if (future.get())
+                        callback.onSuccess();
+                    else
+                        callback.onFailure(null);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error getting async result from future", e);
+                    callback.onFailure(e);
+                }
+                return null;
+            }
+        });
     }
 
     /**
@@ -367,190 +425,10 @@ public class DataStorageEngine {
      * @return List<String> The sources attached to the current user
      * @throws IllegalStateException when the DataStorageEngine is not ready yet
      **/
-    public List<String> getSources(){
-        if(getStatus() != DSEStatus.READY) {
+    public List<String> getSources() {
+        if (getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         }
         return mDatabaseHandler.getSources();
-    }
-
-    /**
-     * Flushes the local data to Common Sense
-     * @return A future which will return the status of the flush action as Boolean via Future.get()
-     */
-    public Future<Boolean> flushData() {
-        return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                try {
-                    if (getStatus() != DSEStatus.READY) {
-                        throw new IllegalStateException("The DataStorageEngine is not ready yet");
-                    }
-                    mDataSyncer.sync();
-                    return true;
-                } catch (Exception e) {
-                    Log.e(TAG, "Error flushing data", e);
-                   throw e;
-                }
-            }
-        });
-    }
-
-    /**
-     * Flushes the local data to Common Sense
-     * Receive a one time notification when the DataStorage engine has done the data flush
-     * @param asyncCallback The AsynchronousCall back to receive the status of the data flush in
-     */
-    public void flushData(AsyncCallback asyncCallback) {
-        getResultAsync(flushData(), asyncCallback);
-    }
-
-    /**
-     * Returns the result from a future via the AsyncCallback
-     * @param future The future to get the result from
-     * @param callback The AsyncCallback to receive the result in
-     */
-    protected void getResultAsync(final Future<Boolean> future, final AsyncCallback callback)
-    {
-        mCallBackExecutorService.submit(new Callable() {
-            public Object call() throws Exception {
-                try {
-                    if (future.get())
-                        callback.onSuccess();
-                    else
-                        callback.onFailure(null);
-                } catch (Exception e) {
-                    Log.e(TAG, "Error getting async result from future", e);
-                    callback.onFailure(e);
-                }
-                return null;
-            }
-        });
-    }
-
-    /**
-     * Handle the response of the DataSyncer
-     */
-    private class DataSyncerProgressCallback implements ProgressCallback {
-        private Boolean isDeletionCompleted = false;
-        private Boolean isUploadCompleted = false;
-        private Boolean isDownloadSensorsCompleted = false;
-        private Boolean isDownloadSensorDataCompleted = false;
-        private Boolean isCleanupCompleted = false;
-
-        public final Object isDeletionCompletedMonitor = new Object();
-        public final Object isUploadCompletedMonitor = new Object();
-        public final Object isDownloadSensorsCompletedMonitor = new Object();
-        public final Object isDownloadSensorDataCompletedMonitor = new Object();
-        public final Object isCleanupCompletedMonitor = new Object();
-
-        private Exception lastException;
-
-        public void init()
-        {
-            isDeletionCompleted = false;
-            isUploadCompleted = false;
-            isDownloadSensorsCompleted = false;
-            isDownloadSensorDataCompleted = false;
-            isCleanupCompleted = false;
-            lastException = null;
-        }
-
-        public Boolean getIsDeletionCompleted() {
-            return isDeletionCompleted;
-        }
-
-        public Boolean getIsUploadCompleted() {
-            return isUploadCompleted;
-        }
-
-        public Boolean getIsDownloadSensorsCompleted() {
-            return isDownloadSensorsCompleted;
-        }
-
-        public Boolean getIsDownloadSensorDataCompleted() {
-            return isDownloadSensorDataCompleted;
-        }
-
-        public Boolean getIsCleanupCompleted() {
-            return isCleanupCompleted;
-        }
-
-        public Exception getLastException() {
-            return lastException;
-        }
-
-        /**
-         * If an error occurs the last exception is set and the other status Booleans are notified
-         * @param e The last thrown exception
-         */
-        public void setLastException(Exception e)
-        {
-            lastException = e;
-            setIsDeletionCompleted(isDeletionCompleted);
-            setIsUploadCompleted(isUploadCompleted);
-            setIsDownloadSensorsCompleted(isDownloadSensorsCompleted);
-            setIsDownloadSensorDataCompleted(isDownloadSensorDataCompleted);
-            setIsCleanupCompleted(isCleanupCompleted);
-        }
-
-        private void setIsUploadCompleted(boolean value) {
-            synchronized (isUploadCompletedMonitor) {
-                isUploadCompleted = value;
-                isUploadCompletedMonitor.notifyAll();
-            }
-        }
-
-        private void setIsDownloadSensorsCompleted(boolean value) {
-            synchronized (isDownloadSensorsCompletedMonitor) {
-                isDownloadSensorsCompleted = value;
-                isDownloadSensorsCompletedMonitor.notifyAll();
-            }
-        }
-
-        private void setIsDeletionCompleted(boolean value) {
-            synchronized (isDeletionCompletedMonitor) {
-                isDeletionCompleted = value;
-                isDeletionCompletedMonitor.notifyAll();
-            }
-        }
-
-        private void setIsCleanupCompleted(boolean value) {
-            synchronized (isCleanupCompletedMonitor) {
-                isCleanupCompleted = value;
-                isCleanupCompletedMonitor.notifyAll();
-            }
-        }
-
-        private void setIsDownloadSensorDataCompleted(boolean value) {
-            synchronized (isDownloadSensorDataCompletedMonitor) {
-                isDownloadSensorDataCompleted = value;
-                isDownloadSensorDataCompletedMonitor.notifyAll();
-            }
-        }
-
-        @Override
-        public void onDeletionCompleted() {
-            setIsDeletionCompleted(true);
-        }
-
-        @Override
-        public void onUploadCompeted() {
-          setIsUploadCompleted(true);
-        }
-
-        @Override
-        public void onDownloadSensorsCompleted() {
-            setIsDownloadSensorsCompleted(true);
-        }
-
-        @Override
-        public void onDownloadSensorDataCompleted() {
-            setIsDownloadSensorDataCompleted(true);
-        }
-
-        @Override
-        public void onCleanupCompleted() {
-            setIsCleanupCompleted(true);
-        }
     }
 }
