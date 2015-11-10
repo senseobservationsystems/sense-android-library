@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import nl.sense_os.datastorageengine.AsyncCallback;
+import nl.sense_os.datastorageengine.DSEOptions;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
@@ -41,18 +42,19 @@ public class TestDataStorageEngine extends AndroidTestCase{
     /** AsyncCallback class to receive status updates in */
     class DSEAsyncCallback implements AsyncCallback {
         String name;
+        public boolean hasSuccess = false;
         public DSEAsyncCallback(String name){ this.name = name; }
 
         @Override
-        public void onSuccess() { assertTrue(name, true); }
+        public void onSuccess() { hasSuccess = true; }
 
         @Override
         public void onFailure(Throwable throwable){ assertTrue(name+":"+ throwable.getMessage(), false); }
     }
-    private AsyncCallback onReady = new DSEAsyncCallback("onReadyAsync");
-    private AsyncCallback onSensorsDownloaded = new DSEAsyncCallback("onSensorsDownloadedAsync");
-    private AsyncCallback onSensorDataDownloaded = new DSEAsyncCallback("onSensorDataDownloadedAsync");
-    private AsyncCallback flushData = new DSEAsyncCallback("fushDataAsync");
+    private DSEAsyncCallback onReady = new DSEAsyncCallback("onReadyAsync");
+    private DSEAsyncCallback onSensorsDownloaded = new DSEAsyncCallback("onSensorsDownloadedAsync");
+    private DSEAsyncCallback onSensorDataDownloaded = new DSEAsyncCallback("onSensorDataDownloadedAsync");
+    private DSEAsyncCallback flushData = new DSEAsyncCallback("fushDataAsync");
 
     /**
      * Set up of the DataStorageEngine with checks for the status updates
@@ -66,8 +68,11 @@ public class TestDataStorageEngine extends AndroidTestCase{
         sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
         dataStorageEngine = new DataStorageEngine(getContext());
         dataStorageEngine.setCredentials(sessionId, userId, appKey);
+        DSEOptions dseOptions = new DSEOptions();
+        //dseOptions.
+        //dataStorageEngine.setOptions(dseOptions);
 
-        /** asynchronous test */
+        /** asynchronous test init */
         // Test onReady
         dataStorageEngine.onReady(onReady);
         // Test onSensorsDownloaded
@@ -87,6 +92,15 @@ public class TestDataStorageEngine extends AndroidTestCase{
 
         // Test the getStatus
         assertEquals(DataStorageEngine.DSEStatus.READY, dataStorageEngine.getStatus());
+
+        /** asynchronous test result */
+        // N.B. We have a race condition here!
+        // Test onReady
+        assertEquals(true, onReady.hasSuccess);
+        // Test onSensorsDownloaded
+        assertEquals(true, onSensorsDownloaded.hasSuccess);
+        // Test onSensorDataDownloaded
+        assertEquals(true, onSensorDataDownloaded.hasSuccess);
     }
 
     /**
