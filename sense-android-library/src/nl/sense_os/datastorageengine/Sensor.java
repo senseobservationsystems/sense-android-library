@@ -13,6 +13,7 @@ import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
+import nl.sense_os.datastorageengine.realm.RealmDataDeletionRequest;
 import nl.sense_os.datastorageengine.realm.RealmDataPoint;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
 import nl.sense_os.util.json.JSONSchemaValidator;
@@ -21,52 +22,52 @@ import nl.sense_os.util.json.ValidationException;
 
 public class Sensor {
 
-    private Context context = null;
-    private JSONObject profile = null;
-    private JSONSchemaValidator validator = null;
+    private Context mContext = null;
+    private JSONObject mProfile = null;
+    private JSONSchemaValidator mValidator = null;
 
-    private long id = -1;
-    private String name = null;
-    private String userId = null;
-    private String source = null;
-    private SensorOptions options = new SensorOptions();
-    private boolean remoteDataPointsDownloaded = false;
+    private long mId = -1;
+    private String mName = null;
+    private String mUserId = null;
+    private String mSource = null;
+    private SensorOptions mOptions = new SensorOptions();
+    private boolean mRemoteDataPointsDownloaded = false;
 
     public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException, SensorProfileException, JSONException, SchemaException {
-        this.context = context;
-        this.profile = new SensorProfiles(context).get(name);
-        this.validator = new JSONSchemaValidator(this.profile);
+        this.mContext = context;
+        this.mProfile = new SensorProfiles(context).get(name);
+        this.mValidator = new JSONSchemaValidator(this.mProfile);
 
-        this.id = id;
-        this.name = name;
-        this.userId = userId;
-        this.source = source;
-        this.options = options;
-        this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
+        this.mId = id;
+        this.mName = name;
+        this.mUserId = userId;
+        this.mSource = source;
+        this.mOptions = options;
+        this.mRemoteDataPointsDownloaded = remoteDataPointsDownloaded;
     }
 
     public long getId() {
-        return id;
+        return mId;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
     public String getUserId() {
-        return userId;
+        return mUserId;
     }
 
     public String getSource() {
-        return source;
+        return mSource;
     }
 
     public JSONObject getProfile() throws SensorProfileException, JSONException {
-        return profile;
+        return mProfile;
     }
 
     public boolean isRemoteDataPointsDownloaded() {
-        return remoteDataPointsDownloaded;
+        return mRemoteDataPointsDownloaded;
     }
 
     /**
@@ -76,7 +77,7 @@ public class Sensor {
      * @return Returns the applied options.
      */
     public SensorOptions setOptions (SensorOptions options) throws JSONException, DatabaseHandlerException {
-        this.options = SensorOptions.merge(this.options, options);
+        this.mOptions = SensorOptions.merge(this.mOptions, options);
 
         // store changes in the local database
         saveChanges();
@@ -89,11 +90,11 @@ public class Sensor {
      * @return options
      */
     public SensorOptions getOptions () {
-        return options.clone();
+        return mOptions.clone();
     }
 
     public void setRemoteDataPointsDownloaded(boolean remoteDataPointsDownloaded) throws DatabaseHandlerException {
-        this.remoteDataPointsDownloaded = remoteDataPointsDownloaded;
+        this.mRemoteDataPointsDownloaded = remoteDataPointsDownloaded;
 
         // store changes in the local database
         saveChanges();
@@ -105,7 +106,7 @@ public class Sensor {
      * @param time
      */
     public void insertOrUpdateDataPoint(Object value, long time) throws ValidationException, JSONException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, time, false));
+        insertOrUpdateDataPoint(new DataPoint(mId, value, time, false));
     }
 
     /**
@@ -115,21 +116,21 @@ public class Sensor {
      * @param existsInRemote
      */
     public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws ValidationException, JSONException {
-        insertOrUpdateDataPoint(new DataPoint(id, value, time, existsInRemote));
+        insertOrUpdateDataPoint(new DataPoint(mId, value, time, existsInRemote));
     }
 
     /**
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      */
     protected void saveChanges() throws DatabaseHandlerException {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             realm.beginTransaction();
 
             // get the existing sensor (just to throw an error if it doesn't exist)
             RealmSensor realmSensor = realm
                     .where(RealmSensor.class)
-                    .equalTo("id", this.id)
+                    .equalTo("id", this.mId)
                     .findFirst();
 
             if (realmSensor == null) {
@@ -153,9 +154,9 @@ public class Sensor {
      * 			into a Realm object.
      */
     protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws ValidationException, JSONException {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
-            validator.validate(dataPoint.getValue());
+            mValidator.validate(dataPoint.getValue());
 
             RealmDataPoint realmDataPoint = RealmDataPoint.fromDataPoint(dataPoint);
             realm.beginTransaction();
@@ -179,7 +180,7 @@ public class Sensor {
      */
     public List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException {
         // query results
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             if(queryOptions.getLimit() != null) {
                 if(queryOptions.getLimit() <= 0) {
@@ -210,19 +211,19 @@ public class Sensor {
 
     /**
      * Delete data from the Local Storage and Common Sense for this sensor
-     * DataPoints will be immediately removed locally, and an event (class DataDeletionRequest)
+     * DataPoints will be immediately removed locally, and an event (class RealmDataDeletionRequest)
      * is scheduled for the next synchronization round to delete them from Common Sense.
      * @param startTime The start time in epoch milliseconds
      * @param endTime The end time in epoch milliseconds
      * @trhows DatabaseHandlerException when the local deletion of sensor data for a sensor fails
      **/
     public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             Long startTimeRequest = startTime == null? -1l: startTime;
             Long endTimeRequest  = endTime == null? -1l: endTime;
             // Add the delete data request for deleting data from the backend
-            DataDeletionRequest dataDeletionRequest = new DataDeletionRequest(userId, name, source, startTimeRequest, endTimeRequest);
+            RealmDataDeletionRequest dataDeletionRequest = new RealmDataDeletionRequest(mUserId, mName, mSource, startTimeRequest, endTimeRequest);
 
             realm.beginTransaction();
             realm.copyToRealm(dataDeletionRequest);
@@ -236,7 +237,7 @@ public class Sensor {
             realm.commitTransaction();
 
         } catch (RealmPrimaryKeyConstraintException err) {
-            throw new DatabaseHandlerException("Error adding delete data request for \"" + name + "\" and source \"" + source + "\".");
+            throw new DatabaseHandlerException("Error adding delete data request for \"" + mName + "\" and mSource \"" + mSource + "\".");
         }
         finally {
             realm.close();
@@ -251,7 +252,7 @@ public class Sensor {
      */
     public static synchronized long generateId (Realm realm) {
         if (auto_increment == -1) {
-            // find the max id of the existing sensors
+            // find the max mId of the existing sensors
             realm.beginTransaction();
             Number max = realm
                     .where(RealmSensor.class)
@@ -269,11 +270,11 @@ public class Sensor {
 
     // Helper function for getDataPoints
     private RealmResults<RealmDataPoint> queryFromRealm(Long startTime, Long endTime, Boolean existsInRemote) throws DatabaseHandlerException{
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             RealmQuery<RealmDataPoint> query = realm
                                                     .where(RealmDataPoint.class)
-                                                    .equalTo("sensorId", this.id);
+                                                    .equalTo("sensorId", this.mId);
             if(startTime != null) {
                 query.greaterThanOrEqualTo("date", startTime.longValue());
             }

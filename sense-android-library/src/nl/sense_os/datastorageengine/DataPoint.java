@@ -4,20 +4,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * A DataPoint can hold a single data point of for a sensor: a time and a value.
+ * A DataPoint can hold a single data point of for a sensor: a mTime and a mValue.
  */
 public class DataPoint {
 
     private long sensorId = -1;
-    private Object value = null;
-    private long time = 0;
-    private boolean existsInRemote = false;
+    private Object mValue = null;
+    private long mTime = 0;
+    private boolean mExistsInRemote = false;
 
     public DataPoint(long sensorId, Object value, long time, boolean existsInRemote) {
         this.sensorId = sensorId;
-        this.value = value;
-        this.time = time;
-        this.existsInRemote = existsInRemote;
+        this.mValue = value;
+        this.mTime = time;
+        this.mExistsInRemote = existsInRemote;
     }
 
     /**
@@ -25,10 +25,10 @@ public class DataPoint {
      * @param obj
      */
     public DataPoint(JSONObject obj) throws JSONException {
-        this.sensorId   = obj.getLong("sensorId");
-        this.value      = obj.opt("value");
-        this.time = obj.getLong("time");
-        this.existsInRemote = obj.optBoolean("existsInRemote", false);
+        this.sensorId = obj.getLong("sensorId");
+        this.mValue = obj.opt("value");
+        this.mTime = obj.getLong("time");
+        this.mExistsInRemote = obj.optBoolean("existsInRemote", false);
     }
 
     public long getSensorId() {
@@ -40,14 +40,14 @@ public class DataPoint {
     }
 
     public Object getValue() {
-        return value;
+        return mValue;
     }
 
     public boolean getValueAsBoolean() throws ClassCastException {
-        if (value instanceof Boolean) {
-            return (Boolean) value;
-        } else if (value instanceof String) {
-            String stringValue = (String) value;
+        if (mValue instanceof Boolean) {
+            return (Boolean) mValue;
+        } else if (mValue instanceof String) {
+            String stringValue = (String) mValue;
             if ("true".equalsIgnoreCase(stringValue)) {
                 return true;
             } else if ("false".equalsIgnoreCase(stringValue)) {
@@ -58,13 +58,13 @@ public class DataPoint {
     }
 
     public float getValueAsFloat() throws ClassCastException {
-        if (value instanceof Float) {
-            return (float) value;
-        } else if (value instanceof Number) {
-            return ((Number) value).floatValue();
-        } else if (value instanceof String) {
+        if (mValue instanceof Float) {
+            return (float) mValue;
+        } else if (mValue instanceof Number) {
+            return ((Number) mValue).floatValue();
+        } else if (mValue instanceof String) {
             try {
-                return Float.valueOf((String) value);
+                return Float.valueOf((String) mValue);
             } catch (NumberFormatException ignored) {
             }
         }
@@ -72,13 +72,13 @@ public class DataPoint {
     }
 
     public double getValueAsDouble() throws ClassCastException {
-        if (value instanceof Double) {
-            return (Double) value;
-        } else if (value instanceof Number) {
-            return ((Number) value).doubleValue();
-        } else if (value instanceof String) {
+        if (mValue instanceof Double) {
+            return (Double) mValue;
+        } else if (mValue instanceof Number) {
+            return ((Number) mValue).doubleValue();
+        } else if (mValue instanceof String) {
             try {
-                return Double.valueOf((String) value);
+                return Double.valueOf((String) mValue);
             } catch (NumberFormatException ignored) {
             }
         }
@@ -86,13 +86,13 @@ public class DataPoint {
     }
 
     public int getValueAsInteger() throws ClassCastException {
-        if (value instanceof Integer) {
-            return (int) value;
-        } else if (value instanceof Number) {
-            return ((Number) value).intValue();
-        } else if (value instanceof String) {
+        if (mValue instanceof Integer) {
+            return (int) mValue;
+        } else if (mValue instanceof Number) {
+            return ((Number) mValue).intValue();
+        } else if (mValue instanceof String) {
             try {
-                return Integer.parseInt((String) value);
+                return Integer.parseInt((String) mValue);
             } catch (NumberFormatException ignored) {
             }
         }
@@ -100,13 +100,13 @@ public class DataPoint {
     }
 
     public long getValueAsLong() throws ClassCastException {
-        if (value instanceof Long) {
-            return (long) value;
-        } else if (value instanceof Number) {
-            return ((Number) value).longValue();
-        } else if (value instanceof String) {
+        if (mValue instanceof Long) {
+            return (long) mValue;
+        } else if (mValue instanceof Number) {
+            return ((Number) mValue).longValue();
+        } else if (mValue instanceof String) {
             try {
-                return Long.parseLong((String) value);
+                return Long.parseLong((String) mValue);
             } catch (NumberFormatException ignored) {
             }
         }
@@ -114,11 +114,11 @@ public class DataPoint {
     }
 
     public JSONObject getValueAsJSONObject() throws ClassCastException {
-        if (value instanceof JSONObject) {
-            return (JSONObject) value;
-        } else if (value instanceof String) {
+        if (mValue instanceof JSONObject) {
+            return (JSONObject) mValue;
+        } else if (mValue instanceof String) {
             try {
-                return new JSONObject((String) value);
+                return new JSONObject((String) mValue);
             } catch (JSONException ignored) {
             }
         }
@@ -126,31 +126,31 @@ public class DataPoint {
     }
 
     public String getValueAsString() {
-        if (value instanceof String) {
-            return (String) value;
+        if (mValue instanceof String) {
+            return (String) mValue;
         } else {
-            return String.valueOf(value);
+            return String.valueOf(mValue);
         }
     }
 
     public void setValue(Object value) {
-        this.value = value;
+        this.mValue = value;
     }
 
     public long getTime() {
-        return time;
+        return mTime;
     }
 
     public void setTime(long time) {
-        this.time = time;
+        this.mTime = time;
     }
 
     public boolean existsInRemote() {
-        return existsInRemote;
+        return mExistsInRemote;
     }
 
     public void setExistsInRemote(boolean existsInRemote) {
-        this.existsInRemote = existsInRemote;
+        this.mExistsInRemote = existsInRemote;
     }
 
     /**
@@ -161,9 +161,9 @@ public class DataPoint {
 
         try {
             obj.put("sensorId", sensorId);
-            obj.put("value",    value);
-            obj.put("time", time);
-            obj.put("existsInRemote", existsInRemote);
+            obj.put("value", mValue);
+            obj.put("time", mTime);
+            obj.put("existsInRemote", mExistsInRemote);
         } catch (JSONException e) {
             e.printStackTrace();
         }

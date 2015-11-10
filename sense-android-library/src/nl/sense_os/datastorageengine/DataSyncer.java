@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import nl.sense_os.datastorageengine.realm.RealmDataDeletionRequest;
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
 
@@ -25,27 +26,28 @@ import nl.sense_os.util.json.ValidationException;
  */
 public class DataSyncer {
     private static final String TAG = "DataSyncer";
-
-    private SensorDataProxy proxy = null;
-    private Context context;
-    private DatabaseHandler databaseHandler;
-    private SensorProfiles sensorProfiles;
-    private boolean periodicSyncEnabled = false;
-    private DataSyncerAlarmReceiver alarm;
     public final static String SOURCE = "sense-android";
+
+    private SensorDataProxy mProxy = null;
+    private Context mContext;
+    private DatabaseHandler mDatabaseHandler;
+    private SensorProfiles mSensorProfiles;
+    private boolean mPeriodicSyncEnabled = false;
+    private DataSyncerAlarmReceiver mAlarm;
+    private long mPersistPeriod = 2678400000L; // 31 days in milliseconds
 
     /**
      * Create a new DataSyncer
-     * @param context          Android context
+     * @param context          Android Context
      * @param databaseHandler  A DatabaseHandler for local data storage
-     * @param proxy            A proxy for remote data storage (in the Sensor API)
+     * @param proxy            A Proxy for remote data storage (in the Sensor API)
      */
     public DataSyncer(Context context, DatabaseHandler databaseHandler, SensorDataProxy proxy){
-        this.context = context;
-        this.databaseHandler = databaseHandler;
-        this.sensorProfiles = new SensorProfiles(context);
-        this.proxy = proxy;
-        this.alarm = new DataSyncerAlarmReceiver();
+        this.mContext = context;
+        this.mDatabaseHandler = databaseHandler;
+        this.mSensorProfiles = new SensorProfiles(context);
+        this.mProxy = proxy;
+        this.mAlarm = new DataSyncerAlarmReceiver();
     }
 
     public class PeriodicSyncService extends IntentService {
@@ -69,24 +71,20 @@ public class DataSyncer {
     }
 
     public boolean isPeriodicSyncEnabled() {
-        return this.periodicSyncEnabled;
+        return this.mPeriodicSyncEnabled;
     }
 
     public void enablePeriodicSync(){
         // the default sync rate is set in DSEAlarmReceiver
-        if(!periodicSyncEnabled) {
-            alarm.setAlarm(context);
-            periodicSyncEnabled = true;
+        if(!mPeriodicSyncEnabled) {
+            mAlarm.setAlarm(mContext);
+            mPeriodicSyncEnabled = true;
         }
     }
 
     public void disablePeriodicSync(){
-        alarm.cancelAlarm(context);
-        periodicSyncEnabled = false;
-    }
-
-    public SensorProfiles getSensorProfiles() {
-        return this.sensorProfiles;
+        mAlarm.cancelAlarm(mContext);
+        mPeriodicSyncEnabled = false;
     }
 
     /**
@@ -103,24 +101,54 @@ public class DataSyncer {
     /**
      * Synchronize data in local and remote storage.
      * Is executed synchronously.
+     * @param progressCallback      Optional callback structure to get notified of the syncing progress.
      */
-    public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
+    public void sync(ProgressCallback progressCallback) throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
         // TODO: check whether there is no sync in progress currently, if so throw an exception
+
+        // Step 1
         deletionInRemote();
-        downloadFromRemote();
+        if (progressCallback != null) {
+            progressCallback.onDeletionCompleted();
+        }
+
+        // Step 2
         uploadToRemote();
-        cleanUpLocalStorage();
+        if (progressCallback != null) {
+            progressCallback.onUploadCompeted();
+        }
+
+        // Step 3
+        downloadFromRemote();
+        if (progressCallback != null) {
+            progressCallback.onDownloadCompleted();
+        }
+
+        // Step 4
+        cleanupLocal();
+        if (progressCallback != null) {
+            progressCallback.onCleanupCompleted();
+        }
+    }
+
+    /**
+     * Synchronize data in local and remote storage.
+     * Is executed synchronously.
+     */
+    public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException,
+            JSONException, SchemaException, ValidationException {
+        sync(null);
     }
 
     protected void downloadSensorProfiles () throws JSONException, IOException, SensorProfileException {
-        JSONArray profiles = proxy.getSensorProfiles();
+        JSONArray profiles = mProxy.getSensorProfiles();
 
         for(int i = 0; i< profiles.length(); i++) {
             JSONObject profile = profiles.getJSONObject(i);
             Log.d(TAG, "Sensor profile " + i + ": " + profile.toString());
 
             try {
-                sensorProfiles.createOrUpdate(profile.getString("sensor_name"), profile.getJSONObject("data_structure"));
+                mSensorProfiles.createOrUpdate(profile.getString("sensor_name"), profile.getJSONObject("data_structure"));
             }
             catch (Exception err) {
                 Log.e(TAG, "Error parsing sensor profile: ", err);
@@ -132,44 +160,44 @@ public class DataSyncer {
     }
 
     protected void deletionInRemote() throws IOException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
-        List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
+        List<RealmDataDeletionRequest> dataDeletionRequests = mDatabaseHandler.getDataDeletionRequests();
 
         //Step 2: delete the data in remote and delete the request in local storage
         if(!dataDeletionRequests.isEmpty()){
-            for(DataDeletionRequest request : dataDeletionRequests){
-                proxy.deleteSensorData(request.getSourceName(),request.getSensorName(),request.getStartTime(),request.getEndTime());
-                databaseHandler.deleteDataDeletionRequest(request.getUuid());
+            for(RealmDataDeletionRequest request : dataDeletionRequests){
+                // FIXME: request.getSourceName() throws an exception as this needs Realm which is already closed.
+                mProxy.deleteSensorData(request.getSourceName(), request.getSensorName(), request.getStartTime(), request.getEndTime());
+                mDatabaseHandler.deleteDataDeletionRequest(request.getUuid());
             }
         }
     }
 
     protected void downloadFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: download sensors from remote
-        JSONArray sensorList = proxy.getSensors(SOURCE);
+        JSONArray sensorList = mProxy.getSensors(SOURCE);
 
         //Step 2: insert sensors into local storage
         if(sensorList.length() !=0 ) {
             for (int i = 0; i < sensorList.length(); i++) {
                 JSONObject sensorFromRemote = sensorList.getJSONObject(i);
                 SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
-                if(!databaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))){
-                    databaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
+                if(!mDatabaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))){
+                    mDatabaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
                 }
             }
         }
 
         //Step 3: get the sensors from local storage
-        List<Sensor> sensorListInLocal = databaseHandler.getSensors(SOURCE);
+        List<Sensor> sensorListInLocal = mDatabaseHandler.getSensors(SOURCE);
 
         //Step 4: Start data syncing for all sensors
         if(!sensorListInLocal.isEmpty()) {
             for (Sensor sensor : sensorListInLocal) {
                 if(sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
                     try {
-                        JSONArray dataList = proxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
+                        // FIXME: specify the interval for which to retrieve the data, and set the limit to infinity
+                        JSONArray dataList = mProxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
                         for (int i = 0; i < dataList.length(); i++) {
                             JSONObject dataFromRemote = dataList.getJSONObject(i);
                             sensor.insertOrUpdateDataPoint(dataFromRemote.get("value"), dataFromRemote.getLong("time"));
@@ -190,9 +218,8 @@ public class DataSyncer {
     }
 
     protected void uploadToRemote() throws JSONException, SensorException, SensorProfileException, DatabaseHandlerException, IOException, SchemaException, ValidationException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
-        List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
+        List<Sensor> rawSensorList = mDatabaseHandler.getSensors(SOURCE);
 
         //Step 2: filter the sensor and its data and upload to remote, mark existsInRemote to true afterwards
         /** Data structure of the sensor
@@ -219,7 +246,7 @@ public class DataSyncer {
                     jsonDataPoint.put("value", dataPoint.getValue());
                     dataArray.put(jsonDataPoint);
                 }
-                proxy.putSensorData(sensor.getSource(),sensor.getName(),dataArray,sensor.getOptions().getMeta());
+                mProxy.putSensorData(sensor.getSource(), sensor.getName(), dataArray, sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInRemote(true);
                     sensor.insertOrUpdateDataPoint(dataPoint.getValue(), dataPoint.getTime(), dataPoint.existsInRemote());
@@ -228,19 +255,18 @@ public class DataSyncer {
         }
     }
 
-    protected void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
+    protected void cleanupLocal() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         //Step 1: get all the sensors of this source in local storage
-        List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
+        List<Sensor> rawSensorList = mDatabaseHandler.getSensors(SOURCE);
 
         //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
         for(Sensor sensor: rawSensorList){
-            Long persistenceBoundary = new Date().getTime() - DSEConstants.PERSIST_PERIOD;
+            Long persistenceBoundary = new Date().getTime() - mPersistPeriod;
             if(sensor.getOptions().isUploadEnabled()){
                 if(sensor.getOptions().isPersistLocally()){
                    sensor.deleteDataPoints(null,persistenceBoundary);
                 }else{
-                    sensor.deleteDataPoints(null,null);
+                    sensor.deleteDataPoints(null,null); // delete all
                 }
             }else{
                 if(sensor.getOptions().isPersistLocally()){
@@ -248,6 +274,57 @@ public class DataSyncer {
                 }
             }
         }
+    }
+
+    /**
+     * Get the persist period, the period for which sensor data is kept in the local database.
+     * @return Returns the persist period in milliseconds
+     */
+    public long getPersistPeriod() {
+        return mPersistPeriod;
+    }
+
+    /**
+     * Set the persist period, the period for which sensor data is kept in the local database.
+     * @param persistPeriod   The persist period in milliseconds, 2678400000 (=31 days) by default.
+     */
+    public void setPersistPeriod(long persistPeriod) {
+        this.mPersistPeriod = persistPeriod;
+    }
+
+    /**
+     * A progress callback can be passed to method DataSyncer.sync(callback) to get notified during
+     * the different steps that the syncing process takes. The callbacks are triggered in the
+     * following order, and are only invoked once:
+     *
+     *   1. onDeletionCompleted
+     *   2. onUploadCompeted
+     *   3. onDownloadCompleted
+     *   4. onCleanupCompleted
+     *
+     */
+    public interface ProgressCallback {
+        /**
+         * Callback method called after data scheduled for deletion is actually deleted from
+         * remote.
+         **/
+        void onDeletionCompleted();
+
+        /**
+         * Callback called after all local data is uploaded to remote
+         */
+        void onUploadCompeted();
+
+        /**
+         * Callback called after all remote data is downloaded to local
+         */
+        void onDownloadCompleted();
+
+        /**
+         * Callback called after all outdated local data is cleaned up. Data is kept locally for a
+         * certain period only, and removed from local when older than this period and synced to remote.
+         */
+        void onCleanupCompleted();
     }
 
 }

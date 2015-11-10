@@ -1,4 +1,4 @@
-package nl.sense_os.datastorageengine;
+package nl.sense_os.datastorageengine.realm;
 
 import java.util.UUID;
 
@@ -7,7 +7,7 @@ import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 
-public class DataDeletionRequest extends RealmObject {
+public class RealmDataDeletionRequest extends RealmObject {
     @PrimaryKey
     private String uuid = null;
     private String userId = null;
@@ -17,9 +17,9 @@ public class DataDeletionRequest extends RealmObject {
     private Long startTime = null;
     private Long endTime = null;
 
-    public DataDeletionRequest() {}
+    public RealmDataDeletionRequest() {}
 
-    public DataDeletionRequest(String userId, String sensorName, String sourceName, long startTime, long endTime) {
+    public RealmDataDeletionRequest(String userId, String sensorName, String sourceName, long startTime, long endTime) {
         this.uuid = UUID.randomUUID().toString();
         this.userId = userId;
         this.sensorName = sensorName;

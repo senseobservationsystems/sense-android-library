@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -245,8 +246,8 @@ public class JSONSchemaValidator {
         if (  object instanceof Long)    return true;
         if (  object instanceof Byte)    return true;
 
-        // Float, Double, Short
+        // Double, Float, Short
         Number number = (Number) object;
-        return number.equals(number.intValue());
+        return Double.compare(number.doubleValue(), number.longValue()) == 0;
     }
 }

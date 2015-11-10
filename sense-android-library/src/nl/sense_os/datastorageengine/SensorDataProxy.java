@@ -27,9 +27,9 @@ public class SensorDataProxy {
     public static final String BASE_URL_LIVE = "https://sensor-api.sense-os.nl";
     public static final String BASE_URL_STAGING = "http://sensor-api.staging.sense-os.nl";
 
-    private String baseUrl = null;
-    private String appKey = null;
-    private String sessionId = null;
+    private String mBaseUrl = null;
+    private String mAppKey = null;
+    private String mSessionId = null;
 
     /**
      * Create a sensor data proxy.
@@ -38,9 +38,9 @@ public class SensorDataProxy {
      * @param sessionId  The session id of the current user.
      */
     public SensorDataProxy(SERVER server, String appKey, String sessionId) {
-        this.baseUrl = (server == SERVER.LIVE) ? BASE_URL_LIVE : BASE_URL_STAGING;
-        this.appKey = appKey;
-        this.sessionId = sessionId;
+        this.mBaseUrl = (server == SERVER.LIVE) ? BASE_URL_LIVE : BASE_URL_STAGING;
+        this.mAppKey = appKey;
+        this.mSessionId = sessionId;
     }
 
     /**
@@ -48,7 +48,7 @@ public class SensorDataProxy {
      * @return Returns the sessionId, or null if not set
      */
     public String getSessionId() {
-        return sessionId;
+        return mSessionId;
     }
 
     /**
@@ -56,7 +56,7 @@ public class SensorDataProxy {
      * @param sessionId   The session id of the current user.
      */
     public void setSessionId(final String sessionId) {
-        this.sessionId = sessionId;
+        this.mSessionId = sessionId;
     }
 
     /**
@@ -66,7 +66,7 @@ public class SensorDataProxy {
      *         [{sensor_name: string, data_structure: JSON}, ...]
      */
     public JSONArray getSensorProfiles() throws JSONException, IOException {
-        return request("GET", new URL(baseUrl + "/sensor_profiles")).toJSONArray();
+        return request("GET", new URL(mBaseUrl + "/sensor_profiles")).toJSONArray();
     }
 
     /**
@@ -75,7 +75,7 @@ public class SensorDataProxy {
      * @return Returns an array with sensors
      */
     public JSONArray getSensors() throws IOException, JSONException {
-        return request("GET", new URL(baseUrl + "/sensors")).toJSONArray();
+        return request("GET", new URL(mBaseUrl + "/sensors")).toJSONArray();
     }
 
     /**
@@ -302,7 +302,7 @@ public class SensorDataProxy {
      */
     protected URL sensorUrl(String sourceName)
             throws UnsupportedEncodingException, MalformedURLException {
-        return new URL(baseUrl + "/sensors/" + HTTPUtil.encode(sourceName));
+        return new URL(mBaseUrl + "/sensors/" + HTTPUtil.encode(sourceName));
     }
 
     /**
@@ -315,7 +315,7 @@ public class SensorDataProxy {
      */
     protected URL sensorUrl(String sourceName, String sensorName)
             throws UnsupportedEncodingException, MalformedURLException {
-        return new URL(baseUrl + "/sensors/" + HTTPUtil.encode(sourceName) + "/" + HTTPUtil.encode(sensorName));
+        return new URL(mBaseUrl + "/sensors/" + HTTPUtil.encode(sourceName) + "/" + HTTPUtil.encode(sensorName));
     }
 
     /**
@@ -328,7 +328,7 @@ public class SensorDataProxy {
      */
     protected URL sensorDataUrl(String sourceName, String sensorName)
             throws UnsupportedEncodingException, MalformedURLException {
-        return new URL(baseUrl + "/sensor_data/" + HTTPUtil.encode(sourceName) + "/" + HTTPUtil.encode(sensorName));
+        return new URL(mBaseUrl + "/sensor_data/" + HTTPUtil.encode(sourceName) + "/" + HTTPUtil.encode(sensorName));
     }
 
     /**
@@ -338,7 +338,7 @@ public class SensorDataProxy {
      * @throws MalformedURLException
      */
     protected URL sensorDataUrl() throws UnsupportedEncodingException, MalformedURLException {
-        return new URL(baseUrl + "/sensor_data");
+        return new URL(mBaseUrl + "/sensor_data");
     }
 
     /**
@@ -400,16 +400,16 @@ public class SensorDataProxy {
         HttpURLConnection urlConnection = null;
 
         // validate whether both sessionId and appKey are set
-        if (sessionId == null) {
+        if (mSessionId == null) {
             throw new IllegalArgumentException("SessionId is null");
         }
-        if (appKey == null) {
+        if (mAppKey == null) {
             throw new IllegalArgumentException("Application key is null");
         }
 
         Map<String,String> headers = new HashMap<>();
-        headers.put("APPLICATION-KEY", appKey);
-        headers.put("SESSION-ID", sessionId);
+        headers.put("APPLICATION-KEY", mAppKey);
+        headers.put("SESSION-ID", mSessionId);
 
         // When no charset is given in the Content-Type header "ISO-8859-1" should be
         // assumed (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7.1).
