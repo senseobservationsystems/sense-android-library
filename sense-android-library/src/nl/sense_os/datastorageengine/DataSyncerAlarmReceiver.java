@@ -9,12 +9,12 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
-    // The app's AlarmManager, which provides access to the system mAlarm services.
-    private AlarmManager mAlarmManager;
-    // The pending intent that is triggered when the Alarm fires.
-    private PendingIntent mAlarmIntent;
+    private Object mLock = new Object();
 
-    private long mSyncRate = 1800000;  // 30 minutes in milliseconds
+    private AlarmManager mAlarmManager;  // The app's AlarmManager, which provides access to the system mAlarm services.
+    private PendingIntent mAlarmIntent;  // The pending intent that is triggered when the Alarm fires.
+
+    private long mSyncRate = 1800000;  // 30 minutes in milliseconds by default
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -24,16 +24,31 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     public void setAlarm(Context context) {
-        mAlarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, DataSyncerAlarmReceiver.class);
-        mAlarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0, mSyncRate, mAlarmIntent);
+        // cancel if already running
+        cancelAlarm();
+
+        synchronized (mLock) {
+            // create a new alarm
+            mAlarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, DataSyncerAlarmReceiver.class);
+            mAlarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+            mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0, mSyncRate, mAlarmIntent);
+        }
     }
 
     public void cancelAlarm() {
-        // If the Alarm has been set, cancel it.
-        if (mAlarmManager != null) {
-            mAlarmManager.cancel(mAlarmIntent);
+        synchronized (mLock) {
+            // If the Alarm has been set, cancel it.
+            if (mAlarmManager != null) {
+                mAlarmManager.cancel(mAlarmIntent);
+                mAlarmManager = null;
+            }
+       }
+    }
+
+    public boolean isRunning() {
+        synchronized (mLock) {
+            return mAlarmManager != null;
         }
     }
 
@@ -46,7 +61,8 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     /**
-     * Set sync rate
+     * Set sync rate. After changing the sync rate, the alarm receiver must be started again
+     * using setAlarm.
      * @param syncRate Sync rate in milliseconds (1800000 (= 30 minutes) by default)
      */
     public void setSyncRate(long syncRate) {

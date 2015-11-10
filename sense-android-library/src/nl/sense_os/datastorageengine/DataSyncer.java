@@ -32,7 +32,6 @@ public class DataSyncer {
     private Context mContext;
     private DatabaseHandler mDatabaseHandler;
     private SensorProfiles mSensorProfiles;
-    private boolean mPeriodicSyncEnabled = false;
     private DataSyncerAlarmReceiver mAlarm;
     private long mPersistPeriod = 2678400000L; // 31 days in milliseconds
 
@@ -71,20 +70,15 @@ public class DataSyncer {
     }
 
     public boolean isPeriodicSyncEnabled() {
-        return this.mPeriodicSyncEnabled;
+        return mAlarm.isRunning();
     }
 
     public void enablePeriodicSync(){
-        // the default sync rate is set in DSEAlarmReceiver
-        if(!mPeriodicSyncEnabled) {
-            mAlarm.setAlarm(mContext);
-            mPeriodicSyncEnabled = true;
-        }
+        mAlarm.setAlarm(mContext);
     }
 
     public void disablePeriodicSync(){
         mAlarm.cancelAlarm();
-        mPeriodicSyncEnabled = false;
     }
 
     /**
