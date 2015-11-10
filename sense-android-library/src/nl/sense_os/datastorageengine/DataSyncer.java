@@ -83,7 +83,7 @@ public class DataSyncer {
     }
 
     public void disablePeriodicSync(){
-        mAlarm.cancelAlarm(mContext);
+        mAlarm.cancelAlarm();
         mPeriodicSyncEnabled = false;
     }
 
