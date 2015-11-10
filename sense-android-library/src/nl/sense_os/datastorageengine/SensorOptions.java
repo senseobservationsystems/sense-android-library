@@ -9,50 +9,50 @@ import org.json.JSONObject;
  * When setting sensor options via Sensor.setOptions(options) the options being null are ignored.
  */
 public class SensorOptions implements Cloneable {
-    private JSONObject meta = null;
-    private Boolean uploadEnabled = null;
-    private Boolean downloadEnabled = null;
-    private Boolean persistLocally = null;
+    private JSONObject mMeta = null;
+    private Boolean mUploadEnabled = null;
+    private Boolean mDownloadEnabled = null;
+    private Boolean mPersistLocally = null;
 
     public SensorOptions() {};
 
     public SensorOptions(JSONObject meta, Boolean uploadEnabled, Boolean downloadEnabled, Boolean persistLocally) {
-        this.meta = meta;
-        this.uploadEnabled = uploadEnabled;
-        this.downloadEnabled = downloadEnabled;
-        this.persistLocally = persistLocally;
+        this.mMeta = meta;
+        this.mUploadEnabled = uploadEnabled;
+        this.mDownloadEnabled = downloadEnabled;
+        this.mPersistLocally = persistLocally;
     }
 
     public JSONObject getMeta() {
-        return meta;
+        return mMeta;
     }
 
     public void setMeta(JSONObject meta) {
-        this.meta = meta;
+        this.mMeta = meta;
     }
 
     public Boolean isUploadEnabled() {
-        return uploadEnabled;
+        return mUploadEnabled;
     }
 
     public void setUploadEnabled(Boolean uploadEnabled) {
-        this.uploadEnabled = uploadEnabled;
+        this.mUploadEnabled = uploadEnabled;
     }
 
     public Boolean isDownloadEnabled() {
-        return downloadEnabled;
+        return mDownloadEnabled;
     }
 
-    public void setDownloadEnabled(Boolean downloadEnabled) {
-        this.downloadEnabled = downloadEnabled;
+    public void setmDownloadEnabled(Boolean mDownloadEnabled) {
+        this.mDownloadEnabled = mDownloadEnabled;
     }
 
     public Boolean isPersistLocally() {
-        return persistLocally;
+        return mPersistLocally;
     }
 
-    public void setPersistLocally(Boolean persistLocally) {
-        this.persistLocally = persistLocally;
+    public void setPersistLocally(Boolean mPersistLocally) {
+        this.mPersistLocally = mPersistLocally;
     }
 
     public SensorOptions clone () {
@@ -69,25 +69,25 @@ public class SensorOptions implements Cloneable {
         SensorOptions merged = new SensorOptions();
 
         for (SensorOptions o : options) {
-            if (o.meta != null) {
+            if (o.mMeta != null) {
                 try {
                     // This should not throw an exception in practice as we're
                     // cloning an existing, valid JSONObject.
-                    merged.meta = new JSONObject(o.meta.toString()); // create a clone of the JSON
+                    merged.mMeta = new JSONObject(o.mMeta.toString()); // create a clone of the JSON
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            if (o.downloadEnabled != null) {
-                merged.downloadEnabled = o.downloadEnabled;
+            if (o.mDownloadEnabled != null) {
+                merged.mDownloadEnabled = o.mDownloadEnabled;
             }
 
-            if (o.uploadEnabled != null) {
-                merged.uploadEnabled = o.uploadEnabled;
+            if (o.mUploadEnabled != null) {
+                merged.mUploadEnabled = o.mUploadEnabled;
             }
 
-            if (o.persistLocally != null) {
-                merged.persistLocally = o.persistLocally;
+            if (o.mPersistLocally != null) {
+                merged.mPersistLocally = o.mPersistLocally;
             }
         }
         return merged;

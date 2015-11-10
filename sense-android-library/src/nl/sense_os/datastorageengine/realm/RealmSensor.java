@@ -5,7 +5,6 @@ import android.content.Context;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;

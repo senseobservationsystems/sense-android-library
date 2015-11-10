@@ -8,14 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-/**
- * Created by fei on 30/10/15.
- */
 public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
-    // The app's AlarmManager, which provides access to the system alarm services.
-    private AlarmManager alarmMgr;
-    // The pending intent that is triggered when the alarm fires.
-    private PendingIntent alarmIntent;
+    // The app's AlarmManager, which provides access to the system mAlarm services.
+    private AlarmManager mAlarmManager;
+    // The pending intent that is triggered when the Alarm fires.
+    private PendingIntent mAlarmIntent;
 
 
     @Override
@@ -27,11 +24,11 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     public void setAlarm(Context context) {
-        alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        mAlarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, DataSyncerAlarmReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        mAlarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         //TODO: configure the period here
-        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0, DSEConstants.SYNC_RATE, alarmIntent);
+        mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 0, DSEConstants.SYNC_RATE, mAlarmIntent);
 
         ComponentName receiver = new ComponentName(context, DataSyncerBootReciver.class);
         PackageManager pm = context.getPackageManager();
@@ -42,12 +39,12 @@ public class DataSyncerAlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     public void cancelAlarm(Context context) {
-        // If the alarm has been set, cancel it.
-        if (alarmMgr!= null) {
-            alarmMgr.cancel(alarmIntent);
+        // If the Alarm has been set, cancel it.
+        if (mAlarmManager != null) {
+            mAlarmManager.cancel(mAlarmIntent);
         }
         // Disable {@code SampleBootReceiver} so that it doesn't automatically restart the
-        // alarm when the device is rebooted.
+        // Alarm when the device is rebooted.
         ComponentName receiver = new ComponentName(context, DataSyncerBootReciver.class);
         PackageManager pm = context.getPackageManager();
 

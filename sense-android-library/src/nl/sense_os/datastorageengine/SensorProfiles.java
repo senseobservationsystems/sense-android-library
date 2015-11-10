@@ -5,22 +5,19 @@ import android.content.Context;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.realm.Realm;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmSensorProfile;
 
 public class SensorProfiles {
-    private Context context = null;
+    private Context mContext = null;
 
     public SensorProfiles(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     public void create(String sensorName, JSONObject profile) throws SensorProfileException {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
 
@@ -38,7 +35,7 @@ public class SensorProfiles {
     }
 
     public void createOrUpdate(String sensorName, JSONObject profile) throws SensorProfileException {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
 
@@ -52,7 +49,7 @@ public class SensorProfiles {
     }
 
     public boolean has(String sensorName) {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             realm.beginTransaction();
             RealmSensorProfile realmSensorProfile = realm
@@ -69,7 +66,7 @@ public class SensorProfiles {
     }
 
     public JSONObject get(String sensorName) throws SensorProfileException, JSONException {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             realm.beginTransaction();
             RealmSensorProfile realmSensorProfile = realm
@@ -95,7 +92,7 @@ public class SensorProfiles {
      * @return Returns the number of profiles
      */
     public long size() {
-        Realm realm = Realm.getInstance(context);
+        Realm realm = Realm.getInstance(mContext);
         try {
             realm.beginTransaction();
             long count = realm.where(RealmSensorProfile.class).count();

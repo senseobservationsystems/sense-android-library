@@ -12,50 +12,50 @@ public class QueryOptions implements Cloneable{
     public enum SORT_ORDER {ASC, DESC};
     public enum INTERVAL {MINUTE, HOUR, DAY, WEEK};
 
-    private Long startTime = null;
-    private Long endTime = null;
-    private Boolean existsInRemote = null;
-    private Integer limit = null;
-    private SORT_ORDER sortOrder = null;
-    private INTERVAL interval = null;
+    private Long mStartTime = null;
+    private Long mEndTime = null;
+    private Boolean mExistsInRemote = null;
+    private Integer mLimit = null;
+    private SORT_ORDER mSortOrder = null;
+    private INTERVAL mInterval = null;
 
     public QueryOptions() {};
 
     public QueryOptions(Long startTime, Long endTime, Boolean existsInRemote, Integer limit, SORT_ORDER sortOrder){
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.existsInRemote = existsInRemote;
-        this.limit = limit;
-        this.sortOrder = sortOrder;
+        this.mStartTime = startTime;
+        this.mEndTime = endTime;
+        this.mExistsInRemote = existsInRemote;
+        this.mLimit = limit;
+        this.mSortOrder = sortOrder;
     }
 
-    public Long getStartTime() { return startTime; }
+    public Long getStartTime() { return mStartTime; }
 
-    public void setStartTime(Long startTime) { this.startTime = startTime; }
+    public void setStartTime(Long mStartTime) { this.mStartTime = mStartTime; }
 
-    public Long getEndTime() { return endTime; }
+    public Long getEndTime() { return mEndTime; }
 
-    public void setEndTime(Long endTime) { this.endTime = endTime; }
+    public void setEndTime(Long endTime) { this.mEndTime = endTime; }
 
-    public Boolean getExistsInRemote() { return existsInRemote; }
+    public Boolean getExistsInRemote() { return mExistsInRemote; }
 
-    public void setExistsInRemote(Boolean existsInRemote) { this.existsInRemote = existsInRemote; }
+    public void setExistsInRemote(Boolean existsInRemote) { this.mExistsInRemote = existsInRemote; }
 
-    public Integer getLimit() { return limit; }
+    public Integer getLimit() { return mLimit; }
 
-    public void setLimit(Integer limit) { this.limit = limit; }
+    public void setLimit(Integer limit) { this.mLimit = limit; }
 
     public INTERVAL getInterval() {
-        return interval;
+        return mInterval;
     }
 
     public void setInterval(INTERVAL interval) {
-        this.interval = interval;
+        this.mInterval = interval;
     }
 
-    public SORT_ORDER getSortOrder() { return sortOrder; }
+    public SORT_ORDER getSortOrder() { return mSortOrder; }
 
-    public void setSortOrder(SORT_ORDER sortOrder) { this.sortOrder = sortOrder; }
+    public void setSortOrder(SORT_ORDER sortOrder) { this.mSortOrder = sortOrder; }
 
     public QueryOptions clone() { return merge(this); }
 
@@ -68,33 +68,33 @@ public class QueryOptions implements Cloneable{
     public static QueryOptions merge(QueryOptions... options) {
         QueryOptions merged = new QueryOptions();
         for(QueryOptions o: options){
-            if(o.startTime != null)
-                merged.startTime = o.startTime;
-            if(o.endTime != null)
-                merged.endTime = o.endTime;
-            if(o.existsInRemote != null)
-                merged.existsInRemote = o.existsInRemote;
-            if(o.limit != null)
-                merged.limit = o.limit;
-            if(o.sortOrder != null)
-                merged.sortOrder = o.sortOrder;
+            if(o.mStartTime != null)
+                merged.mStartTime = o.mStartTime;
+            if(o.mEndTime != null)
+                merged.mEndTime = o.mEndTime;
+            if(o.mExistsInRemote != null)
+                merged.mExistsInRemote = o.mExistsInRemote;
+            if(o.mLimit != null)
+                merged.mLimit = o.mLimit;
+            if(o.mSortOrder != null)
+                merged.mSortOrder = o.mSortOrder;
         }
         return merged;
     }
 
     /**
-     * Create a query parameter string like "?start_time=123&end_time=456&limit=1000&sort=asc".
+     * Create a query parameter string like "?start_time=123&end_time=456&mLimit=1000&sort=asc".
      * Query options with null values are ignored.
      * @return
      */
     public String toQueryParams () {
         Map<String, String> params = new HashMap<>();
 
-        if (startTime != null) {params.put("start_time", startTime.toString()); }
-        if (endTime != null)   {params.put("end_time",   endTime.toString()); }
-        if (limit != null)     {params.put("limit",      limit.toString()); }
-        if (interval != null)  {params.put("interval",   interval.name().toLowerCase()); }
-        if (sortOrder != null) {params.put("sort",       sortOrder.name().toLowerCase()); }
+        if (mStartTime != null) {params.put("start_time", mStartTime.toString()); }
+        if (mEndTime != null)   {params.put("end_time",   mEndTime.toString()); }
+        if (mLimit != null)     {params.put("limit",      mLimit.toString()); }
+        if (mInterval != null)  {params.put("interval",   mInterval.name().toLowerCase()); }
+        if (mSortOrder != null) {params.put("sort",       mSortOrder.name().toLowerCase()); }
 
         String queryParams = "";
         for (Map.Entry<String, String> entry : params.entrySet()) {

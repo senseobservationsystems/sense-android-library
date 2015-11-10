@@ -11,7 +11,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
-import nl.sense_os.datastorageengine.DataDeletionRequest;
+import nl.sense_os.datastorageengine.realm.RealmDataDeletionRequest;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.QueryOptions;
@@ -963,8 +963,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
         databaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(),new Date().getTime());
         numberOfRequest++;
 
-        RealmResults<DataDeletionRequest> resultList= realm.where(DataDeletionRequest.class)
-                .equalTo("userId", databaseHandler.getUserId())
+        RealmResults<RealmDataDeletionRequest> resultList= realm.where(RealmDataDeletionRequest.class)
+                .equalTo("userId", databaseHandler.getmUserId())
                 .findAll();
         assertEquals("Incorrect number of the deletion requests", numberOfRequest, resultList.size());
     }
@@ -978,8 +978,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
         databaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
         numberOfRequest++;
 
-        RealmResults<DataDeletionRequest> resultList = realm.where(DataDeletionRequest.class)
-                .equalTo("userId", databaseHandler.getUserId())
+        RealmResults<RealmDataDeletionRequest> resultList = realm.where(RealmDataDeletionRequest.class)
+                .equalTo("userId", databaseHandler.getmUserId())
                 .findAll();
         assertEquals("Incorrect number of the deletion requests", numberOfRequest, resultList.size());
     }
@@ -993,7 +993,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         databaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
         numberOfRequest++;
 
-        List<DataDeletionRequest> resultList = databaseHandler.getDataDeletionRequests();
+        List<RealmDataDeletionRequest> resultList = databaseHandler.getDataDeletionRequests();
         assertEquals("Incorrect number of the deletion requests", numberOfRequest, resultList.size());
     }
 
@@ -1006,11 +1006,11 @@ public class TestDatabaseHandler extends AndroidTestCase {
         databaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
         numberOfRequest++;
 
-        List<DataDeletionRequest> resultList = databaseHandler.getDataDeletionRequests();
-        for(DataDeletionRequest request: resultList){
+        List<RealmDataDeletionRequest> resultList = databaseHandler.getDataDeletionRequests();
+        for(RealmDataDeletionRequest request: resultList){
             databaseHandler.deleteDataDeletionRequest(request.getUuid());
             numberOfRequest--;
-            List<DataDeletionRequest> newResultList = databaseHandler.getDataDeletionRequests();
+            List<RealmDataDeletionRequest> newResultList = databaseHandler.getDataDeletionRequests();
             assertEquals("Incorrect number of the deletion requests", numberOfRequest, newResultList.size());
         }
     }
