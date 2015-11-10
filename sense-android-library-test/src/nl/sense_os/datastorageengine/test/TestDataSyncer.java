@@ -479,6 +479,41 @@ public class TestDataSyncer extends AndroidTestCase {
 
     }
 
+    public void testProgressCallback() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        final JSONArray progress = new JSONArray();
+
+        dataSyncer.sync(new DataSyncer.ProgressCallback() {
+            @Override
+            public void onDeletionCompleted() {
+                progress.put("onDeletionCompleted");
+            }
+
+            @Override
+            public void onUploadCompeted() {
+                progress.put("onUploadCompeted");
+            }
+
+            @Override
+            public void onDownloadCompleted() {
+                progress.put("onDownloadCompleted");
+            }
+
+            @Override
+            public void onCleanupCompleted() {
+                progress.put("onCleanupCompleted");
+            }
+        });
+
+        JSONArray expected = new JSONArray()
+                .put("onDeletionCompleted")
+                .put("onUploadCompeted")
+                .put("onDownloadCompleted")
+                .put("onCleanupCompleted");
+        JSONAssert.assertEquals(expected, progress, true);
+    }
+
+    // TODO: test the four cases for cleaning up old data (currently there's only one)
+
     // TODO: test scheduler: start/stop/execute
     // TODO: test whether sync cannot run twice at the same time (lock not yet implemented!)
     // TODO: test deleting data

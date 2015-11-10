@@ -177,7 +177,7 @@ public class DataStorageEngine {
         mDatabaseHandler = new DatabaseHandler(mContext, mUserID);
         //mDatabaseHandler.enableEncryption(mOptions.enableEncryption);
         if(mOptions.enableEncryption != null && mOptions.enableEncryption) {
-            // TODO enable encryption on the database
+            // TODO enable encryption on the database. See https://realm.io/docs/java/latest/#encryption
             // mDatabaseHandler.setEncryptionKey(mOptions.encryptionKey);
         }
         mSensorDataProxy = new SensorDataProxy(mOptions.backendEnvironment, mAPPKey, mSessionID);

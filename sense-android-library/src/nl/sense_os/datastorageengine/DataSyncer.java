@@ -99,13 +99,43 @@ public class DataSyncer {
     /**
      * Synchronize data in local and remote storage.
      * Is executed synchronously.
+     * @param progressCallback      Optional callback structure to get notified of the syncing progress.
      */
-    public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
+    public void sync(ProgressCallback progressCallback) throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
         // TODO: check whether there is no sync in progress currently, if so throw an exception
+
+        // Step 1
         deletionInRemote();
+        if (progressCallback != null) {
+            progressCallback.onDeletionCompleted();
+        }
+
+        // Step 2
         uploadToRemote();
+        if (progressCallback != null) {
+            progressCallback.onUploadCompeted();
+        }
+
+        // Step 3
         downloadFromRemote();
-        cleanUpLocalStorage();
+        if (progressCallback != null) {
+            progressCallback.onDownloadCompleted();
+        }
+
+        // Step 4
+        cleanupLocal();
+        if (progressCallback != null) {
+            progressCallback.onCleanupCompleted();
+        }
+    }
+
+    /**
+     * Synchronize data in local and remote storage.
+     * Is executed synchronously.
+     */
+    public void sync() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException,
+            JSONException, SchemaException, ValidationException {
+        sync(null);
     }
 
     protected void downloadSensorProfiles () throws JSONException, IOException, SensorProfileException {
@@ -128,7 +158,6 @@ public class DataSyncer {
     }
 
     protected void deletionInRemote() throws IOException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get the deletion requests from local storage
         List<DataDeletionRequest> dataDeletionRequests = databaseHandler.getDataDeletionRequests();
 
@@ -143,7 +172,6 @@ public class DataSyncer {
     }
 
     protected void downloadFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: download sensors from remote
         JSONArray sensorList = proxy.getSensors(SOURCE);
 
@@ -188,7 +216,6 @@ public class DataSyncer {
     }
 
     protected void uploadToRemote() throws JSONException, SensorException, SensorProfileException, DatabaseHandlerException, IOException, SchemaException, ValidationException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
@@ -226,8 +253,7 @@ public class DataSyncer {
         }
     }
 
-    protected void cleanUpLocalStorage() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
-        //DatabaseHandler databaseHandler = new DatabaseHandler(context, userId);
+    protected void cleanupLocal() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         //Step 1: get all the sensors of this source in local storage
         List<Sensor> rawSensorList = databaseHandler.getSensors(SOURCE);
 
@@ -246,6 +272,41 @@ public class DataSyncer {
                 }
             }
         }
+    }
+
+    /**
+     * A progress callback can be passed to method DataSyncer.sync(callback) to get notified during
+     * the different steps that the syncing process takes. The callbacks are triggered in the
+     * following order, and are only invoked once:
+     *
+     *   1. onDeletionCompleted
+     *   2. onUploadCompeted
+     *   3. onDownloadCompleted
+     *   4. onCleanupCompleted
+     *
+     */
+    public interface ProgressCallback {
+        /**
+         * Callback method called after data scheduled for deletion is actually deleted from
+         * remote.
+         **/
+        void onDeletionCompleted();
+
+        /**
+         * Callback called after all local data is uploaded to remote
+         */
+        void onUploadCompeted();
+
+        /**
+         * Callback called after all remote data is downloaded to local
+         */
+        void onDownloadCompleted();
+
+        /**
+         * Callback called after all outdated local data is cleaned up. Data is kept locally for a
+         * certain period only, and removed from local when older than this period and synced to remote.
+         */
+        void onCleanupCompleted();
     }
 
 }
