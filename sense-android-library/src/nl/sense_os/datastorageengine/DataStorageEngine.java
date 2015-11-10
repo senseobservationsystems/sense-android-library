@@ -305,25 +305,6 @@ public class DataStorageEngine {
     }
 
     /**
-     * Delete data from Local Storage and Common Sense.
-     * DataPoints will be immediately removed locally, and an event (class DeletionCriteria)
-     * is scheduled for the next synchronization round to delete them from Common Sense.
-     * @param startTime The start time in epoch milliseconds
-     * @param endTime The start time in epoch milliseconds
-     * @throws IllegalStateException when the DataStorageEngine is not ready yet
-     **/
-    public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException, JSONException, SensorException, SensorProfileException, SchemaException {
-        if(getStatus() != DSEStatus.READY) {
-            throw new IllegalStateException("The DataStorageEngine is not ready yet");
-        }
-        for(String source : getSources()){
-            for(Sensor sensor : getSensors(source)){
-                sensor.deleteDataPoints(startTime, endTime);
-            }
-        }
-    }
-
-    /**
      * Flushes the local data to Common Sense
      * @return A future which will return the status of the flush action as Boolean via Future.get()
      */

@@ -71,7 +71,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         // Test onReady
         dataStorageEngine.onReady(onReady);
         // Test onSensorsDownloaded
-        dataStorageEngine.onSensorDataDownloaded(onSensorsDownloaded);
+        dataStorageEngine.onSensorsDownloaded(onSensorsDownloaded);
         // Test onSensorDataDownloaded
         dataStorageEngine.onSensorDataDownloaded(onSensorDataDownloaded);
 
@@ -131,13 +131,13 @@ public class TestDataStorageEngine extends AndroidTestCase{
         // Test Flush data asynchronously
         dataStorageEngine.flushData(flushData);
         // Test Flush data synchronously
-        dataStorageEngine.flushData();
+        assertEquals(Boolean.TRUE, dataStorageEngine.flushData().get(60, TimeUnit.SECONDS));
     }
 
     /**
      * Test the Create, Read, Update and Delete of sensor data
      */
-    public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException, IOException {
+    public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException, IOException, InterruptedException, ExecutionException, TimeoutException {
         /** CREATE */
         // check the create sensor
         Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
@@ -172,7 +172,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
 
         /** DELETE */
         // delete the last 2 data points, only the date is used with delete
-        dataStorageEngine.deleteDataPoints(date3, date4+1);
+        sensor.deleteDataPoints(date3, date4+1);
         // get the first rest with the same query, should return the first 2 in reversed order
         queryOptions = new QueryOptions(date, date4+1, null, null, QueryOptions.SORT_ORDER.DESC);
         dataPoints = sensor.getDataPoints(queryOptions);
@@ -180,10 +180,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         assertEquals(date, dataPoints.get(1).getTime());
 
         // Test Flush data
-        // TODO check why flush fails after the delete call
-        // dataStorageEngine.flushData();
-
-        // TODO test if the data has been deleted in the back-end
+        assertEquals(Boolean.TRUE, dataStorageEngine.flushData().get(60, TimeUnit.SECONDS));
     }
 
     /** Helper function for comparing sensors */
