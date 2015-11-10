@@ -485,8 +485,13 @@ public class TestDataSyncer extends AndroidTestCase {
             }
 
             @Override
-            public void onDownloadCompleted() {
-                progress.put("onDownloadCompleted");
+            public void onDownloadSensorsCompleted() {
+                progress.put("onDownloadSensorsCompleted");
+            }
+
+            @Override
+            public void onDownloadSensorDataCompleted() {
+                progress.put("onDownloadSensorDataCompleted");
             }
 
             @Override
@@ -498,7 +503,8 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONArray expected = new JSONArray()
                 .put("onDeletionCompleted")
                 .put("onUploadCompeted")
-                .put("onDownloadCompleted")
+                .put("onDownloadSensorsCompleted")
+                .put("onDownloadSensorDataCompleted")
                 .put("onCleanupCompleted");
         JSONAssert.assertEquals(expected, progress, true);
     }
