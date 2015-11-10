@@ -9,12 +9,10 @@ import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -22,6 +20,8 @@ import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.ErrorCallback;
+import nl.sense_os.datastorageengine.ProgressCallback;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorDataProxy;
@@ -476,7 +476,7 @@ public class TestDataSyncer extends AndroidTestCase {
     public void testProgressCallback() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
         final JSONArray progress = new JSONArray();
 
-        mDataSyncer.sync(new DataSyncer.ProgressCallback() {
+        mDataSyncer.sync(new ProgressCallback() {
             @Override
             public void onDeletionCompleted() {
                 progress.put("onDeletionCompleted");
@@ -512,9 +512,13 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expected, progress, true);
     }
 
+    /**
+     * WARNING: this test takes multiple minutes before it is finished
+     */
     public void testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
         long originalSyncRate = mDataSyncer.getSyncRate();
-        long syncRate = 1000 * 5; // 5 seconds
+        long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
+        long maxSyncDuration = 5 * 1000;  // we assume the syncing will never take longer than 5 seconds in this unit test
 
         try {
             mDataSyncer.setSyncRate(syncRate);
@@ -532,7 +536,7 @@ public class TestDataSyncer extends AndroidTestCase {
             DataPoint point = dataPoints.get(0);
             assertFalse("DataPoint should not yet exist in remote", point.existsInRemote());
 
-            Thread.sleep(syncRate * 2); // wait for twice the sync rate, syncing should be done by then
+            Thread.sleep(syncRate + maxSyncDuration); // wait until the first sync has taken place
 
             // by now, the data point should have been synced
             List<DataPoint> dataPoints2 = noise.getDataPoints(new QueryOptions());
@@ -543,7 +547,7 @@ public class TestDataSyncer extends AndroidTestCase {
             // stop syncing
             mDataSyncer.disablePeriodicSync();
 
-            Thread.sleep(syncRate); // wait another the sync rate period, be sure there is no sync in progress
+            Thread.sleep(syncRate + maxSyncDuration); // wait another the sync rate period, be sure there is no sync in progress
 
             // create a second data point
             long value2 = 2;
@@ -557,7 +561,7 @@ public class TestDataSyncer extends AndroidTestCase {
             assertTrue("DataPoint 1 should exist in remote", dataPoints3.get(0).existsInRemote());
             assertFalse("DataPoint 2 should NOT exist in remote", dataPoints3.get(1).existsInRemote());
 
-            Thread.sleep(syncRate * 2); // wait for twice the sync rate
+            Thread.sleep(syncRate + maxSyncDuration); // wait for twice the sync rate
 
             // sync should not have been executed (it is stopped)
             List<DataPoint> dataPoints4 = noise.getDataPoints(new QueryOptions());
@@ -574,14 +578,48 @@ public class TestDataSyncer extends AndroidTestCase {
         }
     }
 
+    /**
+     * WARNING: this test takes multiple minutes before it is finished
+     */
+    public void testOnErrorCallback() throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
+        String originalSessionId = mProxy.getSessionId();
+        long originalSyncRate = mDataSyncer.getSyncRate();
+        long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
+        long maxSyncDuration = 5 * 1000;  // we assume the syncing will never take longer than 5 seconds in this unit test
+
+        try {
+            final List<Throwable> receivedErrors = new ArrayList<>();
+
+            mProxy.setSessionId("invalid_session_id");
+
+            mDataSyncer.onError(new ErrorCallback() {
+                @Override
+                public void onError(Throwable err) {
+                    receivedErrors.add(err);
+                }
+            });
+
+            mDataSyncer.setSyncRate(syncRate);
+            mDataSyncer.enablePeriodicSync();
+
+            // wait until we're sure the sync action has taken place
+            Thread.sleep(syncRate + maxSyncDuration);
+
+            // now sync should have failed because of an invalid session id
+            assertTrue("Should have thrown an exception", receivedErrors.size() > 0);
+        }
+        finally {
+            // restore settings
+            mDataSyncer.disablePeriodicSync();
+            mDataSyncer.setSyncRate(originalSyncRate);
+            mProxy.setSessionId(originalSessionId);
+        }
+    }
+
 
     // TODO: test the four cases for cleaning up old data (currently there's only one)
 
-    // TODO: test scheduler: start/stop/execute
     // TODO: test whether sync cannot run twice at the same time (lock not yet implemented!)
     // TODO: test deleting data
-    // TODO: test setSyncRate
-
-    // TODO: implement and test DataSyncer.onError
 
 }

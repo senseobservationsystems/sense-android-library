@@ -33,7 +33,9 @@ public class DataSyncer {
     private DatabaseHandler mDatabaseHandler;
     private SensorProfiles mSensorProfiles;
     private DataSyncerAlarmReceiver mAlarm;
+    private ErrorCallback mErrorCallback = null;
     private long mPersistPeriod = 2678400000L; // 31 days in milliseconds
+    private Object mLock = new Object();
 
     /**
      * Create a new DataSyncer
@@ -46,7 +48,14 @@ public class DataSyncer {
         this.mDatabaseHandler = databaseHandler;
         this.mSensorProfiles = new SensorProfiles(context);
         this.mProxy = proxy;
-        this.mAlarm = new DataSyncerAlarmReceiver();
+        this.mAlarm = new DataSyncerAlarmReceiver(context, this, new ErrorCallback() {
+            @Override
+            public void onError(Throwable err) {
+                if (mErrorCallback != null) {
+                    mErrorCallback.onError(err);
+                }
+            }
+        });
     }
 
     public class PeriodicSyncService extends IntentService {
@@ -74,7 +83,7 @@ public class DataSyncer {
     }
 
     public void enablePeriodicSync(){
-        mAlarm.setAlarm(mContext);
+        mAlarm.setAlarm();
     }
 
     public void disablePeriodicSync(){
@@ -98,37 +107,43 @@ public class DataSyncer {
      * @param progressCallback      Optional callback structure to get notified of the syncing progress.
      */
     public void sync(ProgressCallback progressCallback) throws IOException, DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException {
-        // TODO: check whether there is no sync in progress currently, if so throw an exception
+        Log.d(TAG, "sync start... awaiting lock");
 
-        // Step 1
-        deletionInRemote();
-        if (progressCallback != null) {
-            progressCallback.onDeletionCompleted();
+        synchronized (mLock) {
+            Log.d(TAG, "sync start... there we go");
+
+            // Step 1
+            deletionInRemote();
+            if (progressCallback != null) {
+                progressCallback.onDeletionCompleted();
+            }
+
+            // Step 2
+            uploadToRemote();
+            if (progressCallback != null) {
+                progressCallback.onUploadCompeted();
+            }
+
+            // Step 3
+            downloadSensorsFromRemote();
+            if (progressCallback != null) {
+                progressCallback.onDownloadSensorsCompleted();
+            }
+
+            // Step 4
+            downloadSensorDataFromRemote();
+            if (progressCallback != null) {
+                progressCallback.onDownloadSensorDataCompleted();
+            }
+
+            // Step 5
+            cleanupLocal();
+            if (progressCallback != null) {
+                progressCallback.onCleanupCompleted();
+            }
         }
 
-        // Step 2
-        uploadToRemote();
-        if (progressCallback != null) {
-            progressCallback.onUploadCompeted();
-        }
-
-        // Step 3
-        downloadSensorsFromRemote();
-        if (progressCallback != null) {
-            progressCallback.onDownloadSensorsCompleted();
-        }
-
-        // Step 4
-        downloadSensorDataFromRemote();
-        if (progressCallback != null) {
-            progressCallback.onDownloadSensorDataCompleted();
-        }
-
-        // Step 4
-        cleanupLocal();
-        if (progressCallback != null) {
-            progressCallback.onCleanupCompleted();
-        }
+        Log.d(TAG, "sync end");
     }
 
     /**
@@ -295,47 +310,6 @@ public class DataSyncer {
     }
 
     /**
-     * A progress callback can be passed to method DataSyncer.sync(callback) to get notified during
-     * the different steps that the syncing process takes. The callbacks are triggered in the
-     * following order, and are only invoked once:
-     *
-     *   1. onDeletionCompleted
-     *   2. onUploadCompeted
-     *   3. onDownloadSensorsCompleted
-     *   4. onDownloadSensorDataCompleted
-     *   5. onCleanupCompleted
-     *
-     */
-    public interface ProgressCallback {
-        /**
-         * Callback method called after data scheduled for deletion is actually deleted from
-         * remote.
-         **/
-        void onDeletionCompleted();
-
-        /**
-         * Callback called after all local data is uploaded to remote
-         */
-        void onUploadCompeted();
-
-        /**
-         * Callback called after all remote sensors (not their data) are downloaded to local
-         */
-        void onDownloadSensorsCompleted();
-
-        /**
-         * Callback called after all remote sensor data is downloaded to local
-         */
-        void onDownloadSensorDataCompleted();
-
-        /**
-         * Callback called after all outdated local data is cleaned up. Data is kept locally for a
-         * certain period only, and removed from local when older than this period and synced to remote.
-         */
-        void onCleanupCompleted();
-    }
-
-    /**
      * Get the current sync rate
      * @return Returns the sync rate in milliseconds
      */
@@ -350,5 +324,14 @@ public class DataSyncer {
      */
     public void setSyncRate(long syncRate) {
         this.mAlarm.setSyncRate(syncRate);
+    }
+
+    /**
+     * Set an ErrorCallback for the DataSyncer. When an error occurs during a periodic sync,
+     * the error will be propagated to the onError method of this ErrorCallback.
+     * @param callback
+     */
+    public void onError(ErrorCallback callback) {
+        mErrorCallback = callback;
     }
 }
