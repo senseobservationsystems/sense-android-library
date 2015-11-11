@@ -176,14 +176,13 @@ public class DataSyncer {
 
     protected void deletionInRemote() throws IOException {
         //Step 1: get the deletion requests from local storage
-        List<RealmDataDeletionRequest> dataDeletionRequests = mDatabaseHandler.getDataDeletionRequests();
+        List<DataDeletionRequest> dataDeletionRequests = mDatabaseHandler.getDataDeletionRequests();
 
         //Step 2: delete the data in remote and delete the request in local storage
         if(!dataDeletionRequests.isEmpty()){
-            for(RealmDataDeletionRequest request : dataDeletionRequests){
-                // FIXME: request.getSourceName() throws an exception as this needs Realm which is already closed.
+            for(DataDeletionRequest request : dataDeletionRequests) {
                 mProxy.deleteSensorData(request.getSourceName(), request.getSensorName(), request.getStartTime(), request.getEndTime());
-                mDatabaseHandler.deleteDataDeletionRequest(request.getUuid());
+                mDatabaseHandler.deleteDataDeletionRequest(request.getId());
             }
         }
     }

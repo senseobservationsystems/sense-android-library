@@ -573,10 +573,62 @@ public class TestDataSyncer extends AndroidTestCase {
         assertEquals("Should have the right time", time1, local.get(0).getTime());
     }
 
+    public void testDeleteData() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        String sensorName = "time_active";
+
+        // create sensor data
+        JSONArray data = new JSONArray();
+        data.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
+        data.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
+        data.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
+        data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
+        data.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
+        mProxy.putSensorData(mSourceName, sensorName, data);
+
+        // synchronize data so we have it both local and remote
+        mDataSyncer.sync();
+
+        // delete sensor data via local
+        // see whether point 2 and 3 are deleted
+        // (not point 4, endTime itself should be excluded)
+        long startTime = 1444739042200l;  // time of point with value 2
+        long endTime   = 1444739042400l;  // time of point with value 4
+        Sensor timeActive = mDatabaseHandler.getSensor(mSourceName, sensorName);
+        timeActive.deleteDataPoints(startTime, endTime);
+
+        // data points should be deleted immediately from local
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        List<DataPoint> local = timeActive.getDataPoints(options);
+        assertEquals("Local should contain 3 items", 3, local.size());
+        assertEquals("Item 0 should the right value", 1, local.get(0).getValueAsInteger());
+        assertEquals("Item 1 should the right value", 4, local.get(1).getValueAsInteger());
+        assertEquals("Item 2 should the right value", 5, local.get(2).getValueAsInteger());
+
+        // data points should not yet be deleted from remote
+        JSONAssert.assertEquals(data, mProxy.getSensorData(mSourceName, sensorName, options), true);
+
+        // now we're going to do the sync... drum roll...
+        mDataSyncer.sync();
+
+        // data points should now be deleted from remote
+        JSONArray actual = mProxy.getSensorData(mSourceName, sensorName, options);
+        JSONArray expected = new JSONArray();
+        expected.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
+        expected.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
+        expected.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
+        JSONAssert.assertEquals(expected, actual, true);
+    }
+
+    // TODO: test deleting data not yet in remote
+    // TODO: test deleting data not in local
+
+
     /**
      * WARNING: this test takes multiple minutes before it is finished
      */
     // TODO: enable testPeriodicSync
+    // TODO: move this test to TestDataStorageEngine
     public void _testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
         long originalSyncRate = mDataSyncer.getSyncRate();
         long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
@@ -644,6 +696,7 @@ public class TestDataSyncer extends AndroidTestCase {
      * WARNING: this test takes multiple minutes before it is finished
      */
     // TODO: enable testOnErrorCallback
+    // TODO: move this test to TestDataStorageEngine
     public void _testOnErrorCallback() throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
         String originalSessionId = mProxy.getSessionId();
         long originalSyncRate = mDataSyncer.getSyncRate();

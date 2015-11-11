@@ -174,13 +174,8 @@ public class DatabaseHandler {
     public void createDataDeletionRequest(String sourceName, String sensorName, Long startTime, Long endTime) throws DatabaseHandlerException{
         Realm realm = Realm.getInstance(mContext);
         try {
-            if (startTime == null) {
-                startTime = -1l;
-            }
-            if (endTime == null) {
-                endTime = -1l;
-            }
-            RealmDataDeletionRequest dataDeletionRequest = new RealmDataDeletionRequest(mUserId, sourceName, sensorName, startTime, endTime);
+            RealmDataDeletionRequest dataDeletionRequest
+                    = RealmDataDeletionRequest.fromDataDeletionRequest(new DataDeletionRequest(mUserId, sourceName, sensorName, startTime, endTime));
 
             realm.beginTransaction();
             try {
@@ -195,7 +190,7 @@ public class DatabaseHandler {
         }
     }
 
-    public List<RealmDataDeletionRequest> getDataDeletionRequests(){
+    public List<DataDeletionRequest> getDataDeletionRequests(){
         Realm realm = Realm.getInstance(mContext);
         try {
             // query results
@@ -206,10 +201,10 @@ public class DatabaseHandler {
                     .findAll();
             realm.commitTransaction();
 
-            List<RealmDataDeletionRequest> dataDeletionRequests = new ArrayList<>();
+            List<DataDeletionRequest> dataDeletionRequests = new ArrayList<>();
             Iterator<RealmDataDeletionRequest> iterator = results.iterator();
             while (iterator.hasNext()) {
-                dataDeletionRequests.add(iterator.next());
+                dataDeletionRequests.add(RealmDataDeletionRequest.toDataDeletionRequest(iterator.next()));
             }
             return dataDeletionRequests;
         }
@@ -218,14 +213,14 @@ public class DatabaseHandler {
         }
     }
 
-    public void deleteDataDeletionRequest(String uuid){
+    public void deleteDataDeletionRequest(String id){
         Realm realm = Realm.getInstance(mContext);
         try {
             realm.beginTransaction();
             RealmResults<RealmDataDeletionRequest> result = realm
                     .where(RealmDataDeletionRequest.class)
                     .equalTo("userId", mUserId)
-                    .equalTo("uuid", uuid)
+                    .equalTo("id", id)
                     .findAll();
             result.clear();
             realm.commitTransaction();

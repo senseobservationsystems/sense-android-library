@@ -220,10 +220,9 @@ public class Sensor {
     public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
         Realm realm = Realm.getInstance(mContext);
         try {
-            Long startTimeRequest = startTime == null? -1l: startTime;
-            Long endTimeRequest  = endTime == null? -1l: endTime;
             // Add the delete data request for deleting data from the backend
-            RealmDataDeletionRequest dataDeletionRequest = new RealmDataDeletionRequest(mUserId, mSource, mName, startTimeRequest, endTimeRequest);
+            RealmDataDeletionRequest dataDeletionRequest
+                    = RealmDataDeletionRequest.fromDataDeletionRequest(new DataDeletionRequest(mUserId, mSource, mName, startTime, endTime));
 
             realm.beginTransaction();
             realm.copyToRealm(dataDeletionRequest);
