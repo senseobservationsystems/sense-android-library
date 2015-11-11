@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import nl.sense_os.datastorageengine.AsyncCallback;
-import nl.sense_os.datastorageengine.DSEOptions;
+import nl.sense_os.datastorageengine.DSEConfig;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
@@ -68,7 +68,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
         dataStorageEngine = new DataStorageEngine(getContext());
         dataStorageEngine.setCredentials(sessionId, userId, appKey);
-        DSEOptions dseOptions = new DSEOptions();
+        DSEConfig dseOptions = new DSEConfig();
         //dseOptions.
         //dataStorageEngine.setOptions(dseOptions);
 

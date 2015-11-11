@@ -7,7 +7,9 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -30,21 +32,15 @@ public class DataStorageEngine {
     /** The proxy for the actual data transfer with the back-end */
     private SensorDataProxy mSensorDataProxy;
     /** Synchronous DataSyncer progress monitor */
-    private DataSyncerProgressMonitor mDataSyncerProgress;
+    DataSyncerProgress mDataSyncerProgressTracker = new DataSyncerProgress();
     /** Static singleton instance of the DataStorageEngine */
     //private static DataStorageEngine mDataStorageEngine;
     /** Context needed for the DataSyncer */
     private Context mContext;
-    /** Ephemeral credentials set status */
-    private boolean mHasCredentials;
     /** Ephemeral initialization status */
     private boolean mInitialized;
     /** Ephemeral DSE options */
-    private DSEOptions mOptions;
-    /** Ephemeral DSE credentials */
-    private String mUserID = "";
-    private String mSessionID = "";
-    private String mAPPKey = "";
+    private DSEConfig mDSEConfig;
 
     /** Handles data syncer actions asynchronously */
     private ExecutorService mDataSyncerExecutorService;
@@ -70,10 +66,27 @@ public class DataStorageEngine {
     public DataStorageEngine(Context context)
     {
         mContext = context;
-        mOptions = new DSEOptions();
         mDataSyncerExecutorService = Executors.newSingleThreadExecutor();
         mCallBackExecutorService = Executors.newCachedThreadPool();
-        mDataSyncerProgress = new DataSyncerProgressMonitor();
+        loadConfiguration();
+        initialize();
+    }
+
+    /**
+     * Loads the latest configuration
+     */
+    private void loadConfiguration()
+    {
+        // get the configuration properties from the shared preferences
+        // TODO get the configuration from the local storage
+    }
+
+    /**
+     * Stores the currentConfiguration
+     */
+    private void saveConfiguration()
+    {
+        // TODO store the configuration in the shared preferences
     }
 
 //TODO see if a singleton construction is needed
@@ -108,7 +121,7 @@ public class DataStorageEngine {
      **/
     public synchronized DSEStatus getStatus()
     {
-        if(!mHasCredentials) {
+        if(mDSEConfig == null) {
             return DSEStatus.AWAITING_CREDENTIALS;
         } else if(mInitialized) {
             return DSEStatus.READY;
@@ -118,56 +131,20 @@ public class DataStorageEngine {
     }
 
     /**
-     * Set the options DataStorageOption
-     * Options with a null value will be unchanged.
-     * @param options The options to set for the DataStorageEngine
-     */
-    public synchronized void setOptions(DSEOptions options)
-    {
-        DSEOptions oldOptions = mOptions;
-        mOptions = options;
-        // if the options have change initialize the DSE
-        if(!oldOptions.equals(options)) {
-            initialize();
-        }
-    }
-
-    /**
-     * Set credentials required in DataStorageEngine
-     *
-     * SessionID, AppKey for Http requests. userId for table management in the database.
-     *
-     * @param sessionID The sessionID given on the latest successful login.
-     * @param userId The userId of the current logged in user.
-     * @param appKey The appKey of the application using DSE.
-     * @throws IllegalArgumentException When one of the arguments is empty
+     * Set the configuration properties for the DataStorageEngine
+     * The DataStorageEngine will re-initialize when the current configuration properties are different then the supplied dseConfig.
+     * @param dseConfig The configuration properties to set
      **/
-    public synchronized void setCredentials(String sessionID, String userId, String appKey) throws IllegalArgumentException
+    public synchronized void setConfig(DSEConfig dseConfig)
     {
-        if(sessionID == null || sessionID.length() == 0 ) {
-            throw new IllegalArgumentException("missing sessionID");
+        if(dseConfig == null || (mDSEConfig != null && dseConfig.equals(mDSEConfig))) {
+           return;
         }
-        if(userId == null || userId.length() == 0 ) {
-            throw new IllegalArgumentException("missing userID");
-        }
-        if(appKey == null || appKey.length() == 0 ) {
-            throw new IllegalArgumentException("missing appKey");
-        }
-
-        boolean credentialsUpdated = false;
-        if(!mUserID.equals(userId) || !mSessionID.equals(sessionID) || !mAPPKey.equals(appKey)) {
-            credentialsUpdated = true;
-        }
-
-        mUserID = userId;
-        mSessionID = sessionID;
-        mAPPKey = appKey;
 
         // the credentials have been set, start the initialization
-        mHasCredentials = true;
-        if(credentialsUpdated) {
-            initialize();
-        }
+        mDSEConfig = dseConfig;
+        saveConfiguration();
+        initialize();
     }
 
     /**
@@ -177,28 +154,28 @@ public class DataStorageEngine {
     private synchronized void initialize()
     {
         // if there are no credentials wait with the initialization
-        if(!mHasCredentials) {
+        if(mDSEConfig == null) {
             return;
         }
         // reset the initialized status
         mInitialized = false;
         // create a new database handler instance
-        mDatabaseHandler = new DatabaseHandler(mContext, mUserID);
-        //mDatabaseHandler.enableEncryption(mOptions.enableEncryption);
-        if(mOptions.enableEncryption != null && mOptions.enableEncryption) {
+        mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.getUserID());
+        //mDatabaseHandler.enableEncryption(mDSEConfig.enableEncryption);
+        if(mDSEConfig.enableEncryption != null && mDSEConfig.enableEncryption) {
             // TODO enable encryption on the database. See https://realm.io/docs/java/latest/#encryption
-            // mDatabaseHandler.setEncryptionKey(mOptions.encryptionKey);
+            // mDatabaseHandler.setEncryptionKey(mDSEConfig.encryptionKey);
         }
         // create a new sensor data proxy instance
-        mSensorDataProxy = new SensorDataProxy(mOptions.backendEnvironment, mAPPKey, mSessionID);
+        mSensorDataProxy = new SensorDataProxy(mDSEConfig.backendEnvironment, mDSEConfig.getAPPKey(), mDSEConfig.getSessionID());
         // disable the period syncing of the previous data syncer
         if(mDataSyncer != null) {
             mDataSyncer.disablePeriodicSync();
         }
         // create a new data syncer instance
         mDataSyncer = new DataSyncer(mContext, mDatabaseHandler,mSensorDataProxy);
-        if(mOptions.localPersistancePeriod != null) {
-            mDataSyncer.setPersistPeriod(mOptions.localPersistancePeriod);
+        if(mDSEConfig.localPersistancePeriod != null) {
+            mDataSyncer.setPersistPeriod(mDSEConfig.localPersistancePeriod);
         }
         // execute the initialization of the DataSyncer asynchronously
         mDataSyncerExecutorService.execute(mInitTask);
@@ -246,40 +223,47 @@ public class DataStorageEngine {
     private FutureTask<Boolean> mDataSync = new FutureTask<>(new Callable<Boolean>() {
         public Boolean call() throws Exception {
             try {
-                mDataSyncerProgress.reset();
-                mDataSyncer.sync(mDataSyncerProgress);
+                mDataSyncer.sync(mDataSyncerProgressTracker);
                 return true;
             } catch(Exception e) {
                 Log.e(TAG, "Error doing the initial sync on the DataSyncer", e);
-                mDataSyncerProgress.setLastException(e);
+                mDataSyncerProgressTracker.onException(e);
                throw e;
             }
         }
     });
+
 
     /**
      * Receive an update when the sensors have been downloaded
      * @return A Future<boolean> which will return the status of the sensor download process of the DataStorageEngine.
      */
     public Future<Boolean> onSensorsDownloaded() {
-        return mCallBackExecutorService.submit(new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                synchronized (mDataSyncerProgress.isDownloadSensorsCompletedMonitor){
-                    while(true) {
-                        // the data has already been been downloaded
-                        if (mDataSyncerProgress.getIsDownloadSensorsCompleted()) {
-                            return true;
-                        }
-                        // it failed, throw the last known exception
-                        if (mDataSyncerProgress.getLastException() != null) {
-                            throw mDataSyncerProgress.getLastException();
-                        }
-                        // no update yet, wait for it...
-                        mDataSyncerProgress.isDownloadSensorsCompletedMonitor.wait();
-                    }
-                }
-            }
-        });
+        // this future will only be executed when:
+        // 1) the associated call back function is called
+        // 2) when an exception is thrown
+        // 3) the call back function was already called successfully
+       Callable<Boolean> functionCall = new Callable<Boolean>() {
+           @Override
+           public Boolean call() throws Exception {
+               if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+                   return true;
+               } else {
+                   throw mDataSyncerProgressTracker.lastException;
+               }
+           }
+       };
+
+        // if the event has been fired already, submit the function call and return the future
+        if(mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+           return mCallBackExecutorService.submit(functionCall);
+        }
+        // put it in the queue and wait for it to be executed
+        else {
+            FutureTask<Boolean> future = new FutureTask(functionCall);
+            mDataSyncerProgressTracker.downloadSensorsFutureQueue.add(future);
+            return future;
+        }
     }
 
     /**
@@ -296,24 +280,31 @@ public class DataStorageEngine {
      * @return True when the sensor data download was successful, throws and exception otherwise
      */
     public Future<Boolean> onSensorDataDownloaded() {
-        return mCallBackExecutorService.submit(new Callable<Boolean>() {
+        // this future will only be executed when:
+        // 1) the associated call back function is called
+        // 2) when an exception is thrown
+        // 3) the call back function was already called successfully
+        Callable<Boolean> functionCall = new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
-                synchronized (mDataSyncerProgress.isDownloadSensorDataCompletedMonitor) {
-                    while (true) {
-                        // the data has already been been downloaded
-                        if (mDataSyncerProgress.getIsDownloadSensorDataCompleted()) {
-                            return true;
-                        }
-                        // it failed, throw the last known exception
-                        if (mDataSyncerProgress.getLastException() != null) {
-                            throw mDataSyncerProgress.getLastException();
-                        }
-                        // no update yet, wait for it...
-                        mDataSyncerProgress.isDownloadSensorDataCompletedMonitor.wait();
-                    }
+                if (mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
+                    return true;
+                } else {
+                    throw mDataSyncerProgressTracker.lastException;
                 }
             }
-        });
+        };
+
+        // if the event has been fired already, submit the function call and return the future
+        if(mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
+            return mCallBackExecutorService.submit(functionCall);
+        }
+        // put it in the queue and wait for it to be executed
+        else {
+            FutureTask<Boolean> future = new FutureTask(functionCall);
+            mDataSyncerProgressTracker.downloadSensorDataFutureQueue.add(future);
+            return future;
+        }
     }
 
     /**
@@ -431,4 +422,56 @@ public class DataStorageEngine {
         }
         return mDatabaseHandler.getSources();
     }
+
+
+    class DataSyncerProgress implements ProgressCallback {
+        public boolean isDownloadSensorsCompleted;
+        public boolean isDownloadSensorDataCompleted;
+        public Queue<FutureTask> downloadSensorsFutureQueue = new ConcurrentLinkedQueue<>();
+        public Queue<FutureTask> downloadSensorDataFutureQueue = new ConcurrentLinkedQueue<>();
+        public Queue<FutureTask> exceptionFutureQueue = new ConcurrentLinkedQueue<>();
+        public Exception lastException = null;
+
+        /** Function to call when an exception is thrown when executing a DataSyncer function with ProgressCallback*/
+        public void onException(Exception e){
+            lastException = e;
+
+            // process all the futures
+            for(FutureTask future : exceptionFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+            for(FutureTask future : downloadSensorsFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+            for(FutureTask future : downloadSensorDataFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+        }
+
+        @Override
+        public void onDownloadSensorsCompleted() {
+            isDownloadSensorsCompleted = true;
+            for(FutureTask future : downloadSensorsFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+        }
+
+        @Override
+        public void onDownloadSensorDataCompleted() {
+            isDownloadSensorDataCompleted = true;
+            for(FutureTask future : downloadSensorDataFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+        }
+
+        @Override
+        public void onDeletionCompleted() {}
+
+        @Override
+        public void onUploadCompeted() {}
+
+        @Override
+        public void onCleanupCompleted() {}
+    }
+
 }
