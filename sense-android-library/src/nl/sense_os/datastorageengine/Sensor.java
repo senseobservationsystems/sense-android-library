@@ -110,16 +110,6 @@ public class Sensor {
     }
 
     /**
-     * Insert a new DataPoint to this sensor
-     * @param value
-     * @param time
-     * @param existsInRemote
-     */
-    public void insertOrUpdateDataPoint(Object value, long time, boolean existsInRemote) throws ValidationException, JSONException {
-        insertOrUpdateDataPoint(new DataPoint(mId, value, time, existsInRemote));
-    }
-
-    /**
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      */
     protected void saveChanges() throws DatabaseHandlerException {
@@ -218,19 +208,15 @@ public class Sensor {
      * @trhows DatabaseHandlerException when the local deletion of sensor data for a sensor fails
      **/
     public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
+        // create a deletion request, will be put in a queue and in the next synchronization
+        // the remote data will be deleted
+        DatabaseHandler databaseHandler = new DatabaseHandler(mContext, mUserId);
+        databaseHandler.createDataDeletionRequest(mSource, mName, startTime, endTime);
+
+        // Delete the data locally
         Realm realm = Realm.getInstance(mContext);
         try {
-            // Add the delete data request for deleting data from the backend
-            RealmDataDeletionRequest dataDeletionRequest
-                    = RealmDataDeletionRequest.fromDataDeletionRequest(new DataDeletionRequest(mUserId, mSource, mName, startTime, endTime));
-
-            realm.beginTransaction();
-            realm.copyToRealm(dataDeletionRequest);
-            realm.commitTransaction();
-
-            // Delete the local data
             RealmResults<RealmDataPoint> results = queryFromRealm(startTime, endTime, null);
-
             realm.beginTransaction();
             results.clear();
             realm.commitTransaction();

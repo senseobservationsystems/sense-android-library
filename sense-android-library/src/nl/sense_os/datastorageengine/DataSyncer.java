@@ -181,7 +181,17 @@ public class DataSyncer {
         //Step 2: delete the data in remote and delete the request in local storage
         if(!dataDeletionRequests.isEmpty()){
             for(DataDeletionRequest request : dataDeletionRequests) {
-                mProxy.deleteSensorData(request.getSourceName(), request.getSensorName(), request.getStartTime(), request.getEndTime());
+                try {
+                    mProxy.deleteSensorData(request.getSourceName(), request.getSensorName(), request.getStartTime(), request.getEndTime());
+                }
+                catch (HttpResponseException err) {
+                    if (err.getStatusCode() == 404) { // Resource not found
+                        // ignore this error: the sensor doesn't yet exist remotely, no problem
+                    }
+                    else {
+                        throw err;
+                    }
+                }
                 mDatabaseHandler.deleteDataDeletionRequest(request.getId());
             }
         }
@@ -309,7 +319,7 @@ public class DataSyncer {
                 mProxy.putSensorData(sensor.getSource(), sensor.getName(), dataArray, sensor.getOptions().getMeta());
                 for(DataPoint dataPoint: dataPoints){
                     dataPoint.setExistsInRemote(true);
-                    sensor.insertOrUpdateDataPoint(dataPoint.getValue(), dataPoint.getTime(), dataPoint.existsInRemote());
+                    sensor.insertOrUpdateDataPoint(dataPoint);
                 }
             }
         }

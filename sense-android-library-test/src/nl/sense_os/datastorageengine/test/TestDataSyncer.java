@@ -620,9 +620,85 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expected, actual, true);
     }
 
-    // TODO: test deleting data not yet in remote
-    // TODO: test deleting data not in local
+    public void testDeleteDataNotInRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        String sensorName = "time_active";
+        Sensor timeActive = mDatabaseHandler.createSensor(mSourceName, sensorName, new SensorOptions(null, true, true, true));
 
+        // create sensor data
+        timeActive.insertOrUpdateDataPoint(1, 1444739042100l);
+        timeActive.insertOrUpdateDataPoint(2, 1444739042200l);
+        timeActive.insertOrUpdateDataPoint(3, 1444739042300l);
+        timeActive.insertOrUpdateDataPoint(4, 1444739042400l);
+        timeActive.insertOrUpdateDataPoint(5, 1444739042500l);
+
+        // delete sensor data via local
+        // see whether point 2 and 3 are deleted
+        // (not point 4, endTime itself should be excluded)
+        long startTime = 1444739042200l;  // time of point with value 2
+        long endTime   = 1444739042400l;  // time of point with value 4
+        timeActive.deleteDataPoints(startTime, endTime);
+
+        // data points should be deleted immediately from local
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        List<DataPoint> local = timeActive.getDataPoints(options);
+        assertEquals("Local should contain 3 items", 3, local.size());
+        assertEquals("Item 0 should the right value", 1, local.get(0).getValueAsInteger());
+        assertEquals("Item 1 should the right value", 4, local.get(1).getValueAsInteger());
+        assertEquals("Item 2 should the right value", 5, local.get(2).getValueAsInteger());
+
+        // sync to the backend
+        mDataSyncer.sync();
+
+        // check whether backend does not contain the left over data points only (not the deleted ones)
+        JSONArray actual = mProxy.getSensorData(mSourceName, sensorName, options);
+        JSONArray expected = new JSONArray();
+        expected.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
+        expected.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
+        expected.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
+        JSONAssert.assertEquals(expected, actual, true);
+    }
+
+    public void testDeleteDataNotInLocal() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        String sensorName = "time_active";
+
+        // create sensor data
+        JSONArray data = new JSONArray();
+        data.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
+        data.put(new JSONObject("{\"time\":1444739042200,\"value\":2}"));
+        data.put(new JSONObject("{\"time\":1444739042300,\"value\":3}"));
+        data.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
+        data.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
+        mProxy.putSensorData(mSourceName, sensorName, data);
+
+        // delete sensor data via local
+        // see whether point 2 and 3 are deleted
+        // (not point 4, endTime itself should be excluded)
+        long startTime = 1444739042200l;  // time of point with value 2
+        long endTime   = 1444739042400l;  // time of point with value 4
+        mProxy.deleteSensorData(mSourceName, sensorName, startTime, endTime);
+
+        // check whether backend does not contain the deleted data points
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        JSONArray actual = mProxy.getSensorData(mSourceName, sensorName, options);
+        JSONArray expected = new JSONArray();
+        expected.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
+        expected.put(new JSONObject("{\"time\":1444739042400,\"value\":4}"));
+        expected.put(new JSONObject("{\"time\":1444739042500,\"value\":5}"));
+        JSONAssert.assertEquals(expected, actual, true);
+
+        // sync to the backend
+        mDataSyncer.sync();
+
+        // the sensor should now be created locally, and should only contain the left over data points
+        Sensor timeActive = mDatabaseHandler.getSensor(mSourceName, sensorName);
+        List<DataPoint> local = timeActive.getDataPoints(options);
+        assertEquals("Local should contain 3 items", 3, local.size());
+        assertEquals("Item 0 should the right value", 1, local.get(0).getValueAsInteger());
+        assertEquals("Item 1 should the right value", 4, local.get(1).getValueAsInteger());
+        assertEquals("Item 2 should the right value", 5, local.get(2).getValueAsInteger());
+    }
 
     /**
      * WARNING: this test takes multiple minutes before it is finished
@@ -734,7 +810,5 @@ public class TestDataSyncer extends AndroidTestCase {
 
 
     // TODO: test the four cases for cleaning up old data (currently there's only one)
-    // TODO: test deleting data
-    // TODO: test downloading data which exceeds the limit per request of 100 data points
 
 }
