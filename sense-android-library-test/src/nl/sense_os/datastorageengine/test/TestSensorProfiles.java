@@ -30,6 +30,7 @@ public class TestSensorProfiles  extends AndroidTestCase {
     String mSessionId;
     SensorDataProxy mProxy;
     DatabaseHandler mDatabaseHandler;
+    private byte[] mEncryptionKey = null; // TODO: test with encryption key
     DataSyncer mDataSyncer;
     private SensorProfiles mSensorProfiles;
     CSUtils mCsUtils;
@@ -44,7 +45,7 @@ public class TestSensorProfiles  extends AndroidTestCase {
 
         mProxy = new SensorDataProxy(mServer, mAppKey, mSessionId);
         mDatabaseHandler = new DatabaseHandler(getContext(), mUserId);
-        mSensorProfiles = new SensorProfiles(getContext());
+        mSensorProfiles = new SensorProfiles(getContext(), mEncryptionKey);
         mDataSyncer = new DataSyncer(getContext(), mDatabaseHandler, mProxy);
         mDataSyncer.initialize();
     }

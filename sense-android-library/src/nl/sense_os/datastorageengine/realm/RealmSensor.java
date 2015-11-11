@@ -174,14 +174,16 @@ public class RealmSensor extends RealmObject {
     /**
      * Convert a RealmSensor into a Sensor
      * @param context
+     * @param encryptionKey
      * @param realmSensor
      * @return Returns a Sensor
      */
-    public static Sensor toSensor (Context context, RealmSensor realmSensor) throws JSONException, SensorException, SensorProfileException, SchemaException {
+    public static Sensor toSensor (Context context, byte[] encryptionKey, RealmSensor realmSensor) throws JSONException, SensorException, SensorProfileException, SchemaException {
         String meta = realmSensor.getMeta();
 
         return new Sensor(
                 context,
+                encryptionKey,
                 realmSensor.getId(),
                 realmSensor.getName(),
                 realmSensor.getUserId(),

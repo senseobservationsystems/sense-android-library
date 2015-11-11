@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
@@ -23,6 +24,7 @@ import nl.sense_os.util.json.ValidationException;
 public class Sensor {
 
     private Context mContext = null;
+    private byte[] mEncryptionKey = null;
     private JSONObject mProfile = null;
     private JSONSchemaValidator mValidator = null;
 
@@ -33,9 +35,10 @@ public class Sensor {
     private SensorOptions mOptions = new SensorOptions();
     private boolean mRemoteDataPointsDownloaded = false;
 
-    public Sensor(Context context, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException, SensorProfileException, JSONException, SchemaException {
+    public Sensor(Context context, byte[] encryptionKey, long id, String name, String userId, String source, SensorOptions options, boolean remoteDataPointsDownloaded) throws SensorException, SensorProfileException, JSONException, SchemaException {
         this.mContext = context;
-        this.mProfile = new SensorProfiles(context).get(name);
+        this.mEncryptionKey = encryptionKey;
+        this.mProfile = new SensorProfiles(context, encryptionKey).get(name);
         this.mValidator = new JSONSchemaValidator(this.mProfile);
 
         this.mId = id;
@@ -113,7 +116,7 @@ public class Sensor {
      * Update RealmSensor in local database with the info of the given Sensor object. Throws an exception if it fails to updated.
      */
     protected void saveChanges() throws DatabaseHandlerException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
 
@@ -144,7 +147,7 @@ public class Sensor {
      * 			into a Realm object.
      */
     protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws ValidationException, JSONException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             mValidator.validate(dataPoint.getValue());
 
@@ -170,7 +173,7 @@ public class Sensor {
      */
     public List<DataPoint> getDataPoints(QueryOptions queryOptions) throws JSONException, DatabaseHandlerException {
         // query results
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             if(queryOptions.getLimit() != null) {
                 if(queryOptions.getLimit() <= 0) {
@@ -214,7 +217,7 @@ public class Sensor {
         databaseHandler.createDataDeletionRequest(mSource, mName, startTime, endTime);
 
         // Delete the data locally
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             RealmResults<RealmDataPoint> results = queryFromRealm(startTime, endTime, null);
             realm.beginTransaction();
@@ -255,7 +258,7 @@ public class Sensor {
 
     // Helper function for getDataPoints
     private RealmResults<RealmDataPoint> queryFromRealm(Long startTime, Long endTime, Boolean existsInRemote) throws DatabaseHandlerException{
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             RealmQuery<RealmDataPoint> query = realm
                                                     .where(RealmDataPoint.class)
@@ -299,5 +302,20 @@ public class Sensor {
             }
         }
         return dataPoints;
+    }
+
+    /**
+     * Helper function to create a new Realm instance
+     * TODO: come up with a smarter way to use Realm, this is a lot of redundant code right now
+     * @return Returns a new Realm instance
+     */
+    protected Realm getRealmInstance () {
+        RealmConfiguration.Builder config = new RealmConfiguration.Builder(mContext);
+
+        if (mEncryptionKey != null) {
+            config = config.encryptionKey(mEncryptionKey);
+        }
+
+        return Realm.getInstance(config.build());
     }
 }
