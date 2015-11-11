@@ -213,12 +213,35 @@ public class DataSyncer {
             for (Sensor sensor : sensorListInLocal) {
                 if(sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
                     try {
-                        // FIXME: specify the interval for which to retrieve the data, and set the limit to infinity
-                        JSONArray dataList = mProxy.getSensorData(sensor.getSource(), sensor.getName(), new QueryOptions());
-                        for (int i = 0; i < dataList.length(); i++) {
-                            JSONObject dataFromRemote = dataList.getJSONObject(i);
-                            sensor.insertOrUpdateDataPoint(dataFromRemote.get("value"), dataFromRemote.getLong("time"));
+                        // as start time, we take the the current time minus persist period,
+                        // minus 10 minutes to account for duration of the process itself
+                        final long MINUTE = 1000 * 60;
+                        final int LIMIT = 100; // number of data points to retrieve per request, max allowed by the backend is 1000
+                        QueryOptions options = new QueryOptions();
+                        options.setSortOrder(QueryOptions.SORT_ORDER.DESC);
+                        options.setStartTime(new Date().getTime() - mPersistPeriod - 10 * MINUTE);
+                        options.setEndTime(null); // undefined, we want to get all data up until to now
+                        options.setLimit(LIMIT);
+
+                        boolean done = false;
+                        while (!done) {
+                            JSONArray dataList = mProxy.getSensorData(sensor.getSource(), sensor.getName(), options);
+                            for (int i = 0; i < dataList.length(); i++) {
+                                JSONObject dataFromRemote = dataList.getJSONObject(i);
+                                sensor.insertOrUpdateDataPoint(dataFromRemote.get("value"), dataFromRemote.getLong("time"));
+                            }
+
+                            if (dataList.length() < LIMIT) {
+                                done = true;
+                            }
+                            else {
+                                // we need to retrieve the next 100 number of items
+                                // new endTime is the time of the last (oldest) data point. Data points are ordered DESC
+                                long endTime = dataList.getJSONObject(dataList.length() - 1).getLong("time");
+                                options.setEndTime(endTime);
+                            }
                         }
+
                         sensor.setRemoteDataPointsDownloaded(true);
                     }
                     catch (HttpResponseException err) {

@@ -512,10 +512,72 @@ public class TestDataSyncer extends AndroidTestCase {
         JSONAssert.assertEquals(expected, progress, true);
     }
 
+    public void testDownloadMuchData() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        // create more than 100 data points.
+        // The sync process retrieves the data in chunks of 100 items, that's what we want to test.
+        long time = new Date().getTime();
+        JSONArray data = new JSONArray();
+        for (int i = 0; i < 250; i++) {
+            data.put(new JSONObject().put("time", time + i).put("value", i));
+        }
+
+        String sensorName = "noise";
+        mProxy.putSensorData(mSourceName, sensorName, data);
+
+        // sync all data points, should sync them from remote to local
+        mDataSyncer.sync();
+
+        // get all DataPoints from local
+        Sensor noise = mDatabaseHandler.getSensor(mSourceName, sensorName);
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        List<DataPoint> local = noise.getDataPoints(options);
+
+        // compare the data points
+        assertEquals("Should contain the right amount of data", data.length(), local.size());
+        // TODO: test all points
+        for (int i = 0; i < data.length(); i++) {
+            assertEquals("Should have the right time (i=" + i + ")", data.getJSONObject(i).getLong("time"), local.get(i).getTime());
+            assertEquals("Should have the right value (i=" + i + ")", data.getJSONObject(i).getInt("value"), local.get(i).getValueAsInteger());
+        }
+    }
+
+    public void testDownloadOnlyRecentData() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        // test whether only recent data is downloaded
+
+        long time1 = new Date().getTime();
+        int value1 = 111;
+        JSONArray data = new JSONArray();
+        data.put(new JSONObject().put("time", time1).put("value", value1));
+
+        // create an "old" data point, long before the persist period
+        long time2 = time1 - 2 * mDataSyncer.getPersistPeriod();
+        int value2 = 222;
+        data.put(new JSONObject().put("time", time2).put("value", value2));
+
+        String sensorName = "noise";
+        mProxy.putSensorData(mSourceName, sensorName, data);
+
+        // sync all data points, should sync them from remote to local
+        mDataSyncer.sync();
+
+        // get all DataPoints from local
+        Sensor noise = mDatabaseHandler.getSensor(mSourceName, sensorName);
+        QueryOptions options = new QueryOptions();
+        options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
+        List<DataPoint> local = noise.getDataPoints(options);
+
+        // compare the data point
+        assertEquals("Should contain only one data point", 1, local.size());
+        assertEquals("Should have the right value", value1, local.get(0).getValueAsInteger());
+        assertEquals("Should have the right time", time1, local.get(0).getTime());
+    }
+
     /**
      * WARNING: this test takes multiple minutes before it is finished
      */
-    public void testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
+    // TODO: enable testPeriodicSync
+    public void _testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
         long originalSyncRate = mDataSyncer.getSyncRate();
         long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
         long maxSyncDuration = 5 * 1000;  // we assume the syncing will never take longer than 5 seconds in this unit test
@@ -581,7 +643,8 @@ public class TestDataSyncer extends AndroidTestCase {
     /**
      * WARNING: this test takes multiple minutes before it is finished
      */
-    public void testOnErrorCallback() throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
+    // TODO: enable testOnErrorCallback
+    public void _testOnErrorCallback() throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
         String originalSessionId = mProxy.getSessionId();
         long originalSyncRate = mDataSyncer.getSyncRate();
         long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
@@ -618,8 +681,7 @@ public class TestDataSyncer extends AndroidTestCase {
 
 
     // TODO: test the four cases for cleaning up old data (currently there's only one)
-
-    // TODO: test whether sync cannot run twice at the same time (lock not yet implemented!)
     // TODO: test deleting data
+    // TODO: test downloading data which exceeds the limit per request of 100 data points
 
 }
