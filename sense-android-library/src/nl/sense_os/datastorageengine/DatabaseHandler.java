@@ -53,10 +53,10 @@ public class DatabaseHandler {
         this.mEncryptionKey = null;
     }
 
-    public DatabaseHandler(Context context, String userId, byte[] encryptionKey) {
+    public DatabaseHandler(Context context, byte[] encryptionKey, String userId) {
         this.mContext = context;
-        this.mUserId = userId;
         this.mEncryptionKey = encryptionKey;
+        this.mUserId = userId;
     }
 
     public byte[] getEncryptionKey() {
