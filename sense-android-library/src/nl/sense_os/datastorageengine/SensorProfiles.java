@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmSensor;
@@ -18,13 +19,15 @@ import nl.sense_os.datastorageengine.realm.RealmSensorProfile;
 
 public class SensorProfiles {
     private Context mContext = null;
+    private byte[] mEncryptionKey = null;
 
-    public SensorProfiles(Context context) {
+    public SensorProfiles(Context context, byte[] encryptionKey) {
         this.mContext = context;
+        this.mEncryptionKey = encryptionKey;
     }
 
     public void create(String sensorName, JSONObject profile) throws SensorProfileException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
 
@@ -42,7 +45,7 @@ public class SensorProfiles {
     }
 
     public void createOrUpdate(String sensorName, JSONObject profile) throws SensorProfileException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             RealmSensorProfile realmSensorProfile = new RealmSensorProfile(sensorName, profile.toString());
 
@@ -56,7 +59,7 @@ public class SensorProfiles {
     }
 
     public boolean has(String sensorName) {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
             RealmSensorProfile realmSensorProfile = realm
@@ -73,7 +76,7 @@ public class SensorProfiles {
     }
 
     public JSONObject get(String sensorName) throws SensorProfileException, JSONException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
             RealmSensorProfile realmSensorProfile = realm
@@ -95,7 +98,7 @@ public class SensorProfiles {
     }
 
     public Set<String> getSensorNames() throws SensorProfileException, JSONException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
 
@@ -120,7 +123,7 @@ public class SensorProfiles {
      * @return Returns the number of profiles
      */
     public long size() {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
             long count = realm.where(RealmSensorProfile.class).count();
@@ -131,5 +134,20 @@ public class SensorProfiles {
         finally {
             realm.close();
         }
+    }
+
+    /**
+     * Helper function to create a new Realm instance
+     * TODO: come up with a smarter way to use Realm, this is a lot of redundant code right now
+     * @return Returns a new Realm instance
+     */
+    protected Realm getRealmInstance () {
+        RealmConfiguration.Builder config = new RealmConfiguration.Builder(mContext);
+
+        if (mEncryptionKey != null) {
+            config = config.encryptionKey(mEncryptionKey);
+        }
+
+        return Realm.getInstance(config.build());
     }
 }

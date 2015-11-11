@@ -45,6 +45,7 @@ public class TestDataSyncer extends AndroidTestCase {
     private SensorDataProxy mProxy;
     private DataSyncer mDataSyncer;
     private SensorProfiles mSensorProfiles;
+    private byte[] mEncryptionKey = null; // TODO: test with encryption key
 
     @Override
     protected void setUp () throws Exception {
@@ -58,7 +59,7 @@ public class TestDataSyncer extends AndroidTestCase {
         mSessionId = mCsUtils.loginUser(mNewUser.get("username"), mNewUser.get("password"));
         mDatabaseHandler = new DatabaseHandler(getContext(), userId);
         mProxy = new SensorDataProxy(mServer, mAppKey, mSessionId);
-        mSensorProfiles = new SensorProfiles(getContext());
+        mSensorProfiles = new SensorProfiles(getContext(), mEncryptionKey);
         mDataSyncer = new DataSyncer(getContext(), mDatabaseHandler, mProxy);
         mDataSyncer.initialize();
     }

@@ -38,6 +38,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
     private Sensor mSensor;
     private SensorOptions mSensorOptions;
     private DatabaseHandler mNewDatabaseHandler; // TODO: remove this mNewDatabaseHandler
+    private byte[] mEncryptionKey = null; // TODO: test with encryption key
 
     @Override
     protected void setUp () throws Exception {
@@ -50,7 +51,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         mNewDatabaseHandler = new DatabaseHandler(getContext(), mNewUserId);
 
         // Create a few sensor profiles by hand, so we don't have to fetch them from the server via SensorDataProxy
-        SensorProfiles profiles = new SensorProfiles(getContext());
+        SensorProfiles profiles = new SensorProfiles(getContext(), mEncryptionKey);
 
         profiles.create("noise",
                 new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"description\": \"The Ambient noise in decibel\",\"type\": \"number\"}"));
@@ -733,7 +734,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
 
-        Sensor resultSensor = RealmSensor.toSensor(getContext(), resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(getContext(), mEncryptionKey, resultList.first());
         assertEquals("Incorrect name of the Realm Sensor object", sensorName, resultSensor.getName());
         assertEquals("Incorrect source of the Realm Sensor object", sourceName, resultSensor.getSource());
         assertEquals("Incorrect sensorOptions meta of the Realm Sensor object", mSensorOptions.getMeta().toString(), resultSensor.getOptions().getMeta().toString());
@@ -791,7 +792,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
-        Sensor resultSensor = RealmSensor.toSensor(getContext(), resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(getContext(), mEncryptionKey, resultList.first());
         assertEquals("Incorrect options of the Realm Sensor object", sensorMeta.toString(), resultSensor.getOptions().getMeta().toString());
     }
 
@@ -820,7 +821,7 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
         int listSize = resultList.size();
         assertEquals("Incorrect number of the Realm Sensor object", sensorNumber, listSize);
-        Sensor resultSensor = RealmSensor.toSensor(getContext(), resultList.first());
+        Sensor resultSensor = RealmSensor.toSensor(getContext(), mEncryptionKey, resultList.first());
         assertEquals("Incorrect userId of the Realm Sensor object", downloaded, resultSensor.isRemoteDataPointsDownloaded());
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import nl.sense_os.datastorageengine.realm.RealmDataDeletionRequest;
@@ -44,20 +45,34 @@ public class DatabaseHandler {
     private Context mContext = null;
     private String mUserId = null;
 
+    private byte[] mEncryptionKey = null;
+
     public DatabaseHandler(Context context, String userId) {
         this.mContext = context;
         this.mUserId = userId;
+        this.mEncryptionKey = null;
     }
+
+    public DatabaseHandler(Context context, String userId, byte[] encryptionKey) {
+        this.mContext = context;
+        this.mUserId = userId;
+        this.mEncryptionKey = encryptionKey;
+    }
+
+    public byte[] getEncryptionKey() {
+        return mEncryptionKey;
+    }
+
     public String getUserId() {
         return mUserId;
     }
 
     public Sensor createSensor(String source, String name, SensorOptions options) throws SensorProfileException, SchemaException, JSONException, SensorException, DatabaseHandlerException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             final long id = Sensor.generateId(realm);
             final boolean synced = false;
-            Sensor sensor = new Sensor(mContext, id, name, mUserId, source, options, synced);
+            Sensor sensor = new Sensor(mContext, mEncryptionKey, id, name, mUserId, source, options, synced);
 
             RealmSensor realmSensor = RealmSensor.fromSensor(sensor);
 
@@ -76,7 +91,7 @@ public class DatabaseHandler {
     }
 
     public Sensor getSensor(String source, String name) throws SensorProfileException, SchemaException, SensorException, JSONException, DatabaseHandlerException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
 
@@ -93,7 +108,7 @@ public class DatabaseHandler {
                 throw new DatabaseHandlerException("Sensor not found. Sensor with name " + name + " does not exist.");
             }
 
-            return RealmSensor.toSensor(mContext, realmSensor);
+            return RealmSensor.toSensor(mContext, mEncryptionKey, realmSensor);
         }
         finally {
             realm.close();
@@ -101,7 +116,7 @@ public class DatabaseHandler {
     }
 
     public boolean hasSensor(String source, String name) {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
             RealmSensor realmSensor = realm
@@ -120,7 +135,7 @@ public class DatabaseHandler {
     }
 
     public List<Sensor> getSensors(String source) throws JSONException, SensorException, SensorProfileException, SchemaException {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             // query results
             realm.beginTransaction();
@@ -135,7 +150,7 @@ public class DatabaseHandler {
             List<Sensor> sensors = new ArrayList<>();
             Iterator<RealmSensor> iterator = results.iterator();
             while (iterator.hasNext()) {
-                sensors.add(RealmSensor.toSensor(mContext, iterator.next()));
+                sensors.add(RealmSensor.toSensor(mContext, mEncryptionKey, iterator.next()));
             }
             // TODO: figure out what is the most efficient way to loop over the results
 
@@ -147,7 +162,7 @@ public class DatabaseHandler {
     }
 
     public List<String> getSources() {
-        Realm realm = Realm.getInstance(mContext);
+        Realm realm = getRealmInstance();
         try {
             // query results
             realm.beginTransaction();
@@ -171,8 +186,8 @@ public class DatabaseHandler {
         }
     }
 
-    public void createDataDeletionRequest(String sourceName, String sensorName, Long startTime, Long endTime) throws DatabaseHandlerException{
-        Realm realm = Realm.getInstance(mContext);
+    public void createDataDeletionRequest(String sourceName, String sensorName, Long startTime, Long endTime) throws DatabaseHandlerException {
+        Realm realm = getRealmInstance();
         try {
             RealmDataDeletionRequest dataDeletionRequest
                     = RealmDataDeletionRequest.fromDataDeletionRequest(new DataDeletionRequest(mUserId, sourceName, sensorName, startTime, endTime));
@@ -190,8 +205,8 @@ public class DatabaseHandler {
         }
     }
 
-    public List<DataDeletionRequest> getDataDeletionRequests(){
-        Realm realm = Realm.getInstance(mContext);
+    public List<DataDeletionRequest> getDataDeletionRequests() {
+        Realm realm = getRealmInstance();
         try {
             // query results
             realm.beginTransaction();
@@ -213,8 +228,8 @@ public class DatabaseHandler {
         }
     }
 
-    public void deleteDataDeletionRequest(String id){
-        Realm realm = Realm.getInstance(mContext);
+    public void deleteDataDeletionRequest(String id) {
+        Realm realm = getRealmInstance();
         try {
             realm.beginTransaction();
             RealmResults<RealmDataDeletionRequest> result = realm
@@ -228,5 +243,20 @@ public class DatabaseHandler {
         finally {
             realm.close();
         }
+    }
+
+    /**
+     * Helper function to create a new Realm instance
+     * TODO: come up with a smarter way to use Realm, this is a lot of redundant code right now
+     * @return Returns a new Realm instance
+     */
+    protected Realm getRealmInstance () {
+        RealmConfiguration.Builder config = new RealmConfiguration.Builder(mContext);
+
+        if (mEncryptionKey != null) {
+            config = config.encryptionKey(mEncryptionKey);
+        }
+
+        return Realm.getInstance(config.build());
     }
 }

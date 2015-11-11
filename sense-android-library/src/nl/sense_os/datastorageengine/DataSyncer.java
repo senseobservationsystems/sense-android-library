@@ -29,7 +29,6 @@ public class DataSyncer {
     public final static String SOURCE = "sense-android";
 
     private SensorDataProxy mProxy = null;
-    private Context mContext;
     private DatabaseHandler mDatabaseHandler;
     private SensorProfiles mSensorProfiles;
     private DataSyncerAlarmReceiver mAlarm;
@@ -44,9 +43,8 @@ public class DataSyncer {
      * @param proxy            A Proxy for remote data storage (in the Sensor API)
      */
     public DataSyncer(Context context, DatabaseHandler databaseHandler, SensorDataProxy proxy){
-        this.mContext = context;
         this.mDatabaseHandler = databaseHandler;
-        this.mSensorProfiles = new SensorProfiles(context);
+        this.mSensorProfiles = new SensorProfiles(context, databaseHandler.getEncryptionKey());
         this.mProxy = proxy;
         this.mAlarm = new DataSyncerAlarmReceiver(context, this, new ErrorCallback() {
             @Override
