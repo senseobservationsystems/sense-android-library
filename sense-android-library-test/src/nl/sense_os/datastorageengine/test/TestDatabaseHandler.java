@@ -32,8 +32,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
     protected Realm mRealm;
     private RealmConfiguration mTestConfig;
     private DatabaseHandler mDatabaseHandler;
-    private String mUserId = "mUserId";
-    private String mNewUserId = "mNewUserId";
+    private String mUserId = "userId";
+    private String mNewUserId = "newUserId";
     private String mSourceName = "sense-android";
     private Sensor mSensor;
     private SensorOptions mSensorOptions;
