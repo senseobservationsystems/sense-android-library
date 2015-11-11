@@ -439,7 +439,7 @@ public class TestDataSyncer extends AndroidTestCase {
         int value1 = 12;
         int value2 = 23;
 
-        // create a local sensor with a data point
+        // create a local sensor with data points
         String sensorName = "noise";
         SensorOptions options = new SensorOptions();
         options.setUploadEnabled(true);
@@ -448,12 +448,12 @@ public class TestDataSyncer extends AndroidTestCase {
         noise.insertOrUpdateDataPoint(value1, time1);
         noise.insertOrUpdateDataPoint(value2, time2);
 
-        // synchronize (should remove old data
+        // synchronize (should remove old data)
         dataSyncer.sync();
 
         // local should have one data point left
         List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
-        assertEquals("should contain zero data points", 1, actualLocal.size());
+        assertEquals("should contain 1 data point", 1, actualLocal.size());
         assertEquals("should have the right time", time2, actualLocal.get(0).getTime());
         assertEquals("should have the right value", value2, actualLocal.get(0).getValueAsInteger());
 
@@ -471,6 +471,81 @@ public class TestDataSyncer extends AndroidTestCase {
                 .put("value", value2);
         expectedRemote.put(p2);
         JSONAssert.assertEquals(expectedRemote, actualRemote, true);
+    }
+
+    public void testCleanupNoPersistLocally() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        final long DAY = 1000 * 60 * 60 * 24; // in milliseconds
+
+        // change the persistence period to 2 days
+        DataSyncer dataSyncer = new DataSyncer(getContext(), mDatabaseHandler, mProxy);
+        dataSyncer.setPersistPeriod(2 * DAY);
+
+        long time1 = new Date().getTime() - 4 * DAY;
+        long time2 = new Date().getTime() - DAY;
+        int value1 = 12;
+        int value2 = 23;
+
+        // create a local sensor with data points
+        String sensorName = "noise";
+        SensorOptions options = new SensorOptions();
+        options.setUploadEnabled(true);
+        options.setDownloadEnabled(false);
+        options.setPersistLocally(false);   // <--   look here!
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
+        noise.insertOrUpdateDataPoint(value1, time1);
+        noise.insertOrUpdateDataPoint(value2, time2);
+
+        // synchronize (should remove all local data as persistLocally==false)
+        dataSyncer.sync();
+
+        // local should have no data points left
+        List<DataPoint> actualLocal2 = noise.getDataPoints(new QueryOptions());
+        assertEquals("should contain zero data points", 0, actualLocal2.size());
+
+        // remote should still have both data points
+        JSONArray actualRemote2 = mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
+        assertEquals("remote should contain all data points", 2, actualRemote2.length());
+    }
+
+    public void testCleanupNoUpload() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
+        final long DAY = 1000 * 60 * 60 * 24; // in milliseconds
+
+        // change the persistence period to 2 days
+        DataSyncer dataSyncer = new DataSyncer(getContext(), mDatabaseHandler, mProxy);
+        dataSyncer.setPersistPeriod(2 * DAY);
+
+        long time1 = new Date().getTime() - 4 * DAY;
+        long time2 = new Date().getTime() - DAY;
+        int value1 = 12;
+        int value2 = 23;
+
+        // create a local sensor with data points
+        String sensorName = "noise";
+        SensorOptions options = new SensorOptions();
+        options.setUploadEnabled(false);    // <-- look here!
+        options.setDownloadEnabled(false);
+        options.setPersistLocally(true);   // <-- and here!
+        Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, options);
+        noise.insertOrUpdateDataPoint(value1, time1);
+        noise.insertOrUpdateDataPoint(value2, time2);
+
+        // synchronize (should remove old data)
+        dataSyncer.sync();
+
+        // local should have one data point left
+        List<DataPoint> actualLocal = noise.getDataPoints(new QueryOptions());
+        assertEquals("should contain 1 data point", 1, actualLocal.size());
+        assertEquals("should have the right time", time2, actualLocal.get(0).getTime());
+        assertEquals("should have the right value", value2, actualLocal.get(0).getValueAsInteger());
+
+        // remote should still not exist (uploadEnabled==false)
+        try {
+            mProxy.getSensorData(mSourceName, sensorName, new QueryOptions());
+            fail("Should throw an exception");
+        }
+        catch (HttpResponseException err) {
+            assertEquals("Should throw a resource not found error", 404, err.getStatusCode());
+        }
     }
 
     public void testProgressCallback() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
@@ -535,7 +610,6 @@ public class TestDataSyncer extends AndroidTestCase {
 
         // compare the data points
         assertEquals("Should contain the right amount of data", data.length(), local.size());
-        // TODO: test all points
         for (int i = 0; i < data.length(); i++) {
             assertEquals("Should have the right time (i=" + i + ")", data.getJSONObject(i).getLong("time"), local.get(i).getTime());
             assertEquals("Should have the right value (i=" + i + ")", data.getJSONObject(i).getInt("value"), local.get(i).getValueAsInteger());
@@ -807,8 +881,5 @@ public class TestDataSyncer extends AndroidTestCase {
             mProxy.setSessionId(originalSessionId);
         }
     }
-
-
-    // TODO: test the four cases for cleaning up old data (currently there's only one)
 
 }
