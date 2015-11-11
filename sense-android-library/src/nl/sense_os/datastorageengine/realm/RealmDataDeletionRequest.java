@@ -19,11 +19,11 @@ public class RealmDataDeletionRequest extends RealmObject {
 
     public RealmDataDeletionRequest() {}
 
-    public RealmDataDeletionRequest(String userId, String sensorName, String sourceName, long startTime, long endTime) {
+    public RealmDataDeletionRequest(String userId, String sourceName, String sensorName, long startTime, long endTime) {
         this.uuid = UUID.randomUUID().toString();
         this.userId = userId;
-        this.sensorName = sensorName;
         this.sourceName = sourceName;
+        this.sensorName = sensorName;
         this.startTime = startTime;
         this.endTime = endTime;
     }

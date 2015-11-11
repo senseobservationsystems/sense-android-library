@@ -32,7 +32,8 @@ public class TestDatabaseHandler extends AndroidTestCase {
     private RealmConfiguration mTestConfig;
     private DatabaseHandler mDatabaseHandler;
     private String mUserId = "mUserId";
-    String mNewUserId = "mNewUserId";
+    private String mNewUserId = "mNewUserId";
+    private String mSourceName = "sense-android";
     private Sensor mSensor;
     private SensorOptions mSensorOptions;
     private DatabaseHandler mNewDatabaseHandler; // TODO: remove this mNewDatabaseHandler
@@ -941,9 +942,9 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testCreateDataDeletionRequestSucceeded() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        mDatabaseHandler.createDataDeletionRequest("light", "sony", new Date().getTime(), new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "light", new Date().getTime(), new Date().getTime());
         numberOfRequest++;
-        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(),new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "gyroscope",new Date().getTime(),new Date().getTime());
         numberOfRequest++;
 
         RealmResults<RealmDataDeletionRequest> resultList= mRealm.where(RealmDataDeletionRequest.class)
@@ -954,11 +955,11 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testCreateDataDeletionRequestSucceededWithNullDate() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        mDatabaseHandler.createDataDeletionRequest("light", "sony", null, new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "light", null, new Date().getTime());
         numberOfRequest++;
-        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc", new Date().getTime(), null);
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "gyroscope", new Date().getTime(), null);
         numberOfRequest++;
-        mDatabaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "accelerometer", null, null);
         numberOfRequest++;
 
         RealmResults<RealmDataDeletionRequest> resultList = mRealm.where(RealmDataDeletionRequest.class)
@@ -969,11 +970,11 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testGetDataDeletionRequestSucceeded() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        mDatabaseHandler.createDataDeletionRequest("light","sony", null, new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "light",null, new Date().getTime());
         numberOfRequest++;
-        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(), null);
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "gyroscope", new Date().getTime(), null);
         numberOfRequest++;
-        mDatabaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "accelerometer",null, null);
         numberOfRequest++;
 
         List<RealmDataDeletionRequest> resultList = mDatabaseHandler.getDataDeletionRequests();
@@ -982,11 +983,11 @@ public class TestDatabaseHandler extends AndroidTestCase {
 
     public void testDeleteDataDeletionRequestSucceeded() throws DatabaseHandlerException{
         int numberOfRequest = 0;
-        mDatabaseHandler.createDataDeletionRequest("light","sony", null, new Date().getTime());
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "light", null, new Date().getTime());
         numberOfRequest++;
-        mDatabaseHandler.createDataDeletionRequest("gyroscope", "htc",new Date().getTime(), null);
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "gyroscope", new Date().getTime(), null);
         numberOfRequest++;
-        mDatabaseHandler.createDataDeletionRequest("accelerometer", "iphone", null, null);
+        mDatabaseHandler.createDataDeletionRequest(mSourceName, "accelerometer", null, null);
         numberOfRequest++;
 
         List<RealmDataDeletionRequest> resultList = mDatabaseHandler.getDataDeletionRequests();

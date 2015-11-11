@@ -171,7 +171,7 @@ public class DatabaseHandler {
         }
     }
 
-    public void createDataDeletionRequest(String sensorName, String source, Long startTime, Long endTime) throws DatabaseHandlerException{
+    public void createDataDeletionRequest(String sourceName, String sensorName, Long startTime, Long endTime) throws DatabaseHandlerException{
         Realm realm = Realm.getInstance(mContext);
         try {
             if (startTime == null) {
@@ -180,14 +180,14 @@ public class DatabaseHandler {
             if (endTime == null) {
                 endTime = -1l;
             }
-            RealmDataDeletionRequest dataDeletionRequest = new RealmDataDeletionRequest(mUserId, sensorName, source, startTime, endTime);
+            RealmDataDeletionRequest dataDeletionRequest = new RealmDataDeletionRequest(mUserId, sourceName, sensorName, startTime, endTime);
 
             realm.beginTransaction();
             try {
                 realm.copyToRealm(dataDeletionRequest);
                 realm.commitTransaction();
             } catch (RealmPrimaryKeyConstraintException err) {
-                throw new DatabaseHandlerException("Error adding delete data request for \"" + sensorName + "\" and source \"" + source + "\".");
+                throw new DatabaseHandlerException("Error adding delete data request for \"" + sensorName + "\" and source \"" + sourceName + "\".");
             }
         }
         finally {
