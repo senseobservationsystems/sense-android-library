@@ -1,6 +1,7 @@
 package nl.sense_os.datastorageengine;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -15,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import nl.sense_os.util.json.EncryptionHelper;
 import nl.sense_os.util.json.SchemaException;
 
 /**
@@ -34,7 +36,7 @@ public class DataStorageEngine {
     /** Synchronous DataSyncer progress monitor */
     DataSyncerProgress mDataSyncerProgressTracker = new DataSyncerProgress();
     /** Static singleton instance of the DataStorageEngine */
-    //private static DataStorageEngine mDataStorageEngine;
+    private static DataStorageEngine mDataStorageEngine;
     /** Context needed for the DataSyncer */
     private Context mContext;
     /** Ephemeral initialization status */
@@ -46,6 +48,18 @@ public class DataStorageEngine {
     private ExecutorService mDataSyncerExecutorService;
     /** Handles the AsyncCallback function calls */
     private ExecutorService mCallBackExecutorService;
+
+    /** The shared preference file name */
+    private String SHARED_PREFERENCES_FILE = "data_storage_engine";
+    /** The shared preferences keys */
+    private String PREFERENCES_APP_KEY  = "app_key";
+    private String PREFERENCES_USER_ID = "user_id";
+    private String PREFERENCES_SESSION_ID = "session_id";
+    private String PREFERENCES_ENABLE_ENCRYPTION = "enable_encryption";
+    private String PREFERENCES_BACKEND_ENV = "backend_environment";
+    private String PREFERENCES_LOCAL_PERSISTANCE_PERIOD = "local_persistance_period";
+    private String PREFERENCES_UPLOAD_INTERVAL = "upload_interval";
+
 
     /**
      * The possible statuses of the DataStorageEngine
@@ -63,7 +77,7 @@ public class DataStorageEngine {
      * Constructor of the DataStorageEngine
      * @param context The Android context
      */
-    public DataStorageEngine(Context context)
+    private DataStorageEngine(Context context)
     {
         mContext = context;
         mDataSyncerExecutorService = Executors.newSingleThreadExecutor();
@@ -77,8 +91,38 @@ public class DataStorageEngine {
      */
     private void loadConfiguration()
     {
-        // get the configuration properties from the shared preferences
-        // TODO get the configuration from the local storage
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFERENCES_FILE, mContext.MODE_PRIVATE);
+
+        if(!sharedPreferences.contains(PREFERENCES_USER_ID)) {
+            return;
+        }
+        Boolean isEncrypted = sharedPreferences.getBoolean(PREFERENCES_ENABLE_ENCRYPTION, false);
+        String userID = sharedPreferences.getString(PREFERENCES_USER_ID, "");
+        String appKEY = sharedPreferences.getString(PREFERENCES_APP_KEY, "");
+        String sessionID = sharedPreferences.getString(PREFERENCES_SESSION_ID, "");
+        if(isEncrypted) {
+            EncryptionHelper encryptor = new EncryptionHelper(mContext, mDSEConfig.encryptionKey);
+            userID = encryptor.decrypt(userID);
+            appKEY = encryptor.decrypt(appKEY);
+            sessionID = encryptor.decrypt(sessionID);
+        }
+        mDSEConfig = new DSEConfig(sessionID, userID, appKEY);
+        if(!sharedPreferences.contains(PREFERENCES_BACKEND_ENV)){
+            String env = sharedPreferences.getString(PREFERENCES_BACKEND_ENV, "");
+            mDSEConfig.backendEnvironment = SensorDataProxy.SERVER.valueOf(env);
+        }
+
+        if(!sharedPreferences.contains(PREFERENCES_ENABLE_ENCRYPTION)){
+            mDSEConfig.enableEncryption = sharedPreferences.getBoolean(PREFERENCES_ENABLE_ENCRYPTION, false);
+        }
+
+        if(!sharedPreferences.contains(PREFERENCES_LOCAL_PERSISTANCE_PERIOD)){
+            mDSEConfig.localPersistancePeriod = sharedPreferences.getLong(PREFERENCES_LOCAL_PERSISTANCE_PERIOD, 0);
+        }
+
+        if(!sharedPreferences.contains(PREFERENCES_UPLOAD_INTERVAL)){
+            mDSEConfig.uploadInterval = sharedPreferences.getInt(PREFERENCES_UPLOAD_INTERVAL, 0);
+        }
     }
 
     /**
@@ -86,34 +130,53 @@ public class DataStorageEngine {
      */
     private void saveConfiguration()
     {
-        // TODO store the configuration in the shared preferences
+        if(mDSEConfig == null)
+            return;
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFERENCES_FILE, mContext.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String userID =  mDSEConfig.getUserID();
+        String appKEY = mDSEConfig.getAPPKey();
+        String sessionID = mDSEConfig.getSessionID();
+
+        if(mDSEConfig.enableEncryption){
+            EncryptionHelper encryptor = new EncryptionHelper(mContext, mDSEConfig.encryptionKey);
+            userID = encryptor.encrypt(userID);
+            appKEY = encryptor.encrypt(appKEY);
+            sessionID = encryptor.encrypt(sessionID);
+        }
+
+        editor.putString(PREFERENCES_USER_ID, userID);
+        editor.putString(PREFERENCES_APP_KEY, appKEY);
+        editor.putString(PREFERENCES_SESSION_ID, sessionID);
+        if(mDSEConfig.backendEnvironment != null) {
+            editor.putString(PREFERENCES_BACKEND_ENV, mDSEConfig.backendEnvironment.name());
+        }
+        if(mDSEConfig.enableEncryption != null) {
+            editor.putBoolean(PREFERENCES_ENABLE_ENCRYPTION, mDSEConfig.enableEncryption);
+        }
+        if(mDSEConfig.localPersistancePeriod != null) {
+            editor.putLong(PREFERENCES_LOCAL_PERSISTANCE_PERIOD, mDSEConfig.localPersistancePeriod);
+        }
+        if(mDSEConfig.uploadInterval != null) {
+            editor.putInt(PREFERENCES_UPLOAD_INTERVAL, mDSEConfig.uploadInterval);
+        }
+        editor.commit();
     }
 
-//TODO see if a singleton construction is needed
-//    /**
-//     * Creates a singleton DataStorageEngine instance if it does not exists already
-//     * @param context An Android context
-//     * @return a static instance of the DataStorageEngine
-//     */
-//    public synchronized static DataStorageEngine getInstance(Context context)
-//    {
-//        if(mDataStorageEngine == null) {
-//            mDataStorageEngine = new DataStorageEngine(context);
-//        }
-//        return mDataStorageEngine;
-//    }
-//
-//    /**
-//     * Get an initialized DataStorageEngine
-//     * @return an Initialed DataStorageEngine
-//     * @throws RuntimeException When the DataStorageEngine has not been initialized with a context.
-//     */
-//    public static DataStorageEngine getInstance()throws RuntimeException{
-//        if(mDataStorageEngine == null) {
-//            throw new RuntimeException("The DataStorageEngine should be initialized with a context first");
-//        }
-//        return mDataStorageEngine;
-//    }
+    /**
+     * Creates a singleton DataStorageEngine instance if it does not exists already
+     * @param context An Android context
+     * @return a static instance of the DataStorageEngine
+     */
+    public synchronized static DataStorageEngine getInstance(Context context)
+    {
+        if(mDataStorageEngine == null) {
+            mDataStorageEngine = new DataStorageEngine(context);
+        }
+        return mDataStorageEngine;
+    }
 
     /**
      * Returns enum DSEStatus indicating status of DSE.
@@ -133,6 +196,7 @@ public class DataStorageEngine {
     /**
      * Set the configuration properties for the DataStorageEngine
      * The DataStorageEngine will re-initialize when the current configuration properties are different then the supplied dseConfig.
+     * This will override all the current configuration settings
      * @param dseConfig The configuration properties to set
      **/
     public synchronized void setConfig(DSEConfig dseConfig)
@@ -159,12 +223,12 @@ public class DataStorageEngine {
         }
         // reset the initialized status
         mInitialized = false;
-        // create a new database handler instance
-        mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.getUserID());
-        //mDatabaseHandler.enableEncryption(mDSEConfig.enableEncryption);
         if(mDSEConfig.enableEncryption != null && mDSEConfig.enableEncryption) {
-            // TODO enable encryption on the database. See https://realm.io/docs/java/latest/#encryption
-            // mDatabaseHandler.setEncryptionKey(mDSEConfig.encryptionKey);
+            // create a new database handler instance with encryption enabled
+            mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.encryptionKey.getBytes(), mDSEConfig.getUserID());
+        }else {
+            // create a new database handler instance without encryption
+            mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.getUserID());
         }
         // create a new sensor data proxy instance
         mSensorDataProxy = new SensorDataProxy(mDSEConfig.backendEnvironment, mDSEConfig.getAPPKey(), mDSEConfig.getSessionID());

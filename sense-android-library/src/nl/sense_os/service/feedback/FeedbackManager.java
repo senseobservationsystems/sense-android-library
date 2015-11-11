@@ -13,7 +13,7 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.EncryptionHelper;
+import nl.sense_os.util.json.EncryptionHelper;
 
 
 import org.json.JSONException;

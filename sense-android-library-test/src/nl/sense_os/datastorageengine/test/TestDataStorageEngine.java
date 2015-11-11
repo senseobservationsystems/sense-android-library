@@ -66,11 +66,9 @@ public class TestDataStorageEngine extends AndroidTestCase{
         newUser = csUtils.createCSAccount();
         String userId = newUser.get("id");
         sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
-        dataStorageEngine = new DataStorageEngine(getContext());
-        dataStorageEngine.setCredentials(sessionId, userId, appKey);
-        DSEConfig dseOptions = new DSEConfig();
-        //dseOptions.
-        //dataStorageEngine.setOptions(dseOptions);
+        dataStorageEngine = DataStorageEngine.getInstance(getContext());
+        DSEConfig dseConfig = new DSEConfig(sessionId, userId, appKey);
+        dataStorageEngine.setConfig(dseConfig);
 
         /** asynchronous test init */
         // Test onReady

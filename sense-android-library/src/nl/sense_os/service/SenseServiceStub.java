@@ -6,6 +6,8 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensePrefs.Status;
+import nl.sense_os.util.json.EncryptionHelper;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Binder;

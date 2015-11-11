@@ -7,6 +7,8 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.constants.SenseStatusCodes;
+import nl.sense_os.util.json.EncryptionHelper;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
