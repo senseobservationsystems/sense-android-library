@@ -142,9 +142,7 @@ public class Sensor {
 
     /**
      * This method inserts a DataPoint object into the local Realm database.
-     * The typecasting to string should already be done at this point.
-     * @param dataPoint	A DataPoint object that has a stringified value that will be copied
-     * 			into a Realm object.
+     * @param dataPoint	A DataPoint object
      */
     protected void insertOrUpdateDataPoint (DataPoint dataPoint) throws ValidationException, JSONException {
         Realm realm = getRealmInstance();

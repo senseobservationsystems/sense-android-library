@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -235,7 +236,8 @@ public class DataSyncer {
                             JSONArray dataList = mProxy.getSensorData(sensor.getSource(), sensor.getName(), options);
                             for (int i = 0; i < dataList.length(); i++) {
                                 JSONObject dataFromRemote = dataList.getJSONObject(i);
-                                sensor.insertOrUpdateDataPoint(dataFromRemote.get("value"), dataFromRemote.getLong("time"));
+                                DataPoint dataPoint = new DataPoint(sensor.getId(), dataFromRemote.get("value"), dataFromRemote.getLong("time"), true);
+                                sensor.insertOrUpdateDataPoint(dataPoint);
                             }
 
                             if (dataList.length() < LIMIT) {
