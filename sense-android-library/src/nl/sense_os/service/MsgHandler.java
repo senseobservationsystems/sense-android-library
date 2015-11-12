@@ -20,7 +20,7 @@ import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.storage.LocalStorage;
-import nl.sense_os.service.EncryptionHelper;
+import nl.sense_os.util.json.EncryptionHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,18 +1,22 @@
 package nl.sense_os.datastorageengine;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import nl.sense_os.util.json.EncryptionHelper;
 import nl.sense_os.util.json.SchemaException;
 
 /**
@@ -30,26 +34,32 @@ public class DataStorageEngine {
     /** The proxy for the actual data transfer with the back-end */
     private SensorDataProxy mSensorDataProxy;
     /** Synchronous DataSyncer progress monitor */
-    private DataSyncerProgressMonitor mDataSyncerProgress;
+    DataSyncerProgress mDataSyncerProgressTracker = new DataSyncerProgress();
     /** Static singleton instance of the DataStorageEngine */
-    //private static DataStorageEngine mDataStorageEngine;
+    private static DataStorageEngine mDataStorageEngine;
     /** Context needed for the DataSyncer */
     private Context mContext;
-    /** Ephemeral credentials set status */
-    private boolean mHasCredentials;
     /** Ephemeral initialization status */
     private boolean mInitialized;
     /** Ephemeral DSE options */
-    private DSEOptions mOptions;
-    /** Ephemeral DSE credentials */
-    private String mUserID = "";
-    private String mSessionID = "";
-    private String mAPPKey = "";
+    private DSEConfig mDSEConfig;
 
     /** Handles data syncer actions asynchronously */
     private ExecutorService mDataSyncerExecutorService;
     /** Handles the AsyncCallback function calls */
     private ExecutorService mCallBackExecutorService;
+
+    /** The shared preference file name */
+    private String SHARED_PREFERENCES_FILE = "data_storage_engine";
+    /** The shared preferences keys */
+    private String PREFERENCES_APP_KEY  = "app_key";
+    private String PREFERENCES_USER_ID = "user_id";
+    private String PREFERENCES_SESSION_ID = "session_id";
+    private String PREFERENCES_ENABLE_ENCRYPTION = "enable_encryption";
+    private String PREFERENCES_BACKEND_ENV = "backend_environment";
+    private String PREFERENCES_LOCAL_PERSISTANCE_PERIOD = "local_persistance_period";
+    private String PREFERENCES_UPLOAD_INTERVAL = "upload_interval";
+
 
     /**
      * The possible statuses of the DataStorageEngine
@@ -67,40 +77,106 @@ public class DataStorageEngine {
      * Constructor of the DataStorageEngine
      * @param context The Android context
      */
-    public DataStorageEngine(Context context)
+    private DataStorageEngine(Context context)
     {
         mContext = context;
-        mOptions = new DSEOptions();
         mDataSyncerExecutorService = Executors.newSingleThreadExecutor();
         mCallBackExecutorService = Executors.newCachedThreadPool();
-        mDataSyncerProgress = new DataSyncerProgressMonitor();
+        loadConfiguration();
+        initialize();
     }
 
-//TODO see if a singleton construction is needed
-//    /**
-//     * Creates a singleton DataStorageEngine instance if it does not exists already
-//     * @param context An Android context
-//     * @return a static instance of the DataStorageEngine
-//     */
-//    public synchronized static DataStorageEngine getInstance(Context context)
-//    {
-//        if(mDataStorageEngine == null) {
-//            mDataStorageEngine = new DataStorageEngine(context);
-//        }
-//        return mDataStorageEngine;
-//    }
-//
-//    /**
-//     * Get an initialized DataStorageEngine
-//     * @return an Initialed DataStorageEngine
-//     * @throws RuntimeException When the DataStorageEngine has not been initialized with a context.
-//     */
-//    public static DataStorageEngine getInstance()throws RuntimeException{
-//        if(mDataStorageEngine == null) {
-//            throw new RuntimeException("The DataStorageEngine should be initialized with a context first");
-//        }
-//        return mDataStorageEngine;
-//    }
+    /**
+     * Loads the latest configuration
+     */
+    private void loadConfiguration()
+    {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFERENCES_FILE, mContext.MODE_PRIVATE);
+
+        if(!sharedPreferences.contains(PREFERENCES_USER_ID)) {
+            return;
+        }
+        Boolean isEncrypted = sharedPreferences.getBoolean(PREFERENCES_ENABLE_ENCRYPTION, false);
+        String userID = sharedPreferences.getString(PREFERENCES_USER_ID, "");
+        String appKEY = sharedPreferences.getString(PREFERENCES_APP_KEY, "");
+        String sessionID = sharedPreferences.getString(PREFERENCES_SESSION_ID, "");
+        if(isEncrypted) {
+            EncryptionHelper encryptor = new EncryptionHelper(mContext, mDSEConfig.encryptionKey);
+            userID = encryptor.decrypt(userID);
+            appKEY = encryptor.decrypt(appKEY);
+            sessionID = encryptor.decrypt(sessionID);
+        }
+        mDSEConfig = new DSEConfig(sessionID, userID, appKEY);
+        if(!sharedPreferences.contains(PREFERENCES_BACKEND_ENV)){
+            String env = sharedPreferences.getString(PREFERENCES_BACKEND_ENV, "");
+            mDSEConfig.backendEnvironment = SensorDataProxy.SERVER.valueOf(env);
+        }
+
+        if(!sharedPreferences.contains(PREFERENCES_ENABLE_ENCRYPTION)){
+            mDSEConfig.enableEncryption = sharedPreferences.getBoolean(PREFERENCES_ENABLE_ENCRYPTION, false);
+        }
+
+        if(!sharedPreferences.contains(PREFERENCES_LOCAL_PERSISTANCE_PERIOD)){
+            mDSEConfig.localPersistancePeriod = sharedPreferences.getLong(PREFERENCES_LOCAL_PERSISTANCE_PERIOD, 0);
+        }
+
+        if(!sharedPreferences.contains(PREFERENCES_UPLOAD_INTERVAL)){
+            mDSEConfig.uploadInterval = sharedPreferences.getInt(PREFERENCES_UPLOAD_INTERVAL, 0);
+        }
+    }
+
+    /**
+     * Stores the currentConfiguration
+     */
+    private void saveConfiguration()
+    {
+        if(mDSEConfig == null)
+            return;
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFERENCES_FILE, mContext.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String userID =  mDSEConfig.getUserID();
+        String appKEY = mDSEConfig.getAPPKey();
+        String sessionID = mDSEConfig.getSessionID();
+
+        if(mDSEConfig.enableEncryption){
+            EncryptionHelper encryptor = new EncryptionHelper(mContext, mDSEConfig.encryptionKey);
+            userID = encryptor.encrypt(userID);
+            appKEY = encryptor.encrypt(appKEY);
+            sessionID = encryptor.encrypt(sessionID);
+        }
+
+        editor.putString(PREFERENCES_USER_ID, userID);
+        editor.putString(PREFERENCES_APP_KEY, appKEY);
+        editor.putString(PREFERENCES_SESSION_ID, sessionID);
+        if(mDSEConfig.backendEnvironment != null) {
+            editor.putString(PREFERENCES_BACKEND_ENV, mDSEConfig.backendEnvironment.name());
+        }
+        if(mDSEConfig.enableEncryption != null) {
+            editor.putBoolean(PREFERENCES_ENABLE_ENCRYPTION, mDSEConfig.enableEncryption);
+        }
+        if(mDSEConfig.localPersistancePeriod != null) {
+            editor.putLong(PREFERENCES_LOCAL_PERSISTANCE_PERIOD, mDSEConfig.localPersistancePeriod);
+        }
+        if(mDSEConfig.uploadInterval != null) {
+            editor.putInt(PREFERENCES_UPLOAD_INTERVAL, mDSEConfig.uploadInterval);
+        }
+        editor.commit();
+    }
+
+    /**
+     * Creates a singleton DataStorageEngine instance if it does not exists already
+     * @param context An Android context
+     * @return a static instance of the DataStorageEngine
+     */
+    public synchronized static DataStorageEngine getInstance(Context context)
+    {
+        if(mDataStorageEngine == null) {
+            mDataStorageEngine = new DataStorageEngine(context);
+        }
+        return mDataStorageEngine;
+    }
 
     /**
      * Returns enum DSEStatus indicating status of DSE.
@@ -108,7 +184,7 @@ public class DataStorageEngine {
      **/
     public synchronized DSEStatus getStatus()
     {
-        if(!mHasCredentials) {
+        if(mDSEConfig == null) {
             return DSEStatus.AWAITING_CREDENTIALS;
         } else if(mInitialized) {
             return DSEStatus.READY;
@@ -118,56 +194,21 @@ public class DataStorageEngine {
     }
 
     /**
-     * Set the options DataStorageOption
-     * Options with a null value will be unchanged.
-     * @param options The options to set for the DataStorageEngine
-     */
-    public synchronized void setOptions(DSEOptions options)
-    {
-        DSEOptions oldOptions = mOptions;
-        mOptions = options;
-        // if the options have change initialize the DSE
-        if(!oldOptions.equals(options)) {
-            initialize();
-        }
-    }
-
-    /**
-     * Set credentials required in DataStorageEngine
-     *
-     * SessionID, AppKey for Http requests. userId for table management in the database.
-     *
-     * @param sessionID The sessionID given on the latest successful login.
-     * @param userId The userId of the current logged in user.
-     * @param appKey The appKey of the application using DSE.
-     * @throws IllegalArgumentException When one of the arguments is empty
+     * Set the configuration properties for the DataStorageEngine
+     * The DataStorageEngine will re-initialize when the current configuration properties are different then the supplied dseConfig.
+     * This will override all the current configuration settings
+     * @param dseConfig The configuration properties to set
      **/
-    public synchronized void setCredentials(String sessionID, String userId, String appKey) throws IllegalArgumentException
+    public synchronized void setConfig(DSEConfig dseConfig)
     {
-        if(sessionID == null || sessionID.length() == 0 ) {
-            throw new IllegalArgumentException("missing sessionID");
+        if(dseConfig == null || (mDSEConfig != null && dseConfig.equals(mDSEConfig))) {
+           return;
         }
-        if(userId == null || userId.length() == 0 ) {
-            throw new IllegalArgumentException("missing userID");
-        }
-        if(appKey == null || appKey.length() == 0 ) {
-            throw new IllegalArgumentException("missing appKey");
-        }
-
-        boolean credentialsUpdated = false;
-        if(!mUserID.equals(userId) || !mSessionID.equals(sessionID) || !mAPPKey.equals(appKey)) {
-            credentialsUpdated = true;
-        }
-
-        mUserID = userId;
-        mSessionID = sessionID;
-        mAPPKey = appKey;
 
         // the credentials have been set, start the initialization
-        mHasCredentials = true;
-        if(credentialsUpdated) {
-            initialize();
-        }
+        mDSEConfig = dseConfig;
+        saveConfiguration();
+        initialize();
     }
 
     /**
@@ -177,28 +218,28 @@ public class DataStorageEngine {
     private synchronized void initialize()
     {
         // if there are no credentials wait with the initialization
-        if(!mHasCredentials) {
+        if(mDSEConfig == null) {
             return;
         }
         // reset the initialized status
         mInitialized = false;
-        // create a new database handler instance
-        mDatabaseHandler = new DatabaseHandler(mContext, mUserID);
-        //mDatabaseHandler.enableEncryption(mOptions.enableEncryption);
-        if(mOptions.enableEncryption != null && mOptions.enableEncryption) {
-            // TODO enable encryption on the database. See https://realm.io/docs/java/latest/#encryption
-            // mDatabaseHandler.setEncryptionKey(mOptions.encryptionKey);
+        if(mDSEConfig.enableEncryption != null && mDSEConfig.enableEncryption) {
+            // create a new database handler instance with encryption enabled
+            mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.encryptionKey.getBytes(), mDSEConfig.getUserID());
+        }else {
+            // create a new database handler instance without encryption
+            mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.getUserID());
         }
         // create a new sensor data proxy instance
-        mSensorDataProxy = new SensorDataProxy(mOptions.backendEnvironment, mAPPKey, mSessionID);
+        mSensorDataProxy = new SensorDataProxy(mDSEConfig.backendEnvironment, mDSEConfig.getAPPKey(), mDSEConfig.getSessionID());
         // disable the period syncing of the previous data syncer
         if(mDataSyncer != null) {
             mDataSyncer.disablePeriodicSync();
         }
         // create a new data syncer instance
         mDataSyncer = new DataSyncer(mContext, mDatabaseHandler,mSensorDataProxy);
-        if(mOptions.localPersistancePeriod != null) {
-            mDataSyncer.setPersistPeriod(mOptions.localPersistancePeriod);
+        if(mDSEConfig.localPersistancePeriod != null) {
+            mDataSyncer.setPersistPeriod(mDSEConfig.localPersistancePeriod);
         }
         // execute the initialization of the DataSyncer asynchronously
         mDataSyncerExecutorService.execute(mInitTask);
@@ -246,40 +287,47 @@ public class DataStorageEngine {
     private FutureTask<Boolean> mDataSync = new FutureTask<>(new Callable<Boolean>() {
         public Boolean call() throws Exception {
             try {
-                mDataSyncerProgress.reset();
-                mDataSyncer.sync(mDataSyncerProgress);
+                mDataSyncer.sync(mDataSyncerProgressTracker);
                 return true;
             } catch(Exception e) {
                 Log.e(TAG, "Error doing the initial sync on the DataSyncer", e);
-                mDataSyncerProgress.setLastException(e);
+                mDataSyncerProgressTracker.onException(e);
                throw e;
             }
         }
     });
+
 
     /**
      * Receive an update when the sensors have been downloaded
      * @return A Future<boolean> which will return the status of the sensor download process of the DataStorageEngine.
      */
     public Future<Boolean> onSensorsDownloaded() {
-        return mCallBackExecutorService.submit(new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                synchronized (mDataSyncerProgress.isDownloadSensorsCompletedMonitor){
-                    while(true) {
-                        // the data has already been been downloaded
-                        if (mDataSyncerProgress.getIsDownloadSensorsCompleted()) {
-                            return true;
-                        }
-                        // it failed, throw the last known exception
-                        if (mDataSyncerProgress.getLastException() != null) {
-                            throw mDataSyncerProgress.getLastException();
-                        }
-                        // no update yet, wait for it...
-                        mDataSyncerProgress.isDownloadSensorsCompletedMonitor.wait();
-                    }
-                }
-            }
-        });
+        // this future will only be executed when:
+        // 1) the associated call back function is called
+        // 2) when an exception is thrown
+        // 3) the call back function was already called successfully
+       Callable<Boolean> functionCall = new Callable<Boolean>() {
+           @Override
+           public Boolean call() throws Exception {
+               if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+                   return true;
+               } else {
+                   throw mDataSyncerProgressTracker.lastException;
+               }
+           }
+       };
+
+        // if the event has been fired already, submit the function call and return the future
+        if(mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+           return mCallBackExecutorService.submit(functionCall);
+        }
+        // put it in the queue and wait for it to be executed
+        else {
+            FutureTask<Boolean> future = new FutureTask(functionCall);
+            mDataSyncerProgressTracker.downloadSensorsFutureQueue.add(future);
+            return future;
+        }
     }
 
     /**
@@ -296,24 +344,31 @@ public class DataStorageEngine {
      * @return True when the sensor data download was successful, throws and exception otherwise
      */
     public Future<Boolean> onSensorDataDownloaded() {
-        return mCallBackExecutorService.submit(new Callable<Boolean>() {
+        // this future will only be executed when:
+        // 1) the associated call back function is called
+        // 2) when an exception is thrown
+        // 3) the call back function was already called successfully
+        Callable<Boolean> functionCall = new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
-                synchronized (mDataSyncerProgress.isDownloadSensorDataCompletedMonitor) {
-                    while (true) {
-                        // the data has already been been downloaded
-                        if (mDataSyncerProgress.getIsDownloadSensorDataCompleted()) {
-                            return true;
-                        }
-                        // it failed, throw the last known exception
-                        if (mDataSyncerProgress.getLastException() != null) {
-                            throw mDataSyncerProgress.getLastException();
-                        }
-                        // no update yet, wait for it...
-                        mDataSyncerProgress.isDownloadSensorDataCompletedMonitor.wait();
-                    }
+                if (mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
+                    return true;
+                } else {
+                    throw mDataSyncerProgressTracker.lastException;
                 }
             }
-        });
+        };
+
+        // if the event has been fired already, submit the function call and return the future
+        if(mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
+            return mCallBackExecutorService.submit(functionCall);
+        }
+        // put it in the queue and wait for it to be executed
+        else {
+            FutureTask<Boolean> future = new FutureTask(functionCall);
+            mDataSyncerProgressTracker.downloadSensorDataFutureQueue.add(future);
+            return future;
+        }
     }
 
     /**
@@ -431,4 +486,56 @@ public class DataStorageEngine {
         }
         return mDatabaseHandler.getSources();
     }
+
+
+    class DataSyncerProgress implements ProgressCallback {
+        public boolean isDownloadSensorsCompleted;
+        public boolean isDownloadSensorDataCompleted;
+        public Queue<FutureTask> downloadSensorsFutureQueue = new ConcurrentLinkedQueue<>();
+        public Queue<FutureTask> downloadSensorDataFutureQueue = new ConcurrentLinkedQueue<>();
+        public Queue<FutureTask> exceptionFutureQueue = new ConcurrentLinkedQueue<>();
+        public Exception lastException = null;
+
+        /** Function to call when an exception is thrown when executing a DataSyncer function with ProgressCallback*/
+        public void onException(Exception e){
+            lastException = e;
+
+            // process all the futures
+            for(FutureTask future : exceptionFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+            for(FutureTask future : downloadSensorsFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+            for(FutureTask future : downloadSensorDataFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+        }
+
+        @Override
+        public void onDownloadSensorsCompleted() {
+            isDownloadSensorsCompleted = true;
+            for(FutureTask future : downloadSensorsFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+        }
+
+        @Override
+        public void onDownloadSensorDataCompleted() {
+            isDownloadSensorDataCompleted = true;
+            for(FutureTask future : downloadSensorDataFutureQueue){
+                mCallBackExecutorService.execute(future);
+            }
+        }
+
+        @Override
+        public void onDeletionCompleted() {}
+
+        @Override
+        public void onUploadCompeted() {}
+
+        @Override
+        public void onCleanupCompleted() {}
+    }
+
 }

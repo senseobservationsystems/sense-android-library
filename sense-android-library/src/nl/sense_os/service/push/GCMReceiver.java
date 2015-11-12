@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import nl.sense_os.service.R;
 import nl.sense_os.service.ServiceStateHelper;
-import nl.sense_os.service.EncryptionHelper;
+import nl.sense_os.util.json.EncryptionHelper;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.configuration.ConfigurationService;
 import nl.sense_os.service.configuration.RequirementReceiver;

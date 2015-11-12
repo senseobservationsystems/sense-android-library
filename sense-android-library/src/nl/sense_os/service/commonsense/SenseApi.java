@@ -35,7 +35,7 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import nl.sense_os.service.EncryptionHelper;
+import nl.sense_os.util.json.EncryptionHelper;
 import nl.sense_os.service.SenseServiceStub;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
