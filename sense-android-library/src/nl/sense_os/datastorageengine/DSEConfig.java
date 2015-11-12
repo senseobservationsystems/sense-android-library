@@ -24,17 +24,20 @@ public class DSEConfig {
      * The default environment will be selected which is SensorDataProxy.SERVER.STAGING
      */
     public SensorDataProxy.SERVER backendEnvironment = null;
-    /**
-     * The encryption key for the local storage
-     * This encryption key should be changed by the application and a tool like DexGuard should be used to obfuscate it. Using encryption without obfuscating the string is not safe.
-     **/
-    public final String encryptionKey = "3XnMxOy3E&jsd55HWM941D89yK!RlRVH";
 
     /** Ephemeral DSE credentials */
     private String mUserID = "";
     private String mSessionID = "";
     private String mAPPKey = "";
 
+    /**
+     * Create a DataStorageEngine configuration object
+     *
+     * @param sessionID The session id of the user
+     * @param userId The user id
+     * @param appKey The application key
+     * @throws IllegalArgumentException
+     */
     public DSEConfig(String sessionID, String userId, String appKey) throws IllegalArgumentException {
         if (sessionID == null || sessionID.length() == 0) {
             throw new IllegalArgumentException("missing sessionID");
@@ -83,8 +86,6 @@ public class DSEConfig {
         if(localPersistancePeriod != ((DSEConfig)o).localPersistancePeriod)
             return false;
         if(enableEncryption != ((DSEConfig)o).enableEncryption)
-            return false;
-        if(!encryptionKey.equals(((DSEConfig)o).encryptionKey))
             return false;
         if(backendEnvironment != ((DSEConfig)o).backendEnvironment)
             return false;

@@ -22,7 +22,7 @@ import java.util.Map;
 public class SensorDataProxy {
     private static final String TAG = "SensorDataProxy";
 
-    public enum SERVER {LIVE, STAGING};
+    public enum SERVER {LIVE, STAGING}
 
     public static final String BASE_URL_LIVE = "https://sensor-api.sense-os.nl";
     public static final String BASE_URL_STAGING = "http://sensor-api.staging.sense-os.nl";

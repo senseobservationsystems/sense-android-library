@@ -76,7 +76,6 @@ public class EncryptionHelper {
 						Context.MODE_PRIVATE);
 		}
 
-		// TODO fix this security bug, the SALT should not be in the shared preferences unencrypted!!
 		String salt = sMainPrefs.getString(Advanced.ENCRYPT_CREDENTIAL_SALT, DEFAULT_KEY_SALT);
 
 		IvParameterSpec ivSpec = getIv();

@@ -16,8 +16,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import nl.sense_os.service.R;
 import nl.sense_os.util.json.EncryptionHelper;
 import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
 
 /**
  * This class provides the main interface for creating sensors and sources and setting storage engine specific properties.
@@ -41,7 +43,7 @@ public class DataStorageEngine {
     private Context mContext;
     /** Ephemeral initialization status */
     private boolean mInitialized;
-    /** Ephemeral DSE options */
+    /** DSE configuration */
     private DSEConfig mDSEConfig;
 
     /** Handles data syncer actions asynchronously */
@@ -101,26 +103,27 @@ public class DataStorageEngine {
         String appKEY = sharedPreferences.getString(PREFERENCES_APP_KEY, "");
         String sessionID = sharedPreferences.getString(PREFERENCES_SESSION_ID, "");
         if(isEncrypted) {
-            EncryptionHelper encryptor = new EncryptionHelper(mContext, mDSEConfig.encryptionKey);
+            String encryptionKey = mContext.getString(R.string.dse_encryption_key);
+            EncryptionHelper encryptor = new EncryptionHelper(mContext, encryptionKey);
             userID = encryptor.decrypt(userID);
             appKEY = encryptor.decrypt(appKEY);
             sessionID = encryptor.decrypt(sessionID);
         }
         mDSEConfig = new DSEConfig(sessionID, userID, appKEY);
-        if(!sharedPreferences.contains(PREFERENCES_BACKEND_ENV)){
+        if(sharedPreferences.contains(PREFERENCES_BACKEND_ENV)){
             String env = sharedPreferences.getString(PREFERENCES_BACKEND_ENV, "");
             mDSEConfig.backendEnvironment = SensorDataProxy.SERVER.valueOf(env);
         }
 
-        if(!sharedPreferences.contains(PREFERENCES_ENABLE_ENCRYPTION)){
+        if(sharedPreferences.contains(PREFERENCES_ENABLE_ENCRYPTION)){
             mDSEConfig.enableEncryption = sharedPreferences.getBoolean(PREFERENCES_ENABLE_ENCRYPTION, false);
         }
 
-        if(!sharedPreferences.contains(PREFERENCES_LOCAL_PERSISTANCE_PERIOD)){
+        if(sharedPreferences.contains(PREFERENCES_LOCAL_PERSISTANCE_PERIOD)){
             mDSEConfig.localPersistancePeriod = sharedPreferences.getLong(PREFERENCES_LOCAL_PERSISTANCE_PERIOD, 0);
         }
 
-        if(!sharedPreferences.contains(PREFERENCES_UPLOAD_INTERVAL)){
+        if(sharedPreferences.contains(PREFERENCES_UPLOAD_INTERVAL)){
             mDSEConfig.uploadInterval = sharedPreferences.getInt(PREFERENCES_UPLOAD_INTERVAL, 0);
         }
     }
@@ -140,8 +143,9 @@ public class DataStorageEngine {
         String appKEY = mDSEConfig.getAPPKey();
         String sessionID = mDSEConfig.getSessionID();
 
-        if(mDSEConfig.enableEncryption){
-            EncryptionHelper encryptor = new EncryptionHelper(mContext, mDSEConfig.encryptionKey);
+        if(mDSEConfig.enableEncryption != null && mDSEConfig.enableEncryption){
+            String encryptionKey = mContext.getString(R.string.dse_encryption_key);
+            EncryptionHelper encryptor = new EncryptionHelper(mContext, encryptionKey);
             userID = encryptor.encrypt(userID);
             appKEY = encryptor.encrypt(appKEY);
             sessionID = encryptor.encrypt(sessionID);
@@ -225,7 +229,8 @@ public class DataStorageEngine {
         mInitialized = false;
         if(mDSEConfig.enableEncryption != null && mDSEConfig.enableEncryption) {
             // create a new database handler instance with encryption enabled
-            mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.encryptionKey.getBytes(), mDSEConfig.getUserID());
+            String encryptionKey = mContext.getString(R.string.dse_encryption_key);
+            mDatabaseHandler = new DatabaseHandler(mContext, encryptionKey.getBytes(), mDSEConfig.getUserID());
         }else {
             // create a new database handler instance without encryption
             mDatabaseHandler = new DatabaseHandler(mContext, mDSEConfig.getUserID());
@@ -267,6 +272,9 @@ public class DataStorageEngine {
     /**
      * Receive an update when the DataStorageEngine has done it's initialization
      * @return A Future<boolean> which will return the status of the initialization of the DataStorageEngine.
+     * @throws JSONException
+     * @throws IOException
+     * @throws SensorProfileException
      */
     public Future<Boolean> onReady() {
         return mInitTask;
@@ -383,10 +391,18 @@ public class DataStorageEngine {
     /**
      * Synchronizes the local and remote data
      * @return A future which will return the status of the data synchronization action as Boolean via Future.get()
+     * @throws IOException
+     * @throws DatabaseHandlerException
+     * @throws SensorException
+     * @throws SensorProfileException
+     * @throws JSONException
+     * @throws SchemaException
+     * @throws ValidationException
      */
     public Future<Boolean> syncData() {
         return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
-            public Boolean call() throws Exception {
+            public Boolean call() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException,
+                    JSONException, SchemaException, ValidationException {
                 try {
                     if (getStatus() != DSEStatus.READY) {
                         throw new IllegalStateException("The DataStorageEngine is not ready yet");
@@ -394,7 +410,7 @@ public class DataStorageEngine {
                     mDataSyncer.sync();
                     return true;
                 } catch (Exception e) {
-                    Log.e(TAG, "Error flushing data", e);
+                    Log.e(TAG, "Error syncing data", e);
                     throw e;
                 }
             }
