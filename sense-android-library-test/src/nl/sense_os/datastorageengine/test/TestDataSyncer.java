@@ -781,13 +781,12 @@ public class TestDataSyncer extends AndroidTestCase {
     // TODO: enable testPeriodicSync
     // TODO: move this test to TestDataStorageEngine
     public void _testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
-        long originalSyncRate = mDataSyncer.getSyncRate();
+        long originalSyncRate = mDataSyncer.SYNC_RATE;
         long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
         long maxSyncDuration = 5 * 1000;  // we assume the syncing will never take longer than 5 seconds in this unit test
 
         try {
-            mDataSyncer.setSyncRate(syncRate);
-            mDataSyncer.enablePeriodicSync();
+            mDataSyncer.enablePeriodicSync(syncRate);
 
             String sensorName = "noise";
             Sensor noise = mDatabaseHandler.createSensor(mSourceName, sensorName, new SensorOptions());
@@ -839,48 +838,7 @@ public class TestDataSyncer extends AndroidTestCase {
         finally {
             // restore settings
             mDataSyncer.disablePeriodicSync();
-            mDataSyncer.setSyncRate(originalSyncRate);
+            mDataSyncer.enablePeriodicSync(originalSyncRate);
         }
     }
-
-    /**
-     * WARNING: this test takes multiple minutes before it is finished
-     */
-    // TODO: enable testOnErrorCallback
-    // TODO: move this test to TestDataStorageEngine
-    public void _testOnErrorCallback() throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
-        String originalSessionId = mProxy.getSessionId();
-        long originalSyncRate = mDataSyncer.getSyncRate();
-        long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
-        long maxSyncDuration = 5 * 1000;  // we assume the syncing will never take longer than 5 seconds in this unit test
-
-        try {
-            final List<Throwable> receivedErrors = new ArrayList<>();
-
-            mProxy.setSessionId("invalid_session_id");
-
-            mDataSyncer.onError(new ErrorCallback() {
-                @Override
-                public void onError(Throwable err) {
-                    receivedErrors.add(err);
-                }
-            });
-
-            mDataSyncer.setSyncRate(syncRate);
-            mDataSyncer.enablePeriodicSync();
-
-            // wait until we're sure the sync action has taken place
-            Thread.sleep(syncRate + maxSyncDuration);
-
-            // now sync should have failed because of an invalid session id
-            assertTrue("Should have thrown an exception", receivedErrors.size() > 0);
-        }
-        finally {
-            // restore settings
-            mDataSyncer.disablePeriodicSync();
-            mDataSyncer.setSyncRate(originalSyncRate);
-            mProxy.setSessionId(originalSessionId);
-        }
-    }
-
 }

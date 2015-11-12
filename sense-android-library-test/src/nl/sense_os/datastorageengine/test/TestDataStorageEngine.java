@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -16,7 +17,9 @@ import nl.sense_os.datastorageengine.AsyncCallback;
 import nl.sense_os.datastorageengine.DSEConfig;
 import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataStorageEngine;
+import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.ErrorCallback;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorDataProxy;
@@ -195,6 +198,39 @@ public class TestDataStorageEngine extends AndroidTestCase{
         assertEquals(Boolean.TRUE, dataStorageEngine.syncData().get(60, TimeUnit.SECONDS));
     }
 
+    /**
+     * Test for an error when providing wrong credentials
+     */
+    public void testOnErrorCallback() throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
+        DSEConfig dseConfig = dataStorageEngine.getConfig();
+        try {
+            final List<Throwable> receivedErrors = new ArrayList<>();
+
+            // register the on error callback
+            dataStorageEngine.registerOnError(new ErrorCallback() {
+                @Override
+                public void onError(Throwable err) {
+                    receivedErrors.add(err);
+                }
+            });
+
+            DSEConfig badConfig = new DSEConfig("invalid_session_id", "1", "1");
+            dataStorageEngine.setConfig(badConfig);
+
+            // wait until we're sure the sync action has taken place
+            Thread.sleep(1000);
+
+            // now sync should have failed because of an invalid session id
+            assertTrue("Should have thrown an exception", receivedErrors.size() > 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // restore settings
+            dataStorageEngine.setConfig(dseConfig);
+        }
+    }
+
+
     /** Helper function for comparing sensors */
     public void assertEqualsSensor(Sensor left, Sensor right)
     {
@@ -222,5 +258,4 @@ public class TestDataStorageEngine extends AndroidTestCase{
             assertEquals(left.getMeta().toString(), right.getMeta().toString());
         }
     }
-
 }

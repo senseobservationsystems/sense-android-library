@@ -1,8 +1,6 @@
 package nl.sense_os.datastorageengine;
 
-import android.app.IntentService;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import org.apache.http.client.HttpResponseException;
@@ -11,11 +9,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nl.sense_os.datastorageengine.realm.RealmDataDeletionRequest;
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
 
@@ -27,14 +23,20 @@ import nl.sense_os.util.json.ValidationException;
  */
 public class DataSyncer {
     private static final String TAG = "DataSyncer";
+    // TODO move static constants to a separate class
     public final static String SOURCE = "sense-android";
+    public final static long SYNC_RATE = 1800000;  // 30 minutes in milliseconds by default
+    public final static long PERSIST_PERIOD = 2678400000L; // 31 days in milliseconds
+
+    // set the default persist period and sync rate
+    private long mSyncRate = SYNC_RATE;
+    private long mPersistPeriod = PERSIST_PERIOD;
 
     private SensorDataProxy mProxy = null;
     private DatabaseHandler mDatabaseHandler;
     private SensorProfiles mSensorProfiles;
-    private DataSyncerAlarmReceiver mAlarm;
-    private ErrorCallback mErrorCallback = null;
-    private long mPersistPeriod = 2678400000L; // 31 days in milliseconds
+    private Context mContext;
+
     private Object mLock = new Object();
 
     /**
@@ -47,46 +49,20 @@ public class DataSyncer {
         this.mDatabaseHandler = databaseHandler;
         this.mSensorProfiles = new SensorProfiles(context, databaseHandler.getEncryptionKey());
         this.mProxy = proxy;
-        this.mAlarm = new DataSyncerAlarmReceiver(context, this, new ErrorCallback() {
-            @Override
-            public void onError(Throwable err) {
-                if (mErrorCallback != null) {
-                    mErrorCallback.onError(err);
-                }
-            }
-        });
+        mContext = context;
     }
 
-    public class PeriodicSyncService extends IntentService {
-        public static final String TAG = "PeriodicSyncHandlerService";
-
-        public PeriodicSyncService(String name) {
-            super(name);
-        }
-
-        @Override
-        protected void onHandleIntent(Intent intent) {
-            try {
-                sync();
-            }
-            catch(Exception e) {
-                e.getStackTrace();
-            }
-            // Release the wake lock provided by the BroadcastReceiver.
-            DataSyncerAlarmReceiver.completeWakefulIntent(intent);
-        }
-    }
-
-    public boolean isPeriodicSyncEnabled() {
-        return mAlarm.isRunning();
+    public void enablePeriodicSync(long syncRate){
+        mSyncRate = syncRate;
+        PeriodicDataSyncer.setAlarm(mContext, mSyncRate);
     }
 
     public void enablePeriodicSync(){
-        mAlarm.setAlarm();
+        enablePeriodicSync(mSyncRate);
     }
 
     public void disablePeriodicSync(){
-        mAlarm.cancelAlarm();
+        PeriodicDataSyncer.cancelAlarm(mContext);
     }
 
     /**
@@ -339,31 +315,5 @@ public class DataSyncer {
      */
     public void setPersistPeriod(long persistPeriod) {
         this.mPersistPeriod = persistPeriod;
-    }
-
-    /**
-     * Get the current sync rate
-     * @return Returns the sync rate in milliseconds
-     */
-    public long getSyncRate() {
-        return mAlarm.getSyncRate();
-    }
-
-    /**
-     * Set sync rate
-     * After changing the sync rate, the scheduler must be started again enablePeriodicSync.
-     * @param syncRate Sync rate in milliseconds (1800000 (= 30 minutes) by default)
-     */
-    public void setSyncRate(long syncRate) {
-        this.mAlarm.setSyncRate(syncRate);
-    }
-
-    /**
-     * Set an ErrorCallback for the DataSyncer. When an error occurs during a periodic sync,
-     * the error will be propagated to the onError method of this ErrorCallback.
-     * @param callback
-     */
-    public void onError(ErrorCallback callback) {
-        mErrorCallback = callback;
     }
 }

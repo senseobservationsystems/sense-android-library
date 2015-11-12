@@ -36,15 +36,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="nl.sense_os.datastorageengine.DataSyncerAlarmReceiver"></receiver>
-        <receiver android:name="nl.sense_os.datastorageengine.DataSyncerBootReciver"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>
-        </receiver>
-        <service android:name="nl.sense_os.datastorageengine.DataSyncer$PeriodicSyncService" />
+        <receiver android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer"></receiver>
 
+        <service android:enabled="true" android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer$PeriodicSyncService" />
     </application>
 
 </manifest>

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
@@ -62,6 +64,7 @@ public class DataStorageEngine {
     private String PREFERENCES_LOCAL_PERSISTANCE_PERIOD = "local_persistance_period";
     private String PREFERENCES_UPLOAD_INTERVAL = "upload_interval";
 
+    private FutureTask<Boolean> mInitTask;
 
     /**
      * The possible statuses of the DataStorageEngine
@@ -89,7 +92,7 @@ public class DataStorageEngine {
     }
 
     /**
-     * Loads the latest configuration
+     * Loads the latest configuration from the shared preferences in the DSEConfig member
      */
     private void loadConfiguration()
     {
@@ -129,7 +132,7 @@ public class DataStorageEngine {
     }
 
     /**
-     * Stores the currentConfiguration
+     * Stores the DSEConfig member data to the shared preferences
      */
     private void saveConfiguration()
     {
@@ -201,6 +204,7 @@ public class DataStorageEngine {
      * Set the configuration properties for the DataStorageEngine
      * The DataStorageEngine will re-initialize when the current configuration properties are different then the supplied dseConfig.
      * This will override all the current configuration settings
+     * TODO retrieve the credentials from the sharedpreferences (use a listener) when the AccountManager is implemented
      * @param dseConfig The configuration properties to set
      **/
     public synchronized void setConfig(DSEConfig dseConfig)
@@ -213,6 +217,15 @@ public class DataStorageEngine {
         mDSEConfig = dseConfig;
         saveConfiguration();
         initialize();
+    }
+
+    /**
+     * Returns the current configuration properties
+     * @return The DSEConfig object
+     */
+    public DSEConfig getConfig()
+    {
+        return mDSEConfig;
     }
 
     /**
@@ -237,37 +250,45 @@ public class DataStorageEngine {
         }
         // create a new sensor data proxy instance
         mSensorDataProxy = new SensorDataProxy(mDSEConfig.backendEnvironment, mDSEConfig.getAPPKey(), mDSEConfig.getSessionID());
-        // disable the period syncing of the previous data syncer
-        if(mDataSyncer != null) {
-            mDataSyncer.disablePeriodicSync();
-        }
-        // create a new data syncer instance
-        mDataSyncer = new DataSyncer(mContext, mDatabaseHandler,mSensorDataProxy);
+
+        // create a new DataSyncer instance
+        mDataSyncer = new DataSyncer(mContext, mDatabaseHandler, mSensorDataProxy);
         if(mDSEConfig.localPersistancePeriod != null) {
             mDataSyncer.setPersistPeriod(mDSEConfig.localPersistancePeriod);
         }
         // execute the initialization of the DataSyncer asynchronously
-        mDataSyncerExecutorService.execute(mInitTask);
+        mDataSyncerExecutorService.execute(getInitializeTask());
     }
 
     /**
      * The FutureTask that performs the DataSyncer initialization (sensor profile downloading)
      * When this task is successful then the status of the DSE will be READY
      */
-    private FutureTask<Boolean> mInitTask = new FutureTask<>(new Callable<Boolean>() {
-        public Boolean call() throws JSONException, IOException, SensorProfileException {
-            try {
-                mDataSyncer.initialize();
-                // when the initialization is done download the sensors
-                mDataSyncerExecutorService.execute(mDataSync);
-                mInitialized = true;
-                return true;
-            } catch(Exception e) {
-                Log.e(TAG, "Error initializing the DataSyncer", e);
-                throw  e;
-            }
-        }
-    });
+    private FutureTask<Boolean> getInitializeTask() {
+       if(mInitTask == null || mInitTask.isDone()) {
+           mInitTask = new FutureTask<>(new Callable<Boolean>() {
+               public Boolean call() throws JSONException, IOException, SensorProfileException {
+                   try {
+                       mDataSyncerProgressTracker.reset();
+                       mDataSyncer.initialize();
+                       // when the initialization is done enable the periodic syncing to download the sensor and sensor data
+                       if (mDSEConfig.uploadInterval != null) {
+                           mDataSyncer.enablePeriodicSync(mDSEConfig.uploadInterval);
+                       } else {
+                           mDataSyncer.enablePeriodicSync();
+                       }
+                       mInitialized = true;
+                       return true;
+                   } catch (Exception e) {
+                       mDataSyncerProgressTracker.onException(e);
+                       Log.e(TAG, "Error initializing the DataSyncer", e);
+                       throw e;
+                   }
+               }
+           });
+       }
+        return mInitTask;
+    }
 
     /**
      * Receive an update when the DataStorageEngine has done it's initialization
@@ -277,7 +298,7 @@ public class DataStorageEngine {
      * @throws SensorProfileException
      */
     public Future<Boolean> onReady() {
-        return mInitTask;
+        return getInitializeTask();
     }
 
     /**
@@ -287,24 +308,27 @@ public class DataStorageEngine {
     public void onReady(AsyncCallback asyncCallback) {
         getResultAsync(onReady(), asyncCallback);
     }
+    /**
+     * Callback invoked for errors during initialization and the a periodic sync.
+     * @param errorCallback
+     **/
+    public void registerOnError(ErrorCallback errorCallback)
+    {
+        if(!mDataSyncerProgressTracker.errorCallbacks.contains(errorCallback)){
+            mDataSyncerProgressTracker.errorCallbacks.add(errorCallback);
+        }
+    }
 
     /**
-     * The FutureTask that performs the initial sensors and sensor data download in the DataSyncer.
-     * This task will initialize mDataSyncerProgress and set any received exception via mDataSyncerProgress.setLastException.
-     */
-    private FutureTask<Boolean> mDataSync = new FutureTask<>(new Callable<Boolean>() {
-        public Boolean call() throws Exception {
-            try {
-                mDataSyncer.sync(mDataSyncerProgressTracker);
-                return true;
-            } catch(Exception e) {
-                Log.e(TAG, "Error doing the initial sync on the DataSyncer", e);
-                mDataSyncerProgressTracker.onException(e);
-               throw e;
-            }
+     * Unregister the on error callback for errors during initialization and the a periodic sync.
+     * @param errorCallback
+     **/
+    public void unRegisterOnError(ErrorCallback errorCallback)
+    {
+        if(mDataSyncerProgressTracker.errorCallbacks.contains(errorCallback)){
+            mDataSyncerProgressTracker.errorCallbacks.remove(errorCallback);
         }
-    });
-
+    }
 
     /**
      * Receive an update when the sensors have been downloaded
@@ -390,7 +414,7 @@ public class DataStorageEngine {
 
     /**
      * Synchronizes the local and remote data
-     * @return A future which will return the status of the data synchronization action as Boolean via Future.get()
+     * @return A future which will return the status of the data synchronization action as Boolean or Exception via Future.get()
      * @throws IOException
      * @throws DatabaseHandlerException
      * @throws SensorException
@@ -399,7 +423,7 @@ public class DataStorageEngine {
      * @throws SchemaException
      * @throws ValidationException
      */
-    public Future<Boolean> syncData() {
+    public synchronized Future<Boolean> syncData() {
         return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
             public Boolean call() throws IOException, DatabaseHandlerException, SensorException, SensorProfileException,
                     JSONException, SchemaException, ValidationException {
@@ -407,9 +431,16 @@ public class DataStorageEngine {
                     if (getStatus() != DSEStatus.READY) {
                         throw new IllegalStateException("The DataStorageEngine is not ready yet");
                     }
-                    mDataSyncer.sync();
+                    mDataSyncerProgressTracker.reset();
+                    mDataSyncer.sync(mDataSyncerProgressTracker);
                     return true;
                 } catch (Exception e) {
+                    if(e instanceof HttpResponseException) {
+                        if(((HttpResponseException)e).getStatusCode() == 403){
+                            // TODO handle HTTP response 403 by sending a relogin request
+                        }
+                    }
+                    mDataSyncerProgressTracker.onException(e);
                     Log.e(TAG, "Error syncing data", e);
                     throw e;
                 }
@@ -509,7 +540,7 @@ public class DataStorageEngine {
         public boolean isDownloadSensorDataCompleted;
         public Queue<FutureTask> downloadSensorsFutureQueue = new ConcurrentLinkedQueue<>();
         public Queue<FutureTask> downloadSensorDataFutureQueue = new ConcurrentLinkedQueue<>();
-        public Queue<FutureTask> exceptionFutureQueue = new ConcurrentLinkedQueue<>();
+        public ArrayList<ErrorCallback> errorCallbacks = new ArrayList<>();
         public Exception lastException = null;
 
         /** Function to call when an exception is thrown when executing a DataSyncer function with ProgressCallback*/
@@ -517,8 +548,10 @@ public class DataStorageEngine {
             lastException = e;
 
             // process all the futures
-            for(FutureTask future : exceptionFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for(ErrorCallback errorCallback: errorCallbacks){
+                if(errorCallback != null){
+                    errorCallback.onError(lastException);
+                }
             }
             for(FutureTask future : downloadSensorsFutureQueue){
                 mCallBackExecutorService.execute(future);
@@ -526,6 +559,12 @@ public class DataStorageEngine {
             for(FutureTask future : downloadSensorDataFutureQueue){
                 mCallBackExecutorService.execute(future);
             }
+        }
+
+        public void reset(){
+            isDownloadSensorsCompleted = false;
+            isDownloadSensorDataCompleted = false;
+            lastException = null;
         }
 
         @Override
