@@ -75,7 +75,19 @@ public class TestDataStorageEngine extends AndroidTestCase{
         DSEConfig dseConfig = new DSEConfig(sessionId, userId, appKey);
         dseConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
         dataStorageEngine.setConfig(dseConfig);
+        // Wait and test onReady
+        assertEquals(Boolean.TRUE, dataStorageEngine.onReady().get(60, TimeUnit.SECONDS));
+    }
 
+    /**
+     * Deletes the account after every function call
+     */
+    @Override
+    protected void tearDown () throws Exception {
+        csUtils.deleteAccount(newUser.get("username"), newUser.get("password"), newUser.get("id"));
+    }
+
+    public void testCallbacks() throws InterruptedException, ExecutionException, TimeoutException {
         /** asynchronous test init */
         // Test onReady
         dataStorageEngine.onReady(onReady);
@@ -99,20 +111,13 @@ public class TestDataStorageEngine extends AndroidTestCase{
 
         /** asynchronous test result */
         // N.B. We have a race condition here!
+        Thread.sleep(1000);
         // Test onReady
         assertEquals(true, onReady.hasSuccess);
         // Test onSensorsDownloaded
         assertEquals(true, onSensorsDownloaded.hasSuccess);
         // Test onSensorDataDownloaded
         assertEquals(true, onSensorDataDownloaded.hasSuccess);
-    }
-
-    /**
-     * Deletes the account after every function call
-     */
-    @Override
-    protected void tearDown () throws Exception {
-        csUtils.deleteAccount(newUser.get("username"), newUser.get("password"), newUser.get("id"));
     }
 
     /**
@@ -252,16 +257,13 @@ public class TestDataStorageEngine extends AndroidTestCase{
     /**
      * Test periodic syncing of data
      */
-    public void testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
+    public void testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException, TimeoutException, ExecutionException {
 
-        long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
-        long maxSyncDuration = 5 * 1000;  // we assume the syncing will never take longer than 5 seconds in this unit test
+        Long syncRate = 60 * 1000l;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
+        Long maxSyncDuration = 5 * 1000l;  // we assume the syncing will never take longer than 5 seconds in this unit test
         DSEConfig dseConfig = dataStorageEngine.getConfig();
-        long originalSyncRate = dseConfig.uploadInterval;
+        Long originalSyncRate = dseConfig.uploadInterval;
         try {
-            dseConfig.uploadInterval = syncRate;
-            dataStorageEngine.setConfig(dseConfig);
-
             Sensor noise = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
 
             long value1 = 1;
@@ -273,6 +275,11 @@ public class TestDataStorageEngine extends AndroidTestCase{
             DataPoint point = dataPoints.get(0);
             assertFalse("DataPoint should not yet exist in remote", point.existsInRemote());
 
+            // change the sync rate
+            dseConfig.uploadInterval = syncRate;
+            dataStorageEngine.setConfig(dseConfig);
+            // wait until the DSE downloaded the data
+            assertEquals(Boolean.TRUE, dataStorageEngine.onSensorDataDownloaded().get(60, TimeUnit.SECONDS));
             Thread.sleep(syncRate + maxSyncDuration); // wait until the first sync has taken place
 
             // by now, the data point should have been synced
