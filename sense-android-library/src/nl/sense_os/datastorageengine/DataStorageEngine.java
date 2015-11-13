@@ -128,7 +128,7 @@ public class DataStorageEngine {
         }
 
         if(sharedPreferences.contains(PREFERENCES_UPLOAD_INTERVAL)){
-            mDSEConfig.uploadInterval = sharedPreferences.getInt(PREFERENCES_UPLOAD_INTERVAL, 0);
+            mDSEConfig.uploadInterval = sharedPreferences.getLong(PREFERENCES_UPLOAD_INTERVAL, 0l);
         }
     }
 
@@ -168,7 +168,7 @@ public class DataStorageEngine {
             editor.putLong(PREFERENCES_LOCAL_PERSISTANCE_PERIOD, mDSEConfig.localPersistancePeriod);
         }
         if(mDSEConfig.uploadInterval != null) {
-            editor.putInt(PREFERENCES_UPLOAD_INTERVAL, mDSEConfig.uploadInterval);
+            editor.putLong(PREFERENCES_UPLOAD_INTERVAL, mDSEConfig.uploadInterval);
         }
         editor.commit();
     }

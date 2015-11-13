@@ -6,17 +6,18 @@ package nl.sense_os.datastorageengine;
 public class DSEConfig {
     /**
      * The number of milliseconds between the upload sessions
-     * The default is DSEConstants.SYNC_RATE
+     * The default is DataSyncer.SYNC_RATE
      */
-    public Integer uploadInterval = null;
+    public Long uploadInterval = null;
     /**
      * The number of seconds to persist the data locally
-     * The default value is DSEConstants.PERSIST_PERIOD
+     * The default value is DataSyncer.PERSIST_PERIOD
      */
     public Long localPersistancePeriod = null;
     /**
      * Enable data encryption for the local storage
-     * The default behavior is to encrypt the local storage
+     * The default behavior is no encryption of the local storage
+     * When enabling encryption please make sure to change the encryption key string, "dse_encryption_key", in res/values/strings.xml
      **/
     public Boolean enableEncryption = null;
     /**
@@ -25,7 +26,7 @@ public class DSEConfig {
      */
     public SensorDataProxy.SERVER backendEnvironment = null;
 
-    /** Ephemeral DSE credentials */
+    /** DSE back-end credentials */
     private String mUserID = "";
     private String mSessionID = "";
     private String mAPPKey = "";

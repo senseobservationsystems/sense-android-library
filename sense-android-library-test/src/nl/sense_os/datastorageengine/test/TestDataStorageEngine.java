@@ -2,11 +2,13 @@ package nl.sense_os.datastorageengine.test;
 
 import android.test.AndroidTestCase;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -237,7 +239,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     public void testConfig(){
         DSEConfig oldDseConfig = dataStorageEngine.getConfig();
         DSEConfig newConfig =new DSEConfig("session", "1", "1");
-        newConfig.uploadInterval = -1;
+        newConfig.uploadInterval = -1l;
         newConfig.localPersistancePeriod = -1l;
         newConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
         newConfig.enableEncryption = true;
@@ -246,7 +248,69 @@ public class TestDataStorageEngine extends AndroidTestCase{
         assertTrue("The new config should be different then the previous", !oldDseConfig.equals(updatedConfig));
         assertTrue("The new config should be equal to the set DSEConfig object changed", newConfig.equals(updatedConfig));
     }
-    
+
+    /**
+     * Test periodic syncing of data
+     */
+    public void testPeriodicSync () throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException, ValidationException, InterruptedException, IOException {
+
+        long syncRate = 60 * 1000;        // 60 seconds, AlarmManager doesn't allow shorter intervals.
+        long maxSyncDuration = 5 * 1000;  // we assume the syncing will never take longer than 5 seconds in this unit test
+        DSEConfig dseConfig = dataStorageEngine.getConfig();
+        long originalSyncRate = dseConfig.uploadInterval;
+        try {
+            dseConfig.uploadInterval = syncRate;
+            dataStorageEngine.setConfig(dseConfig);
+
+            Sensor noise = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+
+            long value1 = 1;
+            long time1 = new Date().getTime();
+            noise.insertOrUpdateDataPoint(value1, time1);
+
+            List<DataPoint> dataPoints = noise.getDataPoints(new QueryOptions());
+            assertEquals("Should contain 1 data points", 1, dataPoints.size());
+            DataPoint point = dataPoints.get(0);
+            assertFalse("DataPoint should not yet exist in remote", point.existsInRemote());
+
+            Thread.sleep(syncRate + maxSyncDuration); // wait until the first sync has taken place
+
+            // by now, the data point should have been synced
+            List<DataPoint> dataPoints2 = noise.getDataPoints(new QueryOptions());
+            assertTrue("DataPoint should exist in remote", dataPoints2.get(0).existsInRemote());
+            Sensor sensor = dataStorageEngine.getSensor(source, sensor_name);
+            List<DataPoint> array = sensor.getDataPoints(new QueryOptions());
+            assertEquals("Remote should contain 1 data point", 1, array.size());
+
+            // TODO do we need a disable sync?
+            // TODO do we need to have an option to only upload on wifi?
+
+            // create a second data point
+            long value2 = 2;
+            long time2 = time1 + 1;
+            noise.insertOrUpdateDataPoint(value2, time2);
+
+            List<DataPoint> dataPoints3 = noise.getDataPoints(new QueryOptions());
+            assertEquals("Should contain 2 data points", 2, dataPoints3.size());
+            assertEquals("DataPoint 1 should have the right value", value1, dataPoints3.get(0).getValueAsInteger());
+            assertEquals("DataPoint 2 should have the right value", value2, dataPoints3.get(1).getValueAsInteger());
+            assertTrue("DataPoint 1 should exist in remote", dataPoints3.get(0).existsInRemote());
+            assertFalse("DataPoint 2 should NOT exist in remote", dataPoints3.get(1).existsInRemote());
+
+            // sync should not have been executed
+            List<DataPoint> dataPoints4 = noise.getDataPoints(new QueryOptions());
+            assertEquals("Should contain 2 data points", 2, dataPoints4.size());
+            assertEquals("DataPoint 1 should have the right value", value1, dataPoints4.get(0).getValueAsInteger());
+            assertEquals("DataPoint 2 should have the right value", value2, dataPoints4.get(1).getValueAsInteger());
+            assertTrue("DataPoint 1 should exist in remote", dataPoints4.get(0).existsInRemote());
+            assertFalse("DataPoint 2 should NOT exist in remote", dataPoints4.get(1).existsInRemote());
+        }
+        finally {
+            // restore settings
+            dseConfig.uploadInterval = originalSyncRate;
+            dataStorageEngine.setConfig(dseConfig);
+        }
+    }
 
     /** Helper function for comparing sensors */
     public void assertEqualsSensor(Sensor left, Sensor right)
