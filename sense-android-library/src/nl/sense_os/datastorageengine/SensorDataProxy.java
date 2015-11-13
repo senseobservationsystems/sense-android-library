@@ -33,12 +33,12 @@ public class SensorDataProxy {
 
     /**
      * Create a sensor data proxy.
-     * @param server     Select whether to use the live or staging server.
+     * @param server     Select whether to use the live or staging server. (default when null: LIVE)
      * @param appKey     Application key, identifying the application in the REST API.
      * @param sessionId  The session id of the current user.
      */
     public SensorDataProxy(SERVER server, String appKey, String sessionId) {
-        this.mBaseUrl = (server == SERVER.LIVE) ? BASE_URL_LIVE : BASE_URL_STAGING;
+        this.mBaseUrl = (server == SERVER.STAGING) ? BASE_URL_STAGING : BASE_URL_LIVE;
         this.mAppKey = appKey;
         this.mSessionId = sessionId;
     }

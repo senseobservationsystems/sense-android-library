@@ -21,7 +21,7 @@ public class DSEConfig {
     public Boolean enableEncryption = null;
     /**
      * The back-end environment to select
-     * The default environment will be selected which is SensorDataProxy.SERVER.STAGING
+     * The default environment will be selected which is SensorDataProxy.SERVER.LIVE
      */
     public SensorDataProxy.SERVER backendEnvironment = null;
 

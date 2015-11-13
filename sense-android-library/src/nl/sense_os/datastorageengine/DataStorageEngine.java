@@ -87,6 +87,7 @@ public class DataStorageEngine {
         mContext = context;
         mDataSyncerExecutorService = Executors.newSingleThreadExecutor();
         mCallBackExecutorService = Executors.newCachedThreadPool();
+        mInitTask = getInitializeTask();
         loadConfiguration();
         initialize();
     }
@@ -204,11 +205,11 @@ public class DataStorageEngine {
      * Set the configuration properties for the DataStorageEngine
      * The DataStorageEngine will re-initialize when the current configuration properties are different then the supplied dseConfig.
      * This will override all the current configuration settings
-     * TODO retrieve the credentials from the sharedpreferences (use a listener) when the AccountManager is implemented
      * @param dseConfig The configuration properties to set
      **/
     public synchronized void setConfig(DSEConfig dseConfig)
     {
+        // TODO retrieve the credentials from the sharedpreferences (use a listener) when the AccountManager is implemented
         if(dseConfig == null || (mDSEConfig != null && dseConfig.equals(mDSEConfig))) {
            return;
         }
@@ -256,8 +257,13 @@ public class DataStorageEngine {
         if(mDSEConfig.localPersistancePeriod != null) {
             mDataSyncer.setPersistPeriod(mDSEConfig.localPersistancePeriod);
         }
+        mInitTask.cancel(true);
+        // create a new FutureTask if we already used the mIinitTask
+        if(mInitTask.isCancelled() || mInitTask.isDone()){
+            mInitTask = getInitializeTask();
+        }
         // execute the initialization of the DataSyncer asynchronously
-        mDataSyncerExecutorService.execute(getInitializeTask());
+        mDataSyncerExecutorService.execute(mInitTask);
     }
 
     /**
@@ -265,44 +271,43 @@ public class DataStorageEngine {
      * When this task is successful then the status of the DSE will be READY
      */
     private FutureTask<Boolean> getInitializeTask() {
-       if(mInitTask == null || mInitTask.isDone()) {
-           mInitTask = new FutureTask<>(new Callable<Boolean>() {
-               public Boolean call() throws JSONException, IOException, SensorProfileException {
-                   try {
-                       mDataSyncerProgressTracker.reset();
-                       mDataSyncer.initialize();
-                       // when the initialization is done enable the periodic syncing to download the sensor and sensor data
-                       if (mDSEConfig.uploadInterval != null) {
-                           mDataSyncer.enablePeriodicSync(mDSEConfig.uploadInterval);
-                       } else {
-                           mDataSyncer.enablePeriodicSync();
-                       }
-                       mInitialized = true;
-                       return true;
-                   } catch (Exception e) {
-                       mDataSyncerProgressTracker.onException(e);
-                       Log.e(TAG, "Error initializing the DataSyncer", e);
-                       throw e;
-                   }
-               }
-           });
-       }
-        return mInitTask;
+        return new FutureTask<>(new Callable<Boolean>() {
+            public Boolean call() throws JSONException, IOException, SensorProfileException {
+                try {
+                    mDataSyncerProgressTracker.reset();
+                    mDataSyncer.initialize();
+                    // when the initialization is done enable the periodic syncing to download the sensor and sensor data
+                    if (mDSEConfig.uploadInterval != null) {
+                        mDataSyncer.enablePeriodicSync(mDSEConfig.uploadInterval);
+                    } else {
+                        mDataSyncer.enablePeriodicSync();
+                    }
+                    mInitialized = true;
+                    return true;
+                } catch (Exception e) {
+                    mDataSyncerProgressTracker.onException(e);
+                    Log.e(TAG, "Error initializing the DataSyncer", e);
+                    throw e;
+                }
+            }
+        });
     }
 
     /**
      * Receive an update when the DataStorageEngine has done it's initialization
+     * Returns a value immediately when the initialization is already done
      * @return A Future<boolean> which will return the status of the initialization of the DataStorageEngine.
      * @throws JSONException
      * @throws IOException
      * @throws SensorProfileException
      */
     public Future<Boolean> onReady() {
-        return getInitializeTask();
+        return mInitTask;
     }
 
     /**
      * Receive a one time notification when the DataStorageEngine has done it's initialization
+     * Sends a notification immediately when the initialization is already done
      * @param asyncCallback The AsynchronousCall back to receive the status of the initialization in
      */
     public void onReady(AsyncCallback asyncCallback) {
@@ -310,7 +315,8 @@ public class DataStorageEngine {
     }
     /**
      * Callback invoked for errors during initialization and the a periodic sync.
-     * @param errorCallback
+     * Will send all errors which have occurred since registering the callback
+     * @param errorCallback The callback to receive errors on.
      **/
     public void registerOnError(ErrorCallback errorCallback)
     {
@@ -535,7 +541,7 @@ public class DataStorageEngine {
     }
 
 
-    class DataSyncerProgress implements ProgressCallback {
+    private class DataSyncerProgress implements ProgressCallback {
         public boolean isDownloadSensorsCompleted;
         public boolean isDownloadSensorDataCompleted;
         public Queue<FutureTask> downloadSensorsFutureQueue = new ConcurrentLinkedQueue<>();
@@ -550,6 +556,7 @@ public class DataStorageEngine {
             // process all the futures
             for(ErrorCallback errorCallback: errorCallbacks){
                 if(errorCallback != null){
+                    // TODO check if a new thread should be created for a better flow
                     errorCallback.onError(lastException);
                 }
             }

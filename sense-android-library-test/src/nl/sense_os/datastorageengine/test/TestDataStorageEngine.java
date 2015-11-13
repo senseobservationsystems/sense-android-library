@@ -71,6 +71,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
         dataStorageEngine = DataStorageEngine.getInstance(getContext());
         DSEConfig dseConfig = new DSEConfig(sessionId, userId, appKey);
+        dseConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
         dataStorageEngine.setConfig(dseConfig);
 
         /** asynchronous test init */
@@ -230,6 +231,22 @@ public class TestDataStorageEngine extends AndroidTestCase{
         }
     }
 
+    /**
+     * Test whether set and getConfig store and retrieve the configuration correctly
+     */
+    public void testConfig(){
+        DSEConfig oldDseConfig = dataStorageEngine.getConfig();
+        DSEConfig newConfig =new DSEConfig("session", "1", "1");
+        newConfig.uploadInterval = -1;
+        newConfig.localPersistancePeriod = -1l;
+        newConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
+        newConfig.enableEncryption = true;
+        dataStorageEngine.setConfig(newConfig);
+        DSEConfig updatedConfig = dataStorageEngine.getConfig();
+        assertTrue("The new config should be different then the previous", !oldDseConfig.equals(updatedConfig));
+        assertTrue("The new config should be equal to the set DSEConfig object changed", newConfig.equals(updatedConfig));
+    }
+    
 
     /** Helper function for comparing sensors */
     public void assertEqualsSensor(Sensor left, Sensor right)
