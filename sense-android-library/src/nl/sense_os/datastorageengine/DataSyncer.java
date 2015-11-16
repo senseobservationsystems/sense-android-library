@@ -24,7 +24,6 @@ import nl.sense_os.util.json.ValidationException;
 public class DataSyncer {
     private static final String TAG = "DataSyncer";
     // TODO move static constants to a separate class
-    public final static String SOURCE = "sense-android";
     public final static long SYNC_RATE = 1800000;  // 30 minutes in milliseconds by default
     public final static long PERSIST_PERIOD = 2678400000L; // 31 days in milliseconds
 
@@ -173,68 +172,69 @@ public class DataSyncer {
     }
 
     protected void downloadSensorsFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
-        //Step 1: download sensors from remote
-        JSONArray sensorList = mProxy.getSensors(SOURCE);
+        for(String source : mDatabaseHandler.getSources()) {
+            //Step 1: download sensors from remote
+            JSONArray sensorList = mProxy.getSensors(source);
 
-        //Step 2: insert sensors into local storage
-        if(sensorList.length() !=0 ) {
-            for (int i = 0; i < sensorList.length(); i++) {
-                JSONObject sensorFromRemote = sensorList.getJSONObject(i);
-                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
-                if(!mDatabaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))){
-                    mDatabaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
+            //Step 2: insert sensors into local storage
+            if (sensorList.length() != 0) {
+                for (int i = 0; i < sensorList.length(); i++) {
+                    JSONObject sensorFromRemote = sensorList.getJSONObject(i);
+                    SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
+                    if (!mDatabaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))) {
+                        mDatabaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
+                    }
                 }
             }
         }
     }
 
     protected void downloadSensorDataFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
-        //Step 1: get the sensors from local storage
-        List<Sensor> sensorListInLocal = mDatabaseHandler.getSensors(SOURCE);
+        for(String source : mDatabaseHandler.getSources()) {
+            //Step 1: get the sensors from local storage
+            List<Sensor> sensorListInLocal = mDatabaseHandler.getSensors(source);
 
-        //Step 2: Start data syncing for all sensors
-        if(!sensorListInLocal.isEmpty()) {
-            for (Sensor sensor : sensorListInLocal) {
-                if(sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
-                    try {
-                        // as start time, we take the the current time minus persist period,
-                        // minus 10 minutes to account for duration of the process itself
-                        final long MINUTE = 1000 * 60;
-                        final int LIMIT = 100; // number of data points to retrieve per request, max allowed by the backend is 1000
-                        QueryOptions options = new QueryOptions();
-                        options.setSortOrder(QueryOptions.SORT_ORDER.DESC);
-                        options.setStartTime(new Date().getTime() - mPersistPeriod - 10 * MINUTE);
-                        options.setEndTime(null); // undefined, we want to get all data up until to now
-                        options.setLimit(LIMIT);
+            //Step 2: Start data syncing for all sensors
+            if (!sensorListInLocal.isEmpty()) {
+                for (Sensor sensor : sensorListInLocal) {
+                    if (sensor.getOptions().isDownloadEnabled() && !sensor.isRemoteDataPointsDownloaded()) {
+                        try {
+                            // as start time, we take the the current time minus persist period,
+                            // minus 10 minutes to account for duration of the process itself
+                            final long MINUTE = 1000 * 60;
+                            final int LIMIT = 1000; // number of data points to retrieve per request, max allowed by the backend is 1000
+                            QueryOptions options = new QueryOptions();
+                            options.setSortOrder(QueryOptions.SORT_ORDER.DESC);
+                            options.setStartTime(new Date().getTime() - mPersistPeriod - 10 * MINUTE);
+                            options.setEndTime(null); // undefined, we want to get all data up until to now
+                            options.setLimit(LIMIT);
 
-                        boolean done = false;
-                        while (!done) {
-                            JSONArray dataList = mProxy.getSensorData(sensor.getSource(), sensor.getName(), options);
-                            for (int i = 0; i < dataList.length(); i++) {
-                                JSONObject dataFromRemote = dataList.getJSONObject(i);
-                                DataPoint dataPoint = new DataPoint(sensor.getId(), dataFromRemote.get("value"), dataFromRemote.getLong("time"), true);
-                                sensor.insertOrUpdateDataPoint(dataPoint);
+                            boolean done = false;
+                            while (!done) {
+                                JSONArray dataList = mProxy.getSensorData(sensor.getSource(), sensor.getName(), options);
+                                for (int i = 0; i < dataList.length(); i++) {
+                                    JSONObject dataFromRemote = dataList.getJSONObject(i);
+                                    DataPoint dataPoint = new DataPoint(sensor.getId(), dataFromRemote.get("value"), dataFromRemote.getLong("time"), true);
+                                    sensor.insertOrUpdateDataPoint(dataPoint);
+                                }
+
+                                if (dataList.length() < LIMIT) {
+                                    done = true;
+                                } else {
+                                    // we need to retrieve the next 100 number of items
+                                    // new endTime is the time of the last (oldest) data point. Data points are ordered DESC
+                                    long endTime = dataList.getJSONObject(dataList.length() - 1).getLong("time");
+                                    options.setEndTime(endTime);
+                                }
                             }
 
-                            if (dataList.length() < LIMIT) {
-                                done = true;
+                            sensor.setRemoteDataPointsDownloaded(true);
+                        } catch (HttpResponseException err) {
+                            if (err.getStatusCode() == 404) { // Resource not found
+                                // ignore this error: the sensor doesn't yet exist remotely, no problem
+                            } else {
+                                throw err;
                             }
-                            else {
-                                // we need to retrieve the next 100 number of items
-                                // new endTime is the time of the last (oldest) data point. Data points are ordered DESC
-                                long endTime = dataList.getJSONObject(dataList.length() - 1).getLong("time");
-                                options.setEndTime(endTime);
-                            }
-                        }
-
-                        sensor.setRemoteDataPointsDownloaded(true);
-                    }
-                    catch (HttpResponseException err) {
-                        if (err.getStatusCode() == 404) { // Resource not found
-                            // ignore this error: the sensor doesn't yet exist remotely, no problem
-                        }
-                        else {
-                            throw err;
                         }
                     }
                 }
@@ -244,58 +244,62 @@ public class DataSyncer {
 
     protected void cleanupLocal() throws JSONException, DatabaseHandlerException, SensorException, SensorProfileException, SchemaException {
         //Step 1: get all the sensors of this source in local storage
-        List<Sensor> rawSensorList = mDatabaseHandler.getSensors(SOURCE);
+        for(String source : mDatabaseHandler.getSources()) {
+            List<Sensor> rawSensorList = mDatabaseHandler.getSensors(source);
 
-        //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
-        for(Sensor sensor: rawSensorList){
-            Long persistenceBoundary = new Date().getTime() - mPersistPeriod;
-            if(sensor.getOptions().isUploadEnabled()){
-                if(sensor.getOptions().isPersistLocally()){
-                    sensor.deleteDataPoints(null,persistenceBoundary);
-                }else{
-                    sensor.deleteDataPoints(null,null); // delete all
-                }
-            }else{
-                if(sensor.getOptions().isPersistLocally()){
-                    sensor.deleteDataPoints(null, persistenceBoundary);
+            //Step 2: filter the sensor, and set the query options of data point deletion in different conditions.
+            for (Sensor sensor : rawSensorList) {
+                Long persistenceBoundary = new Date().getTime() - mPersistPeriod;
+                if (sensor.getOptions().isUploadEnabled()) {
+                    if (sensor.getOptions().isPersistLocally()) {
+                        sensor.deleteDataPoints(null, persistenceBoundary);
+                    } else {
+                        sensor.deleteDataPoints(null, null); // delete all
+                    }
+                } else {
+                    if (sensor.getOptions().isPersistLocally()) {
+                        sensor.deleteDataPoints(null, persistenceBoundary);
+                    }
                 }
             }
         }
     }
 
     protected void uploadToRemote() throws JSONException, SensorException, SensorProfileException, DatabaseHandlerException, IOException, SchemaException, ValidationException {
-        //Step 1: get all the sensors of this source in local storage
-        List<Sensor> rawSensorList = mDatabaseHandler.getSensors(SOURCE);
+        for(String source : mDatabaseHandler.getSources()) {
+            //Step 1: get all the sensors of this source in local storage
+            List<Sensor> rawSensorList = mDatabaseHandler.getSensors(source);
 
-        //Step 2: filter the sensor and its data and upload to remote, mark existsInRemote to true afterwards
-        /** Data structure of the sensor
-         * [
-         *  {
-         *      source_name: string,
-         *      sensor_name, string,
-         *      data: [
-         *              {time: number, value: JSON},
-         *               ...
-         *            ]
-         *   },
-         *  ...
-         * ]
-         **/
-        for(Sensor sensor: rawSensorList){
-            if(sensor.getOptions().isUploadEnabled()){
-                List<DataPoint> dataPoints = sensor.getDataPoints(new QueryOptions(null, null, false, null, QueryOptions.SORT_ORDER.ASC));
+            //Step 2: filter the sensor and its data and upload to remote, mark existsInRemote to true afterwards
+            /** Data structure of the sensor
+             * [
+             *  {
+             *      source_name: string,
+             *      sensor_name, string,
+             *      data: [
+             *              {time: number, value: JSON},
+             *               ...
+             *            ]
+             *   },
+             *  ...
+             * ]
+             **/
+            for (Sensor sensor : rawSensorList) {
+                if (sensor.getOptions().isUploadEnabled()) {
+                    List<DataPoint> dataPoints = sensor.getDataPoints(new QueryOptions(null, null, false, null, QueryOptions.SORT_ORDER.ASC));
 
-                JSONArray dataArray = new JSONArray();
-                for(DataPoint dataPoint: dataPoints){
-                    JSONObject jsonDataPoint = new JSONObject();
-                    jsonDataPoint.put("time", dataPoint.getTime());
-                    jsonDataPoint.put("value", dataPoint.getValue());
-                    dataArray.put(jsonDataPoint);
-                }
-                mProxy.putSensorData(sensor.getSource(), sensor.getName(), dataArray, sensor.getOptions().getMeta());
-                for(DataPoint dataPoint: dataPoints){
-                    dataPoint.setExistsInRemote(true);
-                    sensor.insertOrUpdateDataPoint(dataPoint);
+                    JSONArray dataArray = new JSONArray();
+                    for (DataPoint dataPoint : dataPoints) {
+                        JSONObject jsonDataPoint = new JSONObject();
+                        jsonDataPoint.put("time", dataPoint.getTime());
+                        jsonDataPoint.put("value", dataPoint.getValue());
+                        dataArray.put(jsonDataPoint);
+                    }
+                    mProxy.putSensorData(sensor.getSource(), sensor.getName(), dataArray, sensor.getOptions().getMeta());
+                    for (DataPoint dataPoint : dataPoints) {
+                        dataPoint.setExistsInRemote(true);
+                        sensor.insertOrUpdateDataPoint(dataPoint);
+                    }
                 }
             }
         }
