@@ -61,6 +61,9 @@ public class TestDataSyncer extends AndroidTestCase {
         mProxy = new SensorDataProxy(mServer, mAppKey, mSessionId);
         mSensorProfiles = new SensorProfiles(getContext(), mEncryptionKey);
         mDataSyncer = new DataSyncer(getContext(), mDatabaseHandler, mProxy);
+        // this tests should work for about 10 years
+        long persistPeriod = 315360000000l;
+        mDataSyncer.setPersistPeriod(persistPeriod);
         mDataSyncer.initialize();
     }
 
@@ -649,7 +652,7 @@ public class TestDataSyncer extends AndroidTestCase {
     }
 
     public void testDeleteData() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
-        String sensorName = "time_active";
+        String sensorName = "noise";
 
         // create sensor data
         JSONArray data = new JSONArray();
@@ -668,13 +671,13 @@ public class TestDataSyncer extends AndroidTestCase {
         // (not point 4, endTime itself should be excluded)
         long startTime = 1444739042200l;  // time of point with value 2
         long endTime   = 1444739042400l;  // time of point with value 4
-        Sensor timeActive = mDatabaseHandler.getSensor(mSourceName, sensorName);
-        timeActive.deleteDataPoints(startTime, endTime);
+        Sensor noise = mDatabaseHandler.getSensor(mSourceName, sensorName);
+        noise.deleteDataPoints(startTime, endTime);
 
         // data points should be deleted immediately from local
         QueryOptions options = new QueryOptions();
         options.setSortOrder(QueryOptions.SORT_ORDER.ASC);
-        List<DataPoint> local = timeActive.getDataPoints(options);
+        List<DataPoint> local = noise.getDataPoints(options);
         assertEquals("Local should contain 3 items", 3, local.size());
         assertEquals("Item 0 should the right value", 1, local.get(0).getValueAsInteger());
         assertEquals("Item 1 should the right value", 4, local.get(1).getValueAsInteger());
@@ -696,7 +699,7 @@ public class TestDataSyncer extends AndroidTestCase {
     }
 
     public void testDeleteDataNotInRemote() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
-        String sensorName = "time_active";
+        String sensorName = "noise";
         Sensor timeActive = mDatabaseHandler.createSensor(mSourceName, sensorName, new SensorOptions(null, true, true, true));
 
         // create sensor data
@@ -735,7 +738,7 @@ public class TestDataSyncer extends AndroidTestCase {
     }
 
     public void testDeleteDataNotInLocal() throws SensorProfileException, SchemaException, JSONException, DatabaseHandlerException, SensorException, ValidationException, IOException {
-        String sensorName = "time_active";
+        String sensorName = "noise";
 
         // create sensor data
         JSONArray data = new JSONArray();

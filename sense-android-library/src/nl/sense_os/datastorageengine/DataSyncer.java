@@ -172,18 +172,16 @@ public class DataSyncer {
     }
 
     protected void downloadSensorsFromRemote() throws IOException, JSONException, SensorException, SensorProfileException, DatabaseHandlerException, SchemaException, ValidationException {
-        for(String source : mDatabaseHandler.getSources()) {
-            //Step 1: download sensors from remote
-            JSONArray sensorList = mProxy.getSensors(source);
+        //Step 1: download sensors from remote
+        JSONArray sensorList = mProxy.getSensors();
 
-            //Step 2: insert sensors into local storage
-            if (sensorList.length() != 0) {
-                for (int i = 0; i < sensorList.length(); i++) {
-                    JSONObject sensorFromRemote = sensorList.getJSONObject(i);
-                    SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
-                    if (!mDatabaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))) {
-                        mDatabaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
-                    }
+        //Step 2: insert sensors into local storage
+        if (sensorList.length() != 0) {
+            for (int i = 0; i < sensorList.length(); i++) {
+                JSONObject sensorFromRemote = sensorList.getJSONObject(i);
+                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
+                if (!mDatabaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))) {
+                    mDatabaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
                 }
             }
         }
@@ -205,7 +203,7 @@ public class DataSyncer {
                             final int LIMIT = 1000; // number of data points to retrieve per request, max allowed by the backend is 1000
                             QueryOptions options = new QueryOptions();
                             options.setSortOrder(QueryOptions.SORT_ORDER.DESC);
-                            options.setStartTime(new Date().getTime() - mPersistPeriod - 10 * MINUTE);
+                            options.setStartTime(Math.max(new Date().getTime() - mPersistPeriod - 10 * MINUTE, 0));
                             options.setEndTime(null); // undefined, we want to get all data up until to now
                             options.setLimit(LIMIT);
 
