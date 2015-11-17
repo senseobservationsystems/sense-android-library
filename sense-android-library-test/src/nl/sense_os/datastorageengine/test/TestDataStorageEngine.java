@@ -269,7 +269,10 @@ public class TestDataStorageEngine extends AndroidTestCase{
         DSEConfig dseConfig = dataStorageEngine.getConfig();
         Long originalSyncRate = dseConfig.uploadInterval;
         try {
-            Sensor noise = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+            SensorOptions sensorOptions = new SensorOptions();
+            sensorOptions.setUploadEnabled(true);
+            sensorOptions.setDownloadEnabled(true);
+            Sensor noise = dataStorageEngine.createSensor(source, sensor_name, sensorOptions);
 
             long value1 = 1;
             long time1 = new Date().getTime();
