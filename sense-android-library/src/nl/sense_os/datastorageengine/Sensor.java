@@ -211,9 +211,8 @@ public class Sensor {
     public void deleteDataPoints(Long startTime, Long endTime) throws DatabaseHandlerException {
         // create a deletion request, will be put in a queue and in the next synchronization
         // the remote data will be deleted
-        DatabaseHandler databaseHandler = new DatabaseHandler(mContext, mUserId);
+        DatabaseHandler databaseHandler = new DatabaseHandler(mContext, mEncryptionKey, mUserId);
         databaseHandler.createDataDeletionRequest(mSource, mName, startTime, endTime);
-
         // Delete the data locally
         Realm realm = getRealmInstance();
         try {
