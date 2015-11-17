@@ -3,7 +3,7 @@ package nl.sense_os.datastorageengine;
 /**
  * Created by ted on 10/30/15.
  */
-public class DSEConfig {
+public class DSEConfig implements Cloneable{
     /**
      * The number of milliseconds between the upload sessions
      * The default is DataSyncer.SYNC_RATE
@@ -79,6 +79,15 @@ public class DSEConfig {
         return mAPPKey;
     }
 
+    @Override
+    protected DSEConfig clone(){
+        DSEConfig dseConfig = new DSEConfig(mSessionID, mUserID, mAPPKey);
+        dseConfig.uploadInterval = uploadInterval;
+        dseConfig.localPersistancePeriod = localPersistancePeriod;
+        dseConfig.enableEncryption = enableEncryption;
+        dseConfig.backendEnvironment = backendEnvironment;
+        return dseConfig;
+    }
 
     @Override
     public boolean equals(Object o) {

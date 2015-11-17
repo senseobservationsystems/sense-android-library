@@ -28,8 +28,8 @@
     <!-- LocalStorage authority, overwrite when bundling Sense into another app -->
     <string name="local_storage_authority" translatable="false">nl.sense_os.platform.provider.LocalStorage</string>
     <!-- DataStorageEngine encryption key -->
-    <!-- This encryption key should be changed by the application and a tool like DexGuard should be used to obfuscate it. Using encryption without obfuscating the string is not safe. -->
-    <string name="dse_encryption_key" translatable="false">3XnMxOy3Ejsd55HWM941D89yK!RlRVH</string>
+    <!-- This encryption key should be changed by the application with a string of 64-bytes and a tool like DexGuard should be used to obfuscate it. Using encryption without obfuscating the string is not safe. -->
+    <string name="dse_encryption_key" translatable="false">3XnMxOy3Ejsd55HWM941D89yK!RlRVH3XnMxOy3Ejsd55HWM941D89yK!RlRVHER</string>
 
 
 </resources>

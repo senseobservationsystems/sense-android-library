@@ -15,6 +15,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import nl.sense_os.datastorageengine.AsyncCallback;
 import nl.sense_os.datastorageengine.DSEConfig;
 import nl.sense_os.datastorageengine.DataPoint;
@@ -74,6 +76,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         dataStorageEngine = DataStorageEngine.getInstance(getContext());
         DSEConfig dseConfig = new DSEConfig(sessionId, userId, appKey);
         dseConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
+        dseConfig.enableEncryption = true;
         dataStorageEngine.setConfig(dseConfig);
         // Wait and test onReady
         assertEquals(Boolean.TRUE, dataStorageEngine.onReady().get(60, TimeUnit.SECONDS));
@@ -86,6 +89,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     protected void tearDown () throws Exception {
         csUtils.deleteAccount(newUser.get("username"), newUser.get("password"), newUser.get("id"));
         dataStorageEngine.clearConfig();
+        deleteRealm(mContext.getString(R.string.dse_encryption_key).getBytes());
     }
 
     public void testCallbacks() throws InterruptedException, ExecutionException, TimeoutException {
@@ -320,6 +324,37 @@ public class TestDataStorageEngine extends AndroidTestCase{
         }
     }
 
+    public void testEncryption() throws ValidationException, JSONException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, InterruptedException, ExecutionException, TimeoutException {
+        // create the sensor
+        Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+        // create the data point
+        Integer value = 10;
+        long date = System.currentTimeMillis();
+        sensor.insertOrUpdateDataPoint(value, date);
+        // check if it exists
+        QueryOptions queryOptions = new QueryOptions();
+        List<DataPoint> dataPoints = sensor.getDataPoints(queryOptions);
+        assertEquals(1, dataPoints.size());
+
+        // get the current configuration
+        DSEConfig dseConfig = dataStorageEngine.getConfig();
+        // disable encryption
+        dseConfig.enableEncryption = false;
+        dataStorageEngine.setConfig(dseConfig);
+        // wait until the DSE is ready
+        assertEquals(Boolean.TRUE, dataStorageEngine.onReady().get(60, TimeUnit.SECONDS));
+        // check again if we can get the data
+        try {
+            sensor = dataStorageEngine.getSensor(source, sensor_name);
+            dataPoints = sensor.getDataPoints(queryOptions);
+            assertEquals(0, dataPoints.size());
+            fail("Should have thrown an exception");
+        }catch(IllegalArgumentException e){
+            // the realm data base should not be available
+            assertEquals("Illegal Argument: Invalid format of Realm file.", e.getMessage());
+        }
+    }
+
     /** Helper function for comparing sensors */
     public void assertEqualsSensor(Sensor left, Sensor right)
     {
@@ -346,5 +381,17 @@ public class TestDataStorageEngine extends AndroidTestCase{
         if(left.getMeta() != null && (right.getMeta() != null)) {
             assertEquals(left.getMeta().toString(), right.getMeta().toString());
         }
+    }
+
+    /**
+     * Helper function to delete realm
+     * @param encryptionKey
+     */
+    void deleteRealm (byte[] encryptionKey) {
+        RealmConfiguration config = new RealmConfiguration.Builder(getContext()).encryptionKey(encryptionKey).build();
+        Realm.deleteRealm(config);
+
+        RealmConfiguration config2 = new RealmConfiguration.Builder(getContext()).build();
+        Realm.deleteRealm(config2);
     }
 }

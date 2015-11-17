@@ -222,11 +222,11 @@ public class DataStorageEngine {
 
     /**
      * Returns the current configuration properties
-     * @return The DSEConfig object
+     * @return The cloned DSEConfig object
      */
     public DSEConfig getConfig()
     {
-        return mDSEConfig;
+        return mDSEConfig.clone();
     }
 
     /**
