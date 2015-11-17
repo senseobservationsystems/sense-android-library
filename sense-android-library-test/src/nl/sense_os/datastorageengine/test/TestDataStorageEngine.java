@@ -85,6 +85,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     @Override
     protected void tearDown () throws Exception {
         csUtils.deleteAccount(newUser.get("username"), newUser.get("password"), newUser.get("id"));
+        dataStorageEngine.clearConfig();
     }
 
     public void testCallbacks() throws InterruptedException, ExecutionException, TimeoutException {

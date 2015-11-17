@@ -209,7 +209,7 @@ public class DataStorageEngine {
      **/
     public synchronized void setConfig(DSEConfig dseConfig)
     {
-        // TODO retrieve the credentials from the sharedpreferences (use a listener) when the AccountManager is implemented
+        // TODO retrieve the credentials from the shared preferences (use a listener) when the AccountManager is implemented
         if(dseConfig == null || (mDSEConfig != null && dseConfig.equals(mDSEConfig))) {
            return;
         }
@@ -227,6 +227,22 @@ public class DataStorageEngine {
     public DSEConfig getConfig()
     {
         return mDSEConfig;
+    }
+
+    /**
+     * Clears the configuration and creates a new uninitialized DataStorageEngine instance
+     */
+    public synchronized void clearConfig()
+    {
+        // clear the shared preferences configuration
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFERENCES_FILE, mContext.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+        // disable the periodic data syncing
+        mDataSyncer.disablePeriodicSync();
+        // create a new empty DSE
+        mDataStorageEngine = new DataStorageEngine(mContext);
     }
 
     /**
