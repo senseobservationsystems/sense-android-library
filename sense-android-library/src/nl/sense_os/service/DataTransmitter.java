@@ -3,10 +3,13 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
+import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
 import nl.sense_os.service.scheduler.Scheduler;
+import nl.sense_os.service.storage.DSEDataConsumer;
+
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.content.ComponentName;
@@ -25,8 +28,7 @@ import android.util.Log;
  * registering the transmission task to the scheduler. The Sense service calls
  * {@link #scheduleTransmissions(Context)} when it starts sensing. <br/>
  * <br/>
- * When the transmission task is executed, an Intent is sent to the {@link MsgHandler} to empty its
- * buffer.<br/>
+ * When the transmission task is executed, the DataStorageEngine.syncData() is called to synchronize with the back-end<br/>
  * <br/>
  * The transmission frequency is based on the {@link Main#SYNC_RATE} preference. When the sync rate
  * is set to the real-time setting, we look at the and {@link Main#SAMPLE_RATE} to determine
@@ -124,9 +126,8 @@ public class DataTransmitter implements Runnable {
 
     /**
      * Starts the periodic transmission of sensor data.
-     * 
-     * @param mContext
-     *            Context to access Scheduler
+     * @param taskTransmitterInterval The transmission interval
+     * @param transmissionInterval The task transmitter interal
      */
     public void startTransmissions(long transmissionInterval, long taskTransmitterInterval) {
 
@@ -149,12 +150,7 @@ public class DataTransmitter implements Runnable {
      */
     public void transmissionService() {
         Log.v(TAG, "Start transmission");
-        Intent task = new Intent(mContext.getString(R.string.action_sense_send_data));
-        task.setPackage(mContext.getPackageName());
-        mLastTxTime = SystemClock.elapsedRealtime();
-        ComponentName service = mContext.startService(task);
-        if (null == service) {
-            Log.w(TAG, "Failed to start data sync service");
-        }
+        DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(mContext);
+        dataStorageEngine.syncData();
     }
 }

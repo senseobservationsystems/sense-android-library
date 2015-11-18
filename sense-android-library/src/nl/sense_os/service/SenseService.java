@@ -8,6 +8,8 @@ import java.util.Map;
 
 import nl.sense_os.datastorageengine.DSEConfig;
 import nl.sense_os.datastorageengine.DataStorageEngine;
+import nl.sense_os.datastorageengine.ErrorCallback;
+import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.HumiditySensor;
 import nl.sense_os.service.ambience.LightSensor;
@@ -48,6 +50,7 @@ import nl.sense_os.service.storage.DSEDataConsumer;
 import nl.sense_os.service.subscription.SubscriptionManager;
 import nl.sense_os.util.json.EncryptionHelper;
 
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -355,9 +358,27 @@ public class SenseService extends Service {
         mSubscrMgr = SubscriptionManager.getInstance();
         // create an instance of the DSE
         mDataStorageEngine = DataStorageEngine.getInstance(this);
+        // register the on error receiver
+        mDataStorageEngine.registerOnError(mErrorCallback);
         // create the data consumer which subscribes to the input of sensors which it will store in the DSE
         DSEDataConsumer.getInstance(this);
     }
+
+    // Receive errors from the DSE
+    private ErrorCallback mErrorCallback = new ErrorCallback() {
+        @Override
+        public void onError(Throwable err) {
+            if(err instanceof HttpResponseException){
+                // If there is an unauthorized error, send the relogin intent
+                if(((HttpResponseException)err).getStatusCode() == 403){
+                    final Intent serviceIntent = new Intent(getString(R.string.action_sense_service));
+                    serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
+                    serviceIntent.setPackage(getPackageName());
+                    startService(serviceIntent);
+                }
+            }
+        }
+    };
 
     /**
      * Stops sensing, logs out, removes foreground status.
@@ -426,6 +447,19 @@ public class SenseService extends Service {
             newDSEConfig.uploadInterval = dseConfig.uploadInterval;
             newDSEConfig.backendEnvironment = dseConfig.backendEnvironment;
             newDSEConfig.localPersistancePeriod = dseConfig.localPersistancePeriod;
+        }else{
+            // check for encryption
+            newDSEConfig.enableEncryption = mainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
+            if(mainPrefs.getBoolean(Advanced.DEV_MODE, false)) {
+                newDSEConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
+            }else {
+                newDSEConfig.backendEnvironment = SensorDataProxy.SERVER.LIVE;
+            }
+            int localPersistPeriod = mainPrefs.getInt( SensePrefs.Main.Advanced.RETENTION_HOURS, -1 );
+            if(localPersistPeriod != -1){
+                newDSEConfig.localPersistancePeriod = localPersistPeriod * 60 * 60 * 1000l;
+            }
+            // TODO disable periodic uploading via the DSE
         }
 
         mDataStorageEngine.setConfig(newDSEConfig);

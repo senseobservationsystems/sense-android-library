@@ -10,7 +10,7 @@ public class DSEConfig implements Cloneable{
      */
     public Long uploadInterval = null;
     /**
-     * The number of seconds to persist the data locally
+     * The number of milliseconds to persist the data locally
      * The default value is DataSyncer.PERSIST_PERIOD
      */
     public Long localPersistancePeriod = null;
