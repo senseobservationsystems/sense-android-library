@@ -1,16 +1,22 @@
 package nl.sense_os.service.storage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONException;
 import java.util.HashMap;
 
 import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.ErrorCallback;
 import nl.sense_os.datastorageengine.Sensor;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
+import nl.sense_os.service.R;
+import nl.sense_os.service.SenseService;
 import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.DataConsumer;
@@ -18,6 +24,11 @@ import nl.sense_os.service.subscription.SubscriptionManager;
 import nl.sense_os.util.json.SchemaException;
 
 /**
+ * This class receives data from the sensors that the DataStorageEngine can and will store.
+ *
+ * The DSEDataConsumer subscribes to a fixed set of sensor names.
+ * A sensor will be created if it does not exists yet with SensorOptions defined per sensor.
+ *
  * Created by ted@sense-os.nl on 11/17/15.
  * Copyright (c) 2015 Sense Observation Systems BV. All rights reserved.
  */

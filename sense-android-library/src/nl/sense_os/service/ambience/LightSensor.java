@@ -10,7 +10,6 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
@@ -57,7 +56,6 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
     private List<Sensor> sensors;
     private SensorManager smgr;
     private PeriodicPollAlarmReceiver pollAlarmReceiver;
-    private Controller controller;
     private boolean active;
     private boolean listening;
 
@@ -71,7 +69,6 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
         this.context = context;
         smgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
-        controller = Controller.getController(context);
         sensors = new ArrayList<Sensor>();
         if (null != smgr.getDefaultSensor(Sensor.TYPE_LIGHT)) {
             sensors.add(smgr.getDefaultSensor(Sensor.TYPE_LIGHT));

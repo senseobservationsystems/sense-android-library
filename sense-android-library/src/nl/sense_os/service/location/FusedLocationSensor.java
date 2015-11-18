@@ -49,7 +49,7 @@ import android.util.Log;
  */
 public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSensor, com.google.android.gms.location.LocationListener, ConnectionCallbacks, OnConnectionFailedListener {
 
-    private static final String TAG = "Sense FusedLocationSensor";
+    private static final String TAG = "FusedLocationSensor";
     private static final String DISTANCE_ALARM_ACTION = "nl.sense_os.service.LocationAlarm.distanceAlarm";
     private static final int DISTANCE_ALARM_ID = 70;
     private static FusedLocationSensor instance = null;
@@ -72,7 +72,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
      * Constructor.
      * 
      * @param context an Android Context object
-     * @param googleApiClient a connected GoogleApiClient
      */
     protected FusedLocationSensor(Context context) {
         this.context = context;

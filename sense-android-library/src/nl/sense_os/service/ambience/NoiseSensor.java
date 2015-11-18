@@ -31,14 +31,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import nl.sense_os.service.MsgHandler;
 import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
@@ -62,7 +60,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
 	/**
 	 * Runnable that performs one noise sample. Starts the recording, reads the buffer contents,
-	 * calculates the noise power and sends the measurement to the {@link MsgHandler}. Also
+	 * calculates the noise power and sends the measurement to the subscribers. Also
 	 * schedules the next sample job.
 	 */
 	private class NoiseSampleJob implements Runnable {
@@ -271,8 +269,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							SharedPreferences mainPrefs = context.getSharedPreferences(
 									SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 							if (mainPrefs.getBoolean(Ambience.MIC, true)) {
-								dB = calculateDb(samples);                                
-								controller.checkNoiseSensor(dB);
+								dB = calculateDb(samples);
 								if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
 									noiseBurstSensor.addData(samples, RECORDING_TIME_NOISE, startTimestamp);                                	
 								}
@@ -385,7 +382,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
 	/**
 	 * Runnable that starts one sound stream recording. Afterwards, the recording is sent to the
-	 * {@link MsgHandler}. Also schedules the next sample job.
+	 * subscribers. Also schedules the next sample job.
 	 */
 	private class SoundStreamJob implements Runnable {
 		private static final int RECORDING_TIME_STREAM = 5 * 60 * 1000; // 5 minutes audio
@@ -586,7 +583,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 	private LoudnessSensor loudnessSensor;
 	private NoiseBurstSensor noiseBurstSensor = new NoiseBurstSensor();
 	private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
-	private Controller controller;
 	private PeriodicPollAlarmReceiver pollAlarmReceiver;
 	private PhoneStateListener phoneStateListener = new PhoneStateListener() {
 
@@ -624,7 +620,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 	protected NoiseSensor(Context context) {
 		this.context = context;
 		pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
-		controller = Controller.getController(context);
 		loudnessSensor = LoudnessSensor.getInstance(context);
 		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
 	}

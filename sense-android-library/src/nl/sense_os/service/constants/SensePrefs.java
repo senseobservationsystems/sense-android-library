@@ -431,30 +431,6 @@ public class SensePrefs {
 
         public static class Location {
             /**
-             * Key for preference that toggles use of GPS in location sensor.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
-             */
-            @Deprecated
-            public static final String GPS = "location_gps";
-            /**
-             * Key for preference that toggles use of Network in location sensor.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
-             */
-            @Deprecated
-            public static final String NETWORK = "location_network";
-            /**
-             * Key for preference that toggles use of sensor fusion to toggle the GPS usage.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             * @deprecated Selecting the GPS as provider automatically will be replaced by the fused location provider.
-             */
-            @Deprecated
-            public static final String AUTO_GPS = "automatic_gps";
-            /**
              * Key for preference that toggles use of the time zone sensor
              * 
              * @see SensePrefs#MAIN_PREFS

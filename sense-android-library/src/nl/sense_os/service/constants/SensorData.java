@@ -1,7 +1,4 @@
 package nl.sense_os.service.constants;
-
-import nl.sense_os.service.MsgHandler;
-import nl.sense_os.service.storage.LocalStorage;
 import android.content.ContentResolver;
 import android.provider.BaseColumns;
 
@@ -9,9 +6,7 @@ import android.provider.BaseColumns;
  * Utiliy class that contains resources for representing sensor data points.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
- * 
- * @see LocalStorage
- * @see MsgHandler
+ *
  */
 public class SensorData {
 

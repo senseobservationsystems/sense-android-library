@@ -156,7 +156,7 @@ public class BluetoothDeviceProximity extends BaseDataProducer{
 		}
 	}
 
-	private static final String TAG = "Bluetooth DeviceProximity";
+	private static final String TAG = "BTDeviceProximity";
 	private static final int REQ_CODE = 333;
 	private final BluetoothReceiver btReceiver = new BluetoothReceiver();
 	private final ScanAlarmReceiver alarmReceiver = new ScanAlarmReceiver();

@@ -13,7 +13,6 @@ import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.states.EpiStateMonitor;
 import nl.sense_os.service.subscription.BaseSensor;
 import nl.sense_os.service.subscription.SubscriptionManager;
 import android.annotation.TargetApi;
@@ -232,9 +231,6 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
 
         // super fast sample delay
         setSampleRate(0);
-
-        // separate service to check epilepsy (not used anymore?)
-        context.startService(new Intent(context, EpiStateMonitor.class));
 
         // only add epilepsy data processor
         this.epi = new EpilepsySensor(context);
@@ -462,12 +458,6 @@ public class MotionSensor extends BaseSensor implements SensorEventListener, Per
         accelerometerBurstSensor = null;
         linearBurstSensor = null;
         gyroBurstSensor = null;
-
-        // stop the epi state monitor service
-        // TODO: remove the epi mode and epi state monitor service
-        if (isEpiMode || isFallDetectMode || isBurstMode) {
-            context.stopService(new Intent(context, EpiStateMonitor.class));
-        }
     }
 
     private synchronized void unregisterSensors() {

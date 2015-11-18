@@ -1,18 +1,16 @@
 /**************************************************************************************************
  * Copyright (C) 2010 Sense Observation Systems, Rotterdam, the Netherlands. All rights reserved. *
  *************************************************************************************************/
-package nl.sense_os.service;
+package nl.sense_os.service.scheduler;
 
-import nl.sense_os.datastorageengine.DataStorageEngine;
+import nl.sense_os.datastorageengine.PeriodicDataSyncer;
+import nl.sense_os.service.ServiceStateHelper;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
-import nl.sense_os.service.scheduler.Scheduler;
-import nl.sense_os.service.storage.DSEDataConsumer;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +24,7 @@ import android.util.Log;
 /**
  * This class is responsible for initiating the transmission of buffered data. It works by
  * registering the transmission task to the scheduler. The Sense service calls
- * {@link #scheduleTransmissions(Context)} when it starts sensing. <br/>
+ * {@link #scheduleTransmissions()} when it starts sensing. <br/>
  * <br/>
  * When the transmission task is executed, the DataStorageEngine.syncData() is called to synchronize with the back-end<br/>
  * <br/>
@@ -42,6 +40,14 @@ public class DataTransmitter implements Runnable {
     private static final long ADAPTIVE_TX_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
     private static final String TAG = "DataTransmitter";
     private static DataTransmitter sInstance;
+
+    private class Intervals {
+        static final long ECO = AlarmManager.INTERVAL_HALF_HOUR;
+        static final long RARELY = 1000 * 60 * 15;
+        static final long NORMAL = 1000 * 60 * 5;
+        static final long OFTEN = 1000 * 60 * 1;
+        static final long BALANCED = 1000 * 60 * 3;
+    }
 
     /**
      * Factory method to get the singleton instance.
@@ -127,7 +133,7 @@ public class DataTransmitter implements Runnable {
     /**
      * Starts the periodic transmission of sensor data.
      * @param taskTransmitterInterval The transmission interval
-     * @param transmissionInterval The task transmitter interal
+     * @param transmissionInterval The task transmitter interval
      */
     public void startTransmissions(long transmissionInterval, long taskTransmitterInterval) {
 
@@ -150,7 +156,89 @@ public class DataTransmitter implements Runnable {
      */
     public void transmissionService() {
         Log.v(TAG, "Start transmission");
-        DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(mContext);
-        dataStorageEngine.syncData();
+        mLastTxTime = SystemClock.elapsedRealtime();
+        // tick the periodic data syncer
+        Intent intent = new Intent(mContext, PeriodicDataSyncer.class);
+        mContext.sendBroadcast(intent);
+    }
+
+    /**
+     * Starts periodic transmission of the buffered sensor data.
+     */
+    public void scheduleTransmissions() {
+        Log.v(TAG, "Schedule transmissions");
+
+        SharedPreferences mainPrefs = mContext.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        int syncRate = Integer.parseInt(mainPrefs.getString(Main.SYNC_RATE, SensePrefs.Main.SyncRate.NORMAL));
+        int sampleRate = Integer.parseInt(mainPrefs.getString(Main.SAMPLE_RATE, SensePrefs.Main.SampleRate.NORMAL));
+
+        // pick transmission interval
+        long txInterval;
+        switch (syncRate) {
+            case 2: // rarely, every 15 minutes
+                txInterval = Intervals.RARELY;
+                break;
+            case 1: // eco-mode
+                txInterval = Intervals.ECO;
+                break;
+            case 0: // 5 minute
+                txInterval = Intervals.NORMAL;
+                break;
+            case -1: // 60 seconds
+                txInterval = Intervals.OFTEN;
+                break;
+            case -2: // real-time: schedule transmission based on sample time
+                switch (sampleRate) {
+                    case 2: // balanced
+                        txInterval = Intervals.BALANCED * 3;
+                        break;
+                    case 1: // rarely
+                        txInterval = Intervals.ECO * 3;
+                        break;
+                    case 0: // normal
+                        txInterval = Intervals.NORMAL * 3;
+                        break;
+                    case -1: // often
+                        txInterval = Intervals.OFTEN * 3;
+                        break;
+                    case -2: // real time
+                        txInterval = Intervals.OFTEN;
+                        break;
+                    default:
+                        Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
+                        return;
+                }
+                break;
+            default:
+                Log.w(TAG, "Unexpected sync rate value: " + syncRate);
+                return;
+        }
+
+        // pick transmitter task interval
+        long txTaskInterval;
+        switch (sampleRate) {
+            case -2: // real time
+                txTaskInterval = 0;
+                break;
+            case -1: // often
+                txTaskInterval = 10 * 1000;
+                break;
+            case 0: // normal
+                txTaskInterval = 60 * 1000;
+                break;
+            case 1: // rarely (15 minutes)
+                txTaskInterval = 15 * 60 * 1000;
+                break;
+            case 2: // balanced (3 minutes)
+                txTaskInterval = 3 * 60 * 1000;
+                break;
+            default:
+                Log.w(TAG, "Unexpected sample rate value: " + sampleRate);
+                return;
+        }
+
+        DataTransmitter transmitter = DataTransmitter.getInstance(mContext);
+        transmitter.startTransmissions(txInterval, txTaskInterval);
     }
 }

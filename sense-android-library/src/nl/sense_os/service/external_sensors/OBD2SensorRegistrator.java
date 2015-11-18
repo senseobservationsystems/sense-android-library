@@ -1,6 +1,5 @@
 package nl.sense_os.service.external_sensors;
 
-import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.content.Context;
@@ -11,13 +10,11 @@ import android.content.Context;
  * 
  * @author Roelof van den Berg <roelof@sense-os.nl>
  */
-public class OBD2SensorRegistrator extends SensorRegistrator {
+public class OBD2SensorRegistrator {
 
-    public OBD2SensorRegistrator(Context context) {
-        super(context);
+    public OBD2SensorRegistrator() {
     }
 
-    @Override
     public boolean verifySensorIds(String deviceType, String deviceUuid) {
         // preallocate
         String name, displayName, description, dataType, value;
@@ -29,8 +26,8 @@ public class OBD2SensorRegistrator extends SensorRegistrator {
         description = deviceType;
         dataType = SenseDataTypes.INT;
         value = "0";
-        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-                deviceUuid);
+//        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
+//                deviceUuid);
 
         return success;
     }

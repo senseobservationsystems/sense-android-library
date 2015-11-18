@@ -415,8 +415,4 @@ public class SenseServiceStub extends Binder {
         prefs.edit().putBoolean(Status.PHONESTATE, active).commit();
         service.togglePhoneState(active);
     }
-
-    public void togglePopQuiz(boolean active) {
-        Log.w(TAG, "Toggle questionnaire ignored: this functionality is no longer supported!");
-    }
 }

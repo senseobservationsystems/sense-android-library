@@ -125,7 +125,7 @@ public class ZephyrHxM extends BaseDataProducer {
 
 								// check sensor IDs
 								new Thread(){public void run(){
-									new ZephyrHxmRegistrator(context).verifySensorIds(
+									new ZephyrHxmRegistrator().verifySensorIds(
 											deviceType,deviceUuid);
 								}}.start();
 

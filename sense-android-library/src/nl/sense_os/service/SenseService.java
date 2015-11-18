@@ -17,7 +17,6 @@ import nl.sense_os.service.ambience.MagneticFieldSensor;
 import nl.sense_os.service.ambience.NoiseSensor;
 import nl.sense_os.service.ambience.PressureSensor;
 import nl.sense_os.service.ambience.TemperatureSensor;
-import nl.sense_os.service.commonsense.DefaultSensorRegistrationService;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
@@ -29,13 +28,11 @@ import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
 import nl.sense_os.service.constants.SensePrefs.Status;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.deviceprox.DeviceProximity;
 import nl.sense_os.service.external_sensors.NewOBD2DeviceConnector;
 import nl.sense_os.service.external_sensors.ZephyrBioHarness;
 import nl.sense_os.service.external_sensors.ZephyrHxM;
 import nl.sense_os.service.location.FusedLocationSensor;
-import nl.sense_os.service.location.LocationSensor;
 import nl.sense_os.service.location.TimeZoneSensor;
 import nl.sense_os.service.motion.MotionSensor;
 import nl.sense_os.service.phonestate.AppsSensor;
@@ -45,6 +42,7 @@ import nl.sense_os.service.phonestate.ProximitySensor;
 import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.phonestate.AppInfoSensor;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.scheduler.DataTransmitter;
 import nl.sense_os.service.scheduler.ScheduleAlarmTool;
 import nl.sense_os.service.storage.DSEDataConsumer;
 import nl.sense_os.service.subscription.SubscriptionManager;
@@ -92,7 +90,7 @@ public class SenseService extends Service {
      * Class used for the client Binder. Because we know this service always runs in the same
      * process as its clients, we don't need to deal with IPC.
      * 
-     * @see http://developer.android.com/guide/components/bound-services.html
+     * @link http://developer.android.com/guide/components/bound-services.html
      */
     public class SenseBinder extends Binder {
 
@@ -124,8 +122,6 @@ public class SenseService extends Service {
     private CameraLightSensor cameraLightSensor;
     private TemperatureSensor temperatureSensor;
     private HumiditySensor humiditySensor;
-    private LocationSensor locListener;
-    private Controller controller;
     private MotionSensor motionSensor;
     private NoiseSensor noiseSensor;
     private PhoneActivitySensor phoneActivitySensor;
@@ -136,13 +132,12 @@ public class SenseService extends Service {
     private ZephyrHxM es_HxM;
     private NewOBD2DeviceConnector es_obd2sensor;
     private MagneticFieldSensor magneticFieldSensor;
-    private DataTransmitter transmitter;
+    private DataTransmitter mDataTransmitter;
     private SubscriptionManager mSubscrMgr;
     private AppsSensor appsSensor;
     private TimeZoneSensor timeZoneSensor;
     private AppInfoSensor appInfoSensor;
     private FusedLocationSensor fusedLocationListener;
-
     private DataStorageEngine mDataStorageEngine;
 
     /**
@@ -361,7 +356,9 @@ public class SenseService extends Service {
         // register the on error receiver
         mDataStorageEngine.registerOnError(mErrorCallback);
         // create the data consumer which subscribes to the input of sensors which it will store in the DSE
-        DSEDataConsumer.getInstance(this);
+        mDSEDataConsumer = DSEDataConsumer.getInstance(this);
+        // create the data periodic transmitter
+        mDataTransmitter = DataTransmitter.getInstance(this);
     }
 
     // Receive errors from the DSE
@@ -369,7 +366,7 @@ public class SenseService extends Service {
         @Override
         public void onError(Throwable err) {
             if(err instanceof HttpResponseException){
-                // If there is an unauthorized error, send the relogin intent
+                // If there is an unauthorized error, send the re-login intent
                 if(((HttpResponseException)err).getStatusCode() == 403){
                     final Intent serviceIntent = new Intent(getString(R.string.action_sense_service));
                     serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
@@ -420,11 +417,16 @@ public class SenseService extends Service {
         // store this login
         SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
         prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, SNTP.getInstance().getTime()).commit();
+
+        // stop any previously started scheduled transmissions
+        mDataTransmitter.stopTransmissions();
+        // start the periodic syncing with the Scheduler
+        mDataTransmitter.scheduleTransmissions();
+
         checkVersion();
     }
 
     private void setupDSE(){
-        DSEConfig dseConfig = mDataStorageEngine.getConfig();
         SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
         String applicationKey = mainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
@@ -439,28 +441,23 @@ public class SenseService extends Service {
             sessionID = encryptionHelper.decrypt(sessionID);
             userID = encryptionHelper.decrypt(userID);
         }
-        // create a new DSEConfig object and set the previous settings
+        // create a new DSEConfig object and set fill it with the stored preferences
         DSEConfig newDSEConfig = new DSEConfig(sessionID, userID, applicationKey);
-        // copy the settings if this is the same user
-        if(dseConfig != null && dseConfig.getUserID().equals(userID)) {
-            newDSEConfig.enableEncryption = dseConfig.enableEncryption;
-            newDSEConfig.uploadInterval = dseConfig.uploadInterval;
-            newDSEConfig.backendEnvironment = dseConfig.backendEnvironment;
-            newDSEConfig.localPersistancePeriod = dseConfig.localPersistancePeriod;
-        }else{
-            // check for encryption
-            newDSEConfig.enableEncryption = mainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
-            if(mainPrefs.getBoolean(Advanced.DEV_MODE, false)) {
-                newDSEConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
-            }else {
-                newDSEConfig.backendEnvironment = SensorDataProxy.SERVER.LIVE;
-            }
-            int localPersistPeriod = mainPrefs.getInt( SensePrefs.Main.Advanced.RETENTION_HOURS, -1 );
-            if(localPersistPeriod != -1){
-                newDSEConfig.localPersistancePeriod = localPersistPeriod * 60 * 60 * 1000l;
-            }
-            // TODO disable periodic uploading via the DSE
+        // check for encryption
+        newDSEConfig.enableEncryption = mainPrefs.getBoolean(Advanced.ENCRYPT_DATABASE, false);
+        // set the backend environment to use
+        if(mainPrefs.getBoolean(Advanced.DEV_MODE, false)) {
+            newDSEConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
+        }else {
+            newDSEConfig.backendEnvironment = SensorDataProxy.SERVER.LIVE;
         }
+        // set the local data persist period
+        int localPersistPeriod = mainPrefs.getInt( SensePrefs.Main.Advanced.RETENTION_HOURS, -1 );
+        if(localPersistPeriod != -1){
+            newDSEConfig.localPersistancePeriod = localPersistPeriod * 60 * 60 * 1000l;
+        }
+        // The Controller and DataTransmitter will call the DataStorageEngine.syncData() when needed.
+        newDSEConfig.enableSync = false;
 
         mDataStorageEngine.setConfig(newDSEConfig);
     }
@@ -475,8 +472,9 @@ public class SenseService extends Service {
         // update login status
         state.setLoggedIn(false);
 
-        transmitter = DataTransmitter.getInstance(this);
-        transmitter.stopTransmissions();
+        // stop the periodic syncing
+        mDataTransmitter.stopTransmissions();
+
         // clear the dse
         mDataStorageEngine.clearConfig();
     }
@@ -563,11 +561,9 @@ public class SenseService extends Service {
     void onSyncRateChange() {
         Log.v(TAG, "Sync rate changed");
         if (state.isStarted()) {
-            controller = Controller.getController(this);
-            transmitter = DataTransmitter.getInstance(this);
-            transmitter.stopTransmissions();
+            mDataTransmitter.stopTransmissions();
             ScheduleAlarmTool.getInstance(this).resetNextExecution();
-            controller.scheduleTransmissions();
+            mDataTransmitter.scheduleTransmissions();
         }
 
         // update any widgets
@@ -690,16 +686,8 @@ public class SenseService extends Service {
 
         // make sure the IDs of all sensors are known
         SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
-        boolean useCommonSense = mainPrefs.getBoolean(Advanced.USE_COMMONSENSE, true);
-        if (useCommonSense) {
-            verifySensorIds();
-        }
-
         SharedPreferences statusPrefs = getSharedPreferences(SensePrefs.STATUS_PREFS, MODE_PRIVATE);
         if (statusPrefs.getBoolean(Status.MAIN, false)) {
-            // start database leeglepelaar
-            controller = Controller.getController(this);
-            controller.scheduleTransmissions();
             togglePhoneState(statusPrefs.getBoolean(Status.PHONESTATE, false));
             toggleLocation(statusPrefs.getBoolean(Status.LOCATION, false));
             toggleAmbience(statusPrefs.getBoolean(Status.AMBIENCE, false));
@@ -1186,13 +1174,6 @@ public class SenseService extends Service {
             if (true == active) {
 
                 // check location sensor presence
-                if (locListener != null)
-                {
-                    Log.w(TAG, "location sensor is already present!");
-                    locListener.stopSensing();
-                    locListener = null;
-                }
-
                 if (timeZoneSensor != null)
                 {
                     timeZoneSensor.stopSensing();
@@ -1249,15 +1230,6 @@ public class SenseService extends Service {
 
                     @Override
                     public void run() {
-                        if (mainPrefs.getBoolean(Location.GPS, false) || mainPrefs.getBoolean(Location.NETWORK, false))
-                        {
-                            locListener = LocationSensor.getInstance(SenseService.this);
-                            mSubscrMgr.registerProducer(SensorNames.POSITION, locListener);
-                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
-                            mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
-                            locListener.startSensing(time);
-                        }
-
                         if (mainPrefs.getBoolean(Location.TIME_ZONE, true))
                         {
                             timeZoneSensor = TimeZoneSensor.getInstance(SenseService.this);
@@ -1277,18 +1249,6 @@ public class SenseService extends Service {
                 });
 
             } else {
-
-                // stop location listener
-                if (null != locListener)
-                {
-                    locListener.stopSensing();
-                    // unregister is not needed for Singleton Sensors
-                    mSubscrMgr.unregisterProducer(SensorNames.POSITION, locListener);
-                    mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
-                    mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
-                    locListener = null;
-                }
-
                 // stop fused location listener
                 if (null != fusedLocationListener)
                 {
@@ -1602,10 +1562,4 @@ public class SenseService extends Service {
             }
         }
     }
-
-    private synchronized void verifySensorIds() {
-        Log.v(TAG, "Try to verify sensor IDs");
-        startService(new Intent(this, DefaultSensorRegistrationService.class));
-    }
-
 }

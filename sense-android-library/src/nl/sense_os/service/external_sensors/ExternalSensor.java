@@ -237,10 +237,6 @@ public abstract class ExternalSensor extends BaseDataProducer {
             if (mBluetoothSocket != null) {
                 devicename = mBluetoothSocket.getRemoteDevice().getName();
                 deviceadress = mBluetoothSocket.getRemoteDevice().getAddress();
-                boolean gelukt = (new OBD2SensorRegistrator(context)).verifySensorIds(devicename,
-                        deviceadress);
-                Log.v(TAG, "HOI is het gelukt? " + gelukt);
-                Log.v(TAG, "HALLO1 devicename: " + devicename + ", deviceadress: " + deviceadress);
                 if (mmInStream == null || mmOutStream == null) {
                     try {
                         mmInStream = mBluetoothSocket.getInputStream();

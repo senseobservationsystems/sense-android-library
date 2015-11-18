@@ -24,7 +24,7 @@ context.startService(sensorData);
 
 # Transmit Sensor Data to CommonSense {#transmit_data}
 
-SenseService uses an nl.sense_os.service.ctrl.Controller instance to schedule sending of data in LocalStorage to CommonSense periodically. This Controller will create an instance of nl.sense_os.service.DataTransmitter that will register itself to scheduler to run at a particular interval based on the nl.sense_os.service.constants.SensePrefs.Main.SyncRate setting in preferences. This DataTransmitter then will send an *action_sense_send_data* intent to nl.sense_os.service.MsgHandler when scheduled to run, to actually send the sensor data to CommonSense and empty its buffer.
+SenseService uses an nl.sense_os.service.ctrl.Controller instance to schedule sending of data in LocalStorage to CommonSense periodically. This Controller will create an instance of nl.sense_os.service.scheduler.DataTransmitter that will register itself to scheduler to run at a particular interval based on the nl.sense_os.service.constants.SensePrefs.Main.SyncRate setting in preferences. This DataTransmitter then will send an *action_sense_send_data* intent to nl.sense_os.service.MsgHandler when scheduled to run, to actually send the sensor data to CommonSense and empty its buffer.
 
 These options are available for SyncRate settings:
 * nl.sense_os.service.SensePrefs.Main.SyncRate.ECO_MODE (30 minute)

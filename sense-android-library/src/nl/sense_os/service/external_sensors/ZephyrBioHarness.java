@@ -106,7 +106,7 @@ public class ZephyrBioHarness extends BaseDataProducer {
 
 									// check sensor IDs
 									new Thread(){public void run(){
-										new ZephyrBioHarnessRegistrator(context).verifySensorIds(
+										new ZephyrBioHarnessRegistrator().verifySensorIds(
 												deviceType,deviceUuid);
 									}}.start();
 

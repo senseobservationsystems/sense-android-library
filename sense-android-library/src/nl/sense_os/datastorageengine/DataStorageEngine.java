@@ -63,6 +63,7 @@ public class DataStorageEngine {
     private String PREFERENCES_BACKEND_ENV = "backend_environment";
     private String PREFERENCES_LOCAL_PERSISTANCE_PERIOD = "local_persistance_period";
     private String PREFERENCES_UPLOAD_INTERVAL = "upload_interval";
+    private String PREFERENCES_ENABLE_SYNC = "enable_sync";
 
     private FutureTask<Boolean> mInitTask;
 
@@ -130,6 +131,10 @@ public class DataStorageEngine {
         if(sharedPreferences.contains(PREFERENCES_UPLOAD_INTERVAL)){
             mDSEConfig.uploadInterval = sharedPreferences.getLong(PREFERENCES_UPLOAD_INTERVAL, 0l);
         }
+
+        if(sharedPreferences.contains(PREFERENCES_ENABLE_SYNC)){
+            mDSEConfig.enableSync = sharedPreferences.getBoolean(PREFERENCES_ENABLE_SYNC, true);
+        }
     }
 
     /**
@@ -169,6 +174,9 @@ public class DataStorageEngine {
         }
         if(mDSEConfig.uploadInterval != null) {
             editor.putLong(PREFERENCES_UPLOAD_INTERVAL, mDSEConfig.uploadInterval);
+        }
+        if(mDSEConfig.enableSync != null) {
+            editor.putBoolean(PREFERENCES_ENABLE_ENCRYPTION, mDSEConfig.enableSync);
         }
         editor.commit();
     }
@@ -296,10 +304,12 @@ public class DataStorageEngine {
                     mDataSyncerProgressTracker.reset();
                     mDataSyncer.initialize();
                     // when the initialization is done enable the periodic syncing to download the sensor and sensor data
-                    if (mDSEConfig.uploadInterval != null) {
-                        mDataSyncer.enablePeriodicSync(mDSEConfig.uploadInterval);
-                    } else {
-                        mDataSyncer.enablePeriodicSync();
+                    if(mDSEConfig.enableSync == null || mDSEConfig.enableSync == true) {
+                        if (mDSEConfig.uploadInterval != null) {
+                            mDataSyncer.enablePeriodicSync(mDSEConfig.uploadInterval);
+                        } else {
+                            mDataSyncer.enablePeriodicSync();
+                        }
                     }
                     mInitialized = true;
                     return true;

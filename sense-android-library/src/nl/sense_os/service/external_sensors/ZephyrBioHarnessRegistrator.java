@@ -2,7 +2,6 @@ package nl.sense_os.service.external_sensors;
 
 import java.util.HashMap;
 
-import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 
@@ -23,13 +22,12 @@ import android.content.Context;
  * 
  * @author Steven Mulder <steven@sense-os.nl>
  */
-public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
+public class ZephyrBioHarnessRegistrator {
 
-    public ZephyrBioHarnessRegistrator(Context context) {
-        super(context);
+    public ZephyrBioHarnessRegistrator() {
+
     }
 
-    @Override
     public boolean verifySensorIds(String deviceType, String deviceUuid) {
         // preallocate
         String name, displayName, description, dataType, value;
@@ -46,8 +44,7 @@ public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
         dataFields.put("y-axis", 1.1);
         dataFields.put("z-axis", 1.1);
         value = new JSONObject(dataFields).toString();
-        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-                deviceUuid);
+        //success &= checkSensor(name, displayName, dataType, description, value, deviceType, deviceUuid);
 
         // match heart rate
         name = SensorNames.HEART_RATE;
@@ -55,8 +52,7 @@ public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
         description = "BioHarness " + deviceType;
         dataType = SenseDataTypes.INT;
         value = "0";
-        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-                deviceUuid);
+        //success &= checkSensor(name, displayName, dataType, description, value, deviceType,deviceUuid);
 
         // match respiration rate sensor
         name = SensorNames.RESPIRATION;
@@ -64,8 +60,7 @@ public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
         description = "BioHarness " + deviceType;
         dataType = SenseDataTypes.FLOAT;
         value = "0.0";
-        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-                deviceUuid);
+        //success &= checkSensor(name, displayName, dataType, description, value, deviceType,deviceUuid);
 
         // match skin temperature sensor
         name = SensorNames.TEMPERATURE;
@@ -73,8 +68,7 @@ public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
         description = "BioHarness " + deviceType;
         dataType = SenseDataTypes.FLOAT;
         value = "0.0";
-        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-                deviceUuid);
+        //success &= checkSensor(name, displayName, dataType, description, value, deviceType,deviceUuid);
 
         // match battery level sensor
         name = SensorNames.BATTERY_LEVEL;
@@ -82,8 +76,7 @@ public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
         description = "BioHarness " + deviceType;
         dataType = SenseDataTypes.INT;
         value = "0";
-        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-                deviceUuid);
+        //success &= checkSensor(name, displayName, dataType, description, value, deviceType,deviceUuid);
 
         // match worn status sensor
         name = SensorNames.WORN_STATUS;
@@ -91,8 +84,7 @@ public class ZephyrBioHarnessRegistrator extends SensorRegistrator {
         description = "BioHarness " + deviceType;
         dataType = SenseDataTypes.BOOL;
         value = "true";
-        success &= checkSensor(name, displayName, dataType, description, value, deviceType,
-                deviceUuid);
+        //success &= checkSensor(name, displayName, dataType, description, value, deviceType,deviceUuid);
 
         return success;
     }

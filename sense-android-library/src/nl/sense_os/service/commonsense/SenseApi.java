@@ -73,148 +73,8 @@ public class SenseApi {
     private static TelephonyManager sTelManager;
     private static String APPLICATION_KEY;
 
-    /**
-     * Gets a list of all registered sensors for a user at the CommonSense API. Uses caching for
-     * increased performance.
-     * 
-     * @param context
-     *            Application context, used for getting preferences.
-     * @return The list of sensors
-     * @throws IOException
-     *             In case of communication failure to CommonSense
-     * @throws JSONException
-     *             In case of unparseable response from CommonSense
-     */
-    public static JSONArray getAllSensors(Context context) throws IOException, JSONException {
 
-        if (null == sAuthPrefs) {
-            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-        }
-
-        // try to get list of sensors from the cache
-        try {
-            String cachedSensors = sAuthPrefs.getString(Auth.SENSOR_LIST_COMPLETE, null);
-            long cacheTime = sAuthPrefs.getLong(Auth.SENSOR_LIST_COMPLETE_TIME, 0);
-            boolean isOutdated = SNTP.getInstance().getTime() - cacheTime > CACHE_REFRESH;
-
-            // return cached list of it is still valid
-            if (false == isOutdated && null != cachedSensors) {
-                return new JSONArray(cachedSensors);
-            }
-
-        } catch (Exception e) {
-            // unlikely to ever happen. Just get the list from CommonSense instead
-            Log.w(TAG, "Failed to get list of sensors from cache!", e);
-        }
-
-        // if we make it here, the list was not in the cache
-        Log.v(TAG, "List of sensor IDs is missing or outdated, refreshing...");
-
-        boolean done = false;
-        JSONArray result = new JSONArray();
-        int page = 0;
-        while (!done) {
-            // request fresh list of sensors for this device from CommonSense
-            String cookie;
-            try {
-                cookie = getCookie(context);
-            } catch (IllegalAccessException e) {
-                cookie = null;
-            }
-            boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
-            if (devMode) {
-                Log.v(TAG, "Using development server to get registered sensors");
-            }
-            String url = devMode ? SenseUrls.ALL_SENSORS_DEV : SenseUrls.ALL_SENSORS;
-            url += "&page=" + page;
-            Map<String, String> response = SenseApi.request(context, url, null, cookie);
-
-            String responseCode = response.get(RESPONSE_CODE);
-            if (!"200".equals(responseCode)) {
-                Log.w(TAG, "Failed to get list of sensors! Response code: " + responseCode);
-                throw new IOException("Incorrect response from CommonSense: " + responseCode);
-            }
-
-            // parse response and store the list
-            JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));
-            JSONArray sensorList = content.getJSONArray("sensors");
-
-            // put the sensor list in the result array
-            for (int i = 0; i < sensorList.length(); i++) {
-                result.put(sensorList.getJSONObject(i));
-            }
-
-            if (sensorList.length() < SenseUrls.PAGE_SIZE) {
-                // all sensors received
-                done = true;
-            } else {
-                // get the next page
-                page++;
-            }
-        }
-
-        // store the new sensor list
-        Editor authEditor = sAuthPrefs.edit();
-        authEditor.putString(Auth.SENSOR_LIST_COMPLETE, result.toString());
-        authEditor.putLong(Auth.SENSOR_LIST_COMPLETE_TIME, SNTP.getInstance().getTime());
-        authEditor.commit();
-
-        return result;
-    }
-
-    /**
-     * Gets the sensors that are connected to another sensor. Typically used
-     * 
-     * @param context
-     * @param sensorId
-     * @return List of IDs for connected sensors
-     * @throws IOException
-     * @throws JSONException
-     */
-    public static List<String> getConnectedSensors(Context context, String sensorId)
-            throws IOException, JSONException {
-
-        if (null == sAuthPrefs) {
-            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-        }
-        if (null == sMainPrefs) {
-            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-        }
-
-        // request fresh list of sensors for this device from CommonSense
-        String cookie;
-        try {
-            cookie = getCookie(context);
-        } catch (IllegalAccessException e) {
-            cookie = null;
-        }
-        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
-        if (devMode) {
-            Log.v(TAG, "Using development server to get connected sensors");
-        }
-        String url = devMode ? SenseUrls.CONNECTED_SENSORS_DEV : SenseUrls.CONNECTED_SENSORS;
-        url = url.replace("%1", sensorId);
-        Map<String, String> response = SenseApi.request(context, url, null, cookie);
-
-        String responseCode = response.get(RESPONSE_CODE);
-        if (!"200".equals(responseCode)) {
-            Log.w(TAG, "Failed to get list of connected sensors! Response code: " + responseCode);
-            throw new IOException("Incorrect response from CommonSense: " + responseCode);
-        }
-
-        // parse response and store the list
-        JSONObject content = new JSONObject(response.get(RESPONSE_CONTENT));
-        JSONArray sensorList = content.getJSONArray("sensors");
-
-        List<String> result = new ArrayList<String>();
-        for (int i = 0; i < sensorList.length(); i++) {
-            JSONObject sensor = sensorList.getJSONObject(i);
-            result.add(sensor.getString("id"));
-        }
-        return result;
-    }
-
-    /**
+     /**
      * @param context
      *            Context for accessing phone details
      * @return The default device type, i.e. the phone's model String
@@ -250,7 +110,7 @@ public class SenseApi {
 
     /**
      * Get device configuration from commonSense
-     * 
+     *
      * @throws JSONException
      * @throws IOException
      */
@@ -288,10 +148,10 @@ public class SenseApi {
 
     /**
      * Get specific configuration from commonSense
-     * 
+     *
      * @throws JSONException
      * @throws IOException
-     * 
+     *
      */
     public static String getDeviceConfiguration(Context context, String configuration_id)
             throws IOException, JSONException {
@@ -321,7 +181,7 @@ public class SenseApi {
 
     /**
      * Get this device_id registered in common sense
-     * 
+     *
      * @param context
      * @throws IOException
      * @throws JSONException
@@ -373,137 +233,6 @@ public class SenseApi {
         return device_id;
     }
 
-    private static List<JSONObject> getMatchingSensors(Context context, String name,
-            String description, String dataType) throws IOException, JSONException {
-
-        // get list of all registered sensors for this device
-        JSONArray sensors = getAllSensors(context);
-
-        // check sensors with similar names and descriptions in the list
-        List<JSONObject> result = new ArrayList<JSONObject>();
-        JSONObject sensor;
-        for (int i = 0; i < sensors.length(); i++) {
-            sensor = (JSONObject) sensors.get(i);
-
-            if (sensor.getString("name").equalsIgnoreCase(name)
-                    && ((null == description) || sensor.getString("device_type").equalsIgnoreCase(
-                            description))
-                    && ((null == dataType) || sensor.getString("data_type").equalsIgnoreCase(
-                            dataType))) {
-                result.add(sensor);
-
-            } else if (name.equals(SensorNames.ACCELEROMETER) || name.equals(SensorNames.ORIENT)
-                    || name.equals(SensorNames.GYRO) || name.equals(SensorNames.LIN_ACCELERATION)
-                    || name.equals(SensorNames.MAGNETIC_FIELD)
-                    || name.equals(SensorNames.ACCELEROMETER_EPI)
-                    || name.equals(SensorNames.ACCELEROMETER_BURST)
-                    || name.equals(SensorNames.GYRO_BURST) || name.equals(SensorNames.LINEAR_BURST)) {
-                // special case to take care of changed motion sensor descriptions since Gingerbread
-                if (name.equals(sensor.getString("name"))) {
-                    // use inexact match
-                    result.add(sensor);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Gets the sensor ID at CommonSense , which can be used to modify the sensor information and
-     * data.
-     * 
-     * @param context
-     *            Context for getting preferences
-     * @param name
-     *            Sensor name, to match with registered sensors.
-     * @param description
-     *            Sensor description (previously 'device_type'), to match with registered sensors.
-     * @param dataType
-     *            Sensor data type, to match with registered sensors.
-     * @param deviceUuid
-     *            (Optional) UUID of the device that should hold the sensor.
-     * @return String with the sensor's ID, or null if the sensor does not exist at CommonSense
-     *         (yet).
-     * @throws IOException
-     *             If the request to CommonSense failed.
-     * @throws JSONException
-     *             If the response from CommonSense could not be parsed.
-     */
-    public static String getSensorId(Context context, String name, String description,
-            String dataType, String deviceUuid) throws IOException, JSONException {
-
-        // get list of sensors with matching description
-        List<JSONObject> sensors = getMatchingSensors(context, name, description, dataType);
-
-        // check the devices that the sensors are connected to
-        String id = null;
-        JSONObject device;
-        for (JSONObject sensor : sensors) {
-            if (null != deviceUuid && !NO_DEVICE_UUID.equals(deviceUuid)) {
-                // check if the device UUID matches
-                device = sensor.optJSONObject("device");
-                if (null != device && deviceUuid.equals(device.optString("uuid"))) {
-                    id = sensor.getString("id");
-                    break;
-                }
-            } else {
-                // we do not care about the device, just accept the first match we find
-                id = sensor.getString("id");
-                break;
-            }
-        }
-        if (null == id) {
-            Log.d(TAG, "missing id for " + name + " (" + description + ") @ " + deviceUuid);
-        }
-        return id;
-    }
-
-    /**
-     * Gets the URL at CommonSense to which the data must be sent.
-     * 
-     * @param context
-     *            Context for getting preferences
-     * @param name
-     *            Sensor name, to match with registered sensors.
-     * @param description
-     *            Sensor description (previously 'device_type'), to match with registered sensors.
-     * @param dataType
-     *            Sensor data type, to match with registered sensors.
-     * @param deviceUuid
-     *            (Optional) UUID of the device that holds the sensor. Set null to use the default
-     *            device.
-     * @return String with the sensor's URL, or null if sensor does not have an ID (yet)
-     * @throws JSONException
-     *             If there was unexpected response getting the sensor ID.
-     * @throws IOException
-     *             If there was a problem during communication with CommonSense.
-     */
-    public static String getSensorUrl(Context context, String name, String description,
-            String dataType, String deviceUuid) throws IOException, JSONException {
-
-        String id = getSensorId(context, name, description, dataType, deviceUuid);
-
-        if (id == null) {
-            Log.w(TAG, "Failed to get URL for sensor '" + name + "': sensor ID is not available");
-            return null;
-        }
-
-        if (null == sMainPrefs) {
-            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-        }
-        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
-
-        // found the right sensor
-        if (dataType.equals(SenseDataTypes.FILE)) {
-            String url = devMode ? SenseUrls.SENSOR_FILE_DEV : SenseUrls.SENSOR_FILE;
-            return url.replaceFirst("%1", id);
-        } else {
-            String url = devMode ? SenseUrls.SENSOR_DATA_DEV : SenseUrls.SENSOR_DATA;
-            return url.replaceFirst("%1", id);
-        }
-    }
-    
     /**
     * @param context
     *            Context for getting preferences
@@ -637,7 +366,7 @@ public class SenseApi {
 
     /**
      * Joins a group
-     * 
+     *
      * @param context
      *            Context for getting preferences
      * @param groupId
@@ -801,7 +530,7 @@ public class SenseApi {
 
     /**
      * Push GCM Registration ID for current device
-     * 
+     *
      * @param context
      *            Application context, used to read preferences.
      * @param registrationId
@@ -865,155 +594,6 @@ public class SenseApi {
         Editor authEditor = sAuthPrefs.edit();
         authEditor.putString(Auth.GCM_REGISTRATION_ID, registrationId);
         authEditor.commit();
-    }
-
-    /**
-     * Registers a new sensor for this device at CommonSense. Also connects the sensor to this
-     * device.
-     * 
-     * @param context
-     *            The application context, used to retrieve preferences.
-     * @param name
-     *            The name of the sensor.
-     * @param displayName
-     *            The sensor's pretty display name.
-     * @param description
-     *            The sensor description (previously "device_type").
-     * @param dataType
-     *            The sensor data type.
-     * @param value
-     *            An example sensor value, used to determine the data structure for JSON type
-     *            sensors.
-     * @param deviceType
-     *            (Optional) Type of the device that holds the sensor. Set null to use the default
-     *            device.
-     * @param deviceUuid
-     *            (Optional) UUID of the device that holds the sensor. Set null to use the default
-     *            device.
-     * @return The new sensor ID at CommonSense, or <code>null</code> if the registration failed.
-     * @throws JSONException
-     *             In case of invalid sensor details or if the request returned unparseable
-     *             response.
-     * @throws IOException
-     *             In case of communication failure during creation of the sensor.
-     */
-    public static String registerSensor(Context context, String name, String displayName,
-            String description, String dataType, String value, String deviceType, String deviceUuid)
-            throws JSONException, IOException {
-
-        if (null == sAuthPrefs) {
-            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-        }
-        if (null == sMainPrefs) {
-            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-        }
-
-        String cookie;
-        try {
-            cookie = getCookie(context);
-        } catch (IllegalAccessException e) {
-            cookie = null;
-        }
-        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
-
-        // prepare request to create new sensor
-        String url = devMode ? SenseUrls.CREATE_SENSOR_DEV : SenseUrls.SENSORS;
-        JSONObject postData = new JSONObject();
-        JSONObject sensor = new JSONObject();
-        sensor.put("name", name);
-        sensor.put("device_type", description);
-        sensor.put("display_name", displayName);
-        sensor.put("pager_type", "");
-        sensor.put("data_type", dataType);
-        if (dataType.compareToIgnoreCase(SenseDataTypes.JSON) == 0
-                || dataType.compareToIgnoreCase(SenseDataTypes.JSON_TIME_SERIES) == 0) {
-            JSONObject dataStructJSon = null;
-            try {
-                dataStructJSon = new JSONObject(value);
-                JSONArray fieldNames = dataStructJSon.names();
-                for (int x = 0; x < fieldNames.length(); x++) {
-                    String fieldName = fieldNames.getString(x);
-                    int start = dataStructJSon.get(fieldName).getClass().getName().lastIndexOf(".");
-                    dataStructJSon.put(fieldName, dataStructJSon.get(fieldName).getClass()
-                            .getName().substring(start + 1));
-                }
-            } catch (JSONException e) {
-                // apparently the data structure cannot be parsed from the value
-                dataStructJSon = new JSONObject();
-            }
-            sensor.put("data_structure", dataStructJSon.toString().replaceAll("\"", "\\\""));
-        }
-        postData.put("sensor", sensor);
-
-        // perform actual request
-        Map<String, String> response = request(context, url, postData, cookie);
-
-        // check response code
-        String code = response.get(RESPONSE_CODE);
-        if (!"201".equals(code)) {
-            Log.w(TAG, "Failed to register sensor at CommonSense! Response code: " + code);
-            throw new IOException("Incorrect response from CommonSense: " + code);
-        }
-
-        // retrieve the newly created sensor ID
-        String locationHeader = response.get("location");
-        String[] split = locationHeader.split("/");
-        String id = split[split.length - 1];
-
-        // see if sensor should also be connected to a device at CommonSense
-        if (NO_DEVICE_UUID.equals(deviceUuid)) {
-            JSONObject device = new JSONObject();
-            device.put("type", deviceType);
-            device.put("uuid", deviceUuid);
-            postData.put("device", device);
-            // store the new sensor in the preferences
-            sensor.put("id", id);
-            sensor.put("device", device);
-            JSONArray sensors = getAllSensors(context);
-            sensors.put(sensor);
-            Editor authEditor = sAuthPrefs.edit();
-            authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
-            authEditor.commit();
-            return id;
-        }
-
-        // get device properties from preferences, so it matches the properties in CommonSense
-        if (null == deviceUuid) {
-            deviceUuid = getDefaultDeviceUuid(context);
-            deviceType = getDefaultDeviceType(context);
-        }
-
-        // add sensor to this device at CommonSense
-        url = devMode ? SenseUrls.SENSOR_DEVICE_DEV : SenseUrls.SENSOR_DEVICE;
-        url = url.replaceFirst("%1", id);
-        postData = new JSONObject();
-        JSONObject device = new JSONObject();
-        device.put("type", deviceType);
-        device.put("uuid", deviceUuid);
-        postData.put("device", device);
-
-        response = request(context, url, postData, cookie);
-
-        // check response code
-        code = response.get(RESPONSE_CODE);
-        if (!"201".equals(code)) {
-            Log.w(TAG, "Failed to add sensor to device at CommonSense! Response code: " + code);
-            throw new IOException("Incorrect response from CommonSense: " + code);
-        }
-
-        // store the new sensor in the preferences
-        sensor.put("id", id);
-        sensor.put("device", device);
-        JSONArray sensors = getAllSensors(context);
-        sensors.put(sensor);
-        Editor authEditor = sAuthPrefs.edit();
-        authEditor.putString(Auth.SENSOR_LIST_COMPLETE, sensors.toString());
-        authEditor.commit();
-
-        Log.v(TAG, "Created sensor: '" + name + "' for device: '" + deviceType + "'");
-
-        // return the new sensor ID
-        return id;
     }
 
     /**
@@ -1357,61 +937,6 @@ public class SenseApi {
             Log.w(TAG, "Failed to change the password! Response code " + responseCode);
             return false;
         }
-    }
-
-    /**
-     * Shares a sensor with a user or group
-     * 
-     * @param context
-     *            Context for getting preferences
-     * @param sensorId
-     *            Id of the sensor to share
-     * @param userId
-     *            Id of the user or group to share the sensor with
-     * @return true if shared successfully, false otherwise
-     * @throws JSONException
-     *             In case of unparseable response from CommonSense
-     * @throws IOException
-     *             In case of communication failure to CommonSense
-     */
-    public static boolean shareSensor(Context context, String sensorId, String userId)
-            throws JSONException, IOException {
-        if (null == sAuthPrefs) {
-            sAuthPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, Context.MODE_PRIVATE);
-        }
-        if (null == sMainPrefs) {
-            sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-        }
-
-        String cookie;
-        try {
-            cookie = getCookie(context);
-        } catch (IllegalAccessException e) {
-            cookie = null;
-        }
-        boolean devMode = sMainPrefs.getBoolean(Advanced.DEV_MODE, false);
-        String url = devMode ? SenseUrls.SENSOR_USERS_DEV : SenseUrls.SENSOR_USERS;
-        url = url.replaceFirst("%1", sensorId);
-
-        // create JSON object to POST
-        final JSONObject data = new JSONObject();
-        final JSONObject user = new JSONObject();
-        user.put("id", userId);
-        data.put("user", user);
-
-        // perform actual request
-        Map<String, String> response = SenseApi.request(context, url, data, cookie);
-
-        String responseCode = response.get(RESPONSE_CODE);
-        boolean result = false;
-        if ("201".equalsIgnoreCase(responseCode)) {
-            result = true;
-        } else {
-            Log.w(TAG, "Failed to share sensor! Response code: " + responseCode);
-            result = false;
-        }
-
-        return result;
     }
 
 }
