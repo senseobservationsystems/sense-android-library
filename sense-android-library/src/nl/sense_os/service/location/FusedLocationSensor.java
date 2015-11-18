@@ -178,20 +178,10 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
         long timestamp = SNTP.getInstance().getTime();
         notifySubscribers();
         SensorDataPoint dataPoint = new SensorDataPoint(json);
-        dataPoint.sensorName = SensorNames.LOCATION;
-        dataPoint.sensorDescription = SensorNames.LOCATION;
+        dataPoint.sensorName = SensorNames.POSITION;
+        dataPoint.sensorDescription = SensorNames.POSITION;
         dataPoint.timeStamp = timestamp;
         sendToSubscribers(dataPoint);
-
-        // pass message to the MsgHandler
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.LOCATION);
-        i.putExtra(DataPoint.VALUE, json.toString());
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        i.putExtra(DataPoint.TIMESTAMP, timestamp);
-        i.setPackage(context.getPackageName());
-        context.startService(i);
-        distanceEstimator.addPoint(fix);
     }
 
     /**
@@ -209,16 +199,6 @@ public class FusedLocationSensor extends BaseSensor implements PeriodicPollingSe
             dataPoint.sensorDescription = SensorNames.TRAVELED_DISTANCE_1H;
             dataPoint.timeStamp = SNTP.getInstance().getTime();
             sendToSubscribers(dataPoint);
-
-            // pass message to the MsgHandler
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.SENSOR_NAME, SensorNames.TRAVELED_DISTANCE_1H);
-            i.putExtra(DataPoint.VALUE, (float) distance);
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            i.setPackage(context.getPackageName());
-            context.startService(i);
-
             // start counting again, from the last location
             distanceEstimator.reset();
         }

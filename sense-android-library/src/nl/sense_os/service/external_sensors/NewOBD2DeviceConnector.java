@@ -648,7 +648,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 			} else {
 				dataPoint = null;
 			}
-			if(dataPoint != null)	    	
+			if(dataPoint != null)
 			{
 				notifySubscribers();
 				dataPoint.sensorName = sensorName;
@@ -656,32 +656,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 				dataPoint.timeStamp = SNTP.getInstance().getTime();        
 				sendToSubscribers(dataPoint);
 			}
-			// build the intent and send it to commonsense
-			Intent intent = new Intent(context.getString(R.string.action_sense_new_data));
-			intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
-			intent.putExtra(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
-			intent.putExtra(DataPoint.DATA_TYPE, dataType);
-			intent.putExtra(DataPoint.DEVICE_UUID, device.getAddress());
-			if (dataType.equals(SenseDataTypes.BOOL)) {
-				intent.putExtra(DataPoint.VALUE, (Boolean) value);
-			} else if (dataType.equals(SenseDataTypes.FLOAT)) {
-				intent.putExtra(DataPoint.VALUE, (Float) value);
-			} else if (dataType.equals(SenseDataTypes.INT)) {
-				intent.putExtra(DataPoint.VALUE, (Integer) value);
-			} else if (dataType.equals(SenseDataTypes.JSON)) {
-				intent.putExtra(DataPoint.VALUE, (String) value);
-			} else if (dataType.equals(SenseDataTypes.STRING)) {
-				intent.putExtra(DataPoint.VALUE, (String) value);
-			} else {
-				Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
-			}
-			intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-			intent.setPackage(context.getPackageName());
-			boolean itemsent = (context.startService(intent) != null);
-			if (!itemsent)
-				Log.e(TAG, "Sending of DataPoint: " + sensorName + " " + value + " "
-						+ sensorDescription + "    FAILED !!!");
-			return itemsent;
+			return true;
 		}
 
 		private class EmptyRegistrator extends SensorRegistrator {

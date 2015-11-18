@@ -125,19 +125,10 @@ public class BatterySensor extends BaseDataProducer{
 
                 	notifySubscribers();
                 	SensorDataPoint dataPoint = new SensorDataPoint(json);
-                	dataPoint.sensorName = SensorNames.BATTERY_SENSOR;
-                	dataPoint.sensorDescription = SensorNames.BATTERY_SENSOR;
+                	dataPoint.sensorName = SensorNames.BATTERY;
+                	dataPoint.sensorDescription = SensorNames.BATTERY;
                 	dataPoint.timeStamp = SNTP.getInstance().getTime();        
                 	sendToSubscribers(dataPoint);
-                	
-                    Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-                    i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-                    i.putExtra(DataPoint.VALUE, json.toString());
-                    i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BATTERY_SENSOR);
-                    i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-                    lastSampleTime = SNTP.getInstance().getTime();
-                    i.setPackage(context.getPackageName());
-                    context.startService(i);
                 }
 
             } else {

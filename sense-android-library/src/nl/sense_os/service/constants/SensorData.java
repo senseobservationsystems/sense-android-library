@@ -123,10 +123,10 @@ public class SensorData {
         public static final String FALL_DETECTOR = "fall_detector";
 
         /** Noise level sensor. Part of the Ambience sensors. */
-        public static final String NOISE = "noise_sensor";
+        public static final String NOISE = "noise";
 
         /** Noise level sensor (Burst-mode). Part of the Ambience sensors. */
-        public static final String NOISE_BURST = "noise_sensor (burst-mode)";
+        public static final String NOISE_BURST = "noise (burst-mode)";
 
         /** Audio spectrum sensor. Part of the Ambience sensors. */
         public static final String AUDIO_SPECTRUM = "audio_spectrum";
@@ -216,19 +216,19 @@ public class SensorData {
         public static final String STRIDES = "strides";
 
         /** Location sensor. */
-        public static final String LOCATION = "position";
+        public static final String POSITION = "position";
 
         /** TimeZone sensor. */
         public static final String TIME_ZONE = "time_zone";
 
         /** Battery sensor. Part of the Phone State sensors. */
-        public static final String BATTERY_SENSOR = "battery sensor";
+        public static final String BATTERY = "battery";
         
         /** App info sensor. Part of the Phone State sensors. */
-        public static final String APP_INFO_SENSOR = "app_info";
+        public static final String APP_INFO = "app_info";
 
         /** Screen activity sensor. Part of the Phone State sensors. */
-        public static final String SCREEN_ACTIVITY = "screen activity";
+        public static final String SCREEN = "screen";
 
         /** Pressure sensor. Part of the Phone State sensors. */
         public static final String PRESSURE = "pressure";
@@ -237,7 +237,7 @@ public class SensorData {
         public static final String PROXIMITY = "proximity";
 
         /** Call state sensor. Part of the Phone State sensors. */
-        public static final String CALL_STATE = "call state";
+        public static final String CALL = "call";
 
         /** Data connection state sensor. Part of the Phone State sensors. */
         public static final String DATA_CONN = "data connection";

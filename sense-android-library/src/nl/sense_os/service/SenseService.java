@@ -6,6 +6,8 @@ package nl.sense_os.service;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import nl.sense_os.datastorageengine.DSEConfig;
+import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.service.ambience.CameraLightSensor;
 import nl.sense_os.service.ambience.HumiditySensor;
 import nl.sense_os.service.ambience.LightSensor;
@@ -42,8 +44,8 @@ import nl.sense_os.service.phonestate.SensePhoneState;
 import nl.sense_os.service.phonestate.AppInfoSensor;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.scheduler.ScheduleAlarmTool;
+import nl.sense_os.service.storage.DSEDataConsumer;
 import nl.sense_os.service.subscription.SubscriptionManager;
-import nl.sense_os.service.storage.LocalStorage;
 import nl.sense_os.util.json.EncryptionHelper;
 
 import org.json.JSONObject;
@@ -51,6 +53,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -137,7 +140,7 @@ public class SenseService extends Service {
     private AppInfoSensor appInfoSensor;
     private FusedLocationSensor fusedLocationListener;
 
-    private LocalStorage mLocalStorage;
+    private DataStorageEngine mDataStorageEngine;
 
     /**
      * Handler on main application thread to display toasts to the user.
@@ -249,19 +252,20 @@ public class SenseService extends Service {
 
         boolean encrypt_credential = mainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
         // get login parameters from the preferences
+        EncryptionHelper encryptionHelper = null;
         if (encrypt_credential) {
-            EncryptionHelper decryptor = new EncryptionHelper(this);
+            encryptionHelper = new EncryptionHelper(this);
             String decrypted_username;
             String decrypted_pass;
             try {
-                decrypted_username = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_USERNAME, null));
+                decrypted_username = encryptionHelper.decrypt(authPrefs.getString(Auth.LOGIN_USERNAME, null));
             } catch (EncryptionHelper.EncryptionHelperException e) {
                 Log.w(TAG, "Error decrypting username. Assume data is not encrypted");
                 decrypted_username = authPrefs.getString(Auth.LOGIN_USERNAME, null);
             }
             username = decrypted_username;
             try {
-                decrypted_pass = decryptor.decrypt(authPrefs.getString(Auth.LOGIN_PASS, null));
+                decrypted_pass = encryptionHelper.decrypt(authPrefs.getString(Auth.LOGIN_PASS, null));
             } catch (EncryptionHelper.EncryptionHelperException e) {
                 Log.w(TAG, "Error decrypting password. Assume data is not encrypted");
                 decrypted_pass = authPrefs.getString(Auth.LOGIN_PASS, null);
@@ -277,8 +281,19 @@ public class SenseService extends Service {
         if ((username != null) && (pass != null)) {
             try {
                 result = SenseApi.login(this, username, pass);
+                if(result == 0) {
+                    // store the logged in user_id
+                    JSONObject user = SenseApi.getUser(this);
+                    String userID = user.getString("id");
+                    // if there credentials should be encrypted then also encrypt the user id
+                    if(encrypt_credential && encryptionHelper != null){
+                        userID = encryptionHelper.encrypt(userID);
+                    }
+                    authPrefs.edit().putString(Auth.LOGIN_USER_ID, userID).commit();
+                }
             } catch (Exception e) {
                 Log.w(TAG, "Exception during login! " + e + ": '" + e.getMessage() + "'");
+                result = -1;
                 // handle result below
             }
         } else {
@@ -338,8 +353,10 @@ public class SenseService extends Service {
         Log.v(TAG, "Sense Platform service is being created");
         state = ServiceStateHelper.getInstance(this);
         mSubscrMgr = SubscriptionManager.getInstance();
-        // Create the instance to avoid concurrency problems in the SQLCipher lib
-        mLocalStorage = LocalStorage.getInstance(this);
+        // create an instance of the DSE
+        mDataStorageEngine = DataStorageEngine.getInstance(this);
+        // create the data consumer which subscribes to the input of sensors which it will store in the DSE
+        DSEDataConsumer.getInstance(this);
     }
 
     /**
@@ -369,6 +386,10 @@ public class SenseService extends Service {
      */
     private void onLogIn() {
         Log.i(TAG, "Logged in.");
+
+        // Setup the DSE with the new login information
+        setupDSE();
+
         // update ntp time
         SNTP.getInstance().requestTime(SNTP.HOST_WORLDWIDE, 2000);
 
@@ -378,8 +399,36 @@ public class SenseService extends Service {
         // store this login
         SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
         prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, SNTP.getInstance().getTime()).commit();
-
         checkVersion();
+    }
+
+    private void setupDSE(){
+        DSEConfig dseConfig = mDataStorageEngine.getConfig();
+        SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences authPrefs = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE);
+        String applicationKey = mainPrefs.getString(SensePrefs.Main.APPLICATION_KEY, null);
+        String userID = authPrefs.getString(Auth.LOGIN_USER_ID, null);
+        String sessionID = authPrefs.getString(Auth.LOGIN_SESSION_ID, null);
+
+        boolean encrypt_credential = mainPrefs.getBoolean(Advanced.ENCRYPT_CREDENTIAL, false);
+        // get login parameters from the preferences
+        EncryptionHelper encryptionHelper;
+        if (encrypt_credential) {
+            encryptionHelper = new EncryptionHelper(this);
+            sessionID = encryptionHelper.decrypt(sessionID);
+            userID = encryptionHelper.decrypt(userID);
+        }
+        // create a new DSEConfig object and set the previous settings
+        DSEConfig newDSEConfig = new DSEConfig(sessionID, userID, applicationKey);
+        // copy the settings if this is the same user
+        if(dseConfig != null && dseConfig.getUserID().equals(userID)) {
+            newDSEConfig.enableEncryption = dseConfig.enableEncryption;
+            newDSEConfig.uploadInterval = dseConfig.uploadInterval;
+            newDSEConfig.backendEnvironment = dseConfig.backendEnvironment;
+            newDSEConfig.localPersistancePeriod = dseConfig.localPersistancePeriod;
+        }
+
+        mDataStorageEngine.setConfig(newDSEConfig);
     }
 
     /**
@@ -394,14 +443,8 @@ public class SenseService extends Service {
 
         transmitter = DataTransmitter.getInstance(this);
         transmitter.stopTransmissions();
-
-        // completely stop the MsgHandler service
-        Intent newDataIntent = new Intent(getString(R.string.action_sense_new_data));
-        newDataIntent.setPackage(getPackageName());
-        stopService(newDataIntent);
-        Intent sendDataIntent = new Intent(getString(R.string.action_sense_send_data));
-        sendDataIntent.setPackage(getPackageName());
-        stopService(sendDataIntent);
+        // clear the dse
+        mDataStorageEngine.clearConfig();
     }
 
     void onSampleRateChange() {
@@ -1175,7 +1218,7 @@ public class SenseService extends Service {
                         if (mainPrefs.getBoolean(Location.GPS, false) || mainPrefs.getBoolean(Location.NETWORK, false))
                         {
                             locListener = LocationSensor.getInstance(SenseService.this);
-                            mSubscrMgr.registerProducer(SensorNames.LOCATION, locListener);
+                            mSubscrMgr.registerProducer(SensorNames.POSITION, locListener);
                             mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
                             mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
                             locListener.startSensing(time);
@@ -1191,7 +1234,7 @@ public class SenseService extends Service {
                         if (mainPrefs.getBoolean(Location.FUSED_PROVIDER, false))
                         {
                             fusedLocationListener = FusedLocationSensor.getInstance(SenseService.this);
-                            mSubscrMgr.registerProducer(SensorNames.LOCATION, fusedLocationListener);
+                            mSubscrMgr.registerProducer(SensorNames.POSITION, fusedLocationListener);
                             mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_1H, fusedLocationListener);
                             mSubscrMgr.registerProducer(SensorNames.TRAVELED_DISTANCE_24H, fusedLocationListener);
                             fusedLocationListener.startSensing(time);
@@ -1206,7 +1249,7 @@ public class SenseService extends Service {
                 {
                     locListener.stopSensing();
                     // unregister is not needed for Singleton Sensors
-                    mSubscrMgr.unregisterProducer(SensorNames.LOCATION, locListener);
+                    mSubscrMgr.unregisterProducer(SensorNames.POSITION, locListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, locListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, locListener);
                     locListener = null;
@@ -1217,7 +1260,7 @@ public class SenseService extends Service {
                 {
                     fusedLocationListener.stopSensing();
                     // unregister is not needed for Singleton Sensors
-                    mSubscrMgr.unregisterProducer(SensorNames.LOCATION, fusedLocationListener);
+                    mSubscrMgr.unregisterProducer(SensorNames.POSITION, fusedLocationListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_1H, fusedLocationListener);
                     mSubscrMgr.unregisterProducer(SensorNames.TRAVELED_DISTANCE_24H, fusedLocationListener);
                     fusedLocationListener = null;
@@ -1434,13 +1477,13 @@ public class SenseService extends Service {
                             if (mainPrefs.getBoolean(PhoneState.BATTERY, true)) {
                                 batterySensor = BatterySensor.getInstance(SenseService.this);
                                 batterySensor.startBatterySensing(finalInterval);
-                                mSubscrMgr.registerProducer(SensorNames.BATTERY_SENSOR,
+                                mSubscrMgr.registerProducer(SensorNames.BATTERY,
                                         batterySensor);
                             }
                             if (mainPrefs.getBoolean(PhoneState.APP_INFO, true)) {
                             	appInfoSensor = AppInfoSensor.getInstance(SenseService.this);
                             	appInfoSensor.startAppInfoSensing();
-                            	mSubscrMgr.registerProducer(SensorNames.APP_INFO_SENSOR,
+                            	mSubscrMgr.registerProducer(SensorNames.APP_INFO,
                             			appInfoSensor);
                             	
                             }
@@ -1448,7 +1491,7 @@ public class SenseService extends Service {
                                 phoneActivitySensor = PhoneActivitySensor
                                         .getInstance(SenseService.this);
                                 phoneActivitySensor.startPhoneActivitySensing(finalInterval);
-                                mSubscrMgr.registerProducer(SensorNames.SCREEN_ACTIVITY,
+                                mSubscrMgr.registerProducer(SensorNames.SCREEN,
                                         phoneActivitySensor);
                             }
                             if (mainPrefs.getBoolean(PhoneState.PROXIMITY, true)) {
@@ -1466,7 +1509,7 @@ public class SenseService extends Service {
                             }
                             phoneStateListener = SensePhoneState.getInstance(SenseService.this);
                             phoneStateListener.startSensing(finalInterval);
-                            mSubscrMgr.registerProducer(SensorNames.CALL_STATE, phoneStateListener);
+                            mSubscrMgr.registerProducer(SensorNames.CALL, phoneStateListener);
                             mSubscrMgr.registerProducer(SensorNames.DATA_CONN, phoneStateListener);
                             mSubscrMgr.registerProducer(SensorNames.SERVICE_STATE,
                                     phoneStateListener);
@@ -1485,7 +1528,7 @@ public class SenseService extends Service {
                 // stop sensing
                 if (null != phoneStateListener) {
                     phoneStateListener.stopSensing();
-                    mSubscrMgr.unregisterProducer(SensorNames.CALL_STATE, phoneStateListener);
+                    mSubscrMgr.unregisterProducer(SensorNames.CALL, phoneStateListener);
                     mSubscrMgr.unregisterProducer(SensorNames.DATA_CONN, phoneStateListener);
                     mSubscrMgr.unregisterProducer(SensorNames.SERVICE_STATE, phoneStateListener);
                     mSubscrMgr.unregisterProducer(SensorNames.SIGNAL_STRENGTH, phoneStateListener);
@@ -1499,17 +1542,17 @@ public class SenseService extends Service {
                 }
                 if (null != batterySensor) {
                     batterySensor.stopBatterySensing();
-                    mSubscrMgr.unregisterProducer(SensorNames.BATTERY_SENSOR, batterySensor);
+                    mSubscrMgr.unregisterProducer(SensorNames.BATTERY, batterySensor);
                     batterySensor = null;
                 }
                 if (null != appInfoSensor) {
                 	appInfoSensor.stopAppInfoSensing();
-                	mSubscrMgr.unregisterProducer(SensorNames.APP_INFO_SENSOR, appInfoSensor);
+                	mSubscrMgr.unregisterProducer(SensorNames.APP_INFO, appInfoSensor);
                 	appInfoSensor = null;
                 }
                 if (null != phoneActivitySensor) {
                     phoneActivitySensor.stopPhoneActivitySensing();
-                    mSubscrMgr.unregisterProducer(SensorNames.SCREEN_ACTIVITY, phoneActivitySensor);
+                    mSubscrMgr.unregisterProducer(SensorNames.SCREEN, phoneActivitySensor);
                     phoneActivitySensor = null;
                 }
                 if (null != appsSensor) {

@@ -104,16 +104,6 @@ public class HumiditySensor extends BaseSensor implements SensorEventListener,
         dataPoint.timeStamp = SNTP.getInstance().getTime();
         this.sendToSubscribers(dataPoint);
 
-        // send msg to MsgHandler
-        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.VALUE, value);
-        i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-        i.setPackage(mContext.getPackageName());
-        mContext.startService(i);
-
         // done with sample
         stopSample();
     }

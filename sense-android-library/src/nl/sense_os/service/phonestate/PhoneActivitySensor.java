@@ -63,30 +63,12 @@ public class PhoneActivitySensor extends BaseDataProducer{
     
     private void sendData(String screen)
     {
-    	 // create new data point
-        JSONObject json = new JSONObject();
-        try {
-            json.put("screen", screen);
-
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException preparing screen activity data");
-        }
-
         notifySubscribers();
-        SensorDataPoint dataPoint = new SensorDataPoint(json);
-        dataPoint.sensorName = SensorNames.SCREEN_ACTIVITY;
-        dataPoint.sensorDescription = SensorNames.SCREEN_ACTIVITY;
+        SensorDataPoint dataPoint = new SensorDataPoint(screen);
+        dataPoint.sensorName = SensorNames.SCREEN;
+        dataPoint.sensorDescription = SensorNames.SCREEN;
         dataPoint.timeStamp = SNTP.getInstance().getTime();        
         sendToSubscribers(dataPoint);
-        
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        i.putExtra(DataPoint.VALUE, json.toString());
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.SCREEN_ACTIVITY);
-        i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-        i.setPackage(context.getPackageName());
-        context.startService(i);
-    
     }
 
     protected PhoneActivitySensor(Context context) {

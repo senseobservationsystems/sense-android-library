@@ -140,25 +140,6 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
             Log.w(TAG, "Failed to send motion burst data", e);
             return;
 		}
-
-		// pass message to the MsgHandler
-		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-
-		
-		
-		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                Context.MODE_PRIVATE);
-
-        if (mainPrefs.getBoolean(Motion.DONT_UPLOAD_BURSTS, false) == false) {
-			i.putExtra(DataPoint.SENSOR_NAME, SENSOR_NAME);
-			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName()+processed);
-			i.putExtra(DataPoint.VALUE, value);
-			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
-			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime()
-					- burstDuration);
-			i.setPackage(context.getPackageName());
-			context.startService(i);
-        }
 	}
 
 	@Override

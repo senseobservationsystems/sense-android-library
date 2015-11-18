@@ -226,16 +226,6 @@ public class FallDetector extends BaseDataProducer implements DataConsumer {
 		dataPoint.sensorDescription = demo ? "demo fall" : "human fall";
 		dataPoint.timeStamp = SNTP.getInstance().getTime();        
 		this.sendToSubscribers(dataPoint);
-
-		//TODO: implement MsgHandler as data processor
-		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-		i.putExtra(DataPoint.SENSOR_NAME, SensorNames.FALL_DETECTOR);
-		i.putExtra(DataPoint.SENSOR_DESCRIPTION, demo ? "demo fall" : "human fall");
-		i.putExtra(DataPoint.VALUE, fall);
-		i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.BOOL);
-		i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-		i.setPackage(context.getPackageName());
-		context.startService(i);
 	}
 
     @Override

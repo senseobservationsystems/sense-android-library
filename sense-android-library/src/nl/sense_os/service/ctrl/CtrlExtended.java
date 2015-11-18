@@ -537,7 +537,7 @@ public class CtrlExtended extends Controller {
                         + DataPoint.CONTENT_URI_PATH);
                 String[] projection = new String[] { DataPoint.SENSOR_NAME, DataPoint.TIMESTAMP,
                         DataPoint.VALUE };
-                String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.LOCATION + "'"
+                String selection = DataPoint.SENSOR_NAME + "='" + SensorNames.POSITION + "'"
                         + " AND " + DataPoint.TIMESTAMP + ">"
                         + (SNTP.getInstance().getTime() - timerange);
                 data = LocalStorage.getInstance(mContext).query(uri, projection, selection, null,

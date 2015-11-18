@@ -226,6 +226,9 @@ public class DataStorageEngine {
      */
     public DSEConfig getConfig()
     {
+        if(mDSEConfig == null){
+            return null;
+        }
         return mDSEConfig.clone();
     }
 

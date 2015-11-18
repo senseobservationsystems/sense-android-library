@@ -58,6 +58,12 @@ public class SensePrefs {
          */
         public static final String LOGIN_PASS = "login_pass";
         /**
+         * Key for login preference for user id.
+         *
+         * @see SensePrefs#AUTH_PREFS
+         */
+        public static final String LOGIN_USER_ID = "user_id";
+        /**
          * Key for storing the online sensor list for this device (type of JSONArray).
          * 
          * @see #SENSOR_LIST_COMPLETE

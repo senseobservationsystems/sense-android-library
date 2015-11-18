@@ -212,10 +212,10 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         boolean succes = true;
         // match location sensor
         succes &= checkSensor(
-                SensorNames.LOCATION,
-                SensorNames.LOCATION,
+                SensorNames.POSITION,
+                SensorNames.POSITION,
                 SenseDataTypes.JSON,
-                SensorNames.LOCATION,
+                SensorNames.POSITION,
                 "{\"longitude\":1.0,\"laitude\":1.0,\"altitude\":1.0,\"accuracy\":1.0,\"speed\":1.0,\"bearing\":1.0,\"provider\":\"provider\"}",
                 deviceType, deviceUuid);
 
@@ -374,18 +374,18 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         boolean success = true;
 
         // match battery sensor
-        success &= checkSensor(SensorNames.BATTERY_SENSOR, "battery state", SenseDataTypes.JSON,
-                SensorNames.BATTERY_SENSOR, "{\"status\":\"string\",\"level\":\"string\"}",
+        success &= checkSensor(SensorNames.BATTERY, "battery state", SenseDataTypes.JSON,
+                SensorNames.BATTERY, "{\"status\":\"string\",\"level\":\"string\"}",
                 deviceType, deviceUuid);
         
         // match app info sensor
-        success &= checkSensor(SensorNames.APP_INFO_SENSOR, "app_info", SenseDataTypes.JSON,
-        		SensorNames.APP_INFO_SENSOR, "{\"app_build\":\"string\",\"app_name\":\"string\",\"app_version\":\"string\",\"locale\":\"string\",\"os\":\"string\",\"os_version\":\"string\",\"device_model\":\"string\",\"sense_library_version\":\"string\",\"sense_cortex_version\":\"string\"}",
+        success &= checkSensor(SensorNames.APP_INFO, "app_info", SenseDataTypes.JSON,
+        		SensorNames.APP_INFO, "{\"app_build\":\"string\",\"app_name\":\"string\",\"app_version\":\"string\",\"locale\":\"string\",\"os\":\"string\",\"os_version\":\"string\",\"device_model\":\"string\",\"sense_library_version\":\"string\",\"sense_cortex_version\":\"string\"}",
         		deviceType, deviceUuid);
 
         // match screen activity
-        success &= checkSensor(SensorNames.SCREEN_ACTIVITY, SensorNames.SCREEN_ACTIVITY,
-                SenseDataTypes.JSON, SensorNames.SCREEN_ACTIVITY, "{\"screen\":\"string\"}",
+        success &= checkSensor(SensorNames.SCREEN, SensorNames.SCREEN,
+                SenseDataTypes.JSON, SensorNames.SCREEN, "{\"screen\":\"string\"}",
                 deviceType, deviceUuid);
 
         // match proximity
@@ -401,8 +401,8 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
                 .getSystemService(Context.TELEPHONY_SERVICE);
         if (null != tm.getDeviceId()) {
             // match call state
-            success &= checkSensor(SensorNames.CALL_STATE, SensorNames.CALL_STATE,
-                    SenseDataTypes.JSON, SensorNames.CALL_STATE,
+            success &= checkSensor(SensorNames.CALL, SensorNames.CALL,
+                    SenseDataTypes.JSON, SensorNames.CALL,
                     "{\"state\":\"string\",\"incomingNumber\":\"string\"}", deviceType, deviceUuid);
 
             // match service state

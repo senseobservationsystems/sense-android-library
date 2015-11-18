@@ -290,17 +290,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							dataPoint.sensorDescription = SensorNames.NOISE;
 							dataPoint.timeStamp = startTimestamp;
 							sendToSubscribers(dataPoint);
-
-							// pass message to the MsgHandler
-							Intent sensorData = new Intent(
-									context.getString(R.string.action_sense_new_data));
-							sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
-							sensorData.putExtra(DataPoint.VALUE,
-									BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
-							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-							sensorData.setPackage(context.getPackageName());
-							context.startService(sensorData);
 						}
 
 						if (spectrum != null) {
@@ -324,17 +313,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							dataPoint.sensorDescription = "audio spectrum (dB)";
 							dataPoint.timeStamp = startTimestamp;
 							sendToSubscribers(dataPoint);
-
-							Intent sensorData = new Intent(
-									context.getString(R.string.action_sense_new_data));
-							sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.AUDIO_SPECTRUM);
-							sensorData
-							.putExtra(DataPoint.SENSOR_DESCRIPTION, "audio spectrum (dB)");
-							sensorData.putExtra(DataPoint.VALUE, jsonSpectrum.toString());
-							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-							sensorData.setPackage(context.getPackageName());
-							context.startService(sensorData);
 						}
 
 						if (dB != -1 && !Double.valueOf(dB).isNaN()) {
@@ -511,17 +489,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				dataPoint.setDataType(DataType.FILE);
 				dataPoint.timeStamp = SNTP.getInstance().getTime();
 				sendToSubscribers(dataPoint);
-
-				// pass message to the MsgHandler
-				Intent i = new Intent(context
-						.getString(R.string.action_sense_new_data));
-				i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MIC);
-				i.putExtra(DataPoint.VALUE, fileName);
-				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
-				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-				i.setPackage(context.getPackageName());
-				context.startService(i);				
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -589,21 +556,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 			dataPoint.sensorDescription =  "noise (dB)";
 			dataPoint.timeStamp = startTimestamp;
 			sendToSubscribers(dataPoint);
-
-			// pass message to the MsgHandler
-			// get sample rate from preferences
-			SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-			if(!mainPrefs.getBoolean(Ambience.DONT_UPLOAD_BURSTS, true))
-			{
-				Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
-				sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE_BURST);
-				sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION, "noise (dB)");
-				sensorData.putExtra(DataPoint.VALUE, data.toString());
-				sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-				sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-				sensorData.setPackage(context.getPackageName());
-				context.startService(sensorData);
-			}
 		}
 	};
 

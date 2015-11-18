@@ -99,17 +99,6 @@ public class EpilepsySensor extends BaseDataProducer implements DataConsumer {
         {
         	Log.e(TAG, "Error in sending data to subscribers");
         }
-        
-        // TODO: implement MsgHandler as data processor
-        // pass message to the MsgHandler
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.ACCELEROMETER_EPI);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, value);
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME);
-        i.setPackage(context.getPackageName());
-        context.startService(i);
     }
 
     @Override

@@ -388,14 +388,14 @@ public class MsgHandler extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
-		if (getString(R.string.action_sense_new_data).equals(intent.getAction())) {
-			handleNewMsgIntent(intent);
-		} else if (getString(R.string.action_sense_send_data).equals(intent.getAction())) {
-			handleSendIntent(intent);
-		} else {
-			Log.e(TAG, "Unexpected intent action: " + intent.getAction());
-		}
+// MsgHandler DISABLED
+//		if (getString(R.string.action_sense_new_data).equals(intent.getAction())) {
+//			handleNewMsgIntent(intent);
+//		} else if (getString(R.string.action_sense_send_data).equals(intent.getAction())) {
+//			handleSendIntent(intent);
+//		} else {
+//			Log.e(TAG, "Unexpected intent action: " + intent.getAction());
+//		}
 
 		// this service is not sticky, it will get an intent to restart it if necessary
 		return START_NOT_STICKY;

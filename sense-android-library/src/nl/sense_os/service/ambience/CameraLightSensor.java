@@ -54,17 +54,6 @@ public class CameraLightSensor extends BaseDataProducer{
 			dataPoint.sensorDescription = sensorDescription;
 			dataPoint.timeStamp = SNTP.getInstance().getTime();        
 			sendToSubscribers(dataPoint);
-
-			// pass message to the MsgHandler
-			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-			i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-			i.putExtra(DataPoint.DISPLAY_NAME, sensorDisplayName);
-			i.putExtra(DataPoint.VALUE, jsonString);
-			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
-			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-			i.setPackage(context.getPackageName());
-			context.startService(i);
 			// Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
 			nextUpdate(camera_id);
 		}

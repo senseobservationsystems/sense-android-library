@@ -177,6 +177,13 @@ public class SensorDataPoint {
     }
 
     /**
+     * @see #getIntValue()
+     */
+    public Object getValue() {
+        return value;
+    }
+
+    /**
      * Sets the data type.
      * 
      * This method overrides the dataType which has been set automatically. This method can be used

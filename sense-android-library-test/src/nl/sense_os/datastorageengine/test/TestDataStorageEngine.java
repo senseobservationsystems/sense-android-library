@@ -75,7 +75,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
         dataStorageEngine = DataStorageEngine.getInstance(getContext());
         DSEConfig dseConfig = new DSEConfig(sessionId, userId, appKey);
-        dseConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
+        dseConfig.backendEnvironment = server;
         dseConfig.enableEncryption = true;
         dataStorageEngine.setConfig(dseConfig);
         // Wait and test onReady

@@ -340,16 +340,6 @@ public class NfcScan extends BaseDataProducer {
 			sensorDataPoint.sensorDescription = SensorNames.NFC_SCAN;
 			sensorDataPoint.timeStamp = SNTP.getInstance().getTime();        
 			sendToSubscribers(sensorDataPoint);
-			
-			// submit value
-			Intent dataPoint = new Intent(getString(R.string.action_sense_new_data));
-			dataPoint.putExtra(DataPoint.SENSOR_NAME, SensorNames.NFC_SCAN);
-			dataPoint.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.NFC_SCAN);
-			dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			dataPoint.putExtra(DataPoint.TIMESTAMP, sensorDataPoint.timeStamp);
-			dataPoint.putExtra(DataPoint.VALUE, value);
-			dataPoint.setPackage(getPackageName());
-			startService(dataPoint);
 		}
 	}
 }

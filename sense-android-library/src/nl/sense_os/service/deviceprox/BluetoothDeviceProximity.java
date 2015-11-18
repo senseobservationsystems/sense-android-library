@@ -199,15 +199,6 @@ public class BluetoothDeviceProximity extends BaseDataProducer{
 				dataPoint.sensorDescription = SensorNames.BLUETOOTH_DISCOVERY;
 				dataPoint.timeStamp = SNTP.getInstance().getTime();        
 				this.sendToSubscribers(dataPoint);
-
-				// pass message to the MsgHandler
-				Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-				i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_DISCOVERY);
-				i.putExtra(DataPoint.VALUE, deviceJson.toString());
-				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-				i.setPackage(context.getPackageName());
-				BluetoothDeviceProximity.this.context.startService(i);
 			}
 
 			// add count of bluetooth devices as a separate sensor value
@@ -219,14 +210,6 @@ public class BluetoothDeviceProximity extends BaseDataProducer{
 			dataPoint.sensorDescription = SensorNames.BLUETOOTH_NEIGHBOURS_COUNT;
 			dataPoint.timeStamp = SNTP.getInstance().getTime();        
 			this.sendToSubscribers(dataPoint);
-			
-			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.BLUETOOTH_NEIGHBOURS_COUNT);
-			i.putExtra(DataPoint.VALUE, nrBluetoothNeighbours);
-			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.INT);
-			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-			i.setPackage(context.getPackageName());
-			BluetoothDeviceProximity.this.context.startService(i);
 			Log.v(TAG, "Found " + nrBluetoothNeighbours + " bluetooth neighbours");
 
 		} catch (JSONException e) {

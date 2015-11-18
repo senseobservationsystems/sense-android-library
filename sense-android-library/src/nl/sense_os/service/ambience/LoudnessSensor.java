@@ -145,14 +145,5 @@ public class LoudnessSensor extends BaseDataProducer {
 		dataPoint.sensorDescription = SensorNames.LOUDNESS;
 		dataPoint.timeStamp = ms;        
 		this.sendToSubscribers(dataPoint);
-
-		Intent sensorData = new Intent(
-				context.getString(R.string.action_sense_new_data));
-		sensorData.putExtra(DataPoint.SENSOR_NAME,SensorNames.LOUDNESS);
-		sensorData.putExtra(DataPoint.VALUE, (float)value);
-		sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-		sensorData.putExtra(DataPoint.TIMESTAMP, ms);
-		sensorData.setPackage(context.getPackageName());
-		context.startService(sensorData);
 	}
 }

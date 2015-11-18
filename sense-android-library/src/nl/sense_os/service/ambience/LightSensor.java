@@ -118,24 +118,11 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
                 sensorName = SensorNames.LIGHT;
             }
 
-            String jsonString = "{";
-            int x = 0;
-            for (float value : event.values) {
-                if (x == 0) {
-                    if (sensor.getType() == Sensor.TYPE_LIGHT) {
-                        jsonString += "\"lux\":" + value;
-                        controller.checkLightSensor(value);
-                    }
-                }
-                x++;
-            }
-            jsonString += "}";
-
+            float value = event.values[0];
             long time = SNTP.getInstance().getTime();
             try {
-                JSONObject jsonObj = new JSONObject(jsonString);
                 this.notifySubscribers();
-                SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
+                SensorDataPoint dataPoint = new SensorDataPoint(value);
                 dataPoint.sensorName = sensorName;
                 dataPoint.sensorDescription = sensor.getName();
                 dataPoint.timeStamp = time;
@@ -143,16 +130,6 @@ public class LightSensor extends BaseSensor implements SensorEventListener, Peri
             } catch (Exception e) {
                 Log.e(TAG, "Error in send to subscribers of the light sensor");
             }
-            // pass message to the MsgHandler
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-            i.putExtra(DataPoint.VALUE, jsonString);
-            i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.TIMESTAMP, time);
-            i.setPackage(context.getPackageName());
-            this.context.startService(i);
-
             stopSample();
         }
     }
