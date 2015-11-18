@@ -452,7 +452,7 @@ public class SenseService extends Service {
             newDSEConfig.backendEnvironment = SensorDataProxy.SERVER.LIVE;
         }
         // set the local data persist period
-        int localPersistPeriod = mainPrefs.getInt( SensePrefs.Main.Advanced.RETENTION_HOURS, -1 );
+        int localPersistPeriod = mainPrefs.getInt(SensePrefs.Main.Advanced.RETENTION_HOURS, -1 );
         if(localPersistPeriod != -1){
             newDSEConfig.localPersistancePeriod = localPersistPeriod * 60 * 60 * 1000l;
         }

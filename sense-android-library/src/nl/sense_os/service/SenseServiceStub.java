@@ -1,5 +1,7 @@
 package nl.sense_os.service;
 
+import nl.sense_os.datastorageengine.DSEConfig;
+import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Auth;
@@ -268,6 +270,14 @@ public class SenseServiceStub extends Binder {
         SharedPreferences prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS,
                 Context.MODE_PRIVATE);
 
+        // update the retention hours in the DSE
+        if(key.equals(SensePrefs.Main.Advanced.RETENTION_HOURS)){
+            DataStorageEngine dse = DataStorageEngine.getInstance(service);
+            DSEConfig dseConfig = dse.getConfig();
+            dseConfig.localPersistancePeriod = value * 60 * 60 * 1000l;
+            dse.setConfig(dseConfig);
+        }
+
         // store value
         boolean stored = prefs.edit().putInt(key, value).commit();
         if (stored == false) {
@@ -283,7 +293,6 @@ public class SenseServiceStub extends Binder {
         } else {
             prefs = service.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
         }
-
         // store value
         boolean stored = prefs.edit().putLong(key, value).commit();
         if (stored == false) {
