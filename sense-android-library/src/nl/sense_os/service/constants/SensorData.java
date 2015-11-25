@@ -139,7 +139,7 @@ public class SensorData {
         public static final String BLUETOOTH_DISCOVERY = "bluetooth_discovery";
 
         /** Wi-Fi scan sensor. Part of the Neighboring Devices sensors. */
-        public static final String WIFI_SCAN = "wifi scan";
+        public static final String WIFI_SCAN = "wifi_scan";
 
         /** NFC sensor. Part of the Neighboring Devices sensors. */
         public static final String NFC_SCAN = "nfc_scan";

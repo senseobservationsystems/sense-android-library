@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    A JSON array with JSON objects containing the default requirements for sensors.
+    For a complete list of the supported requirements see the GitHub documentation.
+    For a complete list of supported sensor profiles for remote storage see the GitHub documentation.
+    -->
+    <string name="requirements" translatable="false">
+        [
+            {
+                "sensor_name": "position",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "time_zone",
+                "reason": "proper historical data handling",
+                "upload_enabled": true,
+                "optional": false,
+                "persist_locally": true,
+                "download_enabled": true
+            },
+            {
+                "sensor_name": "accelerometer",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "battery",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "call",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "light",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "noise",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "position",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "proximity",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "screen",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "wifi_scan",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "app_info",
+                "reason": "data gathering for improving sleep time",
+                "optional": true,
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            }
+        ]
+
+    </string>
+</resources>

@@ -13,6 +13,11 @@ import android.hardware.SensorEvent;
  */
 public class SensorDataPoint {
 
+    /**
+     * The source of the data point
+     */
+    public String source = "sense-android";
+
     public enum DataType {
         INT, FLOAT, BOOL, DOUBLE, STRING, ARRAYLIST, JSON, JSONSTRING, FILE, SENSOREVENT
     };

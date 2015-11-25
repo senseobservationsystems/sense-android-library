@@ -139,6 +139,7 @@ public class SenseService extends Service {
     private AppInfoSensor appInfoSensor;
     private FusedLocationSensor fusedLocationListener;
     private DataStorageEngine mDataStorageEngine;
+    private DSEDataConsumer mDSEDataConsumer;
 
     /**
      * Handler on main application thread to display toasts to the user.

@@ -179,7 +179,7 @@ public class DataSyncer {
         if (sensorList.length() != 0) {
             for (int i = 0; i < sensorList.length(); i++) {
                 JSONObject sensorFromRemote = sensorList.getJSONObject(i);
-                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
+                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), null, null, null);
                 if (!mDatabaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))) {
                     mDatabaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
                 }
