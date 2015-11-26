@@ -1,5 +1,7 @@
 package nl.sense_os.datastorageengine;
 
+import org.json.JSONException;
+
 /**
  * A generic interface for receiving a success/failure status asynchronously.
  * Created by ted@sense-os.nl on 11/6/15.
@@ -11,7 +13,7 @@ public interface AsyncCallback {
     /**
      * Callback method called on success
      **/
-    void onSuccess();
+    void onSuccess() throws SensorProfileException, JSONException;
 
     /**
      * Callback method called on failure

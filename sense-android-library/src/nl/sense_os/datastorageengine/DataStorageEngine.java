@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -299,7 +300,7 @@ public class DataStorageEngine {
      */
     private FutureTask<Boolean> getInitializeTask() {
         return new FutureTask<>(new Callable<Boolean>() {
-            public Boolean call() throws JSONException, IOException, SensorProfileException {
+            public Boolean call() throws JSONException, IOException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, ValidationException {
                 try {
                     mDataSyncerProgressTracker.reset();
                     mDataSyncer.initialize();
@@ -470,8 +471,8 @@ public class DataStorageEngine {
                     mDataSyncer.sync(mDataSyncerProgressTracker);
                     return true;
                 } catch (Exception e) {
-                    if(e instanceof HttpResponseException) {
-                        if(((HttpResponseException)e).getStatusCode() == 403){
+                    if (e instanceof HttpResponseException) {
+                        if (((HttpResponseException) e).getStatusCode() == 403) {
                             // TODO handle HTTP response 403 by sending a relogin request
                         }
                     }
@@ -569,6 +570,16 @@ public class DataStorageEngine {
         return mDatabaseHandler.getSources();
     }
 
+    /**
+     * Returns the sensor names which are available in the sensor profiles
+     * @return A set with the sensor names available for data storage
+     */
+    public Set<String> getSensorNames() throws SensorProfileException, JSONException {
+        if (getStatus() != DSEStatus.READY) {
+            throw new IllegalStateException("The DataStorageEngine is not ready yet");
+        }
+        return mDataSyncer.getSensorProfilesSensorNames();
+    }
 
     private class DataSyncerProgress implements ProgressCallback {
         public boolean isDownloadSensorsCompleted;

@@ -1,7 +1,4 @@
 package nl.sense_os.service.subscription;
-
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,13 +16,7 @@ public class SensorRequirement {
     private Integer mSampleInterval;
     private Integer mSampleAccuracy;
     private Long mAtTime;
-    private Boolean mUploadEnabled;
-    private Boolean mDownloadEnabled;
-    private Boolean mPersistLocally;
 
-    public final static String REQUIREMENT_FIELD_UPLOAD_ENABLED = "upload_enabled";
-    public final static String REQUIREMENT_FIELD_DOWNLOAD_ENABLED = "download_enabled";
-    public final static String REQUIREMENT_FIELD_PERSIST_LOCALLY = "persist_locally";
     public final static String REQUIREMENT_FIELD_AT_TIME = "at_time";
     public final static String REQUIREMENT_FIELD_SAMPLE_ACCURACY = "sample_accuracy";
     public final static String REQUIREMENT_FIELD_SAMPLE_INTERVAL = "sample_interval";
@@ -50,15 +41,6 @@ public class SensorRequirement {
     public SensorRequirement(JSONObject requirement) throws JSONException {
             String sensorName = requirement.getString(SensorRequirement.REQUIREMENT_FIELD_SENSOR_NAME);
             SensorRequirement sensorRequirement = new SensorRequirement(sensorName);
-            if(requirement.has(SensorRequirement.REQUIREMENT_FIELD_UPLOAD_ENABLED)) {
-                sensorRequirement.setUploadEnabled(requirement.getBoolean(SensorRequirement.REQUIREMENT_FIELD_UPLOAD_ENABLED));
-            }
-            if(requirement.has(SensorRequirement.REQUIREMENT_FIELD_DOWNLOAD_ENABLED)) {
-                sensorRequirement.setDownloadEnabled(requirement.getBoolean(SensorRequirement.REQUIREMENT_FIELD_DOWNLOAD_ENABLED));
-            }
-            if(requirement.has(SensorRequirement.REQUIREMENT_FIELD_PERSIST_LOCALLY)) {
-                sensorRequirement.setPersistLocally(requirement.getBoolean(SensorRequirement.REQUIREMENT_FIELD_PERSIST_LOCALLY));
-            }
             if(requirement.has(SensorRequirement.REQUIREMENT_FIELD_AT_TIME)) {
                 sensorRequirement.setAtTime(requirement.getLong(SensorRequirement.REQUIREMENT_FIELD_AT_TIME));
             }
@@ -189,53 +171,5 @@ public class SensorRequirement {
      */
     public void setAtTime(Long atTime) {
         this.mAtTime = atTime;
-    }
-
-    /**
-     * Returns the upload data requirement for the sensor
-     * @return The upload data requirement if set, null otherwise
-     */
-    public Boolean getUploadEnabled() {
-        return mUploadEnabled;
-    }
-
-    /**
-     * Sets the upload requirement for the sensor
-     * @param uploadEnabled The boolean for enabling and disabling uploading of sensor data
-     */
-    public void setUploadEnabled(Boolean uploadEnabled) {
-        this.mUploadEnabled = uploadEnabled;
-    }
-
-    /**
-     * Returns the download data requirement for the sensor
-     * @return The download data requirement if set, null otherwise
-     */
-    public Boolean getDownloadEnabled() {
-        return mDownloadEnabled;
-    }
-
-    /**
-     * Sets the download data requirement for the sensor
-     * @param downloadEnabled The boolean for enabling and disabling downloading of sensor data
-     */
-    public void setDownloadEnabled(Boolean downloadEnabled) {
-        this.mDownloadEnabled = downloadEnabled;
-    }
-
-    /**
-     * Returns the persist locally requirement for the sensor
-     * @return The persist locally requirement if set, null otherwise
-     */
-    public Boolean getPersistLocally() {
-        return mPersistLocally;
-    }
-
-    /**
-     * Sets the persist locally requirement for the sensor
-     * @param persistLocally The boolean for enabling and disabling the local sensor data persistence
-     */
-    public void setPersistLocally(Boolean persistLocally) {
-        this.mPersistLocally = persistLocally;
     }
 }
