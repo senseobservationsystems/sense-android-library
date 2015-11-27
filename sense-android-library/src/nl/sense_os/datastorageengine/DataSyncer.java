@@ -24,11 +24,9 @@ import nl.sense_os.util.json.ValidationException;
 public class DataSyncer {
     private static final String TAG = "DataSyncer";
     // TODO move static constants to a separate class
-    public final static long SYNC_RATE = 1800000;  // 30 minutes in milliseconds by default
     public final static long PERSIST_PERIOD = 2678400000L; // 31 days in milliseconds
 
-    // set the default persist period and sync rate
-    private long mSyncRate = SYNC_RATE;
+    // set the default sync rate
     private long mPersistPeriod = PERSIST_PERIOD;
 
     private SensorDataProxy mProxy = null;
@@ -49,19 +47,6 @@ public class DataSyncer {
         this.mSensorProfiles = new SensorProfiles(context, databaseHandler.getEncryptionKey());
         this.mProxy = proxy;
         mContext = context;
-    }
-
-    public void enablePeriodicSync(long syncRate){
-        mSyncRate = syncRate;
-        PeriodicDataSyncer.setAlarm(mContext, mSyncRate);
-    }
-
-    public void enablePeriodicSync(){
-        enablePeriodicSync(mSyncRate);
-    }
-
-    public void disablePeriodicSync(){
-        PeriodicDataSyncer.cancelAlarm(mContext);
     }
 
     /**

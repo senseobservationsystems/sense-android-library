@@ -2,6 +2,7 @@ package nl.sense_os.datastorageengine;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.test.SyncBaseInstrumentation;
 import android.util.Log;
 
 import org.apache.http.client.HttpResponseException;
@@ -64,6 +65,8 @@ public class DataStorageEngine {
     private String PREFERENCES_LOCAL_PERSISTANCE_PERIOD = "local_persistance_period";
     private String PREFERENCES_UPLOAD_INTERVAL = "upload_interval";
 
+    // The default sync rate, should be moved to a constants class
+    public final static long SYNC_RATE = 1800000;  // 30 minutes in milliseconds by default
     private FutureTask<Boolean> mInitTask;
 
     /**
@@ -240,7 +243,7 @@ public class DataStorageEngine {
         editor.clear();
         editor.commit();
         // disable the periodic data syncing
-        mDataSyncer.disablePeriodicSync();
+        disablePeriodicSync();
         // create a new empty DSE
         mDataStorageEngine = new DataStorageEngine(mContext);
     }
@@ -294,9 +297,9 @@ public class DataStorageEngine {
                     mDataSyncer.initialize();
                     // when the initialization is done enable the periodic syncing to download the sensor and sensor data
                     if (mDSEConfig.uploadInterval != null) {
-                        mDataSyncer.enablePeriodicSync(mDSEConfig.uploadInterval);
+                        enablePeriodicSync(mDSEConfig.uploadInterval);
                     } else {
-                        mDataSyncer.enablePeriodicSync();
+                        enablePeriodicSync();
                     }
                     mInitialized = true;
                     return true;
@@ -560,6 +563,8 @@ public class DataStorageEngine {
     private class DataSyncerProgress implements ProgressCallback {
         public boolean isDownloadSensorsCompleted;
         public boolean isDownloadSensorDataCompleted;
+        public boolean isReady;
+        // TODO refactor future queue to callback queue
         public Queue<FutureTask> downloadSensorsFutureQueue = new ConcurrentLinkedQueue<>();
         public Queue<FutureTask> downloadSensorDataFutureQueue = new ConcurrentLinkedQueue<>();
         public ArrayList<ErrorCallback> errorCallbacks = new ArrayList<>();
@@ -616,4 +621,25 @@ public class DataStorageEngine {
         public void onCleanupCompleted() {}
     }
 
+    /**
+     * Enables the periodic data synchronization with the back-end
+     * @param syncRate The amount of milliseconds between each synchronization
+     */
+    public void enablePeriodicSync(long syncRate){
+        PeriodicDataSyncer.setAlarm(mContext, syncRate);
+    }
+
+    /**
+     * Enables the periodic data synchronization with the back-end using the default sync rate #SYNC_RATE
+     */
+    public void enablePeriodicSync(){
+        enablePeriodicSync(SYNC_RATE);
+    }
+
+    /**
+     * Disables the periodic data synchronization with the back-end
+     */
+    public void disablePeriodicSync(){
+        PeriodicDataSyncer.cancelAlarm(mContext);
+    }
 }
