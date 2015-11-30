@@ -2,7 +2,6 @@ package nl.sense_os.datastorageengine;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.test.SyncBaseInstrumentation;
 import android.util.Log;
 
 import org.apache.http.client.HttpResponseException;
@@ -293,17 +292,22 @@ public class DataStorageEngine {
         return new FutureTask<>(new Callable<Boolean>() {
             public Boolean call() throws JSONException, IOException, SensorProfileException {
                 try {
+                    // reset the progress tracker status
                     mDataSyncerProgressTracker.reset();
                     mDataSyncer.initialize();
+                    // notify the AsyncCallbacks
+                    mDataSyncerProgressTracker.onInitializeCompleted();
+                    mInitialized = true;
+
                     // when the initialization is done enable the periodic syncing to download the sensor and sensor data
                     if (mDSEConfig.uploadInterval != null) {
                         enablePeriodicSync(mDSEConfig.uploadInterval);
                     } else {
                         enablePeriodicSync();
                     }
-                    mInitialized = true;
                     return true;
                 } catch (Exception e) {
+                    // notify the AsyncCallbacks
                     mDataSyncerProgressTracker.onException(e);
                     Log.e(TAG, "Error initializing the DataSyncer", e);
                     throw e;
@@ -327,10 +331,16 @@ public class DataStorageEngine {
     /**
      * Receive a one time notification when the DataStorageEngine has done it's initialization
      * Sends a notification immediately when the initialization is already done
-     * @param asyncCallback The AsynchronousCall back to receive the status of the initialization in
+     * @param asyncCallback The Asynchronous Callback to receive the status of the initialization in
      */
     public void onReady(AsyncCallback asyncCallback) {
-        getResultAsync(onReady(), asyncCallback);
+        // if the DSE is ready then return immediately
+        if(getStatus() == DSEStatus.READY){
+            asyncCallback.onSuccess();
+        }else {
+            // add to the callback queue
+            mDataSyncerProgressTracker.readyCallbackQueue.add(asyncCallback);
+        }
     }
     /**
      * Callback invoked for errors during initialization and the a periodic sync.
@@ -356,77 +366,21 @@ public class DataStorageEngine {
     }
 
     /**
-     * Receive an update when the sensors have been downloaded
-     * @return A Future<boolean> which will return the status of the sensor download process of the DataStorageEngine.
-     */
-    public Future<Boolean> onSensorsDownloaded() {
-        // this future will only be executed when:
-        // 1) the associated call back function is called
-        // 2) when an exception is thrown
-        // 3) the call back function was already called successfully
-       Callable<Boolean> functionCall = new Callable<Boolean>() {
-           @Override
-           public Boolean call() throws Exception {
-               if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
-                   return true;
-               } else {
-                   throw mDataSyncerProgressTracker.lastException;
-               }
-           }
-       };
-
-        // if the event has been fired already, submit the function call and return the future
-        if(mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
-           return mCallBackExecutorService.submit(functionCall);
-        }
-        // put it in the queue and wait for it to be executed
-        else {
-            FutureTask<Boolean> future = new FutureTask(functionCall);
-            mDataSyncerProgressTracker.downloadSensorsFutureQueue.add(future);
-            return future;
-        }
-    }
-
-    /**
      * Receive a one time notification when the sensors have been downloaded
      * @param asyncCallback The AsynchronousCall which will return the status of the sensor download process of the DataStorageEngine.
      */
     public void onSensorsDownloaded(AsyncCallback asyncCallback)
     {
-        getResultAsync(onSensorsDownloaded(), asyncCallback);
-    }
-
-    /**
-     * Receive an update when the sensor data has been downloaded
-     * @return True when the sensor data download was successful, throws and exception otherwise
-     */
-    public Future<Boolean> onSensorDataDownloaded() {
-        // this future will only be executed when:
-        // 1) the associated call back function is called
-        // 2) when an exception is thrown
-        // 3) the call back function was already called successfully
-        Callable<Boolean> functionCall = new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                if (mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
-                    return true;
-                } else {
-                    throw mDataSyncerProgressTracker.lastException;
-                }
+        synchronized (mDataSyncerProgressTracker) {
+            if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+                asyncCallback.onSuccess();
+            } else {
+                mDataSyncerProgressTracker.downloadSensorsCallbackQueue.add(asyncCallback);
             }
-        };
-
-        // if the event has been fired already, submit the function call and return the future
-        if(mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
-            return mCallBackExecutorService.submit(functionCall);
-        }
-        // put it in the queue and wait for it to be executed
-        else {
-            FutureTask<Boolean> future = new FutureTask(functionCall);
-            mDataSyncerProgressTracker.downloadSensorDataFutureQueue.add(future);
-            return future;
         }
     }
+
+
 
     /**
      * Receive a one time notification when the sensor data has been downloaded
@@ -434,7 +388,14 @@ public class DataStorageEngine {
      */
     public void onSensorDataDownloaded(AsyncCallback asyncCallback)
     {
-        getResultAsync(onSensorDataDownloaded(), asyncCallback);
+        synchronized (mDataSyncerProgressTracker) {
+            if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+                asyncCallback.onSuccess();
+            } else {
+                // send the last exception
+                mDataSyncerProgressTracker.downloadSensorsCallbackQueue.add(asyncCallback);
+            }
+        }
     }
 
     /**
@@ -456,15 +417,9 @@ public class DataStorageEngine {
                     if (getStatus() != DSEStatus.READY) {
                         throw new IllegalStateException("The DataStorageEngine is not ready yet");
                     }
-                    mDataSyncerProgressTracker.reset();
                     mDataSyncer.sync(mDataSyncerProgressTracker);
                     return true;
                 } catch (Exception e) {
-                    if(e instanceof HttpResponseException) {
-                        if(((HttpResponseException)e).getStatusCode() == 403){
-                            // TODO handle HTTP response 403 by sending a relogin request
-                        }
-                    }
                     mDataSyncerProgressTracker.onException(e);
                     Log.e(TAG, "Error syncing data", e);
                     throw e;
@@ -565,13 +520,24 @@ public class DataStorageEngine {
         public boolean isDownloadSensorDataCompleted;
         public boolean isReady;
         // TODO refactor future queue to callback queue
-        public Queue<FutureTask> downloadSensorsFutureQueue = new ConcurrentLinkedQueue<>();
-        public Queue<FutureTask> downloadSensorDataFutureQueue = new ConcurrentLinkedQueue<>();
+        public Queue<AsyncCallback> downloadSensorsCallbackQueue = new ConcurrentLinkedQueue<>();
+        public Queue<AsyncCallback> downloadSensorDataCallbackQueue = new ConcurrentLinkedQueue<>();
+        public Queue<AsyncCallback> readyCallbackQueue = new ConcurrentLinkedQueue<>();
         public ArrayList<ErrorCallback> errorCallbacks = new ArrayList<>();
         public Exception lastException = null;
 
+        /**
+         * Reset the progress status of the DataSyncer
+         */
+        public synchronized void reset(){
+            isDownloadSensorDataCompleted = false;
+            isDownloadSensorsCompleted = false;
+            isReady = false;
+            lastException = null;
+        }
+
         /** Function to call when an exception is thrown when executing a DataSyncer function with ProgressCallback*/
-        public void onException(Exception e){
+        public synchronized void onException(Exception e){
             lastException = e;
 
             // process all the futures
@@ -581,34 +547,38 @@ public class DataStorageEngine {
                     errorCallback.onError(lastException);
                 }
             }
-            for(FutureTask future : downloadSensorsFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for(AsyncCallback callback : downloadSensorsCallbackQueue){
+                callback.onFailure(e);
             }
-            for(FutureTask future : downloadSensorDataFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for(AsyncCallback callback : downloadSensorDataCallbackQueue){
+                callback.onFailure(e);
             }
-        }
-
-        public void reset(){
-            isDownloadSensorsCompleted = false;
-            isDownloadSensorDataCompleted = false;
-            lastException = null;
         }
 
         @Override
-        public void onDownloadSensorsCompleted() {
+        public synchronized void onDownloadSensorsCompleted() {
             isDownloadSensorsCompleted = true;
-            for(FutureTask future : downloadSensorsFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for (AsyncCallback callback : downloadSensorsCallbackQueue) {
+                callback.onSuccess();
             }
+            downloadSensorsCallbackQueue.clear();
+        }
+
+        public synchronized void onInitializeCompleted(){
+            isReady = true;
+            for (AsyncCallback callback : readyCallbackQueue) {
+                callback.onSuccess();
+            }
+            readyCallbackQueue.clear();
         }
 
         @Override
-        public void onDownloadSensorDataCompleted() {
+        public synchronized void onDownloadSensorDataCompleted() {
             isDownloadSensorDataCompleted = true;
-            for(FutureTask future : downloadSensorDataFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for (AsyncCallback callback : downloadSensorDataCallbackQueue) {
+                callback.onSuccess();
             }
+            downloadSensorDataCallbackQueue.clear();
         }
 
         @Override

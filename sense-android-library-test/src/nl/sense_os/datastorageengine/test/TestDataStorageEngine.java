@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,15 +54,15 @@ public class TestDataStorageEngine extends AndroidTestCase{
         public DSEAsyncCallback(String name){ this.name = name; }
 
         @Override
-        public void onSuccess() { hasSuccess = true; }
+        public synchronized void onSuccess() { hasSuccess = true; this.notifyAll();}
 
         @Override
-        public void onFailure(Throwable throwable){ assertTrue(name+":"+ throwable.getMessage(), false); }
+        public void onFailure(Throwable throwable){ fail(name + ":" + throwable.getMessage()); }
     }
     private DSEAsyncCallback onReady = new DSEAsyncCallback("onReadyAsync");
     private DSEAsyncCallback onSensorsDownloaded = new DSEAsyncCallback("onSensorsDownloadedAsync");
     private DSEAsyncCallback onSensorDataDownloaded = new DSEAsyncCallback("onSensorDataDownloadedAsync");
-    private DSEAsyncCallback flushData = new DSEAsyncCallback("fushDataAsync");
+    private DSEAsyncCallback flushData = new DSEAsyncCallback("flushDataAsync");
 
     /**
      * Set up of the DataStorageEngine with checks for the status updates
@@ -105,18 +106,16 @@ public class TestDataStorageEngine extends AndroidTestCase{
         // Test onReady
         assertEquals(Boolean.TRUE, dataStorageEngine.onReady().get(60, TimeUnit.SECONDS));
 
-        // Test onSensorsDownloaded
-        assertEquals(Boolean.TRUE, dataStorageEngine.onSensorsDownloaded().get(60, TimeUnit.SECONDS));
-
-        // Test onSensorDataDownloaded
-        assertEquals(Boolean.TRUE, dataStorageEngine.onSensorDataDownloaded().get(60, TimeUnit.SECONDS));
-
         // Test the getStatus
         assertEquals(DataStorageEngine.DSEStatus.READY, dataStorageEngine.getStatus());
 
         /** asynchronous test result */
-        // N.B. We have a race condition here!
-        Thread.sleep(1000);
+        // N.B. We have a race condition here, so wait max 60 seconds
+        synchronized (onSensorDataDownloaded){
+            if(!onSensorDataDownloaded.hasSuccess) {
+                onSensorDataDownloaded.wait(60000);
+            }
+        }
         // Test onReady
         assertEquals(true, onReady.hasSuccess);
         // Test onSensorsDownloaded
@@ -286,9 +285,8 @@ public class TestDataStorageEngine extends AndroidTestCase{
             // change the sync rate
             dseConfig.uploadInterval = syncRate;
             dataStorageEngine.setConfig(dseConfig);
-            // wait until the DSE downloaded the data
-            assertEquals(Boolean.TRUE, dataStorageEngine.onSensorDataDownloaded().get(60, TimeUnit.SECONDS));
-            Thread.sleep(syncRate + maxSyncDuration); // wait until the first sync has taken place
+            // wait until the first sync has taken place
+            Thread.sleep(syncRate + maxSyncDuration);
 
             // by now, the data point should have been synced
             List<DataPoint> dataPoints2 = noise.getDataPoints(new QueryOptions());
@@ -391,6 +389,9 @@ public class TestDataStorageEngine extends AndroidTestCase{
      * @param encryptionKey
      */
     void deleteRealm (byte[] encryptionKey) {
+        Realm.removeDefaultConfiguration();
+        File realmFile = new File(getContext().getFilesDir(), "default.realm");
+
         RealmConfiguration config = new RealmConfiguration.Builder(getContext()).encryptionKey(encryptionKey).build();
         Realm.deleteRealm(config);
 

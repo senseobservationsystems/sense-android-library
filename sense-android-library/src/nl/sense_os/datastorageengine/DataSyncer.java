@@ -32,7 +32,6 @@ public class DataSyncer {
     private SensorDataProxy mProxy = null;
     private DatabaseHandler mDatabaseHandler;
     private SensorProfiles mSensorProfiles;
-    private Context mContext;
 
     private Object mLock = new Object();
 
@@ -46,7 +45,6 @@ public class DataSyncer {
         this.mDatabaseHandler = databaseHandler;
         this.mSensorProfiles = new SensorProfiles(context, databaseHandler.getEncryptionKey());
         this.mProxy = proxy;
-        mContext = context;
     }
 
     /**
