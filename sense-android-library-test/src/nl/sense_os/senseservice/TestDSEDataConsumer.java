@@ -28,6 +28,8 @@ import nl.sense_os.util.json.SchemaException;
  */
 public class TestDSEDataConsumer extends AndroidTestCase {
     private static final String TAG = "TESTDSEDataConsumer";
+    // The default source for the Android sensing library
+    String source = "sense-android";
 
     public ArrayList<String> getSensorNames() {
         ArrayList<String> sensorNames = new ArrayList();
@@ -79,8 +81,6 @@ public class TestDSEDataConsumer extends AndroidTestCase {
         sensorUtils.screenSensor.sendDummyData();
         sensorUtils.timeZoneSensor.sendDummyData();
         sensorUtils.wifiScanSensor.sendDummyData();
-        // The default source for the Android sensing library
-        String source = "sense-android";
         QueryOptions queryOptions = new QueryOptions();
         // check if it's stored
         for(String sensorName : getSensorNames()){
@@ -94,11 +94,24 @@ public class TestDSEDataConsumer extends AndroidTestCase {
     /**
      * Test if the settings of the default sensors are correct
      */
-    public void testDefaultSensorOptions(){
+    public void testDefaultSensorOptions() throws JSONException, SchemaException, DatabaseHandlerException, SensorProfileException, SensorException {
 
+        // Check the default sensor options set in the xml file
         for(String sensorName : getSensorNames()){
             SensorOptions sensorOptions = DefaultSensorOptions.getSensorOptions(getContext(), sensorName);
             assertTrue("Upload not enabled for this sensor", sensorOptions.isUploadEnabled());
+        }
+
+        // check adding new options
+        for(String sensorName : getSensorNames()) {
+            // get the current options
+            SensorOptions sensorOptions = DefaultSensorOptions.getSensorOptions(getContext(), sensorName);
+            // enable local persistence
+            sensorOptions.setPersistLocally(true);
+            DefaultSensorOptions.setDefaultSensorOptions(getContext(), sensorName, sensorOptions);
+            // get the options again and check for the local persistence
+            sensorOptions = DefaultSensorOptions.getSensorOptions(getContext(), sensorName);
+            assertTrue("Local persistence not enabled for this sensor", sensorOptions.isPersistLocally());
         }
     }
 }
