@@ -72,7 +72,7 @@ public class TestDataSyncer extends AndroidTestCase {
         mCsUtils.deleteAccount(mNewUser.get("username"), mNewUser.get("password"), mNewUser.get("id"));
     }
 
-    public void testInitialize() throws IOException, JSONException, SensorProfileException {
+    public void testInitialize() throws IOException, JSONException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, ValidationException {
         // clear mRealm again for this specific unit tests
         // (for all other tests, dataSyncer is already initialized)
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();

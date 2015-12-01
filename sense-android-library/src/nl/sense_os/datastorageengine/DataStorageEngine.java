@@ -66,6 +66,8 @@ public class DataStorageEngine {
     private String PREFERENCES_UPLOAD_INTERVAL = "upload_interval";
     private String PREFERENCES_ENABLE_SYNC = "enable_sync";
 
+    // The default sync rate, should be moved to a constants class
+    public final static long SYNC_RATE = 1800000;  // 30 minutes in milliseconds by default
     private FutureTask<Boolean> mInitTask;
 
     /**
@@ -252,7 +254,7 @@ public class DataStorageEngine {
         editor.clear();
         editor.commit();
         // disable the periodic data syncing
-        mDataSyncer.disablePeriodicSync();
+        disablePeriodicSync();
         // create a new empty DSE
         mDataStorageEngine = new DataStorageEngine(mContext);
     }
@@ -302,19 +304,24 @@ public class DataStorageEngine {
         return new FutureTask<>(new Callable<Boolean>() {
             public Boolean call() throws JSONException, IOException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, ValidationException {
                 try {
+                    // reset the progress tracker status
                     mDataSyncerProgressTracker.reset();
                     mDataSyncer.initialize();
+                    // notify the AsyncCallbacks
+                    mDataSyncerProgressTracker.onInitializeCompleted();
+                    mInitialized = true;
+
                     // when the initialization is done enable the periodic syncing to download the sensor and sensor data
                     if(mDSEConfig.enableSync == null || mDSEConfig.enableSync == true) {
                         if (mDSEConfig.uploadInterval != null) {
-                            mDataSyncer.enablePeriodicSync(mDSEConfig.uploadInterval);
+                            enablePeriodicSync(mDSEConfig.uploadInterval);
                         } else {
-                            mDataSyncer.enablePeriodicSync();
+                            enablePeriodicSync();
                         }
                     }
-                    mInitialized = true;
                     return true;
                 } catch (Exception e) {
+                    // notify the AsyncCallbacks
                     mDataSyncerProgressTracker.onException(e);
                     Log.e(TAG, "Error initializing the DataSyncer", e);
                     throw e;
@@ -338,10 +345,16 @@ public class DataStorageEngine {
     /**
      * Receive a one time notification when the DataStorageEngine has done it's initialization
      * Sends a notification immediately when the initialization is already done
-     * @param asyncCallback The AsynchronousCall back to receive the status of the initialization in
+     * @param asyncCallback The Asynchronous Callback to receive the status of the initialization in
      */
     public void onReady(AsyncCallback asyncCallback) {
-        getResultAsync(onReady(), asyncCallback);
+        // if the DSE is ready then return immediately
+        if(getStatus() == DSEStatus.READY){
+            asyncCallback.onSuccess();
+        }else {
+            // add to the callback queue
+            mDataSyncerProgressTracker.readyCallbackQueue.add(asyncCallback);
+        }
     }
     /**
      * Callback invoked for errors during initialization and the a periodic sync.
@@ -350,7 +363,7 @@ public class DataStorageEngine {
      **/
     public void registerOnError(ErrorCallback errorCallback)
     {
-        if(!mDataSyncerProgressTracker.errorCallbacks.contains(errorCallback)){
+        if(!mDataSyncerProgressTracker.errorCallbacks.contains(errorCallback)) {
             mDataSyncerProgressTracker.errorCallbacks.add(errorCallback);
         }
     }
@@ -361,40 +374,8 @@ public class DataStorageEngine {
      **/
     public void unRegisterOnError(ErrorCallback errorCallback)
     {
-        if(mDataSyncerProgressTracker.errorCallbacks.contains(errorCallback)){
+        if(mDataSyncerProgressTracker.errorCallbacks.contains(errorCallback)) {
             mDataSyncerProgressTracker.errorCallbacks.remove(errorCallback);
-        }
-    }
-
-    /**
-     * Receive an update when the sensors have been downloaded
-     * @return A Future<boolean> which will return the status of the sensor download process of the DataStorageEngine.
-     */
-    public Future<Boolean> onSensorsDownloaded() {
-        // this future will only be executed when:
-        // 1) the associated call back function is called
-        // 2) when an exception is thrown
-        // 3) the call back function was already called successfully
-       Callable<Boolean> functionCall = new Callable<Boolean>() {
-           @Override
-           public Boolean call() throws Exception {
-               if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
-                   return true;
-               } else {
-                   throw mDataSyncerProgressTracker.lastException;
-               }
-           }
-       };
-
-        // if the event has been fired already, submit the function call and return the future
-        if(mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
-           return mCallBackExecutorService.submit(functionCall);
-        }
-        // put it in the queue and wait for it to be executed
-        else {
-            FutureTask<Boolean> future = new FutureTask(functionCall);
-            mDataSyncerProgressTracker.downloadSensorsFutureQueue.add(future);
-            return future;
         }
     }
 
@@ -404,40 +385,16 @@ public class DataStorageEngine {
      */
     public void onSensorsDownloaded(AsyncCallback asyncCallback)
     {
-        getResultAsync(onSensorsDownloaded(), asyncCallback);
-    }
-
-    /**
-     * Receive an update when the sensor data has been downloaded
-     * @return True when the sensor data download was successful, throws and exception otherwise
-     */
-    public Future<Boolean> onSensorDataDownloaded() {
-        // this future will only be executed when:
-        // 1) the associated call back function is called
-        // 2) when an exception is thrown
-        // 3) the call back function was already called successfully
-        Callable<Boolean> functionCall = new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                if (mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
-                    return true;
-                } else {
-                    throw mDataSyncerProgressTracker.lastException;
-                }
+        synchronized (mDataSyncerProgressTracker) {
+            if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+                asyncCallback.onSuccess();
+            } else {
+                mDataSyncerProgressTracker.downloadSensorsCallbackQueue.add(asyncCallback);
             }
-        };
-
-        // if the event has been fired already, submit the function call and return the future
-        if(mDataSyncerProgressTracker.isDownloadSensorDataCompleted) {
-            return mCallBackExecutorService.submit(functionCall);
-        }
-        // put it in the queue and wait for it to be executed
-        else {
-            FutureTask<Boolean> future = new FutureTask(functionCall);
-            mDataSyncerProgressTracker.downloadSensorDataFutureQueue.add(future);
-            return future;
         }
     }
+
+
 
     /**
      * Receive a one time notification when the sensor data has been downloaded
@@ -445,7 +402,14 @@ public class DataStorageEngine {
      */
     public void onSensorDataDownloaded(AsyncCallback asyncCallback)
     {
-        getResultAsync(onSensorDataDownloaded(), asyncCallback);
+        synchronized (mDataSyncerProgressTracker) {
+            if (mDataSyncerProgressTracker.isDownloadSensorsCompleted) {
+                asyncCallback.onSuccess();
+            } else {
+                // send the last exception
+                mDataSyncerProgressTracker.downloadSensorsCallbackQueue.add(asyncCallback);
+            }
+        }
     }
 
     /**
@@ -467,15 +431,9 @@ public class DataStorageEngine {
                     if (getStatus() != DSEStatus.READY) {
                         throw new IllegalStateException("The DataStorageEngine is not ready yet");
                     }
-                    mDataSyncerProgressTracker.reset();
                     mDataSyncer.sync(mDataSyncerProgressTracker);
                     return true;
                 } catch (Exception e) {
-                    if (e instanceof HttpResponseException) {
-                        if (((HttpResponseException) e).getStatusCode() == 403) {
-                            // TODO handle HTTP response 403 by sending a relogin request
-                        }
-                    }
                     mDataSyncerProgressTracker.onException(e);
                     Log.e(TAG, "Error syncing data", e);
                     throw e;
@@ -498,8 +456,7 @@ public class DataStorageEngine {
      * @param future The future to get the result from
      * @param callback The AsyncCallback to receive the result in
      */
-    protected void getResultAsync(final Future<Boolean> future, final AsyncCallback callback)
-    {
+    protected void getResultAsync(final Future<Boolean> future, final AsyncCallback callback) {
         mCallBackExecutorService.submit(new Callable() {
             public Object call() throws Exception {
                 try {
@@ -584,13 +541,26 @@ public class DataStorageEngine {
     private class DataSyncerProgress implements ProgressCallback {
         public boolean isDownloadSensorsCompleted;
         public boolean isDownloadSensorDataCompleted;
-        public Queue<FutureTask> downloadSensorsFutureQueue = new ConcurrentLinkedQueue<>();
-        public Queue<FutureTask> downloadSensorDataFutureQueue = new ConcurrentLinkedQueue<>();
+        public boolean isReady;
+        // TODO refactor future queue to callback queue
+        public Queue<AsyncCallback> downloadSensorsCallbackQueue = new ConcurrentLinkedQueue<>();
+        public Queue<AsyncCallback> downloadSensorDataCallbackQueue = new ConcurrentLinkedQueue<>();
+        public Queue<AsyncCallback> readyCallbackQueue = new ConcurrentLinkedQueue<>();
         public ArrayList<ErrorCallback> errorCallbacks = new ArrayList<>();
         public Exception lastException = null;
 
+        /**
+         * Reset the progress status of the DataSyncer
+         */
+        public synchronized void reset(){
+            isDownloadSensorDataCompleted = false;
+            isDownloadSensorsCompleted = false;
+            isReady = false;
+            lastException = null;
+        }
+
         /** Function to call when an exception is thrown when executing a DataSyncer function with ProgressCallback*/
-        public void onException(Exception e){
+        public synchronized void onException(Exception e){
             lastException = e;
 
             // process all the futures
@@ -600,34 +570,38 @@ public class DataStorageEngine {
                     errorCallback.onError(lastException);
                 }
             }
-            for(FutureTask future : downloadSensorsFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for(AsyncCallback callback : downloadSensorsCallbackQueue){
+                callback.onFailure(e);
             }
-            for(FutureTask future : downloadSensorDataFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for(AsyncCallback callback : downloadSensorDataCallbackQueue){
+                callback.onFailure(e);
             }
-        }
-
-        public void reset(){
-            isDownloadSensorsCompleted = false;
-            isDownloadSensorDataCompleted = false;
-            lastException = null;
         }
 
         @Override
-        public void onDownloadSensorsCompleted() {
+        public synchronized void onDownloadSensorsCompleted() {
             isDownloadSensorsCompleted = true;
-            for(FutureTask future : downloadSensorsFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for (AsyncCallback callback : downloadSensorsCallbackQueue) {
+                callback.onSuccess();
             }
+            downloadSensorsCallbackQueue.clear();
+        }
+
+        public synchronized void onInitializeCompleted(){
+            isReady = true;
+            for (AsyncCallback callback : readyCallbackQueue) {
+                callback.onSuccess();
+            }
+            readyCallbackQueue.clear();
         }
 
         @Override
-        public void onDownloadSensorDataCompleted() {
+        public synchronized void onDownloadSensorDataCompleted() {
             isDownloadSensorDataCompleted = true;
-            for(FutureTask future : downloadSensorDataFutureQueue){
-                mCallBackExecutorService.execute(future);
+            for (AsyncCallback callback : downloadSensorDataCallbackQueue) {
+                callback.onSuccess();
             }
+            downloadSensorDataCallbackQueue.clear();
         }
 
         @Override
@@ -640,4 +614,25 @@ public class DataStorageEngine {
         public void onCleanupCompleted() {}
     }
 
+    /**
+     * Enables the periodic data synchronization with the back-end
+     * @param syncRate The amount of milliseconds between each synchronization
+     */
+    public void enablePeriodicSync(long syncRate){
+        PeriodicDataSyncer.setAlarm(mContext, syncRate);
+    }
+
+    /**
+     * Enables the periodic data synchronization with the back-end using the default sync rate #SYNC_RATE
+     */
+    public void enablePeriodicSync(){
+        enablePeriodicSync(SYNC_RATE);
+    }
+
+    /**
+     * Disables the periodic data synchronization with the back-end
+     */
+    public void disablePeriodicSync(){
+        PeriodicDataSyncer.cancelAlarm(mContext);
+    }
 }

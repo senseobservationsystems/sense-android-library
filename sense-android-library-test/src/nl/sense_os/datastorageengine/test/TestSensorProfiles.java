@@ -16,9 +16,12 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.datastorageengine.SensorProfiles;
+import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
 
 public class TestSensorProfiles  extends AndroidTestCase {
     private static final String TAG = "TestSensorDataProxy";
@@ -35,7 +38,7 @@ public class TestSensorProfiles  extends AndroidTestCase {
     private SensorProfiles mSensorProfiles;
     CSUtils mCsUtils;
 
-    public void setUp () throws IOException, JSONException, DatabaseHandlerException, SensorProfileException {
+    public void setUp () throws IOException, JSONException, DatabaseHandlerException, SensorProfileException, SensorException, ValidationException, SchemaException {
         mCsUtils = new CSUtils(false); // staging server
 
         mUser = mCsUtils.createCSAccount();

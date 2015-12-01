@@ -23,7 +23,7 @@ public class PeriodicDataSyncer extends WakefulBroadcastReceiver {
      * Set the periodic alarm to start the PeriodicSyncService with a given interval
      * An alarm will also be fired immediately
      * @param context An Android context
-     * @param interval The alarm interval
+     * @param interval The alarm interval in milliseconds
      */
     public static synchronized void setAlarm(Context context, Long interval) {
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);

@@ -51,11 +51,15 @@ public class DSEDataConsumer implements DataConsumer{
      */
     AsyncCallback subscribeToSensors = new AsyncCallback(){
         @Override
-        public void onSuccess() throws SensorProfileException, JSONException {
+        public void onSuccess(){
             SubscriptionManager subscriptionManager = SubscriptionManager.getInstance();
 
-            for(String sensorName: mDataStorageEngine.getSensorNames()) {
-                subscriptionManager.subscribeConsumer(sensorName, DSEDataConsumer.this);
+            try {
+                for(String sensorName: mDataStorageEngine.getSensorNames()) {
+                    subscriptionManager.subscribeConsumer(sensorName, DSEDataConsumer.this);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting sensor names", e);
             }
         }
 

@@ -57,7 +57,7 @@ public class DefaultSensorOptions {
     private static SensorOptions getDefaultOption(Context context, String sensorName){
         SensorOptions sensorOptions = new SensorOptions();
 
-        if(defaultOptions != null) {
+        if(defaultOptions == null) {
             parseSensorOptionsFile(context);
         }
 
