@@ -23,14 +23,19 @@ import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.util.json.SchemaException;
 
 /**
+ * Tests the storage of sensor data send by the sensing library
+ *
  * Created by ted@sense-os.nl on 11/30/15.
  * Copyright (c) 2015 Sense Observation Systems BV. All rights reserved.
  */
 public class TestDSEDataConsumer extends AndroidTestCase {
-    private static final String TAG = "TESTDSEDataConsumer";
     // The default source for the Android sensing library
     String source = "sense-android";
 
+    /**
+     * The sensor names for which dummy sensors are created
+     * @return The list with the names of the available dummy sensors
+     */
     public ArrayList<String> getSensorNames() {
         ArrayList<String> sensorNames = new ArrayList();
         sensorNames.add(SensorData.SensorNames.POSITION);
