@@ -1,8 +1,6 @@
 package nl.sense_os.senseservice;
 
 import android.test.AndroidTestCase;
-import android.util.Log;
-
 import org.json.JSONException;
 
 import java.util.ArrayList;
