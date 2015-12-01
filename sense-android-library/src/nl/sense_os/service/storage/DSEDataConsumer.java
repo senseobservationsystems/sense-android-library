@@ -85,7 +85,7 @@ public class DSEDataConsumer implements DataConsumer{
 
     @Override
     public boolean isSampleComplete() {
-        return true;
+        return false;
     }
 
     @Override

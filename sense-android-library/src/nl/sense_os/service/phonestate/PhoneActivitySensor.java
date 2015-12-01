@@ -76,7 +76,7 @@ public class PhoneActivitySensor extends BaseDataProducer{
     }
 
     public void startPhoneActivitySensing(long sampleDelay) {
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);        
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(screenActivityReceiver, filter);
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);  

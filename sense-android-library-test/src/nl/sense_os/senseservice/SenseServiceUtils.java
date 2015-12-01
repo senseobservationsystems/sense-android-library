@@ -19,6 +19,7 @@ import nl.sense_os.datastorageengine.test.CSUtils;
 import nl.sense_os.platform.SenseApplication;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -34,40 +35,43 @@ import nl.sense_os.util.json.EncryptionHelper;
  */
 public class SenseServiceUtils {
 
-    static final String uniqueID = ""+ System.currentTimeMillis();
-    public static final String EMAIL = "spam+ce_"+uniqueID+"@sense-os.nl";
-    public static final String PASSWORD = "87f95196987d8c3bf339e2a52be957f4";
     private static int loginResult = -1;
     private static SensePlatform mSensePlatform;
+    private static boolean mServiceConnected;
 
     /**
      * Returns a SensePlatform object with a bound SenseService
      * @return the SensePlatform
      */
-    public static SensePlatform getSensePlatform(Context context) throws InterruptedException {
+    public static SensePlatform getSensePlatform(final Context context) throws InterruptedException {
         if(mSensePlatform != null){
             return mSensePlatform;
         }
+
+        // Connect to the SenseService using the SensePlatform
         final Object monitor = new Object();
-        // wait for the SenseService to be connected
-        SensePlatform sensePlatform = new SensePlatform(context, new ServiceConnection() {
+        mServiceConnected = false;
+        mSensePlatform = new SensePlatform(context, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                synchronized (monitor){
+                synchronized (monitor) {
+                    mServiceConnected = true;
                     monitor.notifyAll();
                 }
             }
-
             @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-
-            }
+            public void onServiceDisconnected(ComponentName componentName) {}
         });
+
+        // wait for the SenseService to be connected
         synchronized (monitor){
-            monitor.wait();
+            if(!mServiceConnected) {
+                monitor.wait(60000);
+            }
         }
-        mSensePlatform = sensePlatform;
-        return sensePlatform;
+        // check if the binder is alive, if not then something is wrong and an exception is thrown
+        mSensePlatform.getService().isBinderAlive();
+        return mSensePlatform;
     }
 
     /**
@@ -80,9 +84,18 @@ public class SenseServiceUtils {
      * @throws RuntimeException
      */
     public static void createAccountAndLoginService(Context context) throws IOException, InterruptedException, RemoteException, RuntimeException {
+        // get the sensePlatform object
+        SensePlatform sensePlatform = SenseServiceUtils.getSensePlatform(context);
+        // set DEV mode
+        sensePlatform.getService().setPrefBool(SensePrefs.Main.Advanced.DEV_MODE, true);
+        // set the application key
+        sensePlatform.getService().setPrefString(SensePrefs.Main.APPLICATION_KEY, CSUtils.APP_KEY);
+
+        // Create a random CS account
         CSUtils csUtils = new CSUtils(false);
         Map<String, String> newUser = csUtils.createCSAccount();
-        SensePlatform sensePlatform = SenseServiceUtils.getSensePlatform(context);
+
+        // Login with the new username and password in the SenseService
         final Object monitor = new Object();
         loginResult = -1;
         sensePlatform.login(newUser.get("username"), newUser.get("password"), new ISenseServiceCallback() {
@@ -118,157 +131,4 @@ public class SenseServiceUtils {
         getSensePlatform(context).logout();
     }
 
-    public static BaseDataProducer positionSensor =  new BaseDataProducer() {
-        public void sendDummyData(){
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.POSITION, this);
-            JSONObject json = new JSONObject();
-            try {
-                json.put("latitude", 53.209684d);
-                json.put("longitude", 6.5452243d);
-                json.put("accuracy", 100d);
-                json.put("altitude", 1);
-                json.put("speed", 5d);
-                json.put("bearing", 5d);
-                json.put("provider", "fused");
-
-            } catch (JSONException e) {
-                Log.e(TAG, "JSONException in onLocationChanged", e);
-                return;
-            }
-
-            // use SNTP time
-            long timestamp = SNTP.getInstance().getTime();
-            notifySubscribers();
-            SensorDataPoint dataPoint = new SensorDataPoint(json);
-            dataPoint.sensorName = SensorData.SensorNames.POSITION;
-            dataPoint.sensorDescription = SensorData.SensorNames.POSITION;
-            dataPoint.timeStamp = timestamp;
-            sendToSubscribers(dataPoint);
-        }
-    };
-
-    public static BaseDataProducer noiseSensor =  new BaseDataProducer() {
-        public void sendDummyData(){
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.NOISE, this);
-            notifySubscribers();
-            SensorDataPoint dataPoint = new SensorDataPoint(10);
-            dataPoint.sensorName = SensorData.SensorNames.NOISE;
-            dataPoint.sensorDescription = SensorData.SensorNames.NOISE;
-            dataPoint.timeStamp = SNTP.getInstance().getNtpTime();
-            sendToSubscribers(dataPoint);
-        }
-    };
-    public static BaseDataProducer timeZoneSensor =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.TIME_ZONE, this);
-            try {
-                this.notifySubscribers();
-                TimeZone timeZone = TimeZone.getDefault();
-                JSONObject timeZoneJson = new JSONObject();
-                timeZoneJson.put("offset", timeZone.getOffset(SNTP.getInstance().getTime())/1000l);
-                timeZoneJson.put("id", timeZone.getID());
-                SensorDataPoint dataPoint = new SensorDataPoint(timeZoneJson);
-                dataPoint.sensorName = SensorData.SensorNames.TIME_ZONE;
-                dataPoint.sensorDescription = "Current time zone";
-                dataPoint.timeStamp = SNTP.getInstance().getTime();
-                //Log.d(TAG,"time zone subscribers: " + this.);
-                this.sendToSubscribers(dataPoint);
-            } catch (JSONException e) {
-                Log.e(TAG, "Error creating time zone json object");
-            }
-        }
-    };
-
-    public static BaseDataProducer accelerometerSensor =  new BaseDataProducer() {
-        public void sendDummyData(){
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.ACCELEROMETER, this);
-            try {
-                this.notifySubscribers();
-                JSONObject json = new JSONObject();
-                json.put("x-axis", 10);
-                json.put("y-axis", 10);
-                json.put("z-axis", 10);
-                SensorDataPoint dataPoint = new SensorDataPoint(json);
-                dataPoint.sensorName = SensorData.SensorNames.ACCELEROMETER;
-                dataPoint.sensorDescription = SensorData.SensorNames.ACCELEROMETER;
-                dataPoint.timeStamp = SNTP.getInstance().getTime();
-                this.sendToSubscribers(dataPoint);
-            }catch(Exception e){
-                Log.e(TAG, "Error creating and sending accelerometerData");
-            }
-
-        }
-    };
-
-    public static BaseDataProducer batterySensor =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.BATTERY, this);
-            notifySubscribers();
-            try {
-                JSONObject json = new JSONObject();
-                json.put("level", 10);
-                json.put("status", "charging");
-                SensorDataPoint dataPoint = new SensorDataPoint(json);
-                dataPoint.sensorName = SensorData.SensorNames.BATTERY;
-                dataPoint.sensorDescription = SensorData.SensorNames.BATTERY;
-                dataPoint.timeStamp = SNTP.getInstance().getTime();
-                sendToSubscribers(dataPoint);
-            }catch(Exception e){
-                Log.e(TAG, "Error sending battery data");
-            }
-        }
-    };
-
-    public static BaseDataProducer callSensor =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.BATTERY, this);
-            // TODO implement
-        }
-    };
-
-    public static BaseDataProducer lightSensor =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.BATTERY, this);
-            // TODO implement
-        }
-    };
-
-    public static BaseDataProducer proximitySensor =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.BATTERY, this);
-            // TODO implement
-        }
-    };
-
-    public static BaseDataProducer screenSensor =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.BATTERY, this);
-            // TODO implement
-        }
-    };
-
-    public static BaseDataProducer wifiScanSensor =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.BATTERY, this);
-            // TODO implement
-        }
-    };
-
-    public static BaseDataProducer appInfo =  new BaseDataProducer() {
-        public void sendDummyData() {
-            // register this produces
-            SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.BATTERY, this);
-            // TODO implement
-        }
-    };
 }

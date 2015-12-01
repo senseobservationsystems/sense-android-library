@@ -12,7 +12,8 @@
             {
                 "sensor_name": "time_zone",
                 "persist_locally": true,
-                "download_enabled": true
+                "download_enabled": true,
+                "upload_enabled": true
             },
             {
                 "sensor_name": "accelerometer",
