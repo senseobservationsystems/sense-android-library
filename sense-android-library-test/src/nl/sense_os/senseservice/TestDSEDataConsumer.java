@@ -28,8 +28,6 @@ import nl.sense_os.util.json.SchemaException;
  */
 public class TestDSEDataConsumer extends AndroidTestCase {
     // The default source for the Android sensing library
-    String source = "sense-android";
-
     /**
      * The sensor names for which dummy sensors are created
      * @return The list with the names of the available dummy sensors
@@ -70,7 +68,6 @@ public class TestDSEDataConsumer extends AndroidTestCase {
         DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
         // Wait until the DSE is ready
         dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
-
         // send the sensor data
         SensorUtils sensorUtils = SensorUtils.getInstance();
         sensorUtils.accelerometerSensor.sendDummyData();
@@ -87,7 +84,7 @@ public class TestDSEDataConsumer extends AndroidTestCase {
         QueryOptions queryOptions = new QueryOptions();
         // check if it's stored
         for(String sensorName : getSensorNames()){
-            Sensor sensor = dataStorageEngine.getSensor(source, sensorName);
+            Sensor sensor = dataStorageEngine.getSensor(SensorData.SourceNames.SENSE_ANDROID, sensorName);
             SensorOptions sensorOptions = sensor.getOptions();
             assertTrue("Upload not enabled for this sensor", sensorOptions.isUploadEnabled());
             assertTrue("No data stored", sensor.getDataPoints(queryOptions).size()>0);
