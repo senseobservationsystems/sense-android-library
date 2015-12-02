@@ -69,7 +69,7 @@ Sensors in Sense Library are grouped based on their usecase as follows:
 
 Every datapoint from a sensor should be encapsulated as nl.sense_os.service.shared.SensorDataPoint object. It contains several fields corresponding to data point fields at CommonSense: 
 * sensor name
-* sensor description (corresponds to sensor_type field in CommonSense)
+* source name
 * timestamp
 * data type
 * value
@@ -86,23 +86,19 @@ Sensor datapoints can be one of the following types:
 * File
 * SensorEvent
 
-Here is an example of how to create a new datapoint :
+Here is an example of how to send a new Noise datapoint for a `SensorData.SensorNames.NOISE` DataProvider:
 
-~~~
-SensorDataPoint dataPoint = new SensorDataPoint(value);
-dataPoint.sensorName = sensorName;
-dataPoint.sensorDescription = sensor.getName();
+~~~java
+// Notify the subscribers that a new sample is started
+notifySubscribers();
+// Create a SensorDataPoint with a double value
+SensorDataPoint dataPoint = new SensorDataPoint(40.3d);
+// Set the sensor name using the SensorNames constants
+dataPoint.sensorName = SensorData.SensorNames.NOISE;
+// Set the source name using the SensorNames constants
+dataPoint.source = SensorData.SourceNames.SENSE_ANDROID;
+// Set the epoch milliseconds time stamp using the SNTP time module
 dataPoint.timeStamp = SNTP.getInstance().getTime();
-~~~
-
-This sensor datapoint also needs to be sent to [MsgHandler](documentation/msg_handler.md) so it can be stored in LocalStorage and later in CommonSense. Here is an example of how to send a sensor datapoint to be stored by MsgHandler.
-
-~~~
-Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
-sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
-sensorData.putExtra(DataPoint.VALUE, BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
-sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);	
-sensorData.setPackage(context.getPackageName());
-context.startService(sensorData);
+// Send it to all DataConsumers that subscribed to SensorData.SensorNames.NOISE
+sendToSubscribers(dataPoint);
 ~~~

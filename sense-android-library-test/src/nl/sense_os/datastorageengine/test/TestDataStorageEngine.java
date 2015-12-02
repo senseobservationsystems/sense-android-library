@@ -130,7 +130,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     public void testCRUSensor() throws InterruptedException, ExecutionException, TimeoutException, DatabaseHandlerException, SensorException, JSONException, SensorProfileException, SchemaException, IOException, ValidationException {
         /** CREATE */
         // check the create sensor
-        Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+        Sensor sensor = dataStorageEngine.getSensor(source, sensor_name);
 
         /** READ */
         // check if the source is returned correctly
@@ -167,7 +167,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException, IOException, InterruptedException, ExecutionException, TimeoutException {
         /** CREATE */
         // check the create sensor
-        Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+        Sensor sensor = dataStorageEngine.getSensor(source, sensor_name);
         // create the data point
         Integer value = 10;
         long date = System.currentTimeMillis();
@@ -271,7 +271,8 @@ public class TestDataStorageEngine extends AndroidTestCase{
             SensorOptions sensorOptions = new SensorOptions();
             sensorOptions.setUploadEnabled(true);
             sensorOptions.setDownloadEnabled(true);
-            Sensor noise = dataStorageEngine.createSensor(source, sensor_name, sensorOptions);
+            Sensor noise = dataStorageEngine.getSensor(source, sensor_name);
+            noise.setOptions(sensorOptions);
 
             long value1 = 1;
             long time1 = new Date().getTime();
@@ -327,7 +328,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
 
     public void testEncryption() throws ValidationException, JSONException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, InterruptedException, ExecutionException, TimeoutException {
         // create the sensor
-        Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+        Sensor sensor = dataStorageEngine.getSensor(source, sensor_name);
         // create the data point
         Integer value = 10;
         long date = System.currentTimeMillis();

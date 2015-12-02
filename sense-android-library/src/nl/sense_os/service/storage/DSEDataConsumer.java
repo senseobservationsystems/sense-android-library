@@ -120,14 +120,8 @@ public class DSEDataConsumer implements DataConsumer{
             sensor = sensorCache.get(sensorName);
         }else{
             synchronized (mDataStorageEngine) {
-
-                try {
-                    // check if the sensor is there
-                    sensor =  mDataStorageEngine.getSensor(source, sensorName);
-                } catch (Exception e) {
-                    // create the sensor
-                    sensor = mDataStorageEngine.createSensor(source, sensorName, DefaultSensorOptions.getSensorOptions(mContext, sensorName));
-                }
+                // check if the sensor is there
+                sensor =  mDataStorageEngine.getSensor(source, sensorName);
             }
             // store the sensor in memory
             sensorCache.put(getSensorCacheKey(sensorName), sensor);

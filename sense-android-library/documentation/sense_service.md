@@ -112,3 +112,14 @@ The broadcast receiver then can check the service status through the nl.sense_os
 `SenseService` has an instance of nl.sense_os.service.AliveChecker to make sure that it keeps running when it should be. It will start checking periodically when `SenseService` starts sensing.
 
 `AliveChecker` will check every 15 minutes if the phone is awake, and it will make sure to wake up every hour. It will make sure the `SenseService` keeps running by trying to start the service regardless of current state.
+
+# Transmit Sensor Data to CommonSense {#transmit_data}
+
+SenseService uses the nl.sense_os.service.scheduler.DataTransmitter instance to schedule sending of data in the DataStorageEngine to the back-end periodically. The DataTransmitter will register itself to the scheduler to run at a particular interval based on the nl.sense_os.service.constants.SensePrefs.Main.SyncRate setting in preferences. This DataTransmitter then will send a broadcast intent to the WakefulBroadcastReceiver `PeriodicDataSyncer` which will start the IntentService `PeriodicSyncService` to actually call the `DataStorageEngine.syncData` function to send the sensor data to the back-end.
+
+These options are available for SyncRate settings:
+* nl.sense_os.service.SensePrefs.Main.SyncRate.ECO_MODE (30 minute)
+* nl.sense_os.service.SensePrefs.Main.SyncRate.RARELY (15 minute)
+* nl.sense_os.service.SensePrefs.Main.SyncRate.NORMAL (5 minute)
+* nl.sense_os.service.SensePrefs.Main.SyncRate.OFTEN (1 minute)
+* nl.sense_os.service.SensePrefs.Main.SyncRate.REAL_TIME (depend on sample rate)

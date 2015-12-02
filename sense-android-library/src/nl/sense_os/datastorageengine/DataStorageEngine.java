@@ -362,18 +362,18 @@ public class DataStorageEngine {
                 );
 
                 // wait for the notification
-                synchronized (monitor){
+                synchronized (monitor) {
                     // if the DSE is ready return true
-                    if(getStatus() == DSEStatus.READY) {
+                    if (getStatus() == DSEStatus.READY) {
                         return true;
                     }
                     // else wait
                     monitor.wait();
 
                     // got the notification
-                    if(DataStorageEngine.this.getStatus() == DSEStatus.READY){
+                    if (DataStorageEngine.this.getStatus() == DSEStatus.READY) {
                         return true;
-                    }else {
+                    } else {
                         return false;
                     }
                 }
@@ -516,7 +516,7 @@ public class DataStorageEngine {
      * @throws DatabaseHandlerException when the sensor already exists
      * @throws SensorException, when the sensor name is not valid
      **/
-    public Sensor createSensor(String source, String name, SensorOptions options) throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException {
+    private Sensor createSensor(String source, String name, SensorOptions options) throws SensorProfileException, SchemaException, SensorException, DatabaseHandlerException, JSONException {
         if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         }
@@ -533,7 +533,14 @@ public class DataStorageEngine {
         if(getStatus() != DSEStatus.READY) {
             throw new IllegalStateException("The DataStorageEngine is not ready yet");
         }
-        return mDatabaseHandler.getSensor(source, sensorName);
+        Sensor sensor;
+        try {
+            sensor = mDatabaseHandler.getSensor(source, sensorName);
+        }catch(DatabaseHandlerException ex){
+            // the sensor is not yet created, create the sensor
+            sensor = createSensor(source, sensorName, DefaultSensorOptions.getSensorOptions(mContext, sensorName));
+        }
+        return sensor;
     }
 
     /**

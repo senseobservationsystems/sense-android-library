@@ -16,16 +16,3 @@ And an app specific salt key kan be provided via:<br>
 ~~~
 senseService.setPrefString(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT, "1tD#V4#%6BT!@#$%XCBCV");
 ~~~
-
-# Sensor data {#sensor_data}
-The SensePlatform provides simplified implementations for storing and accessing sensor data.
-
-## Sensor data storage {#sensor_data_storage}
-The function `addData` implements the intent broadcast method to send a sensor data point as desribed in the [Data Storage](documentation/storage.md). It also implements a call to the SensorRegistrator class to automatically create this sensor if it has not been created yet. Because sending a sensor data point via an intent broadcast when this sensor does not exist in CommonSense will result in the data not being uploaded. _Mind that this function could access the network when real-time sync is enabled and should therefore not be called from the main/ui thread._
-
-## Sensor data access {#sensor_data_retrieval}
-Sensor data from the local and remote storage can be retrieved via the SensePlatform using the `getLocalData` and `getData` functions respectively. The SensePlatform implements multiple versions of these functions with different arguments to specify the time boundaries, retrieval size and if it should be data from a sensor which is connected to this device.
-
-## Flusing data {#flusing_Data}
-In order to force an upload of the data in the local storage to CommonSense, for instance when a user decides to logout, the `flushData()` or `flushDataAndBlock()` functions can be used. In which case the later only returns when it's finished with uploading all the data.
-

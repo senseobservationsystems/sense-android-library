@@ -33,30 +33,16 @@ This represents an application that uses SensePlatform. All applications that us
 
 SenseApplication is implemented in nl.sense_os.platform.SenseApplication.
 
-## 4. MsgHandler
+## 4. Data Storage Engine
 
-This is a service that is responsible for handling the data that has been collected by different sensors. There are two tasks that it fulfills:
-* Receive sensor data from sensors and append it to buffer
-* Periodically transmit all sensor data in buffer to CommonSense
+The Data Storage Engine is a stand-alone module for local and remote sensor data storage. It allows the storage of sensor data with a predefined structure from predefined sensors and sources, which are described in the [sensor profiles](https://github.com/senseobservationsystems/aim/blob/master/docs/sensor_profiles.md).
 
-MsgHandler is implemented in nl.sense_os.service.MsgHandler.
+More details on the Data Storage Engine [here](documentation/storage.md)
 
-More details on MsgHandler [here](documentation/msg_handler.md)
-
-## 5. Local / Remote Storage
-
-Sensor data can be stored in and obtained from a local database as well as CommonSense. The data will be stored in the local database first, and be transmitted to CommonSense periodically. To store the data, sensors need to pass a message to MsgHandler by sending an Intent with action_sense_new_data containing the details of the datapoint. This new data will be stored and buffered in the local database before being transmitted to CommonSense at a scheduled time.
-
-LocalStorage is implemented in nl.sense_os.service.storage.LocalStorage.
-
-RemoteStorage is implemented in nl.sense_os.service.storage.RemoteStorage.
-
-More details on Data Storage [here](documentation/storage.md)
-
-## 6. Subscription Manager
+## 5. Subscription Manager
 
 This class will manage and keep track of available DataProducers and DataConsumers. 
-Basically, a DataProducer could be anything that produces data, but currently it’s only used for sensors. A DataConsumer could be anything that wishes to receive updates from a DataProducer everytime there is a new data.
+Basically, a DataProducer could be anything that produces data, but currently it’s only used for sensors. A DataConsumer could be anything that wishes to receive updates from a DataProducer every time there is a new data.
 
 A DataConsumer will be added to DataProducer’s subscriber list when the consumer subscribes to a named producer, and also when a new producer registers with that same name.
 
