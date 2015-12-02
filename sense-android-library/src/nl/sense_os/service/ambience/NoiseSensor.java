@@ -5,7 +5,6 @@ package nl.sense_os.service.ambience;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -24,18 +23,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;

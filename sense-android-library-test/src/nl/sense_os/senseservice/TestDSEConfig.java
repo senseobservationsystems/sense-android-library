@@ -2,14 +2,25 @@ package nl.sense_os.senseservice;
 
 import android.test.AndroidTestCase;
 
+import org.json.JSONException;
+
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import nl.sense_os.datastorageengine.DSEConfig;
+import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataStorageEngine;
+import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.QueryOptions;
+import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorException;
+import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensorData;
+import nl.sense_os.util.json.SchemaException;
 
 /**
  * Created by ted@sense-os.nl on 12/1/15.
@@ -51,7 +62,23 @@ public class TestDSEConfig extends AndroidTestCase{
         assertFalse(dseConfig.localPersistancePeriod == updatedConfig.localPersistancePeriod);
     }
 
-    public void testDataSync(){
+    public void testDataSync() throws InterruptedException, JSONException, SchemaException, DatabaseHandlerException, SensorProfileException, SensorException {
+        // send dummy accelerometer data
+        SensorUtils sensorUtils = SensorUtils.getInstance();
+        sensorUtils.accelerometerSensor.sendDummyData();
+        // set the Sense pref
+        SensePlatform sensePlatform = SenseServiceUtils.getSensePlatform(getContext());
+        // set upload of data every minute
+        sensePlatform.getService().setPrefString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.OFTEN);
+        // wait 1 minute
+        Thread.sleep(60000);
+        // check if the data has been uploaded
+        DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
+        Sensor sensor = dataStorageEngine.getSensor(SensorData.SourceNames.SENSE_ANDROID, SensorData.SensorNames.ACCELEROMETER);
+        QueryOptions queryOptions = new QueryOptions();
+        List<DataPoint> data = sensor.getDataPoints(queryOptions);
+        assertEquals("No data available", data.size() > 0);
+        assertEquals("Data not uploaded", data.get(0).existsInRemote());
 
     }
 

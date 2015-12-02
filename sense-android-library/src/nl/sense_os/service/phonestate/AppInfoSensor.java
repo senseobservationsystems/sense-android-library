@@ -10,9 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
+
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;

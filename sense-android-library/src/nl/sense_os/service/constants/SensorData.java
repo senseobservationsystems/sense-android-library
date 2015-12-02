@@ -30,84 +30,16 @@ public class SensorData {
     }
 
     /**
-     * Column names for Cursors that represent a sensor data point.
+     * Standard source names
      */
-    public static class DataPoint implements BaseColumns {
-
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-                + "/vnd.sense_os.data_point";
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-                + "/vnd.sense_os.data_point";
-        public static final String CONTENT_URI_PATH = "/recent_values";
-        @Deprecated
-        public static final String CONTENT_PERSISTED_URI_PATH = "/persisted_values";
-        public static final String CONTENT_REMOTE_URI_PATH = "/remote_values";
-
-        /**
-         * The name of the sensor that generated the data point. <br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String SENSOR_NAME = "sensor_name";
-        /**
-         * Description of the sensor that generated the data point. Can either be the hardware name,
-         * or any other useful description. <br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String SENSOR_DESCRIPTION = "sensor_description";
-        /**
-         * The data type of the data point. <br>
-         * <br>
-         * TYPE: String
-         * 
-         * @see SenseDataTypes
-         */
-        public static final String DATA_TYPE = "data_type";
-        /**
-         * The human readable display name of the sensor that generated the data point. <br>
-         * <br>
-         * TYPE: String
-         * 
-         * @see SenseDataTypes
-         */
-        public static final String DISPLAY_NAME = "display_name";
-        /**
-         * Time stamp for the data point, in milliseconds. <br>
-         * <br>
-         * TYPE: long
-         */
-        public static final String TIMESTAMP = "timestamp";
-        /**
-         * Data point value. <br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String VALUE = "value";
-        /**
-         * Transmit state of the data point, signalling whether the point has been sent to
-         * CommonSense already.<br>
-         * <br>
-         * TYPE: integer status code: 0 (not sent), or 1 (sent)
-         */
-        public static final String TRANSMIT_STATE = "transmit_state";
-        /**
-         * Device UUID of the sensor. Use this for sensors that are originated from
-         * "external sensors", or leave <code>null</code> to use the phone as default device.<br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String DEVICE_UUID = "device_uuid";
-
-        private DataPoint() {
-            // class should not be instantiated
-        }
+    public static class SourceNames{
+        public final static String SENSE_ANDROID = "sense-android";
+        public final static String AIM_ANDROID = "aim-android";
     }
 
     /**
      * Standard names for sensors.
-     * 
-     * @see DataPoint#SENSOR_NAME
+     *
      */
     public static class SensorNames {
 
@@ -336,8 +268,7 @@ public class SensorData {
 
     /**
      * Standard descriptions for sensors.
-     * 
-     * @see DataPoint#SENSOR_DESCRIPTION
+     *
      */
     public static class SensorDescriptions {
         /**

@@ -6,6 +6,8 @@ import org.json.JSONObject;
 
 import android.hardware.SensorEvent;
 
+import nl.sense_os.service.constants.SensorData;
+
 /**
  * Generic holder for sensor data.
  * 
@@ -15,8 +17,9 @@ public class SensorDataPoint {
 
     /**
      * The source of the data point
+     * By default SensorData.SourceNames.SENSE_ANDROID
      */
-    public String source = "sense-android";
+    public String source = SensorData.SourceNames.SENSE_ANDROID;
 
     public enum DataType {
         INT, FLOAT, BOOL, DOUBLE, STRING, ARRAYLIST, JSON, JSONSTRING, FILE, SENSOREVENT
@@ -90,7 +93,7 @@ public class SensorDataPoint {
     }
 
     /**
-     * @see #setValue(int)
+     * Creates a SensorDataPoint with a JSONObject value
      */
     public SensorDataPoint(JSONObject value) {
         dataType = DataType.JSON;
@@ -98,7 +101,7 @@ public class SensorDataPoint {
     }
 
     /**
-     * @see #setValue(int)
+     * Creates a SensorDataPoint with a SensorEvent value
      */
     public SensorDataPoint(SensorEvent value) {
         dataType = DataType.SENSOREVENT;
@@ -106,7 +109,7 @@ public class SensorDataPoint {
     }
 
     /**
-     * @see #setValue(int)
+     * Creates a SensorDataPoint with a String value
      */
     public SensorDataPoint(String value) {
         dataType = DataType.STRING;
@@ -114,7 +117,7 @@ public class SensorDataPoint {
     }
 
     /**
-     * @see #getIntValue()
+     * Returns the value as an ArrayList of SensorDataPoints
      */
     @SuppressWarnings("unchecked")
     public ArrayList<SensorDataPoint> getArrayValue() {
@@ -122,7 +125,7 @@ public class SensorDataPoint {
     }
 
     /**
-     * @see #getIntValue()
+     * Return the value as a Boolean
      */
     public Boolean getBoolValue() {
         return (Boolean) value;
@@ -138,22 +141,21 @@ public class SensorDataPoint {
     }
 
     /**
-     * @see #getIntValue()
+     * Returns the value a double value
      */
     public double getDoubleValue() {
         return (Double) value;
     }
 
     /**
-     * @see #getIntValue()
+     * Returns the value as a float value
      */
     public float getFloatValue() {
         return (Float) value;
     }
 
     /**
-     * Return the value of the SensorDataPoint
-     * 
+     * Returns the value an integer value
      * @return value
      */
     public int getIntValue() {
@@ -168,21 +170,21 @@ public class SensorDataPoint {
     }
 
     /**
-     * @see #getIntValue()
+     * Return the value as a SensorEvent value
      */
     public SensorEvent getSensorEventValue() {
         return (SensorEvent) value;
     }
 
     /**
-     * @see #getIntValue()
+     * Returns the value as a String value
      */
     public String getStringValue() {
         return (String) value;
     }
 
     /**
-     * @see #getIntValue()
+     * Return the value as an Object
      */
     public Object getValue() {
         return value;

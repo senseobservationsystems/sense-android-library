@@ -5,9 +5,6 @@ package nl.sense_os.service.ambience;
 
 import java.math.BigDecimal;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
@@ -16,7 +13,6 @@ import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseSensor;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;

@@ -5,9 +5,6 @@ package nl.sense_os.service.deviceprox;
 
 import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
