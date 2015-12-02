@@ -24,6 +24,7 @@ import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.DefaultSensorOptions;
 import nl.sense_os.datastorageengine.ErrorCallback;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.Sensor;
@@ -31,6 +32,7 @@ import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
+import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
 
@@ -70,6 +72,13 @@ public class TestDataStorageEngine extends AndroidTestCase{
      **/
     @Override
     protected void setUp () throws Exception {
+        // set the noise sensor to download and persist data locally by default
+        SensorOptions sensorOptions = new SensorOptions();
+        sensorOptions.setPersistLocally(true);
+        sensorOptions.setUploadEnabled(true);
+        sensorOptions.setDownloadEnabled(true);
+        DefaultSensorOptions.setDefaultSensorOptions(getContext(), SensorData.SensorNames.NOISE, sensorOptions);
+        
         csUtils = new CSUtils(false);
         newUser = csUtils.createCSAccount();
         String userId = newUser.get("id");

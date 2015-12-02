@@ -7,11 +7,11 @@ The SenseService has an ErrorCallback registered to the `DataStorageEngine` to r
 ## Storing Sensor data
 Data from the sensors is stored in the `DataStorageEngine` using a specific `DataConsumer`, the `DSEDataConsumer`, that subscribes to all the sensors that exist in the sensor profiles.
 
+### Manual storage
 Sensor data can be stored manually by calling the function `Sensor.insertOrUpdateDataPoint(Object value, long time)` after the appropriate sensor has been retrieved with `DataStorageEngine.getSensor(String source, String sensorName)`.
 
-
-
 ## Retrieving data {#retrieving_sensor_data}
+
 
 ## Default Sensor Options {#default_sensor_options}
 
