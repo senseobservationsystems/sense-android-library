@@ -8,6 +8,13 @@ import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
 import nl.sense_os.service.constants.SensePrefs.Main.Location;
 import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SensorData;
+import nl.sense_os.datastorageengine.QueryOptions;
+import nl.sense_os.datastorageengine.DataStorageEngine;
+import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.DataPoint;
+import nl.sense_os.datastorageengine.SensorOptions;
+import nl.sense_os.datastorageengine.DefaultSensorOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +24,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.util.Log;
+import java.util.List;
 import android.view.View;
 import android.widget.Toast;
 
@@ -46,7 +54,8 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	private static final String TAG = "Sense Demo";
-	private static final String DEMO_SENSOR_NAME = "demo";
+	private static final String DEMO_SENSOR_NAME = SensorData.SensorNames.NOISE;
+	private static final String DEMO_SOURCE = SensorData.SourceNames.SENSE_ANDROID;
 	private SenseApplication mApplication;
 
 	private void flushData() {
@@ -62,19 +71,21 @@ public class MainActivity extends Activity {
 		new Thread() {
 			public void run() {
 
-				JSONArray data;
 				try {
-					data = mApplication.getSensePlatform().getLocalData(
-							DEMO_SENSOR_NAME, 10);
+					Sensor sensor = DataStorageEngine.getInstance(MainActivity.this).getSensor(DEMO_SOURCE, DEMO_SENSOR_NAME);
+					List<DataPoint> data = sensor.getDataPoints(new QueryOptions);
 
 					// show message
-					showToast(R.string.msg_query_local, data.length());
+					showToast(R.string.msg_query_local, data.size());
 
 				} catch (IllegalStateException e) {
 					Log.w(TAG, "Failed to query remote data", e);
 					showToast(R.string.msg_error, e.getMessage());
 				} catch (JSONException e) {
 					Log.w(TAG, "Failed to parse remote data", e);
+					showToast(R.string.msg_error, e.getMessage());
+				} catch(Exception e){
+					Log.w(TAG, "Error getting sensor data", e);
 					showToast(R.string.msg_error, e.getMessage());
 				}
 			};
@@ -90,21 +101,10 @@ public class MainActivity extends Activity {
 		// start new Thread to prevent NetworkOnMainThreadException
 		new Thread() {
 			public void run() {
-
-				JSONArray data;
-				try {
-					data = mApplication.getSensePlatform().getData(
-							DEMO_SENSOR_NAME, true, 0,
-							System.currentTimeMillis());
-
-					// show message
-					showToast(R.string.msg_query_remote, data.length());
-
-				} catch (IllegalStateException e) {
-					Log.w(TAG, "Failed to query remote data", e);
-					showToast(R.string.msg_error, e.getMessage());
-				} catch (JSONException e) {
-					Log.w(TAG, "Failed to parse remote data", e);
+					DataStorageEngine.getInstance(MainActivity.this).syncData().get(60, TimeUnit.SECONDS);
+					getLocalData();
+				} catch(Exception e){
+					Log.w(TAG, "Error getting sensor data", e);
 					showToast(R.string.msg_error, e.getMessage());
 				}
 			};
@@ -154,6 +154,13 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Set the noise sensor to store, upload and download data
+		SensorOptions sensorOptions = new SensorOptions();
+		sensorOptions.setPersistLocally(true);
+		sensorOptions.setUploadEnabled(true);
+		sensorOptions.setDownloadEnabled(true);
+		DefaultSensorOptions.setDefaultSensorOptions(getContext(), SensorData.SensorNames.NOISE, sensorOptions);
+
 		setContentView(R.layout.activity_main);
 
 		// the activity needs to be part of a SenseApplication so it can talk to
@@ -167,23 +174,17 @@ public class MainActivity extends Activity {
 	private void insertData() {
 		Log.v(TAG, "Insert data point");
 
-		// Description of the sensor
-		final String name = DEMO_SENSOR_NAME;
-		final String displayName = "demo data";
-		final String dataType = SenseDataTypes.JSON;
-		final String description = name;
-		// the value to be sent, in json format
-		final String value = "{\"foo\":\"bar\",\"baz\":\"quux\"}";
-		final long timestamp = System.currentTimeMillis();
-
 		// start new Thread to prevent NetworkOnMainThreadException
 		new Thread() {
 
 			@Override
 			public void run() {
-
-				mApplication.getSensePlatform().addDataPoint(name, displayName,
-						description, dataType, value, timestamp);
+				try {
+					Sensor sensor = DataStorageEngine.getInstance(MainActivity.this).getSensor(DEMO_SOURCE, DEMO_SENSOR_NAME);
+					sensor.insertOrUpdateDataPoint(10d, System.currentTimeMillis());
+				}catch(Exception e){
+					Log.e(TAG, "Error inserting data point");
+				}
 
 			}
 		}.start();

@@ -14,8 +14,6 @@ import java.util.concurrent.TimeoutException;
 
 import nl.sense_os.datastorageengine.DSEConfig;
 import nl.sense_os.datastorageengine.DataStorageEngine;
-import nl.sense_os.datastorageengine.DataSyncer;
-import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.DefaultSensorOptions;
 import nl.sense_os.datastorageengine.QueryOptions;
@@ -24,7 +22,6 @@ import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
-import nl.sense_os.datastorageengine.test.CSUtils;
 import nl.sense_os.service.constants.SensorData;
 
 import nl.sense_os.util.json.SchemaException;
