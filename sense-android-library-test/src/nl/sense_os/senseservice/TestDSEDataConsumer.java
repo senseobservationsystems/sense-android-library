@@ -101,7 +101,7 @@ public class TestDSEDataConsumer extends AndroidTestCase {
     }
 
     /**
-     * Test if the settings of the default sensors are correct
+     * Test setting the default sensors and check the default upload settings
      */
     public void testDefaultSensorOptions() throws JSONException, SchemaException, DatabaseHandlerException, SensorProfileException, SensorException {
 
@@ -125,7 +125,7 @@ public class TestDSEDataConsumer extends AndroidTestCase {
     }
 
     /**
-     * Test set default options on sensor download
+     * Test set default options on sensor download and creation in the DataSyncer
      */
     public void testSetDefaultSensorOptions() throws JSONException, IOException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, InterruptedException, ExecutionException, TimeoutException {
         // Set up the proxy to upload data to the back-end and simulate a login on a new device
