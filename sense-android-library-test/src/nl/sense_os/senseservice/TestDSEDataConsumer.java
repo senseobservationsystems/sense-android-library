@@ -1,21 +1,30 @@
 package nl.sense_os.senseservice;
 
 import android.test.AndroidTestCase;
-import org.json.JSONException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import nl.sense_os.datastorageengine.DSEConfig;
 import nl.sense_os.datastorageengine.DataStorageEngine;
+import nl.sense_os.datastorageengine.DataSyncer;
+import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
 import nl.sense_os.datastorageengine.DefaultSensorOptions;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.Sensor;
+import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
+import nl.sense_os.datastorageengine.test.CSUtils;
 import nl.sense_os.service.constants.SensorData;
 
 import nl.sense_os.util.json.SchemaException;
@@ -113,5 +122,30 @@ public class TestDSEDataConsumer extends AndroidTestCase {
             sensorOptions = DefaultSensorOptions.getSensorOptions(getContext(), sensorName);
             assertTrue("Local persistence not enabled for this sensor", sensorOptions.isPersistLocally());
         }
+    }
+
+    /**
+     * Test set default options on sensor download
+     */
+    public void testSetDefaultSensorOptions() throws JSONException, IOException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, InterruptedException, ExecutionException, TimeoutException {
+        // Set up the proxy to upload data to the back-end and simulate a login on a new device
+        DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
+        DSEConfig dseConfig = dataStorageEngine.getConfig();
+        SensorDataProxy mProxy = new SensorDataProxy(dseConfig.backendEnvironment, dseConfig.getAPPKey(), dseConfig.getSessionID());
+
+        // upload sensor data to the back end
+        JSONArray data = new JSONArray();
+        data.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
+        mProxy.putSensorData(SensorData.SourceNames.SENSE_ANDROID, SensorData.SensorNames.NOISE, data);
+
+        // synchronize data to local so a new sensor is created by the DataSyncer
+        dataStorageEngine.syncData().get(60, TimeUnit.SECONDS);
+
+        // check if the sensor has been created with the right sensor options
+        Sensor noise = DataStorageEngine.getInstance(getContext()).getSensor(SensorData.SourceNames.SENSE_ANDROID, SensorData.SensorNames.NOISE);
+        SensorOptions sensorOptions = noise.getOptions();
+        assertTrue("Upload enabled should be true", sensorOptions.isUploadEnabled());
+        assertTrue("Download enabled should be true", sensorOptions.isDownloadEnabled());
+        assertTrue("Persist locally enabled should be true", sensorOptions.isPersistLocally());
     }
 }

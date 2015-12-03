@@ -78,7 +78,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
         sensorOptions.setUploadEnabled(true);
         sensorOptions.setDownloadEnabled(true);
         DefaultSensorOptions.setDefaultSensorOptions(getContext(), SensorData.SensorNames.NOISE, sensorOptions);
-        
+
         csUtils = new CSUtils(false);
         newUser = csUtils.createCSAccount();
         String userId = newUser.get("id");

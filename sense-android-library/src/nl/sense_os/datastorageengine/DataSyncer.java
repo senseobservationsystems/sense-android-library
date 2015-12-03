@@ -167,7 +167,7 @@ public class DataSyncer {
             for (int i = 0; i < sensorList.length(); i++) {
                 JSONObject sensorFromRemote = sensorList.getJSONObject(i);
                 // get the default sensor options
-                SensorOptions sensorOptions = DefaultSensorOptions.getSensorOptions(mContext, sensorFromRemote.getString("source_name"));
+                SensorOptions sensorOptions = DefaultSensorOptions.getSensorOptions(mContext, sensorFromRemote.getString("sensor_name"));
                 sensorOptions.setMeta(sensorFromRemote.getJSONObject("meta"));
 
                 // if the sensor does not exist create it with the default options
