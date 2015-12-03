@@ -7,8 +7,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -340,16 +338,6 @@ public class NfcScan extends BaseDataProducer {
 			sensorDataPoint.sensorDescription = SensorNames.NFC_SCAN;
 			sensorDataPoint.timeStamp = SNTP.getInstance().getTime();        
 			sendToSubscribers(sensorDataPoint);
-			
-			// submit value
-			Intent dataPoint = new Intent(getString(R.string.action_sense_new_data));
-			dataPoint.putExtra(DataPoint.SENSOR_NAME, SensorNames.NFC_SCAN);
-			dataPoint.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.NFC_SCAN);
-			dataPoint.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			dataPoint.putExtra(DataPoint.TIMESTAMP, sensorDataPoint.timeStamp);
-			dataPoint.putExtra(DataPoint.VALUE, value);
-			dataPoint.setPackage(getPackageName());
-			startService(dataPoint);
 		}
 	}
 }

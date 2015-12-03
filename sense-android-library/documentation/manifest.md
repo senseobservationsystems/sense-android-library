@@ -68,22 +68,22 @@ An example of a strings.xml file:<br>
 <resources>
     <string name="app_name">Sense Demo</string>
 
-    < !-- OVERRIDE INTENT ACTIONS FOR BUNDLED SENSE PLATFORM (ALSO CHANGE IN MANIFEST!!) -->
+    <!-- OVERRIDE INTENT ACTIONS FOR BUNDLED SENSE PLATFORM (ALSO CHANGE IN MANIFEST!!) -->
     <string name="action_sense_service">nl.sense_os.demo.SENSE_SERVICE</string>
-    <string name="action_sense_new_data">nl.sense_os.demo.NEW_DATA</string>
-    <string name="action_sense_send_data">nl.sense_os.demo.SEND_DATA</string>
     <string name="action_sense_alive_check_alarm">nl.sense_os.demo.CHECK_ALIVE</string>
     <string name="action_sense_new_requirements">nl.sense_os.demo.NEW_REQUIREMENTS</string>
     <string name="action_widget_update">nl.sense_os.demo.UPDATE_APP_WIDGET</string>
-    <string name="local_storage_authority">nl.sense_os.demo.LocalStorage</string>
    
-    < !-- NOTIFICATION RESOURCES -->
+    <!-- NOTIFICATION RESOURCES -->
     <string name="stat_notify_action">nl.sense_os.demo.NOTIFICATION</string>
     <string name="stat_notify_title">Sense Demo</string>
     <string name="stat_notify_content_off_loggedin">Measurement stopped, logged in as \'%s\'</string>
     <string name="stat_notify_content_off_loggedout">Measurement stopped, no connection with server </string>
     <string name="stat_notify_content_on_loggedin">"Measurement active, logged in as \'%s\'"</string>
     <string name="stat_notify_content_on_loggedout">Measurement active, no connection with server</string>
+    <!-- DATASTORAGEENGINE ENCRYPTION KEY -->
+    <!-- THIS ENCRYPTION KEY SHOULD BE CHANGED BY THE APPLICATION WITH A STRING OF 64-BYTES AND A TOOL LIKE DEXGUARD SHOULD BE USED TO OBFUSCATE IT. USING ENCRYPTION WITHOUT OBFUSCATING THE STRING IS NOT SAFE. -->
+    <string name="dse_encryption_key" translatable="false">3XnMxOy3Ejsd55HWM941D89yK!RlRVH3XnMxOy3Ejsd55HWM941D89yK!RlRVHER</string>
 </resources>
 ~~~
 
@@ -100,19 +100,9 @@ An example of a strings.xml file:<br>
                 <action android:name="nl.sense_os.demo.SENSE_SERVICE" />
             </intent-filter>
         </service>
-        < !-- SERVICE TO BUFFER AND SEND DATA TO COMMONSENSE -->
-        <service
-            android:name="nl.sense_os.service.MsgHandler"
-            android:exported="false" >
-            <intent-filter>
-
-                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
-                <action android:name="nl.sense_os.demo.NEW_DATA" />
-                <action android:name="nl.sense_os.demo.SEND_DATA" />
-            </intent-filter>
-        </service>
-        < !-- SERVICE THAT CHECKS SENSOR REGISTRATION WITH COMMONSENSE -->
-        <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
+        < !-- SERVICE TO PERIODICALLY SEND DATA TO THE BACK-END -->
+        <receiver android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer"></receiver>
+        <service android:enabled="true" android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer$PeriodicSyncService" />
         < !-- SERVICE THAT HANDLES GCM MESSAGES FROM COMMONSENSE -->
         < !-- CAN BE REMOVED IF NOT USED -->
         <service android:name="nl.sense_os.service.push.GCMReceiver" />
@@ -175,7 +165,7 @@ An example of a strings.xml file:<br>
                 <category android:name="nl.sense_os.demo" />
             </intent-filter>
         </receiver>
-        < !-- BROADCAST RECEIVER FOR PUSHED REQUIREMENT CHANGES -->
+        < !-- BROADCAST RECEIVER FOR REQUIREMENT CHANGES PUSHED FROM THE BACK-END-->
         < !-- CAN BE REMOVED IF NOT USED -->
         <receiver
             android:name="nl.sense_os.service.configuration.RequirementReceiver"

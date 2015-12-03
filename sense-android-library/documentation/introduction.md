@@ -12,7 +12,6 @@ This documentation provides insights in the architecture and inner workings of t
 * [Sense Platform](documentation/sense_platform.md)
 * [Settings](documentation/settings.md )
 * [Manifest](documentation/manifest.md)
-* [Message Handler](documentation/msg_handler.md)
 * [Data Storage](documentation/storage.md)
 * [Sensors](documentation/sensors.md)
 * [Data Subcription](documentation/subscription.md)

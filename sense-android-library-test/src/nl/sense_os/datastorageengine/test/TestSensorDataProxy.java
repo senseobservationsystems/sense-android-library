@@ -18,6 +18,7 @@ import java.util.Map;
 
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.SensorDataProxy;
+import nl.sense_os.service.constants.SensorData;
 
 public class TestSensorDataProxy extends AndroidTestCase {
     private static final String TAG = "TestSensorDataProxy";
@@ -26,7 +27,7 @@ public class TestSensorDataProxy extends AndroidTestCase {
     SensorDataProxy.SERVER mServer = SensorDataProxy.SERVER.STAGING;
     String mAppKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
     String mSessionId;
-    String mSourceName = "sense-android";
+    String mSourceName = SensorData.SourceNames.SENSE_LIBRARY;
     SensorDataProxy mProxy;
     CSUtils mCsUtils;
 

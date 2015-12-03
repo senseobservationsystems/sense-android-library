@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--A JSON array with JSON objects containing the default sensor options for data storage.-->
+    <string name="sensorOptions" translatable="false">
+        [
+            {
+                "sensor_name": "position",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "time_zone",
+                "persist_locally": true,
+                "download_enabled": true,
+                "upload_enabled": true
+            },
+            {
+                "sensor_name": "accelerometer",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "battery",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "call",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "light",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "noise",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "position",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "proximity",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "screen",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "wifi_scan",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            },
+            {
+                "sensor_name": "app_info",
+                "persist_locally": false,
+                "upload_enabled": true,
+                "download_enabled": false
+            }
+        ]
+    </string>
+</resources>

@@ -228,19 +228,6 @@ public class ConfigurationService extends IntentService {
     }
 
     /**
-     * Handles attachToMyrianode requirements.
-     * <ol>
-     * <li>enable attachToMyrianode preference</li>
-     * </ol>
-     * 
-     * @param req
-     *            attachTo requirement
-     */
-    private void handleAttachToMyrianodeReq(JSONObject req) {
-        mainPrefs.edit().putBoolean(Advanced.LOCATION_FEEDBACK, true).commit();
-    }
-
-    /**
      * Handles audio spectrum requirements.
      * <ol>
      * <li>update sampling_rate if necessary
@@ -1018,10 +1005,6 @@ public class ConfigurationService extends IntentService {
                 handleMotionEnergyReq(requirements.getJSONObject("motion_energy"));
             if (requirements.has("Activity"))
                 handleActivityReq(requirements.getJSONObject("Activity"));
-
-            // Location Feedback (myrianode)
-            if (requirements.has("attachToMyrianode"))
-                handleAttachToMyrianodeReq(requirements.getJSONObject("attachToMyrianode"));
 
             // update sampling rate if necessary
             if (samplingRate != null) {

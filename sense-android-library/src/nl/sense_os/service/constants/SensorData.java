@@ -1,7 +1,4 @@
 package nl.sense_os.service.constants;
-
-import nl.sense_os.service.MsgHandler;
-import nl.sense_os.service.storage.LocalStorage;
 import android.content.ContentResolver;
 import android.provider.BaseColumns;
 
@@ -9,9 +6,7 @@ import android.provider.BaseColumns;
  * Utiliy class that contains resources for representing sensor data points.
  * 
  * @author Steven Mulder <steven@sense-os.nl>
- * 
- * @see LocalStorage
- * @see MsgHandler
+ *
  */
 public class SensorData {
 
@@ -35,84 +30,16 @@ public class SensorData {
     }
 
     /**
-     * Column names for Cursors that represent a sensor data point.
+     * Standard source names
      */
-    public static class DataPoint implements BaseColumns {
-
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-                + "/vnd.sense_os.data_point";
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-                + "/vnd.sense_os.data_point";
-        public static final String CONTENT_URI_PATH = "/recent_values";
-        @Deprecated
-        public static final String CONTENT_PERSISTED_URI_PATH = "/persisted_values";
-        public static final String CONTENT_REMOTE_URI_PATH = "/remote_values";
-
-        /**
-         * The name of the sensor that generated the data point. <br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String SENSOR_NAME = "sensor_name";
-        /**
-         * Description of the sensor that generated the data point. Can either be the hardware name,
-         * or any other useful description. <br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String SENSOR_DESCRIPTION = "sensor_description";
-        /**
-         * The data type of the data point. <br>
-         * <br>
-         * TYPE: String
-         * 
-         * @see SenseDataTypes
-         */
-        public static final String DATA_TYPE = "data_type";
-        /**
-         * The human readable display name of the sensor that generated the data point. <br>
-         * <br>
-         * TYPE: String
-         * 
-         * @see SenseDataTypes
-         */
-        public static final String DISPLAY_NAME = "display_name";
-        /**
-         * Time stamp for the data point, in milliseconds. <br>
-         * <br>
-         * TYPE: long
-         */
-        public static final String TIMESTAMP = "timestamp";
-        /**
-         * Data point value. <br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String VALUE = "value";
-        /**
-         * Transmit state of the data point, signalling whether the point has been sent to
-         * CommonSense already.<br>
-         * <br>
-         * TYPE: integer status code: 0 (not sent), or 1 (sent)
-         */
-        public static final String TRANSMIT_STATE = "transmit_state";
-        /**
-         * Device UUID of the sensor. Use this for sensors that are originated from
-         * "external sensors", or leave <code>null</code> to use the phone as default device.<br>
-         * <br>
-         * TYPE: String
-         */
-        public static final String DEVICE_UUID = "device_uuid";
-
-        private DataPoint() {
-            // class should not be instantiated
-        }
+    public static class SourceNames{
+        public final static String SENSE_LIBRARY = "sense-library";
+        public final static String MANUAL = "manual";
     }
 
     /**
      * Standard names for sensors.
-     * 
-     * @see DataPoint#SENSOR_NAME
+     *
      */
     public static class SensorNames {
 
@@ -123,10 +50,10 @@ public class SensorData {
         public static final String FALL_DETECTOR = "fall_detector";
 
         /** Noise level sensor. Part of the Ambience sensors. */
-        public static final String NOISE = "noise_sensor";
+        public static final String NOISE = "noise";
 
         /** Noise level sensor (Burst-mode). Part of the Ambience sensors. */
-        public static final String NOISE_BURST = "noise_sensor (burst-mode)";
+        public static final String NOISE_BURST = "noise (burst-mode)";
 
         /** Audio spectrum sensor. Part of the Ambience sensors. */
         public static final String AUDIO_SPECTRUM = "audio_spectrum";
@@ -144,7 +71,7 @@ public class SensorData {
         public static final String BLUETOOTH_DISCOVERY = "bluetooth_discovery";
 
         /** Wi-Fi scan sensor. Part of the Neighboring Devices sensors. */
-        public static final String WIFI_SCAN = "wifi scan";
+        public static final String WIFI_SCAN = "wifi_scan";
 
         /** NFC sensor. Part of the Neighboring Devices sensors. */
         public static final String NFC_SCAN = "nfc_scan";
@@ -216,19 +143,19 @@ public class SensorData {
         public static final String STRIDES = "strides";
 
         /** Location sensor. */
-        public static final String LOCATION = "position";
+        public static final String POSITION = "position";
 
         /** TimeZone sensor. */
         public static final String TIME_ZONE = "time_zone";
 
         /** Battery sensor. Part of the Phone State sensors. */
-        public static final String BATTERY_SENSOR = "battery sensor";
+        public static final String BATTERY = "battery";
         
         /** App info sensor. Part of the Phone State sensors. */
-        public static final String APP_INFO_SENSOR = "app_info";
+        public static final String APP_INFO = "app_info";
 
         /** Screen activity sensor. Part of the Phone State sensors. */
-        public static final String SCREEN_ACTIVITY = "screen activity";
+        public static final String SCREEN = "screen";
 
         /** Pressure sensor. Part of the Phone State sensors. */
         public static final String PRESSURE = "pressure";
@@ -237,7 +164,7 @@ public class SensorData {
         public static final String PROXIMITY = "proximity";
 
         /** Call state sensor. Part of the Phone State sensors. */
-        public static final String CALL_STATE = "call state";
+        public static final String CALL = "call";
 
         /** Data connection state sensor. Part of the Phone State sensors. */
         public static final String DATA_CONN = "data connection";
@@ -341,8 +268,7 @@ public class SensorData {
 
     /**
      * Standard descriptions for sensors.
-     * 
-     * @see DataPoint#SENSOR_DESCRIPTION
+     *
      */
     public static class SensorDescriptions {
         /**

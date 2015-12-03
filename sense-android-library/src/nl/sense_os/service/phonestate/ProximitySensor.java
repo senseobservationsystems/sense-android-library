@@ -6,9 +6,6 @@ package nl.sense_os.service.phonestate;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
@@ -145,16 +142,6 @@ public class ProximitySensor extends BaseSensor implements SensorEventListener,
         } catch (Exception e) {
             Log.e(TAG, "Error in send data to subscribers in ProximitySensor");
         }
-
-        // pass message to the MsgHandler
-        Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.PROXIMITY);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, value);
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        i.setPackage(mContext.getPackageName());
-        mContext.startService(i);
     }
 
     /**

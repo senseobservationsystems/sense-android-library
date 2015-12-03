@@ -3,12 +3,9 @@ package nl.sense_os.service.motion;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Motion;
 import nl.sense_os.service.constants.SensorData;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseDataProducer;
@@ -18,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -140,25 +136,6 @@ public class MotionBurstSensor extends BaseDataProducer implements DataConsumer 
             Log.w(TAG, "Failed to send motion burst data", e);
             return;
 		}
-
-		// pass message to the MsgHandler
-		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-
-		
-		
-		final SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-                Context.MODE_PRIVATE);
-
-        if (mainPrefs.getBoolean(Motion.DONT_UPLOAD_BURSTS, false) == false) {
-			i.putExtra(DataPoint.SENSOR_NAME, SENSOR_NAME);
-			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName()+processed);
-			i.putExtra(DataPoint.VALUE, value);
-			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
-			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime()
-					- burstDuration);
-			i.setPackage(context.getPackageName());
-			context.startService(i);
-        }
 	}
 
 	@Override

@@ -16,13 +16,13 @@ public interface DataConsumer {
      * 
      * @see #isSampleComplete()
      */
-    public abstract void startNewSample();
+    void startNewSample();
 
     /**
      * @return <code>true</code> if the data consumer has received enough sensor events so that the
      *         sample is complete
      */
-    public abstract boolean isSampleComplete();
+    boolean isSampleComplete();
 
     /**
      * Handles a new data point. Take care: the sensor event is not guaranteed to be from the sensor
@@ -30,5 +30,5 @@ public interface DataConsumer {
      * 
      * @param dataPoint
      */
-    public abstract void onNewData(SensorDataPoint dataPoint);
+    void onNewData(SensorDataPoint dataPoint);
 }

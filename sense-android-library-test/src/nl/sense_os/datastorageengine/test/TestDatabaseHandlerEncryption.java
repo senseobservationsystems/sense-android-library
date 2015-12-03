@@ -16,6 +16,7 @@ import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.datastorageengine.SensorProfiles;
+import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.util.json.SchemaException;
 
 public class TestDatabaseHandlerEncryption extends AndroidTestCase {
@@ -30,7 +31,7 @@ public class TestDatabaseHandlerEncryption extends AndroidTestCase {
 
         try {
             String userId = "userId";
-            String sourceName = "sense-android";
+            String sourceName = SensorData.SourceNames.SENSE_LIBRARY;
             String sensorName = "noise";
 
             // Create a sensor profile by hand, so we don't have to fetch them from the server via SensorDataProxy

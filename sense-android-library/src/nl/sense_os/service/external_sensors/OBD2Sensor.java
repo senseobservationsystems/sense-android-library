@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -19,7 +16,6 @@ import org.json.JSONObject;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 /**
@@ -131,34 +127,6 @@ public class OBD2Sensor extends ExternalSensor {
         */
         // TODO these methods cover most of the byte-encoded, single PID commands until Mode 1 PID 0x1F		
 	}
-
-    private void sendDemoDataPoint(String description, Object value,
-            String dataType) {
-    	Log.v(TAG, "attempting to send data point :"+value+": "+description);
-    	Log.v(TAG, "HALLO2 devicename: "+devicename+", deviceadress: "+deviceadress);
-        Intent intent = new Intent(context.getString(R.string.action_sense_new_data));
-        intent.putExtra(DataPoint.SENSOR_NAME, SensorNames.VEHICLE_SPEED);
-        intent.putExtra(DataPoint.SENSOR_DESCRIPTION, devicename);
-        intent.putExtra(DataPoint.DATA_TYPE, dataType);
-        intent.putExtra(DataPoint.DEVICE_UUID, deviceadress);
-        if (dataType.equals(SenseDataTypes.BOOL)) {
-            intent.putExtra(DataPoint.VALUE, (Boolean) value);
-        } else if (dataType.equals(SenseDataTypes.FLOAT)) {
-            intent.putExtra(DataPoint.VALUE, (Float) value);
-        } else if (dataType.equals(SenseDataTypes.INT)) {
-            intent.putExtra(DataPoint.VALUE, (Integer) value);
-        } else if (dataType.equals(SenseDataTypes.JSON)) {
-            intent.putExtra(DataPoint.VALUE, (String) value);
-        } else if (dataType.equals(SenseDataTypes.STRING)) {
-            intent.putExtra(DataPoint.VALUE, (String) value);
-        } else {
-            Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
-        }
-        intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        intent.setPackage(context.getPackageName());
-        context.startService(intent);
-    }
-	
     long maximumexecutetime = 5000; // maximum time for this execution in milliseconds
     long executioninterval = 100; // time in between execution attempts in milliseconds
 	
@@ -258,16 +226,6 @@ public class OBD2Sensor extends ExternalSensor {
     		dataPoint.sensorDescription = sensor_name;
     		dataPoint.timeStamp = SNTP.getInstance().getTime();        
     		sendToSubscribers(dataPoint);
-    		
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.SENSOR_NAME, sensor_name);
-            //i.putExtra(DataPoint.SENSOR_DESCRIPTION, deviceType);
-            i.putExtra(DataPoint.VALUE, getJSON().toString());
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            //TODO: i.putExtra(DataPoint.DEVICE_UUID, )
-            i.setPackage(context.getPackageName());
-            context.startService(i);
     	}
     	
     	protected boolean hasValidResponse(){
@@ -480,7 +438,6 @@ public class OBD2Sensor extends ExternalSensor {
     		super.generateJSON();
     		int i = data.indexOf(validresponse);
 			int value = Integer.parseInt(data.substring(i+6,i+8),16);
-            sendDemoDataPoint("Vehicle speed (km/h)", value, SenseDataTypes.INT);
 		}    	
 	}
     

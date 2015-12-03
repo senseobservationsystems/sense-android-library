@@ -18,7 +18,7 @@ Sense library provides a base implementation of this interface in nl.sense_os.se
 
 DataProducer can register to SubscriptionManager so a DataConsumer can subscribe to it. Here is an example of how to register a producer to SubscriptionManager
 
-~~~
+~~~java
 mSubscrMgr = SubscriptionManager.getInstance();
 testSensor = TestSensor.getInstance(ctx);
 mSubscrMgr.registerProducer(“TestSensor”, testSensor);
@@ -26,12 +26,18 @@ mSubscrMgr.registerProducer(“TestSensor”, testSensor);
 
 BaseDataProducer objects like sensors should also notify and send the datapoint everytime there is a new sample. Here is an example of how to notify and send sensor data to subscribers when there is a new sample.
 
-~~~
+~~~java
+// Notify the subscribers that a new sample is started
 notifySubscribers();
-SensorDataPoint dataPoint = new SensorDataPoint(value);
-dataPoint.sensorName = "Sensor name";
-dataPoint.sensorDescription = "Sensor description";
-dataPoint.timeStamp = startTimestamp;
+// Create a SensorDataPoint with a double value
+SensorDataPoint dataPoint = new SensorDataPoint(40.3d);
+// Set the sensor name using the SensorNames constants
+dataPoint.sensorName = SensorData.SensorNames.NOISE;
+// Set the source name using the SensorNames constants
+dataPoint.source = SensorData.SourceNames.SENSE_ANDROID;
+// Set the epoch milliseconds time stamp using the SNTP time module
+dataPoint.timeStamp = SNTP.getInstance().getTime();
+// Send it to all DataConsumers that subscribed to SensorData.SensorNames.NOISE
 sendToSubscribers(dataPoint);
 ~~~
 

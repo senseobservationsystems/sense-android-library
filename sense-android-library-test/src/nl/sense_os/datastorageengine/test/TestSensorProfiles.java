@@ -16,9 +16,12 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.datastorageengine.SensorProfiles;
+import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
 
 public class TestSensorProfiles  extends AndroidTestCase {
     private static final String TAG = "TestSensorDataProxy";
@@ -35,7 +38,7 @@ public class TestSensorProfiles  extends AndroidTestCase {
     private SensorProfiles mSensorProfiles;
     CSUtils mCsUtils;
 
-    public void setUp () throws IOException, JSONException, DatabaseHandlerException, SensorProfileException {
+    public void setUp () throws IOException, JSONException, DatabaseHandlerException, SensorProfileException, SensorException, ValidationException, SchemaException {
         mCsUtils = new CSUtils(false); // staging server
 
         mUser = mCsUtils.createCSAccount();
@@ -72,7 +75,7 @@ public class TestSensorProfiles  extends AndroidTestCase {
 
     public void testSensorAppInfo() throws Exception {
         String sensorName = "app_info";
-        JSONObject expectedProfile = new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"type\": \"object\",\"properties\": {\"sense_library_version\": {\"description\": \"The version of the sense library\",\"type\": \"string\"},\"app_build\": {\"description\": \"Application build (version code, e.g. 1413357349)\",\"type\": \"string\"},\"app_name\": {\"description\":\"Application name (e.g. Goalie)\",\"type\": \"string\"},\"app_version\":{\"description\": \"Application version (version name, e.g. 3.0.0)\",\"type\":\"string\"},\"locale\": {\"description\": \"The device region settings (e.g. en_GB)\",\"type\": \"string\"},\"os\": {\"description\": \"OS (e.g Android or iOS)\",\"type\": \"string\"},\"os_version\": {\"description\": \"OS Version (e.g. 4.2.2)\",\"type\":\"string\"},\"device_model\":{\"description\": \"Device model (e.g. Galaxy Nexus)\",\"type\": \"string\"},\"required\": [\"sense_library_version\",\"app_name\",\"app_build\"]}}");
+        JSONObject expectedProfile = new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"type\": \"object\",\"properties\": {\"sense_library_version\": {\"description\": \"The version of the sense library\",\"type\": \"string\"},\"app_build\": {\"description\": \"Application build (version code, e.g. 1413357349)\",\"type\": \"string\"},\"app_name\": {\"description\":\"Application name (e.g. Goalie)\",\"type\": \"string\"},\"app_version\":{\"description\": \"Application version (version name, e.g. 3.0.0)\",\"type\":\"string\"},\"locale\": {\"description\": \"The device region settings (e.g. en_GB)\",\"type\": \"string\"},\"os\": {\"description\": \"OS (e.g Android or iOS)\",\"type\": \"string\"},\"os_version\": {\"description\": \"OS Version (e.g. 4.2.2)\",\"type\":\"string\"},\"device_model\":{\"description\": \"Device model (e.g. Galaxy Nexus)\",\"type\": \"string\"}},\"required\": [\"sense_library_version\",\"app_name\",\"app_build\"]}");
 
         JSONObject profile = mSensorProfiles.get(sensorName);
         JSONAssert.assertEquals(expectedProfile, profile, true);

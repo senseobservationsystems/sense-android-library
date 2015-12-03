@@ -7,11 +7,9 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
-import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
@@ -69,7 +67,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
                 if (null != outgoingNumber) {
                     json.put("outgoingNumber", outgoingNumber);
                 }
-                sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
+                sendDataPoint(SensorNames.CALL, json.toString(), SenseDataTypes.JSON);
             } catch (JSONException e) {
                 Log.w(TAG, "Failed to create data point for outgoing call. " + e);
             }
@@ -104,7 +102,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
             }
 
             // immediately send data point
-            sendDataPoint(SensorNames.CALL_STATE, json.toString(), SenseDataTypes.JSON);
+            sendDataPoint(SensorNames.CALL, json.toString(), SenseDataTypes.JSON);
         }
 
         @Override
@@ -249,7 +247,7 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         }
     }
 
-    private static final String TAG = "Sense PhoneStateListener";
+    private static final String TAG = "PhoneStateListener";
     private static SensePhoneState instance = null;
 
     /**
@@ -329,26 +327,6 @@ public class SensePhoneState extends BaseSensor implements PeriodicPollingSensor
         } catch (Exception e) {
             Log.e(TAG, "Error sending data point to subscribers of the ZephyrBioHarness");
         }
-
-        Intent intent = new Intent(context.getString(R.string.action_sense_new_data));
-        intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
-        intent.putExtra(DataPoint.DATA_TYPE, dataType);
-        if (dataType.equals(SenseDataTypes.BOOL)) {
-            intent.putExtra(DataPoint.VALUE, (Boolean) value);
-        } else if (dataType.equals(SenseDataTypes.FLOAT)) {
-            intent.putExtra(DataPoint.VALUE, (Float) value);
-        } else if (dataType.equals(SenseDataTypes.INT)) {
-            intent.putExtra(DataPoint.VALUE, (Integer) value);
-        } else if (dataType.equals(SenseDataTypes.JSON)) {
-            intent.putExtra(DataPoint.VALUE, (String) value);
-        } else if (dataType.equals(SenseDataTypes.STRING)) {
-            intent.putExtra(DataPoint.VALUE, (String) value);
-        } else {
-            Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
-        }
-        intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-        intent.setPackage(context.getPackageName());
-        context.startService(intent);
     }
 
     /**

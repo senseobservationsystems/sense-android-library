@@ -125,19 +125,7 @@
                 <action android:name="nl.sense_os.pgtest.SENSE_SERVICE" />
             </intent-filter>
         </service>
-        <!-- SERVICE TO BUFFER AND SEND DATA TO COMMONSENSE -->
-        <service
-            android:name="nl.sense_os.service.MsgHandler"
-            android:exported="false" >
-            <intent-filter>
 
-                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
-                <action android:name="nl.sense_os.pgtest.NEW_DATA" />
-                <action android:name="nl.sense_os.pgtest.SEND_DATA" />
-            </intent-filter>
-        </service>
-        <!-- SERVICE THAT CHECKS SENSOR REGISTRATION WITH COMMONSENSE -->
-        <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
         <!-- SERVICE THAT HANDLES GCM MESSAGES FROM COMMONSENSE -->
         <!-- CAN BE REMOVED IF NOT USED -->
         <service android:name="nl.sense_os.service.push.GCMReceiver" />
@@ -209,14 +197,9 @@
                 <action android:name="nl.sense_os.pgtest.NEW_REQUIREMENTS" />
             </intent-filter>
         </receiver>
-
-        <!-- CONTENT PROVIDER THAT GIVES OTHER APPS ACCESS TO THE SENSOR DATA -->
-        <!-- MAKE SURE YOU USE A UNIQUE AUTHORITY FOR YOUR OWN APP (SEE res/strings.xml) -->
-        <!-- CAN BE REMOVED IF NOT USED -->
-        <provider
-            android:name="nl.sense_os.service.provider.SensorDataProvider"
-            android:authorities="nl.sense_os.pgtest.LocalStorage"
-            android:exported="true" />
+        <receiver android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer"></receiver>
+        <service android:enabled="true" android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer$PeriodicSyncService" />
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

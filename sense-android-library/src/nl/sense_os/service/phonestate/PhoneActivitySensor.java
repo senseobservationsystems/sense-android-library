@@ -3,16 +3,10 @@
  *************************************************************************************************/
 package nl.sense_os.service.phonestate;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseDataProducer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -63,30 +57,12 @@ public class PhoneActivitySensor extends BaseDataProducer{
     
     private void sendData(String screen)
     {
-    	 // create new data point
-        JSONObject json = new JSONObject();
-        try {
-            json.put("screen", screen);
-
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException preparing screen activity data");
-        }
-
         notifySubscribers();
-        SensorDataPoint dataPoint = new SensorDataPoint(json);
-        dataPoint.sensorName = SensorNames.SCREEN_ACTIVITY;
-        dataPoint.sensorDescription = SensorNames.SCREEN_ACTIVITY;
+        SensorDataPoint dataPoint = new SensorDataPoint(screen);
+        dataPoint.sensorName = SensorNames.SCREEN;
+        dataPoint.sensorDescription = SensorNames.SCREEN;
         dataPoint.timeStamp = SNTP.getInstance().getTime();        
         sendToSubscribers(dataPoint);
-        
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-        i.putExtra(DataPoint.VALUE, json.toString());
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.SCREEN_ACTIVITY);
-        i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-        i.setPackage(context.getPackageName());
-        context.startService(i);
-    
     }
 
     protected PhoneActivitySensor(Context context) {
@@ -94,7 +70,7 @@ public class PhoneActivitySensor extends BaseDataProducer{
     }
 
     public void startPhoneActivitySensing(long sampleDelay) {
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);        
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(screenActivityReceiver, filter);
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);  

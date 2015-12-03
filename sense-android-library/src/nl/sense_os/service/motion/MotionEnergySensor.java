@@ -2,9 +2,6 @@ package nl.sense_os.service.motion;
 
 import java.math.BigDecimal;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -13,7 +10,6 @@ import nl.sense_os.service.subscription.BaseDataProducer;
 import nl.sense_os.service.subscription.DataConsumer;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -136,18 +132,6 @@ public class MotionEnergySensor extends BaseDataProducer implements DataConsumer
         dataPoint.sensorDescription = SensorNames.MOTION_ENERGY;
         dataPoint.timeStamp = SNTP.getInstance().getTime();
         this.sendToSubscribers(dataPoint);
-
-        // TODO: add the MsgHandler as data processor
-
-        // prepare intent to send to MsgHandler
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MOTION_ENERGY);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, SensorNames.MOTION_ENERGY);
-        i.putExtra(DataPoint.VALUE, value);
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-        i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-        i.setPackage(context.getPackageName());
-        context.startService(i);
     }
 
     @Override

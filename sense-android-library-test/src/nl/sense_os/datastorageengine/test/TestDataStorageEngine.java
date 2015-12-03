@@ -24,6 +24,7 @@ import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.DefaultSensorOptions;
 import nl.sense_os.datastorageengine.ErrorCallback;
 import nl.sense_os.datastorageengine.QueryOptions;
 import nl.sense_os.datastorageengine.Sensor;
@@ -31,6 +32,7 @@ import nl.sense_os.datastorageengine.SensorDataProxy;
 import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
+import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
 
@@ -44,7 +46,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     private String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
     private String sessionId;
     private DataStorageEngine dataStorageEngine;
-    private String source = "sense-android";
+    private String source = SensorData.SourceNames.SENSE_LIBRARY;
     private String sensor_name = "noise";
 
     /** AsyncCallback class to receive status updates in */
@@ -70,13 +72,20 @@ public class TestDataStorageEngine extends AndroidTestCase{
      **/
     @Override
     protected void setUp () throws Exception {
+        // set the noise sensor to download and persist data locally by default
+        SensorOptions sensorOptions = new SensorOptions();
+        sensorOptions.setPersistLocally(true);
+        sensorOptions.setUploadEnabled(true);
+        sensorOptions.setDownloadEnabled(true);
+        DefaultSensorOptions.setDefaultSensorOptions(getContext(), SensorData.SensorNames.NOISE, sensorOptions);
+
         csUtils = new CSUtils(false);
         newUser = csUtils.createCSAccount();
         String userId = newUser.get("id");
         sessionId = csUtils.loginUser(newUser.get("username"), newUser.get("password"));
         dataStorageEngine = DataStorageEngine.getInstance(getContext());
         DSEConfig dseConfig = new DSEConfig(sessionId, userId, appKey);
-        dseConfig.backendEnvironment = SensorDataProxy.SERVER.STAGING;
+        dseConfig.backendEnvironment = server;
         dseConfig.enableEncryption = true;
         dataStorageEngine.setConfig(dseConfig);
         // Wait and test onReady
@@ -130,7 +139,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     public void testCRUSensor() throws InterruptedException, ExecutionException, TimeoutException, DatabaseHandlerException, SensorException, JSONException, SensorProfileException, SchemaException, IOException, ValidationException {
         /** CREATE */
         // check the create sensor
-        Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+        Sensor sensor = dataStorageEngine.getSensor(source, sensor_name);
 
         /** READ */
         // check if the source is returned correctly
@@ -167,7 +176,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     public void testCRUDSensorData() throws DatabaseHandlerException, SensorException, SensorProfileException, JSONException, SchemaException, ValidationException, IOException, InterruptedException, ExecutionException, TimeoutException {
         /** CREATE */
         // check the create sensor
-        Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+        Sensor sensor = dataStorageEngine.getSensor(source, sensor_name);
         // create the data point
         Integer value = 10;
         long date = System.currentTimeMillis();
@@ -271,7 +280,8 @@ public class TestDataStorageEngine extends AndroidTestCase{
             SensorOptions sensorOptions = new SensorOptions();
             sensorOptions.setUploadEnabled(true);
             sensorOptions.setDownloadEnabled(true);
-            Sensor noise = dataStorageEngine.createSensor(source, sensor_name, sensorOptions);
+            Sensor noise = dataStorageEngine.getSensor(source, sensor_name);
+            noise.setOptions(sensorOptions);
 
             long value1 = 1;
             long time1 = new Date().getTime();
@@ -327,7 +337,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
 
     public void testEncryption() throws ValidationException, JSONException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, InterruptedException, ExecutionException, TimeoutException {
         // create the sensor
-        Sensor sensor = dataStorageEngine.createSensor(source, sensor_name, new SensorOptions());
+        Sensor sensor = dataStorageEngine.getSensor(source, sensor_name);
         // create the data point
         Integer value = 10;
         long date = System.currentTimeMillis();

@@ -5,7 +5,6 @@ package nl.sense_os.service.ambience;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -24,21 +23,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import nl.sense_os.service.MsgHandler;
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
-import nl.sense_os.service.ctrl.Controller;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
 import nl.sense_os.service.shared.PeriodicPollingSensor;
@@ -62,7 +55,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
 	/**
 	 * Runnable that performs one noise sample. Starts the recording, reads the buffer contents,
-	 * calculates the noise power and sends the measurement to the {@link MsgHandler}. Also
+	 * calculates the noise power and sends the measurement to the subscribers. Also
 	 * schedules the next sample job.
 	 */
 	private class NoiseSampleJob implements Runnable {
@@ -271,8 +264,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							SharedPreferences mainPrefs = context.getSharedPreferences(
 									SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
 							if (mainPrefs.getBoolean(Ambience.MIC, true)) {
-								dB = calculateDb(samples);                                
-								controller.checkNoiseSensor(dB);
+								dB = calculateDb(samples);
 								if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
 									noiseBurstSensor.addData(samples, RECORDING_TIME_NOISE, startTimestamp);                                	
 								}
@@ -290,17 +282,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							dataPoint.sensorDescription = SensorNames.NOISE;
 							dataPoint.timeStamp = startTimestamp;
 							sendToSubscribers(dataPoint);
-
-							// pass message to the MsgHandler
-							Intent sensorData = new Intent(
-									context.getString(R.string.action_sense_new_data));
-							sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE);
-							sensorData.putExtra(DataPoint.VALUE,
-									BigDecimal.valueOf(dB).setScale(2, 0).floatValue());
-							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-							sensorData.setPackage(context.getPackageName());
-							context.startService(sensorData);
 						}
 
 						if (spectrum != null) {
@@ -324,17 +305,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 							dataPoint.sensorDescription = "audio spectrum (dB)";
 							dataPoint.timeStamp = startTimestamp;
 							sendToSubscribers(dataPoint);
-
-							Intent sensorData = new Intent(
-									context.getString(R.string.action_sense_new_data));
-							sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.AUDIO_SPECTRUM);
-							sensorData
-							.putExtra(DataPoint.SENSOR_DESCRIPTION, "audio spectrum (dB)");
-							sensorData.putExtra(DataPoint.VALUE, jsonSpectrum.toString());
-							sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-							sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-							sensorData.setPackage(context.getPackageName());
-							context.startService(sensorData);
 						}
 
 						if (dB != -1 && !Double.valueOf(dB).isNaN()) {
@@ -407,7 +377,7 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 
 	/**
 	 * Runnable that starts one sound stream recording. Afterwards, the recording is sent to the
-	 * {@link MsgHandler}. Also schedules the next sample job.
+	 * subscribers. Also schedules the next sample job.
 	 */
 	private class SoundStreamJob implements Runnable {
 		private static final int RECORDING_TIME_STREAM = 5 * 60 * 1000; // 5 minutes audio
@@ -511,17 +481,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 				dataPoint.setDataType(DataType.FILE);
 				dataPoint.timeStamp = SNTP.getInstance().getTime();
 				sendToSubscribers(dataPoint);
-
-				// pass message to the MsgHandler
-				Intent i = new Intent(context
-						.getString(R.string.action_sense_new_data));
-				i.putExtra(DataPoint.SENSOR_NAME, SensorNames.MIC);
-				i.putExtra(DataPoint.VALUE, fileName);
-				i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FILE);
-				i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-				i.setPackage(context.getPackageName());
-				context.startService(i);				
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -589,21 +548,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 			dataPoint.sensorDescription =  "noise (dB)";
 			dataPoint.timeStamp = startTimestamp;
 			sendToSubscribers(dataPoint);
-
-			// pass message to the MsgHandler
-			// get sample rate from preferences
-			SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
-			if(!mainPrefs.getBoolean(Ambience.DONT_UPLOAD_BURSTS, true))
-			{
-				Intent sensorData = new Intent(context.getString(R.string.action_sense_new_data));
-				sensorData.putExtra(DataPoint.SENSOR_NAME, SensorNames.NOISE_BURST);
-				sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION, "noise (dB)");
-				sensorData.putExtra(DataPoint.VALUE, data.toString());
-				sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-				sensorData.putExtra(DataPoint.TIMESTAMP, startTimestamp);
-				sensorData.setPackage(context.getPackageName());
-				context.startService(sensorData);
-			}
 		}
 	};
 
@@ -634,7 +578,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 	private LoudnessSensor loudnessSensor;
 	private NoiseBurstSensor noiseBurstSensor = new NoiseBurstSensor();
 	private AutoCalibratedNoiseSensor autoCalibratedNoiseSensor;
-	private Controller controller;
 	private PeriodicPollAlarmReceiver pollAlarmReceiver;
 	private PhoneStateListener phoneStateListener = new PhoneStateListener() {
 
@@ -672,7 +615,6 @@ public class NoiseSensor extends BaseSensor implements PeriodicPollingSensor {
 	protected NoiseSensor(Context context) {
 		this.context = context;
 		pollAlarmReceiver = new PeriodicPollAlarmReceiver(this);
-		controller = Controller.getController(context);
 		loudnessSensor = LoudnessSensor.getInstance(context);
 		autoCalibratedNoiseSensor = AutoCalibratedNoiseSensor.getInstance(context);
 	}

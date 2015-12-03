@@ -13,7 +13,6 @@ import nl.sense_os.service.R;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.External;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -125,7 +124,7 @@ public class ZephyrHxM extends BaseDataProducer {
 
 								// check sensor IDs
 								new Thread(){public void run(){
-									new ZephyrHxmRegistrator(context).verifySensorIds(
+									new ZephyrHxmRegistrator().verifySensorIds(
 											deviceType,deviceUuid);
 								}}.start();
 
@@ -413,28 +412,6 @@ public class ZephyrHxM extends BaseDataProducer {
 			} catch (Exception e) {
 				Log.e(TAG, "Error sending data point to subscribers of the ZephyrBioHarness");
 			}
-
-			Intent intent = new Intent(context.getString(R.string.action_sense_new_data));
-			intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
-			intent.putExtra(DataPoint.SENSOR_DESCRIPTION, description);
-			intent.putExtra(DataPoint.DATA_TYPE, dataType);
-			intent.putExtra(DataPoint.DEVICE_UUID, deviceUuid);
-			if (dataType.equals(SenseDataTypes.BOOL)) {
-				intent.putExtra(DataPoint.VALUE, (Boolean) value);
-			} else if (dataType.equals(SenseDataTypes.FLOAT)) {
-				intent.putExtra(DataPoint.VALUE, (Float) value);
-			} else if (dataType.equals(SenseDataTypes.INT)) {
-				intent.putExtra(DataPoint.VALUE, (Integer) value);
-			} else if (dataType.equals(SenseDataTypes.JSON)) {
-				intent.putExtra(DataPoint.VALUE, (String) value);
-			} else if (dataType.equals(SenseDataTypes.STRING)) {
-				intent.putExtra(DataPoint.VALUE, (String) value);
-			} else {
-				Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
-			}
-			intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-			intent.setPackage(context.getPackageName());
-			context.startService(intent);
 		}
 	}
 

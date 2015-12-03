@@ -5,9 +5,6 @@ package nl.sense_os.service.deviceprox;
 
 import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -70,15 +67,6 @@ public class WIFIDeviceProximity extends BaseDataProducer{
                             dataPoint.sensorDescription = SensorNames.WIFI_SCAN;
                             dataPoint.timeStamp = SNTP.getInstance().getTime();        
                             sendToSubscribers(dataPoint);
-                            
-                            // pass device data to the MsgHandler
-                            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-                            i.putExtra(DataPoint.SENSOR_NAME, SensorNames.WIFI_SCAN);
-                            i.putExtra(DataPoint.VALUE, deviceJson.toString());
-                            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-                            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-                            i.setPackage(context.getPackageName());
-                            WIFIDeviceProximity.this.context.startService(i);
                         }
 
                     } catch (JSONException e) {

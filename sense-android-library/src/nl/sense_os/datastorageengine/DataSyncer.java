@@ -11,7 +11,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import nl.sense_os.service.subscription.SensorRequirement;
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
 
@@ -32,7 +34,7 @@ public class DataSyncer {
     private SensorDataProxy mProxy = null;
     private DatabaseHandler mDatabaseHandler;
     private SensorProfiles mSensorProfiles;
-
+    private Context mContext;
     private Object mLock = new Object();
 
     /**
@@ -45,6 +47,7 @@ public class DataSyncer {
         this.mDatabaseHandler = databaseHandler;
         this.mSensorProfiles = new SensorProfiles(context, databaseHandler.getEncryptionKey());
         this.mProxy = proxy;
+        this.mContext = context;
     }
 
     /**
@@ -54,8 +57,9 @@ public class DataSyncer {
      * @throws IOException
      * @throws SensorProfileException
      */
-    public void initialize() throws JSONException, IOException, SensorProfileException {
+    public void initialize() throws JSONException, IOException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, ValidationException {
         downloadSensorProfiles();
+        downloadSensorsFromRemote();
     }
 
     /**
@@ -162,7 +166,11 @@ public class DataSyncer {
         if (sensorList.length() != 0) {
             for (int i = 0; i < sensorList.length(); i++) {
                 JSONObject sensorFromRemote = sensorList.getJSONObject(i);
-                SensorOptions sensorOptions = new SensorOptions(sensorFromRemote.getJSONObject("meta"), false, true, false);
+                // get the default sensor options
+                SensorOptions sensorOptions = DefaultSensorOptions.getSensorOptions(mContext, sensorFromRemote.getString("sensor_name"));
+                sensorOptions.setMeta(sensorFromRemote.getJSONObject("meta"));
+
+                // if the sensor does not exist create it with the default options
                 if (!mDatabaseHandler.hasSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"))) {
                     mDatabaseHandler.createSensor(sensorFromRemote.getString("source_name"), sensorFromRemote.getString("sensor_name"), sensorOptions);
                 }
@@ -284,6 +292,10 @@ public class DataSyncer {
                 }
             }
         }
+    }
+
+    public Set<String> getSensorProfilesSensorNames() throws SensorProfileException, JSONException {
+        return mSensorProfiles.getSensorNames();
     }
 
     /**

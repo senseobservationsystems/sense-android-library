@@ -58,6 +58,12 @@ public class SensePrefs {
          */
         public static final String LOGIN_PASS = "login_pass";
         /**
+         * Key for login preference for user id.
+         *
+         * @see SensePrefs#AUTH_PREFS
+         */
+        public static final String LOGIN_USER_ID = "user_id";
+        /**
          * Key for storing the online sensor list for this device (type of JSONArray).
          * 
          * @see #SENSOR_LIST_COMPLETE
@@ -145,23 +151,10 @@ public class SensePrefs {
              */
             public static final String COMPRESS = "compression";
             /**
-             * Key for preference that enables local storage, making the sensor data available to
-             * other apps through a ContentProvider. Default is true.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             * @deprecated Local storage is always on.
-             */
-            public static final String LOCAL_STORAGE = "local_storage";
-            /**
              * Key for preference that enables communication with CommonSense. Disable this to work
              * in local-only mode. Default is true.
              */
             public static final String USE_COMMONSENSE = "use_commonsense";
-            /**
-             * Key for preference that enables the location feedback sensor. Enable this to
-             * participate in Pim's location feedback test. Default is false.
-             */
-            public static final String LOCATION_FEEDBACK = "location_feedback";
             /**
              * Key for preference that enables Agostino mode. Enable this to participate in
              * Agostino's saliency test. Default is false.
@@ -425,30 +418,6 @@ public class SensePrefs {
 
         public static class Location {
             /**
-             * Key for preference that toggles use of GPS in location sensor.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
-             */
-            @Deprecated
-            public static final String GPS = "location_gps";
-            /**
-             * Key for preference that toggles use of Network in location sensor.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             * @deprecated Selecting the location provider manually will replaced by the fused location provider.
-             */
-            @Deprecated
-            public static final String NETWORK = "location_network";
-            /**
-             * Key for preference that toggles use of sensor fusion to toggle the GPS usage.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             * @deprecated Selecting the GPS as provider automatically will be replaced by the fused location provider.
-             */
-            @Deprecated
-            public static final String AUTO_GPS = "automatic_gps";
-            /**
              * Key for preference that toggles use of the time zone sensor
              * 
              * @see SensePrefs#MAIN_PREFS
@@ -634,34 +603,6 @@ public class SensePrefs {
 			public static final String APP_INFO = "app_info";
         }
 
-        public static class Quiz {
-            /**
-             * Key for preference that sets the interval between pop quizzes.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             */
-            public static final String RATE = "popquiz_rate";
-            /**
-             * Key for preference that sets the silent mode for pop quizzes.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             */
-            public static final String SILENT_MODE = "popquiz_silent_mode";
-            /**
-             * Key for generic preference that starts an update of the quiz questions when clicked.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             */
-            public static final String SYNC = "popquiz_sync";
-            /**
-             * Key for preference that holds the last update time of the quiz questions with
-             * CommonSense.
-             * 
-             * @see SensePrefs#MAIN_PREFS
-             */
-            public static final String SYNC_TIME = "popquiz_sync_time";
-        }
-
         public static class SampleRate {
             /**
              * Key for the preference that sets the sample interval to every 15 minutes.
@@ -844,12 +785,6 @@ public class SensePrefs {
          * @see SensePrefs#STATUS_PREFS
          */
         public static final String AUTOSTART = "autostart";
-        /**
-        * Key for preference to pause sensing until the next charge.
-        * 
-        * @see SensePrefs#STATUS_PREFS
-        */
-        public static final String PAUSED_UNTIL_NEXT_CHARGE = "paused until next charge status";
     }
 
     public static class SensorSpecifics {

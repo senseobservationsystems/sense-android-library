@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
+import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.SenseServiceStub;
@@ -38,15 +39,11 @@ public class SensePlugin extends CordovaPlugin {
      * the plugin.
      */
     private static class Actions {
-        static final String ADD_DATA_POINT = "add_data_point";
         static final String CHANGE_LOGIN = "change_login";
         static final String FLUSH_BUFFER = "flush_buffer";
-        static final String GET_COMMONSENSE_DATA = "get_commonsense_data";
-        static final String GET_DATA = "get_data";
         static final String GET_STATUS = "get_status";
         static final String GET_SESSION = "get_session";
         static final String GET_PREF = "get_pref";
-        static final String GIVE_FEEDBACK = "give_feedback";
         static final String INIT = "init";
         static final String LOGOUT = "logout";
         static final String REGISTER = "register";
@@ -123,35 +120,6 @@ public class SensePlugin extends CordovaPlugin {
 
     private SensePlatform sensePlatform;
 
-    private void addDataPoint(CordovaArgs args, final CallbackContext callbackContext)
-            throws JSONException {
-
-        // get the parameters
-        final String name = args.getString(0);
-        final String displayName = args.getString(1);
-        final String description = args.getString(2);
-        final String dataType = args.getString(3);
-        final String value = args.getString(4);
-        final long timestamp = args.getLong(5);
-        Log.v(TAG, "addDataPoint('" + name + "', '" + displayName + "', '" + description + "', '"
-                + dataType + "', '" + value + "', " + timestamp + ")");
-
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                boolean result = sensePlatform.addDataPoint(name, displayName, description,
-                        dataType, value, timestamp);
-
-                if (result) {
-                    callbackContext.success();
-                } else {
-                    Log.w(TAG, "Could not start MsgHandler service!");
-                    callbackContext.error("could not add data to Sense service");
-                }
-            }
-        });
-    }
-
     private void changeLogin(final CordovaArgs args, final CallbackContext callbackContext)
             throws JSONException {
 
@@ -200,24 +168,16 @@ public class SensePlugin extends CordovaPlugin {
         try {
             if (Actions.INIT.equals(action)) {
                 init(args, callbackContext);
-            } else if (Actions.ADD_DATA_POINT.equals(action)) {
-                addDataPoint(args, callbackContext);
             } else if (Actions.CHANGE_LOGIN.equals(action)) {
                 changeLogin(args, callbackContext);
             } else if (Actions.FLUSH_BUFFER.equals(action)) {
                 flushBuffer(args, callbackContext);
-            } else if (Actions.GET_COMMONSENSE_DATA.equals(action)) {
-                getRemoteValues(args, callbackContext);
-            } else if (Actions.GET_DATA.equals(action)) {
-                getLocalValues(args, callbackContext);
             } else if (Actions.GET_PREF.equals(action)) {
                 getPreference(args, callbackContext);
             } else if (Actions.GET_STATUS.equals(action)) {
                 getStatus(args, callbackContext);
             } else if (Actions.GET_SESSION.equals(action)) {
                 getSession(args, callbackContext);
-            } else if (Actions.GIVE_FEEDBACK.equals(action)) {
-                giveFeedback(args, callbackContext);
             } else if (Actions.LOGOUT.equals(action)) {
                 logout(args, callbackContext);
             } else if (Actions.REGISTER.equals(action)) {
@@ -261,30 +221,9 @@ public class SensePlugin extends CordovaPlugin {
 
             @Override
             public void run() {
-                sensePlatform.flushData();
+                DataStorageEngine.getInstance(sensePlatform.getContext()).syncData();
             }
         });
-    }
-
-    private void getLocalValues(CordovaArgs data, CallbackContext callbackContext)
-            throws JSONException {
-
-        final String sensorName = data.getString(0);
-        final int limit = data.optInt(1);
-        Log.v(TAG, "getLocalValues('" + sensorName + "', " + limit + ")");
-
-        JSONArray result = sensePlatform.getLocalData(sensorName, limit);
-
-        // convert the date to seconds
-        for (int i = 0; i < result.length(); i++) {
-            JSONObject dataPoint = result.getJSONObject(i);
-            dataPoint.put("date", dataPoint.getDouble("date") / 1000d);
-            result.put(i, dataPoint);
-        }
-
-        Log.v(TAG, "Found " + result.length() + " '" + sensorName
-                + "' data points in the local storage");
-        callbackContext.success(result);
     }
 
     private void getPreference(CordovaArgs data, CallbackContext callbackContext)
@@ -303,44 +242,6 @@ public class SensePlugin extends CordovaPlugin {
             callbackContext.success("" + result);
         }
     }
-
-    private void getRemoteValues(CordovaArgs data, final CallbackContext callbackContext)
-            throws JSONException {
-
-        final String sensorName = data.getString(0);
-        final boolean onlyThisDevice = data.getBoolean(1);
-        final int limit = data.optInt(2);
-        Log.v(TAG, "getRemoteValues('" + sensorName + "', " + onlyThisDevice + ", " + limit + ")");
-
-        cordova.getThreadPool().execute(new Runnable() {
-
-            @Override
-            public void run() {
-                JSONArray result;
-                try {
-                    result = sensePlatform.getData(sensorName, onlyThisDevice, limit);
-
-                    Log.v(TAG, "Found " + result.length() + " '" + sensorName
-                            + "' data points in the CommonSense");
-
-                    // convert the date to seconds
-                    for (int i = 0; i < result.length(); i++) {
-                        JSONObject dataPoint = result.getJSONObject(i);
-                        dataPoint.put("date", dataPoint.getDouble("date") / 1000d);
-                        result.put(i, dataPoint);
-                    }
-
-                    callbackContext.success(result);
-
-                } catch (IllegalStateException e) {
-                    callbackContext.error(e.getMessage());
-                } catch (JSONException e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
-    }
-
     private void getSession(CordovaArgs data, CallbackContext callbackContext)
             throws IllegalAccessException {
 
@@ -380,37 +281,6 @@ public class SensePlugin extends CordovaPlugin {
             Log.e(TAG, "No connection to the Sense Platform service.");
             callbackContext.error("No connection to the Sense Platform service.");
         }
-    }
-
-    private void giveFeedback(CordovaArgs args, final CallbackContext callbackContext)
-            throws JSONException {
-
-        // get the parameters
-        final String name = args.getString(0);
-        final long start = args.getLong(1);
-        final long end = args.getLong(2);
-        final String label = args.getString(3);
-
-        Log.v(TAG, "giveFeedback('" + name + "', " + start + ", " + end + ", '" + label + "')");
-
-        cordova.getThreadPool().execute(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    boolean result = sensePlatform.giveFeedback(name, new Date(start),
-                            new Date(end), label);
-                    callbackContext.success("" + result);
-                } catch (IllegalStateException e) {
-                    Log.e(TAG, "Failed to bind to service in time!");
-                    callbackContext.error("Failed to bind to service in time!");
-                } catch (IOException e) {
-                    callbackContext.error(e.getMessage());
-                } catch (JSONException e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
     }
 
     private void init(CordovaArgs args, CallbackContext callback) {

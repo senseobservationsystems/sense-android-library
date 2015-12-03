@@ -10,9 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
+
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -127,19 +125,11 @@ public class AppInfoSensor extends BaseDataProducer {
 			
 			notifySubscribers();
         	SensorDataPoint dataPoint = new SensorDataPoint(json);
-        	dataPoint.sensorName = SensorNames.APP_INFO_SENSOR;
-        	dataPoint.sensorDescription = SensorNames.APP_INFO_SENSOR;
+        	dataPoint.sensorName = SensorNames.APP_INFO;
+        	dataPoint.sensorDescription = SensorNames.APP_INFO;
         	dataPoint.timeStamp = SNTP.getInstance().getTime();        
         	Log.d(TAG,"Going to sendToSubscribers");
         	sendToSubscribers(dataPoint);
-        	
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.VALUE, json.toString());
-            i.putExtra(DataPoint.SENSOR_NAME, SensorNames.APP_INFO_SENSOR);
-            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            i.setPackage(context.getPackageName());
-            context.startService(i);
 		}
 	};
 	

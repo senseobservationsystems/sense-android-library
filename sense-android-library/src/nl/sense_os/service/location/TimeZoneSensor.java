@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
+
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -83,16 +81,6 @@ public class TimeZoneSensor extends BaseDataProducer
             dataPoint.timeStamp = SNTP.getInstance().getTime();
             //Log.d(TAG,"time zone subscribers: " + this.);
             this.sendToSubscribers(dataPoint);
-
-            // pass message to the MsgHandler
-            Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.SENSOR_NAME, SensorNames.TIME_ZONE);
-            i.putExtra(DataPoint.VALUE, timeZoneJson.toString());
-            i.putExtra(DataPoint.SENSOR_DESCRIPTION, dataPoint.sensorDescription);
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            i.setPackage(context.getPackageName());
-            this.context.startService(i);
         }
         catch(Exception e)
         {

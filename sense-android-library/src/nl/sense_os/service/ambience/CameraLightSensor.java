@@ -5,10 +5,7 @@ package nl.sense_os.service.ambience;
 
 import java.util.HashMap;
 
-import nl.sense_os.service.R;
 import nl.sense_os.service.ambience.CameraLightValue.CameraLightValueCallback;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -17,7 +14,6 @@ import nl.sense_os.service.subscription.BaseDataProducer;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -54,17 +50,6 @@ public class CameraLightSensor extends BaseDataProducer{
 			dataPoint.sensorDescription = sensorDescription;
 			dataPoint.timeStamp = SNTP.getInstance().getTime();        
 			sendToSubscribers(dataPoint);
-
-			// pass message to the MsgHandler
-			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-			i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-			i.putExtra(DataPoint.DISPLAY_NAME, sensorDisplayName);
-			i.putExtra(DataPoint.VALUE, jsonString);
-			i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
-			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-			i.setPackage(context.getPackageName());
-			context.startService(i);
 			// Log.e(TAG, "Sent new camera licht values, camera: "+camera_id+" value: "+lightValue);
 			nextUpdate(camera_id);
 		}

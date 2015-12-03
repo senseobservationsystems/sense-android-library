@@ -3,17 +3,13 @@ package nl.sense_os.service.ambience;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.SensorSpecifics;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseDataProducer;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
@@ -145,14 +141,5 @@ public class LoudnessSensor extends BaseDataProducer {
 		dataPoint.sensorDescription = SensorNames.LOUDNESS;
 		dataPoint.timeStamp = ms;        
 		this.sendToSubscribers(dataPoint);
-
-		Intent sensorData = new Intent(
-				context.getString(R.string.action_sense_new_data));
-		sensorData.putExtra(DataPoint.SENSOR_NAME,SensorNames.LOUDNESS);
-		sensorData.putExtra(DataPoint.VALUE, (float)value);
-		sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-		sensorData.putExtra(DataPoint.TIMESTAMP, ms);
-		sensorData.setPackage(context.getPackageName());
-		context.startService(sensorData);
 	}
 }

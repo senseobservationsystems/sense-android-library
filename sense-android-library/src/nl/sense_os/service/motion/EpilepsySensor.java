@@ -1,22 +1,17 @@
 package nl.sense_os.service.motion;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import nl.sense_os.service.subscription.BaseDataProducer;
 import nl.sense_os.service.subscription.DataConsumer;
-import nl.sense_os.service.provider.SNTP;
 
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
@@ -99,17 +94,6 @@ public class EpilepsySensor extends BaseDataProducer implements DataConsumer {
         {
         	Log.e(TAG, "Error in sending data to subscribers");
         }
-        
-        // TODO: implement MsgHandler as data processor
-        // pass message to the MsgHandler
-        Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-        i.putExtra(DataPoint.SENSOR_NAME, SensorNames.ACCELEROMETER_EPI);
-        i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-        i.putExtra(DataPoint.VALUE, value);
-        i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON_TIME_SERIES);
-        i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime() - LOCAL_BUFFER_TIME);
-        i.setPackage(context.getPackageName());
-        context.startService(i);
     }
 
     @Override

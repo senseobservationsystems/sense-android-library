@@ -20,6 +20,7 @@ import nl.sense_os.datastorageengine.DataPoint;
 import nl.sense_os.datastorageengine.DataSyncer;
 import nl.sense_os.datastorageengine.DatabaseHandler;
 import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.DefaultSensorOptions;
 import nl.sense_os.datastorageengine.ErrorCallback;
 import nl.sense_os.datastorageengine.ProgressCallback;
 import nl.sense_os.datastorageengine.QueryOptions;
@@ -29,6 +30,7 @@ import nl.sense_os.datastorageengine.SensorException;
 import nl.sense_os.datastorageengine.SensorOptions;
 import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.datastorageengine.SensorProfiles;
+import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.util.json.SchemaException;
 import nl.sense_os.util.json.ValidationException;
 
@@ -38,7 +40,7 @@ public class TestDataSyncer extends AndroidTestCase {
     private CSUtils mCsUtils;
     private Map<String, String> mNewUser;
     SensorDataProxy.SERVER mServer = SensorDataProxy.SERVER.STAGING;
-    private String mSourceName = "sense-android";
+    private String mSourceName = SensorData.SourceNames.SENSE_LIBRARY;
     private String mAppKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
     private String mSessionId;
     private DatabaseHandler mDatabaseHandler;
@@ -52,6 +54,13 @@ public class TestDataSyncer extends AndroidTestCase {
         // remove old mRealm data
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();
         Realm.deleteRealm(testConfig);
+
+        // set the noise sensor to download and persist data locally by default
+        SensorOptions sensorOptions = new SensorOptions();
+        sensorOptions.setPersistLocally(true);
+        sensorOptions.setUploadEnabled(true);
+        sensorOptions.setDownloadEnabled(true);
+        DefaultSensorOptions.setDefaultSensorOptions(getContext(), SensorData.SensorNames.NOISE, sensorOptions);
 
         mCsUtils = new CSUtils(false);
         mNewUser = mCsUtils.createCSAccount();
@@ -72,7 +81,7 @@ public class TestDataSyncer extends AndroidTestCase {
         mCsUtils.deleteAccount(mNewUser.get("username"), mNewUser.get("password"), mNewUser.get("id"));
     }
 
-    public void testInitialize() throws IOException, JSONException, SensorProfileException {
+    public void testInitialize() throws IOException, JSONException, SensorProfileException, SchemaException, DatabaseHandlerException, SensorException, ValidationException {
         // clear mRealm again for this specific unit tests
         // (for all other tests, dataSyncer is already initialized)
         RealmConfiguration testConfig = new RealmConfiguration.Builder(getContext()).build();
@@ -672,6 +681,9 @@ public class TestDataSyncer extends AndroidTestCase {
         long startTime = 1444739042200l;  // time of point with value 2
         long endTime   = 1444739042400l;  // time of point with value 4
         Sensor noise = mDatabaseHandler.getSensor(mSourceName, sensorName);
+        SensorOptions sensorOptions = noise.getOptions();
+        sensorOptions.setPersistLocally(true);
+        noise.setOptions(sensorOptions);
         noise.deleteDataPoints(startTime, endTime);
 
         // data points should be deleted immediately from local

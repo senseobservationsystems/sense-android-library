@@ -37,8 +37,26 @@
         </activity>
 
         <receiver android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer"></receiver>
-
         <service android:enabled="true" android:name="nl.sense_os.datastorageengine.PeriodicDataSyncer$PeriodicSyncService" />
+        <service
+            android:name="nl.sense_os.service.SenseService"
+            android:exported="false" >
+            <intent-filter>
+                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                <action android:name="nl.sense_os.cortex.test.SENSE_SERVICE" />
+            </intent-filter>
+        </service>
+        <!-- BROADCAST RECEIVER FOR CHANGES IN THE NETWORK STATE -->
+        <receiver
+            android:name="nl.sense_os.service.NetworkMonitor"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <!-- BROADCAST RECEIVER FOR SCHEDULED SAMPLE EXECUTION ALARMS -->
+        <receiver android:name="nl.sense_os.service.scheduler.ExecutionAlarmReceiver" />
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

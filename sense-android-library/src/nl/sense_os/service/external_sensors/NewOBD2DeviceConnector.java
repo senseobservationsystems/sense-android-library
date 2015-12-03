@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -120,9 +117,6 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 		// Hayes Command set: turn automatic formatting ON, turn headers OFF
 		final String[] hayescommands = { "AT E0", /* "AT CAF 1", */"AT H 0" };
 
-		// OBD variables
-		private ArrayList<String> verifiedsensors = new ArrayList<String>();
-		private EmptyRegistrator registrator = new EmptyRegistrator();
 
 		// OBD timer variables
 		private final int timeout = 20000;
@@ -247,7 +241,6 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 			try {
 				input = socket.getInputStream();
 				output = socket.getOutputStream();
-				verifiedsensors = new ArrayList<String>();
 				return State.CONNECTION_READY;
 			} catch (IOException e) {
 				// Stop if no good socket was created
@@ -626,14 +619,6 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 
 		private boolean SendDataPoint(String sensorName, String sensorDescription, Object value,
 				String dataType) {
-			// if necessary, register the sensor
-			if (!verifiedsensors.contains(sensorName)) {
-				if (registrator.checkSensor(sensorName, sensorName, dataType, sensorDescription,
-						value.toString(), device.getName(), device.getAddress())) {
-					verifiedsensors.add(sensorName);
-				}
-			}
-
 			SensorDataPoint dataPoint = new SensorDataPoint(0);
 			if (dataType.equals(SenseDataTypes.BOOL)) {
 				dataPoint =  new  SensorDataPoint((Boolean) value);
@@ -648,7 +633,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 			} else {
 				dataPoint = null;
 			}
-			if(dataPoint != null)	    	
+			if(dataPoint != null)
 			{
 				notifySubscribers();
 				dataPoint.sensorName = sensorName;
@@ -656,45 +641,7 @@ public class NewOBD2DeviceConnector extends BaseDataProducer implements Runnable
 				dataPoint.timeStamp = SNTP.getInstance().getTime();        
 				sendToSubscribers(dataPoint);
 			}
-			// build the intent and send it to commonsense
-			Intent intent = new Intent(context.getString(R.string.action_sense_new_data));
-			intent.putExtra(DataPoint.SENSOR_NAME, sensorName);
-			intent.putExtra(DataPoint.SENSOR_DESCRIPTION, sensorDescription);
-			intent.putExtra(DataPoint.DATA_TYPE, dataType);
-			intent.putExtra(DataPoint.DEVICE_UUID, device.getAddress());
-			if (dataType.equals(SenseDataTypes.BOOL)) {
-				intent.putExtra(DataPoint.VALUE, (Boolean) value);
-			} else if (dataType.equals(SenseDataTypes.FLOAT)) {
-				intent.putExtra(DataPoint.VALUE, (Float) value);
-			} else if (dataType.equals(SenseDataTypes.INT)) {
-				intent.putExtra(DataPoint.VALUE, (Integer) value);
-			} else if (dataType.equals(SenseDataTypes.JSON)) {
-				intent.putExtra(DataPoint.VALUE, (String) value);
-			} else if (dataType.equals(SenseDataTypes.STRING)) {
-				intent.putExtra(DataPoint.VALUE, (String) value);
-			} else {
-				Log.w(TAG, "Error sending data point: unexpected data type! '" + dataType + "'");
-			}
-			intent.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-			intent.setPackage(context.getPackageName());
-			boolean itemsent = (context.startService(intent) != null);
-			if (!itemsent)
-				Log.e(TAG, "Sending of DataPoint: " + sensorName + " " + value + " "
-						+ sensorDescription + "    FAILED !!!");
-			return itemsent;
-		}
-
-		private class EmptyRegistrator extends SensorRegistrator {
-			public EmptyRegistrator() {
-				super(NewOBD2DeviceConnector.this.context);
-			}
-
-			@Override
-			public boolean verifySensorIds(String deviceType, String deviceUuid) {
-				Log.e(TAG,
-						"DO NOT USE verifySensorIds, USE checkSensor methods seperately, because of dynamic implementation");
-				return false;
-			}
+			return true;
 		}
 	}
 }

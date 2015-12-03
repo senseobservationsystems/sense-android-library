@@ -88,8 +88,6 @@ Example for setting the sample and sync rate:
     * nl.sense_os.service.constants.SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL_SALT
     * nl.sense_os.service.constants.SensePrefs.Main.Advanced.ENCRYPT_DATABASE
     * nl.sense_os.service.constants.SensePrefs.Main.Advanced.ENCRYPT_DATABASE_SALT
-    * nl.sense_os.service.constants.SensePrefs.Main.Advanced.LOCAL_STORAGE
-    * nl.sense_os.service.constants.SensePrefs.Main.Advanced.LOCATION_FEEDBACK
     * nl.sense_os.service.constants.SensePrefs.Main.Advanced.MOBILE_INTERNET_ENERGY_SAVING_MODE
     * nl.sense_os.service.constants.SensePrefs.Main.Advanced.RETENTION_HOURS
     * nl.sense_os.service.constants.SensePrefs.Main.Advanced.USE_COMMONSENSE
@@ -118,11 +116,8 @@ Example for setting the sample and sync rate:
     * nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrBioHarness
     * nl.sense_os.service.constants.SensePrefs.Main.External.ZephyrHxM
   * nl.sense_os.service.constants.SensePrefs.Main.Location
-    * nl.sense_os.service.constants.SensePrefs.Main.Location.AUTO_GPS
     * nl.sense_os.service.constants.SensePrefs.Main.Location.FUSED_PROVIDER
     * nl.sense_os.service.constants.SensePrefs.Main.Location.FUSED_PROVIDER_PRIORITY
-    * nl.sense_os.service.constants.SensePrefs.Main.Location.GPS
-    * nl.sense_os.service.constants.SensePrefs.Main.Location.NETWORK
     * nl.sense_os.service.constants.SensePrefs.Main.Location.TIME_ZONE
   * nl.sense_os.service.constants.SensePrefs.Main.Motion
     * nl.sense_os.service.constants.SensePrefs.Main.Motion.ACCELEROMETER
@@ -162,11 +157,6 @@ Example for setting the sample and sync rate:
     * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.NORMAL
     * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.OFTEN
     * nl.sense_os.service.constants.SensePrefs.Main.SyncRate.REAL_TIME
-  * nl.sense_os.service.constants.SensePrefs.Main.Quiz
-    * nl.sense_os.service.constants.SensePrefs.Main.Quiz.RATE
-    * nl.sense_os.service.constants.SensePrefs.Main.Quiz.SILENT_MODE
-    * nl.sense_os.service.constants.SensePrefs.Main.Quiz.SYNC
-    * nl.sense_os.service.constants.SensePrefs.Main.Quiz.SYNC_TIME
   * nl.sense_os.service.constants.SensePrefs.Main.APPLICATION_KEY
   * nl.sense_os.service.constants.SensePrefs.Main.LAST_LOGGED_IN
   * nl.sense_os.service.constants.SensePrefs.Main.LAST_STATUS
@@ -196,6 +186,4 @@ Example for setting the sample and sync rate:
   * nl.sense_os.service.constants.SensePrefs.Status.LOCATION
   * nl.sense_os.service.constants.SensePrefs.Status.MAIN
   * nl.sense_os.service.constants.SensePrefs.Status.MOTION
-  * nl.sense_os.service.constants.SensePrefs.Status.PAUSED_UNTIL_NEXT_CHARGE
   * nl.sense_os.service.constants.SensePrefs.Status.PHONESTATE
-  * nl.sense_os.service.constants.SensePrefs.Status.POPQUIZ

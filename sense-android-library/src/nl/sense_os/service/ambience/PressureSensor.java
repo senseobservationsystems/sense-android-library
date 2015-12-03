@@ -7,9 +7,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
@@ -17,7 +14,6 @@ import nl.sense_os.service.shared.PeriodicPollingSensor;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseSensor;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -132,17 +128,6 @@ public class PressureSensor extends BaseSensor implements SensorEventListener,
             dataPoint.sensorDescription = sensor.getName();
             dataPoint.timeStamp = SNTP.getInstance().getTime();
             this.sendToSubscribers(dataPoint);
-
-            // send msg to MsgHandler
-            Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-            i.putExtra(DataPoint.VALUE, value);
-            i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-            i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            i.setPackage(mContext.getPackageName());
-            mContext.startService(i);
-
             // sample is successful: unregister the listener
             stopSample();
         }

@@ -10,7 +10,7 @@ public class DSEConfig implements Cloneable{
      */
     public Long uploadInterval = null;
     /**
-     * The number of seconds to persist the data locally
+     * The number of milliseconds to persist the data locally
      * The default value is DataSyncer.PERSIST_PERIOD
      */
     public Long localPersistancePeriod = null;
@@ -25,6 +25,11 @@ public class DSEConfig implements Cloneable{
      * The default environment will be selected which is SensorDataProxy.SERVER.LIVE
      */
     public SensorDataProxy.SERVER backendEnvironment = null;
+    /**
+     * Enable the synchronization with the back-end
+     * The default is true
+     */
+    public Boolean enableSync = null;
 
     /** DSE back-end credentials */
     private String mUserID = "";
@@ -86,6 +91,7 @@ public class DSEConfig implements Cloneable{
         dseConfig.localPersistancePeriod = localPersistancePeriod;
         dseConfig.enableEncryption = enableEncryption;
         dseConfig.backendEnvironment = backendEnvironment;
+        dseConfig.enableSync = enableSync;
         return dseConfig;
     }
 
@@ -104,6 +110,8 @@ public class DSEConfig implements Cloneable{
         if(!mSessionID.equals(((DSEConfig)o).mSessionID))
             return false;
         if(!mAPPKey.equals(((DSEConfig)o).mAPPKey))
+            return false;
+        if(enableSync != ((DSEConfig)o).enableSync)
             return false;
         return true;
     }

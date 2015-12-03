@@ -10,6 +10,8 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'jacoco'
+
 /**
  * To see the output of dexcount (number of methods), run:
  *
@@ -65,4 +67,9 @@ dependencies {
     compile 'com.android.support:support-v4:21.+'
     compile 'com.android.support:appcompat-v7:21.+'
     compile project(':sense-android-library')
+}
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+    reportsDir = file("$buildDir/customJacocoReportDir")
 }

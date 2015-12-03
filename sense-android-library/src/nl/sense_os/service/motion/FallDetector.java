@@ -3,9 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.motion;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
@@ -13,7 +10,6 @@ import nl.sense_os.service.shared.SensorDataPoint.DataType;
 import nl.sense_os.service.subscription.BaseDataProducer;
 import nl.sense_os.service.subscription.DataConsumer;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.os.SystemClock;
@@ -226,16 +222,6 @@ public class FallDetector extends BaseDataProducer implements DataConsumer {
 		dataPoint.sensorDescription = demo ? "demo fall" : "human fall";
 		dataPoint.timeStamp = SNTP.getInstance().getTime();        
 		this.sendToSubscribers(dataPoint);
-
-		//TODO: implement MsgHandler as data processor
-		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-		i.putExtra(DataPoint.SENSOR_NAME, SensorNames.FALL_DETECTOR);
-		i.putExtra(DataPoint.SENSOR_DESCRIPTION, demo ? "demo fall" : "human fall");
-		i.putExtra(DataPoint.VALUE, fall);
-		i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.BOOL);
-		i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-		i.setPackage(context.getPackageName());
-		context.startService(i);
 	}
 
     @Override

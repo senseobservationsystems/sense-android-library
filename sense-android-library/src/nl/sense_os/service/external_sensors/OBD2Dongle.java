@@ -10,11 +10,10 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.subscription.BaseDataProducer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +33,7 @@ import android.util.Log;
  * 
  * @author Roelof van den Berg <roelof@sense-os.nl>
  */
-public class OBD2Dongle {
+public class OBD2Dongle extends BaseDataProducer {
     // static device specifics
     private static final String TAG = "OBD-II";
     private static String deviceType = "TestOBD";
@@ -518,16 +517,14 @@ public class OBD2Dongle {
         	}
         	
         	protected String sensor_name;
-        	public void sendIntent(){
-                Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-                i.putExtra(DataPoint.SENSOR_NAME, sensor_name);
-                i.putExtra(DataPoint.SENSOR_DESCRIPTION, deviceType);
-                i.putExtra(DataPoint.VALUE, getJSON().toString());
-                i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-                i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-                i.setPackage(context.getPackageName());
-                context.startService(i);
-        	}
+            public void sendIntent(){
+                SensorDataPoint dataPoint = new SensorDataPoint(getJSON());
+                notifySubscribers();
+                dataPoint.sensorName = sensor_name;
+                dataPoint.sensorDescription = deviceType;
+                dataPoint.timeStamp = SNTP.getInstance().getTime();
+                sendToSubscribers(dataPoint);
+            }
         	
         	protected void clearData(){
         		data = new String();

@@ -1,16 +1,12 @@
 package nl.sense_os.service.ambience;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.SensorSpecifics;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorDescriptions;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.shared.SensorDataPoint;
 import nl.sense_os.service.subscription.BaseDataProducer;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
@@ -26,7 +22,7 @@ import android.util.Log;
  * @author Pim Nijdam <pim@sense-os.nl>
  */
 public class AutoCalibratedNoiseSensor extends BaseDataProducer {
-	private static final String TAG = "AutoCalibratedNoiseSensor";
+	private static final String TAG = "AutoCalNoise";
 	private static final float DEFAULT_TOTAL_SILENCE = Float.MAX_VALUE;
 	private static final float DEFAULT_LOUDEST = Float.MIN_VALUE;
 	private static final double MIN_LOUDNESS_DYNAMIC = 30;
@@ -99,17 +95,5 @@ public class AutoCalibratedNoiseSensor extends BaseDataProducer {
 		dataPoint.sensorDescription = SensorDescriptions.AUTO_CALIBRATED;
 		dataPoint.timeStamp = ms;        
 		this.sendToSubscribers(dataPoint);
-
-		Intent sensorData = new Intent(
-				context.getString(R.string.action_sense_new_data));
-		sensorData.putExtra(DataPoint.SENSOR_NAME,
-				SensorNames.NOISE);
-		sensorData.putExtra(DataPoint.SENSOR_DESCRIPTION,
-				SensorDescriptions.AUTO_CALIBRATED);
-		sensorData.putExtra(DataPoint.VALUE, (float)value);
-		sensorData.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
-		sensorData.putExtra(DataPoint.TIMESTAMP, ms);
-		sensorData.setPackage(context.getPackageName());
-		context.startService(sensorData);
 	}
 }

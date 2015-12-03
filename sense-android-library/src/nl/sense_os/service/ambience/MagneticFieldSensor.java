@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
@@ -21,7 +18,6 @@ import nl.sense_os.service.subscription.BaseSensor;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -137,7 +133,6 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
             dataFields.put("y", y);
             dataFields.put("z", z);
             JSONObject jsonObj = new JSONObject(dataFields);
-            String jsonString = jsonObj.toString();
 
             this.notifySubscribers();
             SensorDataPoint dataPoint = new SensorDataPoint(jsonObj);
@@ -145,17 +140,6 @@ public class MagneticFieldSensor extends BaseSensor implements SensorEventListen
             dataPoint.sensorDescription = sensor.getName();
             dataPoint.timeStamp = SNTP.getInstance().getTime();
             this.sendToSubscribers(dataPoint);
-
-            // send msg to MsgHandler
-            Intent i = new Intent(mContext.getString(R.string.action_sense_new_data));
-            i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-            i.putExtra(DataPoint.VALUE, jsonString);
-            i.putExtra(DataPoint.SENSOR_NAME, sensorName);
-            i.putExtra(DataPoint.DISPLAY_NAME, SENSOR_DISPLAY_NAME);
-            i.putExtra(DataPoint.SENSOR_DESCRIPTION, sensor.getName());
-            i.putExtra(DataPoint.TIMESTAMP, dataPoint.timeStamp);
-            i.setPackage(mContext.getPackageName());
-            mContext.startService(i);
 
             // sample is successful: unregister the listener
             stopSample();

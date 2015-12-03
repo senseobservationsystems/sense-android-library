@@ -3,11 +3,8 @@ package nl.sense_os.service.phonestate;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensePrefs.Main.PhoneState;
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.constants.SensorData.SensorNames;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.PeriodicPollAlarmReceiver;
@@ -90,16 +87,6 @@ public class AppsSensor extends BaseDataProducer implements PeriodicPollingSenso
 			dataPoint.sensorDescription = SensorNames.APP_INSTALLED;
 			dataPoint.timeStamp = SNTP.getInstance().getTime();        
 			sendToSubscribers(dataPoint);
-
-			// send data point
-			Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-			i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-			i.putExtra(DataPoint.VALUE, value.toString());
-			i.putExtra(DataPoint.SENSOR_NAME, SensorNames.APP_INSTALLED);
-			i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-			i.setPackage(context.getPackageName());
-			context.startService(i);
-
 		} catch (JSONException e) {
 			Log.e(TAG, "Failed to create data point for installed apps sensor!", e);
 		}
@@ -112,14 +99,6 @@ public class AppsSensor extends BaseDataProducer implements PeriodicPollingSenso
 		dataPoint.sensorDescription = SensorNames.APP_FOREGROUND;
 		dataPoint.timeStamp = SNTP.getInstance().getTime();        
 		sendToSubscribers(dataPoint);
-
-		Intent i = new Intent(context.getString(R.string.action_sense_new_data));
-		i.putExtra(DataPoint.DATA_TYPE, SenseDataTypes.JSON);
-		i.putExtra(DataPoint.VALUE, foreGroundApp.toString());
-		i.putExtra(DataPoint.SENSOR_NAME, SensorNames.APP_FOREGROUND);
-		i.putExtra(DataPoint.TIMESTAMP, SNTP.getInstance().getTime());
-		i.setPackage(context.getPackageName());
-		context.startService(i);
 	}
 
 
