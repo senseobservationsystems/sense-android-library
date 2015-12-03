@@ -285,7 +285,7 @@ public class SensorUtils {
         }
     };
 
-    public synchronized Future<Boolean> waitForDSEDataconsumer(final Context context) {
+    public synchronized Future<Boolean> waitForDSEDataConsumer(final Context context) {
         return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
             public Boolean call() throws InterruptedException {
                 SubscriptionManager sm = SubscriptionManager.getInstance();

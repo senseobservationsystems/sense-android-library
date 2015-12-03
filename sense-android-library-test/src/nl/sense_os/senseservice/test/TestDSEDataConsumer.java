@@ -76,14 +76,14 @@ public class TestDSEDataConsumer extends AndroidTestCase {
             sensorOptions.setPersistLocally(true);
             DefaultSensorOptions.setDefaultSensorOptions(getContext(), sensorName, sensorOptions);
         }
+        SensorUtils sensorUtils = SensorUtils.getInstance();
+        // wait 60 seconds until the DSEDataConsumer is registered
+        sensorUtils.waitForDSEDataConsumer(getContext()).get(60, TimeUnit.SECONDS);
         // Get the DSE
         DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
         // Wait until the DSE is ready
         dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
         // send the sensor data
-        SensorUtils sensorUtils = SensorUtils.getInstance();
-        // wait 60 seconds until the DSEDataConsumer is registered
-        sensorUtils.waitForDSEDataconsumer(getContext()).get(60, TimeUnit.SECONDS);
         sensorUtils.accelerometerSensor.sendDummyData();
         sensorUtils.appInfo.sendDummyData();
         sensorUtils.batterySensor.sendDummyData();

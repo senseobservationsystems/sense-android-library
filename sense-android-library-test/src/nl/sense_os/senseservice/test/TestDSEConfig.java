@@ -1,6 +1,7 @@
 package nl.sense_os.senseservice.test;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import org.json.JSONException;
 
@@ -22,8 +23,6 @@ import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData;
-import nl.sense_os.service.storage.DSEDataConsumer;
-import nl.sense_os.service.subscription.SubscriptionManager;
 import nl.sense_os.util.json.SchemaException;
 
 /**
@@ -78,18 +77,17 @@ public class TestDSEConfig extends AndroidTestCase{
     public void testDataSync() throws InterruptedException, JSONException, SchemaException, DatabaseHandlerException, SensorProfileException, SensorException, TimeoutException, ExecutionException {
         // set the sensor to persist it's data locally and upload the data
 
-        SensePlatform sensePlatform = SenseServiceUtils.getSensePlatform(getContext());
-        // set the Sense pref upload of data every minute
-        DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
-        // wait until the dse is ready
-        dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
-        // send dummy accelerometer data
         SensorUtils sensorUtils = SensorUtils.getInstance();
         // wait 60 seconds until the DSEDataConsumer is registered
-        sensorUtils.waitForDSEDataconsumer(getContext()).get(60, TimeUnit.SECONDS);
+        sensorUtils.waitForDSEDataConsumer(getContext()).get(60, TimeUnit.SECONDS);
+        // send dummy accelerometer data
         sensorUtils.accelerometerSensor.sendDummyData();
+
+        SensePlatform sensePlatform = SenseServiceUtils.getSensePlatform(getContext());
+        // set the Sense pref upload of data every minute
         sensePlatform.getService().setPrefString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.OFTEN);
         // wait until the dse is ready
+        DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
         dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
         // wait 1 minute + 5 seconds for the sync
         Thread.sleep(65000);
