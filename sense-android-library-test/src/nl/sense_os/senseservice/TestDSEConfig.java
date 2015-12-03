@@ -42,10 +42,11 @@ public class TestDSEConfig extends AndroidTestCase{
     }
 
     public void testUpdateConfig() throws InterruptedException, ExecutionException, TimeoutException {
+        int retentionHours = 60;
         // set the Sense pref
         SensePlatform sensePlatform = SenseServiceUtils.getSensePlatform(getContext());
         // set local persist period
-        sensePlatform.getService().setPrefInt(SensePrefs.Main.Advanced.RETENTION_HOURS, 60);
+        sensePlatform.getService().setPrefInt(SensePrefs.Main.Advanced.RETENTION_HOURS, retentionHours);
 
         // Get the DSE
         DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
@@ -53,6 +54,8 @@ public class TestDSEConfig extends AndroidTestCase{
         dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
         // get the DSE periodic sync
         DSEConfig dseConfig = dataStorageEngine.getConfig();
+        // check if the DSE has the right retention hours
+        assertTrue(dseConfig.localPersistancePeriod == retentionHours*60*60*1000l);
         // set local persist period
         sensePlatform.getService().setPrefInt(SensePrefs.Main.Advanced.RETENTION_HOURS, 1);
 
