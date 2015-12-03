@@ -19,7 +19,7 @@ Stored sensor data can be queried for a specific sensor and source using the met
 * sortOrder: sorting order. it could either be DESC or ASC..
 * interval: such as MINUTE, HOUR, DAY, WEEK
 
-## Default Sensor Options {#default_sensor_options}
+## Default sensor options {#default_sensor_options}
 Default SensorOptions are used when a sensor is created for the first time. This can be when initializing the `DataStorageEngine` or when accessing a sensor. Default SensorOptions can be defined for each sensor in the sensor profiles by defining it statically in the string resource file located at `res/values/default_sensor_options.xml`. In this document the SensorOptions can be defined by adding a JSON object to the JSON array with the following fields as defined in `DefaultSensorOptions`:
 
 ```json
@@ -42,7 +42,7 @@ Example for the accelerometer
 }
 ```
 
-Default SensorOptions can also be set pragmatically for a sensor via de function `DefaultSensorOptions.setDefaultSensorOptions`. N.B. This should be done before the sensor is created in the database in order to take these options into account.
+Default SensorOptions can also be set pragmatically for a sensor via de function `DefaultSensorOptions.setDefaultSensorOptions`. N.B. This function should be called before the sensor is created in the database in order to take these options into account.
 
 
 ## Retention Rate {#retention_rate}

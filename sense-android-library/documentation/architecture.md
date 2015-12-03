@@ -20,7 +20,7 @@ More details on SenseService [here](documentation/sense_service.md).
 
 ## 2. SensePlatform
 
-The SensePlatform class provides an abstraction to simplify the interaction with the SenseService, user management and sensor data access. It's a proxy class which by instantiating binds (and starts if needed) the SenseService. You can then use the high level methods of this class, and/or get the service object to work directly with the SenseService.
+The SensePlatform class provides an abstraction to simplify the interaction with the SenseService, user management and global settings. It's a proxy class which by instantiating binds (and starts if needed) the SenseService. You can then use the high level methods of this class, and/or get the service object to work directly with the SenseService.
 
 SensePlatform is implemented in nl.sense_os.platform.SensePlatform.
 
@@ -42,7 +42,7 @@ More details on the Data Storage Engine [here](documentation/storage.md)
 ## 5. Subscription Manager
 
 This class will manage and keep track of available DataProducers and DataConsumers. 
-Basically, a DataProducer could be anything that produces data, but currently it’s only used for sensors. A DataConsumer could be anything that wishes to receive updates from a DataProducer every time there is a new data.
+Basically, a DataProducer could be anything that produces data. A DataConsumer could be anything that wishes to receive updates from a DataProducer every time there is new data.
 
 A DataConsumer will be added to DataProducer’s subscriber list when the consumer subscribes to a named producer, and also when a new producer registers with that same name.
 
