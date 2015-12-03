@@ -91,7 +91,7 @@ public class TestSensorProfiles  extends AndroidTestCase {
 
     public void testSensorCall() throws Exception {
         String sensorName = "call";
-        JSONObject expectedProfile = new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"type\": \"object\",\"properties\": {\"state\": {\"description\": \"The state of the phone\",\"enum\": [\"idle\", \"dialing\",\"ringing\", \"calling\"]},\"incomingNumber\": {\"description\": \"The phone number of the in-coming call\",\"type\": \"string\"},\"outgoingNumber\": {\"description\": \"The phone number of the out-going call\", \"type\": \"string\"}},\"required\": [\"state\"]}");
+        JSONObject expectedProfile = new JSONObject("{\"$schema\": \"http:\\/\\/json-schema.org\\/draft-04\\/schema#\",\"type\": \"object\",\"properties\": {\"state\": {\"description\": \"The state of the phone\",\"enum\": [\"idle\", \"dialing\",\"ringing\", \"calling\"]},\"incomingNumber\": {\"description\": \"The phone number of the in-comming call\",\"type\": \"string\"},\"outgoingNumber\": {\"description\": \"The phone number of the out-going call\", \"type\": \"string\"}},\"required\": [\"state\"]}");
 
         JSONObject profile = mSensorProfiles.get(sensorName);
         JSONAssert.assertEquals(expectedProfile, profile, true);

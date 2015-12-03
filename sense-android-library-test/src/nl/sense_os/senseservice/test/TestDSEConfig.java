@@ -1,4 +1,4 @@
-package nl.sense_os.senseservice;
+package nl.sense_os.senseservice.test;
 
 import android.test.AndroidTestCase;
 
@@ -22,6 +22,8 @@ import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData;
+import nl.sense_os.service.storage.DSEDataConsumer;
+import nl.sense_os.service.subscription.SubscriptionManager;
 import nl.sense_os.util.json.SchemaException;
 
 /**
@@ -31,6 +33,10 @@ import nl.sense_os.util.json.SchemaException;
 public class TestDSEConfig extends AndroidTestCase{
     @Override
     protected void setUp() throws Exception {
+        SensorOptions sensorOptions =  DefaultSensorOptions.getSensorOptions(getContext(), SensorData.SensorNames.ACCELEROMETER);
+        sensorOptions.setPersistLocally(true);
+        sensorOptions.setUploadEnabled(true);
+        DefaultSensorOptions.setDefaultSensorOptions(getContext(), SensorData.SensorNames.ACCELEROMETER, sensorOptions);
         SenseServiceUtils.createAccountAndLoginService(getContext());
         super.setUp();
     }
@@ -58,7 +64,6 @@ public class TestDSEConfig extends AndroidTestCase{
         assertTrue(dseConfig.localPersistancePeriod == retentionHours*60*60*1000l);
         // set local persist period
         sensePlatform.getService().setPrefInt(SensePrefs.Main.Advanced.RETENTION_HOURS, 1);
-
         // wait one second
         // Wait until the DSE is ready
         dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
@@ -72,25 +77,24 @@ public class TestDSEConfig extends AndroidTestCase{
      */
     public void testDataSync() throws InterruptedException, JSONException, SchemaException, DatabaseHandlerException, SensorProfileException, SensorException, TimeoutException, ExecutionException {
         // set the sensor to persist it's data locally and upload the data
-        SensorOptions sensorOptions =  DefaultSensorOptions.getSensorOptions(getContext(), SensorData.SensorNames.ACCELEROMETER);
-        sensorOptions.setPersistLocally(true);
-        sensorOptions.setUploadEnabled(true);
-        DefaultSensorOptions.setDefaultSensorOptions(getContext(), SensorData.SensorNames.ACCELEROMETER, sensorOptions);
+
         SensePlatform sensePlatform = SenseServiceUtils.getSensePlatform(getContext());
         // set the Sense pref upload of data every minute
-        sensePlatform.getService().setPrefString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.OFTEN);
         DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
         // wait until the dse is ready
         dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
-        // wait 2 seconds until the DSEDataConsumer is registered
-        Thread.sleep(2000);
         // send dummy accelerometer data
         SensorUtils sensorUtils = SensorUtils.getInstance();
+        // wait 60 seconds until the DSEDataConsumer is registered
+        sensorUtils.waitForDSEDataconsumer(getContext()).get(60, TimeUnit.SECONDS);
         sensorUtils.accelerometerSensor.sendDummyData();
-        // wait 1 minute
-        Thread.sleep(60000);
+        sensePlatform.getService().setPrefString(SensePrefs.Main.SYNC_RATE, SensePrefs.Main.SyncRate.OFTEN);
+        // wait until the dse is ready
+        dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
+        // wait 1 minute + 5 seconds for the sync
+        Thread.sleep(65000);
         // check if the data has been uploaded
-        Sensor sensor = dataStorageEngine.getSensor(SensorData.SourceNames.SENSE_ANDROID, SensorData.SensorNames.ACCELEROMETER);
+        Sensor sensor = dataStorageEngine.getSensor(SensorData.SourceNames.SENSE_LIBRARY, SensorData.SensorNames.ACCELEROMETER);
         QueryOptions queryOptions = new QueryOptions();
         List<DataPoint> data = sensor.getDataPoints(queryOptions);
         assertTrue("No data available", data.size() > 0);

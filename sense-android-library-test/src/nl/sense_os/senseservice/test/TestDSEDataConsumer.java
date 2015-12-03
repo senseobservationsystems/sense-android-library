@@ -1,4 +1,4 @@
-package nl.sense_os.senseservice;
+package nl.sense_os.senseservice.test;
 
 import android.test.AndroidTestCase;
 
@@ -70,12 +70,20 @@ public class TestDSEDataConsumer extends AndroidTestCase {
      *  Test the storage of sensor data via the DSEDataConsumer
      */
     public void testDSEDataConsumer() throws InterruptedException, ExecutionException, TimeoutException, JSONException, SchemaException, DatabaseHandlerException, SensorProfileException, SensorException {
+        // enable local persistence
+        for(String sensorName : getSensorNames()) {
+            SensorOptions sensorOptions = DefaultSensorOptions.getSensorOptions(getContext(), sensorName);
+            sensorOptions.setPersistLocally(true);
+            DefaultSensorOptions.setDefaultSensorOptions(getContext(), sensorName, sensorOptions);
+        }
         // Get the DSE
         DataStorageEngine dataStorageEngine = DataStorageEngine.getInstance(getContext());
         // Wait until the DSE is ready
         dataStorageEngine.onReady().get(60, TimeUnit.SECONDS);
         // send the sensor data
         SensorUtils sensorUtils = SensorUtils.getInstance();
+        // wait 60 seconds until the DSEDataConsumer is registered
+        sensorUtils.waitForDSEDataconsumer(getContext()).get(60, TimeUnit.SECONDS);
         sensorUtils.accelerometerSensor.sendDummyData();
         sensorUtils.appInfo.sendDummyData();
         sensorUtils.batterySensor.sendDummyData();
@@ -90,10 +98,10 @@ public class TestDSEDataConsumer extends AndroidTestCase {
         QueryOptions queryOptions = new QueryOptions();
         // check if it's stored
         for(String sensorName : getSensorNames()){
-            Sensor sensor = dataStorageEngine.getSensor(SensorData.SourceNames.SENSE_ANDROID, sensorName);
+            Sensor sensor = dataStorageEngine.getSensor(SensorData.SourceNames.SENSE_LIBRARY, sensorName);
             SensorOptions sensorOptions = sensor.getOptions();
-            assertTrue("Upload not enabled for this sensor", sensorOptions.isUploadEnabled());
-            assertTrue("No data stored", sensor.getDataPoints(queryOptions).size()>0);
+            assertTrue("Upload not enabled for this sensor:"+sensorName, sensorOptions.isUploadEnabled());
+            assertTrue("No data stored:"+sensorName, sensor.getDataPoints(queryOptions).size()>0);
         }
     }
 
@@ -133,13 +141,13 @@ public class TestDSEDataConsumer extends AndroidTestCase {
         // upload sensor data to the back end
         JSONArray data = new JSONArray();
         data.put(new JSONObject("{\"time\":1444739042100,\"value\":1}"));
-        mProxy.putSensorData(SensorData.SourceNames.SENSE_ANDROID, SensorData.SensorNames.NOISE, data);
+        mProxy.putSensorData(SensorData.SourceNames.SENSE_LIBRARY, SensorData.SensorNames.NOISE, data);
 
         // synchronize data to local so a new sensor is created by the DataSyncer
         dataStorageEngine.syncData().get(60, TimeUnit.SECONDS);
 
         // check if the sensor has been created with the right sensor options
-        Sensor noise = DataStorageEngine.getInstance(getContext()).getSensor(SensorData.SourceNames.SENSE_ANDROID, SensorData.SensorNames.NOISE);
+        Sensor noise = DataStorageEngine.getInstance(getContext()).getSensor(SensorData.SourceNames.SENSE_LIBRARY, SensorData.SensorNames.NOISE);
         SensorOptions sensorOptions = noise.getOptions();
         assertTrue("Upload enabled should be true", sensorOptions.isUploadEnabled());
         assertTrue("Download enabled should be true", sensorOptions.isDownloadEnabled());

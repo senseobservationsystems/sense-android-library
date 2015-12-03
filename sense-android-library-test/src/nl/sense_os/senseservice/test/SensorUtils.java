@@ -1,17 +1,30 @@
-package nl.sense_os.senseservice;
+package nl.sense_os.senseservice.test;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.TimeZone;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
+import nl.sense_os.datastorageengine.DatabaseHandlerException;
+import nl.sense_os.datastorageengine.SensorException;
+import nl.sense_os.datastorageengine.SensorProfileException;
 import nl.sense_os.service.constants.SensorData;
 import nl.sense_os.service.provider.SNTP;
 import nl.sense_os.service.shared.SensorDataPoint;
+import nl.sense_os.service.storage.DSEDataConsumer;
 import nl.sense_os.service.subscription.BaseDataProducer;
 import nl.sense_os.service.subscription.SubscriptionManager;
+import nl.sense_os.util.json.SchemaException;
+import nl.sense_os.util.json.ValidationException;
 
 /**
  * Created by ted@sense-os.nl on 12/1/15.
@@ -19,6 +32,7 @@ import nl.sense_os.service.subscription.SubscriptionManager;
  */
 public class SensorUtils {
     private static SensorUtils mSensorUtils;
+    private ExecutorService mDataSyncerExecutorService = Executors.newSingleThreadExecutor();
     public abstract class DummySensor extends  BaseDataProducer{
         public abstract void sendDummyData();
     }
@@ -57,6 +71,9 @@ public class SensorUtils {
             dataPoint.sensorName = SensorData.SensorNames.POSITION;
             dataPoint.sensorDescription = SensorData.SensorNames.POSITION;
             dataPoint.timeStamp = timestamp;
+            if(!this.hasSubscribers()){
+                throw new RuntimeException("No subscribers to send data to.");
+            }
             sendToSubscribers(dataPoint);
         }
     };
@@ -70,6 +87,9 @@ public class SensorUtils {
             dataPoint.sensorName = SensorData.SensorNames.NOISE;
             dataPoint.sensorDescription = SensorData.SensorNames.NOISE;
             dataPoint.timeStamp = SNTP.getInstance().getNtpTime();
+            if(!this.hasSubscribers()){
+                throw new RuntimeException("No subscribers to send data to.");
+            }
             sendToSubscribers(dataPoint);
         }
     };
@@ -88,6 +108,9 @@ public class SensorUtils {
                 dataPoint.sensorDescription = "Current time zone";
                 dataPoint.timeStamp = SNTP.getInstance().getTime();
                 //Log.d(TAG,"time zone subscribers: " + this.);
+                if(!this.hasSubscribers()){
+                    throw new RuntimeException("No subscribers to send data to.");
+                }
                 this.sendToSubscribers(dataPoint);
             } catch (JSONException e) {
                 Log.e(TAG, "Error creating time zone json object");
@@ -109,8 +132,11 @@ public class SensorUtils {
                 dataPoint.sensorName = SensorData.SensorNames.ACCELEROMETER;
                 dataPoint.sensorDescription = SensorData.SensorNames.ACCELEROMETER;
                 dataPoint.timeStamp = SNTP.getInstance().getTime();
+                if(!this.hasSubscribers()){
+                    throw new RuntimeException("No subscribers to send data to.");
+                }
                 this.sendToSubscribers(dataPoint);
-            }catch(Exception e){
+            }catch(JSONException e){
                 Log.e(TAG, "Error creating and sending accelerometerData");
             }
 
@@ -130,8 +156,11 @@ public class SensorUtils {
                 dataPoint.sensorName = SensorData.SensorNames.BATTERY;
                 dataPoint.sensorDescription = SensorData.SensorNames.BATTERY;
                 dataPoint.timeStamp = SNTP.getInstance().getTime();
+                if(!this.hasSubscribers()){
+                    throw new RuntimeException("No subscribers to send data to.");
+                }
                 sendToSubscribers(dataPoint);
-            }catch(Exception e){
+            }catch(JSONException e){
                 Log.e(TAG, "Error sending battery data");
             }
         }
@@ -149,8 +178,11 @@ public class SensorUtils {
                 dataPoint.sensorName = SensorData.SensorNames.CALL;
                 dataPoint.sensorDescription = SensorData.SensorNames.CALL;
                 dataPoint.timeStamp = SNTP.getInstance().getTime();
+                if(!this.hasSubscribers()){
+                    throw new RuntimeException("No subscribers to send data to.");
+                }
                 sendToSubscribers(dataPoint);
-            }catch(Exception e){
+            }catch(JSONException e){
                 Log.e(TAG, "Error sending call data");
             }
         }
@@ -160,15 +192,15 @@ public class SensorUtils {
         public void sendDummyData() {
             // register this produces
             SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.LIGHT, this);
-            try{
-                SensorDataPoint dataPoint = new SensorDataPoint(10);
-                dataPoint.sensorName = SensorData.SensorNames.LIGHT;
-                dataPoint.sensorDescription = SensorData.SensorNames.LIGHT;
-                dataPoint.timeStamp = SNTP.getInstance().getTime();
-                sendToSubscribers(dataPoint);
-            }catch(Exception e){
-                Log.e(TAG, "Error sending light data");
+
+            SensorDataPoint dataPoint = new SensorDataPoint(10);
+            dataPoint.sensorName = SensorData.SensorNames.LIGHT;
+            dataPoint.sensorDescription = SensorData.SensorNames.LIGHT;
+            dataPoint.timeStamp = SNTP.getInstance().getTime();
+            if(!this.hasSubscribers()){
+                throw new RuntimeException("No subscribers to send data to.");
             }
+            sendToSubscribers(dataPoint);
         }
     };
 
@@ -176,15 +208,15 @@ public class SensorUtils {
         public void sendDummyData() {
             // register this produces
             SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.PROXIMITY, this);
-            try{
-                SensorDataPoint dataPoint = new SensorDataPoint(1);
-                dataPoint.sensorName = SensorData.SensorNames.PROXIMITY;
-                dataPoint.sensorDescription = SensorData.SensorNames.PROXIMITY;
-                dataPoint.timeStamp = SNTP.getInstance().getTime();
-                sendToSubscribers(dataPoint);
-            }catch(Exception e){
-                Log.e(TAG, "Error sending proximity data");
+
+            SensorDataPoint dataPoint = new SensorDataPoint(1);
+            dataPoint.sensorName = SensorData.SensorNames.PROXIMITY;
+            dataPoint.sensorDescription = SensorData.SensorNames.PROXIMITY;
+            dataPoint.timeStamp = SNTP.getInstance().getTime();
+            if(!this.hasSubscribers()){
+                throw new RuntimeException("No subscribers to send data to.");
             }
+            sendToSubscribers(dataPoint);
         }
     };
 
@@ -192,15 +224,14 @@ public class SensorUtils {
         public void sendDummyData() {
             // register this produces
             SubscriptionManager.getInstance().registerProducer(SensorData.SensorNames.SCREEN, this);
-            try{
-                SensorDataPoint dataPoint = new SensorDataPoint("on");
-                dataPoint.sensorName = SensorData.SensorNames.SCREEN;
-                dataPoint.sensorDescription = SensorData.SensorNames.SCREEN;
-                dataPoint.timeStamp = SNTP.getInstance().getTime();
-                sendToSubscribers(dataPoint);
-            }catch(Exception e){
-                Log.e(TAG, "Error sending screen data");
+            SensorDataPoint dataPoint = new SensorDataPoint("on");
+            dataPoint.sensorName = SensorData.SensorNames.SCREEN;
+            dataPoint.sensorDescription = SensorData.SensorNames.SCREEN;
+            dataPoint.timeStamp = SNTP.getInstance().getTime();
+            if(!this.hasSubscribers()){
+                throw new RuntimeException("No subscribers to send data to.");
             }
+            sendToSubscribers(dataPoint);
         }
     };
 
@@ -221,8 +252,11 @@ public class SensorUtils {
                 dataPoint.sensorName = SensorData.SensorNames.WIFI_SCAN;
                 dataPoint.sensorDescription = SensorData.SensorNames.WIFI_SCAN;
                 dataPoint.timeStamp = SNTP.getInstance().getTime();
+                if(!this.hasSubscribers()){
+                    throw new RuntimeException("No subscribers to send data to.");
+                }
                 sendToSubscribers(dataPoint);
-            }catch(Exception e){
+            }catch(JSONException e){
                 Log.e(TAG, "Error sending WIFI scan  data");
             }
         }
@@ -241,10 +275,25 @@ public class SensorUtils {
                 dataPoint.sensorName = SensorData.SensorNames.APP_INFO;
                 dataPoint.sensorDescription = SensorData.SensorNames.APP_INFO;
                 dataPoint.timeStamp = SNTP.getInstance().getTime();
+                if(!this.hasSubscribers()){
+                    throw new RuntimeException("No subscribers to send data to.");
+                }
                 sendToSubscribers(dataPoint);
-            }catch(Exception e){
+            }catch(JSONException e){
                 Log.e(TAG, "Error sending app Info");
             }
         }
     };
+
+    public synchronized Future<Boolean> waitForDSEDataconsumer(final Context context) {
+        return mDataSyncerExecutorService.submit(new Callable<Boolean>() {
+            public Boolean call() throws InterruptedException {
+                SubscriptionManager sm = SubscriptionManager.getInstance();
+                while(!sm.isConsumerSubscribed(SensorData.SensorNames.ACCELEROMETER, DSEDataConsumer.getInstance(context))){
+                    Thread.sleep(100);
+                }
+                return true;
+            }
+        });
+    }
 }

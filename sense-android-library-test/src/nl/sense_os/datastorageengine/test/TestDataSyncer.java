@@ -40,7 +40,7 @@ public class TestDataSyncer extends AndroidTestCase {
     private CSUtils mCsUtils;
     private Map<String, String> mNewUser;
     SensorDataProxy.SERVER mServer = SensorDataProxy.SERVER.STAGING;
-    private String mSourceName = "sense-android";
+    private String mSourceName = SensorData.SourceNames.SENSE_LIBRARY;
     private String mAppKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
     private String mSessionId;
     private DatabaseHandler mDatabaseHandler;

@@ -17,9 +17,9 @@ public class SensorDataPoint {
 
     /**
      * The source of the data point
-     * By default SensorData.SourceNames.SENSE_ANDROID
+     * By default SensorData.SourceNames.SENSE_LIBRARY
      */
-    public String source = SensorData.SourceNames.SENSE_ANDROID;
+    public String source = SensorData.SourceNames.SENSE_LIBRARY;
 
     public enum DataType {
         INT, FLOAT, BOOL, DOUBLE, STRING, ARRAYLIST, JSON, JSONSTRING, FILE, SENSOREVENT

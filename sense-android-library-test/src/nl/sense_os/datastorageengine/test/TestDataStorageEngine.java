@@ -46,7 +46,7 @@ public class TestDataStorageEngine extends AndroidTestCase{
     private String appKey = "E9Noi5s402FYo2Gc6a7pDTe4H3UvLkWa";  // application key for dev, android, Brightr ASML
     private String sessionId;
     private DataStorageEngine dataStorageEngine;
-    private String source = "sense-android";
+    private String source = SensorData.SourceNames.SENSE_LIBRARY;
     private String sensor_name = "noise";
 
     /** AsyncCallback class to receive status updates in */

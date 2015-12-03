@@ -33,8 +33,8 @@ public class SensorData {
      * Standard source names
      */
     public static class SourceNames{
-        public final static String SENSE_ANDROID = "sense-android";
-        public final static String AIM_ANDROID = "aim-android";
+        public final static String SENSE_LIBRARY = "sense-library";
+        public final static String MANUAL = "manual";
     }
 
     /**

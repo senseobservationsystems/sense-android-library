@@ -1,33 +1,18 @@
-package nl.sense_os.senseservice;
+package nl.sense_os.senseservice.test;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.TimeZone;
 
-import nl.sense_os.datastorageengine.DataStorageEngine;
 import nl.sense_os.datastorageengine.test.CSUtils;
-import nl.sense_os.platform.SenseApplication;
 import nl.sense_os.platform.SensePlatform;
 import nl.sense_os.service.ISenseServiceCallback;
 import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensorData;
-import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.shared.SensorDataPoint;
-import nl.sense_os.service.subscription.BaseDataProducer;
-import nl.sense_os.service.subscription.DataConsumer;
-import nl.sense_os.service.subscription.DataProducer;
-import nl.sense_os.service.subscription.SubscriptionManager;
-import nl.sense_os.util.json.EncryptionHelper;
 
 /**
  * Created by ted@sense-os.nl on 11/30/15.
