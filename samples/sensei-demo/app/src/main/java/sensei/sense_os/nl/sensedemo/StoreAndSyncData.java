@@ -3,7 +3,16 @@ package sensei.sense_os.nl.sensedemo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.RemoteException;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.Map;
+
+import nl.sense_os.service.EncryptionHelper;
+import nl.sense_os.service.SenseService;
 import nl.sense_os.service.commonsense.DefaultSensorRegistrator;
 import nl.sense_os.service.commonsense.SenseApi;
 import nl.sense_os.service.constants.SenseDataTypes;
@@ -85,6 +94,84 @@ public class StoreAndSyncData {
         sensorData.putExtra(SensorData.DataPoint.TIMESTAMP, System.currentTimeMillis());
         sensorData.setPackage(context.getPackageName());
         context.startService(sensorData);
+    }
+
+    public static boolean sendDataManually(Context context, String statusValue){
+        try {
+            // try to get the sensor id if available
+            String deviceUUID = SenseApi.getDefaultDeviceUuid(context);
+            String sensorID =  SenseApi.getSensorId(context, sensorName, description, dataType, deviceUUID);
+            if(sensorID == null)
+                throw new RuntimeException("Error missing sensor id, the sensor needs to be created first");
+
+            // create the data object
+            JSONObject value = new JSONObject("{\"status\":\""+statusValue+"\"}");
+            JSONObject sensorData = new JSONObject();
+            JSONArray dataArray = new JSONArray();
+            JSONObject data = new JSONObject();
+            data.put("value", value);
+            data.put("date", System.currentTimeMillis());
+            dataArray.put(data);
+            sensorData.put("data", dataArray);
+
+            // get the url to post the data to
+            String url = SenseApi.getSensorUrl(context, sensorName, description, dataType, deviceUUID);
+            // get the session id cookie
+
+            // send the data
+            Map<String, String> response = SenseApi.request(context, url, sensorData, getCookie(context));
+
+            // Error when sending
+            if ((response == null) || !response.get(SenseApi.RESPONSE_CODE).equals("201")) {
+
+                // if un-authorized: relogin
+                if ((response != null) && response.get(SenseApi.RESPONSE_CODE).equals("403")) {
+                    final Intent serviceIntent = new Intent(context.getString(R.string.action_sense_service));
+                    serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
+                    serviceIntent.setPackage(context.getPackageName());
+                    context.startService(serviceIntent);
+                }
+
+                // Show the HTTP response Code
+                if (response != null) {
+                    throw new RemoteException("Failed to send '" + sensorName+ "' data. Response code:"
+                                    + response.get(SenseApi.RESPONSE_CODE) + ", Response content: '"
+                                    + response.get(SenseApi.RESPONSE_CONTENT) + "'\nData will be retried");
+                } else {
+                    throw new RemoteException("Failed to send '" + sensorName+ "' data.");
+                }
+            }
+            return true;
+
+        } catch (Exception e) {
+            String message = e.getMessage() != null? e.getMessage() : e.toString();
+            Log.e(TAG,message);
+            return false;
+        }
+    }
+
+    /**
+     * Get the cookie stored after the last login
+     * @param context An Android context
+     * @return The cookie string
+     */
+    public static String getCookie(Context context){
+        SharedPreferences authPrefs = context.getSharedPreferences(SensePrefs.AUTH_PREFS, context.MODE_PRIVATE);
+        String cookie = authPrefs.getString(SensePrefs.Auth.LOGIN_COOKIE, null);
+
+        SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,context.MODE_PRIVATE);
+
+        boolean encrypt_credential = mainPrefs.getBoolean(SensePrefs.Main.Advanced.ENCRYPT_CREDENTIAL, false);
+
+        if (encrypt_credential) {
+            EncryptionHelper decryptor = new EncryptionHelper(context);
+            try {
+                cookie = decryptor.decrypt(cookie);
+            } catch (EncryptionHelper.EncryptionHelperException e) {
+                Log.w(TAG, "Error decrypting cookie. Assume data is not encrypted");
+            }
+        }
+        return cookie;
     }
 
     /**
