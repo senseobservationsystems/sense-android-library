@@ -13,3 +13,4 @@ Functionality:
 * Store data for a sensor
 * Periodically sync data in the background 
 * Start data sync on phone boot
+* Send data to CommonSense manually
