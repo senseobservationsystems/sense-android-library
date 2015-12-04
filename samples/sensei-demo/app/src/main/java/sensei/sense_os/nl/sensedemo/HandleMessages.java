@@ -24,6 +24,8 @@ public class HandleMessages extends BroadcastReceiver {
         // check for reboot
         else if(action.equalsIgnoreCase("android.intent.action.BOOT_COMPLETED"))
         {
+            // call login
+            SetupUser.login(context);
             // start the data syncer
             StoreAndSyncData.startDataSyncer(context);
         }
