@@ -1,3 +1,8 @@
+## v3.5.1 (2016-01-11)
+
+### Added
+* New parameter language in reset password request
+
 ## v3.4.2 (2015-05-13)
 
 ### Fixed
