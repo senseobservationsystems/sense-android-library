@@ -1277,6 +1277,26 @@ public class SenseApi {
      */
     public static boolean resetPasswordRequest(Context context, String username) throws IOException,
             JSONException {
+        return resetPasswordRequest(context, username, Locale.US);
+    }
+
+    /**
+     * Request a password reset for the given username.
+     * 
+     * @param context
+     *            Application context, used for getting preferences.
+     * @param email
+     *            Email address for the account that you want to regain access to.
+     * @param language
+     *            Language the reset password email will be send as
+     * @return <code>true</code> if the request wasw accepted
+     * @throws IOException
+     *             In case of communication failure to CommonSense
+     * @throws JSONException
+     *             In case of unparseable response from CommonSense
+     */
+    public static boolean resetPasswordRequest(Context context, String username, Locale language) throws IOException,
+            JSONException {
 
         if (null == sMainPrefs) {
             sMainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
@@ -1287,6 +1307,7 @@ public class SenseApi {
         String url = devMode ? SenseUrls.RESET_PASSWORD_REQUEST_DEV : SenseUrls.RESET_PASSWORD_REQUEST;
         JSONObject content = new JSONObject();
         content.put("username", username);
+        content.put("language", language.toString());
 
         // TODO disable compressed 
         Boolean useCompressed = sMainPrefs.getBoolean(SensePrefs.Main.Advanced.COMPRESS, false);
